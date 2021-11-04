@@ -1,0 +1,6 @@
+add_subdirectory(pugixml)
+if(COMPILE_SPLINELIB)
+    set(SHARED OFF)
+    add_subdirectory(SplineLib)
+endif()
+add_subdirectory(pybind11)

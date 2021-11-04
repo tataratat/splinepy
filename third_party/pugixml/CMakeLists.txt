@@ -35,14 +35,6 @@ if (NOT DEFINED CMAKE_MSVC_RUNTIME_LIBRARY)
     MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<BOOL:${STATIC_CRT}>>:DLL>)
 endif()
 
-if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
-if (NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
-endif()
-
 if (USE_POSTFIX)
   set(CMAKE_RELWITHDEBINFO_POSTFIX _r)
   set(CMAKE_MINSIZEREL_POSTFIX _m)
@@ -75,6 +67,7 @@ if (BUILD_SHARED_LIBS OR BUILD_SHARED_AND_STATIC_LIBS)
   add_library(pugixml::shared ALIAS pugixml-shared)
   list(APPEND libs pugixml-shared)
 
+  set_property(TARGET pugixml-shared PROPERTY CXX_STANDARD 11)
   set_property(TARGET pugixml-shared PROPERTY EXPORT_NAME shared)
   target_include_directories(pugixml-shared
     PUBLIC
@@ -96,12 +89,14 @@ if (NOT BUILD_SHARED_LIBS OR BUILD_SHARED_AND_STATIC_LIBS)
   add_library(pugixml::static ALIAS pugixml-static)
   list(APPEND libs pugixml-static)
 
+  set_property(TARGET pugixml-static PROPERTY CXX_STANDARD 11)
   set_property(TARGET pugixml-static PROPERTY EXPORT_NAME static)
   target_include_directories(pugixml-static
     PUBLIC
       $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
   target_compile_options(pugixml-static
     PRIVATE
+      ${SPLINELIBPY_FLAGS}
       ${msvc-rt-mtd-shared}
       ${msvc-rt-mtd-static}
       ${msvc-rt-mt-shared}
@@ -131,13 +126,6 @@ set_target_properties(${libs}
     EXCLUDE_FROM_ALL OFF)
 set(install-targets pugixml ${libs})
 
-configure_package_config_file(
-  "${PROJECT_SOURCE_DIR}/scripts/pugixml-config.cmake.in"
-  "${PROJECT_BINARY_DIR}/pugixml-config.cmake"
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO
-  NO_SET_AND_CHECK_MACRO)
-
 write_basic_package_version_file(
   "${PROJECT_BINARY_DIR}/pugixml-config-version.cmake"
   COMPATIBILITY SameMajorVersion)
@@ -151,8 +139,6 @@ if (USE_POSTFIX)
     set(LIB_POSTFIX ${CMAKE_DEBUG_POSTFIX})
   endif()
 endif()
-
-configure_file(scripts/pugixml.pc.in pugixml.pc @ONLY)
 
 if (NOT DEFINED PUGIXML_RUNTIME_COMPONENT)
   set(PUGIXML_RUNTIME_COMPONENT Runtime)

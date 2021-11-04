@@ -13,8 +13,6 @@
 # OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-pkg_search_module(PUGIXML REQUIRED QUIET pugixml)
-
 set(
     HEADERS
     iges.hpp
@@ -41,7 +39,7 @@ add_library(input_output ${SOURCES})
 target_include_directories(input_output PUBLIC ${INCLUDE_DIRECTORIES})
 target_include_directories(input_output SYSTEM PRIVATE ${PUGIXML_INCLUDEDIR})
 target_link_libraries(input_output PUBLIC utilities splines 
-                                   PRIVATE ${PUGIXML_LDFLAGS} "-Wl,-rpath,${PUGIXML_LIBRARY_DIRS}")
+                                   PRIVATE pugixml::pugixml)
 target_compile_definitions(input_output INTERFACE ${COMPILE_DEFINITIONS} PRIVATE ${PUGIXML_CFLAGS_OTHER})
 target_compile_options(input_output PRIVATE ${COMPILE_OPTIONS})
 

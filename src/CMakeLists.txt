@@ -3,7 +3,7 @@ set(SRCS splinelib.cpp)
 pybind11_add_module(splinelibpy ${SRCS})
 target_include_directories(splinelibpy PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_compile_options(splinelibpy PRIVATE ${C_FLAGS})
+target_compile_options(splinelibpy PRIVATE ${SPLINELIBPY_FLAGS})
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_BUILD_TYPE MATCHES Release)
     target_compile_options(splinelibpy PRIVATE ${GNU_FLAGS_R})
 endif()

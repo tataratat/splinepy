@@ -21,7 +21,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(namespace "${PROJECT_NAME}::")
 set(targets_export_name "${PROJECT_NAME}Targets")
 option(SHARED "Build shared library" ON)
-option(GOOGLETEST "Build with GoogleTest" ON)
 
 # Setup
 set(include_install_directory "include")
@@ -57,8 +56,9 @@ else()
     message(ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 set(COMPILE_DEFINITIONS $<$<BOOL:${SHARED}>:SPLINELIB_SHARED> $<$<BOOL:${GOOGLETEST}>:SPLINELIB_GOOGLETEST>)
-set(COMPILE_OPTIONS ${OPTIMIZATION_FLAGS} 
-                    $<IF:$<CONFIG:Release>,${PARALLELIZATION_FLAGS},${RUNTIME_CHECKS_DEBUG}> ${WARNING_FLAGS})
+set(COMPILE_OPTIONS ${OPTIMIZATION_FLAGS}  
+                    $<IF:$<CONFIG:Release>,${PARALLELIZATION_FLAGS},${RUNTIME_CHECKS_DEBUG}> ${WARNING_FLAGS}
+                    ${SPLINELIBPY_FLAGS})
 message(STATUS "Compile using ${CMAKE_CXX_COMPILER_ID} compiler!")
 set(CMAKE_DEBUG_POSTFIX "d")
 
@@ -78,14 +78,6 @@ endif()
 # Content
 find_package(PkgConfig REQUIRED QUIET)
 add_subdirectory(Sources)
-if(GOOGLETEST)
-    message(STATUS "Build tests!")
-    enable_testing()
-    add_subdirectory(Tests)
-else()
-    message(STATUS "No tests!")
-endif()
-add_subdirectory(Tools)
 
 # Packaging
 set(generated_directory ${CMAKE_CURRENT_BINARY_DIR}/Generated)
