@@ -1,6 +1,7 @@
 from splinelibpy import _splinelibpy
 from splinelibpy._splinelibpy import *
 
+# Alias for "Legacy" classes
 BSplineCurve2D = BSpline1P2D
 BSplineCurve3D = BSpline1P3D
 BSplineSurface2D = BSpline2P2D
