@@ -2,16 +2,9 @@
 #include <bspline.hpp>
 #include <nurbs.hpp>
 
-PYBIND11_MODULE(splinelibpy, m) {
+PYBIND11_MODULE(_splinelibpy, m) {
 
     /* BSPLINE */
-
-    // "Legacy" classes - TODO: set alias in python __init__
-    add_bspline_pyclass<1, 2>(m, "BSplineCurve2D");
-    add_bspline_pyclass<1, 3>(m, "BSplineCurve3D");
-    add_bspline_pyclass<2, 2>(m, "BSplineSurface2D");
-    add_bspline_pyclass<2, 3>(m, "BSplineSurface3D");
-    add_bspline_pyclass<3, 3>(m, "BSplineSolid");
 
     // 1P (Pamametric dimension)
     add_bspline_pyclass<1, 1>(m, "BSpline1P1D");
@@ -136,13 +129,6 @@ PYBIND11_MODULE(splinelibpy, m) {
     /* BSPLINE END */
 
     /* NURBS */
-
-    // "Legacy" class. Same TODO as BSpline
-    add_nurbs_pyclass<1, 2>(m, "NurbsCurve2D");
-    add_nurbs_pyclass<1, 3>(m, "NurbsCurve3D");
-    add_nurbs_pyclass<2, 2>(m, "NurbsSurface2D");
-    add_nurbs_pyclass<2, 3>(m, "NurbsSurface3D");
-    add_nurbs_pyclass<3, 3>(m, "NurbsSolid");
 
     // 1P (Pamametric dimension)
     add_nurbs_pyclass<1, 1>(m, "NURBS1P1D");
