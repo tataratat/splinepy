@@ -75,6 +75,9 @@ struct PyNurbs {
     py::array_t<double> p_control_points;
     py::array_t<double> p_weights;
 
+    // Fr. Nurbs' switch to skip update_c
+    bool skip_update = false;
+
     // Constructor.
     PyNurbs() {} 
     PyNurbs(py::array_t<int> degrees,
@@ -236,8 +239,9 @@ struct PyNurbs {
     // Evaluate.
     py::array_t<double> evaluate(py::array_t<double> queries) {
 
-        // Quick update - Potentially could be improved by hash checker.
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         // Extract input array info.
         py::buffer_info q_buf = queries.request();
@@ -272,7 +276,9 @@ struct PyNurbs {
     // Derivative.
     py::array_t<double> derivative(py::array_t<double> queries, py::array_t<int> orders) {
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         // Extract input arrays info.
         py::buffer_info q_buf = queries.request(), o_buf = orders.request();
@@ -315,7 +321,9 @@ struct PyNurbs {
 
     void insert_knots(int p_dim, py::list knots) {
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         splinelib::Dimension inserting_p_dim{p_dim};
         for (py::handle k : knots) {
@@ -335,7 +343,9 @@ struct PyNurbs {
          *  Use with caution. You've been warned.
          */
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         splinelib::Dimension removing_p_dim{p_dim};
         splines::Tolerance tolerance{tol};
@@ -350,7 +360,9 @@ struct PyNurbs {
     
     void elevate_degree(int p_dim) {
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         splinelib::Dimension elevating_p_dim{p_dim};
         c_nurbs.ElevateDegree(elevating_p_dim);
@@ -360,7 +372,9 @@ struct PyNurbs {
 
     bool reduce_degree(int p_dim, double tol) {
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         bool reduced;
 
@@ -375,7 +389,9 @@ struct PyNurbs {
 
     py::array_t<double> sample(py::array_t<int> query_resolutions) {
 
-        update_c();
+        if (!skip_update) {
+            update_c();
+        }
 
         // Extract input array info.
         py::buffer_info q_buf = query_resolutions.request();
