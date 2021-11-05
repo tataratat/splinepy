@@ -458,3 +458,59 @@ struct PyNurbs {
 
     }
 };
+
+template<int para_dim, int dim>
+void add_nurbs_pyclass(py::module &m, const char *class_name) {
+    py::class_<PyNurbs<para_dim, dim>> klasse(m, class_name);
+
+    klasse.def(py::init<>())
+          .def_readwrite("knot_vectors",
+                             &PyNurbs<para_dim, dim>::p_knot_vectors)
+          .def_readwrite("degrees",
+                             &PyNurbs<para_dim, dim>::p_degrees)
+          .def_readwrite("control_points",
+                             &PyNurbs<para_dim, dim>::p_control_points)
+          .def_readwrite("weights",
+                             &PyNurbs<para_dim, dim>::p_weights)
+          .def("evaluate",
+                   &PyNurbs<para_dim, dim>::evaluate,
+                   py::arg("queries"))
+          .def("derivative",
+                   &PyNurbs<para_dim, dim>::derivative,
+                   py::arg("queries"),
+                   py::arg("orders"))
+          .def("insert_knots",
+                   &PyNurbs<para_dim, dim>::insert_knots,
+                   py::arg("p_dim"),
+                   py::arg("knots"))
+          .def("remove_knots",
+                   &PyNurbs<para_dim, dim>::remove_knots,
+                   py::arg("p_dim"),
+                   py::arg("knots"),
+                   py::arg("tolerance"))
+          .def("elevate_degree",
+                   &PyNurbs<para_dim, dim>::elevate_degree,
+                   py::arg("p_dim"))
+          .def("reduce_degree",
+                   &PyNurbs<para_dim, dim>::reduce_degree,
+                   py::arg("p_dim"),
+                   py::arg("tolerance"))
+          .def("sample",
+                   &PyNurbs<para_dim, dim>::sample,
+                   py::arg("resoultion"))
+          .def("write_iges",
+                   &PyNurbs<para_dim, dim>::write_iges,
+                   py::arg("fname"))
+          .def("write_xml",
+                   &PyNurbs<para_dim, dim>::write_xml,
+                   py::arg("fname"))
+          .def("write_irit",
+                   &PyNurbs<para_dim, dim>::write_irit,
+                   py::arg("fname"))
+          .def("update_c_",
+                   &PyNurbs<para_dim, dim>::update_c)
+          .def("update_p_",
+                   &PyNurbs<para_dim, dim>::update_p);
+
+}
+
