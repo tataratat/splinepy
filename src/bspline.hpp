@@ -597,3 +597,96 @@ struct PyBSpline {
 
     }
 };
+
+template<int para_dim, int dim>
+void add_bspline_pyclass(py::module &m, const char *class_name) {
+    py::class_<PyBSpline<para_dim, dim>> klasse(m, class_name);
+
+    klasse.def(py::init<>())
+          .def_readwrite("knot_vectors",
+                             &PyBSpline<para_dim, dim>::p_knot_vectors)
+          .def_readwrite("degrees",
+                             &PyBSpline<para_dim, dim>::p_degrees)
+          .def_readwrite("control_points",
+                             &PyBSpline<para_dim, dim>::p_control_points)
+          .def("evaluate",
+                   &PyBSpline<para_dim, dim>::evaluate,
+                   py::arg("queries"))
+          .def("derivative",
+                   &PyBSpline<para_dim, dim>::derivative,
+                   py::arg("queries"),
+                   py::arg("orders"))
+          .def("insert_knots",
+                   &PyBSpline<para_dim, dim>::insert_knots,
+                   py::arg("p_dim"),
+                   py::arg("knots"))
+          .def("remove_knots",
+                   &PyBSpline<para_dim, dim>::remove_knots,
+                   py::arg("p_dim"),
+                   py::arg("knots"),
+                   py::arg("tolerance"))
+          .def("elevate_degree",
+                   &PyBSpline<para_dim, dim>::elevate_degree,
+                   py::arg("p_dim"))
+          .def("reduce_degree",
+                   &PyBSpline<para_dim, dim>::reduce_degree,
+                   py::arg("p_dim"),
+                   py::arg("tolerance"))
+          .def("sample",
+                   &PyBSpline<para_dim, dim>::sample,
+                   py::arg("resoultion"))
+          .def("write_iges",
+                   &PyBSpline<para_dim, dim>::write_iges,
+                   py::arg("fname"))
+          .def("write_xml",
+                   &PyBSpline<para_dim, dim>::write_xml,
+                   py::arg("fname"))
+          .def("write_irit",
+                   &PyBSpline<para_dim, dim>::write_irit,
+                   py::arg("fname"))
+          .def("update_c_",
+                   &PyBSpline<para_dim, dim>::update_c)
+          .def("update_p_",
+                   &PyBSpline<para_dim, dim>::update_p);
+
+
+    if constexpr (para_dim == 1) {
+        klasse.def("fit_curve",
+                       &PyBSpline<para_dim, dim>::fit_curve,
+                       py::arg("points"),
+                       py::arg("degree"),
+                       py::arg("num_control_points"),
+                       py::arg("centripetal"),
+                       py::arg("knot_vector"))
+              .def("interpolate_curve",
+                       &PyBSpline<para_dim, dim>::interpolate_curve,
+                       py::arg("points"),
+                       py::arg("degree"),
+                       py::arg("centripetal"))
+              .def("approximate_curve",
+                       &PyBSpline<para_dim, dim>::approximate_curve,
+                       py::arg("points"),
+                       py::arg("degree"),
+                       py::arg("num_control_points"),
+                       py::arg("centripetal"));
+    }
+
+    if constexpr (para_dim == 2) {
+        klasse.def("fit_surface",
+                       &PyBSpline<para_dim, dim>::fit_surface,
+                       py::arg("points"),
+                       py::arg("size_u"),
+                       py::arg("size_v"),
+                       py::arg("degree_u"),
+                       py::arg("degree_v"),
+                       py::arg("centripetal"))
+              .def("interpolate_surface",
+                       &PyBSpline<para_dim, dim>::interpolate_surface,
+                       py::arg("points"),
+                       py::arg("size_u"),
+                       py::arg("size_v"),
+                       py::arg("degree_u"),
+                       py::arg("degree_v"),
+                       py::arg("centripetal"));
+    }
+}
