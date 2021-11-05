@@ -4,253 +4,275 @@
 
 PYBIND11_MODULE(splinelibpy, m) {
 
-    py::class_<PyBSpline<1, 2>>(m, "BSplineCurve2D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyBSpline<1, 2>::p_knot_vectors)
-        .def_readwrite("degrees", &PyBSpline<1, 2>::p_degrees)
-        .def_readwrite("control_points", &PyBSpline<1, 2>::p_control_points)
-        .def("evaluate", &PyBSpline<1, 2>::evaluate, py::arg("queries"))
-        .def("derivative", &PyBSpline<1, 2>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyBSpline<1, 2>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyBSpline<1, 2>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyBSpline<1, 2>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyBSpline<1, 2>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyBSpline<1, 2>::sample, py::arg("resoultion"))
-        .def("fit_curve", &PyBSpline<1, 2>::fit_curve, py::arg("points"),
-                                                       py::arg("degree"),
-                                                       py::arg("num_control_points"),
-                                                       py::arg("centripetal"),
-                                                       py::arg("knot_vector"))
-        .def("interpolate_curve", &PyBSpline<1, 2>::interpolate_curve, py::arg("points"),
-                                                                       py::arg("degree"),
-                                                                       py::arg("centripetal"))
-        .def("approximate_curve", &PyBSpline<1, 2>::approximate_curve, py::arg("points"),
-                                                                       py::arg("degree"),
-                                                                       py::arg("num_control_points"),
-                                                                       py::arg("centripetal"))
-        .def("write_iges", &PyBSpline<1, 2>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyBSpline<1, 2>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyBSpline<1, 2>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyBSpline<1, 2>::update_c)
-        .def("update_p_", &PyBSpline<1, 2>::update_p)
-        ;
+    /* BSPLINE */
 
-    py::class_<PyBSpline<1, 3>>(m, "BSplineCurve3D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyBSpline<1, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyBSpline<1, 3>::p_degrees)
-        .def_readwrite("control_points", &PyBSpline<1, 3>::p_control_points)
-        .def("evaluate", &PyBSpline<1, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyBSpline<1, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyBSpline<1, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyBSpline<1, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyBSpline<1, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyBSpline<1, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyBSpline<1, 3>::sample, py::arg("resoultion"))
-        .def("fit_curve", &PyBSpline<1, 3>::fit_curve, py::arg("points"),
-                                                       py::arg("degree"),
-                                                       py::arg("num_control_points"),
-                                                       py::arg("centripetal"),
-                                                       py::arg("knot_vector"))
-        .def("interpolate_curve", &PyBSpline<1, 3>::interpolate_curve, py::arg("points"),
-                                                                       py::arg("degree"),
-                                                                       py::arg("centripetal"))
-        .def("approximate_curve", &PyBSpline<1, 3>::approximate_curve, py::arg("points"),
-                                                                       py::arg("degree"),
-                                                                       py::arg("num_control_points"),
-                                                                       py::arg("centripetal"))
-        .def("write_iges", &PyBSpline<1, 3>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyBSpline<1, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyBSpline<1, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyBSpline<1, 3>::update_c)
-        .def("update_p_", &PyBSpline<1, 3>::update_p)
-        ;
+    // "Legacy" classes - TODO: set alias in python __init__
+    add_bspline_pyclass<1, 2>(m, "BSplineCurve2D");
+    add_bspline_pyclass<1, 3>(m, "BSplineCurve3D");
+    add_bspline_pyclass<2, 2>(m, "BSplineSurface2D");
+    add_bspline_pyclass<2, 3>(m, "BSplineSurface3D");
+    add_bspline_pyclass<3, 3>(m, "BSplineSolid");
 
-    py::class_<PyBSpline<2, 2>>(m, "BSplineSurface2D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyBSpline<2, 2>::p_knot_vectors)
-        .def_readwrite("degrees", &PyBSpline<2, 2>::p_degrees)
-        .def_readwrite("control_points", &PyBSpline<2, 2>::p_control_points)
-        .def("evaluate", &PyBSpline<2, 2>::evaluate, py::arg("queries"))
-        .def("derivative", &PyBSpline<2, 2>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyBSpline<2, 2>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyBSpline<2, 2>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyBSpline<2, 2>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyBSpline<2, 2>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyBSpline<2, 2>::sample, py::arg("resoultion"))
-        .def("fit_surface", &PyBSpline<2, 2>::fit_surface, py::arg("points"),
-                                                           py::arg("size_u"),
-                                                           py::arg("size_v"),
-                                                           py::arg("degree_u"),
-                                                           py::arg("degree_v"),
-                                                           py::arg("centripetal"))
-        .def("interpolate_surface", &PyBSpline<2, 2>::interpolate_surface, py::arg("points"),
-                                                                           py::arg("size_u"),
-                                                                           py::arg("size_v"),
-                                                                           py::arg("degree_u"),
-                                                                           py::arg("degree_v"),
-                                                                           py::arg("centripetal"))
-        .def("write_iges", &PyBSpline<2, 2>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyBSpline<2, 2>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyBSpline<2, 2>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyBSpline<2, 2>::update_c)
-        .def("update_p_", &PyBSpline<2, 2>::update_p)
-        ;
+    // 1P (Pamametric dimension)
+    add_bspline_pyclass<1, 1>(m, "BSpline1P1D");
+    add_bspline_pyclass<1, 2>(m, "BSpline1P2D");
+    add_bspline_pyclass<1, 3>(m, "BSpline1P3D");
+    add_bspline_pyclass<1, 4>(m, "BSpline1P4D");
+    add_bspline_pyclass<1, 5>(m, "BSpline1P5D");
+    add_bspline_pyclass<1, 6>(m, "BSpline1P6D");
+    add_bspline_pyclass<1, 7>(m, "BSpline1P7D");
+    add_bspline_pyclass<1, 8>(m, "BSpline1P8D");
+    add_bspline_pyclass<1, 9>(m, "BSpline1P9D");
+    add_bspline_pyclass<1, 10>(m, "BSpline1P10D");
 
-    py::class_<PyBSpline<2, 3>>(m, "BSplineSurface3D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyBSpline<2, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyBSpline<2, 3>::p_degrees)
-        .def_readwrite("control_points", &PyBSpline<2, 3>::p_control_points)
-        .def("evaluate", &PyBSpline<2, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyBSpline<2, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyBSpline<2, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyBSpline<2, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyBSpline<2, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyBSpline<2, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))  
-        .def("sample", &PyBSpline<2, 3>::sample, py::arg("resoultion"))
-        .def("fit_surface", &PyBSpline<2, 3>::fit_surface, py::arg("points"),
-                                                           py::arg("size_u"),
-                                                           py::arg("size_v"),
-                                                           py::arg("degree_u"),
-                                                           py::arg("degree_v"),
-                                                           py::arg("centripetal"))
-        .def("interpolate_surface", &PyBSpline<2, 3>::interpolate_surface, py::arg("points"),
-                                                                           py::arg("size_u"),
-                                                                           py::arg("size_v"),
-                                                                           py::arg("degree_u"),
-                                                                           py::arg("degree_v"),
-                                                                           py::arg("centripetal"))
-        .def("write_iges", &PyBSpline<2, 3>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyBSpline<2, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyBSpline<2, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyBSpline<2, 3>::update_c)
-        .def("update_p_", &PyBSpline<2, 3>::update_p)
-        ;
+    // 2P (Pamametric dimension)
+    add_bspline_pyclass<2, 1>(m, "BSpline2P1D");
+    add_bspline_pyclass<2, 2>(m, "BSpline2P2D");
+    add_bspline_pyclass<2, 3>(m, "BSpline2P3D");
+    add_bspline_pyclass<2, 4>(m, "BSpline2P4D");
+    add_bspline_pyclass<2, 5>(m, "BSpline2P5D");
+    add_bspline_pyclass<2, 6>(m, "BSpline2P6D");
+    add_bspline_pyclass<2, 7>(m, "BSpline2P7D");
+    add_bspline_pyclass<2, 8>(m, "BSpline2P8D");
+    add_bspline_pyclass<2, 9>(m, "BSpline2P9D");
+    add_bspline_pyclass<2, 10>(m, "BSpline2P10D");
 
-    py::class_<PyBSpline<3, 3>>(m, "BSplineSolid")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyBSpline<3, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyBSpline<3, 3>::p_degrees)
-        .def_readwrite("control_points", &PyBSpline<3, 3>::p_control_points)
-        .def("evaluate", &PyBSpline<3, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyBSpline<3, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyBSpline<3, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyBSpline<3, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyBSpline<3, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyBSpline<3, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyBSpline<3, 3>::sample, py::arg("resoultion"))
-        .def("write_xml", &PyBSpline<3, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyBSpline<3, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyBSpline<3, 3>::update_c)
-        .def("update_p_", &PyBSpline<3, 3>::update_p)
-        ;
+    // 3P (Pamametric dimension)
+    add_bspline_pyclass<3, 1>(m, "BSpline3P1D");
+    add_bspline_pyclass<3, 2>(m, "BSpline3P2D");
+    add_bspline_pyclass<3, 3>(m, "BSpline3P3D");
+    add_bspline_pyclass<3, 4>(m, "BSpline3P4D");
+    add_bspline_pyclass<3, 5>(m, "BSpline3P5D");
+    add_bspline_pyclass<3, 6>(m, "BSpline3P6D");
+    add_bspline_pyclass<3, 7>(m, "BSpline3P7D");
+    add_bspline_pyclass<3, 8>(m, "BSpline3P8D");
+    add_bspline_pyclass<3, 9>(m, "BSpline3P9D");
+    add_bspline_pyclass<3, 10>(m, "BSpline3P10D");
 
-    py::class_<PyNurbs<1, 2>>(m, "NurbsCurve2D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyNurbs<1, 2>::p_knot_vectors)
-        .def_readwrite("degrees", &PyNurbs<1, 2>::p_degrees)
-        .def_readwrite("control_points", &PyNurbs<1, 2>::p_control_points)
-        .def_readwrite("weights", &PyNurbs<1, 2>::p_weights)
-        .def("evaluate", &PyNurbs<1, 2>::evaluate, py::arg("queries"))
-        .def("derivative", &PyNurbs<1, 2>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyNurbs<1, 2>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyNurbs<1, 2>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyNurbs<1, 2>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyNurbs<1, 2>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyNurbs<1, 2>::sample, py::arg("resoultion"))
-        .def("write_iges", &PyNurbs<1, 2>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyNurbs<1, 2>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyNurbs<1, 2>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyNurbs<1, 2>::update_c)
-        .def("update_p_", &PyNurbs<1, 2>::update_p)
-        ;
+    // 4P (Pamametric dimension)
+    add_bspline_pyclass<4, 1>(m, "BSpline4P1D");
+    add_bspline_pyclass<4, 2>(m, "BSpline4P2D");
+    add_bspline_pyclass<4, 3>(m, "BSpline4P3D");
+    add_bspline_pyclass<4, 4>(m, "BSpline4P4D");
+    add_bspline_pyclass<4, 5>(m, "BSpline4P5D");
+    add_bspline_pyclass<4, 6>(m, "BSpline4P6D");
+    add_bspline_pyclass<4, 7>(m, "BSpline4P7D");
+    add_bspline_pyclass<4, 8>(m, "BSpline4P8D");
+    add_bspline_pyclass<4, 9>(m, "BSpline4P9D");
+    add_bspline_pyclass<4, 10>(m, "BSpline4P10D");
 
-    py::class_<PyNurbs<1, 3>>(m, "NurbsCurve3D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyNurbs<1, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyNurbs<1, 3>::p_degrees)
-        .def_readwrite("control_points", &PyNurbs<1, 3>::p_control_points)
-        .def_readwrite("weights", &PyNurbs<1, 3>::p_weights)
-        .def("evaluate", &PyNurbs<1, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyNurbs<1, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyNurbs<1, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyNurbs<1, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyNurbs<1, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyNurbs<1, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyNurbs<1, 3>::sample, py::arg("resoultion"))
-        .def("write_iges", &PyNurbs<1, 3>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyNurbs<1, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyNurbs<1, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyNurbs<1, 3>::update_c)
-        .def("update_p_", &PyNurbs<1, 3>::update_p)
-        ;
+    // 5P (Pamametric dimension)
+    add_bspline_pyclass<5, 1>(m, "BSpline5P1D");
+    add_bspline_pyclass<5, 2>(m, "BSpline5P2D");
+    add_bspline_pyclass<5, 3>(m, "BSpline5P3D");
+    add_bspline_pyclass<5, 4>(m, "BSpline5P4D");
+    add_bspline_pyclass<5, 5>(m, "BSpline5P5D");
+    add_bspline_pyclass<5, 6>(m, "BSpline5P6D");
+    add_bspline_pyclass<5, 7>(m, "BSpline5P7D");
+    add_bspline_pyclass<5, 8>(m, "BSpline5P8D");
+    add_bspline_pyclass<5, 9>(m, "BSpline5P9D");
+    add_bspline_pyclass<5, 10>(m, "BSpline5P10D");
 
-    py::class_<PyNurbs<2, 2>>(m, "NurbsSurface2D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyNurbs<2, 2>::p_knot_vectors)
-        .def_readwrite("degrees", &PyNurbs<2, 2>::p_degrees)
-        .def_readwrite("control_points", &PyNurbs<2, 2>::p_control_points)
-        .def_readwrite("weights", &PyNurbs<2, 2>::p_weights)
-        .def("evaluate", &PyNurbs<2, 2>::evaluate, py::arg("queries"))
-        .def("derivative", &PyNurbs<2, 2>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyNurbs<2, 2>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyNurbs<2, 2>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyNurbs<2, 2>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyNurbs<2, 2>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyNurbs<2, 2>::sample, py::arg("resoultion"))
-        .def("write_iges", &PyNurbs<2, 2>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyNurbs<2, 2>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyNurbs<2, 2>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyNurbs<2, 2>::update_c)
-        .def("update_p_", &PyNurbs<2, 2>::update_p)
-        ;
+    // 6P (Pamametric dimension)
+    add_bspline_pyclass<6, 1>(m, "BSpline6P1D");
+    add_bspline_pyclass<6, 2>(m, "BSpline6P2D");
+    add_bspline_pyclass<6, 3>(m, "BSpline6P3D");
+    add_bspline_pyclass<6, 4>(m, "BSpline6P4D");
+    add_bspline_pyclass<6, 5>(m, "BSpline6P5D");
+    add_bspline_pyclass<6, 6>(m, "BSpline6P6D");
+    add_bspline_pyclass<6, 7>(m, "BSpline6P7D");
+    add_bspline_pyclass<6, 8>(m, "BSpline6P8D");
+    add_bspline_pyclass<6, 9>(m, "BSpline6P9D");
+    add_bspline_pyclass<6, 10>(m, "BSpline6P10D");
 
-    py::class_<PyNurbs<2, 3>>(m, "NurbsSurface3D")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyNurbs<2, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyNurbs<2, 3>::p_degrees)
-        .def_readwrite("control_points", &PyNurbs<2, 3>::p_control_points)
-        .def_readwrite("weights", &PyNurbs<2, 3>::p_weights)
-        .def("evaluate", &PyNurbs<2, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyNurbs<2, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyNurbs<2, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyNurbs<2, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyNurbs<2, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyNurbs<2, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))  
-        .def("sample", &PyNurbs<2, 3>::sample, py::arg("resoultion"))
-        .def("write_iges", &PyNurbs<2, 3>::write_iges, py::arg("fname"))
-        .def("write_xml", &PyNurbs<2, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyNurbs<2, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyNurbs<2, 3>::update_c)
-        .def("update_p_", &PyNurbs<2, 3>::update_p)
-        ;
+    // 7P (Pamametric dimension)
+    add_bspline_pyclass<7, 1>(m, "BSpline7P1D");
+    add_bspline_pyclass<7, 2>(m, "BSpline7P2D");
+    add_bspline_pyclass<7, 3>(m, "BSpline7P3D");
+    add_bspline_pyclass<7, 4>(m, "BSpline7P4D");
+    add_bspline_pyclass<7, 5>(m, "BSpline7P5D");
+    add_bspline_pyclass<7, 6>(m, "BSpline7P6D");
+    add_bspline_pyclass<7, 7>(m, "BSpline7P7D");
+    add_bspline_pyclass<7, 8>(m, "BSpline7P8D");
+    add_bspline_pyclass<7, 9>(m, "BSpline7P9D");
+    add_bspline_pyclass<7, 10>(m, "BSpline7P10D");
 
-    py::class_<PyNurbs<3, 3>>(m, "NurbsSolid")
-        .def(py::init<>())
-        .def_readwrite("knot_vectors", &PyNurbs<3, 3>::p_knot_vectors)
-        .def_readwrite("degrees", &PyNurbs<3, 3>::p_degrees)
-        .def_readwrite("control_points", &PyNurbs<3, 3>::p_control_points)
-        .def_readwrite("weights", &PyNurbs<3, 3>::p_weights)
-        .def("evaluate", &PyNurbs<3, 3>::evaluate, py::arg("queries"))
-        .def("derivative", &PyNurbs<3, 3>::derivative, py::arg("queries"), py::arg("orders"))
-        .def("insert_knots", &PyNurbs<3, 3>::insert_knots, py::arg("p_dim"), py::arg("knots"))
-        .def("remove_knots", &PyNurbs<3, 3>::remove_knots, py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-        .def("elevate_degree", &PyNurbs<3, 3>::elevate_degree, py::arg("p_dim"))
-        .def("reduce_degree", &PyNurbs<3, 3>::reduce_degree, py::arg("p_dim"), py::arg("tolerance"))
-        .def("sample", &PyNurbs<3, 3>::sample, py::arg("resoultion"))
-        .def("write_xml", &PyNurbs<3, 3>::write_xml, py::arg("fname"))
-        .def("write_irit", &PyNurbs<3, 3>::write_irit, py::arg("fname"))
-        .def("update_c_", &PyNurbs<3, 3>::update_c)
-        .def("update_p_", &PyNurbs<3, 3>::update_p)
-        ;
+    // 8P (Pamametric dimension)
+    add_bspline_pyclass<8, 1>(m, "BSpline8P1D");
+    add_bspline_pyclass<8, 2>(m, "BSpline8P2D");
+    add_bspline_pyclass<8, 3>(m, "BSpline8P3D");
+    add_bspline_pyclass<8, 4>(m, "BSpline8P4D");
+    add_bspline_pyclass<8, 5>(m, "BSpline8P5D");
+    add_bspline_pyclass<8, 6>(m, "BSpline8P6D");
+    add_bspline_pyclass<8, 7>(m, "BSpline8P7D");
+    add_bspline_pyclass<8, 8>(m, "BSpline8P8D");
+    add_bspline_pyclass<8, 9>(m, "BSpline8P9D");
+    add_bspline_pyclass<8, 10>(m, "BSpline8P10D");
 
+    // 9P (Pamametric dimension)
+    add_bspline_pyclass<9, 1>(m, "BSpline9P1D");
+    add_bspline_pyclass<9, 2>(m, "BSpline9P2D");
+    add_bspline_pyclass<9, 3>(m, "BSpline9P3D");
+    add_bspline_pyclass<9, 4>(m, "BSpline9P4D");
+    add_bspline_pyclass<9, 5>(m, "BSpline9P5D");
+    add_bspline_pyclass<9, 6>(m, "BSpline9P6D");
+    add_bspline_pyclass<9, 7>(m, "BSpline9P7D");
+    add_bspline_pyclass<9, 8>(m, "BSpline9P8D");
+    add_bspline_pyclass<9, 9>(m, "BSpline9P9D");
+    add_bspline_pyclass<9, 10>(m, "BSpline9P10D");
+
+    // 10P (Pamametric dimension)
+    add_bspline_pyclass<10, 1>(m, "BSpline10P1D");
+    add_bspline_pyclass<10, 2>(m, "BSpline10P2D");
+    add_bspline_pyclass<10, 3>(m, "BSpline10P3D");
+    add_bspline_pyclass<10, 4>(m, "BSpline10P4D");
+    add_bspline_pyclass<10, 5>(m, "BSpline10P5D");
+    add_bspline_pyclass<10, 6>(m, "BSpline10P6D");
+    add_bspline_pyclass<10, 7>(m, "BSpline10P7D");
+    add_bspline_pyclass<10, 8>(m, "BSpline10P8D");
+    add_bspline_pyclass<10, 9>(m, "BSpline10P9D");
+    add_bspline_pyclass<10, 10>(m, "BSpline10P10D");
+
+    /* BSPLINE END */
+
+    /* NURBS */
+
+    // "Legacy" class. Same TODO as BSpline
+    add_nurbs_pyclass<1, 2>(m, "NurbsCurve2D");
+    add_nurbs_pyclass<1, 3>(m, "NurbsCurve3D");
+    add_nurbs_pyclass<2, 2>(m, "NurbsSurface2D");
+    add_nurbs_pyclass<2, 3>(m, "NurbsSurface3D");
+    add_nurbs_pyclass<3, 3>(m, "NurbsSolid");
+
+    // 1P (Pamametric dimension)
+    add_nurbs_pyclass<1, 1>(m, "NURBS1P1D");
+    add_nurbs_pyclass<1, 2>(m, "NURBS1P2D");
+    add_nurbs_pyclass<1, 3>(m, "NURBS1P3D");
+    add_nurbs_pyclass<1, 4>(m, "NURBS1P4D");
+    add_nurbs_pyclass<1, 5>(m, "NURBS1P5D");
+    add_nurbs_pyclass<1, 6>(m, "NURBS1P6D");
+    add_nurbs_pyclass<1, 7>(m, "NURBS1P7D");
+    add_nurbs_pyclass<1, 8>(m, "NURBS1P8D");
+    add_nurbs_pyclass<1, 9>(m, "NURBS1P9D");
+    add_nurbs_pyclass<1, 10>(m, "NURBS1P10D");
+
+    // 2P (Pamametric dimension)
+    add_nurbs_pyclass<2, 1>(m, "NURBS2P1D");
+    add_nurbs_pyclass<2, 2>(m, "NURBS2P2D");
+    add_nurbs_pyclass<2, 3>(m, "NURBS2P3D");
+    add_nurbs_pyclass<2, 4>(m, "NURBS2P4D");
+    add_nurbs_pyclass<2, 5>(m, "NURBS2P5D");
+    add_nurbs_pyclass<2, 6>(m, "NURBS2P6D");
+    add_nurbs_pyclass<2, 7>(m, "NURBS2P7D");
+    add_nurbs_pyclass<2, 8>(m, "NURBS2P8D");
+    add_nurbs_pyclass<2, 9>(m, "NURBS2P9D");
+    add_nurbs_pyclass<2, 10>(m, "NURBS2P10D");
+
+    // 3P (Pamametric dimension)
+    add_nurbs_pyclass<3, 1>(m, "NURBS3P1D");
+    add_nurbs_pyclass<3, 2>(m, "NURBS3P2D");
+    add_nurbs_pyclass<3, 3>(m, "NURBS3P3D");
+    add_nurbs_pyclass<3, 4>(m, "NURBS3P4D");
+    add_nurbs_pyclass<3, 5>(m, "NURBS3P5D");
+    add_nurbs_pyclass<3, 6>(m, "NURBS3P6D");
+    add_nurbs_pyclass<3, 7>(m, "NURBS3P7D");
+    add_nurbs_pyclass<3, 8>(m, "NURBS3P8D");
+    add_nurbs_pyclass<3, 9>(m, "NURBS3P9D");
+    add_nurbs_pyclass<3, 10>(m, "NURBS3P10D");
+
+    // 4P (Pamametric dimension)
+    add_nurbs_pyclass<4, 1>(m, "NURBS4P1D");
+    add_nurbs_pyclass<4, 2>(m, "NURBS4P2D");
+    add_nurbs_pyclass<4, 3>(m, "NURBS4P3D");
+    add_nurbs_pyclass<4, 4>(m, "NURBS4P4D");
+    add_nurbs_pyclass<4, 5>(m, "NURBS4P5D");
+    add_nurbs_pyclass<4, 6>(m, "NURBS4P6D");
+    add_nurbs_pyclass<4, 7>(m, "NURBS4P7D");
+    add_nurbs_pyclass<4, 8>(m, "NURBS4P8D");
+    add_nurbs_pyclass<4, 9>(m, "NURBS4P9D");
+    add_nurbs_pyclass<4, 10>(m, "NURBS4P10D");
+
+    // 5P (Pamametric dimension)
+    add_nurbs_pyclass<5, 1>(m, "NURBS5P1D");
+    add_nurbs_pyclass<5, 2>(m, "NURBS5P2D");
+    add_nurbs_pyclass<5, 3>(m, "NURBS5P3D");
+    add_nurbs_pyclass<5, 4>(m, "NURBS5P4D");
+    add_nurbs_pyclass<5, 5>(m, "NURBS5P5D");
+    add_nurbs_pyclass<5, 6>(m, "NURBS5P6D");
+    add_nurbs_pyclass<5, 7>(m, "NURBS5P7D");
+    add_nurbs_pyclass<5, 8>(m, "NURBS5P8D");
+    add_nurbs_pyclass<5, 9>(m, "NURBS5P9D");
+    add_nurbs_pyclass<5, 10>(m, "NURBS5P10D");
+
+    // 6P (Pamametric dimension)
+    add_nurbs_pyclass<6, 1>(m, "NURBS6P1D");
+    add_nurbs_pyclass<6, 2>(m, "NURBS6P2D");
+    add_nurbs_pyclass<6, 3>(m, "NURBS6P3D");
+    add_nurbs_pyclass<6, 4>(m, "NURBS6P4D");
+    add_nurbs_pyclass<6, 5>(m, "NURBS6P5D");
+    add_nurbs_pyclass<6, 6>(m, "NURBS6P6D");
+    add_nurbs_pyclass<6, 7>(m, "NURBS6P7D");
+    add_nurbs_pyclass<6, 8>(m, "NURBS6P8D");
+    add_nurbs_pyclass<6, 9>(m, "NURBS6P9D");
+    add_nurbs_pyclass<6, 10>(m, "NURBS6P10D");
+
+    // 7P (Pamametric dimension)
+    add_nurbs_pyclass<7, 1>(m, "NURBS7P1D");
+    add_nurbs_pyclass<7, 2>(m, "NURBS7P2D");
+    add_nurbs_pyclass<7, 3>(m, "NURBS7P3D");
+    add_nurbs_pyclass<7, 4>(m, "NURBS7P4D");
+    add_nurbs_pyclass<7, 5>(m, "NURBS7P5D");
+    add_nurbs_pyclass<7, 6>(m, "NURBS7P6D");
+    add_nurbs_pyclass<7, 7>(m, "NURBS7P7D");
+    add_nurbs_pyclass<7, 8>(m, "NURBS7P8D");
+    add_nurbs_pyclass<7, 9>(m, "NURBS7P9D");
+    add_nurbs_pyclass<7, 10>(m, "NURBS7P10D");
+
+    // 8P (Pamametric dimension)
+    add_nurbs_pyclass<8, 1>(m, "NURBS8P1D");
+    add_nurbs_pyclass<8, 2>(m, "NURBS8P2D");
+    add_nurbs_pyclass<8, 3>(m, "NURBS8P3D");
+    add_nurbs_pyclass<8, 4>(m, "NURBS8P4D");
+    add_nurbs_pyclass<8, 5>(m, "NURBS8P5D");
+    add_nurbs_pyclass<8, 6>(m, "NURBS8P6D");
+    add_nurbs_pyclass<8, 7>(m, "NURBS8P7D");
+    add_nurbs_pyclass<8, 8>(m, "NURBS8P8D");
+    add_nurbs_pyclass<8, 9>(m, "NURBS8P9D");
+    add_nurbs_pyclass<8, 10>(m, "NURBS8P10D");
+
+    // 9P (Pamametric dimension)
+    add_nurbs_pyclass<9, 1>(m, "NURBS9P1D");
+    add_nurbs_pyclass<9, 2>(m, "NURBS9P2D");
+    add_nurbs_pyclass<9, 3>(m, "NURBS9P3D");
+    add_nurbs_pyclass<9, 4>(m, "NURBS9P4D");
+    add_nurbs_pyclass<9, 5>(m, "NURBS9P5D");
+    add_nurbs_pyclass<9, 6>(m, "NURBS9P6D");
+    add_nurbs_pyclass<9, 7>(m, "NURBS9P7D");
+    add_nurbs_pyclass<9, 8>(m, "NURBS9P8D");
+    add_nurbs_pyclass<9, 9>(m, "NURBS9P9D");
+    add_nurbs_pyclass<9, 10>(m, "NURBS9P10D");
+
+    // 10P (Pamametric dimension)
+    add_nurbs_pyclass<10, 1>(m, "NURBS10P1D");
+    add_nurbs_pyclass<10, 2>(m, "NURBS10P2D");
+    add_nurbs_pyclass<10, 3>(m, "NURBS10P3D");
+    add_nurbs_pyclass<10, 4>(m, "NURBS10P4D");
+    add_nurbs_pyclass<10, 5>(m, "NURBS10P5D");
+    add_nurbs_pyclass<10, 6>(m, "NURBS10P6D");
+    add_nurbs_pyclass<10, 7>(m, "NURBS10P7D");
+    add_nurbs_pyclass<10, 8>(m, "NURBS10P8D");
+    add_nurbs_pyclass<10, 9>(m, "NURBS10P9D");
+    add_nurbs_pyclass<10, 10>(m, "NURBS10P10D");
+
+    /* NURBS END */
+
+    /* SPLINE READER */
     py::class_<SplineReader>(m, "Reader")
         .def(py::init<>())
         .def("read_iges", &SplineReader::read_iges, py::arg("fname"))
         .def("read_xml", &SplineReader::read_xml, py::arg("fname"))
         .def("read_irit", &SplineReader::read_irit, py::arg("fname"))
     ;
-
+    /* SPLINE READER END */
 
 }
