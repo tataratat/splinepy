@@ -472,6 +472,8 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                              &PyNurbs<para_dim, dim>::p_control_points)
           .def_readwrite("weights",
                              &PyNurbs<para_dim, dim>::p_weights)
+          .def_readwrite("skip_update",
+                             &PyNurbs<para_dim, dim>::skip_update)
           .def("evaluate",
                    &PyNurbs<para_dim, dim>::evaluate,
                    py::arg("queries"))

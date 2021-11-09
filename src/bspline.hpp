@@ -609,6 +609,8 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
                              &PyBSpline<para_dim, dim>::p_degrees)
           .def_readwrite("control_points",
                              &PyBSpline<para_dim, dim>::p_control_points)
+          .def_readwrite("skip_update",
+                             &PyBSpline<para_dim, dim>::skip_update)
           .def("evaluate",
                    &PyBSpline<para_dim, dim>::evaluate,
                    py::arg("queries"))
