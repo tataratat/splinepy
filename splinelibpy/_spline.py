@@ -106,6 +106,42 @@ class Spline(abc.ABC):
         logging.warning("Spline - Excuse me, you cannot tell me what I am.")
 
     @property
+    def skip_update(self):
+        """
+        Returns the status of skip_update switch
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        skip_update: bool
+        """
+        if not self._is_property("c_spline"):
+            return None
+
+        return self._properties["c_spline"].skip_update
+
+    @skip_update.setter
+    def skip_update(self, skip_update):
+        """
+        Default is that cpp syncs itself with python each time before it
+        executes any function. This is to deal with in-place changes of knot
+        vectors and control_points.
+        If you know that you aren't doing this (in-place changes),
+        set this to `True`, to avoid update/syncing.
+
+        Parameters
+        -----------
+        skip_update: bool
+        """
+        if not self._is_property("c_spline"):
+            return None
+
+        self._properties["c_spline"].skip_update = skip_update
+
+    @property
     def para_dim(self):
         """
         Returns parametric dimension.
