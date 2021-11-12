@@ -39,6 +39,12 @@ class Spline(abc.ABC):
         whatami: str
         para_dim: int
         dim: int
+        degrees: np.ndarray
+        knot_vectors: list
+        control_points: np.ndarray
+        knot_vectors_bounds: np.ndarray
+        control_points_bounds: np.ndarray
+        skip_update: bool
 
         Returns
         --------
