@@ -70,6 +70,14 @@ struct PyBSpline {
     std::shared_ptr<ParameterSpace> c_parameter_space;
     std::shared_ptr<VectorSpace> c_vector_space;
 
+    // Hr. BSpline's answer to the question "What am I?"
+    const std::string whatami =
+        "BSpline, parametric dimension: "
+        + std::to_string(para_dim)
+        + ", physical dimension: "
+        + std::to_string(dim);
+
+
     // Hr. BSpline's python Family
     py::list p_knot_vectors;
     py::array_t<int> p_degrees;
@@ -611,6 +619,8 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
                              &PyBSpline<para_dim, dim>::p_control_points)
           .def_readwrite("skip_update",
                              &PyBSpline<para_dim, dim>::skip_update)
+          .def_readonly("whatami",
+                             &PyBSpline<para_dim, dim>::whatami)
           .def("evaluate",
                    &PyBSpline<para_dim, dim>::evaluate,
                    py::arg("queries"))
@@ -646,9 +656,9 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
           .def("write_irit",
                    &PyBSpline<para_dim, dim>::write_irit,
                    py::arg("fname"))
-          .def("update_c_",
+          .def("update_c",
                    &PyBSpline<para_dim, dim>::update_c)
-          .def("update_p_",
+          .def("update_p",
                    &PyBSpline<para_dim, dim>::update_p);
 
 
