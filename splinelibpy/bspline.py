@@ -65,7 +65,7 @@ class BSpline(Spline):
 
         c_spline_class = f"BSpline{self.para_dim}P{self.dim}D()"
         c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = self.knot_vectors.view()
+        c_spline.knot_vectors = self.knot_vectors
         c_spline.degrees = self.degrees.view()
         c_spline.control_points = self.control_points.view()
         self._properties["c_spline"] = c_spline

@@ -117,7 +117,7 @@ class NURBS(Spline):
 
         c_spline_class = f"NURBS{self.para_dim}P{self.dim}D()"
         c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = self.knot_vectors.view()
+        c_spline.knot_vectors = self.knot_vectors
         c_spline.degrees = self.degrees.view()
         c_spline.control_points = self.control_points.view()
         c_spline.weights = self.weights.view()
