@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 
 def is_property(property_dict, key, class_name):
