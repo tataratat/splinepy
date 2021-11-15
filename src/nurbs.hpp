@@ -69,6 +69,13 @@ struct PyNurbs {
     std::shared_ptr<ParameterSpace> c_parameter_space;
     std::shared_ptr<WeightedVectorSpace> c_weighted_vector_space;
 
+    // Fr. Nurbs' answer to the question "What am I?"
+    const std::string whatami =
+        "NURBS, parametric dimension: "
+        + std::to_string(para_dim)
+        + ", physical dimension: "
+        + std::to_string(dim);
+
     // Fr. Nurbs' python Family
     py::list p_knot_vectors;
     py::array_t<int> p_degrees;
@@ -474,6 +481,8 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                              &PyNurbs<para_dim, dim>::p_weights)
           .def_readwrite("skip_update",
                              &PyNurbs<para_dim, dim>::skip_update)
+          .def_readonly("whatami",
+                            &PyNurbs<para_dim, dim>::whatami)
           .def("evaluate",
                    &PyNurbs<para_dim, dim>::evaluate,
                    py::arg("queries"))
@@ -509,9 +518,9 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
           .def("write_irit",
                    &PyNurbs<para_dim, dim>::write_irit,
                    py::arg("fname"))
-          .def("update_c_",
+          .def("update_c",
                    &PyNurbs<para_dim, dim>::update_c)
-          .def("update_p_",
+          .def("update_p",
                    &PyNurbs<para_dim, dim>::update_p);
 
 }
