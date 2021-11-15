@@ -93,7 +93,7 @@ class Spline(abc.ABC):
             return "Nothing"
 
         else:
-            return self._property["c_spline"].whatami
+            return self._properties["c_spline"].whatami
 
     @whatami.setter
     def whatami(self, how_dare_you):
@@ -283,12 +283,12 @@ class Spline(abc.ABC):
         self._properties["knot_vectors"] = knot_vectors
 
         logging.debug("Spline - Knot vectors set:")
-        for i in range(len(self._knot_vectors)):
+        for i in range(len(self.knot_vectors)):
             logging.debug(
                 "Spline -   "
                 + str(i)
                 + ". knot vector length: "
-                + "{kv}".format(kv=len(self._knot_vectors[i]))
+                + "{kv}".format(kv=len(self.knot_vectors[i]))
             )
 
         self._update_c()
@@ -378,10 +378,10 @@ class Spline(abc.ABC):
         control_points = utils.make_c_contiguous(control_points, np.double)
 
         if self.dim is None:
-            self._property["dim"] = control_points.shape[1]
+            self._properties["dim"] = control_points.shape[1]
 
         else:
-            if self._property["dim"] != control_points.shape[1]:
+            if self._properties["dim"] != control_points.shape[1]:
                 raise InputDimensionError(
                     "Input dimension does not match spline's dim "
                 )
@@ -633,7 +633,7 @@ class Spline(abc.ABC):
                 "One of the query knots not in valid knot range. (Too small)"
             )
 
-        total_knots_before = len(self._knot_vectors[int(parametric_dimension)])
+        total_knots_before = len(self.knot_vectors[int(parametric_dimension)])
         self._properties["c_spline"].remove_knots(
             int(parametric_dimension),
             knots,
@@ -649,7 +649,7 @@ class Spline(abc.ABC):
             "Spline - Actually removed {nk} knot(s).".format(
                 nk=(
                     total_knots_before
-                    - len(self._knot_vectors[int(parametric_dimension)])
+                    - len(self.knot_vectors[int(parametric_dimension)])
                 )
             )
         )

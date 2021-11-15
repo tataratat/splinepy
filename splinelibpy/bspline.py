@@ -69,9 +69,9 @@ class BSpline(Spline):
         c_spline.degrees = self.degrees.view()
         c_spline.control_points = self.control_points.view()
         self._properties["c_spline"] = c_spline
-        self._properties["c_bspline"].update_c()
+        self._properties["c_spline"].update_c()
 
-        logging.debug("Spline - Your spline is {w}.".format(w=self._whatami))
+        logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
     def _update_p(self,):
         """
