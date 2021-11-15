@@ -77,7 +77,6 @@ struct PyBSpline {
         + ", physical dimension: "
         + std::to_string(dim);
 
-
     // Hr. BSpline's python Family
     py::list p_knot_vectors;
     py::array_t<int> p_degrees;

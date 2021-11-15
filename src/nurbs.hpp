@@ -76,7 +76,6 @@ struct PyNurbs {
         + ", physical dimension: "
         + std::to_string(dim);
 
-
     // Fr. Nurbs' python Family
     py::list p_knot_vectors;
     py::array_t<int> p_degrees;
