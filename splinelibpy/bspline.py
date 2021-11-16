@@ -66,8 +66,8 @@ class BSpline(Spline):
         c_spline_class = f"BSpline{self.para_dim}P{self.dim}D()"
         c_spline = eval(c_spline_class)
         c_spline.knot_vectors = self.knot_vectors
-        c_spline.degrees = self.degrees.view()
-        c_spline.control_points = self.control_points.view()
+        c_spline.degrees = self.degrees
+        c_spline.control_points = self.control_points
         self._properties["c_spline"] = c_spline
         self._properties["c_spline"].update_c()
 
@@ -123,7 +123,7 @@ class BSpline(Spline):
         --------
         None
         """
-        query_points = utils.make_c_contiguous(query_points, dtype=np.double)
+        query_points = utils.make_c_contiguous(query_points, dtype="float64")
 
         dim = query_points.shape[1]
         c_spline_class = f"BSpline1P{dim}D()"
@@ -182,7 +182,7 @@ class BSpline(Spline):
         res: float
           (Optional) Only returned, if `return_residual` is True.
         """
-        query_points = utils.make_c_contiguous(query_points, dtype=np.double)
+        query_points = utils.make_c_contiguous(query_points, dtype="float64")
 
         dim = query_points.shape[1]
         c_spline_class = f"BSpline1P{dim}D()"
@@ -244,7 +244,7 @@ class BSpline(Spline):
         --------
         None
         """
-        query_points = utils.make_c_contiguous(query_points, dtype=np.double)
+        query_points = utils.make_c_contiguous(query_points, dtype="float64")
 
         dim = query_points.shape[1]
         c_spline_class = f"BSpline2P{dim}D()"
