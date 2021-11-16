@@ -199,7 +199,8 @@ struct PyNurbs {
         }
 
         // Unpack - degrees
-        p_degrees = py::array_t<int>(para_dim);
+        //p_degrees = py::array_t<int>(para_dim);
+        p_degrees.resize({para_dim});
         py::buffer_info ds_buf = p_degrees.request();
         int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
 
@@ -210,7 +211,8 @@ struct PyNurbs {
         }
 
         // Unpack - Coordinates (control points)
-        p_control_points = py::array_t<double>(coordinates.size() * dim);
+        //p_control_points = py::array_t<double>(coordinates.size() * dim);
+        p_control_points.resize({(int) coordinates.size(), dim}, false);
         py::buffer_info cps_buf = p_control_points.request();
         double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
 
@@ -225,10 +227,11 @@ struct PyNurbs {
             i++;
         }
 
-        p_control_points.resize({(int) coordinates.size(), dim});
+        //p_control_points.resize({(int) coordinates.size(), dim});
 
         // Unpack - Weights 
-        p_weights = py::array_t<double>(weights.size());
+        //p_weights = py::array_t<double>(weights.size());
+        p_weights.resize({(int) weights.size(), 1});
         py::buffer_info ws_buf = p_weights.request();
         double* ws_buf_ptr = static_cast<double *>(ws_buf.ptr);
 
@@ -239,7 +242,7 @@ struct PyNurbs {
             i++;
         }
 
-        p_weights.resize({(int) weights.size(), 1}); // A tall vector
+        //p_weights.resize({(int) weights.size(), 1}); // A tall vector
 
     }
 
@@ -373,7 +376,7 @@ struct PyNurbs {
 
         splinelib::Dimension elevating_p_dim{p_dim};
         c_nurbs.ElevateDegree(elevating_p_dim);
-
+#
         update_p();
     }
 
