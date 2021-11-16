@@ -16,6 +16,9 @@ class InputDimensionError(Exception):
 
 
 class Spline(abc.ABC):
+    """
+    Abstract Spline Class. 
+    """
 
     def __init__(
             self,
@@ -552,7 +555,7 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        if parametric_dimension < self.para_dim:
+        if parametric_dimension >= self.para_dim:
             raise ValueError(
                 "Invalid parametric dimension to insert knots."
             )
@@ -568,12 +571,12 @@ class Spline(abc.ABC):
                 "We couldn't convert input to `list`. Please give us `list`."
             )
 
-        if max(knots) < max(self.knot_vectors[parametric_dimension]):
+        if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too big)"
             )
 
-        if min(knots) > min(self.knot_vectors[parametric_dimension]):
+        if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too small)"
             )
@@ -607,7 +610,7 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        if parametric_dimension < self.para_dim:
+        if parametric_dimension >= self.para_dim:
             raise ValueError(
                 "Invalid parametric dimension to remove knots."
             )
@@ -623,12 +626,12 @@ class Spline(abc.ABC):
                 "We couldn't convert input to `list`. Please give us `list`."
             )
 
-        if max(knots) < max(self.knot_vectors[parametric_dimension]):
+        if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too big)"
             )
 
-        if min(knots) > min(self.knot_vectors[parametric_dimension]):
+        if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too small)"
             )
@@ -669,7 +672,7 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        if parametric_dimension < self.para_dim:
+        if parametric_dimension >= self.para_dim:
             raise ValueError(
                 "Invalid parametric dimension to elevate_degree."
             )
@@ -699,7 +702,7 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        if parametric_dimension < self.para_dim:
+        if parametric_dimension >= self.para_dim:
             raise ValueError(
                 "Invalid parametric dimension to reduce degree."
             )
@@ -756,7 +759,7 @@ class Spline(abc.ABC):
             )
 
         is_one_or_less = [int(qr) <= 1 for qr in query_resolutions]
-        if is_one_or_less.any():
+        if any(is_one_or_less):
             logging.debug(
                 "Spline - You cannot sample less than 2 points per each "
                 + "parametric dimension."
@@ -772,3 +775,59 @@ class Spline(abc.ABC):
         )
 
         return self._properties["c_spline"].sample(query_resolutions)
+
+    def export(self, fname):
+        """
+        Export spline. Please be aware of the limits of `.iges`
+
+        Parameters
+        -----------
+        fname: str
+
+        Returns
+        --------
+        None
+        """
+        self._update_c()
+
+        fname = str(fname)
+
+        dirname = os.path.dirname(fname)
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+
+        ext = os.path.splitext(fname)[1]
+    
+        if ext == ".iges":
+            self._spline.write_iges(fname)
+
+        elif ext == ".xml":
+            self._spline.write_xml(fname)
+
+        elif ext == ".itd":
+            self._spline.write_irit(fname)
+
+        else:
+            raise Exception(
+                "We can only export < .iges | .xml | .itd > spline files"
+            )
+
+        logging.info("Spline - Exported current spline as {f}.".format(f=fname))
+
+    @abc.abstractmethod
+    def copy(self,):
+        """
+        Returns freshly initialized Spline of self.
+
+        Needs to be implemented separately
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        new_spline: `Spline`
+        """
+        pass
+
