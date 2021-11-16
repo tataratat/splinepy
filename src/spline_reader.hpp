@@ -266,30 +266,62 @@ struct SplineReader {
 
         // `if`s to find appropriate BSplines
         if (para_dim == 1) {
-            if (dim == 2) {
+            if (dim == 1) {
+                auto bsparser = BSplineParser<1, 1>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 2) {
                 auto bsparser = BSplineParser<1, 2>();
                 p_splines.append(bsparser.bspline_to_list(bspline));
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<1, 3>();
                 p_splines.append(bsparser.bspline_to_list(bspline));
-
+            } else if (dim == 4) {
+                auto bsparser = BSplineParser<1, 4>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
             }
         } else if (para_dim == 2) {
-            if (dim == 2) {
+            if (dim == 1) {
+                auto bsparser = BSplineParser<2, 1>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 2) {
                 auto bsparser = BSplineParser<2, 2>();
                 p_splines.append(bsparser.bspline_to_list(bspline));
-
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<2, 3>();
                 p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 4) {
+                auto bsparser = BSplineParser<2, 4>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
             }
         } else if (para_dim == 3) {
-            if (dim == 3) {
+            if (dim == 1) {
+                auto bsparser = BSplineParser<3, 1>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 2) {
+                auto bsparser = BSplineParser<3, 2>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 3) {
                 auto bsparser = BSplineParser<3, 3>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 4) {
+                auto bsparser = BSplineParser<3, 4>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            }
+        } else if (para_dim == 4) {
+            if (dim == 1) {
+                auto bsparser = BSplineParser<4, 1>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 2) {
+                auto bsparser = BSplineParser<4, 2>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 3) {
+                auto bsparser = BSplineParser<4, 3>();
+                p_splines.append(bsparser.bspline_to_list(bspline));
+            } else if (dim == 4) {
+                auto bsparser = BSplineParser<4, 4>();
                 p_splines.append(bsparser.bspline_to_list(bspline));
             }
         }
-
     }
 
     void parse_nurbs(SplineEntry const &nurbs) {
@@ -300,30 +332,62 @@ struct SplineReader {
 
         // `if`s to find appropriate Nurbs
         if (para_dim == 1) {
-            if (dim == 2) {
+            if (dim == 1) {
+                auto nparser = NurbsParser<1, 1>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 2) {
                 auto nparser = NurbsParser<1, 2>();
                 p_splines.append(nparser.nurbs_to_list(nurbs));
             } else if (dim == 3) {
                 auto nparser = NurbsParser<1, 3>();
                 p_splines.append(nparser.nurbs_to_list(nurbs));
-
+            } else if (dim == 4) {
+                auto nparser = NurbsParser<1, 4>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
             }
         } else if (para_dim == 2) {
-            if (dim == 2) {
+            if (dim == 1) {
+                auto nparser = NurbsParser<2, 1>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 2) {
                 auto nparser = NurbsParser<2, 2>();
                 p_splines.append(nparser.nurbs_to_list(nurbs));
-
             } else if (dim == 3) {
                 auto nparser = NurbsParser<2, 3>();
                 p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 4) {
+                auto nparser = NurbsParser<2, 4>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
             }
         } else if (para_dim == 3) {
-            if (dim == 3) {
+            if (dim == 1) {
+                auto nparser = NurbsParser<3, 1>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 2) {
+                auto nparser = NurbsParser<3, 2>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 3) {
                 auto nparser = NurbsParser<3, 3>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 4) {
+                auto nparser = NurbsParser<3, 4>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            }
+        } else if (para_dim == 4) {
+            if (dim == 1) {
+                auto nparser = NurbsParser<4, 1>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 2) {
+                auto nparser = NurbsParser<4, 2>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 3) {
+                auto nparser = NurbsParser<4, 3>();
+                p_splines.append(nparser.nurbs_to_list(nurbs));
+            } else if (dim == 4) {
+                auto nparser = NurbsParser<4, 4>();
                 p_splines.append(nparser.nurbs_to_list(nurbs));
             }
         }
-
     }
 
 
