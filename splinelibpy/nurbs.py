@@ -72,7 +72,7 @@ class NURBS(Spline):
 
         weights = utils.make_c_contiguous(
             weights,
-            dtype=np.double
+            dtype=np.float64
         ).reshape(-1,1)
 
         if self.control_points is not None:
@@ -121,9 +121,9 @@ class NURBS(Spline):
         c_spline_class = f"NURBS{self.para_dim}P{self.dim}D()"
         c_spline = eval(c_spline_class)
         c_spline.knot_vectors = self.knot_vectors
-        c_spline.degrees = self.degrees#.view()
-        c_spline.control_points = self.control_points#.view()
-        c_spline.weights = self.weights.view()
+        c_spline.degrees = self.degrees
+        c_spline.control_points = self.control_points
+        c_spline.weights = self.weights
         self._properties["c_spline"] = c_spline
         self._properties["c_spline"].update_c()
 
