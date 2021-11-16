@@ -1,7 +1,10 @@
 import logging
 import copy
 
+import numpy as np
+
 from splinelibpy import utils
+from splinelibpy._splinelibpy import *
 from splinelibpy._spline import Spline
 
 class NURBS(Spline):
@@ -46,10 +49,10 @@ class NURBS(Spline):
         --------
         self._weights: (n, 1) list-like
         """
-        if not self._is_property("weight"):
+        if not self._is_property("weights"):
             return None
 
-        return self._properties["weight"]
+        return self._properties["weights"]
 
     @weights.setter
     def weights(self, weights):
@@ -118,13 +121,13 @@ class NURBS(Spline):
         c_spline_class = f"NURBS{self.para_dim}P{self.dim}D()"
         c_spline = eval(c_spline_class)
         c_spline.knot_vectors = self.knot_vectors
-        c_spline.degrees = self.degrees.view()
-        c_spline.control_points = self.control_points.view()
+        c_spline.degrees = self.degrees#.view()
+        c_spline.control_points = self.control_points#.view()
         c_spline.weights = self.weights.view()
         self._properties["c_spline"] = c_spline
-        self._properties["c_bspline"].update_c()
+        self._properties["c_spline"].update_c()
 
-        logging.debug("Spline - Your spline is {w}.".format(w=self._whatami))
+        logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
     def _update_p(self,):
         """
