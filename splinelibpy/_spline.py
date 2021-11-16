@@ -220,7 +220,8 @@ class Spline(abc.ABC):
         if degrees is None:
             return None
 
-        degrees = utils.make_c_contiguous(degrees, np.int32).flatten()
+        # flatten copies
+        degrees = utils.make_c_contiguous(degrees, "int32").flatten()
 
         if self.para_dim is None:
             self._properties["para_dim"] = degrees.size
@@ -283,7 +284,7 @@ class Spline(abc.ABC):
                     "Input dimension does not match spline's para_dim "
                 )
 
-        self._properties["knot_vectors"] = knot_vectors
+        self._properties["knot_vectors"] = copy.deepcopy(knot_vectors)
 
         logging.debug("Spline - Knot vectors set:")
         for i in range(len(self.knot_vectors)):
@@ -378,7 +379,7 @@ class Spline(abc.ABC):
         if control_points is None:
             return None
 
-        control_points = utils.make_c_contiguous(control_points, np.double)
+        control_points = utils.make_c_contiguous(control_points, np.float64)
 
         if self.dim is None:
             self._properties["dim"] = control_points.shape[1]
@@ -493,7 +494,7 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        queries = utils.make_c_contiguous(queries, dtype=np.double)
+        queries = utils.make_c_contiguous(queries, dtype="float64")
 
         if queries.shape[1] != self.para_dim:
             raise InputDimensionError(
@@ -520,8 +521,8 @@ class Spline(abc.ABC):
         if not self._is_property("c_spline"):
             return None
 
-        queries = utils.make_c_contiguous(queries, dtype=np.double)
-        orders = utils.make_c_contiguous(orders, dtype=np.double)
+        queries = utils.make_c_contiguous(queries, dtype="float64")
+        orders = utils.make_c_contiguous(orders, dtype="float64")
 
         if queries.shape[1] != self.para_dim:
             raise InputDimensionError(
@@ -707,7 +708,7 @@ class Spline(abc.ABC):
                 "Invalid parametric dimension to reduce degree."
             )
 
-        reduced = self._properties["spline"].reduce_degree(
+        reduced = self._properties["c_spline"].reduce_degree(
             parametric_dimension,
             tolerance
         )
@@ -750,7 +751,7 @@ class Spline(abc.ABC):
 
         query_resolutions = utils.make_c_contiguous(
             query_resolutions,
-            dtype=np.int32,
+            dtype="int32",
         ).flatten()
 
         if query_resolutions.size != self.para_dim:
