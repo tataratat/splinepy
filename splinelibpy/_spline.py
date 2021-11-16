@@ -794,19 +794,19 @@ class Spline(abc.ABC):
         fname = str(fname)
 
         dirname = os.path.dirname(fname)
-        if not os.path.isdir(dirname):
+        if not os.path.isdir(dirname) and dirname != "":
             os.makedirs(dirname)
 
         ext = os.path.splitext(fname)[1]
     
         if ext == ".iges":
-            self._spline.write_iges(fname)
+            self._properties["c_spline"].write_iges(fname)
 
         elif ext == ".xml":
-            self._spline.write_xml(fname)
+            self._properties["c_spline"].write_xml(fname)
 
         elif ext == ".itd":
-            self._spline.write_irit(fname)
+            self._properties["c_spline"].write_irit(fname)
 
         else:
             raise Exception(

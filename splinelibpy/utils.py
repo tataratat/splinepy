@@ -1,3 +1,9 @@
+"""splinelibpy/splinelibpy/utils.py
+
+Utility functions.
+"""
+
+import os
 import logging
 
 import numpy as np
@@ -36,8 +42,10 @@ def make_c_contiguous(array, dtype=None):
     Parameters
     -----------
     array: array-like
-    dtype: type
-      (Optional) `numpy` interpretable type.
+    dtype: type or str
+      (Optional) `numpy` interpretable type or str, describing type.
+      Difference is that type will always return a copy and str will only copy
+      if types doesn't match.
 
     Returns
     --------
@@ -46,8 +54,12 @@ def make_c_contiguous(array, dtype=None):
     if isinstance(array, np.ndarray):
         if array.flags.c_contiguous:
             if dtype is not None:
-                if array.dtype is not dtype:
+                if isinstance(dtype, type):
                     return array.astype(dtype)
+
+                elif isinstance(dtype, str):
+                    if array.dtype.name != dtype:
+                        return array.astype(dtype)
 
             return array
 
@@ -56,3 +68,27 @@ def make_c_contiguous(array, dtype=None):
 
     else:
         return np.ascontiguousarray(array)
+
+def abs_fname(fname):
+    """
+    Checks if fname is absolute. If not, returns abspath. Tilde safe.
+
+    Parameters
+    ----------
+    fname: str
+
+    Returns
+    --------
+    abs_fname: str
+      Maybe same to fname, maybe not.
+    """
+    if os.path.isabs(fname):
+        pass
+
+    elif "~" in fname:
+        fname = os.path.expanduser(fname)
+
+    else:
+        fname = os.path.abspath(fname)
+
+    return fname
