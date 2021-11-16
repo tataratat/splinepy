@@ -1,6 +1,8 @@
 from splinelibpy import _splinelibpy
 from splinelibpy.bspline import BSpline
 from splinelibpy.nurbs import NURBS
+from splinelibpy._spline import Spline
+from splinelibpy.load import load_splines
 from splinelibpy._splinelibpy import *
 
 # Alias for "Legacy" classes
@@ -17,8 +19,10 @@ NurbsSurface3D = NURBS2P3D
 NurbsSolid = NURBS3P3D
 
 __all__ = [
+    "Spline",
     "BSpline",
     "NURBS",
+    "Reader",
     "BSplineCurve2D",
     "BSplineCurve3D",
     "BSplineSurface2D",
