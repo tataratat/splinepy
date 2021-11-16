@@ -178,7 +178,6 @@ struct PyBSpline {
         }
 
         // Unpack - degrees
-        //p_degrees = py::array_t<int>(para_dim);
         p_degrees.resize({para_dim});
         py::buffer_info ds_buf = p_degrees.request();
         int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
@@ -190,7 +189,6 @@ struct PyBSpline {
         }
 
         // Unpack - Coordinates (control points)
-        //p_control_points = py::array_t<double>(coordinates.size() * dim);
         p_control_points.resize({(int) coordinates.size(), dim}, false);
         py::buffer_info cps_buf = p_control_points.request();
         double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
@@ -205,8 +203,6 @@ struct PyBSpline {
             }
             i++;
         }
-
-        //p_control_points.resize({(int) coordinates.size(), dim});
 
     }
 

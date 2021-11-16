@@ -187,7 +187,6 @@ struct PyNurbs {
         OutputCoordinates const &coordinates = std::get<0>(weighted_vector_space);
         OutputWeights const &weights = std::get<1>(weighted_vector_space);
 
-
         // Unpack - knot vectors
         p_knot_vectors.attr("clear")();
         for (auto& knotvector : knot_vectors) {
@@ -211,7 +210,6 @@ struct PyNurbs {
         }
 
         // Unpack - Coordinates (control points)
-        //p_control_points = py::array_t<double>(coordinates.size() * dim);
         p_control_points.resize({(int) coordinates.size(), dim}, false);
         py::buffer_info cps_buf = p_control_points.request();
         double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
@@ -227,10 +225,7 @@ struct PyNurbs {
             i++;
         }
 
-        //p_control_points.resize({(int) coordinates.size(), dim});
-
         // Unpack - Weights 
-        //p_weights = py::array_t<double>(weights.size());
         p_weights.resize({(int) weights.size(), 1});
         py::buffer_info ws_buf = p_weights.request();
         double* ws_buf_ptr = static_cast<double *>(ws_buf.ptr);
