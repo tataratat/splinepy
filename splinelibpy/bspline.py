@@ -313,5 +313,6 @@ class BSpline(Spline):
         """
         new_bspline = BSpline()
         new_bspline._properties = copy.deepcopy(self._properties)
+        new_bspline._update_c()
 
         return new_bspline

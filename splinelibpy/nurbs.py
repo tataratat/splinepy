@@ -165,6 +165,6 @@ class NURBS(Spline):
         """
         new_nurbs = NURBS()
         new_nurbs._properties = copy.deepcopy(self._properties)
+        new_nurbs._update_c()
 
         return new_nurbs
-
