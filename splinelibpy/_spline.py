@@ -54,7 +54,6 @@ class Spline(abc.ABC):
         None
         """
         self._properties = dict()
-        self._properties.update(whatami="Nothing")
 
         self.degrees = degrees
         self.knot_vectors = knot_vectors
@@ -377,6 +376,10 @@ class Spline(abc.ABC):
         None
         """
         if control_points is None:
+            self._properties["control_points"] = None
+            logging.debug(
+                "Spline - `control_points` is set to None."
+            )
             return None
 
         control_points = utils.make_c_contiguous(control_points, np.float64)
