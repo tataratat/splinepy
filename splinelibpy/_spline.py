@@ -17,8 +17,18 @@ class InputDimensionError(Exception):
 
 class Spline(abc.ABC):
     """
-    Abstract Spline Class. 
+    Abstract Spline Class.
     """
+
+    __slots__ = [
+        "__degrees",
+        "__knot_vectors",
+        "__control_points",
+        "__weights",
+        "__c_spline",
+        "__para_dim",
+        "__dim",
+    ]
 
     def __init__(
             self,
@@ -45,16 +55,14 @@ class Spline(abc.ABC):
         degrees: np.ndarray
         knot_vectors: list
         control_points: np.ndarray
-        knot_vectors_bounds: np.ndarray
-        control_points_bounds: np.ndarray
+        knot_vector_bounds: np.ndarray
+        control_point_bounds: np.ndarray
         skip_update: bool
 
         Returns
         --------
         None
         """
-        self._properties = dict()
-
         self.degrees = degrees
         self.knot_vectors = knot_vectors
         self.control_points = control_points
@@ -63,20 +71,23 @@ class Spline(abc.ABC):
         if weights is not None:
             self.weights = weights
 
-    def _is_property(self, key):
+    def clear(self):
         """
-        utils.is_property wrapper for some short cut.
-        Intended for internal use.
+        Clear all properties.
 
         Parameters
         -----------
-        key: str
+        None
 
         Returns
         --------
-        is_property: bool
+        None
         """
-        return utils.is_property(self._properties, key, "Spline")
+        for s in self.__slots__:
+            if hasattr(self, s):
+                delattr(self, s)
+
+        logging.debug("Spline - All attributes are cleared!")
 
     @property
     def whatami(self):
@@ -91,11 +102,11 @@ class Spline(abc.ABC):
         --------
         whatami: str
         """
-        if not self._is_property("c_spline"):
-            return "Nothing"
+        if hasattr(self, "__c_spline"):
+            return self.__c_spline.whatami
 
         else:
-            return self._properties["c_spline"].whatami
+            return "Nothing"
 
     @whatami.setter
     def whatami(self, how_dare_you):
@@ -126,10 +137,11 @@ class Spline(abc.ABC):
         --------
         skip_update: bool
         """
-        if not self._is_property("c_spline"):
-            return None
+        if hasattr(self, "__c_spline"):
+            return self.__c_spline.skip_update
 
-        return self._properties["c_spline"].skip_update
+        else:
+            return None
 
     @skip_update.setter
     def skip_update(self, skip_update):
@@ -144,10 +156,11 @@ class Spline(abc.ABC):
         -----------
         skip_update: bool
         """
-        if not self._is_property("c_spline"):
-            return None
+        if hasattr(self, "__c_spline"):
+            self.__c_spline.skip_update = skip_update
 
-        self._properties["c_spline"].skip_update = skip_update
+        else:
+            return None
 
     @property
     def para_dim(self):
@@ -162,10 +175,11 @@ class Spline(abc.ABC):
         --------
         para_dim: int
         """
-        if not self._is_property("para_dim"):
-            return None
+        if hasattr(self, "__para_dim"):
+            return self.__para_dim
 
-        return self._properties["para_dim"]
+        else:
+            return None
 
     @property
     def dim(self):
@@ -180,10 +194,11 @@ class Spline(abc.ABC):
         --------
         dim: int
         """
-        if not self._is_property("dim"):
-            return None
+        if hasattr(self, "__dim"):
+            return self.__dim
 
-        return self._properties["dim"]
+        else:
+            return None
 
     @property
     def degrees(self):
@@ -198,10 +213,11 @@ class Spline(abc.ABC):
         --------
         degrees: (para_dim,) np.ndarray
         """
-        if not self._is_property("degrees"):
-            return None
+        if hasattr(self, "__degrees"):
+            return self.__degrees
 
-        return self._properties["degrees"]
+        else:
+            return None
 
     @degrees.setter
     def degrees(self, degrees):
@@ -217,13 +233,17 @@ class Spline(abc.ABC):
         None
         """
         if degrees is None:
+            if hasattr(self, "__degrees"):
+                delattr(self, "__degrees")
+                if hasattr(self, "__para_dim") and self.knot_vectors is None:
+                    delattr(self, "__para_dim")
             return None
 
         # flatten copies
         degrees = utils.make_c_contiguous(degrees, "int32").flatten()
 
         if self.para_dim is None:
-            self._properties["para_dim"] = degrees.size
+            self.__para_dim = degrees.size
 
         else:
             if self.para_dim != degrees.size:
@@ -231,7 +251,7 @@ class Spline(abc.ABC):
                     "Input dimension does not match spline's para_dim "
                 )
 
-        self._properties["degrees"] = degrees
+        self.__degrees = degrees
 
         logging.debug("Spline - Degrees set: {d}".format(d=self.degrees))
 
@@ -250,10 +270,11 @@ class Spline(abc.ABC):
         --------
         knot_vectors: list
         """
-        if not self._is_property("knot_vectors"):
-            return None
+        if hasattr(self, "__knot_vectors"):
+            return self.__knot_vectors
 
-        return self._properties["knot_vectors"]
+        else:
+            return None
 
     @knot_vectors.setter
     def knot_vectors(self, knot_vectors):
@@ -269,13 +290,17 @@ class Spline(abc.ABC):
         None
         """
         if knot_vectors is None:
+            if hasattr(self, "__knot_vectors"):
+                delattr(self, "__knot_vectors")
+                if hasattr(self, "__para_dim") and self.degrees is None:
+                    delattr(self, "__para_dim")
             return None
 
         if not isinstance(knot_vectors, list):
             raise TypeError("knot_vectors should be a `list`!")
             
         if self.para_dim is None:
-            self._properties["para_dim"] = len(knot_vectors)
+            self.__para_dim = len(knot_vectors)
 
         else:
             if self.para_dim != len(knot_vectors):
@@ -283,15 +308,16 @@ class Spline(abc.ABC):
                     "Input dimension does not match spline's para_dim "
                 )
 
-        self._properties["knot_vectors"] = copy.deepcopy(knot_vectors)
+        self.__knot_vectors = copy.deepcopy(knot_vectors)
 
         logging.debug("Spline - Knot vectors set:")
-        for i in range(len(self.knot_vectors)):
+        kvs = self.knot_vectors
+        for i in range(len(kvs)):
             logging.debug(
                 "Spline -   "
                 + str(i)
                 + ". knot vector length: "
-                + "{kv}".format(kv=len(self.knot_vectors[i]))
+                + "{kv}".format(kv=len(kvs[i]))
             )
 
         self._update_c()
@@ -319,7 +345,7 @@ class Spline(abc.ABC):
         return unique_knots
 
     @property
-    def knot_vectors_bounds(self,):
+    def knot_vector_bounds(self,):
         """
         Returns bounds of knot vectors.
 
@@ -337,12 +363,12 @@ class Spline(abc.ABC):
         logging.debug("Spline - Computing knot_vectors_bounds")
         lower_bounds = []
         upper_bounds = []
+        kvs = self.knot_vectors
         for i in range(self.para_dim):
-            lower_bounds.append(min(self.knot_vectors[i]))
-            upper_bounds.append(max(self.knot_vectors[i]))
+            lower_bounds.append(min(kvs[i]))
+            upper_bounds.append(max(kvs[i]))
 
         return np.vstack((lower_bounds, upper_bounds))
-
 
     @property
     def control_points(self,):
@@ -357,10 +383,11 @@ class Spline(abc.ABC):
         --------
         control_points_: (n, dim) np.ndarray
         """
-        if not self._is_property("control_points"):
-            return None
+        if hasattr(self, "__control_points"):
+            return self.__control_points
 
-        return self._properties["control_points"]
+        else:
+            return None
 
     @control_points.setter
     def control_points(self, control_points):
@@ -376,24 +403,23 @@ class Spline(abc.ABC):
         None
         """
         if control_points is None:
-            self._properties["control_points"] = None
-            logging.debug(
-                "Spline - `control_points` is set to None."
-            )
+            if hasattr(self, "__control_points"):
+                delattr(self, "__control_points")
+                delattr(self, "__dim")
             return None
 
         control_points = utils.make_c_contiguous(control_points, np.float64)
 
         if self.dim is None:
-            self._properties["dim"] = control_points.shape[1]
+            self.__dim = control_points.shape[1]
 
         else:
-            if self._properties["dim"] != control_points.shape[1]:
+            if self.dim != control_points.shape[1]:
                 raise InputDimensionError(
                     "Input dimension does not match spline's dim "
                 )
 
-        self._properties["control_points"] = control_points
+        self.__control_points = control_points
         logging.debug(
                 "Spline - {n_cps} Control points set.".format(
                     n_cps=self.control_points.shape[0]
@@ -436,11 +462,12 @@ class Spline(abc.ABC):
         control_points_bounds: (2, dim) np.ndarray
         """
         logging.debug("Spline - Computing control_points_bounds")
+        cps = self.control_points
 
         return np.vstack(
             (
-                self.control_points.min(axis=0),
-                self.control_points.max(axis=0),
+                cps.min(axis=0),
+                cps.max(axis=0),
             )
         )
 
@@ -494,7 +521,7 @@ class Spline(abc.ABC):
         --------
         results: (n, dim) np.ndarray
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         queries = utils.make_c_contiguous(queries, dtype="float64")
@@ -506,7 +533,7 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating spline...")
 
-        return self._properties["c_spline"].evaluate(queries=queries)
+        return self.__c_spline.evaluate(queries=queries)
 
     def derivative(self, queries, orders):
         """
@@ -521,7 +548,7 @@ class Spline(abc.ABC):
         --------
         results: (n, dim) np.ndarray
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         queries = utils.make_c_contiguous(queries, dtype="float64")
@@ -538,7 +565,7 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating derivatives of the spline...")
 
-        return self._properties["c_spline"].derivative(
+        return self.__c_spline.derivative(
             queries=queries,
             orders=orders
         )
@@ -556,7 +583,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         if parametric_dimension >= self.para_dim:
@@ -585,7 +612,7 @@ class Spline(abc.ABC):
                 "One of the query knots not in valid knot range. (Too small)"
             )
 
-        self._properties["c_spline"].insert_knots(
+        self.__c_spline.insert_knots(
             int(parametric_dimension),
             knots
         )
@@ -611,7 +638,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         if parametric_dimension >= self.para_dim:
@@ -673,7 +700,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         if parametric_dimension >= self.para_dim:
@@ -681,7 +708,7 @@ class Spline(abc.ABC):
                 "Invalid parametric dimension to elevate_degree."
             )
 
-        self._properties["c_spline"].elevate_degree(parametric_dimension)
+        self.__c_spline.elevate_degree(parametric_dimension)
         logging.debug(
             "Spline - Elevated {p}.-dim. degree of the spline.".format(
                 p=parametric_dimension
@@ -703,7 +730,7 @@ class Spline(abc.ABC):
         --------
         reduced: bool
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         if parametric_dimension >= self.para_dim:
@@ -711,7 +738,7 @@ class Spline(abc.ABC):
                 "Invalid parametric dimension to reduce degree."
             )
 
-        reduced = self._properties["c_spline"].reduce_degree(
+        reduced = self.__c_spline.reduce_degree(
             parametric_dimension,
             tolerance
         )
@@ -749,7 +776,7 @@ class Spline(abc.ABC):
         --------
         results: (math.product(query_resolutions), dim) np.ndarray
         """
-        if not self._is_property("c_spline"):
+        if self.whatami == "Nothing":
             return None
 
         query_resolutions = utils.make_c_contiguous(
@@ -778,7 +805,7 @@ class Spline(abc.ABC):
             )
         )
 
-        return self._properties["c_spline"].sample(query_resolutions)
+        return self.__c_spline.sample(query_resolutions)
 
     def export(self, fname):
         """
@@ -794,6 +821,9 @@ class Spline(abc.ABC):
         """
         self._update_c()
 
+        if self.whatami == "Nothing":
+            return None
+
         fname = str(fname)
 
         dirname = os.path.dirname(fname)
@@ -803,17 +833,35 @@ class Spline(abc.ABC):
         ext = os.path.splitext(fname)[1]
     
         if ext == ".iges":
-            self._properties["c_spline"].write_iges(fname)
+            self.__c_spline.write_iges(fname)
 
         elif ext == ".xml":
-            self._properties["c_spline"].write_xml(fname)
+            self.__c_spline.write_xml(fname)
 
         elif ext == ".itd":
-            self._properties["c_spline"].write_irit(fname)
+            self.__c_spline.write_irit(fname)
+
+        elif ext == ".npz":
+            # Save knot vectors as size=1 string array
+            # --> to avoid any floating point issues
+            # whatami is also size=1 string array
+            property_dicts = dict(
+                degrees=self.degrees,
+                knot_vectors=np.array([str(self.knot_vectors)]),
+                control_points=self.control_points,
+                whatami=np.array([self.whatami]),
+            )
+            if self.whatami.startswith("NURBS"):
+                property_dicts.update(weights=self.weights)
+
+            np.savez(
+                fname,
+                **property_dicts,
+            )
 
         else:
-            raise Exception(
-                "We can only export < .iges | .xml | .itd > spline files"
+            raise ValueError(
+                "We can only export < .iges | .xml | .itd | .npz > extentions"
             )
 
         logging.info("Spline - Exported current spline as {f}.".format(f=fname))
@@ -835,3 +883,8 @@ class Spline(abc.ABC):
         """
         pass
 
+    # member function aliases for urgent situations
+    # `weights` is defined in `NURBS`
+    ds = degrees
+    kvs = knot_vectors
+    cps = control_points

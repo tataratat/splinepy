@@ -11,6 +11,8 @@ from splinelibpy.nurbs import NURBS
 
 class BSpline(Spline):
 
+#    __slots__ = ["__degrees", "__knot_vectors"]
+
     def __init__(
             self,
             degrees=None,
@@ -58,9 +60,10 @@ class BSpline(Spline):
         ):
             logging.debug(
                 "Spline - Not enough information to update cpp spline. "
-                + "Skipping update."
+                + "Skipping update or removing existing backend spline."
             )
-
+            if hasattr(self, "__c_spline"):
+                delattr(self, "__c_spline")
             return None
 
         c_spline_class = f"BSpline{self.para_dim}P{self.dim}D()"
@@ -68,8 +71,8 @@ class BSpline(Spline):
         c_spline.knot_vectors = self.knot_vectors
         c_spline.degrees = self.degrees
         c_spline.control_points = self.control_points
-        self._properties["c_spline"] = c_spline
-        self._properties["c_spline"].update_c()
+        self.__c_spline = c_spline
+        self.__c_spline.update_c()
 
         logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
@@ -86,9 +89,9 @@ class BSpline(Spline):
         --------
         None
         """
-        self.degrees = self._properties["c_spline"].degrees
-        self.knot_vectors = self._properties["c_spline"].knot_vectors
-        self.control_points = self._properties["c_spline"].control_points
+        self.degrees = self.__c_spline.degrees
+        self.knot_vectors = self.__c_spline.knot_vectors
+        self.control_points = self.__c_spline.control_points
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             + "now identical."
@@ -134,7 +137,7 @@ class BSpline(Spline):
             degree=degree,
             centripetal=centripetal
         )
-        self._properties["c_spline"] = c_spline
+        self.__c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline curve interpolation complete. "
@@ -142,7 +145,7 @@ class BSpline(Spline):
         )
 
         if save_query:
-            self._properties["fitting_queries"] = query_points
+            self._fitting_queries = query_points
 
         self._update_p()
 
@@ -194,7 +197,7 @@ class BSpline(Spline):
             num_control_points=num_control_points,
             centripetal=centripetal
         )
-        self._properties["c_spline"] = c_spline
+        self.__c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline curve approximation complete. "
@@ -203,7 +206,7 @@ class BSpline(Spline):
         logging.debug("Spline -   Approximation residual: {r}".format(r=res))
 
         if save_query:
-            self._properties["fitting_queries"] = query_points
+            self._fitting_queries = query_points
 
         self._update_p()
 
@@ -257,7 +260,7 @@ class BSpline(Spline):
             degree_v=degree_v,
             centripetal=centripetal,
         )
-        self._properties["c_spline"] = c_spline
+        self.__c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline surface interpolation complete. "
@@ -265,7 +268,7 @@ class BSpline(Spline):
         )
 
         if save_query:
-            self._properties["fitting_queries"] = query_points
+            self._fitting_queries = query_points
 
         self._update_p()
 
@@ -295,7 +298,10 @@ class BSpline(Spline):
         same_nurbs.degrees = copy.deepcopy(self.degrees)
         same_nurbs.knot_vectors = copy.deepcopy(self.knot_vectors)
         same_nurbs.control_points = copy.deepcopy(self.control_points)
-        same_nurbs.weights = np.ones(self.control_points.shape[0])
+        same_nurbs.weights = np.ones(
+            self.control_points.shape[0],
+            dtype=np.float64
+        )
 
         return same_nurbs
 
@@ -312,7 +318,11 @@ class BSpline(Spline):
         new_bspline: `BSpline`
         """
         new_bspline = BSpline()
-        new_bspline._properties = copy.deepcopy(self._properties)
+        new_bspline.degrees = copy.deepcopy(self.degrees)
+        new_bspline.control_points = copy.deepcopy(self.control_points)
+        new_bspline.knot_vectors = copy.deepcopy(self.control_points)
+        if hasattr(self, "_fitting_queries"):
+            new_bspline._fitting_queries = copy.deepcopy(self._fitting_queries)
         new_bspline._update_c()
 
         return new_bspline
