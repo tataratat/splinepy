@@ -64,12 +64,12 @@ class BSpline(Spline):
                 delattr(self, "_c_spline")
             return None
 
-        c_spline_class = f"BSpline{self.para_dim}P{self.dim}D()"
-        self._c_spline = eval(c_spline_class)
-        self._c_spline.knot_vectors = self.knot_vectors
-        self._c_spline.degrees = self.degrees
-        self._c_spline.control_points = self.control_points
-        self._c_spline.update_c()
+        c_spline_class = f"BSpline{self.para_dim}P{self.dim}D"
+        self._c_spline = eval(c_spline_class)(
+            degrees=self.degrees,
+            knot_vectors=self.knot_vectors,
+            control_points=self.control_points,
+        )
 
         logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
@@ -293,13 +293,11 @@ class BSpline(Spline):
         --------
         same_nurbs: NURBS
         """
-        same_nurbs = NURBS()
-        same_nurbs.degrees = copy.deepcopy(self.degrees)
-        same_nurbs.knot_vectors = copy.deepcopy(self.knot_vectors)
-        same_nurbs.control_points = copy.deepcopy(self.control_points)
-        same_nurbs.weights = np.ones(
-            self.control_points.shape[0],
-            dtype=np.float64
+        same_nurbs = NURBS(
+            degrees=copy.deepcopy(self.degrees),
+            knot_vectors=copy.deepcopy(self.knot_vectors),
+            control_points=copy.deepcopy(self.control_points),
+            weights=np.ones(self.control_points.shape[0], dtype=np.float64),
         )
 
         return same_nurbs
@@ -316,12 +314,12 @@ class BSpline(Spline):
         --------
         new_bspline: `BSpline`
         """
-        new_bspline = BSpline()
-        new_bspline.degrees = copy.deepcopy(self.degrees)
-        new_bspline.control_points = copy.deepcopy(self.control_points)
-        new_bspline.knot_vectors = copy.deepcopy(self.control_points)
+        new_bspline = BSpline(
+            degrees = copy.deepcopy(self.degrees),
+            knot_vectors = copy.deepcopy(self.control_points),
+            control_points = copy.deepcopy(self.control_points),
+        )
         if hasattr(self, "_fitting_queries"):
             new_bspline._fitting_queries = copy.deepcopy(self._fitting_queries)
-        new_bspline._update_c()
 
         return new_bspline

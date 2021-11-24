@@ -122,13 +122,13 @@ class NURBS(Spline):
                 delattr(self, "_c_spline")
             return None
 
-        c_spline_class = f"NURBS{self.para_dim}P{self.dim}D()"
-        self._c_spline = eval(c_spline_class)
-        self._c_spline.knot_vectors = self.knot_vectors
-        self._c_spline.degrees = self.degrees
-        self._c_spline.control_points = self.control_points
-        self._c_spline.weights = self.weights
-        self._c_spline.update_c()
+        c_spline_class = f"NURBS{self.para_dim}P{self.dim}D"
+        self._c_spline = eval(c_spline_class)(
+            degrees=self.degrees,
+            knot_vectors=self.knot_vectors,
+            control_points=self.control_points,
+            weights=self.weights,
+        )
 
         logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
@@ -166,12 +166,12 @@ class NURBS(Spline):
         --------
         new_nurbs: `NURBS`
         """
-        new_nurbs = NURBS()
-        new_nurbs.degrees = copy.deepcopy(self.degrees)
-        new_nurbs.knot_vectors = copy.deepcopy(self.knot_vectors)
-        new_nurbs.control_points = copy.deepcopy(self.control_points)
-        new_nurbs.weights = copy.deepcopy(self.weights)
-        new_nurbs._update_c()
+        new_nurbs = NURBS(
+            degrees=copy.deepcopy(self.degrees),
+            knot_vectors=copy.deepcopy(self.knot_vectors),
+            control_points=copy.deepcopy(self.control_points),
+            weights=copy.deepcopy(self.weights),
+        )
 
         return new_nurbs
 
