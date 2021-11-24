@@ -92,11 +92,11 @@ struct PyBSpline {
         p_knot_vectors.append(empty_list);
     } 
     PyBSpline(py::array_t<int> degrees,
-              py::array_t<double> control_points,
-              py::list knot_vectors) : 
-                                          p_degrees(degrees),
-                                          p_control_points(control_points),
-                                          p_knot_vectors(knot_vectors) {
+              py::list knot_vectors,
+              py::array_t<double> control_points) :
+                                                        p_degrees(degrees),
+                                              p_knot_vectors(knot_vectors),
+                                          p_control_points(control_points) {
         update_c();
     } 
 
@@ -109,7 +109,6 @@ struct PyBSpline {
 
 
         // Formulate Degrees
-        std::fill(std::begin(c_degrees), std::end(c_degrees), Degree{0});
         py::buffer_info ds_buf = p_degrees.request();
         int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
         for (i = 0; i < para_dim; i++) {
@@ -139,7 +138,7 @@ struct PyBSpline {
 
         for (i = 0; i < cps_buf.shape[0]; i++) { // cps_buf.shape[0] : number of cps
             Coordinate control_point{};
-            for (j = 0; j < cps_buf.shape[1]; j++) { // cps_buf.shape[1] == dim 
+            for (j = 0; j < dim; j++) { // dim : cps_buf.shape[1]
                 control_point[j] = ScalarCoordinate{cps_buf_ptr[i * dim + j]};
             }
             c_control_points.push_back(control_point);
@@ -178,7 +177,8 @@ struct PyBSpline {
         }
 
         // Unpack - degrees
-        p_degrees.resize({para_dim});
+        // Edit existing array, since it never changes in size.
+        p_degrees.resize({para_dim}); // inplace "flatten"
         py::buffer_info ds_buf = p_degrees.request();
         int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
 
@@ -189,7 +189,7 @@ struct PyBSpline {
         }
 
         // Unpack - Coordinates (control points)
-        p_control_points.resize({(int) coordinates.size(), dim}, false);
+        p_control_points = py::array_t<double>(coordinates.size() * dim);
         py::buffer_info cps_buf = p_control_points.request();
         double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
 
@@ -203,6 +203,8 @@ struct PyBSpline {
             }
             i++;
         }
+
+        p_control_points.resize({(int) coordinates.size(), dim});
 
     }
 
@@ -606,6 +608,10 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
     py::class_<PyBSpline<para_dim, dim>> klasse(m, class_name);
 
     klasse.def(py::init<>())
+          .def(py::init<py::array_t<int>, py::list, py::array_t<double>>(),
+                    py::arg("degrees"),
+                    py::arg("knot_vectors"),
+                    py::arg("control_points"))
           .def_readwrite("knot_vectors",
                              &PyBSpline<para_dim, dim>::p_knot_vectors)
           .def_readwrite("degrees",
@@ -618,11 +624,13 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
                              &PyBSpline<para_dim, dim>::whatami)
           .def("evaluate",
                    &PyBSpline<para_dim, dim>::evaluate,
-                   py::arg("queries"))
+                   py::arg("queries"),
+                   py::return_value_policy::move)
           .def("derivative",
                    &PyBSpline<para_dim, dim>::derivative,
                    py::arg("queries"),
-                   py::arg("orders"))
+                   py::arg("orders"),
+                   py::return_value_policy::move)
           .def("insert_knots",
                    &PyBSpline<para_dim, dim>::insert_knots,
                    py::arg("p_dim"),
@@ -641,7 +649,8 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
                    py::arg("tolerance"))
           .def("sample",
                    &PyBSpline<para_dim, dim>::sample,
-                   py::arg("resoultion"))
+                   py::arg("resoultion"),
+                   py::return_value_policy::move)
           .def("write_iges",
                    &PyBSpline<para_dim, dim>::write_iges,
                    py::arg("fname"))
