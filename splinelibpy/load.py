@@ -16,6 +16,7 @@ def load_splines(fname):
       - `.iges`
       - `.xml`
       - `.itd`
+      - `.npz`
 
     Parameters
     -----------
@@ -38,8 +39,25 @@ def load_splines(fname):
         loaded_splines = sr.read_xml(fname)
     elif ext == ".itd":
         loaded_splines = sr.read_irit(fname)
+    elif ext == ".npz":
+        npz = np.load(fname)
+        whatami = npz["whatami"][0]
+        if whatami.startswith("NURBS"):
+            spline = NURBS()
+            spline.weights = npz["weights"]
+        else:
+            spline = BSpline()
+
+        spline.control_points = npz["control_points"]
+        spline.degrees = npz["degrees"]
+        spline.knot_vectors = eval(npz["knot_vectors"][0])
+
+        # For now, npz only has 1 spline. However, to keep the output format
+        # consistent, return a list.
+        return [spline]
+
     else:
-        raise ImportError(
+        raise ValueError(
             "We can only import < .iges | .xml | .itd > spline files"
         )
 
