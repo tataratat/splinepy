@@ -49,8 +49,8 @@ class NURBS(Spline):
         --------
         self._weights: (n, 1) list-like
         """
-        if hasattr(self, "__weights"):
-            return self.__weights
+        if hasattr(self, "_weights"):
+            return self._weights
 
         else:
             return None
@@ -69,8 +69,8 @@ class NURBS(Spline):
         None
         """
         if weights is None:
-            if hasattr(self, "__weights"):
-                delattr(self, "__weights")
+            if hasattr(self, "_weights"):
+                delattr(self, "_weights")
             return None
 
         weights = utils.make_c_contiguous(
@@ -85,7 +85,7 @@ class NURBS(Spline):
                     + "match."
                 )
 
-        self.__weights = weights
+        self._weights = weights
         
         logging.debug(
             "Spline - {nws} Weights set.".format(nws=self.weights.shape[0])
@@ -118,18 +118,17 @@ class NURBS(Spline):
                 "Spline - Not enough information to update cpp spline. "
                 + "Skipping update."
             )
-            if hasattr(self, "__c_spline"):
-                delattr(self, "__c_spline")
+            if hasattr(self, "_c_spline"):
+                delattr(self, "_c_spline")
             return None
 
         c_spline_class = f"NURBS{self.para_dim}P{self.dim}D()"
-        c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = self.knot_vectors
-        c_spline.degrees = self.degrees
-        c_spline.control_points = self.control_points
-        c_spline.weights = self.weights
-        self.__c_spline = c_spline
-        self.__c_spline.update_c()
+        self._c_spline = eval(c_spline_class)
+        self._c_spline.knot_vectors = self.knot_vectors
+        self._c_spline.degrees = self.degrees
+        self._c_spline.control_points = self.control_points
+        self._c_spline.weights = self.weights
+        self._c_spline.update_c()
 
         logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
@@ -146,10 +145,10 @@ class NURBS(Spline):
         --------
         None
         """
-        self.degrees = self.__c_spline.degrees
-        self.knot_vectors = self.__c_spline.knot_vectors
-        self.control_points = self.__c_spline.control_points
-        self.weights = self.__c_spline.weights
+        self._degrees = self._c_spline.degrees
+        self._knot_vectors = self._c_spline.knot_vectors
+        self._control_points = self._c_spline.control_points
+        self._weights = self._c_spline.weights
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             + "now identical."

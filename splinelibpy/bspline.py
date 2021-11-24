@@ -11,8 +11,6 @@ from splinelibpy.nurbs import NURBS
 
 class BSpline(Spline):
 
-#    __slots__ = ["__degrees", "__knot_vectors"]
-
     def __init__(
             self,
             degrees=None,
@@ -62,17 +60,16 @@ class BSpline(Spline):
                 "Spline - Not enough information to update cpp spline. "
                 + "Skipping update or removing existing backend spline."
             )
-            if hasattr(self, "__c_spline"):
-                delattr(self, "__c_spline")
+            if hasattr(self, "_c_spline"):
+                delattr(self, "_c_spline")
             return None
 
         c_spline_class = f"BSpline{self.para_dim}P{self.dim}D()"
-        c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = self.knot_vectors
-        c_spline.degrees = self.degrees
-        c_spline.control_points = self.control_points
-        self.__c_spline = c_spline
-        self.__c_spline.update_c()
+        self._c_spline = eval(c_spline_class)
+        self._c_spline.knot_vectors = self.knot_vectors
+        self._c_spline.degrees = self.degrees
+        self._c_spline.control_points = self.control_points
+        self._c_spline.update_c()
 
         logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
 
@@ -89,9 +86,11 @@ class BSpline(Spline):
         --------
         None
         """
-        self.degrees = self.__c_spline.degrees
-        self.knot_vectors = self.__c_spline.knot_vectors
-        self.control_points = self.__c_spline.control_points
+        # Don't use setters here, since it calls update_c each time
+        # and it causes us to lose array references.
+        self._degrees = self._c_spline.degrees
+        self._knot_vectors = self._c_spline.knot_vectors
+        self._control_points = self._c_spline.control_points
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             + "now identical."
@@ -137,7 +136,7 @@ class BSpline(Spline):
             degree=degree,
             centripetal=centripetal
         )
-        self.__c_spline = c_spline
+        self._c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline curve interpolation complete. "
@@ -197,7 +196,7 @@ class BSpline(Spline):
             num_control_points=num_control_points,
             centripetal=centripetal
         )
-        self.__c_spline = c_spline
+        self._c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline curve approximation complete. "
@@ -260,7 +259,7 @@ class BSpline(Spline):
             degree_v=degree_v,
             centripetal=centripetal,
         )
-        self.__c_spline = c_spline
+        self._c_spline = c_spline
 
         logging.debug(
             "Spline - BSpline surface interpolation complete. "
