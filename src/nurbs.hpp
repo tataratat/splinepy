@@ -55,11 +55,6 @@ struct PyNurbs {
     using OutputWeights = typename std::tuple_element_t<1, OutputWeightedVectorSpace>;
     using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
 
-    // For exporting cpp splines
-    using ExportSplineItem = typename splines::SplineItem;
-    using ExportSplineEntry = typename input_output::SplineEntry;
-    using ExportSplines = typename input_output::Splines;
-
     // Counters
     int i = 0;
     int j = 0;
