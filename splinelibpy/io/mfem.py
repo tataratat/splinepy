@@ -106,8 +106,6 @@ def mfem_index_mapping(
 
         groups = [group0, group1, group2, group3]
         flat_groups = flatten(groups)
-        print(groups)
-        print(flat_groups)
 
         # Quick check
         assert len(flat_groups) == len(np.unique(flat_groups)),\
@@ -124,7 +122,7 @@ def mfem_index_mapping(
     
 
 
-def mfem(nurbs, fname, precision=10):
+def write_mfem(nurbs, fname, precision=10):
     """
     Exports current nurbs in `mfem` format.
 
@@ -220,7 +218,7 @@ def mfem(nurbs, fname, precision=10):
         # I am not sure if mixed order is allowed, but incase not, let's
         # match orders
         max_degree = max(nurbs.degrees)
-        for i, d in enumerate(len(nurbs.degrees)):
+        for i, d in enumerate(nurbs.degrees):
             d_diff = int(max_degree - d)
             if d_diff > 0:
                 for _ in range(d_diff):
@@ -239,18 +237,21 @@ def mfem(nurbs, fname, precision=10):
                 "knotvectors",
                 str(len(spline.knot_vectors)),
             )
+            kvs2 = ""
             for i in range(spline.para_dim):
-                kvs.join(
-                    form_lines(
-                        str(degrees[i])
-                        + " "
-                        + str(cnr[i])
-                        + " "
-                        + (spline.knot_vectors[i][1:-1]).replace(",", "")
-                    )
+                kvs2 += form_lines(
+                    str(spline.degrees[i])
+                    + " "
+                    + str(cnr[i])
+                    + " "
+                    + str(spline.knot_vectors[i])[1:-1].replace(",", "")
                 )
 
+            kvs = kvs + kvs2
+
             kvs += "\n" # missing empty line
+
+            return kvs
 
         knotvectors_sec = kv_sec(nurbs)
 
@@ -259,6 +260,7 @@ def mfem(nurbs, fname, precision=10):
 
     # disregard inverse
     reorder_ids, _ = mfem_index_mapping(
+        para_dim=nurbs.para_dim,
         degrees=nurbs.degrees,
         knot_vectors=nurbs.knot_vectors,
         flat_list=True,
@@ -272,7 +274,8 @@ def mfem(nurbs, fname, precision=10):
         weights_sec = weights_sec[1:-1] # remove []
         weights_sec = weights_sec.replace("\n", "") # remove \n
         weights_sec = weights_sec.replace(" ", "\n") # add \n
-        weights_sec += "\n"
+        weights_sec = "weights\n" + weights_sec # add title
+        weights_sec += "\n\n" # empty line 
 
         # cps
         cps_sec = str(nurbs.control_points[reorder_ids])
