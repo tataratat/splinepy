@@ -6,6 +6,21 @@ Currently hardcoded for 2D-single-patch-splines.
 
 import numpy as np
 
+_mfem_keywords = [
+    "MFEM NURBS", # intro
+    "dimension",
+    "elements",
+    "boundary",
+    "edges",
+    "vertices",
+    "knotvectors",
+    "weights",
+    "FiniteElementSpace",
+    "FiniteElementCollection",
+    "VDim",
+    "Ordering",
+]
+
 def form_lines(*args):
     """
     Formulate a string, taking each *args as a line.
@@ -23,6 +38,8 @@ def form_lines(*args):
         line_separated_str += a + "\n"
 
     return line_separated_str
+
+
 
 def mfem_index_mapping(
         para_dim,
