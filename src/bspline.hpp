@@ -16,6 +16,7 @@
 #include <Sources/InputOutput/iges.hpp>
 #include <Sources/InputOutput/xml.hpp>
 #include <Sources/InputOutput/vtk.hpp>
+#include <Sources/InputOutput/irit.hpp>
 
 // Local
 // Fitting
