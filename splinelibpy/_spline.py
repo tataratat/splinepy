@@ -7,6 +7,7 @@ import itertools
 import numpy as np
 
 from splinelibpy import utils
+from splinelibpy import io
 
 class InputDimensionError(Exception):
     """
@@ -449,7 +450,7 @@ class Spline(abc.ABC):
         self.control_points = self.control_points[ind]
 
     @property
-    def control_points_bounds(self,):
+    def control_point_bounds(self,):
         """
         Returns bounds of control points.
 
@@ -459,9 +460,9 @@ class Spline(abc.ABC):
 
         Returns
         --------
-        control_points_bounds: (2, dim) np.ndarray
+        control_point_bounds: (2, dim) np.ndarray
         """
-        logging.debug("Spline - Computing control_points_bounds")
+        logging.debug("Spline - Computing control_point_bounds")
         cps = self.control_points
 
         return np.vstack(
@@ -470,6 +471,27 @@ class Spline(abc.ABC):
                 cps.max(axis=0),
             )
         )
+
+    @property
+    def control_net_resolutions(self,):
+        """
+        Returns control new resolutions.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        control_net_resolutions: list
+        """
+        cnr = []
+        for i in range(self.para_dim):
+            cnr.append(
+                len(self.knot_vectors[i]) - self.degrees[i] - 1
+            )
+
+        return cnr
 
     @abc.abstractmethod
     def _update_c(self,):
@@ -859,9 +881,14 @@ class Spline(abc.ABC):
                 **property_dicts,
             )
 
+        elif ext == ".mesh":
+            # mfem nurbs mesh.
+            io.mfem.write_mfem(self, fname, precision=12)
+
         else:
             raise ValueError(
-                "We can only export < .iges | .xml | .itd | .npz > extentions"
+                "We can only export "
+                + "< .iges | .xml | .itd | .npz | .mesh > extentions"
             )
 
         logging.info("Spline - Exported current spline as {f}.".format(f=fname))
