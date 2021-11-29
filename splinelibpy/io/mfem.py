@@ -124,7 +124,7 @@ def mfem_index_mapping(
     
 
 
-def mfem(nurbs, fname):
+def mfem(nurbs, fname, precision=10):
     """
     Exports current nurbs in `mfem` format.
 
@@ -155,42 +155,150 @@ def mfem(nurbs, fname):
     --------
     None
     """
-    intro_sec = (
-        "MFEM NURBS mesh v1.0 - Generated with splinelibpy\n"
-        + "\n"
-        + "#\n"
-        + "# MFEM Geometry Types (see mesh/geom.hpp)\n"
-        + "#\n"
-        + "# SEGMENT = 1\n"
-        + "# SQUARE  = 3\n"
-        + "# CUBE    = 3\n"
-        + "#\n"
-        + "\n"
+    if nurbs.whatami.startswith("NURBS"):
+        pass
+    elif nurbs.whatami.startswith("BSpline"):
+        nurbs = nurbs.nurbs # if bspline, turn it into nurbs
+    else:
+        raise TypeError("Sorry, invalid spline object.")
+
+    intro_sec = form_lines(
+        "MFEM NURBS mesh v1.0 - Generated with splinelibpy",
+        "",
+        "#",
+        "# MFEM Geometry Types (see mesh/geom.hpp)",
+        "#",
+        "# SEGMENT = 1",
+        "# SQUARE  = 3",
+        "# CUBE    = 3",
+        "#",
+        "",
     )
 
-    dimension_sec = (
-        "dimension\n"
-        + str(s)
-        + "\n"
-        + "\n"
+    dimension_sec = form_lines(
+        "dimension",
+        str(nurbs.para_dim),
+        "",
     )
 
-    elements_sec = (
-        "elements\n"
-        + "1"
+    if nurbs.para_dim == 2:
+        elements_sec = form_lines(
+            "elements",
+            "1",
+            "1 3 0 1 2 3",
+            "",
+        )
+
+        boundary_sec = form_lines(
+            "boundary",
+            "4",
+            "1 1 0 1",
+            "1 1 2 3",
+            "1 1 3 0",
+            "1 1 1 2",
+            "",
+        )
+
+        edges_sec = form_lines(
+            "edges",
+            "4",
+            "0 0 1",
+            "0 3 2",
+            "0 0 3",
+            "0 1 2",
+            "",
+        )
+
+        vertices_sec = form_lines(
+            "vertices",
+            "4",
+            ""
+        )
+
+        cnr = nurbs.control_net_resolutions
+
+        # I am not sure if mixed order is allowed, but incase not, let's
+        # match orders
+        max_degree = max(nurbs.degrees)
+        for i, d in enumerate(len(nurbs.degrees)):
+            d_diff = int(max_degree - d)
+            if d_diff > 0:
+                for _ in range(d_diff):
+                    nurbs.elevate_degrees(i)
+
+        # double-check
+        if not (nurbs.degrees == nurbs.degrees[0]).all():
+            raise RuntimeError(
+                "Something went wrong trying to match degrees of nurbs "
+                + "before export."
+            )
+
+        # This is reusable
+        def kv_sec(spline):
+            kvs = form_lines(
+                "knotvectors",
+                str(len(spline.knot_vectors)),
+            )
+            for i in range(spline.para_dim):
+                kvs.join(
+                    form_lines(
+                        str(degrees[i])
+                        + " "
+                        + str(cnr[i])
+                        + " "
+                        + (spline.knot_vectors[i][1:-1]).replace(",", "")
+                    )
+                )
+
+            kvs += "\n" # missing empty line
+
+        knotvectors_sec = kv_sec(nurbs)
+
+    else:
+        raise NotImplementedError
+
+    # disregard inverse
+    reorder_ids, _ = mfem_index_mapping(
+        degrees=nurbs.degrees,
+        knot_vectors=nurbs.knot_vectors,
+        flat_list=True,
     )
 
+    with np.printoptions(
+        formatter=dict(float_kind=lambda x: f"{x:.{precision}f}")
+    ):
+        # weights - string operation
+        weights_sec = str(nurbs.weights.flatten()[reorder_ids]) # flat, reorder
+        weights_sec = weights_sec[1:-1] # remove []
+        weights_sec = weights_sec.replace("\n", "") # remove \n
+        weights_sec = weights_sec.replace(" ", "\n") # add \n
+        weights_sec += "\n"
 
+        # cps
+        cps_sec = str(nurbs.control_points[reorder_ids])
+        cps_sec = cps_sec.replace("[", "") # remove [
+        cps_sec = cps_sec.replace("\n", "") # remove \n
+        cps_sec = cps_sec.replace("]", "\n") # replace ] with \n
 
+    fe_space_sec = form_lines(
+        "FiniteElementSpace",
+        "FiniteElementCollection: NURBS" + str(nurbs.degrees[0]),
+        "VDim: " + str(nurbs.dim),
+        "Ordering: 1",
+        "",
+    )
 
-
-
-
-
-
-
-
-
+    with open(fname, "w") as f:
+        f.write(intro_sec)
+        f.write(dimension_sec)
+        f.write(elements_sec)
+        f.write(boundary_sec)
+        f.write(edges_sec)
+        f.write(vertices_sec)
+        f.write(knotvectors_sec)
+        f.write(weights_sec)
+        f.write(fe_space_sec)
+        f.write(cps_sec)
 
 
 
