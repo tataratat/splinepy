@@ -6,39 +6,143 @@ Currently hardcoded for 2D-single-patch-splines.
 
 import numpy as np
 
-_mfem_keywords = [
-    "MFEM NURBS", # intro
-    "dimension",
-    "elements",
-    "boundary",
-    "edges",
-    "vertices",
-    "knotvectors",
-    "weights",
-    "FiniteElementSpace",
-    "FiniteElementCollection",
-    "VDim",
-    "Ordering",
-]
+# single function imports
+from splinelibpy.utils import make_c_contiguous
+from splinelibpy.io.utils import (form_lines,
+                                  make_meaningful)
 
-def form_lines(*args):
+# keywords : possible assert value
+_mfem_meaningful_keywords = {
+    "MFEM NURBS mesh v1.0": "intro",
+    "dimension": "para_dim",
+    "elements": 1,
+    "boundary": 4,
+    "edges": 4,
+    "vertices": 4,
+    "knotvectors": 2,
+    "weights": None,
+    "FiniteElementSpace": None,
+    "FiniteElementCollection": None,
+    "VDim": "dim",
+    "Ordering": 1,
+}
+
+
+def read_mfem(fname,):
     """
-    Formulate a string, taking each *args as a line.
+    Reads mfem spline and returns a spline.
+    Again, only supports 2D single patch.
 
     Parameters
     -----------
-    *args: *str
+    fname: str
 
     Returns
     --------
-    line_separated_str: str
+    nurbs: dict
+      dict ready to be used for init. ex) NURBS(**nurbs)
     """
-    line_separated_str = ""
-    for a in args:
-        line_separated_str += a + "\n"
+    from copy import deepcopy
+#    def make_meaningful(line, comment="#"):
+#        line = line.strip()
+#        if len(line) == 0 or line.startswith(comment):
+#            return False
+#        else:
+#            return line
 
-    return line_separated_str
+    mk = deepcopy(_mfem_meaningful_keywords)
+    # they follow a strict order or keywords, so just gather those in order
+    # Ordering is a hotkey because control points comes right after
+    hotkey_list = ["knotvectors", "weights", "Ordering",]
+    nurbs_dict = dict(knotvectors=[], weights=[], Ordering=[])
+    collect = False
+    with open(fname, "r") as f:
+        for l in f:
+            line = make_meaningful(l)
+            if not line:
+                continue
 
+            keyword_hit = [k for k in mk.keys() if line.startswith(k)]
+            if len(keyword_hit) > 1:
+                raise ValueError("double keyword hit!")
+
+            elif (
+                len(keyword_hit) == 1
+                and keyword_hit[0] in hotkey_list
+            ):
+                collect = True
+                current_key = deepcopy(keyword_hit[0])
+                continue
+
+            elif (
+                len(keyword_hit) == 1
+                and keyword_hit[0] not in hotkey_list
+            ):
+                collect = False
+                current_key = None
+
+            elif (
+                len(keyword_hit) == 0
+                and collect
+            ):
+                pass
+
+            elif(
+                len(keyword_hit) == 0
+                and not collect
+            ):
+                continue
+
+            if collect:
+                nurbs_dict[current_key].append(line)
+            else:
+                continue
+
+        # parse nurbs_dict
+        # kvs
+        knot_vectors = nurbs_dict["knotvectors"][1:]
+        knot_vectors[0] = eval("[" + knot_vectors[0].replace(" ", ",") + "]")
+        knot_vectors[1] = eval("[" + knot_vectors[1].replace(" ", ",") + "]")
+        # pop some values
+        # ds
+        degrees = [knot_vectors[0].pop(0), knot_vectors[1].pop(0)]
+        ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
+        # ws
+        weights = nurbs_dict["weights"]
+        weights = [eval(w) for w in weights] # hopefully not too slow
+        # cps
+        control_points = nurbs_dict["Ordering"]
+        control_points = [
+            eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
+        ]
+
+        # double check
+        # maybe separate them
+        if (
+            ncps != len(control_points)
+            or ncps != len(weights)
+            or int(nurbs_dict["knotvectors"][0]) != 2
+        ):
+            raise ValueError("Inconsistent spline info in " + fname)
+
+        reorder, _ = mfem_index_mapping(
+            len(knot_vectors),
+            degrees,
+            knot_vectors,
+            flat_list=True,
+        )
+
+        return dict(
+            degrees=degrees,
+            knot_vectors=knot_vectors,
+            control_points=make_c_contiguous(control_points)[reorder],
+            weights=make_c_contiguous(weights)[reorder],
+        )
+
+def read_solution(fname, reference_spline):
+    """
+    """
+    pass
 
 
 def mfem_index_mapping(
@@ -178,8 +282,10 @@ def write_mfem(nurbs, fname, precision=10):
         raise TypeError("Sorry, invalid spline object.")
 
     intro_sec = form_lines(
-        "MFEM NURBS mesh v1.0 - Generated with splinelibpy",
+        "MFEM NURBS mesh v1.0",
         "",
+        "#",
+        "# Generated with splinelibpy",
         "#",
         "# MFEM Geometry Types (see mesh/geom.hpp)",
         "#",
@@ -219,8 +325,8 @@ def write_mfem(nurbs, fname, precision=10):
             "4",
             "0 0 1",
             "0 3 2",
-            "0 0 3",
-            "0 1 2",
+            "1 0 3",
+            "1 1 2",
             "",
         )
 
@@ -230,8 +336,6 @@ def write_mfem(nurbs, fname, precision=10):
             ""
         )
 
-        cnr = nurbs.control_net_resolutions
-
         # I am not sure if mixed order is allowed, but incase not, let's
         # match orders
         max_degree = max(nurbs.degrees)
@@ -239,7 +343,9 @@ def write_mfem(nurbs, fname, precision=10):
             d_diff = int(max_degree - d)
             if d_diff > 0:
                 for _ in range(d_diff):
-                    nurbs.elevate_degrees(i)
+                    nurbs.elevate_degree(i)
+
+        cnr = nurbs.control_net_resolutions
 
         # double-check
         if not (nurbs.degrees == nurbs.degrees[0]).all():
@@ -319,51 +425,3 @@ def write_mfem(nurbs, fname, precision=10):
         f.write(weights_sec)
         f.write(fe_space_sec)
         f.write(cps_sec)
-
-
-
-
-
-
-
-
-
-
-
-"""
-general curvlinear form
-MFEM mesh v1.0
-
-# Space dimension: 2 or 3
-dimension
-<dimension>
-
-# Mesh elements, e.g. tetrahedrons (4)
-elements
-<number of elements>
-<element attribute> <geometry type> <vertex index 1> ... <vertex index m>
-...
-
-# Mesh faces/edges on the boundary, e.g. triangles (2)
-boundary
-<number of boundary elements>
-<boundary element attribute> <geometry type> <vertex index 1> ... <vertex index m>
-...
-
-# Number of vertices (no coordinates)
-vertices
-<number of vertices>
-
-# Mesh nodes as degrees of freedom of a finite element grid function
-nodes
-FiniteElementSpace
-FiniteElementCollection: <finite element collection>
-VDim: <dimension>
-Ordering: 0
-<x-coordinate degrees of freedom>
-...
-<y-coordinate degrees of freedom>
-...
-<z-coordinate degrees of freedom>
-...
-"""
