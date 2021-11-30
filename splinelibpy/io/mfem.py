@@ -9,6 +9,7 @@ import numpy as np
 # single function imports
 from splinelibpy.utils import make_c_contiguous
 from splinelibpy.io.utils import (form_lines,
+                                  next_line,
                                   make_meaningful)
 
 # keywords : possible assert value
@@ -53,7 +54,7 @@ def read_mfem(fname,):
     mk = deepcopy(_mfem_meaningful_keywords)
     # they follow a strict order or keywords, so just gather those in order
     # Ordering is a hotkey because control points comes right after
-    hotkey_list = ["knotvectors", "weights", "Ordering",]
+    hotkeys = ["knotvectors", "weights", "Ordering",]
     nurbs_dict = dict(knotvectors=[], weights=[], Ordering=[])
     collect = False
     with open(fname, "r") as f:
@@ -68,7 +69,7 @@ def read_mfem(fname,):
 
             elif (
                 len(keyword_hit) == 1
-                and keyword_hit[0] in hotkey_list
+                and keyword_hit[0] in hotkeys
             ):
                 collect = True
                 current_key = deepcopy(keyword_hit[0])
@@ -76,7 +77,7 @@ def read_mfem(fname,):
 
             elif (
                 len(keyword_hit) == 1
-                and keyword_hit[0] not in hotkey_list
+                and keyword_hit[0] not in hotkeys
             ):
                 collect = False
                 current_key = None
@@ -139,10 +140,44 @@ def read_mfem(fname,):
             weights=make_c_contiguous(weights)[reorder],
         )
 
-def read_solution(fname, reference_spline):
+
+def read_solution(fname, reference_nurbs):
     """
+    Given solution and reference_nurbs, returns solution-nurbs-dict.
+
+    Parameters
+    -----------
+    fname: str
+    reference_nurbs: NURBS
+
+    Returns
+    --------
+    solution_nurbs: dict
     """
-    pass
+    from copy import deepcopy
+
+    with open(fname, "r") as f:
+        hotkey = "Ordering"
+        line = next_line(f)
+        solution = []
+        collect = False
+        while line is not None:
+            if collect: # check this first. should be true most time
+                solution.append(eval(f"[{line.replace(' ', ',')}]"))
+            elif hotkey in line:
+                collect = True
+
+            line = next_line(f)
+
+    if len(reference_nurbs.control_points) != len(solution):
+        raise ValueError("Solution length does not match reference nurbs")
+
+    return dict(
+        degrees=deepcopy(reference_nurbs.degrees),
+        knot_vectors=deepcopy(reference_nurbs.knot_vectors),
+        control_points=solution,
+        weights=deepcopy(reference_nurbs.weights),
+    )
 
 
 def mfem_index_mapping(
