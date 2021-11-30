@@ -99,46 +99,46 @@ def read_mfem(fname,):
             else:
                 continue
 
-        # parse nurbs_dict
-        # kvs
-        knot_vectors = nurbs_dict["knotvectors"][1:]
-        knot_vectors[0] = eval("[" + knot_vectors[0].replace(" ", ",") + "]")
-        knot_vectors[1] = eval("[" + knot_vectors[1].replace(" ", ",") + "]")
-        # pop some values
-        # ds
-        degrees = [knot_vectors[0].pop(0), knot_vectors[1].pop(0)]
-        ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
-        # ws
-        weights = nurbs_dict["weights"]
-        weights = [eval(w) for w in weights] # hopefully not too slow
-        # cps
-        control_points = nurbs_dict["Ordering"]
-        control_points = [
-            eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
-        ]
+    # parse nurbs_dict
+    # kvs
+    knot_vectors = nurbs_dict["knotvectors"][1:]
+    knot_vectors[0] = eval("[" + knot_vectors[0].replace(" ", ",") + "]")
+    knot_vectors[1] = eval("[" + knot_vectors[1].replace(" ", ",") + "]")
+    # pop some values
+    # ds
+    degrees = [knot_vectors[0].pop(0), knot_vectors[1].pop(0)]
+    ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
+    # ws
+    weights = nurbs_dict["weights"]
+    weights = [eval(w) for w in weights] # hopefully not too slow
+    # cps
+    control_points = nurbs_dict["Ordering"]
+    control_points = [
+        eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
+    ]
 
-        # double check
-        # maybe separate them
-        if (
-            ncps != len(control_points)
-            or ncps != len(weights)
-            or int(nurbs_dict["knotvectors"][0]) != 2
-        ):
-            raise ValueError("Inconsistent spline info in " + fname)
+    # double check
+    # maybe separate them
+    if (
+        ncps != len(control_points)
+        or ncps != len(weights)
+        or int(nurbs_dict["knotvectors"][0]) != 2
+    ):
+        raise ValueError("Inconsistent spline info in " + fname)
 
-        reorder, _ = mfem_index_mapping(
-            len(knot_vectors),
-            degrees,
-            knot_vectors,
-            flat_list=True,
-        )
+    reorder, _ = mfem_index_mapping(
+        len(knot_vectors),
+        degrees,
+        knot_vectors,
+        flat_list=True,
+    )
 
-        return dict(
-            degrees=degrees,
-            knot_vectors=knot_vectors,
-            control_points=make_c_contiguous(control_points)[reorder],
-            weights=make_c_contiguous(weights)[reorder],
-        )
+    return dict(
+        degrees=degrees,
+        knot_vectors=knot_vectors,
+        control_points=make_c_contiguous(control_points)[reorder],
+        weights=make_c_contiguous(weights)[reorder],
+    )
 
 
 def read_solution(fname, reference_nurbs):
@@ -172,10 +172,17 @@ def read_solution(fname, reference_nurbs):
     if len(reference_nurbs.control_points) != len(solution):
         raise ValueError("Solution length does not match reference nurbs")
 
+    reorder, _ = mfem_index_mapping(
+        reference_nurbs.para_dim,
+        reference_nurbs.degrees,
+        reference_nurbs.knot_vectors,
+        flat_list=True,
+    )
+
     return dict(
         degrees=deepcopy(reference_nurbs.degrees),
         knot_vectors=deepcopy(reference_nurbs.knot_vectors),
-        control_points=solution,
+        control_points=make_c_contiguous(solution)[reorder],
         weights=deepcopy(reference_nurbs.weights),
     )
 
