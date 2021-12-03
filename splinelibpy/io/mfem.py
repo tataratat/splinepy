@@ -126,7 +126,7 @@ def read_mfem(fname,):
     ):
         raise ValueError("Inconsistent spline info in " + fname)
 
-    reorder, _ = mfem_index_mapping(
+    _, reorder = mfem_index_mapping(
         len(knot_vectors),
         degrees,
         knot_vectors,
@@ -356,9 +356,9 @@ def write_mfem(nurbs, fname, precision=10):
             "boundary",
             "4",
             "1 1 0 1",
-            "1 1 2 3",
-            "1 1 3 0",
-            "1 1 1 2",
+            "2 1 2 3",
+            "3 1 3 0",
+            "4 1 1 2",
             "",
         )
 
