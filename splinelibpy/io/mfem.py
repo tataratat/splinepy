@@ -387,7 +387,7 @@ def write_mfem(nurbs, fname, precision=10):
                 for _ in range(d_diff):
                     nurbs.elevate_degree(i)
 
-        cnr = nurbs.control_net_resolutions
+        cnr = nurbs.control_mesh_resolutions
 
         # double-check
         if not (nurbs.degrees == nurbs.degrees[0]).all():

@@ -473,9 +473,9 @@ class Spline(abc.ABC):
         )
 
     @property
-    def control_net_resolutions(self,):
+    def control_mesh_resolutions(self,):
         """
-        Returns control new resolutions.
+        Returns control mesh resolutions.
 
         Parameters
         -----------
@@ -483,13 +483,15 @@ class Spline(abc.ABC):
 
         Returns
         --------
-        control_net_resolutions: list
+        control_mesh_resolutions: list
         """
-        cnr = []
-        for i in range(self.para_dim):
-            cnr.append(
-                len(self.knot_vectors[i]) - self.degrees[i] - 1
-            )
+        cmr = []
+        #for i in range(self.para_dim):
+        #    cmr.append(
+        #        len(self.knot_vectors[i]) - self.degrees[i] - 1
+        #    )
+        for kv, d in zip(self.knot_vectors, self.degrees):
+            cmr.append(len(kv) - d - 1)
 
         return cnr
 
