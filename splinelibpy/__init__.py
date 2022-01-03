@@ -3,7 +3,8 @@ from splinelibpy._splinelibpy import Reader
 from splinelibpy.bspline import BSpline
 from splinelibpy.nurbs import NURBS
 from splinelibpy._spline import Spline
-from splinelibpy.load import load_splines
+from splinelibpy.load import (load_splines,
+                              load_solution)
 
 # Alias for "Legacy" classes
 BSplineCurve2D = _s.BSpline1P2D
@@ -33,4 +34,6 @@ __all__ = [
     "NurbsSurface2D",
     "NurbsSurface3D",
     "NurbsSolid",
+    "load_splines",
+    "load_solution",
 ]

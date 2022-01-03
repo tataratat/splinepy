@@ -9,6 +9,7 @@ from splinelibpy._splinelibpy import Reader
 from splinelibpy.bspline import BSpline
 from splinelibpy.nurbs import NURBS
 from splinelibpy.utils import abs_fname
+from splinelibpy import io
 
 def load_splines(fname):
     """
@@ -56,9 +57,13 @@ def load_splines(fname):
         # consistent, return a list.
         return [spline]
 
+    elif ext == ".mesh":
+        return [NURBS(**io.mfem.read_mfem(fname))]
+
     else:
-        raise ValueError(
-            "We can only import < .iges | .xml | .itd > spline files"
+        raise NotImplementedError(
+            "We can only import < .iges | .xml | .itd | .npz | .mesh > "
+            + "spline files."
         )
 
     splines = []
@@ -82,3 +87,33 @@ def load_splines(fname):
             splines.append(tmp_spline)
 
     return splines
+
+def load_solution(fname, reference_spline):
+    """
+    Reads a solution file and returns a solution spline.
+    If output is spline, use load_splines.
+
+    Parameters
+    -----------
+    fname: str
+    reference_spline: Spline
+
+    Returns
+    --------
+    solution_spline: Spline
+    """
+    fname = str(fname)
+    fname = abs_fname(fname)
+
+    sr = Reader()
+
+    ext = os.path.splitext(fname)[1]
+    
+    if ext == ".gf":
+        return NURBS(**io.mfem.read_solution(fname, reference_spline))
+
+    else:
+        raise NotImplementedError(
+            "We can only import < .gf >  solution files"
+        )
+
