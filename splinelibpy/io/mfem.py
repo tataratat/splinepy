@@ -44,12 +44,6 @@ def read_mfem(fname,):
       dict ready to be used for init. ex) NURBS(**nurbs)
     """
     from copy import deepcopy
-#    def make_meaningful(line, comment="#"):
-#        line = line.strip()
-#        if len(line) == 0 or line.startswith(comment):
-#            return False
-#        else:
-#            return line
 
     mk = deepcopy(_mfem_meaningful_keywords)
     # they follow a strict order or keywords, so just gather those in order
@@ -375,7 +369,7 @@ def write_mfem(nurbs, fname, precision=10):
         vertices_sec = form_lines(
             "vertices",
             "4",
-            ""
+            "",
         )
 
         # I am not sure if mixed order is allowed, but incase not, let's
