@@ -1,9 +1,9 @@
-from splinelibpy import _splinelibpy as _s
-from splinelibpy._splinelibpy import Reader
-from splinelibpy.bspline import BSpline
-from splinelibpy.nurbs import NURBS
-from splinelibpy._spline import Spline
-from splinelibpy.load import (load_splines,
+from splinepy import _splinepy as _s
+from splinepy._splinepy import Reader
+from splinepy.bspline import BSpline
+from splinepy.nurbs import NURBS
+from splinepy._spline import Spline
+from splinepy.load import (load_splines,
                               load_solution)
 
 # Alias for "Legacy" classes

@@ -3,9 +3,9 @@ import copy
 
 import numpy as np
 
-from splinelibpy import utils
-from splinelibpy._splinelibpy import *
-from splinelibpy._spline import Spline
+from splinepy import utils
+from splinepy._splinepy import *
+from splinepy._spline import Spline
 
 class NURBS(Spline):
 

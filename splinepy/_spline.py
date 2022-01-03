@@ -6,8 +6,8 @@ import itertools
 
 import numpy as np
 
-from splinelibpy import utils
-from splinelibpy import io
+from splinepy import utils
+from splinepy import io
 
 class InputDimensionError(Exception):
     """
@@ -647,10 +647,10 @@ class Spline(abc.ABC):
 
     def remove_knots(self, parametric_dimension, knots, tolerance=1e-8):
         """
-        Tries to removes knots. If you've compiled `splinelibpy` in `Debug`
+        Tries to removes knots. If you've compiled `splinepy` in `Debug`
         and your removal request is not "accepted", you will get an error.
         See the comments for `Nurbs::remove_knots` @ 
-        `splinelibpy/src/nurbs.hpp` for more info.
+        `splinepy/src/nurbs.hpp` for more info.
 
         Parameters
         -----------
