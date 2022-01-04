@@ -1,25 +1,25 @@
 set(SRCS
-    pyclasses/bspline1.cpp
-    pyclasses/bspline2.cpp
-    pyclasses/bspline3.cpp
-    pyclasses/bspline4.cpp
-    pyclasses/bspline5.cpp
-    pyclasses/bspline6.cpp
-    pyclasses/bspline7.cpp
-    pyclasses/bspline8.cpp
-    pyclasses/bspline9.cpp
-    pyclasses/bspline10.cpp
-    pyclasses/nurbs1.cpp
-    pyclasses/nurbs2.cpp
-    pyclasses/nurbs3.cpp
-    pyclasses/nurbs4.cpp
-    pyclasses/nurbs5.cpp
-    pyclasses/nurbs6.cpp
-    pyclasses/nurbs7.cpp
-    pyclasses/nurbs8.cpp
-    pyclasses/nurbs9.cpp
-    pyclasses/nurbs10.cpp
-    pyclasses/reader.cpp
+    python/bspline1.cpp
+    python/bspline2.cpp
+    python/bspline3.cpp
+    python/bspline4.cpp
+    python/bspline5.cpp
+    python/bspline6.cpp
+    python/bspline7.cpp
+    python/bspline8.cpp
+    python/bspline9.cpp
+    python/bspline10.cpp
+    python/nurbs1.cpp
+    python/nurbs2.cpp
+    python/nurbs3.cpp
+    python/nurbs4.cpp
+    python/nurbs5.cpp
+    python/nurbs6.cpp
+    python/nurbs7.cpp
+    python/nurbs8.cpp
+    python/nurbs9.cpp
+    python/nurbs10.cpp
+    python/reader.cpp
     splinepy.cpp
 )
 
