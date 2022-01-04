@@ -7,8 +7,8 @@ Currently hardcoded for 2D-single-patch-splines.
 import numpy as np
 
 # single function imports
-from splinelibpy.utils import make_c_contiguous
-from splinelibpy.io.utils import (form_lines,
+from splinepy.utils import make_c_contiguous
+from splinepy.io.utils import (form_lines,
                                   next_line,
                                   make_meaningful)
 
@@ -321,7 +321,7 @@ def write_mfem(nurbs, fname, precision=10):
         "MFEM NURBS mesh v1.0",
         "",
         "#",
-        "# Generated with splinelibpy",
+        "# Generated with splinepy",
         "#",
         "# MFEM Geometry Types (see mesh/geom.hpp)",
         "#",

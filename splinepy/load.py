@@ -1,15 +1,15 @@
-"""splinelibpy/splineplibpy/load.py
+"""splinepy/splinepy/load.py
 
 Single function file containing `load_splines`.
 """
 
 import os
 
-from splinelibpy._splinelibpy import Reader
-from splinelibpy.bspline import BSpline
-from splinelibpy.nurbs import NURBS
-from splinelibpy.utils import abs_fname
-from splinelibpy import io
+from splinepy._splinepy import Reader
+from splinepy.bspline import BSpline
+from splinepy.nurbs import NURBS
+from splinepy.utils import abs_fname
+from splinepy import io
 
 def load_splines(fname):
     """

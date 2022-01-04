@@ -66,14 +66,14 @@ class CMakeBuild(build_ext):
         print()  # Add an empty line for cleaner output
 
 setup(
-    name='splinelibpy',
+    name='splinepy',
     version='0.1',
     author='Jaewook Lee',
     author_email='jlee@ilsb.tuwien.ac.at',
     description='Python interface for SplineLib',
     long_description='',
-    packages=["splinelibpy"],
-    ext_modules=[CMakeExtension('splinelibpy._splinelibpy')],
+    packages=["splinepy"],
+    ext_modules=[CMakeExtension('splinepy._splinepy')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )

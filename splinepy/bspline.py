@@ -3,10 +3,10 @@ import copy
 
 import numpy as np
 
-from splinelibpy import utils
-from splinelibpy._splinelibpy import *
-from splinelibpy._spline import Spline
-from splinelibpy.nurbs import NURBS
+from splinepy import utils
+from splinepy._splinepy import *
+from splinepy._spline import Spline
+from splinepy.nurbs import NURBS
 
 
 class BSpline(Spline):

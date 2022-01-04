@@ -1,19 +1,44 @@
-set(SRCS splinelib.cpp)
+set(SRCS
+    python/bspline1.cpp
+    python/bspline2.cpp
+    python/bspline3.cpp
+    python/bspline4.cpp
+    python/bspline5.cpp
+    python/bspline6.cpp
+    python/bspline7.cpp
+    python/bspline8.cpp
+    python/bspline9.cpp
+    python/bspline10.cpp
+    python/nurbs1.cpp
+    python/nurbs2.cpp
+    python/nurbs3.cpp
+    python/nurbs4.cpp
+    python/nurbs5.cpp
+    python/nurbs6.cpp
+    python/nurbs7.cpp
+    python/nurbs8.cpp
+    python/nurbs9.cpp
+    python/nurbs10.cpp
+    python/reader.cpp
+    splinepy.cpp
+)
 
-pybind11_add_module(_splinelibpy ${SRCS})
-target_include_directories(_splinelibpy PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+#set(SRCS splinelib.cpp)
 
-target_compile_options(_splinelibpy PRIVATE ${SPLINELIBPY_FLAGS})
+pybind11_add_module(_splinepy ${SRCS})
+target_include_directories(_splinepy PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_options(_splinepy PRIVATE ${SPLINELIBPY_FLAGS})
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_BUILD_TYPE MATCHES Release)
-    target_compile_options(_splinelibpy PRIVATE ${GNU_FLAGS_R})
+    target_compile_options(_splinepy PRIVATE ${GNU_FLAGS_R})
 endif()
 
 # Link SplineLib
 if(COMPILE_SPLINELIB)
-    target_link_libraries(_splinelibpy PRIVATE splines input_output)
+    target_link_libraries(_splinepy PRIVATE splines input_output)
 else()
     find_package(SplineLib REQUIRED)
-    target_link_libraries(_splinelibpy 
+    target_link_libraries(_splinepy 
         PRIVATE
             SplineLib::splines
             SplineLib::input_output
@@ -22,4 +47,4 @@ endif()
 
 # Link Fitting
 add_subdirectory(fitting)
-target_link_libraries(_splinelibpy PRIVATE fitting)
+target_link_libraries(_splinepy PRIVATE fitting)
