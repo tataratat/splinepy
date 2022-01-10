@@ -82,14 +82,12 @@ class NURBS(Spline):
             if self.control_points.shape[0] != weights.shape[0]:
                 raise ValueError(
                     "Number of control points and number of weights does not "
-                    + "match."
+                    "match."
                 )
 
         self._weights = weights
         
-        logging.debug(
-            "Spline - {nws} Weights set.".format(nws=self.weights.shape[0])
-        )
+        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
 
         self._update_c()
 
@@ -116,7 +114,7 @@ class NURBS(Spline):
         ):
             logging.debug(
                 "Spline - Not enough information to update cpp spline. "
-                + "Skipping update."
+                "Skipping update."
             )
             if hasattr(self, "_c_spline"):
                 delattr(self, "_c_spline")
@@ -130,7 +128,7 @@ class NURBS(Spline):
             weights=self.weights,
         )
 
-        logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
+        logging.debug(f"Spline - Your spline is {self.whatami}.")
 
     def _update_p(self,):
         """
@@ -151,7 +149,7 @@ class NURBS(Spline):
         self._weights = self._c_spline.weights
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
-            + "now identical."
+            "now identical."
         )
 
     def copy(self,):

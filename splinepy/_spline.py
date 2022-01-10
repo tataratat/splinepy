@@ -254,7 +254,7 @@ class Spline(abc.ABC):
 
         self._degrees = degrees
 
-        logging.debug("Spline - Degrees set: {d}".format(d=self.degrees))
+        logging.debug(f"Spline - Degrees set: {self.degrees}")
 
         self._update_c()
 
@@ -312,13 +312,11 @@ class Spline(abc.ABC):
         self._knot_vectors = copy.deepcopy(knot_vectors)
 
         logging.debug("Spline - Knot vectors set:")
-        kvs = self.knot_vectors
-        for i in range(len(kvs)):
+        for i, kv in enumerate(self.knot_vectors):
             logging.debug(
-                "Spline -   "
-                + str(i)
-                + ". knot vector length: "
-                + "{kv}".format(kv=len(kvs[i]))
+                f"Spline -   {i}"
+                ". knot vector length: "
+                f"{len(kv)}"
             )
 
         self._update_c()
@@ -422,9 +420,7 @@ class Spline(abc.ABC):
 
         self._control_points = control_points
         logging.debug(
-                "Spline - {n_cps} Control points set.".format(
-                    n_cps=self.control_points.shape[0]
-                )
+            f"Spline - {self.control_points.shape[0]} Control points set."
         )
 
         self._update_c()
@@ -444,9 +440,7 @@ class Spline(abc.ABC):
         None
         """
         ind = np.lexsort([self.control_points[:,i] for i in order])
-        logging.debug(
-            "Spline - `lexsort` control points ({l})".format(l=order)
-        )
+        logging.debug(f"Spline - `lexsort` control points ({order})")
         self.control_points = self.control_points[ind]
 
     @property
@@ -493,7 +487,7 @@ class Spline(abc.ABC):
         for kv, d in zip(self.knot_vectors, self.degrees):
             cmr.append(len(kv) - d - 1)
 
-        return cnr
+        return cmr
 
     @abc.abstractmethod
     def _update_c(self,):
@@ -641,7 +635,7 @@ class Spline(abc.ABC):
             knots
         )
 
-        logging.debug("Spline - Inserted {nk} knot(s).".format(nk=len(knots)))
+        logging.debug(f"Spline - Inserted {len(knots)} knot(s).")
 
         self._update_p()
 
@@ -701,7 +695,7 @@ class Spline(abc.ABC):
         self._update_p()
 
         logging.debug(
-            "Spline - Tried to remove {nk} knot(s).".format(nk=len(knots))
+            f"Spline - Tried to remove {len(knots)} knot(s)."
         )
         logging.debug(
             "Spline - Actually removed {nk} knot(s).".format(
@@ -734,9 +728,8 @@ class Spline(abc.ABC):
 
         self._c_spline.elevate_degree(parametric_dimension)
         logging.debug(
-            "Spline - Elevated {p}.-dim. degree of the spline.".format(
-                p=parametric_dimension
-            )
+            f"Spline - Elevated {parametric_dimension}.-dim. "
+            "degree of the spline."
         )
 
         self._update_p()
@@ -768,24 +761,21 @@ class Spline(abc.ABC):
         )
 
         logging.debug(
-            "Spline - Tried to reduce {p}.-dim. degree of the spline.".format(
-                p=parametric_dimension
-            )
+            f"Spline - Tried to reduce {parametric_dimension}.-dim. "
+            "degree of the spline."
         )
 
         if reduced:
             logging.debug(
-                "Spline - Successfully reduced {p}.-dim. degree".format(
-                    p=parametric_dimension
-                )
+                f"Spline - Successfully reduced {parametric_dimension}.-dim. "
+                "degree"
             )
             self._update_p()
 
         else:
             logging.debug(
-                "Spline - Could not reduce {p}.-dim. degree".format(
-                    p=parametric_dimension
-                )
+                f"Spline - Could not reduce {parametric_dimension}.-dim. "
+                "degree"
             )
 
     def sample(self, query_resolutions):
@@ -817,16 +807,15 @@ class Spline(abc.ABC):
         if any(is_one_or_less):
             logging.debug(
                 "Spline - You cannot sample less than 2 points per each "
-                + "parametric dimension."
+                "parametric dimension."
             )
             logging.debug("Spline - Applying minimum sampling resolution 2.")
 
             query_resolutions[is_one_or_less] = int(2)
 
         logging.debug(
-            "Spline - Sampling {t} points from spline.".format(
-                t=np.product(query_resolutions)
-            )
+            f"Spline - Sampling {np.product(query_resolutions)} "
+            "points from spline."
         )
 
         return self._c_spline.sample(query_resolutions)
@@ -893,7 +882,7 @@ class Spline(abc.ABC):
                 + "< .iges | .xml | .itd | .npz | .mesh > extentions"
             )
 
-        logging.info("Spline - Exported current spline as {f}.".format(f=fname))
+        logging.info(f"Spline - Exported current spline as {fname}.")
 
     @abc.abstractmethod
     def copy(self,):

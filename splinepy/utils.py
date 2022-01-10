@@ -8,6 +8,31 @@ import logging
 
 import numpy as np
 
+
+def configure_logging(debug=False, logfile=None):
+    """
+    Logging configurator.
+
+    Parameters
+    -----------
+    debug: bool
+    logfile: str
+
+    Returns
+    --------
+    None
+    """
+    logger = logging.getLogger()
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    else:
+        logger.setLevel(logging.INFO)
+
+    if logfile is not None:
+        file_logger_handler = logging.FileHandler(logfile)
+
+
 def is_property(property_dict, key, class_name):
     """
     Checks if property exist in given dict. If not add a debug log.
@@ -33,6 +58,7 @@ def is_property(property_dict, key, class_name):
             + "` does not exist yet."
         )
         return False
+
 
 def make_c_contiguous(array, dtype=None):
     """
@@ -68,6 +94,7 @@ def make_c_contiguous(array, dtype=None):
 
     else:
         return np.ascontiguousarray(array)
+
 
 def abs_fname(fname):
     """

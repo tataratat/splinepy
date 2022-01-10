@@ -63,7 +63,7 @@ def load_splines(fname):
     else:
         raise NotImplementedError(
             "We can only import < .iges | .xml | .itd | .npz | .mesh > "
-            + "spline files."
+            "spline files."
         )
 
     splines = []
