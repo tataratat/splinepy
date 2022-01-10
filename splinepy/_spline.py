@@ -493,7 +493,7 @@ class Spline(abc.ABC):
         for kv, d in zip(self.knot_vectors, self.degrees):
             cmr.append(len(kv) - d - 1)
 
-        return cnr
+        return cmr
 
     @abc.abstractmethod
     def _update_c(self,):
