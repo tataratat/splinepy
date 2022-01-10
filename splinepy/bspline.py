@@ -316,7 +316,7 @@ class BSpline(Spline):
         """
         new_bspline = BSpline(
             degrees = copy.deepcopy(self.degrees),
-            knot_vectors = copy.deepcopy(self.control_points),
+            knot_vectors = copy.deepcopy(self.knot_vectors),
             control_points = copy.deepcopy(self.control_points),
         )
         if hasattr(self, "_fitting_queries"):
