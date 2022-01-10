@@ -58,7 +58,7 @@ class BSpline(Spline):
         ):
             logging.debug(
                 "Spline - Not enough information to update cpp spline. "
-                + "Skipping update or removing existing backend spline."
+                "Skipping update or removing existing backend spline."
             )
             if hasattr(self, "_c_spline"):
                 delattr(self, "_c_spline")
@@ -71,7 +71,7 @@ class BSpline(Spline):
             control_points=self.control_points,
         )
 
-        logging.debug("Spline - Your spline is {w}.".format(w=self.whatami))
+        logging.debug(f"Spline - Your spline is {self.whatami}.")
 
     def _update_p(self,):
         """
@@ -93,7 +93,7 @@ class BSpline(Spline):
         self._control_points = self._c_spline.control_points
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
-            + "now identical."
+            "now identical."
         )
 
     def interpolate_curve(
@@ -140,7 +140,7 @@ class BSpline(Spline):
 
         logging.debug(
             "Spline - BSpline curve interpolation complete. "
-            + "Your spline is {w}.".format(w=self.whatami)
+            f"Your spline is {self.whatami}."
         )
 
         if save_query:
@@ -200,9 +200,9 @@ class BSpline(Spline):
 
         logging.debug(
             "Spline - BSpline curve approximation complete. "
-            + "Your spline is {w}.".format(w=self.whatami)
+            f"Your spline is {self.whatami}."
         )
-        logging.debug("Spline -   Approximation residual: {r}".format(r=res))
+        logging.debug(f"Spline -   Approximation residual: {res}")
 
         if save_query:
             self._fitting_queries = query_points
@@ -263,7 +263,7 @@ class BSpline(Spline):
 
         logging.debug(
             "Spline - BSpline surface interpolation complete. "
-            + "Your spline is {w}.".format(w=self.whatami)
+            f"Your spline is {self.whatami}."
         )
 
         if save_query:
