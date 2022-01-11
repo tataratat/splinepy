@@ -1,11 +1,11 @@
 #include <spline_reader.hpp>
 
 void init_reader(py::module_ &m) {
-    py::class_<SplineReader>(m, "Reader")
-        .def(py::init<>())
-        .def("read_iges", &SplineReader::read_iges, py::arg("fname"))
-        .def("read_xml", &SplineReader::read_xml, py::arg("fname"))
-        .def("read_irit", &SplineReader::read_irit, py::arg("fname"))
-        ;
+    // Functions that return list of dict.
+    // Keys are ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
+    m.def("read_iges", &read_iges, py::arg("fname"))
+     .def("read_xml", &read_xml, py::arg("fname"))
+     .def("read_irit", &read_irit, py::arg("fname"))
+     ;
 }
 
