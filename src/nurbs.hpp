@@ -420,7 +420,7 @@ struct PyNurbs {
             Coordinate c = sampled_coordinates[i];
 
             j = 0;
-            for (auto& sc : c) {
+            for (const auto& sc : c) {
                 r_buf_ptr[i * dim + j] = sc.Get();
                 j++;
             }
