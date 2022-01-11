@@ -37,12 +37,9 @@ struct BSplineParser {
 
     BSplineParser() {}
 
-    py::list bspline_to_list(SplineEntry const &bspline) {
+    py::dict bspline_to_dict(SplineEntry const &bspline) {
 
-        py::list spline; //  to return
-
-        // Nurbs part is none
-        spline.append(py::none());
+        py::dict spline; //  to return
 
         std::shared_ptr<BSpline> bs = std::dynamic_pointer_cast<BSpline>(bspline);
         OutputInformation const &bs_info = bs->Write();
@@ -71,7 +68,7 @@ struct BSplineParser {
             i++;
         }
 
-        spline.append(p_degrees);
+        spline["degrees"] = p_degrees;
 
 
         // Unpack - knot vectors
@@ -84,7 +81,7 @@ struct BSplineParser {
             p_knot_vectors.append(p_kv);
         }
 
-        spline.append(p_knot_vectors);
+        spline["knot_vectors"] = p_knot_vectors;
 
 
         // Unpack - Coordinates (control points)
@@ -105,7 +102,7 @@ struct BSplineParser {
 
         p_control_points.resize({(int) coordinates.size(), dim});
 
-        spline.append(p_control_points);
+        spline["control_points"] = p_control_points;
 
         return spline;
 
@@ -132,9 +129,9 @@ struct NurbsParser {
 
     NurbsParser() {}
 
-    py::list nurbs_to_list(SplineEntry const &nurbs) {
+    py::dict nurbs_to_dict(SplineEntry const &nurbs) {
 
-        py::list spline; //  to return
+        py::dict spline; //  to return
 
         // Read info
         std::shared_ptr<Nurbs> n = std::dynamic_pointer_cast<Nurbs>(nurbs);
@@ -168,7 +165,7 @@ struct NurbsParser {
 
         p_weights.resize({(int) weights.size(), 1}); // A tall vector
 
-        spline.append(p_weights);
+        spline["weights"] = p_weights;
 
         // Unpack - degrees
         auto p_degrees = py::array_t<int>(para_dim);
@@ -181,7 +178,7 @@ struct NurbsParser {
             i++;
         }
 
-        spline.append(p_degrees);
+        spline["degrees"] = p_degrees;
 
         // Unpack - knot vectors
         py::list p_knot_vectors;
@@ -193,7 +190,7 @@ struct NurbsParser {
             p_knot_vectors.append(p_kv);
         }
 
-        spline.append(p_knot_vectors);
+        spline["knot_vectors"] = p_knot_vectors;
 
 
         // Unpack - Coordinates (control points)
@@ -214,7 +211,7 @@ struct NurbsParser {
 
         p_control_points.resize({(int) coordinates.size(), dim});
 
-        spline.append(p_control_points);
+        spline["control_points"] = p_control_points;
 
         return spline;
 
@@ -234,7 +231,7 @@ struct SplineReader {
 
 
     Splines c_splines;
-    py::list p_splines; // [[weights, degrees, knot_vectors, control_points], ...]
+    py::list p_splines; // [dict(weights, degrees, knot_vectors, control_points), ...]
 
     py::list read_iges(std::string fname) {
 
@@ -268,58 +265,58 @@ struct SplineReader {
         if (para_dim == 1) {
             if (dim == 1) {
                 auto bsparser = BSplineParser<1, 1>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 2) {
                 auto bsparser = BSplineParser<1, 2>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<1, 3>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 4) {
                 auto bsparser = BSplineParser<1, 4>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             }
         } else if (para_dim == 2) {
             if (dim == 1) {
                 auto bsparser = BSplineParser<2, 1>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 2) {
                 auto bsparser = BSplineParser<2, 2>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<2, 3>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 4) {
                 auto bsparser = BSplineParser<2, 4>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             }
         } else if (para_dim == 3) {
             if (dim == 1) {
                 auto bsparser = BSplineParser<3, 1>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 2) {
                 auto bsparser = BSplineParser<3, 2>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<3, 3>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 4) {
                 auto bsparser = BSplineParser<3, 4>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             }
         } else if (para_dim == 4) {
             if (dim == 1) {
                 auto bsparser = BSplineParser<4, 1>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 2) {
                 auto bsparser = BSplineParser<4, 2>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 3) {
                 auto bsparser = BSplineParser<4, 3>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             } else if (dim == 4) {
                 auto bsparser = BSplineParser<4, 4>();
-                p_splines.append(bsparser.bspline_to_list(bspline));
+                p_splines.append(bsparser.bspline_to_dict(bspline));
             }
         }
     }
@@ -334,58 +331,58 @@ struct SplineReader {
         if (para_dim == 1) {
             if (dim == 1) {
                 auto nparser = NurbsParser<1, 1>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 2) {
                 auto nparser = NurbsParser<1, 2>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 3) {
                 auto nparser = NurbsParser<1, 3>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 4) {
                 auto nparser = NurbsParser<1, 4>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             }
         } else if (para_dim == 2) {
             if (dim == 1) {
                 auto nparser = NurbsParser<2, 1>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 2) {
                 auto nparser = NurbsParser<2, 2>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 3) {
                 auto nparser = NurbsParser<2, 3>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 4) {
                 auto nparser = NurbsParser<2, 4>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             }
         } else if (para_dim == 3) {
             if (dim == 1) {
                 auto nparser = NurbsParser<3, 1>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 2) {
                 auto nparser = NurbsParser<3, 2>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 3) {
                 auto nparser = NurbsParser<3, 3>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 4) {
                 auto nparser = NurbsParser<3, 4>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             }
         } else if (para_dim == 4) {
             if (dim == 1) {
                 auto nparser = NurbsParser<4, 1>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 2) {
                 auto nparser = NurbsParser<4, 2>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 3) {
                 auto nparser = NurbsParser<4, 3>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             } else if (dim == 4) {
                 auto nparser = NurbsParser<4, 4>();
-                p_splines.append(nparser.nurbs_to_list(nurbs));
+                p_splines.append(nparser.nurbs_to_dict(nurbs));
             }
         }
     }
@@ -415,3 +412,25 @@ struct SplineReader {
     }
 
 };
+
+
+/* direct load calls */
+// iges
+py::list read_iges(std::string fname) {
+    auto sr = SplineReader();
+    return sr.read_iges(fname);
+}
+
+
+// xml
+py::list read_xml(std::string fname) {
+    auto sr = SplineReader();
+    return sr.read_xml(fname);
+}
+
+
+// irit
+py::list read_irit(std::string fname) {
+    auto sr = SplineReader();
+    return sr.read_irit(fname);
+}
