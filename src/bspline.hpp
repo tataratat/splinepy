@@ -47,7 +47,7 @@ struct PyBSpline {
     using ParametricCoordinate = typename BSpline::ParametricCoordinate_;
     using ScalarParametricCoordinate = typename ParametricCoordinate::value_type;
     using Derivative = typename BSpline::Derivative_;
-    using NumberOfParametricCoordinates =  typename  ParameterSpace::NumberOfParametricCoordinates_;
+    using NumberOfParametricCoordinates =  typename ParameterSpace::NumberOfParametricCoordinates_;
 
     // For reading cpp splines
     using OutputInformation = typename BSpline::OutputInformation_;
@@ -388,7 +388,7 @@ struct PyBSpline {
             Coordinate c = sampled_coordinates[i];
 
             j = 0;
-            for (auto& sc : c) {
+            for (const auto& sc : c) {
                 r_buf_ptr[i * dim + j] = sc.Get();
                 j++;
             }
