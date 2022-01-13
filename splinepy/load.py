@@ -93,8 +93,6 @@ def load_solution(fname, reference_spline):
     fname = str(fname)
     fname = abs_fname(fname)
 
-    #sr = Reader()
-
     ext = os.path.splitext(fname)[1]
     
     if ext == ".gf":
