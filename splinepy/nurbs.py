@@ -164,14 +164,29 @@ class NURBS(Spline):
         --------
         new_nurbs: `NURBS`
         """
-        new_nurbs = NURBS(
+        new_nurbs = NURBS(**self.todict())
+
+        return new_nurbs
+
+    def todict(self):
+        """
+        Returns copy of degrees, knot_vectors, control_points, weights in dict.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        dict_spline: dict
+          Keys are {degrees, knot_vectors, control_points, weights}.
+        """
+        return dict(
             degrees=copy.deepcopy(self.degrees),
             knot_vectors=copy.deepcopy(self.knot_vectors),
             control_points=copy.deepcopy(self.control_points),
             weights=copy.deepcopy(self.weights),
         )
-
-        return new_nurbs
 
     # member function alias
     ws = weights

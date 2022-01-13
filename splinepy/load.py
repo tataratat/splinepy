@@ -66,9 +66,9 @@ def load_splines(fname, as_dict=False):
     splines = []
     for s in loaded_splines:
         # are you nurbs?
-        is_nurbs = s.get("weights", False)
+        is_nurbs = s.get("weights", None)
 
-        if is_nurbs:
+        if is_nurbs is not None:
             splines.append(NURBS(**s))
         else:
             splines.append(BSpline(**s))
@@ -92,8 +92,6 @@ def load_solution(fname, reference_spline):
     """
     fname = str(fname)
     fname = abs_fname(fname)
-
-    sr = Reader()
 
     ext = os.path.splitext(fname)[1]
     
