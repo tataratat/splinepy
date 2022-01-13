@@ -294,9 +294,7 @@ class BSpline(Spline):
         same_nurbs: NURBS
         """
         same_nurbs = NURBS(
-            degrees=copy.deepcopy(self.degrees),
-            knot_vectors=copy.deepcopy(self.knot_vectors),
-            control_points=copy.deepcopy(self.control_points),
+            **self.todict(),
             weights=np.ones(self.control_points.shape[0], dtype=np.float64),
         )
 
@@ -314,12 +312,29 @@ class BSpline(Spline):
         --------
         new_bspline: `BSpline`
         """
-        new_bspline = BSpline(
-            degrees = copy.deepcopy(self.degrees),
-            knot_vectors = copy.deepcopy(self.knot_vectors),
-            control_points = copy.deepcopy(self.control_points),
-        )
+        new_bspline = BSpline(**self.todict())
+
+        # add fitting_queries if it has one.
         if hasattr(self, "_fitting_queries"):
             new_bspline._fitting_queries = copy.deepcopy(self._fitting_queries)
 
         return new_bspline
+
+    def todict(self):
+        """
+        Returns copy of degrees, knot_vectors, control_points in dict.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        dict_spline: dict
+          Keys are {degrees, knot_vectors, control_points}.
+        """
+        return dict(
+            degrees=copy.deepcopy(self.degrees),
+            knot_vectors=copy.deepcopy(self.knot_vectors),
+            control_points=copy.deepcopy(self.control_points),
+        )
