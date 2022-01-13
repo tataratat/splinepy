@@ -135,7 +135,7 @@ def read_mfem(fname,):
     )
 
 
-def read_solution(fname, reference_nurbs):
+def read_solution(fname, reference_nurbs,):
     """
     Given solution and reference_nurbs, returns solution-nurbs-dict.
 
@@ -166,7 +166,7 @@ def read_solution(fname, reference_nurbs):
     if len(reference_nurbs.control_points) != len(solution):
         raise ValueError("Solution length does not match reference nurbs")
 
-    reorder, _ = mfem_index_mapping(
+    _, reorder = mfem_index_mapping(
         reference_nurbs.para_dim,
         reference_nurbs.degrees,
         reference_nurbs.knot_vectors,
