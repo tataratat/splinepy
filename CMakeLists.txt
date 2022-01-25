@@ -7,6 +7,7 @@ option(VERBOSE_MAKE "Verbose `make` output" OFF)
 
 set(SPLINELIBPY_FLAGS -fPIC)
 set(GNU_FLAGS_R -ffast-math -mtune=native -O3)
+set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(CMAKE_CXX_STANDARD 20)
 
 if(VERBOSE_MAKE)

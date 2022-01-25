@@ -76,7 +76,7 @@ else()
 endif()
 
 # Content
-find_package(PkgConfig REQUIRED QUIET)
+#find_package(PkgConfig REQUIRED QUIET)
 add_subdirectory(Sources)
 
 # Packaging
