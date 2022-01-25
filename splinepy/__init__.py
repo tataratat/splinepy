@@ -1,5 +1,4 @@
 from splinepy import _splinepy as _s
-from splinepy._splinepy import Reader
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
 from splinepy._spline import Spline
@@ -23,7 +22,6 @@ __all__ = [
     "Spline",
     "BSpline",
     "NURBS",
-    "Reader",
     "BSplineCurve2D",
     "BSplineCurve3D",
     "BSplineSurface2D",
