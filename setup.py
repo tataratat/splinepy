@@ -72,7 +72,10 @@ setup(
     author_email='jlee@ilsb.tuwien.ac.at',
     description='Python interface for SplineLib',
     long_description='',
-    packages=["splinepy"],
+    packages=[
+        "splinepy",
+        "splinepy.io",
+    ],
     ext_modules=[CMakeExtension('splinepy._splinepy')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
