@@ -45,6 +45,9 @@ else()
     )
 endif()
 
+# Link pthread
+#target_link_libraries(_splinepy PRIVATE pthread)
+
 # Link Fitting
 add_subdirectory(fitting)
 target_link_libraries(_splinepy PRIVATE fitting)

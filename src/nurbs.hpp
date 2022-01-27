@@ -4,9 +4,10 @@
 #include <stdexcept>
 #include <tuple>
 #include <string>
+#include <thread>
+#include <cmath>
 
 // pybind11
-#include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
 // SplineLib
@@ -274,6 +275,64 @@ struct PyNurbs {
         return results;
     }
 
+    // multithread `evaluate` using std::thread
+    py::array_t<double> p_evaluate(py::array_t<double> queries, int n_workers) {
+
+        // Extract input array info.
+        py::buffer_info q_buf = queries.request();
+        double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
+        int n_queries = q_buf.shape[0];
+
+        // Prepare results array.
+        py::array_t<double> results(n_queries * dim);
+        py::buffer_info r_buf = results.request();
+        double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
+
+        // eval and fill up result array
+        auto eval = [&] (int begin, int end) {
+            for (int id = begin; id < end; id++) { // n_queries
+                ParametricCoordinate pc{};
+                for (int pd = 0; pd < para_dim; pd++) {
+                    pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
+                }
+                Coordinate const &c_result = c_nurbs(pc);
+                int d = 0;
+                for (const auto& sc : c_result) {
+                    r_buf_ptr[id * dim + d] = sc.Get();
+                    d++;
+                }
+            }
+        };
+
+        // process batch indices
+        std::vector<int> batch_ids;
+        const int chunk_size = std::ceil(n_queries / n_workers);
+        for (i = 0; i < n_workers; i++) {
+          batch_ids.push_back(i * chunk_size);
+        }
+        batch_ids.push_back(n_queries);
+
+        // thread exe         
+        std::vector<std::thread> pool;
+        for (i = 0; i < (n_workers - 1); i++) {
+            std::thread th(eval, i * chunk_size, (i + 1) * chunk_size);
+            pool.push_back(std::move(th));
+        }
+        {
+            // last one
+            std::thread th(eval, i * chunk_size, n_queries);
+            pool.push_back(std::move(th));
+        }
+
+        for (auto &t : pool) {
+            t.join();
+        }
+
+        results.resize({n_queries, dim});
+
+        return results;
+    }
+
     // Derivative.
     py::array_t<double> derivative(py::array_t<double> queries, py::array_t<int> orders) {
 
@@ -491,6 +550,8 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                    py::arg("queries"),
                    py::arg("orders"),
                    py::return_value_policy::move)
+          .def("p_evaluate",
+                   &PyNurbs<para_dim, dim>::p_evaluate)
           .def("insert_knots",
                    &PyNurbs<para_dim, dim>::insert_knots,
                    py::arg("p_dim"),
@@ -523,7 +584,26 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
           .def("update_c",
                    &PyNurbs<para_dim, dim>::update_c)
           .def("update_p",
-                   &PyNurbs<para_dim, dim>::update_p);
+                   &PyNurbs<para_dim, dim>::update_p)
+          .def(py::pickle(
+                   [] (const PyNurbs<para_dim, dim> &nurbs) {
+                     return py::make_tuple(nurbs.p_degrees, nurbs.p_knot_vectors, nurbs.p_control_points, nurbs.p_weights);
+                   },
+                   [] (py::tuple t) {
+                     if (t.size() != 4) {
+                       throw std::runtime_error("Invalid PyNURBS state!");                     }
+
+                     PyNurbs<para_dim, dim> pyn(
+                         t[0].cast<py::array_t<int>>(), // degrees
+                         t[1].cast<py::list>(), // knot vectors
+                         t[2].cast<py::array_t<double>>(), // control points
+                         t[3].cast<py::array_t<double>>() // weights
+                     );
+                     return pyn;
+                   }
+               ))
+           ;
+
 
 }
 
