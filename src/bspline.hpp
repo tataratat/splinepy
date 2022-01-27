@@ -659,7 +659,25 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
           .def("update_c",
                    &PyBSpline<para_dim, dim>::update_c)
           .def("update_p",
-                   &PyBSpline<para_dim, dim>::update_p);
+                   &PyBSpline<para_dim, dim>::update_p)
+          .def(py::pickle(
+                   [] (const PyBSpline<para_dim, dim> &bspl) {
+                     return py::make_tuple(bspl.p_degrees, bspl.p_knot_vectors, bspl.p_control_points);
+                   },
+                   [] (py::tuple t) {
+                     if (t.size() != 3) {
+                       throw std::runtime_error("Invalid PyBspline state!");
+                     }
+
+                     PyBSpline<para_dim, dim> pyb(
+                         t[0].cast<py::array_t<int>>(),
+                         t[1].cast<py::list>(),
+                         t[2].cast<py::array_t<double>>()
+                     );
+
+                     return pyb;
+                   }
+               ));
 
 
     if constexpr (para_dim == 1) {

@@ -65,14 +65,26 @@ class CMakeBuild(build_ext):
                               cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
 
+
+with open("README.md", "r") as readme:
+    long_description = readme.read()
+
+
 setup(
     name='splinepy',
-    version='0.1',
+    version='0.1.0',
     author='Jaewook Lee',
     author_email='jlee@ilsb.tuwien.ac.at',
-    description='Python interface for SplineLib',
-    long_description='',
-    packages=["splinepy"],
+    description='Python NURBS & BSpline library with C++ Backend.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/j042/splinepy",
+    packages=[
+        "splinepy",
+        "splinepy.io",
+    ],
+    classifiers=[
+    ]
     ext_modules=[CMakeExtension('splinepy._splinepy')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
