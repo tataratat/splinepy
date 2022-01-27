@@ -527,13 +527,16 @@ class Spline(abc.ABC):
         """
         pass
 
-    def evaluate(self, queries):
+    def evaluate(self, queries, n_threads=1):
         """
         Evaluates spline.
 
         Parameters
         -----------
         queries: (n, para_dim) list-like
+        n_threads: int
+          Default is 1. If n_thread > 1, it calls multithreading version of
+          `evaluate`. Parallel loop implemented in cpp.
 
         Returns
         --------
@@ -551,9 +554,16 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating spline...")
 
-        return self._c_spline.evaluate(queries=queries)
+        if int(n_threads) > 1:
+            return self._c_spline.p_evaluate(
+                queries=queries,
+                n_threads=n_threads
+            )
 
-    def derivative(self, queries, orders):
+        else:
+            return self._c_spline.evaluate(queries=queries)
+
+    def derivative(self, queries, orders, n_threads=1):
         """
         Evaluates derivatives of spline.
 
@@ -561,6 +571,9 @@ class Spline(abc.ABC):
         -----------
         queries: (n, para_dim) list-like
         orders: (para_dim,) list-like
+        n_threads: int
+          Default is 1. If n_thread > 1, it calls multithreading version of
+          `derivate`. Parallel loop implemented in cpp.
 
         Returns
         --------
@@ -583,10 +596,19 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating derivatives of the spline...")
 
-        return self._c_spline.derivative(
-            queries=queries,
-            orders=orders
-        )
+
+        if int(n_threads) > 1:
+            return self._c_spline.p_derivative(
+                queries=queries,
+                orders=orders,
+                n_threads=n_threads
+            )
+
+        else:
+            return self._c_spline.derivative(
+                queries=queries,
+                orders=orders
+            )
 
     def insert_knots(self, parametric_dimension, knots):
         """
