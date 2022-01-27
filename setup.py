@@ -84,7 +84,7 @@ setup(
         "splinepy.io",
     ],
     classifiers=[
-    ]
+    ],
     ext_modules=[CMakeExtension('splinepy._splinepy')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
