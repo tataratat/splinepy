@@ -304,15 +304,8 @@ struct PyNurbs {
             }
         };
 
-        // process batch indices
-        std::vector<int> batch_ids;
-        const int chunk_size = std::ceil(n_queries / n_workers);
-        for (i = 0; i < n_workers; i++) {
-          batch_ids.push_back(i * chunk_size);
-        }
-        batch_ids.push_back(n_queries);
-
         // thread exe         
+        const int chunk_size = std::ceil(n_queries / n_workers);
         std::vector<std::thread> pool;
         for (i = 0; i < (n_workers - 1); i++) {
             std::thread th(eval, i * chunk_size, (i + 1) * chunk_size);
@@ -377,6 +370,66 @@ struct PyNurbs {
 
         return results;
 
+    }
+
+    // multithread `derivative` using std::thread
+    py::array_t<double> p_derivative(py::array_t<double> queries,
+                                     py::array_t<int> orders,
+                                     int n_workers) {
+
+        // Extract input arrays info.
+        py::buffer_info q_buf = queries.request(), o_buf = orders.request();
+        double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
+        int* o_buf_ptr = static_cast<int *>(o_buf.ptr);
+        int n_queries = q_buf.shape[0];
+
+        // Prepare results array.
+        py::array_t<double> results(n_queries * dim);
+        py::buffer_info r_buf = results.request();
+        double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
+
+        // Formulate Derivative Orders.
+        Derivative derivative{};
+        for (i = 0; i < o_buf.shape[0]; i++) {
+            derivative[i] = splinelib::Derivative{o_buf_ptr[i]};
+        } 
+
+        // deval and fill up result array
+        auto deval = [&] (int begin, int end) {
+            for (int id = begin; id < end; id++) { // n_queries
+                ParametricCoordinate pc{};
+                for (int pd = 0; pd < para_dim; pd++) {
+                    pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
+                }
+                Coordinate const &c_result = c_nurbs(pc, derivative);
+                int d = 0;
+                for (const auto& sc : c_result) {
+                    r_buf_ptr[id * dim + d] = sc.Get();
+                    d++;
+                }
+            }
+        };
+
+        // thread exe
+        const int chunk_size = std::ceil(n_queries / n_workers);
+        std::vector<std::thread> pool;
+        for (i = 0; i < (n_workers - 1); i++) {
+            std::thread th(deval, i * chunk_size, (i + 1) * chunk_size);
+            pool.push_back(std::move(th));
+        }
+        {
+            // last one
+            std::thread th(deval, i * chunk_size, n_queries);
+            pool.push_back(std::move(th));
+        }
+
+        for (auto &t : pool) {
+            t.join();
+        }
+
+        results.resize({n_queries, dim});
+
+        return results;
     }
 
     void insert_knots(int p_dim, py::list knots) {
@@ -551,7 +604,14 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                    py::arg("orders"),
                    py::return_value_policy::move)
           .def("p_evaluate",
-                   &PyNurbs<para_dim, dim>::p_evaluate)
+                   &PyNurbs<para_dim, dim>::p_evaluate,
+                   py::arg("queries"),
+                   py::arg("n_threads"))
+          .def("p_derivative",
+                   &PyNurbs<para_dim, dim>::p_derivative,
+                   py::arg("queries"),
+                   py::arg("orders"),
+                   py::arg("n_threads"))
           .def("insert_knots",
                    &PyNurbs<para_dim, dim>::insert_knots,
                    py::arg("p_dim"),
@@ -591,7 +651,8 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                    },
                    [] (py::tuple t) {
                      if (t.size() != 4) {
-                       throw std::runtime_error("Invalid PyNURBS state!");                     }
+                       throw std::runtime_error("Invalid PyNURBS state!");
+                     }
 
                      PyNurbs<para_dim, dim> pyn(
                          t[0].cast<py::array_t<int>>(), // degrees
