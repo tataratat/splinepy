@@ -279,7 +279,7 @@ def mfem_index_mapping(
     
 
 
-def write_mfem(nurbs, fname, precision=10):
+def write_mfem(fname, nurbs, precision=10):
     """
     Exports current nurbs in `mfem` format.
 

@@ -877,26 +877,11 @@ class Spline(abc.ABC):
             self._c_spline.write_irit(fname)
 
         elif ext == ".npz":
-            # Save knot vectors as size=1 string array
-            # --> to avoid any floating point issues
-            # whatami is also size=1 string array
-            property_dicts = dict(
-                degrees=self.degrees,
-                knot_vectors=np.array([str(self.knot_vectors)]),
-                control_points=self.control_points,
-                whatami=np.array([self.whatami]),
-            )
-            if self.whatami.startswith("NURBS"):
-                property_dicts.update(weights=self.weights)
-
-            np.savez(
-                fname,
-                **property_dicts,
-            )
+            io.npz.write_npz(fname, self)
 
         elif ext == ".mesh":
             # mfem nurbs mesh.
-            io.mfem.write_mfem(self, fname, precision=12)
+            io.mfem.write_mfem(fname, self, precision=12)
 
         else:
             raise ValueError(
@@ -920,6 +905,21 @@ class Spline(abc.ABC):
         Returns
         --------
         new_spline: `Spline`
+        """
+        pass
+
+    @abc.abstractmethod
+    def todict(self,):
+        """
+        Return current spline as dict
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        spline_as_dict: `Spline`
         """
         pass
 
