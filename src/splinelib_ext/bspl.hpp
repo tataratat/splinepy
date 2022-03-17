@@ -50,8 +50,8 @@ public:
     {
 
       Index_ const &basis_function = (
-          parameter_space.FindFirstNonZeroBasisFunction(parametric_coordinate) +
-          non_zero_basis_function.GetIndex()
+          parameter_space.FindFirstNonZeroBasisFunction(parametric_coordinate)
+          + non_zero_basis_function.GetIndex()
       );
 
       const auto evaluated = parameter_space.EvaluateBasisFunction(
