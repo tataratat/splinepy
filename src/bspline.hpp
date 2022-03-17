@@ -428,6 +428,11 @@ public:
   // given parametric coordinate queires,
   // returns a tuple of (basis_functions, support_control_point_ids)
   py::tuple basis_functions(py::array_t<double> queries) {
+
+    if (!skip_update) {
+      update_c();
+    }
+    
     py::buffer_info q_buf = queries.request();
     double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
     const int n_queries = q_buf.shape[0];
@@ -699,7 +704,9 @@ public:
     int num_points = p_buf.shape[0];
     int surface_dim = p_buf.shape[1];
     if (surface_dim != dim) {
-      throw std::invalid_argument("Dimension mis-match between spline and interpolation query points.");
+      throw std::invalid_argument(
+          "Dimension mis-match between spline and interpolation query points."
+      );
     }
     std::vector<double> knot_vector_u, knot_vector_v, control_points;
 
