@@ -36,7 +36,8 @@ public:
   // Constructor
   using Base_::Base_;
 
-  // Computes (degree + 1) X ... 
+  // Computes (degree + 1) X ...
+  // adapted from `SplineLib/Sources/Splines/b_spline.inc` 
   void BasisFunctionsAndIDs(ParametricCoordinate_ const &parametric_coordinate,
                             double* basis_function_values,
                             int* support_control_point_ids) const {
