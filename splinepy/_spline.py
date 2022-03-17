@@ -610,6 +610,37 @@ class Spline(abc.ABC):
                 orders=orders
             )
 
+    def basis_functions(self, queries, n_threads=1):
+        """
+        Returns basis function values and their support ids of given queries.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) list-like
+        n_threads: int
+          Default is 1. Higher number is currently not supported. #TODO: DOIT
+
+        Returns
+        --------
+        results: tuple
+          tuple of two elements.
+          first: (prod(degrees .+ 1)) array of basis function values.
+          second: support ids.
+        """
+        if self.whatami == "Nothing":
+          return None
+
+        queries = utils.make_c_contiguous(queries, dtype="float64")
+
+        if queries.shape[1] != self.para_dim:
+            raise InputDimensionError(
+                "`queries` does not match current pametric dimension."
+            )
+
+        logging.debug("Spline - evaluating basis functions")
+
+        return self._c_spline.basis_functions(queries)
+
     def insert_knots(self, parametric_dimension, knots):
         """
         Inserts knots. 
