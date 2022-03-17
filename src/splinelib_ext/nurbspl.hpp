@@ -20,6 +20,7 @@ public:
       typename ParameterSpace_::OutputInformation_,
       typename WeightedVectorSpace_::OutputInformation_
   >;
+  using VectorSpace_ = typename WeightedVectorSpace_::Base_; // <dim + 1>
 
   // Some private ones. Here we make it public
   //using BezierInformation_ =
@@ -63,15 +64,16 @@ public:
       );
 
       // get `w` and add to `W`
-      const auto& support_id = basis_function.GetIndex1d().Get();
-      const double& w =
-          *Base_::weighted_vector_space_[support_id][dim - 1].Get();
+      const auto& support_id = basis_function.GetIndex1d(); // not int yet
+
+      VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
+      const auto& w = vector_space[support_id][dim].Get(); // dim: last elem
 
       const double N_times_w = evaluated * w;
  
       W += N_times_w;
       basis_function_values[i] = N_times_w; // not yet final
-      support_control_point_ids[i] = support_id;
+      support_control_point_ids[i] = support_id.Get();
       i++;
     }
 
