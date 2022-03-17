@@ -10,9 +10,11 @@ from setuptools.command.build_ext import build_ext
 
 
 class CMakeExtension(Extension):
-    def __init__(self, name, sourcedir=''):
+    def __init__(self, name, sourcedir='', cmake_args=None):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+        if cmake_args is not None:
+            self.cmake_args = cmake_args
 
 
 class CMakeBuild(build_ext):
@@ -38,6 +40,9 @@ class CMakeBuild(build_ext):
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
+
+        # runtime cmake args
+        cmake_args += ext.cmake_args
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
@@ -70,6 +75,33 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 
+# cmake args
+# TODO: prettier solution
+flags = dict(
+    have_splinelib="--have_splinelib",
+    verbose_make="--verbose_make",
+    minimal="--minimal",
+)
+cma = []
+
+if flags["have_splinelib"] not in sys.argv:
+    print("*** compiling splinelib ***")
+    cma.append("-DCOMPILE_SPLINELIB=ON")
+else:
+    print("*** NOT compiling splinelib ***")
+    sys.argv.remove(flags["have_splinelib"])
+
+if flags["verbose_make"] in sys.argv:
+    print("*** verbose make ***")
+    cma.append("-DVERBOSE_MAKE=ON")
+    sys.argv.remove(flags["verbose_make"])
+
+if flags["minimal"] in sys.argv:
+    print("*** compiling only a minimal set of splines")
+    cma += ["-DMINIMAL=ON"]
+    sys.argv.remove(flags["minimal"])
+
+
 setup(
     name='splinepy',
     version='0.1.0',
@@ -85,7 +117,7 @@ setup(
     ],
     classifiers=[
     ],
-    ext_modules=[CMakeExtension('splinepy._splinepy')],
+    ext_modules=[CMakeExtension('splinepy._splinepy', cmake_args=cma)],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )
