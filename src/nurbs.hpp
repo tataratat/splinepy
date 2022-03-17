@@ -496,144 +496,145 @@ public:
     return py::make_tuple(basis_fn, support_cp_id);
   }
 
-    void insert_knots(int p_dim, py::list knots) {
+  void insert_knots(int p_dim, py::list knots) {
 
-        if (!skip_update) {
-            update_c();
-        }
-
-        splinelib::Dimension inserting_p_dim{p_dim};
-        for (py::handle k : knots) {
-            c_nurbs.InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
-        }
-        update_p();
+    if (!skip_update) {
+      update_c();
     }
 
-    void remove_knots(int p_dim, py::list knots, double tol) {
-        /*
-         *  Nurbs::RemoveKnot returns multiplicity. 
-         *  In Debug mode, it returns -1 if you can't remove the knot or there's
-         *    nothing to remove. At the same time in Debug mode, `splinelib::Multiplicity`
-         *    is not supposed to be negative (see named_type.inc, line 25): you get an error.
-         *  In Release mode, however, you get 1 even if you can't remove the knot
-         *    or there's nothing to remove. Thus, this function will return nothing.
-         *  Use with caution. You've been warned.
-         */
-
-        if (!skip_update) {
-            update_c();
-        }
-
-        splinelib::Dimension removing_p_dim{p_dim};
-        splines::Tolerance tolerance{tol};
-
-        for (py::handle k : knots) {
-            c_nurbs.RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
-        }
-
-        update_p();
-
+    splinelib::Dimension inserting_p_dim{p_dim};
+    for (py::handle k : knots) {
+      c_nurbs.InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
     }
+
+    update_p();
+  }
+
+  void remove_knots(int p_dim, py::list knots, double tol) {
+    /*
+     * Nurbs::RemoveKnot returns multiplicity. 
+     *  In Debug mode, it returns -1 if you can't remove the knot or there's
+     *    nothing to remove. At the same time in Debug mode, `splinelib::Multiplicity`
+     *    is not supposed to be negative (see named_type.inc, line 25): you get an error.
+     *  In Release mode, however, you get 1 even if you can't remove the knot
+     *    or there's nothing to remove. Thus, this function will return nothing.
+     *  Use with caution. You've been warned.
+     */
+    if (!skip_update) {
+      update_c();
+    }
+
+    splinelib::Dimension removing_p_dim{p_dim};
+    splines::Tolerance tolerance{tol};
+
+    for (py::handle k : knots) {
+      c_nurbs.RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
+    }
+
+    update_p();
+
+  }
     
-    void elevate_degree(int p_dim) {
+  void elevate_degree(int p_dim) {
 
-        if (!skip_update) {
-            update_c();
-        }
-
-        splinelib::Dimension elevating_p_dim{p_dim};
-        c_nurbs.ElevateDegree(elevating_p_dim);
-
-        update_p();
+    if (!skip_update) {
+      update_c();
     }
 
-    bool reduce_degree(int p_dim, double tol) {
+    splinelib::Dimension elevating_p_dim{p_dim};
+    c_nurbs.ElevateDegree(elevating_p_dim);
 
-        if (!skip_update) {
-            update_c();
-        }
+    update_p();
+  }
 
-        bool reduced;
+  bool reduce_degree(int p_dim, double tol) {
 
-        splinelib::Dimension reducing_p_dim{p_dim};
-        splines::Tolerance tolerance{tol};
-        reduced = c_nurbs.ReduceDegree(reducing_p_dim, tolerance);
-
-        update_p();
-
-        return reduced;
+    if (!skip_update) {
+      update_c();
     }
 
-    py::array_t<double> sample(py::array_t<int> query_resolutions) {
+    bool reduced;
 
-        if (!skip_update) {
-            update_c();
-        }
+    splinelib::Dimension reducing_p_dim{p_dim};
+    splines::Tolerance tolerance{tol};
+    reduced = c_nurbs.ReduceDegree(reducing_p_dim, tolerance);
 
-        // Extract input array info.
-        py::buffer_info q_buf = query_resolutions.request();
-        int* q_buf_ptr = static_cast<int *>(q_buf.ptr);
+    update_p();
 
-        // Prepare results array.
-        int num_results = 1;
-        for (i = 0; i < para_dim; i++) {
-            num_results *= q_buf_ptr[i];
-        }
-        py::array_t<double> results(num_results * dim);
-        py::buffer_info r_buf = results.request();
-        double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
+    return reduced;
+  }
 
-        // Prepare NumberOfParametricCoordinates
-        //   Could be done with "Prepare results array", but easier to read this way.
-        NumberOfParametricCoordinates npc{};
-        for (i = 0; i < para_dim; i ++) {
-            npc[i] = splinelib::Length{q_buf_ptr[i]};
-        }
+  py::array_t<double> sample(py::array_t<int> query_resolutions) {
 
-        // Sample and write to `results`
-        Coordinates sampled_coordinates = c_nurbs.Sample(npc);
-        for (int i = 0; i < sampled_coordinates.size(); i++) {
-            Coordinate c = sampled_coordinates[i];
-
-            j = 0;
-            for (const auto& sc : c) {
-                r_buf_ptr[i * dim + j] = sc.Get();
-                j++;
-            }
-        }
-
-        results.resize({num_results, dim});
-
-        return results;
-
+    if (!skip_update) {
+      update_c();
     }
 
-    void write_iges(std::string fname) {
+    // Extract input array info.
+    py::buffer_info q_buf = query_resolutions.request();
+    int* q_buf_ptr = static_cast<int *>(q_buf.ptr);
 
-        input_output::iges::Write(
-            {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
-            fname
-        );
-
-    } 
-
-    void write_xml(std::string fname) {
-
-        input_output::xml::Write(
-            {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
-            fname
-        );
-
+    // Prepare results array.
+    int num_results = 1;
+    for (i = 0; i < para_dim; i++) {
+      num_results *= q_buf_ptr[i];
     }
 
-    void write_irit(std::string fname) {
+    py::array_t<double> results(num_results * dim);
+    py::buffer_info r_buf = results.request();
+    double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
 
-        input_output::irit::Write(
-            {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
-            fname
-        );
-
+    // Prepare NumberOfParametricCoordinates
+    //   Could be done with "Prepare results array", but easier to read this way.
+    NumberOfParametricCoordinates npc{};
+    for (i = 0; i < para_dim; i ++) {
+      npc[i] = splinelib::Length{q_buf_ptr[i]};
     }
+
+    // Sample and write to `results`
+    Coordinates sampled_coordinates = c_nurbs.Sample(npc);
+    for (int i = 0; i < sampled_coordinates.size(); i++) {
+      Coordinate c = sampled_coordinates[i];
+
+      j = 0;
+      for (const auto& sc : c) {
+        r_buf_ptr[i * dim + j] = sc.Get();
+        j++;
+      }
+    }
+
+    results.resize({num_results, dim});
+
+    return results;
+
+  }
+
+  void write_iges(std::string fname) {
+
+    input_output::iges::Write(
+      {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
+      fname
+    );
+
+  } 
+
+  void write_xml(std::string fname) {
+
+    input_output::xml::Write(
+      {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
+      fname
+    );
+
+  }
+
+  void write_irit(std::string fname) {
+
+    input_output::irit::Write(
+      {std::make_shared<Nurbs>(c_parameter_space, c_weighted_vector_space)},
+      fname
+    );
+
+  }
 };
 
 template<int para_dim, int dim>
