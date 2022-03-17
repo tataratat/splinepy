@@ -9,3 +9,9 @@ Python spline library with C++ backend, [SplineLib](https://github.com/SplineLib
 
 `python`:
 - numpy
+
+## Setup
+
+```
+git submodule update --init
+```
