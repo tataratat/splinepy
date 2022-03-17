@@ -20,6 +20,9 @@
 #include <Sources/InputOutput/vtk.hpp>
 #include <Sources/InputOutput/irit.hpp>
 
+// Local
+#include <splinelib_ext/nurbspl.hpp>
+
 namespace py = pybind11;
 
 using namespace splinelib::sources;
@@ -27,36 +30,37 @@ using namespace splinelib::sources;
 template<int para_dim, int dim>
 struct PyNurbs {
 
-    using Nurbs = splines::Nurbs<para_dim, dim>;
+  //using Nurbs = splines::Nurbs<para_dim, dim>;
+  using Nurbs = Nurbs<para_dim, dim>;
 
-    // For writing cpp splines
-    using ParameterSpace = typename Nurbs::ParameterSpace_;
-    using WeightedVectorSpace = typename Nurbs::WeightedVectorSpace_;
-    using Coordinates = typename WeightedVectorSpace::Coordinates_;
-    using Weights = typename WeightedVectorSpace::Weights_;
-    using Weight = typename splinelib::Weight;
-    using Degrees = typename ParameterSpace::Degrees_;
-    using KnotVectors = typename ParameterSpace::KnotVectors_;
-    using Coordinate = typename Coordinates::value_type;
-    using Degree = typename Degrees::value_type;
-    using KnotVector = typename KnotVectors::value_type::element_type;
-    using Knots = typename KnotVector::Knots_;
-    using ScalarCoordinate = typename Coordinate::value_type;
-    using Knot = typename Knots::value_type;
-    using KnotB = typename Nurbs::Knot_;
-    using ParametricCoordinate = typename Nurbs::ParametricCoordinate_;
-    using ScalarParametricCoordinate = typename ParametricCoordinate::value_type;
-    using Derivative = typename Nurbs::Derivative_;
-    using NumberOfParametricCoordinates = typename ParameterSpace::NumberOfParametricCoordinates_;
+  // For writing cpp splines
+  using ParameterSpace = typename Nurbs::ParameterSpace_;
+  using WeightedVectorSpace = typename Nurbs::WeightedVectorSpace_;
+  using Coordinates = typename WeightedVectorSpace::Coordinates_;
+  using Weights = typename WeightedVectorSpace::Weights_;
+  using Weight = typename splinelib::Weight;
+  using Degrees = typename ParameterSpace::Degrees_;
+  using KnotVectors = typename ParameterSpace::KnotVectors_;
+  using Coordinate = typename Coordinates::value_type;
+  using Degree = typename Degrees::value_type;
+  using KnotVector = typename KnotVectors::value_type::element_type;
+  using Knots = typename KnotVector::Knots_;
+  using ScalarCoordinate = typename Coordinate::value_type;
+  using Knot = typename Knots::value_type;
+  using KnotB = typename Nurbs::Knot_;
+  using ParametricCoordinate = typename Nurbs::ParametricCoordinate_;
+  using ScalarParametricCoordinate = typename ParametricCoordinate::value_type;
+  using Derivative = typename Nurbs::Derivative_;
+  using NumberOfParametricCoordinates = typename ParameterSpace::NumberOfParametricCoordinates_;
 
-    // For reading cpp splines
-    using OutputInformation = typename Nurbs::OutputInformation_;
-    using OutputParameterSpace = typename std::tuple_element_t<0, OutputInformation>;
-    using OutputWeightedVectorSpace = typename std::tuple_element_t<1, OutputInformation>;
-    using OutputKnotVectors = typename std::tuple_element_t<0, OutputParameterSpace>;
-    using OutputCoordinates = typename std::tuple_element_t<0, OutputWeightedVectorSpace>;
-    using OutputWeights = typename std::tuple_element_t<1, OutputWeightedVectorSpace>;
-    using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
+  // For reading cpp splines
+  using OutputInformation = typename Nurbs::OutputInformation_;
+  using OutputParameterSpace = typename std::tuple_element_t<0, OutputInformation>;
+  using OutputWeightedVectorSpace = typename std::tuple_element_t<1, OutputInformation>;
+  using OutputKnotVectors = typename std::tuple_element_t<0, OutputParameterSpace>;
+  using OutputCoordinates = typename std::tuple_element_t<0, OutputWeightedVectorSpace>;
+  using OutputWeights = typename std::tuple_element_t<1, OutputWeightedVectorSpace>;
+  using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
 
     // Counters
     int i = 0;
