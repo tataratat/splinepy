@@ -750,24 +750,6 @@ class Spline(abc.ABC):
         logging.debug(
             f"Spline - Tried to remove {len(knots)} knot(s)."
         )
-
-        if min(knots) < min(self.knot_vectors[parametric_dimension]):
-            raise ValueError(
-                "One of the query knots not in valid knot range. (Too small)"
-            )
-
-        total_knots_before = len(self.knot_vectors[int(parametric_dimension)])
-        self._c_spline.remove_knots(
-            int(parametric_dimension),
-            knots,
-            tolerance,
-        )
-
-        self._update_p()
-
-        logging.debug(
-            f"Spline - Tried to remove {len(knots)} knot(s)."
-        )
         logging.debug(
             "Spline - Actually removed {nk} knot(s).".format(
                 nk=(
