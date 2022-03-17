@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     n = b.nurbs
     # edit a weight so that the values aren't the same
-    n.weights[0, 0] = .5 # weight is a tall array
+    n.weights[0, 0] = .5 # this is a tall array
 
     # queries
     q = [
