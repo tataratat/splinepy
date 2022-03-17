@@ -23,16 +23,11 @@ public:
   using VectorSpace_ = typename WeightedVectorSpace_::Base_; // <dim + 1>
 
   // Some private ones. Here we make it public
-  //using BezierInformation_ =
-  //    typename Base_::ParameterSpace_::BezierInformation_;
-  //using BinomialRatios_ = typename Base_::ParameterSpace_::BinomialRatios_;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
   using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
   using Knots_ = typename Base_::Base_::Knots_;
-  //using BinomialRatio_ = typename Base_::BinomialRatios_::value_type;
-  //using KnotRatio_ = typename KnotRatios_::value_type;
   using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
 
   // Constructor
