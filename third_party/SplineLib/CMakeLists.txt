@@ -36,7 +36,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(OPTIMIZATION_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3 -march=native>)
+    set(OPTIMIZATION_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3 -march=native -Ofast>)
     set(PARALLELIZATION_FLAGS)
     set(RUNTIME_CHECKS_DEBUG)
     set(WARNING_FLAGS -Wall -Wextra -Wmost -Wextra -Wpedantic -Wunreachable-code -Wshadow -Wfloat-equal -Weffc++
