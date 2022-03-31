@@ -104,20 +104,30 @@ if flags["minimal"] in sys.argv:
 
 setup(
     name='splinepy',
-    version='0.1.0',
+    version='0.0.0',
     author='Jaewook Lee',
     author_email='jlee@ilsb.tuwien.ac.at',
     description='Python NURBS & BSpline library with C++ Backend.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/j042/splinepy",
+    url="https://github.com/tataratat/splinepy",
     packages=[
         "splinepy",
         "splinepy.io",
     ],
     classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Natural Language :: English',
+        'Topic :: Scientific/Engineering',
     ],
     ext_modules=[CMakeExtension('splinepy._splinepy', cmake_args=cma)],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
+    license="MIT",
 )
