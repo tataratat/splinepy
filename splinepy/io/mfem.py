@@ -327,7 +327,7 @@ def write_mfem(fname, nurbs, precision=10):
         "#",
         "# SEGMENT = 1",
         "# SQUARE  = 3",
-        "# CUBE    = 3",
+        "# CUBE    = 5",
         "#",
         "",
     )
@@ -429,16 +429,18 @@ def write_mfem(fname, nurbs, precision=10):
         formatter=dict(float_kind=lambda x: f"{x:.{precision}f}")
     ):
         # weights - string operation
-        weights_sec = str(nurbs.weights.flatten()[reorder_ids]) # flat, reorder
+        weights_sec = str(nurbs.weights.flatten()[reorder_ids].tolist())
         weights_sec = weights_sec[1:-1] # remove []
         weights_sec = weights_sec.replace("\n", "") # remove \n
+        weights_sec = weights_sec.replace(",", "") # remove ,
         weights_sec = weights_sec.replace(" ", "\n") # add \n
         weights_sec = "weights\n" + weights_sec # add title
         weights_sec += "\n\n" # empty line 
 
         # cps
-        cps_sec = str(nurbs.control_points[reorder_ids])
+        cps_sec = str(nurbs.control_points[reorder_ids].tolist())
         cps_sec = cps_sec.replace("[", "") # remove [
+        cps_sec = cps_sec.replace(",", "") # remove ,
         cps_sec = cps_sec.replace("\n", "") # remove \n
         cps_sec = cps_sec.replace("]", "\n") # replace ] with \n
 
