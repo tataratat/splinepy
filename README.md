@@ -8,7 +8,7 @@ Option 1: `pip`
 pip install splinepy
 ```
 
-Option 2: `setup.py`
+Option 2: `setup.py`  
 You can locally compile and install using `setup.py`.
 This requires C++20 (C++17 for release mode) compatible C++ compiler
 and cmake version 3.16 or higher.
