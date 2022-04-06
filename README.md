@@ -1,5 +1,5 @@
 # splinepy
-Python BSpline and library with C++ backend, [SplineLib](https://github.com/SplineLib/SplineLib).
+Python BSpline and NURBS library with C++ backend, [SplineLib](https://github.com/SplineLib/SplineLib).
 
 
 ## Install-guide
