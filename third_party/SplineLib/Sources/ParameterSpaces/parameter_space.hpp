@@ -143,7 +143,7 @@ class ParameterSpace {
       ParametricCoordinate const &parametric_coordinate, Tolerance const &tolerance = kEpsilon) const;
 #endif
 
- protected:
+// protected:
   KnotVectors_ knot_vectors_;
   Degrees_ degrees_;
   BSplineBasisFunctions_ basis_functions_;
