@@ -33,8 +33,7 @@ using namespace splinelib::sources;
 template<int para_dim, int dim>
 class PyBSpline {
 public:
-  //using BSpline = splines::BSpline<para_dim, dim>;
-  using BSpline = BSpline<para_dim, dim>;
+  using BSpline = BSplineExt<para_dim, dim>;
 
   // For writing cpp splines
   using ParameterSpace = typename BSpline::ParameterSpace_;
@@ -55,24 +54,6 @@ public:
   using Derivative = typename BSpline::Derivative_;
   using NumberOfParametricCoordinates =
       typename ParameterSpace::NumberOfParametricCoordinates_;
-
-  // For reading cpp splines
-  using OutputInformation = typename BSpline::OutputInformation_;
-  using OutputParameterSpace =
-      typename std::tuple_element_t<0, OutputInformation>;
-  using OutputVectorSpace =
-      typename std::tuple_element_t<1, OutputInformation>;
-  using OutputKnotVectors =
-      typename std::tuple_element_t<0, OutputParameterSpace>;
-  using OutputCoordinates =
-      typename std::tuple_element_t<0, OutputVectorSpace>;
-  using OutputDegrees =
-      typename std::tuple_element_t<1, OutputParameterSpace>;
-
-  // For some further functionalities, for example, FIE
-  //using Index = typename BSpline::Base_::Index_;
-  //using IndexLength = typename Index::Length_;
-  //using IndexValue = typename Index::Value_;
 
   // Counters
   int i = 0;
@@ -164,67 +145,29 @@ public:
     c_vector_space = std::make_shared<VectorSpace>(c_control_points);
 
     // Now, (re)initialize BSpline  
-    c_bspline = BSpline{c_parameter_space, c_vector_space}; 
+    c_bspline = BSpline{c_parameter_space, c_vector_space};
   }
 
   // Pass cpp object values to python.
   void update_p() {
 
-    // Read from spline
-    OutputInformation const &c_infos = c_bspline.Write();
-
-    // Parameter space - knot vectors, degrees
-    OutputParameterSpace const &parameter_space = std::get<0>(c_infos);
-    OutputKnotVectors const &knot_vectors = std::get<0>(parameter_space);
-    OutputDegrees const &degrees = std::get<1>(parameter_space);
-
-    // Vector space - Coordinates(control points)
-    OutputVectorSpace const &vector_space = std::get<1>(c_infos);
-    OutputCoordinates const &coordinates = std::get<0>(vector_space);
-
     // Unpack - knot vectors
-    p_knot_vectors.attr("clear")();
-    for (auto& knotvector : knot_vectors) {
-      py::list p_kv;
-      for (auto& knot : knotvector) {
-        p_kv.append(
-            utilities::string_operations::ConvertToNumber<double>(knot)
-        );
-      }
-      p_knot_vectors.append(p_kv);
-    }
+    c_bspline.UpdateKnotVectors(p_knot_vectors);
 
     // Unpack - degrees
     // Edit existing array, since it never changes in size.
     p_degrees.resize({para_dim}); // inplace "flatten"
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
-
-    i = 0;
-    for (auto& degree : degrees) {
-      ds_buf_ptr[i] =
-          utilities::string_operations::ConvertToNumber<int>(degree);
-      i++;
-    }
+    c_bspline.UpdateDegrees(ds_buf_ptr);
 
     // Unpack - Coordinates (control points)
-    p_control_points = py::array_t<double>(coordinates.size() * dim);
+    int numcps = c_bspline.GetNCps();
+    p_control_points = py::array_t<double>(numcps * dim);
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
-
-    i = 0;
-    for (auto& coordinate : coordinates) {
-      j = 0;
-      for (auto& coord : coordinate) {
-        cps_buf_ptr[i * dim + j] =
-            utilities::string_operations::ConvertToNumber<double>(coord);
-        j++;
-      }
-      i++;
-    }
-
-    p_control_points.resize({(int) coordinates.size(), dim});
-
+    c_bspline.UpdateControlPoints(cps_buf_ptr);
+    p_control_points.resize({numcps, dim});
   }
 
   // Evaluate.

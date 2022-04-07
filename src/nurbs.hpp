@@ -30,8 +30,7 @@ using namespace splinelib::sources;
 template<int para_dim, int dim>
 class PyNurbs {
 public:
-
-  using Nurbs = Nurbs<para_dim, dim>;
+  using Nurbs = NurbsExt<para_dim, dim>;
 
   // For writing cpp splines
   using ParameterSpace = typename Nurbs::ParameterSpace_;
@@ -53,20 +52,6 @@ public:
   using Derivative = typename Nurbs::Derivative_;
   using NumberOfParametricCoordinates =
       typename ParameterSpace::NumberOfParametricCoordinates_;
-
-  // For reading cpp splines
-  using OutputInformation = typename Nurbs::OutputInformation_;
-  using OutputParameterSpace =
-      typename std::tuple_element_t<0, OutputInformation>;
-  using OutputWeightedVectorSpace =
-      typename std::tuple_element_t<1, OutputInformation>;
-  using OutputKnotVectors =
-      typename std::tuple_element_t<0, OutputParameterSpace>;
-  using OutputCoordinates =
-      typename std::tuple_element_t<0, OutputWeightedVectorSpace>;
-  using OutputWeights =
-      typename std::tuple_element_t<1, OutputWeightedVectorSpace>;
-  using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
 
   // Counters
   int i = 0;
@@ -183,69 +168,30 @@ public:
   // Pass cpp object values to python.
   void update_p() {
 
-    // Read from spline
-    OutputInformation const &c_infos = c_nurbs.Write();
-
-    // Parameter space - knot vectors, degrees
-    OutputParameterSpace const &parameter_space = std::get<0>(c_infos);
-    OutputKnotVectors const &knot_vectors = std::get<0>(parameter_space);
-    OutputDegrees const &degrees = std::get<1>(parameter_space);
-    // Weighted Vector space - coordinates(control points), weights
-    OutputWeightedVectorSpace const &weighted_vector_space = std::get<1>(c_infos);
-    OutputCoordinates const &coordinates = std::get<0>(weighted_vector_space);
-    OutputWeights const &weights = std::get<1>(weighted_vector_space);
-    // Unpack - knot vectors
-    p_knot_vectors.attr("clear")();
-    for (auto& knotvector : knot_vectors) {
-      py::list p_kv;
-      for (auto& knot : knotvector) {
-        p_kv.append(
-            utilities::string_operations::ConvertToNumber<double>(knot)
-        );
-      }
-      p_knot_vectors.append(p_kv);
-    }
-    // Unpack - degrees
-    p_degrees.resize({para_dim}); // inplace "flatten"
+    // ds
+    p_degrees.resize({para_dim});
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
-    i = 0;
-    for (auto& degree : degrees) {
-      ds_buf_ptr[i] =
-          utilities::string_operations::ConvertToNumber<int>(degree);
-      i++;
-    }
+    c_nurbs.UpdateDegrees(ds_buf_ptr);
 
-    // Unpack - Coordinates (control points)
-    p_control_points = py::array_t<double>(coordinates.size() * dim);
+    // kvs
+    c_nurbs.UpdateKnotVectors(p_knot_vectors);
+
+    // cps & ws
+    int numcps = c_nurbs.GetNCps();
+
+    p_control_points = py::array_t<double>(numcps * dim);
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
 
-    i = 0;
-    for (auto& coordinate : coordinates) {
-      j = 0;
-      for (auto& coord : coordinate) {
-        cps_buf_ptr[i * dim + j] =
-            utilities::string_operations::ConvertToNumber<double>(coord);
-        j++;
-      }
-      i++;
-    }
-
-    p_control_points.resize({(int) coordinates.size(), dim});
-    // Unpack - Weights 
-    p_weights = py::array_t<double>(weights.size());
+    p_weights = py::array_t<double>(numcps * dim);
     py::buffer_info ws_buf = p_weights.request();
     double* ws_buf_ptr = static_cast<double *>(ws_buf.ptr);
-    i = 0;
-    for (auto& weight : weights) {
-      ws_buf_ptr[i] =
-          utilities::string_operations::ConvertToNumber<double>(weight);
-      i++;
-    }
 
-    p_weights.resize({(int) weights.size(), 1}); // A tall array
+    c_nurbs.UpdateControlPointsAndWeights(cps_buf_ptr, ws_buf_ptr);
 
+    p_control_points.resize({numcps, dim});
+    p_weights.resize({numcps, 1});
   }
 
   // Evaluate.

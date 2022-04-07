@@ -6,8 +6,10 @@
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
+namespace py = pybind11;
+
 template<int para_dim, int dim>
-class Nurbs : public splinelib::sources::splines::Nurbs<para_dim, dim> {
+class NurbsExt : public splinelib::sources::splines::Nurbs<para_dim, dim> {
 public:
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
   using Coordinate_ = typename Base_::Coordinate_;
@@ -32,6 +34,58 @@ public:
 
   // Constructor
   using Base_::Base_;
+
+  // update degrees since its size never changes
+  void UpdateDegrees(int* ds_buf_ptr) {
+
+    ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
+    for (int i = 0; i < para_dim; i++) {
+      ds_buf_ptr[i] = parameter_space.degrees_[i].Get();
+    }
+  }
+
+  // update current knot vectors to python
+  // since list is mutable, update works
+  void UpdateKnotVectors(py::list &p_knot_vectors) {
+
+    // start clean
+    p_knot_vectors.attr("clear")();
+
+    ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
+    for (auto& knotvector : parameter_space.knot_vectors_) {
+      auto const &kv = *knotvector; // in
+      py::list p_kv; // out
+      for (int i = 0; i < kv.GetSize(); i++) {
+        auto const &knot = kv[splinelib::Index{i}];
+        p_kv.append(knot.Get());
+      }
+      p_knot_vectors.append(p_kv);
+    }
+
+  }
+
+  int GetNCps() {
+    VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
+    return vector_space.GetNumberOfCoordinates();
+  }
+
+  // Update cps and weights at the same time since they belong together in
+  // weightedvectorspace
+  void UpdateControlPointsAndWeights(double* cps_buf_ptr,
+                                     double* ws_buf_ptr) {
+    VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
+    int numcps = vector_space.GetNumberOfCoordinates();
+
+    // fill it up, phil!
+    for (int i = 0; i < numcps; i++) {
+      auto const &coord_named_phil = vector_space[splinelib::Index{i}];
+      for (int j = 0; j < dim; j++) {
+        cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
+      }
+      ws_buf_ptr[i * dim + dim] = coord_named_phil[dim].Get();
+    }
+
+  }
 
   // Computes (degree + 1) X ...
   void BasisFunctionsAndIDs(ParametricCoordinate_ const &parametric_coordinate,
