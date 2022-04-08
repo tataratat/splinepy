@@ -1,4 +1,5 @@
 from splinepy import _splinepy as _s
+from splinepy._version import __version__
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
 from splinepy._spline import Spline
