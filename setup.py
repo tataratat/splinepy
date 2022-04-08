@@ -9,6 +9,10 @@ from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
 
 
+with open("splinepy/_version.py") as f:
+    version = eval(f.read().strip().split("=")[-1])
+
+
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir='', cmake_args=None):
         Extension.__init__(self, name, sources=[])
@@ -104,7 +108,7 @@ if flags["minimal"] in sys.argv:
 
 setup(
     name='splinepy',
-    version='0.0.0',
+    version=version,
     author='Jaewook Lee',
     author_email='jlee@ilsb.tuwien.ac.at',
     description='Python NURBS & BSpline library with C++ Backend.',

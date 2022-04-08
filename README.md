@@ -5,6 +5,7 @@ Python BSpline and NURBS library with C++ backend, [SplineLib](https://github.co
 ## Install-guide
 Option 1: `pip`
 ```
+pip install --upgrade pip
 pip install splinepy
 ```
 
