@@ -1,6 +1,6 @@
 # spline sources
 if(MINIMAL)
-    set(SRCS python/minimal.cpp python/bezier1.cpp)
+    set(SRCS python/minimal.cpp)
     set(DEFS _MINIMAL_)
 
 else()

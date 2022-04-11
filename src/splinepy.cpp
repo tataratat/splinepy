@@ -38,7 +38,6 @@ void init_reader(py::module_ &);
 PYBIND11_MODULE(_splinepy, m) {
 
 #ifdef _MINIMAL_
-  init_bezier1(m);
   init_minimal(m);
 #else
   init_bezier1(m);
