@@ -83,3 +83,13 @@ class Bezier(Spline):
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
         )
+
+    def copy(self):
+        """
+        """
+        pass
+
+    def todict(sef):
+        """
+        """
+        pass
