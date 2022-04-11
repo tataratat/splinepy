@@ -65,7 +65,11 @@ class Spline(abc.ABC):
         None
         """
         self.degrees = degrees
-        self.knot_vectors = knot_vectors
+
+        # Bezier has no kvs
+        if knot_vectors is not None:
+            self.knot_vectors = knot_vectors
+
         self.control_points = control_points
 
         # Only for NURBS
