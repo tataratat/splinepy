@@ -1,11 +1,12 @@
 # spline sources
 if(MINIMAL)
-    set(SRCS python/minimal.cpp)
+    set(SRCS python/minimal.cpp python/bezier1.cpp)
     set(DEFS _MINIMAL_)
 
 else()
     set(
         SRCS
+            python/bezier1.cpp
             python/bspline1.cpp
             python/bspline2.cpp
             python/bspline3.cpp
@@ -56,6 +57,9 @@ else()
     add_library(splines ALIAS SplineLib::splines)
     add_library(input_output ALIAS SplineLib::input_output)
 endif()
+
+# Link bezierManipulation
+target_link_libraries(_splinepy PRIVATE bezierManipulation)
 
 # Link Fitting
 add_subdirectory(fitting)
