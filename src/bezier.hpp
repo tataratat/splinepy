@@ -49,12 +49,14 @@ public:
     // update degrees
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int *>(ds_buf.ptr);
+
     for (int i = 0; i < para_dim; i++) {
       c_degrees[i] = ds_buf_ptr[i];
     }
-
     // (re)init
     c_bezier = std::move(Bezier<para_dim, dim>{c_degrees});
+
+    //c_bezier.UpdateDegrees(c_degrees);
 
     // update cps
     py::buffer_info cps_buf = p_control_points.request();
@@ -76,8 +78,9 @@ public:
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
 
     // update degrees
+    auto const& c_ds = c_bezier.GetDegrees();
     for (int i = 0; i < para_dim; i++) {
-      ds_buf_ptr[i] = c_bezier.degrees[i];
+      ds_buf_ptr[i] = c_ds[i];
     }
 
     // update control_points
@@ -89,7 +92,15 @@ public:
 
   }
 
+  void update_unless_skip() {
+    if(!skip_update) {
+      update_c();
+    }
+  }
+
   py::array_t<double> evaluate(py::array_t<double> queries) {
+    update_unless_skip();
+
     py::buffer_info q_buf = queries.request();
     double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
 
@@ -114,7 +125,9 @@ public:
     return results;
   }
 
-  py::array_t<double> slow_evaluate(py::array_t<double> queries) {
+  py::array_t<double> classique_evaluate(py::array_t<double> queries) {
+    update_unless_skip();
+
     py::buffer_info q_buf = queries.request();
     double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
 
@@ -140,6 +153,8 @@ public:
   }
 
   void elevate_degree(int p_dim) {
+    update_unless_skip();
+
     c_bezier.OrderElevateAlongParametricDimension(
         static_cast<std::size_t>(p_dim)
     );
@@ -172,8 +187,8 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("evaluate",
                  &PyBezier<para_dim, dim>::evaluate,
                  py::arg("queries"))
-        .def("slow_evaluate",
-                 &PyBezier<para_dim, dim>::slow_evaluate,
+        .def("classique_evaluate",
+                 &PyBezier<para_dim, dim>::classique_evaluate,
                  py::arg("queries"))
         .def("elevate_degree",
                  &PyBezier<para_dim, dim>::elevate_degree,
