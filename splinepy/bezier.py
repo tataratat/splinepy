@@ -84,6 +84,67 @@ class Bezier(Spline):
             "now identical."
         )
 
+    def classique_evaluate(self, queries, n_threads=1):
+        """
+        Evaluates spline, classique way.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) list-like
+
+        Returns
+        --------
+        results: (n, dim) np.ndarray
+        """
+        if self.whatami == "Nothing":
+            return None
+
+        queries = utils.make_c_contiguous(queries, dtype="float64")
+
+        if queries.shape[1] != self.para_dim:
+            raise InputDimensionError(
+                "`queries` does not match current pametric dimension."
+            )
+
+        logging.debug("Spline - Evaluating spline...")
+
+        return self._c_spline.classique_evaluate(queries=queries)
+
+
+    def sample(self, resolution):
+        """
+        Overwrites basic sample routine by explicitly giving sampling location.
+
+        Parameters
+        -----------
+        resolution: int or list
+
+        Returns
+        --------
+        sampled: (prod(resolution), dim) np.ndarray
+        """
+        if isinstance(resolution, int):
+            resolution = [resolution for _ in range(self.para_dim)]
+
+        elif isinstance(resolution, (list or np.ndarray)):
+            if len(resolution) != self.para_dim:
+                raise ValueError(
+                    "Invalid resolution length. Should match para_dim"
+                )
+
+        else:
+            raise TypeError("resolution only accept list, np.ndarray or int.")
+
+        q = utils.raster_points(
+            [
+                [0. for _ in range(self.para_dim)],
+                [1. for _ in range(self.para_dim)],
+            ],
+            resolution 
+        )
+
+        return self.evaluate(q)
+
     def copy(self):
         """
         """
