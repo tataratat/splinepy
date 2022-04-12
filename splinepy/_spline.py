@@ -484,12 +484,14 @@ class Spline(abc.ABC):
         control_mesh_resolutions: list
         """
         cmr = []
-        #for i in range(self.para_dim):
-        #    cmr.append(
-        #        len(self.knot_vectors[i]) - self.degrees[i] - 1
-        #    )
-        for kv, d in zip(self.knot_vectors, self.degrees):
-            cmr.append(len(kv) - d - 1)
+
+        # allow bezier
+        if self.whatami.startswith("Bezier"):
+            for kv, d in zip(self.knot_vectors, self.degrees):
+                cmr.append(len(kv) - d - 1)
+
+        else:
+            cmr = (self.degrees + 1).tolist()
 
         return cmr
 
