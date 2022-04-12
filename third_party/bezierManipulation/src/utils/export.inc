@@ -32,7 +32,7 @@ void Export::format2IRITfile(
   // Write different degrees
   for (std::size_t i{}; i < parametric_dimension; i++) {
     // IRIT expexts order not degrees
-    export_file << spline.degrees[i] + 1 << " ";
+    export_file << spline.GetDegrees()[i] + 1 << " ";
   }
 
   // Point Type
@@ -68,10 +68,10 @@ void Export::format2JSONfile(
               << "\"ParametricDimension\" : " << parametric_dimension << ",\n";
 
   // Write degrees
-  export_file << indentation << "\"Degrees\" : [" << spline.degrees[0];
+  export_file << indentation << "\"Degrees\" : [" << spline.GetDegrees()[0];
   for (std::size_t i{1}; i < parametric_dimension; i++) {
     // IRIT expexts order not degrees
-    export_file << ", " << spline.degrees[i];
+    export_file << ", " << spline.GetDegrees()[i];
   }
   export_file << "],\n";
 
@@ -139,7 +139,7 @@ void Export::format2XMLfile(
   export_file << indentation << "<deg>\n" << indentation << indentation;
   for (std::size_t i_par_dim{};
        i_par_dim < BezierSplineType::kParametricDimensions; i_par_dim++) {
-    export_file << spline.degrees[i_par_dim]
+    export_file << spline.GetDegrees()[i_par_dim]
                 << indentation;  // Add \n if required
   }
   export_file << "\n" << indentation << "</deg>\n";
@@ -151,10 +151,10 @@ void Export::format2XMLfile(
     export_file << indentation << indentation << "<kntVec>\n"
                 << indentation << indentation;
     // Write All Control Points
-    for (std::size_t i_point{0}; i_point < 2 * spline.degrees[i_par_dim] + 2;
+    for (std::size_t i_point{0}; i_point < 2 * spline.GetDegrees()[i_par_dim] + 2;
          i_point++) {
       export_file << indentation
-                  << (i_point < (spline.degrees[i_par_dim] + 1) ? "0." : "1.");
+                  << (i_point < (spline.GetDegrees()[i_par_dim] + 1) ? "0." : "1.");
     }
     export_file << "\n" << indentation << indentation << "</kntVec>\n";
   }

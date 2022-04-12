@@ -45,11 +45,12 @@ class BezierSpline {
                        parametric_dimension>& factors,
       const ScalarType& factor_product, const Indices&... indices) const;
 
+  /// Polynomial degrees
+  std::array<IndexingType, parametric_dimension> degrees{};
+
  public:
   using ScalarType_ = ScalarType;
 
-  /// Polynomial degrees
-  std::array<IndexingType, parametric_dimension> degrees{};
   /// Offsets in Row based control point storage
   std::array<IndexingType, parametric_dimension> index_offsets{};
   /// Number of control points
@@ -119,6 +120,26 @@ class BezierSpline {
   /// Move operator
   constexpr BezierSpline& operator=(const BezierSpline& rhs) = default;
 
+  /// Getter for Degrees
+  constexpr const std::array<std::size_t, parametric_dimension>& GetDegrees()
+      const {
+    return degrees;
+  }
+
+  /// Getter for Degrees
+  constexpr std::array<std::size_t, parametric_dimension> GetDegrees() {
+    return degrees;
+  }
+
+  /// Set Degrees
+  constexpr void UpdateDegrees(const std::array<std::size_t, parametric_dimension>& new_degrees){
+    degrees = new_degrees;
+    for (unsigned int i{}; i < parametric_dimension; i++)
+      NumberOfControlPoints *= degrees[i] + 1;
+    control_points.resize(NumberOfControlPoints);
+    UpdateIndexOffsets_();
+  }
+
   /// Retrieve single control point from local indices
   template <typename... T>
   constexpr const PointTypePhysical_& ControlPoint(const T... index) const;
@@ -146,7 +167,7 @@ class BezierSpline {
   /// Evaluate the spline using the de Casteljau algorithm
   template <typename... T>
   constexpr PointTypePhysical_ Evaluate(const T&... par_coords) const {
-    return (*this).Evaluate(PointTypeParametric_{par_coords...});
+    return Evaluate(PointTypeParametric_{par_coords...});
   }
 
   /// Evaluate the spline via the deCasteljau algorithm
@@ -157,10 +178,10 @@ class BezierSpline {
   constexpr PointTypePhysical_ ForwardEvaluate(
       const PointTypeParametric_& par_coords) const;
 
-  /// Evaluate the spline using the de Casteljau algorithm
+  /// Evaluate the spline using explicit precomputation of bernstein values
   template <typename... T>
   constexpr PointTypePhysical_ ForwardEvaluate(const T&... par_coords) const {
-    return (*this).ForwardEvaluate(PointTypeParametric_{par_coords...});
+    return ForwardEvaluate(PointTypeParametric_{par_coords...});
   }
 
   /// Addition of Two Splines resulting in a new spline that describes the

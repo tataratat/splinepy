@@ -35,8 +35,8 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::
   // Some constant indices and degrees
   const int depth = sizeof...(indices);
   const int k = ctpsIndex[depth];
-  const int m = P_spline.degrees[depth];
-  const int n = Q_spline.degrees[depth];
+  const int m = P_spline.GetDegrees()[depth];
+  const int n = Q_spline.GetDegrees()[depth];
 
   // Loop over current parametric domain
   for (int i{std::max(0, k - n)}; i <= std::min(k, m); i++) {
@@ -330,7 +330,7 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::
       evaluation_point += factor_product * factors[c_par_dim][i_ctps] *
                           ControlPoint(indices..., i_ctps);
     } else {
-      evaluation_point += AddUpContributionsToControlPointVector_(
+      AddUpContributionsToControlPointVector_(
           evaluation_point, factors,
           factors[c_par_dim][i_ctps] * factor_product, indices..., i_ctps);
     }
@@ -346,7 +346,7 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::operator==(
     const BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>&
         rhs) const {
   // Check if degrees fit and if control_points are the same
-  if (rhs.degrees == degrees) {
+  if (rhs.GetDegrees() == degrees) {
     return rhs.control_points == control_points;
   } else {
     return false;
@@ -449,13 +449,13 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::operator+(
   bool rhs_needs_copy = false;
   for (IndexingType par_dim{0}; par_dim < parametric_dimension; par_dim++) {
     rhs_needs_copy =
-        rhs_needs_copy || (degrees[par_dim] > rhs.degrees[par_dim]);
+        rhs_needs_copy || (degrees[par_dim] > rhs.GetDegrees()[par_dim]);
   }
 
   // Increase the order of the copied spline to be greater or equal to the
   // RHSs order
   for (IndexingType par_dim{0}; par_dim < parametric_dimension; par_dim++) {
-    while (rhs.degrees[par_dim] > return_spline.degrees[par_dim]) {
+    while (rhs.GetDegrees()[par_dim] > return_spline.GetDegrees()[par_dim]) {
       return_spline.OrderElevateAlongParametricDimension(par_dim);
     }
   }
@@ -479,13 +479,13 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::operator+=(
   // Increase the order of (*this) spline to be greater or equal to the
   // RHSs order
   for (IndexingType par_dim{0}; par_dim < parametric_dimension; par_dim++) {
-    while (rhs.degrees[par_dim] > degrees[par_dim]) {
+    while (rhs.GetDegrees()[par_dim] > degrees[par_dim]) {
       OrderElevateAlongParametricDimension(par_dim);
     }
   }
   // Do the same thing to the rhs
   for (IndexingType par_dim{0}; par_dim < parametric_dimension; par_dim++) {
-    while (rhs.degrees[par_dim] < degrees[par_dim]) {
+    while (rhs.GetDegrees()[par_dim] < degrees[par_dim]) {
       rhs.OrderElevateAlongParametricDimension(par_dim);
     }
   }
@@ -630,7 +630,7 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::operator*(
   std::array<IndexingType, parametric_dimension> product_degrees;
   for (IndexingType param_dim{}; param_dim < parametric_dimension;
        param_dim++) {
-    product_degrees[param_dim] = degrees[param_dim] + rhs.degrees[param_dim];
+    product_degrees[param_dim] = degrees[param_dim] + rhs.GetDegrees()[param_dim];
   }
 
   // Initialize the return type
@@ -666,7 +666,7 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::Compose(
           inner_function.FitsIntoUnitCube()));
   // New degrees
   std::array<IndexingType, parametric_dimension_inner_spline> new_degrees{
-      inner_function.degrees};
+      inner_function.GetDegrees()};
   for (IndexingType i{}; i < parametric_dimension_inner_spline; i++)
     new_degrees[i] *= sum_of_degrees_outer_spline;
 
