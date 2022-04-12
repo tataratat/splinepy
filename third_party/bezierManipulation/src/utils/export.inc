@@ -78,7 +78,7 @@ void Export::format2JSONfile(
   // Write All Control Points
   export_file << indentation << "\"ControlPoints\" : [\n"
               << indentation << "  " << spline.control_points[0];
-  for (std::size_t i_point{0}; i_point < spline.NumberOfControlPoints;
+  for (std::size_t i_point{1}; i_point < spline.NumberOfControlPoints;
        i_point++) {
     export_file << ",\n"
                 << indentation << "  " << spline.control_points[i_point];
