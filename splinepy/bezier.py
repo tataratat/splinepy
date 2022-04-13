@@ -79,6 +79,9 @@ class Bezier(Spline):
         # and it causes us to lose array references.
         self._degrees = self._c_spline.degrees
         self._control_points = self._c_spline.control_points
+        self._dim = self._c_spline.control_points.shape[1]
+        self._para_dim = self._c_spline.degrees.shape[0]
+
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
@@ -171,18 +174,21 @@ class Bezier(Spline):
       elif isinstance(factor, type(self)):
           if len(factor.degrees) == len(self._degrees):
               if factor.dim == self.dim:
-                  result = self._c_spline.multiply_with_spline(factor._c_spline)
+                  result_c_spline = self._c_spline.multiply_with_spline(
+                                           factor._c_spline)
               elif factor.dim == 1:
-                  result = self._c_spline.multiply_with_scalar_spline(factor._c_spline)
+                  result_c_spline = self._c_spline.multiply_with_scalar_spline(
+                                           factor._c_spline)
               elif self.dim == 1:
-                  result = factor._c_spline.multiply_with_scalar_spline(self._c_spline)
+                  result_c_spline = factor._c_spline.\
+                                   multiply_with_scalar_spline(self._c_spline)
               else:
                 raise NotImplementedError()
               # Copy the c spline to the python object
-              return type(self)(
-                  degrees = result.degrees,
-                  control_points = result.control_points
-                  )
+              result = type(self)()
+              result._c_spline = result_c_spline
+              result._update_p()
+              return result
           else:
               raise TypeError("Multiplication with inequal parametric dimensions")
       else:
