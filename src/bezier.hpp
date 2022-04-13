@@ -1,3 +1,5 @@
+#include<type_traits>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
@@ -9,16 +11,21 @@ namespace py = pybind11;
 template<int para_dim, int dim>
 using Bezier = beziermanipulation::BezierSpline<
     static_cast<std::size_t>(para_dim),
-    beziermanipulation::Point<static_cast<unsigned>(dim)>,
+    std::conditional_t<
+      (dim > 1),
+      beziermanipulation::Point<static_cast<unsigned>(dim)>,
+      double>,
     double
 >;
 
 
 template<int para_dim, int dim>
 class PyBezier {
-public:
+private:
+  // Alias to the internal Bezier type
+  using BezierSpline_ = Bezier<para_dim, dim>;
 
-  //using ScalarType_ = Bezier<para_dim, dim>;
+public:
 
   // python arrays
   py::array_t<int> p_degrees;
@@ -42,6 +49,14 @@ public:
     update_c();
   }
 
+  PyBezier(BezierSpline_ rhs){
+    // Init c_bezier using move constructor
+    c_bezier = std::move(rhs);
+    p_control_points.resize({(int) c_bezier.control_points.size(), dim});
+    p_degrees.resize({(int) para_dim});
+    update_p();
+  }
+
   void update_c() {
 
     std::array<std::size_t, para_dim> c_degrees;
@@ -62,8 +77,12 @@ public:
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
     for (int i = 0; i < cps_buf.shape[0]; i++) {
-      for (int j = 0; j < dim; j++) {
-        c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
+      if constexpr (dim > 1){
+        for (int j = 0; j < dim; j++) {
+          c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
+        }
+      } else {
+          c_bezier.control_points[i] = cps_buf_ptr[i];
       }
     }
 
@@ -85,11 +104,14 @@ public:
 
     // update control_points
     for (int i = 0; i < cps_buf.shape[0]; i++) {
-      for (int j = 0; j < dim; j++) {
-        cps_buf_ptr[i * dim + j] = c_bezier.control_points[i][j];
+      if constexpr (dim > 1){
+        for (int j = 0; j < dim; j++) {
+          cps_buf_ptr[i * dim + j] = c_bezier.control_points[i][j];
+        }
+      } else {
+          cps_buf_ptr[i] = c_bezier.control_points[i];
       }
     }
-
   }
 
   void update_unless_skip() {
@@ -115,8 +137,12 @@ public:
          qpt[j] = q_buf_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_bezier.ForwardEvaluate(qpt); // evaluated query pt
-      for (int k = 0; k < dim; k++) {
-        r_buf_ptr[i * dim + k] = eqpt[k];
+      if constexpr (dim > 1){
+        for (int j = 0; j < dim; j++) {
+          r_buf_ptr[i * dim + j] = eqpt[j];
+        }
+      } else {
+          r_buf_ptr[i * dim] = eqpt;
       }
     }
 
@@ -125,7 +151,7 @@ public:
     return results;
   }
 
-  py::array_t<double> classique_evaluate(py::array_t<double> queries) {
+  py::array_t<double> pseudorecursive_evaluate(py::array_t<double> queries) {
     update_unless_skip();
 
     py::buffer_info q_buf = queries.request();
@@ -142,8 +168,12 @@ public:
          qpt[j] = q_buf_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_bezier.Evaluate(qpt); // evaluated query pt
-      for (int k = 0; k < dim; k++) {
-        r_buf_ptr[i * dim + k] = eqpt[k];
+      if constexpr (dim > 1){
+        for (int j = 0; j < dim; j++) {
+          r_buf_ptr[i * dim + j] = eqpt[j];
+        }
+      } else {
+          r_buf_ptr[i * dim] = eqpt;
       }
     }
 
@@ -160,6 +190,18 @@ public:
     );
 
     update_p();
+  }
+
+  PyBezier<para_dim,1> multiply_with_spline (const PyBezier& a){
+    PyBezier<para_dim,1> result{(*this).c_bezier * a.c_bezier};
+    result.update_p();
+    return result;
+  }
+  
+  PyBezier multiply_with_scalar_spline (const PyBezier<para_dim,1>& a){
+    PyBezier result{(*this).c_bezier * a.c_bezier};
+    result.update_p();
+    return result;
   }
 
 };
@@ -187,11 +229,18 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("evaluate",
                  &PyBezier<para_dim, dim>::evaluate,
                  py::arg("queries"))
-        .def("classique_evaluate",
-                 &PyBezier<para_dim, dim>::classique_evaluate,
+        .def("recursive_evaluate",
+                 &PyBezier<para_dim, dim>::pseudorecursive_evaluate,
                  py::arg("queries"))
         .def("elevate_degree",
                  &PyBezier<para_dim, dim>::elevate_degree,
                  py::arg("p_dim"))
+        .def("multiply_with_spline",
+                 &PyBezier<para_dim, dim>::multiply_with_spline,
+                 py::arg("factor"))
+        .def("multiply_with_scalar_spline",
+                 &PyBezier<para_dim, dim>::multiply_with_scalar_spline,
+                 py::arg("factor"))
+                 // Add definition for interface
         ;
 }

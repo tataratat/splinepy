@@ -84,7 +84,7 @@ class Bezier(Spline):
             "now identical."
         )
 
-    def classique_evaluate(self, queries, n_threads=1):
+    def recursive_evaluate(self, queries, n_threads=1):
         """
         Evaluates spline, classique way.
 
@@ -108,7 +108,7 @@ class Bezier(Spline):
 
         logging.debug("Spline - Evaluating spline...")
 
-        return self._c_spline.classique_evaluate(queries=queries)
+        return self._c_spline.recursive_evaluate(queries=queries)
 
 
     def sample(self, resolution):
@@ -144,6 +144,51 @@ class Bezier(Spline):
         )
 
         return self.evaluate(q)
+
+    # Operator Overloading
+
+    def __mul__(self, factor):
+      """
+      Overwrites the * operator to multiply splines with different types of
+      data
+
+      The resulting spline fulfils the equation 
+        factora(t) * factorb(t) = result(t)
+
+      Parameters
+      ----------
+      factor :  scalar type (float) or spline with same parametric and physical
+                dimension or scalar control points
+      Returns
+      -------
+      spline : New spline with updated types
+      """
+      if isinstance(factor, float):
+        return Bezier(
+            control_points = self._control_points * factor,
+            degrees = self._degrees
+          )
+      elif isinstance(factor, type(self)):
+          if len(factor.degrees) == len(self._degrees):
+              if factor.dim == self.dim:
+                  result = self._c_spline.multiply_with_spline(factor._c_spline)
+              elif factor.dim == 1:
+                  result = self._c_spline.multiply_with_scalar_spline(factor._c_spline)
+              elif self.dim == 1:
+                  result = factor._c_spline.multiply_with_scalar_spline(self._c_spline)
+              else:
+                raise NotImplementedError()
+              # Copy the c spline to the python object
+              return type(self)(
+                  degrees = result.degrees,
+                  control_points = result.control_points
+                  )
+          else:
+              raise TypeError("Multiplication with inequal parametric dimensions")
+      else:
+          raise TypeError("Multiplication with unknown type requested.")
+
+        
 
     def copy(self):
         """

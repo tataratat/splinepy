@@ -19,3 +19,10 @@ cd splinepy
 git submodule update --init
 python3 setup.py install
 ```
+
+if there are problems with the vtk version not finding lib9openh264.so.5 create a soft link in the anaconda lib
+directory
+```
+cd <anaconda-directory>/envs/<your conda env>/lib/
+ln -s libopenh264.so.2.1.1 libopenh264.so.5
+```
