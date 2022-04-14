@@ -27,6 +27,9 @@ private:
 
 public:
 
+  int para_dim_ = para_dim;
+  int dim_ = dim;
+
   // python arrays
   py::array_t<int> p_degrees;
   py::array_t<double> p_control_points;
@@ -232,6 +235,10 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
                  py::arg("control_points"))
         .def_readonly("whatami",
                            &PyBezier<para_dim, dim>::whatami)
+        .def_readonly("dim",
+                           &PyBezier<para_dim, dim>::dim_)
+        .def_readonly("para_dim",
+                           &PyBezier<para_dim, dim>::para_dim_)
         .def_readwrite("skip_update",
                            &PyBezier<para_dim, dim>::skip_update)
         .def_readwrite("degrees",

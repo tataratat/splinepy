@@ -79,9 +79,9 @@ class Bezier(Spline):
         # and it causes us to lose array references.
         self._degrees = self._c_spline.degrees
         self._control_points = self._c_spline.control_points
-        self._dim = self._c_spline.control_points.shape[1]
-        self._para_dim = self._c_spline.degrees.shape[0]
-
+        # silent setter
+        self._para_dim = self._c_spline.para_dim
+        self._dim = self._c_spline.dim
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."

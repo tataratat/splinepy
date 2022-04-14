@@ -147,6 +147,9 @@ class NURBS(Spline):
         self._knot_vectors = self._c_spline.knot_vectors
         self._control_points = self._c_spline.control_points
         self._weights = self._c_spline.weights
+        # do the setters work.
+        self._para_dim = self._c_spline.para_dim
+        self._dim = self._c_spline.dim
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."

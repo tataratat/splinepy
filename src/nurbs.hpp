@@ -53,6 +53,9 @@ public:
   using NumberOfParametricCoordinates =
       typename ParameterSpace::NumberOfParametricCoordinates_;
 
+  int para_dim_ = para_dim;
+  int dim_ = dim;
+
   // Counters
   int i = 0;
   int j = 0;
@@ -605,6 +608,10 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                              &PyNurbs<para_dim, dim>::skip_update)
           .def_readonly("whatami",
                             &PyNurbs<para_dim, dim>::whatami)
+          .def_readonly("dim",
+                            &PyNurbs<para_dim, dim>::dim_)
+          .def_readonly("para_dim",
+                            &PyNurbs<para_dim, dim>::para_dim_)
           .def("evaluate",
                    &PyNurbs<para_dim, dim>::evaluate,
                    py::arg("queries"),
