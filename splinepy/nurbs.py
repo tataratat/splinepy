@@ -185,10 +185,10 @@ class NURBS(Spline):
           Keys are {degrees, knot_vectors, control_points, weights}.
         """
         return dict(
-            degrees=copy.deepcopy(self.degrees),
+            degrees=copy.deepcopy(self.degrees).tolist(),
             knot_vectors=copy.deepcopy(self.knot_vectors),
-            control_points=copy.deepcopy(self.control_points),
-            weights=copy.deepcopy(self.weights),
+            control_points=copy.deepcopy(self.control_points).tolist(),
+            weights=copy.deepcopy(self.weights).tolist(),
         )
 
     # member function alias

@@ -919,6 +919,9 @@ class Spline(abc.ABC):
         elif ext == ".npz":
             io.npz.write_npz(fname, self)
 
+        elif ext == ".json":
+            io.json.write_json(fname, self)
+
         elif ext == ".mesh":
             # mfem nurbs mesh.
             io.mfem.write_mfem(fname, self, precision=12)

@@ -337,7 +337,7 @@ class BSpline(Spline):
           Keys are {degrees, knot_vectors, control_points}.
         """
         return dict(
-            degrees=copy.deepcopy(self.degrees),
-            knot_vectors=copy.deepcopy(self.knot_vectors),
-            control_points=copy.deepcopy(self.control_points),
+            degrees=copy.deepcopy(self.degrees).tolist(),
+            knot_vectors=copy.deepcopy(self.knot_vectors).tolist(),
+            control_points=copy.deepcopy(self.control_points).tolist(),
         )

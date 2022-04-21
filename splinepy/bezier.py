@@ -270,7 +270,20 @@ class Bezier(Spline):
         """
         pass
 
-    def todict(sef):
+    def todict(self):
         """
+        Returns copy of degrees, control_points in dict.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        dict_spline: dict
+          Keys are {degrees, control_points}.
         """
-        pass
+        return dict(
+            degrees=copy.deepcopy(self.degrees).tolist(),
+            control_points=copy.deepcopy(self.control_points).tolist(),
+        )
