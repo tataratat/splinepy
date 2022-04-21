@@ -501,13 +501,18 @@ template <std::size_t parametric_dimension, typename PhysicalPointType,
 constexpr BezierSpline<parametric_dimension, ScalarType, ScalarType>
 BezierSpline<parametric_dimension, PhysicalPointType,
              ScalarType>::ExtractDimension(unsigned int dimension) const {
-  assert(dimension < PointTypePhysical_::kSpatialDimension);
-  BezierSpline<parametric_dimension, ScalarType, ScalarType> extracted_spline(
-      degrees);
-  for (std::size_t i{}; i < NumberOfControlPoints; i++) {
-    extracted_spline.control_points[i] = control_points[i][dimension];
+  if constexpr (std::is_arithmetic_v<PhysicalPointType>) {
+    assert(dimension == 0ul);
+    return (*this);
+  } else {
+    assert(dimension < PointTypePhysical_::kSpatialDimension);
+    BezierSpline<parametric_dimension, ScalarType, ScalarType> extracted_spline(
+        degrees);
+    for (std::size_t i{}; i < NumberOfControlPoints; i++) {
+      extracted_spline.control_points[i] = control_points[i][dimension];
+    }
+    return extracted_spline;
   }
-  return extracted_spline;
 }
 
 template <std::size_t parametric_dimension, typename PhysicalPointType,
@@ -630,7 +635,8 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::operator*(
   std::array<IndexingType, parametric_dimension> product_degrees;
   for (IndexingType param_dim{}; param_dim < parametric_dimension;
        param_dim++) {
-    product_degrees[param_dim] = degrees[param_dim] + rhs.GetDegrees()[param_dim];
+    product_degrees[param_dim] =
+        degrees[param_dim] + rhs.GetDegrees()[param_dim];
   }
 
   // Initialize the return type
@@ -674,23 +680,105 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::Compose(
                ScalarReturnT>
       composition{new_degrees};
 
-  // Check Dimensions
-  static_assert(PointTypeRHS::kSpatialDimension == parametric_dimension,
-                "Dimension mismatch");
+  // Check Dimensions (Scalar Value splines to be treaded as kSpDim = 1)
+  if constexpr (std::is_arithmetic_v<PointTypeRHS>) {
+    static_assert(parametric_dimension == 1, "Dimension mismatch");
+  } else {
+    static_assert(PointTypeRHS::kSpatialDimension == parametric_dimension,
+                  "Dimension mismatch");
+  }
 
-  // Extract splines only once, and store data on heap. The size corresponds
-  // to the parametric dimensions of the outer spline representation
-  std::vector<BezierSpline<parametric_dimension_inner_spline, ScalarReturnT,
-                           ScalarReturnT>>
-      inner_spline_coordinate_seperations{parametric_dimension};
+  // Extraction and Precomputation
+  /*
+   * 1. Extract splines, to get the individual physical coordinates
+   *    x_i (xi, eta, ...). These are stored temporarily in a local variable
+   * 2. Precompute the "Basis function"-splines, i.e., the spline functions
+   *    inserted into the definition of the Bernstein polynomials. This might be
+   *    storage inefficient, but reduces the total number of multiplications
+   *    required.
+   */
+  std::array<std::vector<BezierSpline<parametric_dimension_inner_spline,
+                                      ScalarReturnT, ScalarReturnT>>,
+             parametric_dimension>
+      bernstein_basis_splines{};
   for (std::size_t i_outer_parametric_dimension{};
        i_outer_parametric_dimension < parametric_dimension;
        i_outer_parametric_dimension++) {
-    // Extract the current dimension of the spline
-    inner_spline_coordinate_seperations[i_outer_parametric_dimension] =
+    // Store current parametric dimensions entry as a reference
+    auto& bernstein_spline =
+        bernstein_basis_splines[i_outer_parametric_dimension];
+    bernstein_spline.resize(degrees[i_outer_parametric_dimension] + 1);
+
+    // Extract the current dimension of the spline and its inverse
+    auto extracted_dimension_multiple =
+        BezierSpline<parametric_dimension_inner_spline, ScalarReturnT,
+                     ScalarReturnT>{
+            std::array<std::size_t,
+                       parametric_dimension_inner_spline>{},  // initializes
+                                                              // to zero
+            std::vector<ScalarReturnT>{static_cast<ScalarReturnT>(1.)}};
+    auto inverse_extracted_dimension_mulitple = extracted_dimension_multiple;
+
+    const auto extracted_dimension =
         inner_function.ExtractDimension(i_outer_parametric_dimension);
+
+    const auto inverse_extracted_dimension =
+        static_cast<ScalarRHS>(1.) - extracted_dimension;
+
+    // Loop over all possible Bernstein basis functions and assign the n-th
+    // entry the extracteed dimension to the power n (see "Free Form Surface
+    // Analysis Using a Hybrid of Symbolic and Numeric Computation" - Elber -
+    // Eq. 6.2)
+    // 1. Multiply c(t) ^ i - terms
+    bernstein_spline[0] = extracted_dimension_multiple;
+    for (std::size_t i_ctps_in_par_dim{1};
+         i_ctps_in_par_dim <= degrees[i_outer_parametric_dimension];
+         i_ctps_in_par_dim++) {
+      extracted_dimension_multiple =
+          extracted_dimension_multiple * extracted_dimension;
+      bernstein_spline[i_ctps_in_par_dim] = extracted_dimension_multiple;
+    }
+    // 2. Multiply (1 - c(t)) ^ (n-i) - terms
+    for (std::size_t i_ctps_in_par_dim{1};
+         i_ctps_in_par_dim <= degrees[i_outer_parametric_dimension];
+         i_ctps_in_par_dim++) {
+      inverse_extracted_dimension_mulitple =
+          inverse_extracted_dimension_mulitple * inverse_extracted_dimension;
+      bernstein_spline[degrees[i_outer_parametric_dimension] -
+                       i_ctps_in_par_dim] =
+          bernstein_spline[degrees[i_outer_parametric_dimension] -
+                           i_ctps_in_par_dim] *
+          inverse_extracted_dimension_mulitple;
+    }
+    // 3. Multiply coefficients
+    for (std::size_t i_ctps_in_par_dim{1};
+         i_ctps_in_par_dim < degrees[i_outer_parametric_dimension];
+         i_ctps_in_par_dim++) {
+      bernstein_spline[degrees[i_outer_parametric_dimension] -
+                       i_ctps_in_par_dim] *=
+          utils::FastBinomialCoefficient::choose(
+              degrees[i_outer_parametric_dimension], i_ctps_in_par_dim);
+    }
   }
 
+  /*
+   * @todo The current loop can be made more efficient by precomputing spline
+   * products
+   *
+   * for the three-dimensional case C = T_{ijk} Bi Bj Bk
+   * Looping over all i j k (as is currently done) is very inefficient, as many
+   * splines Products are ccomputed multiple times (ijk). If the product can be
+   * organized as follows, the computational cost can significantly be reduced.
+   * for i:
+   *    for j:
+   *        Bij = Bi * Bj
+   *        for k:
+   *            Bijk = Bij * Bk
+   *
+   * In this example for every k -- (k-1) fewer spline products are computed as
+   * Bij can be reused for every iteration of k. This effect becomes more
+   * important for parametric dimensions of the deformation function
+   */
   // Loop over control points of the outer spline to start the interpolation
   for (unsigned int i_control_point_outer_spline{};
        i_control_point_outer_spline < NumberOfControlPoints;
@@ -699,51 +787,23 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::Compose(
     const auto outer_spline_ctps_indices =
         LocalToGlobalIndex(i_control_point_outer_spline);
 
-    // Create a 2D vector of all control-point factors to be filled later on
-    std::vector<BezierSpline<parametric_dimension_inner_spline, ScalarReturnT,
-                             ScalarReturnT>>
-        factorization_splines{parametric_dimension};
-
-    // Fill the factor list
-    for (std::size_t i_outer_parametric_dimension{};
-         i_outer_parametric_dimension < parametric_dimension;
-         i_outer_parametric_dimension++) {
-      const auto i_basis_function_index =
-          outer_spline_ctps_indices[i_outer_parametric_dimension];
-      const auto n_outer_degree =
-          degrees[i_outer_parametric_dimension];  // Reference for readability
-      const auto& inner_spline_xi =
-          inner_spline_coordinate_seperations[i_outer_parametric_dimension];
-
-      // Boundary cases
-      // @todo (avoid costly power operation and save intermediate states)
-      if (i_basis_function_index == 0) {
-        factorization_splines[i_outer_parametric_dimension] =
-            ((1 - inner_spline_xi).RaisePower(n_outer_degree));
-      } else if (i_basis_function_index == n_outer_degree) {
-        factorization_splines[i_outer_parametric_dimension] =
-            (inner_spline_xi.RaisePower(n_outer_degree));
-      } else {
-        factorization_splines[i_outer_parametric_dimension] =
-            (utils::FastBinomialCoefficient::choose(n_outer_degree,
-                                                    i_basis_function_index) *
-             inner_spline_xi.RaisePower(i_basis_function_index) *
-             (1 - inner_spline_xi)
-                 .RaisePower(n_outer_degree - i_basis_function_index));
-      }
-    }
-
-    // Multiply all factor splines with each other
-    BezierSpline<parametric_dimension_inner_spline, ScalarReturnT,
-                 ScalarReturnT>
-        control_point_multiplication_factor{factorization_splines[0]};
+    // Initialize current factor
+    auto bernstein_basis_tensor_product =
+        bernstein_basis_splines[0][outer_spline_ctps_indices[0]];
     for (std::size_t i_outer_parametric_dimension{1};
          i_outer_parametric_dimension < parametric_dimension;
          i_outer_parametric_dimension++) {
-      control_point_multiplication_factor =
-          control_point_multiplication_factor *
-          factorization_splines[i_outer_parametric_dimension];
+      bernstein_basis_tensor_product =
+          bernstein_basis_tensor_product *
+          bernstein_basis_splines
+              [i_outer_parametric_dimension]
+              [outer_spline_ctps_indices[i_outer_parametric_dimension]];
     }
+
+    // Check if the bernstein_basis_tensor_product has the degrees (and number
+    // of control_points) as expected
+    assert(("Degree mismatch",
+            new_degrees == bernstein_basis_tensor_product.GetDegrees()));
 
     // Now that all factors have been precomputed we can determine the
     // control-points of the resulting spline
@@ -752,7 +812,7 @@ BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>::Compose(
          i_control_point_composition++) {
       // Start interpolation
       composition.control_points[i_control_point_composition] +=
-          control_point_multiplication_factor
+          bernstein_basis_tensor_product
               .control_points[i_control_point_composition] *
           control_points[i_control_point_outer_spline];
     }

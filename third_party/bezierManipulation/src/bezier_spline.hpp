@@ -38,6 +38,14 @@ class BezierSpline {
 
   constexpr void UpdateIndexOffsets_();
 
+  /**
+   * @brief Multiply all weights to their corresponding control points and add
+   * up all weighted contributions more efficiently by precomputing some of the
+   * factors in every loop
+   *
+   * Changing the inner array to a vector would pass less values at the price of
+   * runtime memory allocation
+   */
   template <typename... Indices>
   constexpr PhysicalPointType AddUpContributionsToControlPointVector_(
       PhysicalPointType& evaluation_point,
@@ -132,7 +140,8 @@ class BezierSpline {
   }
 
   /// Set Degrees
-  constexpr void UpdateDegrees(const std::array<std::size_t, parametric_dimension>& new_degrees){
+  constexpr void UpdateDegrees(
+      const std::array<std::size_t, parametric_dimension>& new_degrees) {
     degrees = new_degrees;
     for (unsigned int i{}; i < parametric_dimension; i++)
       NumberOfControlPoints *= degrees[i] + 1;
