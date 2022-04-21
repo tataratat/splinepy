@@ -202,6 +202,13 @@ public:
     return result;
   }
   
+  // Addition routines
+  PyBezier add_spline (const PyBezier& a){
+    PyBezier result{(*this).c_bezier + a.c_bezier};
+    result.update_p();
+    return result;
+  }
+  
   PyBezier multiply_with_scalar_spline (const PyBezier<para_dim,1>& a){
     PyBezier result{(*this).c_bezier * a.c_bezier};
     result.update_p();
@@ -264,6 +271,9 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("multiply_with_scalar_spline",
                  &PyBezier<para_dim, dim>::multiply_with_scalar_spline,
                  py::arg("factor"))
+        .def("add_spline",
+                 &PyBezier<para_dim, dim>::add_spline,
+                 py::arg("summand"))
         .def("compose_line",
                  &PyBezier<para_dim, dim>::template Compose<1>,
                  py::arg("inner_function"))

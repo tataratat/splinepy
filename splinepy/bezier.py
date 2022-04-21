@@ -194,6 +194,38 @@ class Bezier(Spline):
       else:
           raise TypeError("Multiplication with unknown type requested.")
 
+    def __add__(self, summand):
+      """
+      Calculates the spline that formes the sum of the summand and the current
+      spline (function argument)
+
+      The resulting spline fulfils the equation
+        self(t) + summand(t) = result(t)
+
+      Parameters
+      ----------
+      summand :  spline with same parametric and physical dimension
+
+      Returns
+      -------
+      spline : New spline that describes sum
+      """
+      if isinstance(summand, type(self)):
+          if summand.para_dim == self.para_dim and \
+            summand.dim == self.dim:
+              resulting_c_spline = \
+                  self._c_spline.add_spline(summand._c_spline)
+              # Copy the c spline to the python object
+              result = type(self)()
+              result._c_spline = resulting_c_spline
+              result._update_p()
+              return result
+          else :
+              raise TypeError("Dimension Mismatch.")          
+      else :
+          raise TypeError("Sum must be formed with Bezier Splines")
+
+
     def compose(self, inner_function):
       """
       Calculates the spline that formes the composition of the inner function
