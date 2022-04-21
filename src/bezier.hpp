@@ -192,6 +192,7 @@ public:
     update_p();
   }
 
+  // Multiplication routines
   PyBezier<para_dim,1> multiply_with_spline (const PyBezier& a){
     PyBezier<para_dim,1> result{(*this).c_bezier * a.c_bezier};
     result.update_p();
@@ -203,6 +204,21 @@ public:
     result.update_p();
     return result;
   }
+
+  // Addition Routines
+
+  // Composition Routine
+  template<int par_dim_inner_function>
+  PyBezier<par_dim_inner_function, dim> Compose(
+              const PyBezier<par_dim_inner_function, para_dim>& inner_function){
+      // Use Composition routine
+      PyBezier<par_dim_inner_function, dim> result{(*this).c_bezier.Compose(
+                        inner_function.c_bezier)
+                        };
+    result.update_p();
+    return result;
+  }
+
 
 };
 
@@ -241,6 +257,15 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("multiply_with_scalar_spline",
                  &PyBezier<para_dim, dim>::multiply_with_scalar_spline,
                  py::arg("factor"))
+        .def("compose_line",
+                 &PyBezier<para_dim, dim>::template Compose<1>,
+                 py::arg("inner_function"))
+        .def("compose_surface",
+                 &PyBezier<para_dim, dim>::template Compose<2>,
+                 py::arg("inner_function"))
+        .def("compose_volume",
+                 &PyBezier<para_dim, dim>::template Compose<3>,
+                 py::arg("inner_function"))
                  // Add definition for interface
         ;
 }

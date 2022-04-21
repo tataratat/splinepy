@@ -143,7 +143,7 @@ class Bezier(Spline):
                 [0. for _ in range(self.para_dim)],
                 [1. for _ in range(self.para_dim)],
             ],
-            resolution 
+            resolution
         )
 
         return self.evaluate(q)
@@ -155,7 +155,7 @@ class Bezier(Spline):
       Overwrites the * operator to multiply splines with different types of
       data
 
-      The resulting spline fulfils the equation 
+      The resulting spline fulfils the equation
         factora(t) * factorb(t) = result(t)
 
       Parameters
@@ -194,7 +194,44 @@ class Bezier(Spline):
       else:
           raise TypeError("Multiplication with unknown type requested.")
 
-        
+    def compose(self, inner_function):
+      """
+      Calculates the spline that formes the composition of the inner function
+      spline (function argument), using the caller spline as the outer (or 
+      deformation function).
+
+      The resulting spline fulfils the equation
+        spline_self(inner_function(t)) = result(t)
+
+      Parameters
+      ----------
+      inner_function :  spline with parametric dimension <= 3
+
+      Returns
+      -------
+      spline : New spline that describes composition
+      """
+      if isinstance(inner_function, type(self)):
+          if inner_function.para_dim == 1:
+              resulting_c_spline = \
+                  self._c_spline.compose_line(inner_function._c_spline)
+          elif inner_function.para_dim == 2:
+              resulting_c_spline = \
+                  self._c_spline.compose_surface(inner_function._c_spline)
+          elif inner_function.para_dim == 3:
+              resulting_c_spline = \
+                  self._c_spline.compose_volume(inner_function._c_spline)
+          else :
+              raise TypeError("Compositions with high"
+                      " parametric dimensions not supported.")          
+          # Copy the c spline to the python object
+          result = type(self)()
+          result._c_spline = resulting_c_spline
+          result._update_p()
+          return result
+      else :
+          raise TypeError("Composisiton must be formed with Bezier Splines")
+      
 
     def copy(self):
         """
