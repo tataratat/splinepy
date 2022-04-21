@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
@@ -76,13 +78,14 @@ public:
     VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
     int numcps = vector_space.GetNumberOfCoordinates();
 
+
     // fill it up, phil!
     for (int i = 0; i < numcps; i++) {
       auto const &coord_named_phil = vector_space[splinelib::Index{i}];
       for (int j = 0; j < dim; j++) {
         cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
       }
-      ws_buf_ptr[i * dim + dim] = coord_named_phil[dim].Get();
+      ws_buf_ptr[i] = coord_named_phil[dim].Get();
     }
 
   }

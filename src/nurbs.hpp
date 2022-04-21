@@ -184,7 +184,7 @@ public:
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
 
-    p_weights = py::array_t<double>(numcps * dim);
+    p_weights = py::array_t<double>(numcps);
     py::buffer_info ws_buf = p_weights.request();
     double* ws_buf_ptr = static_cast<double *>(ws_buf.ptr);
 
