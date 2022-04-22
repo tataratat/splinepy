@@ -11,6 +11,31 @@ import numpy as np
 # 
 # 
 def load(fname):
+    ''' dirty WIP to share
+    """
+    Loads splines from json file. Returns dict-splines
+
+    Parameters
+    -----------
+    fname: str
+
+    Returns
+    --------
+    spline_list: list
+    """
+    def unpack_spline(raw_dict):
+        """try to unpack spline properties"""
+        unpacked = dict()
+        splinekeys = ["degrees", "knot_vectors", "control_points", "weights"]
+
+        for sk in splinekeys:
+            prop = raw_dict.get(sk, None)
+
+            if prop is not None:
+                unpacked.update({sk : prop})
+
+        return unpacked
+    '''
     # Import data from file into dict format
     jsonbz = json.load(open(fname, "r"))
 
@@ -84,6 +109,52 @@ def export_splines(fname, spline_list, list_name=None, base64encoding=False):
     Dictornay data written into file
 
   """
+
+    """ dirty WIP to share
+    '''
+    Exports a list of arbitrary splines in json-format
+
+
+    Parameters
+    ----------
+    fname : str
+      Export Filename
+    spline_list: list or Spline
+      List of arbitrary Spline-Types or a single spline
+    list_name: str
+      Default is None and "SplineGroup" will be assigned. Used to define name.
+    base64encoding: bool
+      Default is False. If True, encodes float type spline properties before
+      saving.
+
+
+    Returns
+    -------
+    output_dict : dict
+    '''
+    if list_name == None:
+        list_name = "SplineGroup"
+
+    if not isinstance(spline_list, list):
+        # duck test
+        allowed = ["Bezier", "BSpline", "NURBS"]
+        whatami = spline_list.whatami
+        oneofus = False
+
+        for a in allowed:
+            if whatami.startswith(a):
+                oneofus = True
+
+        if not oneofus:
+            raise TypeError("Invalid input for spline export!")
+
+        spline_list = [spline_list]
+
+    # Number of splines in group
+    n_splines = len(spline_list)
+    """
+
+
   if list_name == None:
     list_name = "SplineGroup"
 
