@@ -917,19 +917,19 @@ class Spline(abc.ABC):
             self._c_spline.write_irit(fname)
 
         elif ext == ".npz":
-            io.npz.write_npz(fname, self)
+            io.npz.export(fname, self)
 
         elif ext == ".json":
-            io.json.write_json(fname, self)
+            io.json.export(fname, self)
 
         elif ext == ".mesh":
             # mfem nurbs mesh.
-            io.mfem.write_mfem(fname, self, precision=12)
+            io.mfem.export(fname, self, precision=12)
 
         else:
             raise ValueError(
                 "We can only export "
-                + "< .iges | .xml | .itd | .npz | .mesh > extentions"
+                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
             )
 
         logging.info(f"Spline - Exported current spline as {fname}.")

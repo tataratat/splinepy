@@ -47,10 +47,10 @@ def load_splines(fname, as_dict=False):
     elif ext == ".npz":
         # it should only have one spline, but
         # put it in a list to keep output format consistent
-        loaded_splines = [io.npz.read_npz(fname)]
+        loaded_splines = [io.npz.load(fname)]
 
     elif ext == ".mesh":
-        loaded_splines = [io.mfem.read_mfem(fname)]
+        loaded_splines = [io.mfem.load(fname)]
 
     else:
         raise NotImplementedError(
