@@ -343,7 +343,7 @@ class Spline(abc.ABC):
         logging.debug("Spline - Computing unique knots using `np.unique`.")
         unique_knots = []
         if self.whatami.startswith("Bezier"):
-            unique_knots=[[0,1]]*self.para_dim
+            unique_knots = [[0, 1]] * self.para_dim
         else:
             for k in self.knot_vectors:
                 unique_knots.append(np.unique(k).tolist())

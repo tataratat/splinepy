@@ -7,6 +7,7 @@ import json
 import logging
 import numpy as np
 
+
 def load(fname):
     """
     Loads splines from json file. Returns dict-splines
@@ -36,118 +37,106 @@ def load(fname):
 
         # Convert Base64 str into np array
         if base64encoding:
-            jbz["control_points"] = \
-                np.frombuffer(
-                  base64.b64decode(
-                    jbz["control_points"].encode('ascii')
-                  ), dtype=np.float
-                ).reshape((-1,jbz["dim"]))
+            jbz["control_points"] = np.frombuffer(
+              base64.b64decode(
+                jbz["control_points"].encode('ascii')
+              ),
+              dtype=np.float
+              ).reshape((-1, jbz["dim"]))
 
         # Transform data into Splines
         if jbz["SplineType"] == "Bezier":
             return_dict["Bezier"].append(
-                {
-                    "control_points" : jbz["control_points"],
-                    "degrees" : jbz["degrees"]
-                }
-            )        
+              {
+                "control_points" : jbz["control_points"],
+                "degrees" : jbz["degrees"]
+              }
+            )
         elif jbz["SplineType"] == "NURBS":
             return_dict["NURBS"].append(
-                {
-                    "control_points" : jbz["control_points"],
-                    "degrees" : jbz["degrees"],
-                    "weights" : jbz["weights"],
-                    "knot_vectors" : jbz["knot_vectors"]
-                }
-            )        
+              {
+                "control_points" : jbz["control_points"],
+                "degrees" : jbz["degrees"],
+                "weights" : jbz["weights"],
+                "knot_vectors" : jbz["knot_vectors"]
+              }
+            )
         elif jbz["SplineType"] == "BSpline":
             return_dict["BSpline"].append(
-                {
-                    "control_points" : jbz["control_points"],
-                    "degrees" : jbz["degrees"],
-                    "knot_vectors" : jbz["knot_vectors"]
-                }
-            )        
+              {
+                "control_points" : jbz["control_points"],
+                "degrees" : jbz["degrees"],
+                "knot_vectors" : jbz["knot_vectors"]
+              }
+            )
         else :
             logging.warning("Found unknown spline-type: " + str(jbz))
+
     logging.debug("Imported " + str(len(spline_list)) + " splines from file.")
+
     return return_dict
 
 def export_splines(fname, spline_list, list_name=None, base64encoding=False):
-  """
-  Exports a list of arbitrary splines in json-format
+    """
+    Exports a list of arbitrary splines in json-format
 
-  Parameters
-  ----------
-  fname : str
-    Export Filename
-  spline_list: list
-    List of arbitrary Spline-Types
-  list_name: str
-    Default is None and "SplineGroup" will be assigned. Used to define name.
-  base64encoding: bool
-    Default is False. If True, encodes float type spline properties before
-    saving.
+    Parameters
+    ----------
+    fname : str
+      Export Filename
+    spline_list: list
+      List of arbitrary Spline-Types
+    list_name: str
+      Default is None and "SplineGroup" will be assigned. Used to define name.
+    base64encoding: bool
+      Default is False. If True, encodes float type spline properties before
+      saving.
 
-  Returns
-  -------
-  output_dict : dict
-    Dictornay data written into file
+    Returns
+    -------
+    output_dict : dict
+      Dictornay data written into file
 
-  """
-  if list_name == None:
-    list_name = "SplineGroup"
+    """
+    # Determine Spline Group
+    if list_name == None:
+        list_name = "SplineGroup"
 
-  # Number of splines in group
-  n_splines = len(spline_list)
+    # Ensure spline_list is actually a list
+    if not isinstance(spline_list, list):
+        spline_list = [spline_list]
 
-  output_dict = {
-    "Name" : list_name,
-    "NumberOfSplines" : n_splines,
-    "Base64Encoding" : base64encoding
-  }
+    # Number of splines in group
+    n_splines = len(spline_list)
 
-  # Append all splines to a dictionary
-  spline_dictonary_list = []
-  for i_spline in spline_list:
-      i_spline_dict["SplineType"] = type(i_spline).__qualname__
-      if not typetype(i_spline).__qualname_ in ["Bezier", "BSpline", "NURBS"]:
-          logging.warning("Unknown spline-type : " +
-                i_spline_dict["SplineType"] + " will be ignored.")
-          continue
+    output_dict = {
+      "Name" : list_name,
+      "NumberOfSplines" : n_splines,
+      "Base64Encoding" : base64encoding
+    }
 
-      # Create Dictionary
-      i_spline_dict = i_spline.todict()
-      # Append para_dim and dim
-      i_spline_dict["dim"] = i_spline.dim
-      i_spline_dict["para_dim"] = i_spline.para_dim
-      spline_dictonary_list.append(i_spline_dict)
-      if base64encoding:
-          i_spline_dict["control_points"] = base64.b64encode(
-              np.array(i_spline_dict["control_points"])
-          ).decode('utf-8')
+    # Append all splines to a dictionary
+    spline_dictonary_list = []
+    for i_spline in spline_list:
+        i_spline_dict["SplineType"] = type(i_spline).__qualname__
+        if not typetype(i_spline).__qualname_ in ["Bezier", "BSpline", "NURBS"]:
+            logging.warning("Unknown spline-type : " +
+                  i_spline_dict["SplineType"] + " will be ignored.")
+            continue
 
-  output_dict["SplineList"] = spline_dictonary_list
+        # Create Dictionary
+        i_spline_dict = i_spline.todict()
+        # Append para_dim and dim
+        i_spline_dict["dim"] = i_spline.dim
+        i_spline_dict["para_dim"] = i_spline.para_dim
+        spline_dictonary_list.append(i_spline_dict)
+        if base64encoding:
+            i_spline_dict["control_points"] = base64.b64encode(
+                np.array(i_spline_dict["control_points"])
+            ).decode('utf-8')
 
-  with open(fname, 'w') as file_pointer:
-      file_pointer.write(json.dumps(output_dict, indent=4))
-  return output_dict
+    output_dict["SplineList"] = spline_dictonary_list
 
-
-def write_json(spline, fname):
-  """
-  Pass Information to export_splines routin
-
-  Parameters
-  ----------
-  spline : spline
-    arbitrary spline-type
-  fname : str
-    filename
-
-  Returns
-  -------
-  None
-  """
-  export_splines(fname, [spline])
-
+    with open(fname, 'w') as file_pointer:
+        file_pointer.write(json.dumps(output_dict, indent=4))
+    return output_dict
