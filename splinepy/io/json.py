@@ -76,7 +76,7 @@ def load(fname):
 
     return return_dict
 
-def export_splines(fname, spline_list, list_name=None, base64encoding=False):
+def export(fname, spline_list, list_name=None, base64encoding=False):
     """
     Exports a list of arbitrary splines in json-format
 
