@@ -7,6 +7,15 @@ else()
     set(
         SRCS
             python/bezier1.cpp
+            python/bezier2.cpp
+            python/bezier3.cpp
+            python/bezier4.cpp
+            python/bezier5.cpp
+            python/bezier6.cpp
+            python/bezier7.cpp
+            python/bezier8.cpp
+            python/bezier9.cpp
+            python/bezier10.cpp
             python/bspline1.cpp
             python/bspline2.cpp
             python/bspline3.cpp

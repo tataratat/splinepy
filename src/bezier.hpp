@@ -283,6 +283,5 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("compose_volume",
                  &PyBezier<para_dim, dim>::template Compose<3>,
                  py::arg("inner_function"))
-                 // Add definition for interface
         ;
 }

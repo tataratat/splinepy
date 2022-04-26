@@ -41,6 +41,15 @@ PYBIND11_MODULE(_splinepy, m) {
   init_minimal(m);
 #else
   init_bezier1(m);
+  init_bezier2(m);
+  init_bezier3(m);
+  init_bezier4(m);
+  init_bezier5(m);
+  init_bezier6(m);
+  init_bezier7(m);
+  init_bezier8(m);
+  init_bezier9(m);
+  init_bezier10(m);
 
   init_bspline1(m);
   init_bspline2(m);
