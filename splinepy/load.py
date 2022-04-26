@@ -17,6 +17,7 @@ def load_splines(fname, as_dict=False):
       - `.iges`
       - `.xml`
       - `.itd`
+      - `.json`
       - `.npz`
       - `.mesh` #only 2D-single-patch.
 
@@ -51,6 +52,9 @@ def load_splines(fname, as_dict=False):
 
     elif ext == ".mesh":
         loaded_splines = [io.mfem.load(fname)]
+
+    elif ext == ".json":
+        loaded_splines = [io.json.load(fname)]
 
     else:
         raise NotImplementedError(
