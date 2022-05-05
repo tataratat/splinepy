@@ -283,5 +283,25 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("compose_volume",
                  &PyBezier<para_dim, dim>::template Compose<3>,
                  py::arg("inner_function"))
-        ;
+        .def(py::pickle(
+                 [] (const PyBezier<para_dim, dim> &bezier) {
+                   return py::make_tuple(
+                       bezier.p_degrees,
+                       bezier.p_control_points
+                   );
+                 },
+                 [] (py::tuple t) {
+                   if (t.size() != 2) {
+                     throw std::runtime_error("Invalid PyBezier state!");
+                   }
+
+                   PyBezier<para_dim, dim> pyb(
+                     t[0].cast<py::array_t<int>>(),
+                     t[1].cast<py::array_t<double>>()
+                   );
+
+                   return pyb;
+                 }
+             ));
+        
 }

@@ -489,7 +489,7 @@ class Spline(abc.ABC):
         """
         cmr = []
 
-        # allow bezier
+        # Special case Bezier
         if self.whatami.startswith("Bezier"):
             cmr = (self.degrees + 1).tolist()
         else:

@@ -177,19 +177,28 @@ class NURBS(Spline):
 
         Parameters
         -----------
-        None
+        tolist : bool
+          Convert numpy properties into lists
 
         Returns
         --------
         dict_spline: dict
           Keys are {degrees, knot_vectors, control_points, weights}.
         """
-        return dict(
-            degrees=copy.deepcopy(self.degrees).tolist(),
-            knot_vectors=copy.deepcopy(self.knot_vectors),
-            control_points=copy.deepcopy(self.control_points).tolist(),
-            weights=copy.deepcopy(self.weights).tolist(),
-        )
+        if tolist:
+            return dict(
+                degrees=self.degrees.tolist(),
+                knot_vectors=self.knot_vectors.tolist(),
+                control_points=self.control_points.tolist(),
+                weights=self.weights.tolist()
+            )
+        else:
+            return dict(
+                degrees=copy.deepcopy(self.degrees),
+                knot_vectors=copy.deepcopy(self.knot_vectors),
+                control_points=copy.deepcopy(self.control_points),
+                weights=copy.deepcopy(self.weights)
+            )
 
     # member function alias
     ws = weights

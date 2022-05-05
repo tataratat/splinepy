@@ -6,13 +6,6 @@ option(COMPILE_SPLINELIB "Compile splinelib together." ON)
 option(VERBOSE_MAKE "Verbose `make` output." OFF)
 option(MINIMAL "Compile a minimal set of splines." OFF)
 
-# try to minimize runtime dependencies
-#set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
-
-#if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#    set(CMAKE_CXX_FLAGS "-static -static-libstdc++ -static-libgcc")
-#endif()
-
 set(SPLINELIBPY_FLAGS -fPIC)
 set(GNU_FLAGS_R -ffast-math -mtune=native -O3)
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")

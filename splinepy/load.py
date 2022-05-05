@@ -6,6 +6,7 @@ Single function file containing `load_splines`.
 import os
 
 from splinepy._splinepy import read_iges, read_xml, read_irit
+from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
 from splinepy.utils import abs_fname
@@ -54,7 +55,7 @@ def load_splines(fname, as_dict=False):
         loaded_splines = [io.mfem.load(fname)]
 
     elif ext == ".json":
-        loaded_splines = [io.json.load(fname)]
+        loaded_splines = list(io.json.load(fname).values())
 
     else:
         raise NotImplementedError(
@@ -70,12 +71,15 @@ def load_splines(fname, as_dict=False):
     splines = []
     for s in loaded_splines:
         # are you nurbs?
+        is_bspline = s.get("knot_vectors", None)
         is_nurbs = s.get("weights", None)
 
         if is_nurbs is not None:
             splines.append(NURBS(**s))
-        else:
+        elif is_bspline is not None:
             splines.append(BSpline(**s))
+        else:
+            splines.append(Bezier(**s))
             
     return splines
 

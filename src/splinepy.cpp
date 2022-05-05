@@ -4,6 +4,15 @@ namespace py = pybind11;
 
 // Bezier
 void init_bezier1(py::module_ &);
+void init_bezier2(py::module_ &);
+void init_bezier3(py::module_ &);
+void init_bezier4(py::module_ &);
+void init_bezier5(py::module_ &);
+void init_bezier6(py::module_ &);
+void init_bezier7(py::module_ &);
+void init_bezier8(py::module_ &);
+void init_bezier9(py::module_ &);
+void init_bezier10(py::module_ &);
 
 // BSpline
 void init_bspline1(py::module_ &);
@@ -75,5 +84,4 @@ PYBIND11_MODULE(_splinepy, m) {
 #endif
 
   init_reader(m);
-
 }

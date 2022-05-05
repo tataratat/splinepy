@@ -89,7 +89,7 @@ class Bezier(Spline):
 
     def recursive_evaluate(self, queries, n_threads=1):
         """
-        Evaluates spline, classique way.
+        Evaluates spline, classique (de Casteljau) way.
 
         Parameters
         -----------
@@ -165,41 +165,40 @@ class Bezier(Spline):
           return Bezier(
               control_points=self._control_points * factor,
               degrees=self._degrees
-            )
+          )
+
         elif isinstance(factor, type(self)):
             if len(factor.degrees) == len(self._degrees):
                 if factor.dim == self.dim:
-                    result_c_spline = self._c_spline.multiply_with_spline(
+                    res_c_spl = self._c_spline.multiply_with_spline(
                       factor._c_spline
                     )
                 elif factor.dim == 1:
-                    result_c_spline = self._c_spline.\
-                      multiply_with_scalar_spline(
+                    res_c_spl = self._c_spline.multiply_with_scalar_spline(
                         factor._c_spline
-                      )
+                    )
                 elif self.dim == 1:
-                    result_c_spline = factor._c_spline.\
-                      multiply_with_scalar_spline(
+                    res_c_spl = factor._c_spline.multiply_with_scalar_spline(
                         self._c_spline
-                      )
+                    )
                 else:
                   raise NotImplementedError()
 
                 # Copy the c spline to the python object
                 result = type(self)()
-                result._c_spline = result_c_spline
+                result._c_spline = res_c_spl
                 result._update_p()
                 return result
             else:
                 raise TypeError(
-                        "Multiplication with inequal parametric dimensions"
-                      )
+                    "Multiplication with inequal parametric dimensions"
+                )
         else:
             raise TypeError("Multiplication with unknown type requested.")
 
     def __add__(self, summand):
         """
-        Calculates the spline that formes the sum of the summand and the 
+        Calculates the spline that formes the sum of the summand and the
         current spline (function argument)
 
         The resulting spline fulfils the equation
@@ -207,32 +206,35 @@ class Bezier(Spline):
 
         Parameters
         ----------
-        summand :  spline with same parametric and physical dimension
+        summand : Bezier
+          spline with same parametric and physical dimension
 
         Returns
         -------
-        spline : New spline that describes sum
+        spline : Bezier
+          New spline that describes sum
         """
         if isinstance(summand, type(self)):
-            if  (
-                  summand.para_dim == self.para_dim
-                ) and (
-                  summand.dim == self.dim
-                ):
-                # Calculate Spline sum
-                resulting_c_spline = self._c_spline.add_spline(
+          if (
+              summand.para_dim == self.para_dim
+              and summand.dim == self.dim
+          ):
+              # Calculate Spline sum
+              resulting_c_spline = self._c_spline.add_spline(
                   summand._c_spline
-                )
+              )
 
-                # Copy the c spline to the python object
-                result = type(self)()
-                result._c_spline = resulting_c_spline
-                result._update_p()
-                return result
-            else :
-                raise TypeError("Dimension Mismatch.")
+              # Copy the c spline to the python object
+              result = type(self)()
+              result._c_spline = resulting_c_spline
+              result._update_p()
+              return result
+
+          else :
+              raise TypeError("Dimension Mismatch.")
+
         else :
-            raise TypeError("Sum must be formed with Bezier Splines")
+            raise TypeError("Sum must be formed between Bezier Splines")
 
     def compose(self, inner_function):
         """
@@ -253,22 +255,32 @@ class Bezier(Spline):
         """
         if isinstance(inner_function, type(self)):
             if inner_function.para_dim == 1:
-                resulting_c_spline = \
-                    self._c_spline.compose_line(inner_function._c_spline)
+                res_c_spl = self._c_spline.compose_line(
+                    inner_function._c_spline
+                )
+
             elif inner_function.para_dim == 2:
-                resulting_c_spline = \
-                    self._c_spline.compose_surface(inner_function._c_spline)
+                res_c_spl = self._c_spline.compose_surface(
+                    inner_function._c_spline
+                )
+
             elif inner_function.para_dim == 3:
-                resulting_c_spline = \
-                    self._c_spline.compose_volume(inner_function._c_spline)
+                res_c_spl = self._c_spline.compose_volume(
+                    inner_function._c_spline
+                )
+
             else :
-                raise TypeError("Compositions with high"
-                        " parametric dimensions not supported.")
+                raise TypeError(
+                    "Compositions with high"
+                    " parametric dimensions not supported."
+                )
+
             # Copy the c spline to the python object
             result = type(self)()
-            result._c_spline = resulting_c_spline
+            result._c_spline = res_c_spl
             result._update_p()
             return result
+
         else :
             raise TypeError("Composisiton must be formed with Bezier Splines")
 
@@ -286,20 +298,28 @@ class Bezier(Spline):
         """
         return type(self)(**self.todict())
 
-    def todict(self):
+    def todict(self, tolist=False):
         """
         Returns copy of degrees, control_points in dict.
 
         Parameters
         -----------
-        None
+        tolist : bool
+          Convert numpy properties into lists
 
         Returns
         --------
         dict_spline: dict
           Keys are {degrees, control_points}.
         """
-        return dict(
-            degrees=copy.deepcopy(self.degrees).tolist(),
-            control_points=copy.deepcopy(self.control_points).tolist(),
-        )
+        if tolist:
+            return dict(
+                degrees=self.degrees.tolist(),
+                control_points=self.control_points.tolist(),
+            )
+
+        else:
+            return dict(
+                degrees=copy.deepcopy(self.degrees)),
+                control_points=copy.deepcopy(self.control_points),
+            )

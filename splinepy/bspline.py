@@ -329,15 +329,23 @@ class BSpline(Spline):
 
         Parameters
         -----------
-        None
+        tolist : bool
+          Convert numpy properties into lists
 
         Returns
         --------
         dict_spline: dict
           Keys are {degrees, knot_vectors, control_points}.
         """
-        return dict(
-            degrees=copy.deepcopy(self.degrees).tolist(),
-            knot_vectors=copy.deepcopy(self.knot_vectors).tolist(),
-            control_points=copy.deepcopy(self.control_points).tolist(),
-        )
+        if tolist:
+            return dict(
+                degrees=self.degrees.tolist(),
+                knot_vectors=self.knot_vectors.tolist(),
+                control_points=self.control_points.tolist(),
+            )
+        else:
+            return dict(
+                degrees=copy.deepcopy(self.degrees),
+                knot_vectors=copy.deepcopy(self.knot_vectors),
+                control_points=copy.deepcopy(self.control_points)
+            )
