@@ -320,6 +320,6 @@ class Bezier(Spline):
 
         else:
             return dict(
-                degrees=copy.deepcopy(self.degrees)),
+                degrees=copy.deepcopy(self.degrees),
                 control_points=copy.deepcopy(self.control_points),
             )
