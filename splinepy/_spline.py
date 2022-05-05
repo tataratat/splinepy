@@ -65,7 +65,11 @@ class Spline(abc.ABC):
         None
         """
         self.degrees = degrees
-        self.knot_vectors = knot_vectors
+
+        # Bezier has no kvs
+        if knot_vectors is not None:
+            self.knot_vectors = knot_vectors
+
         self.control_points = control_points
 
         # Only for NURBS
@@ -338,8 +342,12 @@ class Spline(abc.ABC):
         """
         logging.debug("Spline - Computing unique knots using `np.unique`.")
         unique_knots = []
-        for k in self.knot_vectors:
-            unique_knots.append(np.unique(k).tolist())
+        if self.whatami.startswith("Bezier"):
+            unique_knots = [[0, 1]] * self.para_dim
+        else:
+            for k in self.knot_vectors:
+                unique_knots.append(np.unique(k).tolist())
+            
 
         return unique_knots
 
@@ -480,12 +488,13 @@ class Spline(abc.ABC):
         control_mesh_resolutions: list
         """
         cmr = []
-        #for i in range(self.para_dim):
-        #    cmr.append(
-        #        len(self.knot_vectors[i]) - self.degrees[i] - 1
-        #    )
-        for kv, d in zip(self.knot_vectors, self.degrees):
-            cmr.append(len(kv) - d - 1)
+
+        # Special case Bezier
+        if self.whatami.startswith("Bezier"):
+            cmr = (self.degrees + 1).tolist()
+        else:
+            for kv, d in zip(self.knot_vectors, self.degrees):
+                cmr.append(len(kv) - d - 1)
 
         return cmr
 
@@ -908,16 +917,19 @@ class Spline(abc.ABC):
             self._c_spline.write_irit(fname)
 
         elif ext == ".npz":
-            io.npz.write_npz(fname, self)
+            io.npz.export(fname, self)
+
+        elif ext == ".json":
+            io.json.export(fname, self)
 
         elif ext == ".mesh":
             # mfem nurbs mesh.
-            io.mfem.write_mfem(fname, self, precision=12)
+            io.mfem.export(fname, self, precision=12)
 
         else:
             raise ValueError(
                 "We can only export "
-                + "< .iges | .xml | .itd | .npz | .mesh > extentions"
+                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
             )
 
         logging.info(f"Spline - Exported current spline as {fname}.")

@@ -6,6 +6,16 @@ if(MINIMAL)
 else()
     set(
         SRCS
+            python/bezier1.cpp
+            python/bezier2.cpp
+            python/bezier3.cpp
+            python/bezier4.cpp
+            python/bezier5.cpp
+            python/bezier6.cpp
+            python/bezier7.cpp
+            python/bezier8.cpp
+            python/bezier9.cpp
+            python/bezier10.cpp
             python/bspline1.cpp
             python/bspline2.cpp
             python/bspline3.cpp
@@ -56,6 +66,9 @@ else()
     add_library(splines ALIAS SplineLib::splines)
     add_library(input_output ALIAS SplineLib::input_output)
 endif()
+
+# Link bezierManipulation
+target_link_libraries(_splinepy PRIVATE bezierManipulation)
 
 # Link Fitting
 add_subdirectory(fitting)

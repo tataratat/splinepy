@@ -29,7 +29,7 @@ _mfem_meaningful_keywords = {
 }
 
 
-def read_mfem(fname,):
+def load(fname,):
     """
     Reads mfem spline and returns a spline.
     Again, only supports 2D single patch.
@@ -279,7 +279,7 @@ def mfem_index_mapping(
     
 
 
-def write_mfem(fname, nurbs, precision=10):
+def export(fname, nurbs, precision=10):
     """
     Exports current nurbs in `mfem` format.
 

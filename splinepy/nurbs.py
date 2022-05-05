@@ -147,6 +147,9 @@ class NURBS(Spline):
         self._knot_vectors = self._c_spline.knot_vectors
         self._control_points = self._c_spline.control_points
         self._weights = self._c_spline.weights
+        # do the setters work.
+        self._para_dim = self._c_spline.para_dim
+        self._dim = self._c_spline.dim
         logging.debug(
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
@@ -174,19 +177,28 @@ class NURBS(Spline):
 
         Parameters
         -----------
-        None
+        tolist : bool
+          Convert numpy properties into lists
 
         Returns
         --------
         dict_spline: dict
           Keys are {degrees, knot_vectors, control_points, weights}.
         """
-        return dict(
-            degrees=copy.deepcopy(self.degrees),
-            knot_vectors=copy.deepcopy(self.knot_vectors),
-            control_points=copy.deepcopy(self.control_points),
-            weights=copy.deepcopy(self.weights),
-        )
+        if tolist:
+            return dict(
+                degrees=self.degrees.tolist(),
+                knot_vectors=self.knot_vectors.tolist(),
+                control_points=self.control_points.tolist(),
+                weights=self.weights.tolist()
+            )
+        else:
+            return dict(
+                degrees=copy.deepcopy(self.degrees),
+                knot_vectors=copy.deepcopy(self.knot_vectors),
+                control_points=copy.deepcopy(self.control_points),
+                weights=copy.deepcopy(self.weights)
+            )
 
     # member function alias
     ws = weights

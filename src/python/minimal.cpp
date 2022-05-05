@@ -1,9 +1,31 @@
+#include <bezier.hpp>
 #include <bspline.hpp>
 #include <nurbs.hpp>
 
 // only compile a minimal set of splines
 // 4P X 4D
 void init_minimal(py::module_ &m) {
+  // Bezier
+  add_bezier_pyclass<1, 1>(m, "Bezier1P1D");
+  add_bezier_pyclass<1, 2>(m, "Bezier1P2D");
+  add_bezier_pyclass<1, 3>(m, "Bezier1P3D");
+  add_bezier_pyclass<1, 4>(m, "Bezier1P4D");
+
+  add_bezier_pyclass<2, 1>(m, "Bezier2P1D");
+  add_bezier_pyclass<2, 2>(m, "Bezier2P2D");
+  add_bezier_pyclass<2, 3>(m, "Bezier2P3D");
+  add_bezier_pyclass<2, 4>(m, "Bezier2P4D");
+
+  add_bezier_pyclass<3, 1>(m, "Bezier3P1D");
+  add_bezier_pyclass<3, 2>(m, "Bezier3P2D");
+  add_bezier_pyclass<3, 3>(m, "Bezier3P3D");
+  add_bezier_pyclass<3, 4>(m, "Bezier3P4D");
+
+  add_bezier_pyclass<4, 1>(m, "Bezier4P1D");
+  add_bezier_pyclass<4, 2>(m, "Bezier4P2D");
+  add_bezier_pyclass<4, 3>(m, "Bezier4P3D");
+  add_bezier_pyclass<4, 4>(m, "Bezier4P4D");
+
   // BSpline
   add_bspline_pyclass<1, 1>(m, "BSpline1P1D");
   add_bspline_pyclass<1, 2>(m, "BSpline1P2D");

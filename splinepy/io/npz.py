@@ -11,7 +11,7 @@ keys in raw files are:
 import numpy as np
 
 
-def read_npz(fname,):
+def load(fname,):
     """
     Read spline in `.npz` form.
 
@@ -39,7 +39,7 @@ def read_npz(fname,):
     return dict_spline
 
 
-def write_npz(fname, spline):
+def export(fname, spline):
     """
     Save spline as `.npz`.
 

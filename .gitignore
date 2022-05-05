@@ -1,0 +1,12 @@
+# Ignore build directories
+**/build/
+
+# Ignore python specific file and directories
+**/*.egg-info/
+**/__pycache__/
+
+# Ignore binary object files
+*.so
+
+# Distribution information
+**/dist/

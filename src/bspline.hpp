@@ -55,6 +55,10 @@ public:
   using NumberOfParametricCoordinates =
       typename ParameterSpace::NumberOfParametricCoordinates_;
 
+  // make both dims available
+  int para_dim_ = para_dim;
+  int dim_ = dim;
+
   // Counters
   int i = 0;
   int j = 0;
@@ -758,6 +762,10 @@ void add_bspline_pyclass(py::module &m, const char *class_name) {
                            &PyBSpline<para_dim, dim>::skip_update)
         .def_readonly("whatami",
                            &PyBSpline<para_dim, dim>::whatami)
+        .def_readonly("dim",
+                           &PyBSpline<para_dim, dim>::dim_)
+        .def_readonly("para_dim",
+                           &PyBSpline<para_dim, dim>::para_dim_)
         .def("evaluate",
                  &PyBSpline<para_dim, dim>::evaluate,
                  py::arg("queries"),
