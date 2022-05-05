@@ -55,7 +55,8 @@ def load_splines(fname, as_dict=False):
         loaded_splines = [io.mfem.load(fname)]
 
     elif ext == ".json":
-        loaded_splines = list(io.json.load(fname).values())
+        loaded_splines = [splines for spline_list in io.json.load(
+            fname).values() for splines in spline_list]
 
     else:
         raise NotImplementedError(
