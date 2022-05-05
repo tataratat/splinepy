@@ -41,7 +41,7 @@ def load(fname):
               base64.b64decode(
                 jbz["control_points"].encode('ascii')
               ),
-              dtype=np.float
+              dtype=np.float64
               ).reshape((-1, jbz["dim"]))
 
         # Transform data into Splines
@@ -119,13 +119,13 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
     spline_dictonary_list = []
     for i_spline in spline_list:
         i_spline_dict["SplineType"] = type(i_spline).__qualname__
-        if not typetype(i_spline).__qualname_ in ["Bezier", "BSpline", "NURBS"]:
+        if not type(i_spline).__qualname__ in ["Bezier", "BSpline", "NURBS"]:
             logging.warning("Unknown spline-type : " +
                   i_spline_dict["SplineType"] + " will be ignored.")
             continue
 
         # Create Dictionary
-        i_spline_dict = i_spline.todict()
+        i_spline_dict = i_spline.todict(tolist=True)
         # Append para_dim and dim
         i_spline_dict["dim"] = i_spline.dim
         i_spline_dict["para_dim"] = i_spline.para_dim
