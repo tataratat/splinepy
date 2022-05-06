@@ -118,18 +118,20 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
     # Append all splines to a dictionary
     spline_dictonary_list = []
     for i_spline in spline_list:
-        i_spline_dict["SplineType"] = type(i_spline).__qualname__
         if not type(i_spline).__qualname__ in ["Bezier", "BSpline", "NURBS"]:
-            logging.warning("Unknown spline-type : " +
-                  i_spline_dict["SplineType"] + " will be ignored.")
+            logging.warning(
+                f"Skipping unknown spline-type `{type(i_spline).__qualname__}`"
+            )
             continue
 
         # Create Dictionary
         i_spline_dict = i_spline.todict(tolist=True)
+        i_spline_dict["SplineType"] = type(i_spline).__qualname__
         # Append para_dim and dim
         i_spline_dict["dim"] = i_spline.dim
         i_spline_dict["para_dim"] = i_spline.para_dim
         spline_dictonary_list.append(i_spline_dict)
+
         if base64encoding:
             i_spline_dict["control_points"] = base64.b64encode(
                 np.array(i_spline_dict["control_points"])
@@ -139,4 +141,5 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
 
     with open(fname, 'w') as file_pointer:
         file_pointer.write(json.dumps(output_dict, indent=4))
+
     return output_dict
