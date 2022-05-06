@@ -171,14 +171,14 @@ class NURBS(Spline):
 
         return new_nurbs
 
-    def todict(self):
+    def todict(self, tolist=False):
         """
         Returns copy of degrees, knot_vectors, control_points, weights in dict.
 
         Parameters
         -----------
         tolist : bool
-          Convert numpy properties into lists
+          Default is False. Convert numpy properties into lists
 
         Returns
         --------

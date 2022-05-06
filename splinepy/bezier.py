@@ -305,7 +305,7 @@ class Bezier(Spline):
         Parameters
         -----------
         tolist : bool
-          Convert numpy properties into lists
+          Default is False. Convert numpy properties into lists
 
         Returns
         --------
