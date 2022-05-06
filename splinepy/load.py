@@ -55,12 +55,17 @@ def load_splines(fname, as_dict=False):
         loaded_splines = [io.mfem.load(fname)]
 
     elif ext == ".json":
-        loaded_splines = [splines for spline_list in io.json.load(
-            fname).values() for splines in spline_list]
+        json_load_raw = io.json.load(fname)
+        # json load returns splines organized by their types in dict
+        # pretty neat. but for now, let's keep the format consistent
+        loaded_splines = []
+        for splines in json_load_raw.values():
+            loaded_splines.extend(splines)
 
     else:
         raise NotImplementedError(
-            "We can only import < .iges | .xml | .itd | .npz | .mesh > "
+            "We can only import "
+            "< .iges | .xml | .itd | .npz | .mesh | .json > "
             "spline files."
         )
 
