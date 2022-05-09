@@ -15,10 +15,12 @@ class NurbsExt : public splinelib::sources::splines::Nurbs<para_dim, dim> {
 public:
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
   using Coordinate_ = typename Base_::Coordinate_;
+  using ScalarCoordinate_ = typename Coordinate::value_type;
   using Derivative_ = typename Base_::Derivative_;
   using Knot_ = typename Base_::Knot_;
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
+  using ScalarParametricCoordinate_ typename ParametricCoordinate::value_type;
   using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
   using OutputInformation_ = splinelib::Tuple<
       typename ParameterSpace_::OutputInformation_,
@@ -138,5 +140,76 @@ public:
   }
 
 
+  /* [start] Helper functions for `FindParametricCoordinate` */
+  void _distance(ParametricCoordinate_& q,
+                 double* goal,
+                 std::array<double, dim>& dist) {
+
+    auto const &physc = Base_::operator()(q);
+    ew_diff(physc, goal, dist);
+  }
+
+  void _parametric_bounds(std::array<std::array<double, dim>, 2>& pbounds) {
+    ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
+    int i = 0;
+    for (auto& knotvector : parameter_space.knot_vectors_) {
+      // first and last knots of each kv are the bounds
+      auto const &kf = knotvector->GetFront();
+      auto const &kb = knotvector->GetBack();
+
+      pbounds[0][i] = kf.Get();
+      pbounds[1][i] = kb.Get();
+
+      i++;
+    }
+   
+  }
+
+  /* goodguess including bounds guess */
+  void _good_guess(double* goal,
+                   int option,
+                   ParametricCoordinates_& goodguess,
+                   std::array<std::array<double, dim>, 2>& boundguess) {
+
+    // return mid point. will serve until better guessers arrive.
+    if (option == 0) {
+       _parametric_bounds(boundguess);
+       std::array<double, 2> tmpgoodguess;
+       ew_mean(boundguess[0], boundguess[1], tmpgoodguess);
+
+       for (int i{0}; i < para_dim; i++) {
+         goodguess[i] = ScalarParametricCoordinate_{tmpgoodguess[i]};
+       }
+    } else {
+    
+    }
+  }
+
+  void _clip(ParametricCoordinates_& guess,
+             std::array<std::array<double, dim>, 2>& bounds,
+             std::array<bool, dim>& clipped) {
+  }
+
+  void FindParametricCoordinate(double* query, /* <- from physical space */
+                                double* para_coord) {
+
+    // everything we need
+    ParametricCoordinate_ current_guess{};
+    std::array<std::array<double, dim>, 2> searchbounds{};
+    
+    // start with some sort of guess
+    _good_guess(query,
+                0, /* only one option for now */
+                current_guess,
+                searchbounds);
+
+    int max_iter = para_dim * 15;
+
+    // series of required lambda functions
+    auto distance = [&] (double* pc, double* q,) {
+      
+    }
+  
+  }
 };
 
