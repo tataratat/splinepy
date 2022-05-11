@@ -24,7 +24,7 @@ inline void ew_minus(const std::array<T, dim>& arr1,
 /* elementwise subtraction overload for SplineLib Coordinate*/
 template<typename T, int dim>
 inline void ew_minus(
-    const vector_spaces::VectorSpace<dim>::Coordinate_ arr1,
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
     const std::array<T, dim>& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
@@ -37,7 +37,7 @@ inline void ew_minus(
 template<typename T, int dim>
 inline void ew_minus(
     const std::array<T, dim>& arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_ arr2,
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
     out[i] = arr1[i] - arr2[splinelib::Index{i}].Get();
@@ -49,7 +49,7 @@ inline void ew_minus(
 template<typename T, int dim>
 inline void ew_minus(
     const double* arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_ arr2,
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
     std::array<T, dim>& out) {
 
   for (int i{0}; i < dim; i++) {
@@ -196,4 +196,84 @@ inline void gauss_with_pivot(
     }
     x[i] = (x[i] - sum) / A[i][i];
   }
+}
+
+
+template<typename T, int dim>
+inline void dot(const std::array<T, dim>& arr1,
+                const std::array<T, dim>& arr2,
+                T& dotted) {
+  dotted = T{}; /* default value should be 0. */
+  for (int i{0}; i < dim; i++) {
+    dotted += arr1[i] * arr2[i];
+  }
+}
+
+
+/* maybe it is annoying sometimes to have dot as subroutine */
+template <typename T, int dim>
+inline T dot(const std::array<T, dim>& arr1,
+             const std::array<T, dim>& arr2) {
+  T returnval;
+  dot(arr1, arr2, returnval);
+
+  return returnval;
+}
+
+
+template<typename T, int dim>
+inline void dot(
+    const std::array<T, dim>& arr1,
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
+    T& dotted) {
+  dotted = T{};
+  for (int i{0}; i < dim; i++) {
+    dotted += arr1[i] * arr2[splinelib::Index{i}].Get();
+  }
+}
+
+
+template<typename T, int dim>
+inline void dot(
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
+    const std::array<T, dim>& arr2,
+    T& dotted) {
+  // switch place
+  dot(arr2, arr1, dotted);
+}
+
+
+template<typename T, int dim>
+inline T dot(
+    const std::array<T, dim>& arr1,
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2) {
+  T returnval;
+  dot(arr1, arr2, returnval);
+  return returnval;
+}
+
+
+template<typename T, int dim>
+inline T dot(
+    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
+    const std::array<T, dim>& arr2) {
+  return dot(arr2, arr1);
+}
+
+template<typename T, int dim1, int dim2>
+inline void AAt(
+    const std::array<std::array<T, dim2>, dim1>& arr1,
+    std::array<std::array<T, dim1>, dim1>& out) {
+
+  // use symmetry
+  for (int i{0}; i < dim1; i++) {
+    for (int j{0}; j < dim2; j++) {
+      if (i > j) continue;
+      out[i][j] = dot(arr1[i], arr1[j]);
+
+      // fill symmetric part
+      if (i != j) out[j][i] = out[i][j];
+    }
+  }
+
 }
