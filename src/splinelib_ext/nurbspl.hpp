@@ -15,12 +15,12 @@ class NurbsExt : public splinelib::sources::splines::Nurbs<para_dim, dim> {
 public:
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
   using Coordinate_ = typename Base_::Coordinate_;
-  using ScalarCoordinate_ = typename Coordinate::value_type;
+  using ScalarCoordinate_ = typename Coordinate_::value_type;
   using Derivative_ = typename Base_::Derivative_;
   using Knot_ = typename Base_::Knot_;
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
-  using ScalarParametricCoordinate_ typename ParametricCoordinate::value_type;
+  using ScalarParametricCoordinate_ = typename ParametricCoordinate_::value_type;
   using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
   using OutputInformation_ = splinelib::Tuple<
       typename ParameterSpace_::OutputInformation_,
@@ -168,13 +168,13 @@ public:
   /* goodguess including bounds guess */
   void _good_guess(double* goal,
                    int option,
-                   ParametricCoordinates_& goodguess,
-                   std::array<std::array<double, dim>, 2>& boundguess) {
+                   ParametricCoordinate_& goodguess,
+                   std::array<std::array<double, para_dim>, 2>& boundguess) {
 
     // return mid point. will serve until better guessers arrive.
     if (option == 0) {
        _parametric_bounds(boundguess);
-       std::array<double, 2> tmpgoodguess;
+       std::array<double, para_dim> tmpgoodguess;
        ew_mean(boundguess[0], boundguess[1], tmpgoodguess);
 
        for (int i{0}; i < para_dim; i++) {
@@ -185,30 +185,57 @@ public:
     }
   }
 
-  void _clip(ParametricCoordinates_& guess,
-             std::array<std::array<double, dim>, 2>& bounds,
-             std::array<bool, dim>& clipped) {
+  void _build_djdu(ParametricCoordinate_& guess, /* in */
+                   std::array<double, dim>& dist /* in */
+                   std::array<double, para_dim>& lhs /* out */) {
+    // lhs is djdu
+    double tmp;
+    Derivative_ derq; // derivative query 
+    for (int i{0}; i < para_dim; i++) { /* fill */
+      // get deriv of order 1.
+      derq.fill(splinelib::Derivative{0});
+      derq[i] = splinelib::Derivative{1}; 
+      auto const &der = Base_::operator()(derq);
+
+      int j{0};
+      tmp = 0.;
+      for (const auto& d : der) { /* matmul */
+        tmp += dist[j] * d.Get();
+        j++;
+      }
+      lhs[i] = 2. * tmp;
+    }
   }
 
-  void FindParametricCoordinate(double* query, /* <- from physical space */
-                                double* para_coord) {
+  void _build_dj2du2(ParametricCoordinate_& guess,
+                     std::array<std::array<double, para_dim>, para_dim>& rhs) {
+    
+  }
+
+  void ClosestParametricCoordinate(double* query, /* <- from physical space */
+                                   double* para_coord) {
 
     // everything we need
+    // here, we try nested array
     ParametricCoordinate_ current_guess{};
     std::array<std::array<double, dim>, 2> searchbounds{};
+    std::array<std::array<double, para_dim>, para_dim> d2jdu2; /* lhs */
+    std::array<double, para_dim> djdu; /* rhs */
+    std::array<int, para_dim> clipped;
+    
     
     // start with some sort of guess
     _good_guess(query,
-                0, /* only one option for now */
+                0, /* only one option for now. TODO: extend*/
                 current_guess,
                 searchbounds);
 
-    int max_iter = para_dim * 15;
+    int max_iter = para_dim * 20; /* max newton iter */
 
-    // series of required lambda functions
-    auto distance = [&] (double* pc, double* q,) {
-      
-    }
+    /* newton loops */
+    for (int i{0}; i < max_iter; i++) {
+
+    } 
   
   }
 };
