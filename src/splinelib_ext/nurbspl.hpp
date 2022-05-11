@@ -181,13 +181,14 @@ public:
          goodguess[i] = ScalarParametricCoordinate_{tmpgoodguess[i]};
        }
     } else {
-    
     }
   }
 
-  void _build_djdu(ParametricCoordinate_& guess, /* in */
-                   std::array<double, dim>& dist /* in */
-                   std::array<double, para_dim>& lhs /* out */) {
+  void _build_djdu(
+      ParametricCoordinate_& guess, /* in */
+      std::array<double, dim>& dist, /* in */
+      std::array<std::array<double, dim>, para_dim>& eyeders, /* out */
+      std::array<double, para_dim>& lhs /* out */) {
     // lhs is djdu
     double tmp;
     Derivative_ derq; // derivative query 
@@ -201,15 +202,41 @@ public:
       tmp = 0.;
       for (const auto& d : der) { /* matmul */
         tmp += dist[j] * d.Get();
+        eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
         j++;
       }
       lhs[i] = 2. * tmp;
     }
   }
 
-  void _build_dj2du2(ParametricCoordinate_& guess,
-                     std::array<std::array<double, para_dim>, para_dim>& rhs) {
+  void _build_dj2du2(
+      ParametricCoordinate_& guess,
+      std::array<double, dim>& dist,
+      std::array<std::array<double, dim>, para_dim>& eyeders,
+      std::array<std::array<double, para_dim>, para_dim>& rhs) {
     
+    // prepare AAt of eyeders
+    std::array<std::array<double, para_dim>, para_dim> eyedersAAt;
+    AAt(eyeders, eyedersAAt);
+
+    Derivative_ derq; // derivative query
+    for (int i{0}; i < para_dim; i++) {
+      for (int j{0}; j < para_dim; j++) {
+        // it results in symmetric matrix.
+        // until we implement something special for it,
+        // fill in bottom half same as upper half
+        if (i > j) continue; 
+        derq.fill(splinelib::Derivative{0});
+        derq[i]++;
+        derq[j]++;
+        auto const &der = Base_::operator()(derq);
+
+        rhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
+
+        // fill symmetric part
+        if (i != j) rhs[j][i] = rhs[i][j];
+      }
+    }
   }
 
   void ClosestParametricCoordinate(double* query, /* <- from physical space */
