@@ -25,7 +25,7 @@ inline void ew_minus(const std::array<T, dim>& arr1,
 /* elementwise subtraction overload for SplineLib Coordinate*/
 template<typename T, int dim>
 inline void ew_minus(
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
     const std::array<T, dim>& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
@@ -38,7 +38,7 @@ inline void ew_minus(
 template<typename T, int dim>
 inline void ew_minus(
     const std::array<T, dim>& arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
     out[i] = arr1[i] - arr2[splinelib::Index{i}].Get();
@@ -50,7 +50,7 @@ inline void ew_minus(
 template<typename T, int dim>
 inline void ew_minus(
     const double* arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
     std::array<T, dim>& out) {
 
   for (int i{0}; i < dim; i++) {
@@ -83,14 +83,15 @@ inline void ew_plus(const std::array<T, dim>& arr1,
 }
 
 /* inplace elementwise addition */
-template<typename T, int para_dim>
+template<int para_dim>
 inline void ew_iplus(
     const std::array<double, para_dim>& arr1,
-    parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_& arr2) {
+    typename
+      parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_& arr2) {
 
   using PC =
-    typename parameter_spaces::ParameterSpaces<para_dim>::ParameterCoordinate_;
-  using SPC = PC::value_type;
+    typename parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_;
+  using SPC = typename PC::value_type;
 
   int i{0};
   for (auto& a2 : arr2) {
@@ -135,12 +136,13 @@ inline double norm2(std::array<T, dim>& in) {
 template<typename T, int para_dim>
 inline void clip(
     std::array<std::array<double, para_dim>, 2>& bounds,
-    parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_& arr1,
+    typename
+      parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_& arr1,
     std::array<int, para_dim> clipped) {
 
   using PC =
-    typename parameter_spaces::ParameterSpaces<para_dim>::ParameterCoordinate_;
-  using SPC = PC::value_type;
+    typename parameter_spaces::ParameterSpace<para_dim>::ParameterCoordinate_;
+  using SPC = typename PC::value_type;
 
   for (int i{0}; i < para_dim; i++) {
     // check if it is already clipped
@@ -167,9 +169,9 @@ inline void clip(
  * author: Potatoswatter
  */
 template< typename order_iter, typename value_iter>
-void reorder(order_iterator order_begin,
-             order_iterator order_end,
-             value_iterator v)  {
+void reorder(order_iter order_begin,
+             order_iter order_end,
+             value_iter v)  {
   typedef typename std::iterator_traits<value_iter>::value_type value_t;
   typedef typename std::iterator_traits<order_iter>::value_type index_t;
   typedef typename std::iterator_traits<order_iter>::difference_type diff_t;
@@ -209,7 +211,7 @@ inline void gauss_with_pivot(
     std::array<double, para_dim>& x) {
 
   int maxrow;
-  double maxval;
+  double maxval, maybemax;
   std::array<int, para_dim> indexmap;
   std::iota(indexmap.begin(), indexmap.end(), 0);
  
@@ -227,9 +229,9 @@ inline void gauss_with_pivot(
     maxrow = i;
     maxval = std::abs(A[i][i]);
     for (int j{i+1}; j < para_dim; j++) {
-      curmax = std::abs(A[j][i]);
-      if (curmax > maxval) {
-        maxval = curmax;
+      maybemax = std::abs(A[j][i]);
+      if (maybemax > maxval) {
+        maxval = maybemax;
         maxrow = j;
       }
     }
@@ -307,7 +309,7 @@ inline T dot(const std::array<T, dim>& arr1,
 template<typename T, int dim>
 inline void dot(
     const std::array<T, dim>& arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr2,
     T& dotted) {
   dotted = T{};
   for (int i{0}; i < dim; i++) {
@@ -318,7 +320,7 @@ inline void dot(
 
 template<typename T, int dim>
 inline void dot(
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
     const std::array<T, dim>& arr2,
     T& dotted) {
   // switch place
@@ -329,7 +331,7 @@ inline void dot(
 template<typename T, int dim>
 inline T dot(
     const std::array<T, dim>& arr1,
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr2) {
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr2) {
   T returnval;
   dot(arr1, arr2, returnval);
   return returnval;
@@ -338,7 +340,7 @@ inline T dot(
 
 template<typename T, int dim>
 inline T dot(
-    const vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
+    const typename vector_spaces::VectorSpace<dim>::Coordinate_& arr1,
     const std::array<T, dim>& arr2) {
   return dot(arr2, arr1);
 }
