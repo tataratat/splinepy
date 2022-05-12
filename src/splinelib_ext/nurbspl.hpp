@@ -146,7 +146,7 @@ public:
                  std::array<double, dim>& dist) {
 
     auto const &physc = Base_::operator()(q);
-    ew_diff(physc, goal, dist);
+    ew_minus(physc, goal, dist);
   }
 
   void _parametric_bounds(std::array<std::array<double, dim>, 2>& pbounds) {
@@ -191,25 +191,26 @@ public:
       std::array<double, para_dim>& lhs /* out */) {
     // lhs is djdu
     double tmp;
+    int j;
     Derivative_ derq; // derivative query 
     for (int i{0}; i < para_dim; i++) { /* fill */
       // get deriv of order 1.
       derq.fill(splinelib::Derivative{0});
       derq[i] = splinelib::Derivative{1}; 
-      auto const &der = Base_::operator()(derq);
+      auto const &der = Base_::operator()(guess, derq);
 
-      int j{0};
+      j = 0;
       tmp = 0.;
       for (const auto& d : der) { /* matmul */
         tmp += dist[j] * d.Get();
         eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
         j++;
       }
-      lhs[i] = 2. * tmp;
+      lhs[i] = -2. * tmp; // apply minus here already!
     }
   }
 
-  void _build_dj2du2(
+  void _build_d2jdu2(
       ParametricCoordinate_& guess,
       std::array<double, dim>& dist,
       std::array<std::array<double, dim>, para_dim>& eyeders,
@@ -229,7 +230,7 @@ public:
         derq.fill(splinelib::Derivative{0});
         derq[i]++;
         derq[j]++;
-        auto const &der = Base_::operator()(derq);
+        auto const &der = Base_::operator()(guess, derq);
 
         rhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
 
@@ -244,10 +245,13 @@ public:
 
     // everything we need
     // here, we try nested array
+    double tolerance = 1e-10;
     ParametricCoordinate_ current_guess{};
     std::array<std::array<double, dim>, 2> searchbounds{};
     std::array<std::array<double, para_dim>, para_dim> d2jdu2; /* lhs */
     std::array<double, para_dim> djdu; /* rhs */
+    std::array<double, para_dim> dx; /* sol */
+    std::array<std::array<double, dim>, para_dim> eyeders;
     std::array<int, para_dim> clipped;
     
     
@@ -259,11 +263,29 @@ public:
 
     int max_iter = para_dim * 20; /* max newton iter */
 
+    double prevnorm{123456789.};
     /* newton loops */
     for (int i{0}; i < max_iter; i++) {
-
+      _build_djdu(current_guess, dist, eyeders, djdu); /* rhs */
+      _build_dj2du2(current_guess, dist, eyeders, d2jdu2); /* lhs */
+      gauss_with_pivot(d2jdu2, djdu, clipped, dx); /* solve */
+                                                   // don't trust d2jdu2, djdu,
+                                                   // they've been altered
+                                                   // inplace.
+      ew_iplus(dx, current_guess); /* update */
+      clip(searchbounds, current_guess, clipped); /* clip */
+      // Customer satisfaction survey
+      // ============================
+      // 1. Converged?
+      // 2. All clipped?
+      if (std::abs(prevnorm - norm2(djdu)) < tolerance
+          || nonzeros(clipped) == para_dim) break;
     } 
-  
+
+    // fill up the para_coord
+    for (int i{0}; i < para_dim; i++) {
+      para_coord[i] = current_guess[i].Get();
+    }
   }
 };
 
