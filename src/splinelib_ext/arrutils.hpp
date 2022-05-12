@@ -30,7 +30,7 @@ inline void ew_minus(
     const std::array<T, dim>& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
-    out[i] = arr1[splinelib::Index{i}].Get() - arr2[i];
+    out[i] = arr1[i].Get() - arr2[i];
   }
 }
 
@@ -42,7 +42,7 @@ inline void ew_minus(
     const VC& arr2,
     std::array<T, dim>& out) {
   for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] - arr2[splinelib::Index{i}].Get();
+    out[i] = arr1[i] - arr2[i].Get();
   }
 }
 
@@ -55,7 +55,20 @@ inline void ew_minus(
     std::array<T, dim>& out) {
 
   for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] - arr2[splinelib::Index{i}].Get();
+    out[i] = arr1[i] - arr2[i].Get();
+  }
+}
+
+
+/* elementwise subtraction overload for ptr */
+template<typename T, std::size_t dim, typename VC>
+inline void ew_minus(
+    const VC& arr1,
+    const double* arr2,
+    std::array<T, dim>& out) {
+
+  for (int i{0}; i < dim; i++) {
+    out[i] = arr1[i].Get() - arr2[i];
   }
 
 }
@@ -94,6 +107,7 @@ inline void ew_iplus(const std::array<double, para_dim>& arr1, PC& arr2) {
     // TODO does one of them do less work?
     //a2 += SPC{arr1[i]};
     a2 = SPC{a2.Get() + arr1[i]};
+    i++;
   }
 }
 
@@ -133,7 +147,7 @@ template<typename T, std::size_t para_dim, typename PC>
 inline void clip(
     std::array<std::array<T, para_dim>, 2>& bounds,
     PC& arr1,
-    std::array<int, para_dim> clipped) {
+    std::array<int, para_dim>& clipped) {
 
   using SPC = typename PC::value_type;
 
@@ -270,8 +284,11 @@ inline void gauss_with_pivot(
     for (int j{i+1}; j < para_dim; j++) {
       sum += A[i][j] * x[j];
     }
-    x[i] = (x[i] - sum) / A[i][i];
+    x[i] = (b[i] - sum) / A[i][i];
+    
+    std::cout << "x" << i <<": " << x[i] << " "; 
   }
+  std::cout << "\n";
 
   // reorder
   reorder(x, indexmap);
@@ -362,7 +379,7 @@ inline void AAt(
 
 
 template<typename T, std::size_t dim>
-inline int nonzeros(std::array<T, dim> arr) {
+inline int nonzeros(std::array<T, dim>& arr) {
   int nnz{0};
   for (int i{0}; i < dim; i++) {
     if (arr[i] != 0) nnz++;

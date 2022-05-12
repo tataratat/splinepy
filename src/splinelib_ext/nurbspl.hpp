@@ -202,9 +202,11 @@ public:
       derq[i] = splinelib::Derivative{1}; 
       auto const &der = Base_::operator()(guess, derq);
 
+
       j = 0;
       tmp = 0.;
       for (const auto& d : der) { /* matmul */
+        std::cout << d.Get() <<"\n";
         tmp += dist[j] * d.Get();
         eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
         j++;
@@ -257,6 +259,7 @@ public:
     std::array<double, dim> dist;
     std::array<std::array<double, dim>, para_dim> eyeders;
     std::array<int, para_dim> clipped;
+    clipped.fill(0);
     
     
     // start with some sort of guess
@@ -267,23 +270,78 @@ public:
 
     int max_iter = para_dim * 20; /* max newton iter */
 
-    double prevnorm{123456789.};
+    double prevnorm{123456789.}, curnorm;
     /* newton loops */
     for (int i{0}; i < max_iter; i++) {
+      _distance(current_guess, query, dist);
+      std::cout << "dist===============\n";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << dist[i] << " ";
+      }
+      std::cout << "===============\n";
+
       _build_djdu(current_guess, dist, eyeders, djdu); /* rhs */
       _build_d2jdu2(current_guess, dist, eyeders, d2jdu2); /* lhs */
+
+      std::cout << "d2jdu2===============\n";
+      for (int i{0}; i < para_dim; i++) {
+        for (int j{0}; j < para_dim; j++) {
+          std::cout << d2jdu2[i][j] << " ";
+        }
+        std::cout << "\n";
+      }
+      std::cout << "===============\n";
+      std::cout << "djdu===============\n";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << djdu[i] << " ";
+      }
+      std::cout << "===============\n";
+
+
       gauss_with_pivot(d2jdu2, djdu, clipped, dx); /* solve */
                                                    // don't trust d2jdu2, djdu,
                                                    // they've been altered
                                                    // inplace.
+      std::cout << "d2jdu2===============\n";
+      for (int i{0}; i < para_dim; i++) {
+        for (int j{0}; j < para_dim; j++) {
+          std::cout << d2jdu2[i][j] << " ";
+        }
+        std::cout << "\n";
+      }
+      std::cout << "===============\n";
+      std::cout << "djdu===============\n";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << djdu[i] << " ";
+      }
+      std::cout << "===============\n";
+
+
       ew_iplus(dx, current_guess); /* update */
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << current_guess[i].Get() << " ";
+      }
+      std::cout  << "<- current\n";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << dx[i] << " ";
+      }
+      std::cout  << "<- dx\n";
+
       clip(searchbounds, current_guess, clipped); /* clip */
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << clipped[i] << " ";
+      }
+      std::cout  << "<- clipped\n";
+
+
       // Customer satisfaction survey
       // ============================
       // 1. Converged?
       // 2. All clipped?
-      if (std::abs(prevnorm - norm2(djdu)) < tolerance
+      curnorm = norm2(djdu);
+      if (std::abs(prevnorm - curnorm) < tolerance
           || nonzeros(clipped) == para_dim) break;
+      prevnorm = curnorm;
     } 
 
     // fill up the para_coord
