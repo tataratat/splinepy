@@ -8,6 +8,8 @@
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
+#include "arrutils.hpp"
+
 namespace py = pybind11;
 
 template<int para_dim, int dim>
@@ -149,7 +151,8 @@ public:
     ew_minus(physc, goal, dist);
   }
 
-  void _parametric_bounds(std::array<std::array<double, dim>, 2>& pbounds) {
+  void _parametric_bounds(
+      std::array<std::array<double, para_dim>, 2>& pbounds) {
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
     int i = 0;
     for (auto& knotvector : parameter_space.knot_vectors_) {
@@ -228,8 +231,8 @@ public:
         // fill in bottom half same as upper half
         if (i > j) continue; 
         derq.fill(splinelib::Derivative{0});
-        derq[i]++;
-        derq[j]++;
+        ++derq[i];
+        ++derq[j];
         auto const &der = Base_::operator()(guess, derq);
 
         rhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
@@ -247,10 +250,11 @@ public:
     // here, we try nested array
     double tolerance = 1e-10;
     ParametricCoordinate_ current_guess{};
-    std::array<std::array<double, dim>, 2> searchbounds{};
+    std::array<std::array<double, para_dim>, 2> searchbounds{};
     std::array<std::array<double, para_dim>, para_dim> d2jdu2; /* lhs */
     std::array<double, para_dim> djdu; /* rhs */
     std::array<double, para_dim> dx; /* sol */
+    std::array<double, dim> dist;
     std::array<std::array<double, dim>, para_dim> eyeders;
     std::array<int, para_dim> clipped;
     
@@ -267,7 +271,7 @@ public:
     /* newton loops */
     for (int i{0}; i < max_iter; i++) {
       _build_djdu(current_guess, dist, eyeders, djdu); /* rhs */
-      _build_dj2du2(current_guess, dist, eyeders, d2jdu2); /* lhs */
+      _build_d2jdu2(current_guess, dist, eyeders, d2jdu2); /* lhs */
       gauss_with_pivot(d2jdu2, djdu, clipped, dx); /* solve */
                                                    // don't trust d2jdu2, djdu,
                                                    // they've been altered

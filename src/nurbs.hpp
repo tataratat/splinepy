@@ -558,6 +558,28 @@ public:
 
   }
 
+  py::array_t<double> closest_para_coord(
+      py::array_t<double> queries) {
+    // input arr
+    py::buffer_info q_buf = queries.request();
+    double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
+    const int n_queries = q_buf.shape[0];
+
+    // output arr
+    py::array_t<double> results(n_queries * para_dim);
+    py::buffer_info r_buf = results.request();
+    double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
+
+    // TODO: turn this into multithread later
+    for (int k{0}; k < n_queries; k++) {
+      c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
+                                          &r_buf_ptr[k * para_dim]);
+    }
+
+    results.resize({n_queries, para_dim});
+    return  results;
+  }
+
   void write_iges(std::string fname) {
 
     input_output::iges::Write(
@@ -653,6 +675,9 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                    &PyNurbs<para_dim, dim>::sample,
                    py::arg("resoultion"),
                    py::return_value_policy::move)
+          .def("closest_para_coord",
+                   &PyNurbs<para_dim, dim>::closest_para_coord,
+                   py::arg("query"))
           .def("write_iges",
                    &PyNurbs<para_dim, dim>::write_iges,
                    py::arg("fname"))
