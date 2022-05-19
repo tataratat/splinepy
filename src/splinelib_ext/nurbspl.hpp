@@ -67,7 +67,7 @@ public:
   }
 
   int GetNCps() {
-    VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
+    WeightedVectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
     return vector_space.GetNumberOfCoordinates();
   }
 
@@ -75,15 +75,17 @@ public:
   // weightedvectorspace
   void UpdateControlPointsAndWeights(double* cps_buf_ptr,
                                      double* ws_buf_ptr) {
-    VectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
+    WeightedVectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
     int numcps = vector_space.GetNumberOfCoordinates();
 
 
     // fill it up, phil!
     for (int i = 0; i < numcps; i++) {
       auto const &coord_named_phil = vector_space[splinelib::Index{i}];
+      // phil needs to first project before filling.
+      auto const &projected_phil = WeightedVectorSpace_::Project(coord_named_phil);
       for (int j = 0; j < dim; j++) {
-        cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
+        cps_buf_ptr[i * dim + j] = projected_phil[j].Get();
       }
       ws_buf_ptr[i] = coord_named_phil[dim].Get();
     }
