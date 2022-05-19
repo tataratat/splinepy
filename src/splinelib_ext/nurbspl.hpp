@@ -8,6 +8,9 @@
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
+// napf
+#include <napf.hpp>
+
 #include "arrutils.hpp"
 
 namespace py = pybind11;
@@ -40,6 +43,25 @@ public:
 
   // Constructor
   using Base_::Base_;
+
+  // kdtree, for smart initial guess
+  using VSCoords = typename std::vector<Coordinate_>;
+  using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
+  using TreeT = typename std::conditional<
+      (dim < 4),
+      napf::SplineLibCoordinatesTree<double,
+                                     double,
+                                     int,
+                                     dim,
+                                     1,
+                                     CloudT>,
+      napf::SplineLibCoordinatesHighDimTree<double,
+                                            double,
+                                            int,
+                                            dim,
+                                            1,
+                                            CloudT>
+  >::type; // takes L1 metric
 
   // update degrees since its size never changes
   void UpdateDegrees(int* ds_buf_ptr) {
@@ -246,6 +268,8 @@ public:
       }
     }
   }
+
+  /* [end] Helper functions for `FindParametricCoordinate` */
 
   void ClosestParametricCoordinate(double* query, /* <- from physical space */
                                    double* para_coord) {
