@@ -572,13 +572,54 @@ public:
 
     // TODO: turn this into multithread later
     for (int k{0}; k < n_queries; k++) {
-      c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
-                                          &r_buf_ptr[k * para_dim]);
+        // this will be default guess option, 0
+        c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
+                                            &r_buf_ptr[k * para_dim]);
     }
 
     results.resize({n_queries, para_dim});
     return  results;
   }
+
+  py::array_t<double> closest_para_coord_kdt(
+      py::array_t<double> queries,
+      py::array_t<int> resolutions,
+      int nthreads) {
+    // input arr
+    py::buffer_info q_buf = queries.request();
+    double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
+    const int n_queries = q_buf.shape[0];
+    // if resolutions is negative, we don't build a new tree
+    // check the first entry
+    bool build_newtree = true;
+    int* qres_ptr = static_cast<int *>(resolutions.request().ptr);
+
+    // build new tree if requested
+    if (qres_ptr[0] != -1) {
+      std::array<int, para_dim> qres;
+      for (int k{0}; k < para_dim; k++) {
+        qres[k] = qres_ptr[k];
+      }
+      c_nurbs._newtree(qres, nthreads);
+    }
+
+    // output arr
+    py::array_t<double> results(n_queries * para_dim);
+    py::buffer_info r_buf = results.request();
+    double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
+
+    // TODO: turn this into multithread later
+    for (int k{0}; k < n_queries; k++) {
+        c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
+                                            &r_buf_ptr[k * para_dim],
+                                            1);
+    }
+
+    results.resize({n_queries, para_dim});
+    return  results;
+  }
+
+
 
   void write_iges(std::string fname) {
 
@@ -678,6 +719,11 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
           .def("closest_para_coord",
                    &PyNurbs<para_dim, dim>::closest_para_coord,
                    py::arg("query"))
+          .def("closest_para_coord_kdt",
+                   &PyNurbs<para_dim, dim>::closest_para_coord_kdt,
+                   py::arg("query"),
+                   py::arg("resolutions"),
+                   py::arg("nthreads"))
           .def("write_iges",
                    &PyNurbs<para_dim, dim>::write_iges,
                    py::arg("fname"))
