@@ -245,6 +245,7 @@ public:
        for (int i{0}; i < para_dim; i++) {
          goodguess[i] = ScalarParametricCoordinate_{tmpgoodguess[i]};
        }
+
     } else if (option == 1) {
       if (!tree_planted_) {
         // hate to be aggresive, but here we raise error
@@ -261,6 +262,10 @@ public:
                        &dist[0]);
 
       pc_sampler_.id_to_paracoord(id[0], goodguess);
+
+      // this would be a good part to adjust boundguess based on
+      // step size!
+        
     }
   }
 
