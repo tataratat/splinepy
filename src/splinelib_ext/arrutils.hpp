@@ -153,16 +153,17 @@ inline void clip(
 
   for (int i{0}; i < para_dim; i++) {
     // check if it is already clipped
-    if (clipped[i] != 0) continue;
+    //if (clipped[i] != 0) continue;
 
     // check max
     if (arr1[i].Get() > bounds[1][i]) {
       clipped[i] = 1;
       arr1[i] = SPC{bounds[1][i]};
+    // check min
     } else if (arr1[i].Get() < bounds[0][i]) {
       clipped[i] = -1;
       arr1[i] = SPC{bounds[0][i]};
-    } else { // I guess we won't reach here?
+    } else { 
       clipped[i] = 0;
     }
   }
