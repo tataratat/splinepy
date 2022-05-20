@@ -416,6 +416,10 @@ public:
         std::cout << clipped[i] << " ";
       }
       std::cout  << "<- clipped\n";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << current_guess[i].Get() << " ";
+      }
+      std::cout  << "<- after clip\n";
 
 
       // Customer satisfaction survey
