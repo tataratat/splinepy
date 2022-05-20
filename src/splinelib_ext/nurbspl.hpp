@@ -47,7 +47,7 @@ public:
   using Base_::Base_;
 
   // kdtree, for smart initial guess
-  using VSCoords = typename std::map<int, Coordinate_>;
+  using VSCoords = typename std::unique_ptr<Coordinate_[]>;
   using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
   using TreeT = typename std::conditional<
       (dim < 4),
@@ -210,20 +210,20 @@ public:
     _parametric_bounds(bounds);
 
     pc_sampler_ = RasterPoints<double, int, para_dim>(bounds, resolutions);
-    cloud_data_.clear();
+    cloud_data_ = VSCoords(new Coordinate_[pc_sampler_.size()]);
 
     auto prepare_cloud = [&] (int begin, int end) {
       ParametricCoordinate_ pc;
       for (int i{begin}; i < end; i++) {
         pc_sampler_.id_to_paracoord(i, pc);
-        cloud_data_.emplace(std::make_pair(i, Base_::operator()(pc)));
+        cloud_data_[i] = std::move(Base_::operator()(pc));
       }
     };
 
     // make sure this is not called from a child !
     nthread_execution(prepare_cloud, pc_sampler_.size(), nthread);
 
-    cloud_ = std::unique_ptr<CloudT>(new CloudT(cloud_data_));
+    cloud_ = std::unique_ptr<CloudT>(new CloudT(cloud_data_, pc_sampler_.size()));
     tree_ = std::unique_ptr<TreeT>(new TreeT(dim, *cloud_));
     tree_planted_ = true;
   }
@@ -338,7 +338,10 @@ public:
     std::array<double, dim> dist;
     std::array<std::array<double, dim>, para_dim> eyeders;
     std::array<int, para_dim> clipped;
+    std::array<int, para_dim> prevclipped;
+    std::array<int, para_dim> solverclip;
     clipped.fill(0);
+    solverclip.fill(0);
     
     
     // start with some sort of guess
@@ -377,8 +380,8 @@ public:
       }
       std::cout << "===============\n";
 
-
-      gauss_with_pivot(d2jdu2, djdu, clipped, dx); /* solve */
+      if(prevclipped == clipped) solverclip = clipped;
+      gauss_with_pivot(d2jdu2, djdu, solverclip, dx); /* solve */
                                                    // don't trust d2jdu2, djdu,
                                                    // they've been altered
                                                    // inplace.
@@ -407,6 +410,7 @@ public:
       }
       std::cout  << "<- dx\n";
 
+      prevclipped = clipped;
       clip(searchbounds, current_guess, clipped); /* clip */
       for (int i{0}; i < para_dim; i++) {
         std::cout << clipped[i] << " ";
@@ -420,7 +424,7 @@ public:
       // 2. All clipped?
       curnorm = norm2(djdu);
       if (std::abs(prevnorm - curnorm) < tolerance
-          || nonzeros(clipped) == para_dim) break;
+          || nonzeros(solverclip) == para_dim) break;
       prevnorm = curnorm;
     } 
 
