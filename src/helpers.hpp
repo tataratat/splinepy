@@ -51,6 +51,10 @@ template <typename DataT,
           int dim>
 class RasterPoints {
 public:
+
+  // cloud be useful for setting searchbounds aggresively
+  std::array<DataT, dim> step_size_;
+
   RasterPoints() = default;
   RasterPoints(std::array<std::array<DataT, dim>, 2>& bounds,
                std::array<IndexT, dim>& resolutions) : res_(resolutions){
@@ -107,7 +111,6 @@ public:
 
 
 private:
-  std::array<DataT, dim> step_size_; /* don't really need it .. */
   std::array<IndexT, dim> res_;
   IndexT count_;
   IndexT len_;
