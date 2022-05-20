@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -12,6 +13,7 @@
 #include <napf.hpp>
 
 #include "arrutils.hpp"
+#include "../helpers.hpp"
 
 namespace py = pybind11;
 
@@ -45,7 +47,7 @@ public:
   using Base_::Base_;
 
   // kdtree, for smart initial guess
-  using VSCoords = typename std::vector<Coordinate_>;
+  using VSCoords = typename std::map<int, Coordinate_>;
   using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
   using TreeT = typename std::conditional<
       (dim < 4),
@@ -62,6 +64,13 @@ public:
                                             1,
                                             CloudT>
   >::type; // takes L1 metric
+
+  // add members
+  RasterPoints<double, int, para_dim> pc_sampler_; /* samples paracoord */
+  VSCoords cloud_data_; /* evaluated */
+  std::unique_ptr<CloudT> cloud_;
+  std::unique_ptr<TreeT> tree_;
+  bool tree_planted_ = false;
 
   // update degrees since its size never changes
   void UpdateDegrees(int* ds_buf_ptr) {
@@ -192,22 +201,66 @@ public:
    
   }
 
+  /* build a kdtree based on given resolution. */
+  /* this needs to be buildt before queires! */
+  void _newtree(std::array<int, para_dim>& resolutions,
+                int nthread) {
+    // get parametric bounds and build raster points 
+    std::array<std::array<double, para_dim>, 2> bounds;
+    _parametric_bounds(bounds);
+
+    pc_sampler_ = RasterPoints<double, int, para_dim>(bounds, resolutions);
+    cloud_data_.clear();
+
+    auto prepare_cloud = [&] (int begin, int end) {
+      ParametricCoordinate_ pc;
+      for (int i{begin}; i < end; i++) {
+        pc_sampler_.id_to_paracoord(i, pc);
+        cloud_data_.emplace(std::make_pair(i, Base_::operator()(pc)));
+      }
+    };
+
+    // make sure this is not called from a child !
+    nthread_execution(prepare_cloud, pc_sampler_.size(), nthread);
+
+    cloud_ = std::unique_ptr<CloudT>(new CloudT(cloud_data_));
+    tree_ = std::unique_ptr<TreeT>(new TreeT(dim, *cloud_));
+    tree_planted_ = true;
+  }
+
   /* goodguess including bounds guess */
   void _good_guess(double* goal,
                    int option,
                    ParametricCoordinate_& goodguess,
                    std::array<std::array<double, para_dim>, 2>& boundguess) {
 
+    /* always start with para_bounds */
+    _parametric_bounds(boundguess);
+
     // return mid point. will serve until better guessers arrive.
     if (option == 0) {
-       _parametric_bounds(boundguess);
        std::array<double, para_dim> tmpgoodguess;
        ew_mean(boundguess[0], boundguess[1], tmpgoodguess);
 
        for (int i{0}; i < para_dim; i++) {
          goodguess[i] = ScalarParametricCoordinate_{tmpgoodguess[i]};
        }
-    } else {
+    } else if (option == 1) {
+      if (!tree_planted_) {
+        // hate to be aggresive, but here we raise error
+        throw std::runtime_error(
+            "to use kd-tree initial guess, please first plant the kd-tree!"
+        );
+      }
+      int vote = 1;
+      int id[vote];
+      double dist[vote];
+      tree_->knnSearch(goal,
+                       vote /* only closest */,
+                       &id[0],
+                       &dist[0]);
+
+      pc_sampler_.id_to_paracoord(id[0], goodguess);
     }
   }
 
@@ -230,7 +283,6 @@ public:
       j = 0;
       tmp = 0.;
       for (const auto& d : der) { /* matmul */
-        std::cout << d.Get() <<"\n";
         tmp += dist[j] * d.Get();
         eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
         j++;
@@ -272,7 +324,8 @@ public:
   /* [end] Helper functions for `FindParametricCoordinate` */
 
   void ClosestParametricCoordinate(double* query, /* <- from physical space */
-                                   double* para_coord) {
+                                   double* para_coord,
+                                   int guessoption = 0) {
 
     // everything we need
     // here, we try nested array
@@ -289,8 +342,9 @@ public:
     
     
     // start with some sort of guess
+    // TODO: better option than this?
     _good_guess(query,
-                0, /* only one option for now. TODO: extend*/
+                guessoption,
                 current_guess,
                 searchbounds);
 
