@@ -73,3 +73,6 @@ target_link_libraries(_splinepy PRIVATE bezierManipulation)
 # Link Fitting
 add_subdirectory(fitting)
 target_link_libraries(_splinepy PRIVATE fitting)
+
+# Link napf
+target_link_libraries(_splinepy PRIVATE napf)
