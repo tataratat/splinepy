@@ -231,7 +231,7 @@ public:
     // prepare parametric coordinate
     ParametricCoordinate_ pc{};
     for (int i{0}; i < para_dim; i++) {
-      pc[j] = ScalarParametricCoordinate_{parametric_coordinate[i]};
+      pc[i] = ScalarParametricCoordinate_{parametric_coordinate[i]};
     }
 
     BasisFunctionsAndIDs(parametric_coordinate,
@@ -559,7 +559,7 @@ public:
 
 
       /* debug prints */
-      std::cout << "\nClip info: "
+      std::cout << "\nClip info: ";
       for (int i{0}; i < para_dim; i++) {
         std::cout << clipped[i] << " ";
       }
