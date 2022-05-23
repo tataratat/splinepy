@@ -572,8 +572,8 @@ public:
 
     // TODO: turn this into multithread later
     for (int k{0}; k < n_queries; k++) {
-        // this will be default guess option, 0
         c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
+                                            0, /* guess option */
                                             &r_buf_ptr[k * para_dim]);
     }
 
@@ -611,15 +611,13 @@ public:
     // TODO: turn this into multithread later
     for (int k{0}; k < n_queries; k++) {
         c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
-                                            &r_buf_ptr[k * para_dim],
-                                            1);
+                                            1,
+                                            &r_buf_ptr[k * para_dim]);
     }
 
     results.resize({n_queries, para_dim});
     return  results;
   }
-
-
 
   void write_iges(std::string fname) {
 

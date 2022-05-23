@@ -27,7 +27,8 @@ public:
   using Knot_ = typename Base_::Knot_;
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
-  using ScalarParametricCoordinate_ = typename ParametricCoordinate_::value_type;
+  using ScalarParametricCoordinate_ =
+      typename ParametricCoordinate_::value_type;
   using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
   using OutputInformation_ = splinelib::Tuple<
       typename ParameterSpace_::OutputInformation_,
@@ -51,12 +52,12 @@ public:
   using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
   using TreeT = typename std::conditional<
       (dim < 4),
-      napf::SplineLibCoordinatesTree<double,
-                                     double,
-                                     int,
-                                     dim,
-                                     1,
-                                     CloudT>,
+      napf::SplineLibCoordinatesTree<double,  /* DataT */
+                                     double,  /* DistT */
+                                     int,     /* IndexT */
+                                     dim,     /* dim */
+                                     1,       /* metric */
+                                     CloudT>, /* CloudT */
       napf::SplineLibCoordinatesHighDimTree<double,
                                             double,
                                             int,
@@ -65,14 +66,19 @@ public:
                                             CloudT>
   >::type; // takes L1 metric
 
-  // add members
-  RasterPoints<double, int, para_dim> pc_sampler_; /* samples paracoord */
+  // add members for parameter coordinate search
+  RasterPoints<double, int, para_dim> pc_sampler_; /* sampling locations */
   VSCoords cloud_data_; /* evaluated */
   std::unique_ptr<CloudT> cloud_;
   std::unique_ptr<TreeT> tree_;
   bool tree_planted_ = false;
 
-  // update degrees since its size never changes
+  /* update degrees since its size never changes
+   *
+   * Parameters
+   * -----------
+   * ds_buf_ptr: out
+   */
   void UpdateDegrees(int* ds_buf_ptr) {
 
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
@@ -81,8 +87,14 @@ public:
     }
   }
 
-  // update current knot vectors to python
-  // since list is mutable, update works
+  /* update current knot vectors to python
+   * since list is mutable, update works
+   *
+   * Parameters
+   * -----------
+   * p_knot_vectors: inout
+   *  will be `clear`ed before writing.
+   */
   void UpdateKnotVectors(py::list &p_knot_vectors) {
 
     // start clean
@@ -101,13 +113,32 @@ public:
 
   }
 
+  /* Returns n_cpts
+   * used to allocate numpy array
+   *
+   * Parameters
+   * -----------
+   * None
+   *
+   * Returns
+   * -------
+   * N_CPS
+   */ 
   int GetNCps() {
     WeightedVectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
     return vector_space.GetNumberOfCoordinates();
   }
 
-  // Update cps and weights at the same time since they belong together in
-  // weightedvectorspace
+  /* Update cps and weights at the same time since they belong together in
+   * weightedvectorspace
+   *
+   * Parameters
+   * -----------
+   * cps_buf_ptr: out
+   *   size -> (n_cps * dim)
+   * ws_buf_ptr: out
+   *   size -> (n_ws) (=n_cps) 
+   */
   void UpdateControlPointsAndWeights(double* cps_buf_ptr,
                                      double* ws_buf_ptr) {
     WeightedVectorSpace_ const &vector_space = *Base_::weighted_vector_space_;
@@ -118,7 +149,10 @@ public:
     for (int i = 0; i < numcps; i++) {
       auto const &coord_named_phil = vector_space[splinelib::Index{i}];
       // phil needs to first project before filling.
-      auto const &projected_phil = WeightedVectorSpace_::Project(coord_named_phil);
+      auto const &projected_phil = WeightedVectorSpace_::Project(
+          coord_named_phil
+      );
+
       for (int j = 0; j < dim; j++) {
         cps_buf_ptr[i * dim + j] = projected_phil[j].Get();
       }
@@ -127,7 +161,16 @@ public:
 
   }
 
-  // Computes (degree + 1) X ...
+  /* Given parametric coordinate, returns basis functions and support control
+   * point ids.
+   * pointer should have size of (degree + 1)^(para_dim)
+   *
+   * Parameters
+   * -----------
+   * parametric_coordinate: in
+   * basis_function_values: out
+   * support_control_point_ids: out
+   */
   void BasisFunctionsAndIDs(ParametricCoordinate_ const &parametric_coordinate,
                             double* basis_function_values,
                             int* support_control_point_ids) const {
@@ -174,8 +217,42 @@ public:
     }
   }
 
+  /* Fn overload with pure array in,outs.
+   *
+   * Parameters
+   * -----------
+   * parametric_coordinate: in
+   * basis_function_values: out
+   * support_control_point_ids: out
+   */
+  void BasisFunctionsAndIDs(const double* parametric_coordinate,
+                            double* basis_function_values,
+                            int* support_control_point_ids) const {
+    // prepare parametric coordinate
+    ParametricCoordinate_ pc{};
+    for (int i{0}; i < para_dim; i++) {
+      pc[j] = ScalarParametricCoordinate_{parametric_coordinate[i]};
+    }
 
-  /* [start] Helper functions for `FindParametricCoordinate` */
+    BasisFunctionsAndIDs(parametric_coordinate,
+                         basis_function_values,
+                         support_control_point_ids);
+  }
+
+  /***************************************************************************/
+  /******** [start] Helper functions for `FindParametricCoordinate` **********/
+  /***************************************************************************/
+  /* TODO: Generalize and extract them to use it also for bsplines! */
+
+  /* Computes distance between goal and query.
+   * physical_goal - spline(parametric_query)
+   *
+   * Parameters
+   * -----------
+   * q: in
+   * goal: in
+   * dist: out
+   */
   void _distance(ParametricCoordinate_& q,
                  double* goal,
                  std::array<double, dim>& dist) {
@@ -184,8 +261,15 @@ public:
     ew_minus(physc, goal, dist);
   }
 
+  /* Returns parametric bounds
+   *
+   * Parameters
+   * -----------
+   * pbounds: out
+   */
   void _parametric_bounds(
       std::array<std::array<double, para_dim>, 2>& pbounds) {
+
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
     int i = 0;
     for (auto& knotvector : parameter_space.knot_vectors_) {
@@ -201,8 +285,15 @@ public:
    
   }
 
-  /* build a kdtree based on given resolution. */
-  /* this needs to be buildt before queires! */
+  /* Builds a kdtree based on given resolution.
+   * This needs to be built before queires with `goodguess=1`
+   * Uses "nthread-for", so no need to be executed by thread-child.
+   *
+   * Parameters
+   * -----------
+   * resolutions: in
+   * nthread: in
+   */
   void _newtree(std::array<int, para_dim>& resolutions,
                 int nthread) {
     // get parametric bounds and build raster points 
@@ -228,7 +319,27 @@ public:
     tree_planted_ = true;
   }
 
-  /* goodguess including bounds guess */
+  /* Good guess including bounds guess
+   * Options:
+   *   0: Gets mid-point of parametric space and parametric bounds.
+   *   1: KDTree query for nearest discrete point. 
+   *      Currently returns parametric bounbds as bound guess.
+   *      However, we could instead give kdtree hit +- tree sample step size.
+   *      That'd be aggressive, but would work as long as kdtree is build dense
+   *      enough.
+   *
+   * Parameters
+   * -----------
+   * goal: in
+   * option: in
+   * goodguess: out
+   * boundguess: out
+   *
+   * Raises
+   * -------
+   * runtime_error:
+   *   If there's no kdtree planted and option is 1.
+   */
   void _good_guess(double* goal,
                    int option,
                    ParametricCoordinate_& goodguess,
@@ -269,12 +380,26 @@ public:
     }
   }
 
+  /* Builds rhs array and returns "eyeders" matrix, so that it can be used in
+   * d2jdu2. "eyeders" refer to collection of spline derivatives where only one
+   * parametric dimension is set to one and everything else zero, resulting in
+   * "eye"-like vectorized derivative query.
+   *
+   * Parameters
+   * -----------
+   * guess: in
+   *   current parametric coordinate guess
+   * dist: in
+   *   distance to coordinate goal. Same as result of `_distance(--)`.
+   * eyeders: out
+   * rhs: out
+   */
   void _build_djdu(
       ParametricCoordinate_& guess, /* in */
       std::array<double, dim>& dist, /* in */
       std::array<std::array<double, dim>, para_dim>& eyeders, /* out */
-      std::array<double, para_dim>& lhs /* out */) {
-    // lhs is djdu
+      std::array<double, para_dim>& rhs /* out */) {
+    // rhs is djdu
     double tmp;
     int j;
     Derivative_ derq; // derivative query 
@@ -292,15 +417,25 @@ public:
         eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
         j++;
       }
-      lhs[i] = -2. * tmp; // apply minus here already!
+      rhs[i] = -2. * tmp; // apply minus here already!
     }
   }
 
+  /* Builds lhs array. Parameters are same as djdu, except this one only takes
+   * eyeders as `in`.
+   *
+   * Parameters
+   * -----------
+   * guess: in
+   * dist: in
+   * eyeders: in
+   * lhs: out
+   */
   void _build_d2jdu2(
       ParametricCoordinate_& guess,
       std::array<double, dim>& dist,
       std::array<std::array<double, dim>, para_dim>& eyeders,
-      std::array<std::array<double, para_dim>, para_dim>& rhs) {
+      std::array<std::array<double, para_dim>, para_dim>& lhs) {
     
     // prepare AAt of eyeders
     std::array<std::array<double, para_dim>, para_dim> eyedersAAt;
@@ -312,25 +447,37 @@ public:
         // it results in symmetric matrix.
         // until we implement something special for it,
         // fill in bottom half same as upper half
-        if (i > j) continue; 
+        if (i > j) continue; /* skip bottom half */
+
         derq.fill(splinelib::Derivative{0});
         ++derq[i];
         ++derq[j];
         auto const &der = Base_::operator()(guess, derq);
 
-        rhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
+        lhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
 
         // fill symmetric part
-        if (i != j) rhs[j][i] = rhs[i][j];
+        if (i != j) lhs[j][i] = lhs[i][j];
       }
     }
   }
 
-  /* [end] Helper functions for `FindParametricCoordinate` */
+  /***************************************************************************/
+  /********** [end] Helper functions for `FindParametricCoordinate` **********/
+  /***************************************************************************/
 
+  /* Given physical query coordinate, finds closest parametric coordinate.
+   * Take a look at `_good_guess(--)` for initial guess options.
+   * 
+   * Paramters
+   * ----------
+   * query: in
+   * guessoption: in
+   * para_coord: out
+   */
   void ClosestParametricCoordinate(double* query, /* <- from physical space */
-                                   double* para_coord,
-                                   int guessoption = 0) {
+                                   int guessoption,
+                                   double* para_coord) {
 
     // everything we need
     // here, we try nested array
@@ -346,6 +493,7 @@ public:
     std::array<int, para_dim> prevclipped;
     std::array<int, para_dim> solverclip;
     clipped.fill(0);
+    prevclipped.fill(0);
     solverclip.fill(0);
     
     
@@ -356,86 +504,83 @@ public:
                 current_guess,
                 searchbounds);
 
-    int max_iter = para_dim * 20; /* max newton iter */
+    constexpr int max_iter = para_dim * 20; /* max newton iter */
 
     double prevnorm{123456789.}, curnorm;
+
     /* newton loops */
     for (int i{0}; i < max_iter; i++) {
+      /* build system to solve*/
       _distance(current_guess, query, dist);
-      std::cout << "dist===============\n";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << dist[i] << " ";
-      }
-      std::cout << "===============\n";
-
       _build_djdu(current_guess, dist, eyeders, djdu); /* rhs */
       _build_d2jdu2(current_guess, dist, eyeders, d2jdu2); /* lhs */
 
-      std::cout << "d2jdu2===============\n";
+      /* debug prints */
+      std::cout << "**************** Newton iteration: " << i << " **********"; 
+      std::cout << "\n distance (goal - spline(para_c): ";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << dist[i] << " ";
+      }
+      std::cout << "\n";
+      std::cout << "System Matrix: A | b  (d2jdu2 | djdu)\n";
       for (int i{0}; i < para_dim; i++) {
         for (int j{0}; j < para_dim; j++) {
           std::cout << d2jdu2[i][j] << " ";
         }
+        std::cout << "| " << djdu[i];
         std::cout << "\n";
       }
-      std::cout << "===============\n";
-      std::cout << "djdu===============\n";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << djdu[i] << " ";
-      }
-      std::cout << "===============\n";
+      /* end debug prints */
 
+      /* solve and update */
+      // solver clip only if it is clipped at the same place twice.
       if(prevclipped == clipped) solverclip = clipped;
+      // solve. pivoting is done inplace, so don't use these afterwards.
+      // dx is always reorganized.
+      // TODO: why not reorganize d2jdu2 and djdu too?
       gauss_with_pivot(d2jdu2, djdu, solverclip, dx); /* solve */
-                                                   // don't trust d2jdu2, djdu,
-                                                   // they've been altered
-                                                   // inplace.
-      std::cout << "d2jdu2===============\n";
-      for (int i{0}; i < para_dim; i++) {
-        for (int j{0}; j < para_dim; j++) {
-          std::cout << d2jdu2[i][j] << " ";
-        }
-        std::cout << "\n";
-      }
-      std::cout << "===============\n";
-      std::cout << "djdu===============\n";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << djdu[i] << " ";
-      }
-      std::cout << "===============\n";
-
-
       ew_iplus(dx, current_guess); /* update */
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << current_guess[i].Get() << " ";
-      }
-      std::cout  << "<- current\n";
+
+
+      /* debug prints */
+      std::cout << "Solution (dx): ";
       for (int i{0}; i < para_dim; i++) {
         std::cout << dx[i] << " ";
       }
-      std::cout  << "<- dx\n";
-
-      prevclipped = clipped;
-      clip(searchbounds, current_guess, clipped); /* clip */
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << clipped[i] << " ";
-      }
-      std::cout  << "<- clipped\n";
+      std::cout << "\nUpdated: ";
       for (int i{0}; i < para_dim; i++) {
         std::cout << current_guess[i].Get() << " ";
       }
-      std::cout  << "<- after clip\n";
+      /* end debug prints */
 
+      /* clip */
+      prevclipped = clipped;
+      clip(searchbounds, current_guess, clipped); /* clip */
+
+
+      /* debug prints */
+      std::cout << "\nClip info: "
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << clipped[i] << " ";
+      }
+      std::cout  << "\n Current guess after clip:";
+      for (int i{0}; i < para_dim; i++) {
+        std::cout << current_guess[i].Get() << " ";
+      }
+      /* end debug prints */
 
       // Customer satisfaction survey
       // ============================
       // 1. Converged?
+      //   -> should be zero, if query point is on the spline.
       // 2. All clipped?
+      //   -> should be the case if query point lies outside the spline.
       curnorm = norm2(djdu);
+      std::cout  << "\n norm2(djdu): " << curnorm << "\n";
       if (std::abs(prevnorm - curnorm) < tolerance
           || nonzeros(solverclip) == para_dim) break;
       prevnorm = curnorm;
-    } 
+    }
 
     // fill up the para_coord
     for (int i{0}; i < para_dim; i++) {
@@ -443,4 +588,3 @@ public:
     }
   }
 };
-
