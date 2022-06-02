@@ -71,16 +71,15 @@ public:
     for (int i = 0; i < para_dim; i++) {
       c_degrees[i] = ds_buf_ptr[i];
     }
+    
     // (re)init
     c_bezier = std::move(Bezier<para_dim, dim>{c_degrees});
-
-    //c_bezier.UpdateDegrees(c_degrees);
 
     // update cps
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
     for (int i = 0; i < cps_buf.shape[0]; i++) {
-      if constexpr (dim > 1){
+      if constexpr (dim > 1) {
         for (int j = 0; j < dim; j++) {
           c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
         }
@@ -106,6 +105,15 @@ public:
     }
 
     // update control_points
+    // Check if shape changed
+    if (c_bezier.control_points.size() != cps_buf.shape[0]) {
+      p_control_points = py::array_t<double>(c_bezier.control_points.size() * dim);
+      cps_buf = p_control_points.request();
+      cps_buf_ptr = static_cast<double *>(cps_buf.ptr);
+      p_control_points.resize({(int) c_bezier.control_points.size(), dim});
+    }
+
+    // Update point coordinates
     for (int i = 0; i < cps_buf.shape[0]; i++) {
       if constexpr (dim > 1){
         for (int j = 0; j < dim; j++) {
