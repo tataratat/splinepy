@@ -481,7 +481,7 @@ public:
 
     // everything we need
     // here, we try nested array
-    double tolerance = 1e-10;
+    double tolerance = 1e-13;
     ParametricCoordinate_ current_guess{};
     std::array<std::array<double, para_dim>, 2> searchbounds{};
     std::array<std::array<double, para_dim>, para_dim> d2jdu2; /* lhs */
@@ -492,6 +492,7 @@ public:
     std::array<int, para_dim> clipped;
     std::array<int, para_dim> prevclipped;
     std::array<int, para_dim> solverclip;
+    bool solverclipped = false;
     clipped.fill(0);
     prevclipped.fill(0);
     solverclip.fill(0);
@@ -534,7 +535,10 @@ public:
 
       /* solve and update */
       // solver clip only if it is clipped at the same place twice.
-      if(prevclipped == clipped) solverclip = clipped;
+      if(prevclipped == clipped && !solverclipped) {
+        solverclip = clipped;
+        solverclipped = true;
+      }
       // solve. pivoting is done inplace, so don't use these afterwards.
       // dx is always reorganized.
       // TODO: why not reorganize d2jdu2 and djdu too?
