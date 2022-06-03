@@ -200,6 +200,24 @@ void reorder(std::array<T, dim>& arr,
   }
 }
 
+/* reorder by copying.
+ * "who cares" approach
+ * maybe faster. who knows 
+ *
+ * Parameters
+ * -----------
+ * arr: inout  <- altered inplace
+ * order: in
+ */
+templace<typename T, typename IndexT, std::size_t dim>
+void copyreorder(std::array<T, dim>& arr,
+                 std::array<IndexT, dim>& order) {
+  const auto copyarr = std::copy(arr);
+  for (IndexT i{0}; i < dim; i++) {
+    arr[order[i]] = copyarr[i];
+  }
+}
+
 
 /* Gauss elimination with partial pivoting to find x from (A x = b)
  *
@@ -248,13 +266,21 @@ inline void gauss_with_pivot(
     if (maxrow != i) {
       // swap matrix entries
       // TODO: since it is nested, we can just do once?
-      for (int j{0}; j < para_dim; j++) {
-        std::swap(A[maxrow][j], A[i][j]);
-      }
+      //for (int j{0}; j < para_dim; j++) {
+      //  std::swap(A[maxrow][j], A[i][j]);
+      //}
+      // ^ true
+      // swap matrix row
+      std::swap(A[maxrow], A[i]);
+
       // swap row-vec entries
       std::swap(b[maxrow], b[i]);
       // swap indexmap to return x correctly
       std::swap(indexmap[maxrow], indexmap[i]);
+
+      // let's not forget, skipmask needs to be swapped too!
+      std::swap(skipmask[maxrow], skipmask[i]);
+
     }
     /* END swap */
 
@@ -293,6 +319,7 @@ inline void gauss_with_pivot(
 
   // reorder
   reorder(x, indexmap);
+  //reorder(skipmask, indexmap);
 }
 
 
