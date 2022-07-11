@@ -1,16 +1,73 @@
 #pragma once
 
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-
-// SplineLib
-#include <Sources/Splines/nurbs.hpp>
-
-// napf
-#include <napf.hpp>
-
 #include "arrutils.hpp"
 #include "../helpers.hpp"
+
+namespace splinepy::proximity {
+
+// a helper class to perform proximity operations to nurbs.
+template<typename SplineType>
+class Proximity {
+public:
+
+  // Frequently used array alias
+  using DArray_ = std::array<double, SplineType::kDim>;
+  using PArray_ = std::array<double, SplineType::kParaDim>;
+  using PxPMatrix_ = std::array<
+      std::array<double, SplineType::kParaDim>, SplineType::kParaDim
+  >;
+  using PxDMatrix_ = std::array<
+      std::array<double, SplineType::kDim>, SplineType::kParaDim
+  >;
+  using ClipArray_ = std::array<int, SplineType::kParaDim>;
+
+
+  // constructor.
+  Proximity(SplineType const &spline) : spline_(spline) {};
+
+  // kdtree related variables
+  GridPoints<double, int, SplineType::kParaDim> grid_points_;
+  using Coordinates_ = typename std::unique_ptr<SplineType::Coordinate_[]>;
+  using Cloud_ =
+      typename napf::CoordinatesCloud<Coordinates_, int, SplineType::kDim>;
+  using Tree_ = typename std::conditional<
+    (SplineType::kDim < 4),
+    napf::CoordinatesTree<double,  /* DataT */
+                          double,  /* DistT */
+                          int,     /* IndexT */
+                          dim,     /* dim */
+                          1,       /* metric (L1) */
+                          Cloud_>, /* CloudT */
+    napf::CoordinatesHighDimTree<double, double, int, dim, 1, Cloud_>
+  >::type;
+
+  /* Computes difference between physical query and current parametric guess.
+   *
+   * Parameters
+   * -----------
+   * query: in
+   * guess: in
+   * difference: out
+   */
+  void QueryMinusGuess(const double* query,
+                       const SplineType::ParametricCoordinate_& guess,
+                       DArray_& difference) {
+
+    FirstMinusSecondEqualsThird(
+        query,
+        SplineType::Base_::operator()(guess),
+        difference
+    );
+
+  }
+
+protected:
+  SplineType const &spline_;
+  bool tree_planted_ = false;
+
+}
+
+} /* namespace proximity */
 
 namespace py = pybind11;
 
@@ -92,7 +149,7 @@ void distance(SplineT& spline,
               std::array<double, dim>& dist) {
 
   auto const &physc = spline(q); // eval
-  ew_minus(physc, goal, dist);
+  ew_minus(physcgoal, dist);
 }
 
 

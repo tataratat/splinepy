@@ -1,63 +1,23 @@
 #pragma once
 
 #include <cmath>
-#include <thread>
 #include <utility>
 
 
-/* thread for all */
-template <typename Func, typename IndexT>
-void nthread_execution(
-    Func& f,
-    const IndexT& total,
-    const IndexT& nthread
-) {
-  // if nthread == 1, don't even bother creating thread
-  if (nthread == 1) {
-    f(0, total);
-    return;
-  }
-
-  // get chunk size and prepare threads
-  const IndexT chunk_size = std::ceil(total / nthread);
-  std::vector<std::thread> tpool;
-  tpool.reserve(nthread);
-
-  for (int i{0}; i < (nthread - 1); i++) {
-    tpool.emplace_back(std::thread{f, i * chunk_size, (i + 1)*chunk_size});
-  }
-  {
-    // last one
-    tpool.emplace_back(
-        std::thread{f, (nthread - 2) * chunk_size, total}
-    );
-  }
-
-  for (auto &t : tpool) {
-    t.join();
-  }
-}
-
-/* raster point generator */
-template <int dim, typename FillType>
-void raster_points(
-    
-) {
-}
-
+namespace splinepy::utils {
 
 template <typename DataT,
           typename IndexT,
           int dim>
-class RasterPoints {
+class GridPoints {
 public:
 
   // cloud be useful for setting searchbounds aggresively
   std::array<DataT, dim> step_size_;
 
-  RasterPoints() = default;
-  RasterPoints(std::array<std::array<DataT, dim>, 2>& bounds,
-               std::array<IndexT, dim>& resolutions) : res_(resolutions){
+  GridPoints() = default;
+  GridPoints(std::array<std::array<DataT, dim>, 2>& bounds,
+             std::array<IndexT, dim>& resolutions) : res_(resolutions){
     // linspace and prepare possible entries */
     len_ = 1;
     for (int i{0}; i < dim; i++) {
@@ -117,3 +77,5 @@ private:
   std::array<std::vector<DataT>, dim> entries_;
 
 };
+
+} /* namespace splinepy::utils */

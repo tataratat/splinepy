@@ -9,70 +9,27 @@
 #include <Sources/Utilities/named_type.hpp>
 #include <Sources/VectorSpaces/vector_space.hpp>
 #include <Sources/ParameterSpaces/parameter_space.hpp>
-  
+
+
+namespace splinepy::utils {
+
 using namespace splinelib::sources;  
 
+template<typename DataT, int n_rows, int n_columns>
+using ArrayMatrix = std::array<std::array<DataT, n_columns>, n_rows>;
+
 /* elementwise subtraction */
-template<typename T, std::size_t dim>
-inline void ew_minus(const std::array<T, dim>& arr1,
-                     const std::array<T, dim>& arr2,
-                     std::array<T, dim>& out) {
-  for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] - arr2[i];
+template<typename T, typename NamedType, std::size_t dim>
+inline void FirstMinusSecondEqualsThird(
+    const T* first,
+    const std::array<NamedType, dim>& second,
+    std::array<T, dim>& third) {
+  for (size_t i{}; i < dim; ++i) {
+    // following line should raise error during compile time
+    // if T != NameType::Type_
+    third[i] = first[i] - static_cast<T>(second[i]);
   }
 }
-
-
-/* elementwise subtraction overload for SplineLib Coordinate*/
-template<typename T, std::size_t dim, typename VC /* VectorspaceCoordinate */>
-inline void ew_minus(
-    const VC& arr1,
-    const std::array<T, dim>& arr2,
-    std::array<T, dim>& out) {
-  for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i].Get() - arr2[i];
-  }
-}
-
-
-/* elementwise subtraction overload for SplineLib Coordinate*/
-template<typename T, std::size_t dim, typename VC>
-inline void ew_minus(
-    const std::array<T, dim>& arr1,
-    const VC& arr2,
-    std::array<T, dim>& out) {
-  for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] - arr2[i].Get();
-  }
-}
-
-
-/* elementwise subtraction overload for ptr */
-template<typename T, std::size_t dim, typename VC>
-inline void ew_minus(
-    const double* arr1,
-    const VC& arr2,
-    std::array<T, dim>& out) {
-
-  for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] - arr2[i].Get();
-  }
-}
-
-
-/* elementwise subtraction overload for ptr */
-template<typename T, std::size_t dim, typename VC>
-inline void ew_minus(
-    const VC& arr1,
-    const double* arr2,
-    std::array<T, dim>& out) {
-
-  for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i].Get() - arr2[i];
-  }
-
-}
-
 
 /* elementwise mean */
 template<typename T, std::size_t dim>
@@ -209,7 +166,7 @@ void reorder(std::array<T, dim>& arr,
  * arr: inout  <- altered inplace
  * order: in
  */
-templace<typename T, typename IndexT, std::size_t dim>
+template<typename T, typename IndexT, std::size_t dim>
 void copyreorder(std::array<T, dim>& arr,
                  std::array<IndexT, dim>& order) {
   const auto copyarr = std::copy(arr);
@@ -414,3 +371,5 @@ inline int nonzeros(std::array<T, dim>& arr) {
   }
   return nnz;
 }
+
+} /* namespace splinepy::utils */
