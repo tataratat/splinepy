@@ -6,6 +6,8 @@
 // SplineLib
 #include <Sources/Splines/b_spline.hpp>
 
+#include <proximity/proximity.hpp>
+
 
 namespace splinepy::splines{
 
@@ -39,6 +41,8 @@ public:
   using BinomialRatio_ = typename BinomialRatios_::value_type;
   using KnotRatio_ = typename KnotRatios_::value_type;
 
+  using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim, dim>>;
+
   // Constructor
   using Base_::Base_;
 
@@ -48,6 +52,52 @@ public:
 
   const VectorSpace_& GetVectorSpace() const {
     return *Base_::vector_space_;
+  }
+
+  // update degrees since its size never changes
+  void UpdateDegrees(int* p_degree_ptr) {
+    ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
+    for (int i = 0; i < para_dim; i++) {
+      p_degree_ptr[i] = parameter_space.degrees_[i].Get();
+    }
+  }
+
+  // update current knot vectors to python
+  // since list is mutable, update works
+  void UpdateKnotVectors(py::list &p_knot_vectors) {
+
+    // start clean
+    p_knot_vectors.attr("clear")();
+
+    ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
+    for (auto& knotvector : parameter_space.knot_vectors_) {
+      auto const &kv = *knotvector; // in
+      py::list p_kv; // out
+      for (int i = 0; i < kv.GetSize(); i++) {
+        auto const &knot = kv[splinelib::Index{i}];
+        p_kv.append(knot.Get());
+      }
+      p_knot_vectors.append(p_kv);
+    }
+  }
+
+  int GetNCps() {
+    VectorSpace_ const &vector_space = *Base_::vector_space_;
+    return vector_space.GetNumberOfCoordinates();
+  }
+
+  // control point changes in size, but you can figure it out with GetNCps()
+  void UpdateControlPoints(double* cps_buf_ptr) {
+    VectorSpace_ const &vector_space = *Base_::vector_space_;
+    int numcps = vector_space.GetNumberOfCoordinates();
+
+    // fill it up, phil!
+    for (int i = 0; i < numcps; i++) {
+      auto const &coord_named_phil = vector_space[splinelib::Index{i}];
+      for (int j = 0; j < dim; j++) {
+        cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
+      }
+    }
   }
 
   // control point changes in size, but you can figure it out with GetNCps()
@@ -94,6 +144,17 @@ public:
     }
   }
 
+
+  splinepy::proximity::Proximity& GetProximity() {
+    if (!proximity_initialized_) {
+      proximity_ = std::unique_ptr<Proximity_>(*this);
+    }
+    return proximity_;
+  }
+
+protected:
+  std::unique_ptr<Proximity_> proximity_;   
+  bool proximity_initialized_ = false;
 
 };
 
