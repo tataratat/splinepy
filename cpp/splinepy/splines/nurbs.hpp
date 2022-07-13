@@ -1,20 +1,12 @@
 #pragma once
 
-#include <iostream>
-#include <map>
-
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
-// napf
-#include <napf.hpp>
-
-#include "arrutils.hpp"
-#include "../helpers.hpp"
-
+#include <proximity/proximity.hpp>
 
 namespace splinepy::splines {
 
@@ -47,34 +39,10 @@ public:
   using Knots_ = typename Base_::Base_::Knots_;
   using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
 
+  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>
+
   // Constructor
   using Base_::Base_;
-
-  // kdtree, for smart initial guess
-  using VSCoords = typename std::unique_ptr<Coordinate_[]>;
-  using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
-  using TreeT = typename std::conditional<
-      (dim < 4),
-      napf::SplineLibCoordinatesTree<double,  /* DataT */
-                                     double,  /* DistT */
-                                     int,     /* IndexT */
-                                     dim,     /* dim */
-                                     1,       /* metric */
-                                     CloudT>, /* CloudT */
-      napf::SplineLibCoordinatesHighDimTree<double,
-                                            double,
-                                            int,
-                                            dim,
-                                            1,
-                                            CloudT>
-  >::type; // takes L1 metric
-
-  // add members for parameter coordinate search
-  RasterPoints<double, int, para_dim> pc_sampler_; /* sampling locations */
-  VSCoords cloud_data_; /* evaluated */
-  std::unique_ptr<CloudT> cloud_;
-  std::unique_ptr<TreeT> tree_;
-  bool tree_planted_ = false;
 
   /* update degrees since its size never changes
    *
@@ -241,6 +209,17 @@ public:
                          basis_function_values,
                          support_control_point_ids);
   }
+
+  Proximity_& GetProximity() {
+    if (!proximity_initialized_) {
+      proximity_ = std::unique_ptr<Proximity>(*this);
+    }
+    return *proximity_;
+  }
+
+protected:
+  std::unique_ptr<Proximity_> proximity_;
+  bool proximity_initialized_ = false;
 
 }; /* class Nurbs */
 
