@@ -1,4 +1,4 @@
-#include <spline_reader.hpp>
+#include <py/spline_reader.hpp>
 
 void init_reader(py::module_ &m) {
     // Functions that return list of dict.

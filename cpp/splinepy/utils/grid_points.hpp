@@ -16,8 +16,8 @@ public:
   std::array<DataT, dim> step_size_;
 
   GridPoints() = default;
-  GridPoints(std::array<std::array<DataT, dim>, 2>& bounds,
-             std::array<IndexT, dim>& resolutions) : res_(resolutions){
+  GridPoints(const std::array<std::array<DataT, dim>, 2>& bounds,
+             const std::array<IndexT, dim>& resolutions) : res_(resolutions){
     // linspace and prepare possible entries */
     len_ = 1;
     for (int i{0}; i < dim; i++) {
@@ -51,14 +51,34 @@ public:
   template<typename ParaCoord>
   ParaCoord IndexToParametricCoordinate(const IndexT& id) const {
 
+    using ValueType = typename ParaCoord::value_type;
+
     ParaCoord pcoord{};
 
     IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      pcoord[i] = ParaCoord::value_type{entries_[i][quot % res_[i]]};
+      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
       quot /= res_[i];
     }
+
+    return std::move(pcoord);
   }
+
+  /// subroutine variation
+  template<typename ParaCoord>
+  void IndexToParametricCoordinate(const IndexT& id,
+                                   ParaCoord pcoord) const {
+
+    using ValueType = typename ParaCoord::value_type;
+
+    IndexT quot{id};
+    for (int i{0}; i < dim; i++) {
+      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
+      quot /= res_[i];
+    }
+
+  }
+
 
   IndexT Size() const {
     return len_;

@@ -15,6 +15,9 @@ namespace py = pybind11;
 template<int para_dim, int dim>
 class Nurbs : public splinelib::sources::splines::Nurbs<para_dim, dim> {
 public:
+  static constexpr int kParaDim = para_dim;
+  static constexpr int kDim = dim;
+
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
   using Coordinate_ = typename Base_::Coordinate_;
   using ScalarCoordinate_ = typename Coordinate_::value_type;
@@ -39,10 +42,18 @@ public:
   using Knots_ = typename Base_::Base_::Knots_;
   using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
 
-  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>
+  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>;
 
   // Constructor
   using Base_::Base_;
+
+  const ParameterSpace_& GetParameterSpace() const {
+    return *Base_::Base_::parameter_space_;
+  }
+
+  const WeightedVectorSpace_& GetWeightedVectorSpace() const {
+    return *Base_::weighted_vector_space_;
+  }
 
   /* update degrees since its size never changes
    *
@@ -54,7 +65,7 @@ public:
 
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
     for (int i = 0; i < para_dim; i++) {
-      ds_buf_ptr[i] = parameter_space.degrees_[i].Get();
+      ds_buf_ptr[i] = parameter_space.GetDegrees()[i].Get();
     }
   }
 
@@ -72,7 +83,7 @@ public:
     p_knot_vectors.attr("clear")();
 
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
-    for (auto& knotvector : parameter_space.knot_vectors_) {
+    for (auto& knotvector : parameter_space.GetKnotVectors()) {
       auto const &kv = *knotvector; // in
       py::list p_kv; // out
       for (int i = 0; i < kv.GetSize(); i++) {
@@ -212,7 +223,8 @@ public:
 
   Proximity_& GetProximity() {
     if (!proximity_initialized_) {
-      proximity_ = std::unique_ptr<Proximity>(*this);
+      proximity_ = std::make_unique<Proximity_>(*this);
+      proximity_initialized_ = true;
     }
     return *proximity_;
   }

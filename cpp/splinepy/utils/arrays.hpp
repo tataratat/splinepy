@@ -61,7 +61,7 @@ template<typename T, std::size_t dim1, std::size_t dim2>
 inline std::array<std::array<T, dim1>, dim1> AAt(
     const std::array<std::array<T, dim2>, dim1>& arr1) {
 
-  std::array<std::array<T, dim1>, dim1>
+  std::array<std::array<T, dim1>, dim1> out;
 
   for (int i{}; i < dim1; ++i) {
     for (int j{i}; j < dim2; ++j) {
@@ -70,11 +70,12 @@ inline std::array<std::array<T, dim1>, dim1> AAt(
     }
   }
 
+  return out;
 }
 
 /// elementwise inplace addition
 template<typename T1, typename T2, std::size_t dim>
-inline void AddSecondToFirst(const std::array<T1, dim>& arr1,
+inline void AddSecondToFirst(std::array<T1, dim>& arr1,
                              const std::array<T2, dim>& arr2) {
   for (int i{0}; i < dim; i++) {
     arr1[i] += T1{arr2[i]};
@@ -93,19 +94,19 @@ inline void AddSecondToFirst(const std::array<T1, dim>& arr1,
  */
 template<typename T1, typename T2, std::size_t para_dim>
 inline void Clip(
-    std::array<std::array<T1, para_dim>, 2>& bounds,
-    std::array<T2, para_dim>,& para_coord,
+    const std::array<std::array<T1, para_dim>, 2>& bounds,
+    std::array<T2, para_dim>& para_coord,
     std::array<int, para_dim>& clipped) {
 
   for (int i{0}; i < para_dim; i++) {
     // check max
     if (static_cast<T1>(para_coord[i]) > bounds[1][i]) {
       clipped[i] = 1;
-      para_coords[i] = T2{bounds[1][i]};
+      para_coord[i] = T2{bounds[1][i]};
     // check min
     } else if (static_cast<T1>(para_coord[i]) < bounds[0][i]) {
       clipped[i] = -1;
-      para_coords[i] = T2{bounds[0][i]};
+      para_coord[i] = T2{bounds[0][i]};
     } else { 
       clipped[i] = 0;
     } // end if
@@ -167,7 +168,7 @@ void reorder(std::array<T, dim>& arr,
 template<typename T, typename IndexT, std::size_t dim>
 void CopyReorder(std::array<T, dim>& arr,
                  std::array<IndexT, dim>& order) {
-  const auto copyarr = std::copy(arr);
+  const auto copyarr = arr; // should copy.
   for (IndexT i{0}; i < dim; i++) {
     arr[order[i]] = copyarr[i];
   }

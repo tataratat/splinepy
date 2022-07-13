@@ -58,7 +58,7 @@ public:
   void UpdateDegrees(int* p_degree_ptr) {
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
     for (int i = 0; i < para_dim; i++) {
-      p_degree_ptr[i] = parameter_space.degrees_[i].Get();
+      p_degree_ptr[i] = parameter_space.GetDegrees()[i].Get();
     }
   }
 
@@ -70,7 +70,7 @@ public:
     p_knot_vectors.attr("clear")();
 
     ParameterSpace_ const &parameter_space = *Base_::Base_::parameter_space_;
-    for (auto& knotvector : parameter_space.knot_vectors_) {
+    for (auto& knotvector : parameter_space.GetKnotVectors()) {
       auto const &kv = *knotvector; // in
       py::list p_kv; // out
       for (int i = 0; i < kv.GetSize(); i++) {
@@ -145,11 +145,12 @@ public:
   }
 
 
-  splinepy::proximity::Proximity& GetProximity() {
+  Proximity_& GetProximity() {
     if (!proximity_initialized_) {
       proximity_ = std::unique_ptr<Proximity_>(*this);
+      proximity_initialized_ = true;
     }
-    return proximity_;
+    return *proximity_;
   }
 
 protected:

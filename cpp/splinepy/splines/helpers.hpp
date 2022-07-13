@@ -4,7 +4,7 @@
 
 /* helper functions for all spline types */
 
-namespace splinpy::splines {
+namespace splinepy::splines {
 
 
 /// Fills raw pointer with degrees. applicable for both nurbs and bspline
@@ -34,7 +34,7 @@ inline void FillKnotVector(const SplineType& spline,
 
 
 /// Returns number of control_points
-tempalte<typename SplineType, typename CountType>
+template<typename SplineType, typename CountType>
 inline CountType GetNumberOfControlPoints(const SplineType& spline) {
   return static_cast<CountType>(
       spline.GetVectorSpace().GetNumberOfCoordinates()

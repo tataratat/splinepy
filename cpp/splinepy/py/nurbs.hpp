@@ -21,7 +21,7 @@
 #include <Sources/InputOutput/irit.hpp>
 
 // Local
-#include <splinelib_ext/nurbspl.hpp>
+#include <splines/nurbs.hpp>
 
 namespace py = pybind11;
 
@@ -30,7 +30,7 @@ using namespace splinelib::sources;
 template<int para_dim, int dim>
 class PyNurbs {
 public:
-  using Nurbs = NurbsExt<para_dim, dim>;
+  using Nurbs = splinepy::splines::Nurbs<para_dim, dim>;
 
   // For writing cpp splines
   using ParameterSpace = typename Nurbs::ParameterSpace_;
@@ -572,9 +572,13 @@ public:
 
     // TODO: turn this into multithread later
     for (int k{0}; k < n_queries; k++) {
-        c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
-                                            0, /* guess option */
-                                            &r_buf_ptr[k * para_dim]);
+      const auto hit = c_nurbs.GetProximity().FindNearestParametricCoordinate(
+          &q_buf_ptr[k * dim],
+          Nurbs::Proximity_::InitialGuess::MidPoint
+      );
+      for (int l{}; l < para_dim; ++l) {
+        r_buf_ptr[k * para_dim] = hit[l].Get();
+      };
     }
 
     results.resize({n_queries, para_dim});
@@ -600,7 +604,7 @@ public:
       for (int k{0}; k < para_dim; k++) {
         qres[k] = qres_ptr[k];
       }
-      c_nurbs._newtree(qres, nthreads);
+      c_nurbs.GetProximity().PlantNewKdTree(qres, nthreads);
     }
 
     // output arr
@@ -610,9 +614,14 @@ public:
 
     // TODO: turn this into multithread later
     for (int k{0}; k < n_queries; k++) {
-        c_nurbs.ClosestParametricCoordinate(&q_buf_ptr[k * dim],
-                                            1,
-                                            &r_buf_ptr[k * para_dim]);
+      const auto hit = c_nurbs.GetProximity().FindNearestParametricCoordinate(
+          &q_buf_ptr[k * dim],
+          Nurbs::Proximity_::InitialGuess::KdTree
+      );
+      for (int l{}; l < para_dim; ++l) {
+        r_buf_ptr[k * para_dim] = hit[l].Get();
+      };
+
     }
 
     results.resize({n_queries, para_dim});

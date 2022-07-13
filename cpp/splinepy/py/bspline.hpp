@@ -21,7 +21,7 @@
 #include <Sources/InputOutput/irit.hpp>
 
 // Local
-#include <splinelib_ext/bspl.hpp>
+#include <splines/bspline.hpp>
 
 // Fitting
 #include <fitting/fitting.hpp>
@@ -33,7 +33,7 @@ using namespace splinelib::sources;
 template<int para_dim, int dim>
 class PyBSpline {
 public:
-  using BSpline = BSplineExt<para_dim, dim>;
+  using BSpline = splinepy::splines::BSpline<para_dim, dim>;
 
   // For writing cpp splines
   using ParameterSpace = typename BSpline::ParameterSpace_;
