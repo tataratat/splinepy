@@ -4,24 +4,15 @@
 #include <cmath>
 #include <algorithm>
 #include <numeric>
-#include <iterator>
-
-#include <Sources/Utilities/named_type.hpp>
-#include <Sources/VectorSpaces/vector_space.hpp>
-#include <Sources/ParameterSpaces/parameter_space.hpp>
-
 
 namespace splinepy::utils {
 
 using namespace splinelib::sources;  
 
-template<typename DataT, int n_rows, int n_columns>
-using ArrayMatrix = std::array<std::array<DataT, n_columns>, n_rows>;
-
-/* elementwise subtraction */
+/// Elementwise subtraction
 template<typename T, typename NamedType, std::size_t dim>
 inline void FirstMinusSecondEqualsThird(
-    const T* first,
+    const T* first /* array */,
     const std::array<NamedType, dim>& second,
     std::array<T, dim>& third) {
   for (size_t i{}; i < dim; ++i) {
@@ -31,99 +22,106 @@ inline void FirstMinusSecondEqualsThird(
   }
 }
 
-/* elementwise mean */
+/// Elementwise mean
 template<typename T, std::size_t dim>
-inline void ew_mean(const std::array<T, dim>& arr1,
-                    const std::array<T, dim>& arr2,
-                    std::array<T, dim>& out) {
-  for (int i{0}; i < dim; i++) {
+inline std::array<T, dim> Mean(const std::array<T, dim>& arr1,
+                               const std::array<T, dim>& arr2) {
+  std::array<T, dim> out;
+  for (int i{0}; i < dim; ++i) {
     out[i] = (arr1[i] + arr2[i]) * .5;
   }
+  return std::move(out);
+}
+
+/// Elementwise mean overload, you can specified return value_type.
+/// Useful for returning NamedType.
+template<typename ReturnT, typename T, std::size_t dim>
+inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
+                                     const std::array<T, dim>& arr2) {
+  std::array<ReturnT, dim> out;
+  for (int i{0}; i < dim; ++i) {
+    out[i] = ReturnT{(arr1[i] + arr2[i]) * .5};
+  }
+  return std::move(out);
+}
+
+/// Dot product
+template<typename T1, typename T2, std::size_t dim>
+inline T1 Dot(const std::array<T1, dim>& arr1,
+              const std::array<T2, dim>& arr2) {
+  T1 dotted{}; /* default value should be 0. */
+  for (int i{0}; i < dim; ++i) {
+    dotted += arr1[i] * static_cast<T1>(arr2[i]);
+  }
+  return dotted;
+}
+
+/// AAt
+template<typename T, std::size_t dim1, std::size_t dim2>
+inline std::array<std::array<T, dim1>, dim1> AAt(
+    const std::array<std::array<T, dim2>, dim1>& arr1) {
+
+  std::array<std::array<T, dim1>, dim1>
+
+  for (int i{}; i < dim1; ++i) {
+    for (int j{i}; j < dim2; ++j) {
+      out[i][j] = Dot(arr1[i], arr1[j]);
+      if (i != j) out[j][i] = out[i][j]; // fill symmetric part
+    }
+  }
 
 }
 
-
-/* elementwise addition */
-template<typename T, std::size_t dim>
-inline void ew_plus(const std::array<T, dim>& arr1,
-                    const std::array<T, dim>& arr2,
-                    std::array<T, dim>& out) {
+/// elementwise inplace addition
+template<typename T1, typename T2, std::size_t dim>
+inline void AddSecondToFirst(const std::array<T1, dim>& arr1,
+                             const std::array<T2, dim>& arr2) {
   for (int i{0}; i < dim; i++) {
-    out[i] = arr1[i] + arr2[i];
-  }
-}
-
-/* inplace elementwise addition */
-template<std::size_t para_dim, typename PC>
-inline void ew_iplus(const std::array<double, para_dim>& arr1, PC& arr2) {
-
-  using SPC = typename PC::value_type;
-
-  int i{0};
-  for (auto& a2 : arr2) {
-    // TODO does one of them do less work?
-    //a2 += SPC{arr1[i]};
-    a2 = SPC{a2.Get() + arr1[i]};
-    i++;
+    arr1[i] += T1{arr2[i]};
   }
 }
 
 
-template<typename T, std::size_t dim>
-inline void norm2(std::array<T, dim>& in,
-                  double& out) {
-  T sqsum{}; /* zero init */
-  for (int i{0}; i < dim; i++) {
-    sqsum += in[i] * in[i];
-  }
-
-  out = std::sqrt(sqsum);
-}
-
-
-template<typename T, std::size_t dim>
-inline double norm2(std::array<T, dim>& in) {
-  double returnval;
-  norm2(in, returnval);
-  return returnval;
-}
-
-
-/* inplace operation for para coord clipping 
+/*!
+ * Inplace operation for para coord clipping and saving clip info
  *
  * Parameters
  * -----------
- * bounds: in
- * para_coord: out
- * clipped: inout
- *   -1 -> minimum clip
- *    0 -> no clip
- *    1 -> maximum clip
+ * @param[in] bounds
+ * @param[out] para_coord
+ * @param[out] clipped (-1) minimum clip; (0) no clip; (1) maximum clip
  */
-template<typename T, std::size_t para_dim, typename PC>
-inline void clip(
-    std::array<std::array<T, para_dim>, 2>& bounds,
-    PC& arr1,
+template<typename T1, typename T2, std::size_t para_dim>
+inline void Clip(
+    std::array<std::array<T1, para_dim>, 2>& bounds,
+    std::array<T2, para_dim>,& para_coord,
     std::array<int, para_dim>& clipped) {
 
-  using SPC = typename PC::value_type;
-
   for (int i{0}; i < para_dim; i++) {
-    // check if it is already clipped
-    //if (clipped[i] != 0) continue;
-
     // check max
-    if (arr1[i].Get() > bounds[1][i]) {
+    if (static_cast<T1>(para_coord[i]) > bounds[1][i]) {
       clipped[i] = 1;
-      arr1[i] = SPC{bounds[1][i]};
+      para_coords[i] = T2{bounds[1][i]};
     // check min
-    } else if (arr1[i].Get() < bounds[0][i]) {
+    } else if (static_cast<T1>(para_coord[i]) < bounds[0][i]) {
       clipped[i] = -1;
-      arr1[i] = SPC{bounds[0][i]};
+      para_coords[i] = T2{bounds[0][i]};
     } else { 
       clipped[i] = 0;
-    }
+    } // end if
+  } // end for
+
+}
+
+
+/// L2 Norm
+template<typename T, std::size_t dim>
+inline double NormL2(std::array<T, dim>& arr) {
+  double returnval{};
+  for (int i{}; i < dim; ++i) {
+    returnval += arr[i] * arr[i];
   }
+  return std::sqrt(returnval);
 }
 
 
@@ -167,7 +165,7 @@ void reorder(std::array<T, dim>& arr,
  * order: in
  */
 template<typename T, typename IndexT, std::size_t dim>
-void copyreorder(std::array<T, dim>& arr,
+void CopyReorder(std::array<T, dim>& arr,
                  std::array<IndexT, dim>& order) {
   const auto copyarr = std::copy(arr);
   for (IndexT i{0}; i < dim; i++) {
@@ -188,7 +186,7 @@ void copyreorder(std::array<T, dim>& arr,
  * x: out
  */
 template<std::size_t para_dim>
-inline void gauss_with_pivot(
+inline void GaussWithPivot(
     std::array<std::array<double, para_dim>, para_dim>& A,
     std::array<double, para_dim>& b,
     std::array<int, para_dim>& skipmask,
@@ -221,23 +219,11 @@ inline void gauss_with_pivot(
     }
     // swap if needed. max entry row goes to i-th row.
     if (maxrow != i) {
-      // swap matrix entries
-      // TODO: since it is nested, we can just do once?
-      //for (int j{0}; j < para_dim; j++) {
-      //  std::swap(A[maxrow][j], A[i][j]);
-      //}
-      // ^ true
-      // swap matrix row
+      // swap A's rows, entries of b, indexmap, and skipmask
       std::swap(A[maxrow], A[i]);
-
-      // swap row-vec entries
       std::swap(b[maxrow], b[i]);
-      // swap indexmap to return x correctly
       std::swap(indexmap[maxrow], indexmap[i]);
-
-      // let's not forget, skipmask needs to be swapped too!
       std::swap(skipmask[maxrow], skipmask[i]);
-
     }
     /* END swap */
 
@@ -269,107 +255,20 @@ inline void gauss_with_pivot(
       sum += A[i][j] * x[j];
     }
     x[i] = (b[i] - sum) / A[i][i];
-    
-    std::cout << "x" << i <<": " << x[i] << " "; 
   }
-  std::cout << "\n";
 
   // reorder
-  reorder(x, indexmap);
-  //reorder(skipmask, indexmap);
+  CopyReorder(x, indexmap);
+  CopyReorder(skipmask, indexmap);
 }
-
 
 template<typename T, std::size_t dim>
-inline void dot(const std::array<T, dim>& arr1,
-                const std::array<T, dim>& arr2,
-                T& dotted) {
-  dotted = T{}; /* default value should be 0. */
-  for (int i{0}; i < dim; i++) {
-    dotted += arr1[i] * arr2[i];
+inline int NonZeros(std::array<T, dim>& arr) {
+  int nonzeros{};
+  for (const auto& a : arr) {
+    if (a != 0) ++nonzeros;
   }
-}
-
-
-/* maybe it is annoying sometimes to have dot as subroutine */
-template <typename T, std::size_t dim>
-inline T dot(const std::array<T, dim>& arr1,
-             const std::array<T, dim>& arr2) {
-  T returnval;
-  dot(arr1, arr2, returnval);
-
-  return returnval;
-}
-
-
-template<typename T, std::size_t dim, typename VC>
-inline void dot(
-    const std::array<T, dim>& arr1,
-    const VC& arr2,
-    T& dotted) {
-  dotted = T{};
-  for (int i{0}; i < dim; i++) {
-    //dotted += arr1[i] * arr2[splinelib::Index{i}].Get();
-    dotted += arr1[i] * arr2[i].Get();
-  }
-}
-
-
-template<typename T, std::size_t dim, typename VC>
-inline void dot(
-    const VC& arr1,
-    const std::array<T, dim>& arr2,
-    T& dotted) {
-  // switch place
-  dot(arr2, arr1, dotted);
-}
-
-
-template<typename T, std::size_t dim, typename VC>
-inline T dot(
-    const std::array<T, dim>& arr1,
-    const VC& arr2) {
-  T returnval;
-  dot(arr1, arr2, returnval);
-  return returnval;
-}
-
-
-// makes `T dot` ambiguous. comment out 
-//template<typename T, std::size_t dim, typename VC>
-//inline T dot(
-//    const VC& arr1,
-//    const std::array<T, dim>& arr2) {
-//  return dot(arr2, arr1);
-//}
-
-
-template<typename T, std::size_t dim1, std::size_t dim2>
-inline void AAt(
-    const std::array<std::array<T, dim2>, dim1>& arr1,
-    std::array<std::array<T, dim1>, dim1>& out) {
-
-  // use symmetry
-  for (int i{0}; i < dim1; i++) {
-    for (int j{0}; j < dim2; j++) {
-      if (i > j) continue;
-      out[i][j] = dot(arr1[i], arr1[j]);
-
-      // fill symmetric part
-      if (i != j) out[j][i] = out[i][j];
-    }
-  }
-
-}
-
-
-template<typename T, std::size_t dim>
-inline int nonzeros(std::array<T, dim>& arr) {
-  int nnz{0};
-  for (int i{0}; i < dim; i++) {
-    if (arr[i] != 0) nnz++;
-  }
-  return nnz;
+  return nonzeros;
 }
 
 } /* namespace splinepy::utils */

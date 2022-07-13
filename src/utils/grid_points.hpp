@@ -49,22 +49,22 @@ public:
   }
 
   template<typename ParaCoord>
-  void id_to_paracoord(const IndexT& id, ParaCoord& pcoord) {
-    using SPC = typename ParaCoord::value_type;
+  ParaCoord IndexToParametricCoordinate(const IndexT& id) const {
 
-    IndexT quot = id, newquot, rem;
+    ParaCoord pcoord{};
+
+    IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      newquot = (IndexT) quot / res_[i];
-      pcoord[i] = SPC{entries_[i][quot % res_[i]]};
-      quot = newquot;
+      pcoord[i] = ParaCoord::value_type{entries_[i][quot % res_[i]]};
+      quot /= res_[i];
     }
   }
 
-  IndexT size() {
+  IndexT Size() const {
     return len_;
   }
 
-  IndexT len() {
+  IndexT Len() const {
     return len_;
   }
 

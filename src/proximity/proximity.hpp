@@ -1,32 +1,35 @@
 #pragma once
 
-#include "arrutils.hpp"
-#include "../helpers.hpp"
+#include <utils/arrays.hpp>
+#include <utils/print.hpp>
+#include <utils/nthreads.hpp>
+#include <utils/grid_points.hpp>
 
 namespace splinepy::proximity {
 
-// a helper class to perform proximity operations to nurbs.
+
+/*!
+ * A helper class to perform proximity operations for splines.
+ */
 template<typename SplineType>
 class Proximity {
 public:
 
+  /// Options for initial guess
+  enum class InitalGuess {MidPoint, KdTree};
+
   // Frequently used array alias
-  using DArray_ = std::array<double, SplineType::kDim>;
-  using PArray_ = std::array<double, SplineType::kParaDim>;
-  using PxPMatrix_ = std::array<
+  using DArrayD_ = std::array<double, SplineType::kDim>;
+  using PArrayD_ = std::array<double, SplineType::kParaDim>;
+  using DArrayI_ = std::array<int, SplineType::kDim>;
+  using PArrayI_ = std::array<int, SplineType::kParaDim>;
+  using PxPMatrixD_ = std::array<
       std::array<double, SplineType::kParaDim>, SplineType::kParaDim
   >;
-  using PxDMatrix_ = std::array<
+  using PxDMatrixD_ = std::array<
       std::array<double, SplineType::kDim>, SplineType::kParaDim
   >;
-  using ClipArray_ = std::array<int, SplineType::kParaDim>;
-
-
-  // constructor.
-  Proximity(SplineType const &spline) : spline_(spline) {};
-
-  // kdtree related variables
-  GridPoints<double, int, SplineType::kParaDim> grid_points_;
+  // kdtree related alias
   using Coordinates_ = typename std::unique_ptr<SplineType::Coordinate_[]>;
   using Cloud_ =
       typename napf::CoordinatesCloud<Coordinates_, int, SplineType::kDim>;
@@ -40,467 +43,278 @@ public:
                           Cloud_>, /* CloudT */
     napf::CoordinatesHighDimTree<double, double, int, dim, 1, Cloud_>
   >::type;
+  using GridPoints_ = GridPoints<double, int, SplineType::kParaDim>;
 
-  /* Computes difference between physical query and current parametric guess.
+  /// Constructor. As a spline helper class, always need a spline.
+  Proximity(SplineType const &spline) : spline_(spline) {};
+
+
+  /*!
+   * Computes difference between physical query and current parametric guess.
    *
-   * Parameters
-   * -----------
-   * query: in
-   * guess: in
-   * difference: out
+   * @param[in] query
+   * @param[in] guess
+   * @param[out] difference query - guess
    */
   void QueryMinusGuess(const double* query,
                        const SplineType::ParametricCoordinate_& guess,
-                       DArray_& difference) {
+                       DArrayD_& difference) const {
 
     FirstMinusSecondEqualsThird(
         query,
-        SplineType::Base_::operator()(guess),
+        spline_.(guess),
         difference
     );
 
   }
 
-protected:
-  SplineType const &spline_;
-  bool tree_planted_ = false;
-
-}
-
-} /* namespace proximity */
-
-namespace py = pybind11;
-
-template<int para_dim, int dim>
-class NurbsExt : public splinelib::sources::splines::Nurbs<para_dim, dim> {
-public:
-  using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
-  using Coordinate_ = typename Base_::Coordinate_;
-  using ScalarCoordinate_ = typename Coordinate_::value_type;
-  using Derivative_ = typename Base_::Derivative_;
-  using Knot_ = typename Base_::Knot_;
-  using ParameterSpace_ = typename Base_::ParameterSpace_;
-  using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
-  using ScalarParametricCoordinate_ =
-      typename ParametricCoordinate_::value_type;
-  using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
-  using OutputInformation_ = splinelib::Tuple<
-      typename ParameterSpace_::OutputInformation_,
-      typename WeightedVectorSpace_::OutputInformation_
-  >;
-  using VectorSpace_ = typename WeightedVectorSpace_::Base_; // <dim + 1>
-
-  // Some private ones. Here we make it public
-  using Index_ = typename Base_::Base_::Index_;
-  using IndexLength_ = typename Index_::Length_;
-  using IndexValue_ = typename Index_::Value_;
-  using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
-  using Knots_ = typename Base_::Base_::Knots_;
-  using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
-
-  // Constructor
-  using Base_::Base_;
-
-  // kdtree, for smart initial guess
-  using VSCoords = typename std::unique_ptr<Coordinate_[]>;
-  using CloudT = napf::VSCoordCloud<VSCoords, int, dim>;
-  using TreeT = typename std::conditional<
-      (dim < 4),
-      napf::SplineLibCoordinatesTree<double,  /* DataT */
-                                     double,  /* DistT */
-                                     int,     /* IndexT */
-                                     dim,     /* dim */
-                                     1,       /* metric */
-                                     CloudT>, /* CloudT */
-      napf::SplineLibCoordinatesHighDimTree<double,
-                                            double,
-                                            int,
-                                            dim,
-                                            1,
-                                            CloudT>
-  >::type; // takes L1 metric
-
-  // add members for parameter coordinate search
-  RasterPoints<double, int, para_dim> pc_sampler_; /* sampling locations */
-  VSCoords cloud_data_; /* evaluated */
-  std::unique_ptr<CloudT> cloud_;
-  std::unique_ptr<TreeT> tree_;
-  bool tree_planted_ = false;
-
-  /***************************************************************************/
-  /******** [start] Helper functions for `FindParametricCoordinate` **********/
-  /***************************************************************************/
-  /* TODO: Generalize and extract them to use it also for bsplines! */
-
-/* Computes distance between goal and query.
- * physical_goal - spline(parametric_query)
- *
- * Parameters
- * -----------
- * spline: in
- * q: in
- * goal: in
- * dist: out
- */
-template<typename SplineT, typename ParaCoordT, int dim>
-void distance(SplineT& spline,
-              ParaCoordT& q,
-              double* goal,
-              std::array<double, dim>& dist) {
-
-  auto const &physc = spline(q); // eval
-  ew_minus(physcgoal, dist);
-}
-
-
-/* Returns parametric bounds
- *
- * Parameters
- * -----------
- * spline: in
- * pbounds: out
- */
-template<typename SplineT, int para_dim>
-void parametric_bounds(SplineT& spline,
-                       std::array<std::array<double, para_dim>, 2>& pbounds) {
-
-  auto const &parameter_space = *spline::Base_::Base_::parameter_space_;
-  int i = 0;
-  for (auto& knotvector : parameter_space.knot_vectors_) {
-    // first and last knots of each kv are the bounds
-    auto const &kf = knotvector->GetFront();
-    auto const &kb = knotvector->GetBack();
-
-    pbounds[0][i] = kf.Get();
-    pbounds[1][i] = kb.Get();
-
-    i++;
-  }
-   
-}
-
-/* Builds a kdtree based on given resolution.
- * This needs to be built before queires with `goodguess=1`
- * Uses "nthread-for", so no need to be executed by thread-child.
- *
- * Parameters
- * -----------
- * spline: in
- * resolutions: in
- * nthread: in
- * 
- */
-template<typename SplineT,
-         int para_dim,
-         typename PointSamplerT
-         typename CloudDataT,
-         typename CloudT,
-         typename TreeT>
-void newtree(SplineT& spline,
-             std::array<int, para_dim>& resolutions,
-             int nthread,
-             PointSamplerT& p_sampler,
-             std::unique_ptr<CloudDataT>& cloud_data, // Coordinate
-             std::unique_ptr<CloudT>& cloud,
-             std::unique_ptr<TreeT>& tree) {
-
-  using ParaCoordT = typename SplineT::ParametricCoordiate_;
-
-  // get parametric bounds and build raster points 
-  std::array<std::array<double, para_dim>, 2> bounds;
-  parametric_bounds(spline, bounds);
-
-  // create sampler
-  p_sampler = PointSamplerT<double, int, para_dim>(bounds, resolutions);
-
-  // cloud_data
-  cloud_data = std::unique_ptr<CloudDataT>(new CloudDataT[p_sampler.size()]);
-  // lambda to fill cloud_data
-  auto prepare_cloud = [&] (int begin, int end) {
-    ParaCoordT_ pc;
-    for (int i{begin}; i < end; i++) {
-      pc_sampler_.id_to_paracoord(i, pc);
-      cloud_data_[i] = std::move(Base_::operator()(pc));
-    }
-  };
-  // fill/prepare cloud data
-  nthread_execution(prepare_cloud, p_sampler.size(), nthread);
-
-  // create cloud and tree
-  cloud = std::unique_ptr<CloudT>(new CloudT(cloud_data, p_sampler_.size()));
-  tree = std::unique_ptr<TreeT>(new TreeT(spline.dim_, *cloud));
-}
-
-  /* Good guess including bounds guess
-   * Options:
-   *   0: Gets mid-point of parametric space and parametric bounds.
-   *   1: KDTree query for nearest discrete point. 
-   *      Currently returns parametric bounbds as bound guess.
-   *      However, we could instead give kdtree hit +- tree sample step size.
-   *      That'd be aggressive, but would work as long as kdtree is build dense
-   *      enough.
+  /*!
+   * Plants a kdtree with given resolution.
    *
-   * Parameters
-   * -----------
-   * goal: in
-   * option: in
-   * goodguess: out
-   * boundguess: out
+   * This needs to be built before BEFORE you request a proximity query with
+   * `InitialGuess::kdTree`. This will always plant a new tree: at runtime, if
+   * a finer tree is desired, you can plant it again.
    *
-   * Raises
-   * -------
-   * runtime_error:
-   *   If there's no kdtree planted and option is 1.
+   * @param resolutions parameter space sampling resolution
+   * @param n_thread number of threads to be used for sampling
    */
-  void _good_guess(double* goal,
-                   int option,
-                   ParametricCoordinate_& goodguess,
-                   std::array<std::array<double, para_dim>, 2>& boundguess) {
+  void PlantNewKdTree(const PArrayI_& resolutions, const int n_thread=1) {
+    // skip early, if requested resolutions are the as existing kdtree
+    if (kdtree_platned_ && sampled_resolutions_ == resolutions) {
+      return;
+    }
 
-    /* always start with para_bounds */
-    _parametric_bounds(boundguess);
+    // create fresh grid_points_ and coordinates_
+    const auto parametric_bounds =
+        splinepy::splines::GetParametricBounds(splines_);
+    grid_points_ = GridPoints_(parametric_bounds, resolutions);
+    coordinates_ =
+        Coordinates_(new SplineType::Coordinate_[grid_points_.Size()]);
 
-    // return mid point. will serve until better guessers arrive.
-    if (option == 0) {
-       std::array<double, para_dim> tmpgoodguess;
-       ew_mean(boundguess[0], boundguess[1], tmpgoodguess);
+    // lambda function to allow n-thread execution
+    auto sample_coordinates = [&] (int begin, int end) {
+      SplineType::ParametricCoordinate_ parametric_coordinate;
+      for (int i{begin}; i < end; ++i) {
+        grid_points_.IndexToParametricCoordinate(i, parametric_coordinate);
+        coordinates_[i] = std::move(spline_(parametric_coordinate));
+      }
+    }
 
-       for (int i{0}; i < para_dim; i++) {
-         goodguess[i] = ScalarParametricCoordinate_{tmpgoodguess[i]};
-       }
+    // n-thread execution
+    splinepy::utils::NThreadExecution(sample_coordinates,
+                                      grid_points_.Size(),
+                                      n_thread);
 
-    } else if (option == 1) {
-      if (!tree_planted_) {
-        // hate to be aggresive, but here we raise error
-        throw std::runtime_error(
-            "to use kd-tree initial guess, please first plant the kd-tree!"
+    // plant a new tree
+    coordinates_cloud_ = std::make_unique<Cloud_>(coordinates_,
+                                                  grid_points_.size());
+    kdtree_ = std::make_unique<Tree_>(SplineType::kDim, *coordinates_cloud_);
+    kdtree_planted_ = true;
+  }
+
+  /// Make initial guess of choice
+  SplineType::ParametricCoordinate_ MakeInitialGuess(
+      InitialGuess initial_guess,
+      const double* goal) const {
+
+
+    if (initial_guess == InitialGuess::MidPoint) {
+      using ReturnValueType = SplineType::ParametricCoordinate_::value_type;
+
+      // mid point is mean of parametric bounds. doesn't consider the goal.
+      return splinepy::utils::Mean<ReturnValueType>(
+          splinepy::splines::GetParametricBounds(splines_
+      );
+
+    } else (initial_guess == InitialGuess::KdTree) {
+      if (!kdtree_planted_) {
+        // hate to be aggresive, but here it is.
+        splinepy::utils::PrintAndThrowError(
+            "to use InitialGuess::Kdtree, please first plant the kdtree!"
         );
       }
-      int vote = 1;
+
+      // good to go. ask the tree
+      const int vote = 1;
       int id[vote];
-      double dist[vote];
-      tree_->knnSearch(goal,
-                       vote /* only closest */,
-                       &id[0],
-                       &dist[0]);
+      double distance[vote];
+      kdtree_->knnSearch(goal,
+                         vote /* closest neighbor */,
+                         &id[0],
+                         &distance[0]);
 
-      pc_sampler_.id_to_paracoord(id[0], goodguess);
+      using ReturnType = SplineType::ParametricCoordinate_;
 
-      // this would be a good part to adjust boundguess based on
-      // step size!
-        
-    }
+      return std::move(
+          grid_points_.IndexToParametricCoordinate<ReturnType>(id[0])
+      );
+    } // if initial_guess == ...
   }
 
-  /* Builds rhs array and returns "eyeders" matrix, so that it can be used in
-   * d2jdu2. "eyeders" refer to collection of spline derivatives where only one
-   * parametric dimension is set to one and everything else zero, resulting in
-   * "eye"-like vectorized derivative query.
+  /*!
+   * Builds RHS and fills "eyeders" matrix, which is also required in LHS.
    *
-   * Parameters
-   * -----------
-   * guess: in
-   *   current parametric coordinate guess
-   * dist: in
-   *   distance to coordinate goal. Same as result of `_distance(--)`.
-   * eyeders: out
-   * rhs: out
+   * "eyeders" refer to collection of spline derivatives where only one
+   * parametric dimension is set to one and everythin else zero, which results
+   * in "eye"-like vectorized derivative query
+   *
+   * @params[in] guess current parametric coordinate guess
+   * @params[in] difference result of `QueryMinusGuess()`
+   * @params[out] eyeders
+   * @params[out] rhs
    */
-  void _build_djdu(
-      ParametricCoordinate_& guess, /* in */
-      std::array<double, dim>& dist, /* in */
-      std::array<std::array<double, dim>, para_dim>& eyeders, /* out */
-      std::array<double, para_dim>& rhs /* out */) {
-    // rhs is djdu
-    double tmp;
+  void FillEyeDersAndRhs(
+      const SplineType::ParametricCoordinate_& guess,
+      const PArrayD_& difference,
+      PxDMatrixD_& eyeders,
+      PArrayD_& rhs) const {
+    // btw, RHS is what's internally called as "df_dxi"
+    double df_dxi_i; // temporary variable to hold sum
     int j;
-    Derivative_ derq; // derivative query 
-    for (int i{0}; i < para_dim; i++) { /* fill */
-      // get deriv of order 1.
-      derq.fill(splinelib::Derivative{0});
-      derq[i] = splinelib::Derivative{1}; 
-      auto const &der = Base_::operator()(guess, derq);
+    SplineType::Derivative_ derivative_query;
 
+    for (int i{}; i < SplineType::kParaDim; ++i) {
+      // eyeder query formulation
+      derivative_query.fill(splinelib::Derivative{0});
+      ++derivative_query[i];
+      // derivative evaluation
+      auto const &derivative = spline_(guess, derivative_query);
 
       j = 0;
-      tmp = 0.;
-      for (const auto& d : der) { /* matmul */
-        tmp += dist[j] * d.Get();
-        eyeders[i][j] = d.Get(); /* needed for 2nd ders. save! */
-        j++;
+      df_dxi_i = 0.;
+      for (const auto& d : derivative) {
+        // cast, since d may be a NamedType.
+        const double d_value = static_cast<double>(d);
+        df_dxi_i += difference[j] * d_value;
+        eyeders[i][j] = d_value;
+        ++j;
       }
-      rhs[i] = -2. * tmp; // apply minus here already!
+      rhs[i] = -2. * df_dxi_i; // apply minus here already!
     }
   }
 
-  /* Builds lhs array. Parameters are same as djdu, except this one only takes
-   * eyeders as `in`.
+  /*!
+   * Builds LHS
    *
-   * Parameters
-   * -----------
-   * guess: in
-   * dist: in
-   * eyeders: in
-   * lhs: out
+   * @params[in] guess
+   * @params[in] difference
+   * @params[in] eyeders
+   * @params[out] lhs
    */
-  void _build_d2jdu2(
-      ParametricCoordinate_& guess,
-      std::array<double, dim>& dist,
-      std::array<std::array<double, dim>, para_dim>& eyeders,
-      std::array<std::array<double, para_dim>, para_dim>& lhs) {
-    
-    // prepare AAt of eyeders
-    std::array<std::array<double, para_dim>, para_dim> eyedersAAt;
-    AAt(eyeders, eyedersAAt);
+  void FillLhs(
+      const SplineType::ParametricCoordinate_& guess,
+      const PArrayD_& difference,
+      const PxDMatrixD_& eyeders,
+      PxPMatrixD_& lhs) const {
 
-    Derivative_ derq; // derivative query
-    for (int i{0}; i < para_dim; i++) {
-      for (int j{0}; j < para_dim; j++) {
-        // it results in symmetric matrix.
-        // until we implement something special for it,
-        // fill in bottom half same as upper half
-        if (i > j) continue; /* skip bottom half */
+    const PxPMatrixD_ eyedersAAt = AAt(eyeders);
 
-        derq.fill(splinelib::Derivative{0});
-        ++derq[i];
-        ++derq[j];
-        auto const &der = Base_::operator()(guess, derq);
+    SplineType::Derivative_ derivative_query;
+    for (int i{}; i < SplineType::kParaDim; ++i) {
+      for (int j{i}; j < SplineType::kParaDim; ++j) {
+        derivative_query.fill(splinelib::Derivative{0});
+        ++derivative_query[i];
+        ++derivative_query[j];
 
-        lhs[i][j] = 2 * (dot(dist, der) + eyedersAAt[i][j]);
+        auto const &derivative = spline_(guess, derivative_query);
 
-        // fill symmetric part
-        if (i != j) lhs[j][i] = lhs[i][j];
+        lhs[i][j] = 2 * (Dot(difference, derivative) + eyedersAAt[i][j]);
+
+        if (i != j) lhs[j][i] = lhs[i][j]; // fill symmetric part
       }
     }
+
   }
 
-  /***************************************************************************/
-  /********** [end] Helper functions for `FindParametricCoordinate` **********/
-  /***************************************************************************/
-
-  /* Given physical query coordinate, finds closest parametric coordinate.
-   * Take a look at `_good_guess(--)` for initial guess options.
-   * 
-   * Paramters
-   * ----------
-   * query: in
-   * guessoption: in
-   * para_coord: out
+  /*!
+   * Given physical coordinate, finds closest parametric coordinate.
+   *
+   * @params query
+   * @params initial_guess
+   * @params tolerance
    */
-  void ClosestParametricCoordinate(double* query, /* <- from physical space */
-                                   int guessoption,
-                                   double* para_coord) {
+  SplineType::ParametricCoordinate_ FindNearestParametricCoordinate(
+      const double* query,
+      InitialGuess initial_guess,
+      double tolerance = 1e-12) {
 
-    // everything we need
-    // here, we try nested array
-    double tolerance = 1e-13;
-    ParametricCoordinate_ current_guess{};
-    std::array<std::array<double, para_dim>, 2> searchbounds{};
-    std::array<std::array<double, para_dim>, para_dim> d2jdu2; /* lhs */
-    std::array<double, para_dim> djdu; /* rhs */
-    std::array<double, para_dim> dx; /* sol */
-    std::array<double, dim> dist;
-    std::array<std::array<double, dim>, para_dim> eyeders;
-    std::array<int, para_dim> clipped;
-    std::array<int, para_dim> prevclipped;
-    std::array<int, para_dim> solverclip;
-    bool solverclipped = false;
-    clipped.fill(0);
-    prevclipped.fill(0);
-    solverclip.fill(0);
-    
-    
-    // start with some sort of guess
-    // TODO: better option than this?
-    _good_guess(query,
-                guessoption,
-                current_guess,
-                searchbounds);
+    PxPMatrixD_ lhs;
+    PArrayD_ rhs;
+    PArrayD_ delta_guess;
+    DArrayD_ difference;
+    PxDMatrixD_ eyeders;
+    PArrayI_ clipped{}; /* clip status after most recent update */
+    PArrayI_ previous_clipped{};
+    PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
+    bool solver_skip_mask_activated = false;
 
-    constexpr int max_iter = para_dim * 20; /* max newton iter */
+    // search_bounds is parametric bounds.
+    const auto search_bounds =
+        splinepy::splines::GetParametricBounds(splines_);
 
-    double prevnorm{123456789.}, curnorm;
+    SplineType::ParametricCoordinate_ current_guess =
+        MakeInitialGuess(initial_guess, query);
 
-    /* newton loops */
-    for (int i{0}; i < max_iter; i++) {
-      /* build system to solve*/
-      _distance(current_guess, query, dist);
-      _build_djdu(current_guess, dist, eyeders, djdu); /* rhs */
-      _build_d2jdu2(current_guess, dist, eyeders, d2jdu2); /* lhs */
+    // Be optimistic and check if initial guess was awesome
+    // If it is awesome, return and have feierabend
+    QueryMinusGuess(query, current_guess, difference);
+    if (splinepy::utils::NormL2(difference) < tolerance) {
+      return std::move(current_guess);
+    }
 
-      /* debug prints */
-      std::cout << "**************** Newton iteration: " << i << " **********"; 
-      std::cout << "\n distance (goal - spline(para_c): ";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << dist[i] << " ";
-      }
-      std::cout << "\n";
-      std::cout << "System Matrix: A | b  (d2jdu2 | djdu)\n";
-      for (int i{0}; i < para_dim; i++) {
-        for (int j{0}; j < para_dim; j++) {
-          std::cout << d2jdu2[i][j] << " ";
+    const int max_iteration = SplineType::kParaDim * 20;
+    double previous_norm{}, current_norm;
+
+    // newton iteration
+    for (int i{}; i < max_iteration; ++i) {
+      // build systems to solve
+      FillEyeDersAndRhs(current_guess, difference, eyeders, rhs);
+      FillLhs(current_guess, difference, eyeders, lhs);
+
+      // solve and update
+      // 1. set solver skip mask if clipping happend twice at the same place.
+      if (previous_clipped == clipped && !solver_skip_mask_activated) {
+        solver_skip_mask = clipped;
+        solver_skip_mask_activated = true;
+        // if skip mask is on for all entries, return now.
+        if (splinepy::utils::NonZeros(solver_skip_mask) ==
+                SplineType::kParaDim) {
+          // current_guess should be clipped at this point.
+          return std::move(current_guess);
         }
-        std::cout << "| " << djdu[i];
-        std::cout << "\n";
       }
-      /* end debug prints */
 
-      /* solve and update */
-      // solver clip only if it is clipped at the same place twice.
-      if(prevclipped == clipped && !solverclipped) {
-        solverclip = clipped;
-        solverclipped = true;
-      }
-      // solve. pivoting is done inplace, so don't use these afterwards.
-      // dx is always reorganized.
-      // TODO: why not reorganize d2jdu2 and djdu too?
-      gauss_with_pivot(d2jdu2, djdu, solverclip, dx); /* solve */
-      ew_iplus(dx, current_guess); /* update */
+      // GaussWithPivot may swap and modify enties of all the input
+      // -> can't use lhs and rhs afterwards, and we don't need them.
+      // -> solver_skip_mask and delta_guess is reordered to rewind swaps
+      splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
 
+      // Update
+      splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
+      // Clip
+      previous_clipped = std::move(clipped);
+      splinepy::utils::Clip(search_bounds, current_guess, clipped);
+      // Converged?
+      current_norm = NormL2(lhs);
+      if (std::abs(previous_norm - current_norm) < tolernace) break;
 
-      /* debug prints */
-      std::cout << "Solution (dx): ";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << dx[i] << " ";
-      }
-      std::cout << "\nUpdated: ";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << current_guess[i].Get() << " ";
-      }
-      /* end debug prints */
-
-      /* clip */
-      prevclipped = clipped;
-      clip(searchbounds, current_guess, clipped); /* clip */
-
-
-      /* debug prints */
-      std::cout << "\nClip info: ";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << clipped[i] << " ";
-      }
-      std::cout  << "\n Current guess after clip:";
-      for (int i{0}; i < para_dim; i++) {
-        std::cout << current_guess[i].Get() << " ";
-      }
-      /* end debug prints */
-
-      // Customer satisfaction survey
-      // ============================
-      // 1. Converged?
-      //   -> should be zero, if query point is on the spline.
-      // 2. All clipped?
-      //   -> should be the case if query point lies outside the spline.
-      curnorm = norm2(djdu);
-      std::cout  << "\n norm2(djdu): " << curnorm << "\n";
-      if (std::abs(prevnorm - curnorm) < tolerance
-          || nonzeros(solverclip) == para_dim) break;
-      prevnorm = curnorm;
+      // prepare next round
+      QueryMinusGuess(query, current_guess, difference);
+      previous_norm = current_norm
     }
-
-    // fill up the para_coord
-    for (int i{0}; i < para_dim; i++) {
-      para_coord[i] = current_guess[i].Get();
-    }
+    return std::move(current_guess);
   }
+
+protected:
+  SplineType const &spline_;
+  // kdtree related variables
+  GridPoints_ grid_points_;
+  PArrayI_ sampled_resolutions_;
+  bool kdtree_planted_ = false;
+  Coordinates_ coordinates_;
+  Cloud_ coordinates_cloud_;
+  Tree_ kdtree_;
+
 };
+
+} /* namespace proximity */
