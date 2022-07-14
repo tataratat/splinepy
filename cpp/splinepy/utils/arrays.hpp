@@ -12,13 +12,13 @@ using namespace splinelib::sources;
 /// Elementwise subtraction
 template<typename T, typename NamedType, std::size_t dim>
 inline void FirstMinusSecondEqualsThird(
-    const T* first /* array */,
-    const std::array<NamedType, dim>& second,
+    const std::array<NamedType, dim>& first,
+    const T* second, /* c array */
     std::array<T, dim>& third) {
   for (size_t i{}; i < dim; ++i) {
     // following line should raise error during compile time
     // if T != NameType::Type_
-    third[i] = first[i] - static_cast<T>(second[i]);
+    third[i] = static_cast<T>(first[i]) - second[i];
   }
 }
 

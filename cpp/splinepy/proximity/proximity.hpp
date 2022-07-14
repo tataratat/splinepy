@@ -68,13 +68,13 @@ public:
    * @param[in] guess
    * @param[out] difference query - guess
    */
-  void QueryMinusGuess(const double* query,
-                       const typename SplineType::ParametricCoordinate_& guess,
+  void GuessMinusQuery(const typename SplineType::ParametricCoordinate_& guess,
+                       const double* query,
                        DArrayD_& difference) const {
 
     splinepy::utils::FirstMinusSecondEqualsThird(
-        query,
         spline_(guess),
+        query,
         difference
     );
 
@@ -179,7 +179,7 @@ public:
    * in "eye"-like vectorized derivative query
    *
    * @params[in] guess current parametric coordinate guess
-   * @params[in] difference result of `QueryMinusGuess()`
+   * @params[in] difference result of `GussMinusQuery()`
    * @params[out] eyeders
    * @params[out] rhs
    */
@@ -278,7 +278,7 @@ public:
 
     // Be optimistic and check if initial guess was awesome
     // If it is awesome, return and have feierabend
-    QueryMinusGuess(query, current_guess, difference);
+    GuessMinusQuery(current_guess, query, difference);
     if (splinepy::utils::NormL2(difference) < tolerance) {
       return std::move(current_guess);
     }
@@ -313,14 +313,14 @@ public:
       // Update
       splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
       // Clip
-      previous_clipped = std::move(clipped);
+      previous_clipped = std::move(clipped); //swap?
       splinepy::utils::Clip(search_bounds, current_guess, clipped);
       // Converged?
       current_norm = splinepy::utils::NormL2(rhs);
       if (std::abs(previous_norm - current_norm) < tolerance) break;
 
       // prepare next round
-      QueryMinusGuess(query, current_guess, difference);
+      GuessMinusQuery(current_guess, query, difference);
       previous_norm = current_norm;
     }
     return std::move(current_guess);

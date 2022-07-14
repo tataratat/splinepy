@@ -67,7 +67,7 @@ public:
   /// subroutine variation
   template<typename ParaCoord>
   void IndexToParametricCoordinate(const IndexT& id,
-                                   ParaCoord pcoord) const {
+                                   ParaCoord& pcoord) const {
 
     using ValueType = typename ParaCoord::value_type;
 

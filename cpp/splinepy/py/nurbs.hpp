@@ -577,7 +577,7 @@ public:
           Nurbs::Proximity_::InitialGuess::MidPoint
       );
       for (int l{}; l < para_dim; ++l) {
-        r_buf_ptr[k * para_dim] = hit[l].Get();
+        r_buf_ptr[k * para_dim + l] = hit[l].Get();
       };
     }
 
@@ -619,7 +619,7 @@ public:
           Nurbs::Proximity_::InitialGuess::KdTree
       );
       for (int l{}; l < para_dim; ++l) {
-        r_buf_ptr[k * para_dim] = hit[l].Get();
+        r_buf_ptr[k * para_dim + l] = hit[l].Get();
       };
 
     }
