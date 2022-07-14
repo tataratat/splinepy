@@ -20,7 +20,8 @@ namespace py = pybind11;
 using namespace splinelib::sources;
 
 template<int para_dim, int dim>
-struct BSplineParser {
+class BSplineParser {
+public:
 
 
     using BSpline = typename splines::BSpline<para_dim, dim>;
@@ -111,7 +112,8 @@ struct BSplineParser {
 };
 
 template<int para_dim, int dim>
-struct NurbsParser {
+class NurbsParser {
+public:
 
 
     using Nurbs = typename splines::Nurbs<para_dim, dim>;
@@ -220,8 +222,8 @@ struct NurbsParser {
 };
 
 
-
-struct SplineReader {
+class SplineReader {
+public:
 
     using Splines = typename input_output::Splines;
     using SplineEntry = typename input_output::SplineEntry;
