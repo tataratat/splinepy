@@ -34,18 +34,8 @@ public:
   }
 
 
-  const std::array<DataT, dim> operator[](IndexT id) {
-    IndexT quot = id, newquot, rem;
-    std::array<DataT, dim> out;
-
-    for (int i{0}; i < dim; i++) {
-      // compiler should be smart enough
-      newquot = (IndexT) quot / res_[i];
-      out[i] = entries_[i][quot % res_[i]];
-      quot = newquot;
-    }
-
-    return std::move(out);
+  const std::array<DataT, dim> operator[](const IndexT id) {
+    return IndexToParametricCoordinate(id);
   }
 
   template<typename ParaCoord>
@@ -61,7 +51,7 @@ public:
       quot /= res_[i];
     }
 
-    return std::move(pcoord);
+    return pcoord;
   }
 
   /// subroutine variation

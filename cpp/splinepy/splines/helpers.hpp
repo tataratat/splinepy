@@ -62,7 +62,7 @@ GetParametricBounds(const SplineType& spline) {
     ++i;
   }
 
-  return std::move(parametric_bounds);
+  return parametric_bounds;
 }
 
 

@@ -109,7 +109,7 @@ public:
       typename SplineType::ParametricCoordinate_ parametric_coordinate;
       for (int i{begin}; i < end; ++i) {
         grid_points_.IndexToParametricCoordinate(i, parametric_coordinate);
-        coordinates_[i] = std::move(spline_(parametric_coordinate));
+        coordinates_[i] = spline_(parametric_coordinate);
       }
     };
 
@@ -280,7 +280,7 @@ public:
     // If it is awesome, return and have feierabend
     GuessMinusQuery(current_guess, query, difference);
     if (splinepy::utils::NormL2(difference) < tolerance) {
-      return std::move(current_guess);
+      return current_guess;
     }
 
     const int max_iteration = SplineType::kParaDim * 20;
@@ -301,7 +301,7 @@ public:
         if (splinepy::utils::NonZeros(solver_skip_mask) ==
                 SplineType::kParaDim) {
           // current_guess should be clipped at this point.
-          return std::move(current_guess);
+          return current_guess;
         }
       }
 
@@ -313,7 +313,7 @@ public:
       // Update
       splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
       // Clip
-      previous_clipped = std::move(clipped); //swap?
+      previous_clipped = clipped; //swap?
       splinepy::utils::Clip(search_bounds, current_guess, clipped);
       // Converged?
       current_norm = splinepy::utils::NormL2(rhs);
@@ -323,7 +323,7 @@ public:
       GuessMinusQuery(current_guess, query, difference);
       previous_norm = current_norm;
     }
-    return std::move(current_guess);
+    return current_guess;
   }
 
 protected:

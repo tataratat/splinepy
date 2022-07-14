@@ -30,7 +30,7 @@ inline std::array<T, dim> Mean(const std::array<T, dim>& arr1,
   for (int i{0}; i < dim; ++i) {
     out[i] = (arr1[i] + arr2[i]) * .5;
   }
-  return std::move(out);
+  return out;
 }
 
 /// Elementwise mean overload, you can specified return value_type.
@@ -42,7 +42,7 @@ inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
   for (int i{0}; i < dim; ++i) {
     out[i] = ReturnT{(arr1[i] + arr2[i]) * .5};
   }
-  return std::move(out);
+  return out;
 }
 
 /// Dot product
