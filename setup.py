@@ -105,6 +105,10 @@ if flags["minimal"] in sys.argv:
     cma += ["-DMINIMAL=ON"]
     sys.argv.remove(flags["minimal"])
 
+if "develop" in sys.argv:
+    print("*** develop? nice! adding `-Wall` flag ***")
+    cma += ["-DENABLE_WARNINGS=ON"]
+
 
 setup(
     name='splinepy',

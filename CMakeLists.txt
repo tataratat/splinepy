@@ -6,8 +6,13 @@ option(COMPILE_SPLINELIB "Compile splinelib together." ON)
 option(VERBOSE_MAKE "Verbose `make` output." OFF)
 option(MINIMAL "Compile a minimal set of splines." OFF)
 option(COMPILE_PYTHON "Compile python module." ON)
+option(ENABLE_WARNINGS "Add warning flags" OFF)
 
 set(SPLINEPY_FLAGS -fPIC)
+if(ENABLE_WARNINGS)
+    set(SPLINEPY_FLAGS ${SPLINEPY_FLAGS} -Wall)
+endif()
+
 set(SPLINEPY_OPTIMIZATION_FLAGS -O3)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND SPLINEPY_OPTIMIZATION_FLAGS -ffast-math -mtune=native)
