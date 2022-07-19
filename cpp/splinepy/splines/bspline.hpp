@@ -147,7 +147,7 @@ public:
 
   Proximity_& GetProximity() {
     if (!proximity_initialized_) {
-      proximity_ = std::unique_ptr<Proximity_>(*this);
+      proximity_ = std::make_unique<Proximity_>(*this);
       proximity_initialized_ = true;
     }
     return *proximity_;
