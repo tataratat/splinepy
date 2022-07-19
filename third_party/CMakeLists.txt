@@ -1,6 +1,6 @@
 if(SPLINEPY_COMPILE_SPLINELIB)
     add_subdirectory(SplineLib)
 endif()
-add_subdirectory(bezierManipulation)
+add_subdirectory(bezman)
 add_subdirectory(pybind11)
 add_subdirectory(napf)

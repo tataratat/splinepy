@@ -1,4 +1,5 @@
 #include <splinepy/py/py_bezier.hpp>
+#include <splinepy/py/py_rational_bezier.hpp>
 #include <splinepy/py/py_bspline.hpp>
 #include <splinepy/py/py_nurbs.hpp>
 
@@ -17,6 +18,19 @@ void init_minimal(py::module_ &m) {
   add_bezier_pyclass<3, 1>(m, "Bezier3P1D");
   add_bezier_pyclass<3, 2>(m, "Bezier3P2D");
   add_bezier_pyclass<3, 3>(m, "Bezier3P3D");
+
+  // Rational Bezier
+  add_rational_bezier_pyclass<1, 1>(m, "RationalBezier1P1D");
+  add_rational_bezier_pyclass<1, 2>(m, "RationalBezier1P2D");
+  add_rational_bezier_pyclass<1, 3>(m, "RationalBezier1P3D");
+
+  add_rational_bezier_pyclass<2, 1>(m, "RationalBezier2P1D");
+  add_rational_bezier_pyclass<2, 2>(m, "RationalBezier2P2D");
+  add_rational_bezier_pyclass<2, 3>(m, "RationalBezier2P3D");
+
+  add_rational_bezier_pyclass<3, 1>(m, "RationalBezier3P1D");
+  add_rational_bezier_pyclass<3, 2>(m, "RationalBezier3P2D");
+  add_rational_bezier_pyclass<3, 3>(m, "RationalBezier3P3D");
 
   // BSpline
   add_bspline_pyclass<1, 1>(m, "BSpline1P1D");
