@@ -12,7 +12,7 @@ template <typename DataT,
 class GridPoints {
 public:
 
-  // cloud be useful for setting searchbounds aggresively
+  // could be useful for setting searchbounds aggresively
   std::array<DataT, dim> step_size_;
 
   GridPoints() = default;
@@ -35,7 +35,7 @@ public:
 
 
   const std::array<DataT, dim> operator[](const IndexT id) {
-    return IndexToParametricCoordinate(id);
+    return IndexToParametricCoordinate<std::array<DataT, dim>>(id);
   }
 
   template<typename ParaCoord>
