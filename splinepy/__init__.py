@@ -1,6 +1,7 @@
 from splinepy import _splinepy as _s
 from splinepy._version import __version__
 from splinepy.bezier import Bezier
+from splinepy.rational_bezier import RationalBezier
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
 from splinepy._spline import Spline
@@ -23,6 +24,7 @@ NurbsSolid = _s.NURBS3P3D
 __all__ = [
     "Spline",
     "Bezier",
+    "RationalBezier",
     "BSpline",
     "NURBS",
     "BSplineCurve2D",
