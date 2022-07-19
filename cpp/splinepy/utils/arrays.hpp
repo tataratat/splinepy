@@ -82,6 +82,15 @@ inline void AddSecondToFirst(std::array<T1, dim>& arr1,
   }
 }
 
+/// elementwise inplace addition with a given factor.
+template<typename T1, typename T2, std::size_t dim>
+inline void AddSecondTimesThirdToFirst(std::array<T1, dim>& arr1,
+                                       const T2& factor,
+                                       const std::array<T2, dim>& arr2) {
+  for (int i{0}; i < dim; i++) {
+    arr1[i] += T1{factor * arr2[i]};
+  }
+}
 
 /*!
  * Inplace operation for para coord clipping and saving clip info
@@ -113,7 +122,6 @@ inline void Clip(
   } // end for
 
 }
-
 
 /// L2 Norm
 template<typename T, std::size_t dim>
