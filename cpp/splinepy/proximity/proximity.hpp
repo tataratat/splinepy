@@ -317,10 +317,11 @@ public:
       splinepy::utils::Clip(search_bounds, current_guess, clipped);
       // Converged?
       current_norm = splinepy::utils::NormL2(rhs);
-      if (std::abs(previous_norm - current_norm) < tolerance) break;
+      GuessMinusQuery(current_guess, query, difference);
+      if (std::abs(previous_norm - current_norm) < tolerance
+          || splinepy::utils::NormL2(difference) < tolerance) break;
 
       // prepare next round
-      GuessMinusQuery(current_guess, query, difference);
       previous_norm = current_norm;
     }
     return current_guess;
