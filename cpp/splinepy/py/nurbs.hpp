@@ -358,7 +358,7 @@ public:
     Derivative derivative{};
     for (i = 0; i < o_buf.shape[0]; i++) {
       derivative[i] = splinelib::Derivative{o_buf_ptr[i]};
-    }
+                                       }
 
     // deval and fill up result array
     auto deval = [&] (int begin, int end) {
@@ -558,8 +558,8 @@ public:
 
   }
 
-  py::array_t<double> closest_para_coord(
-      py::array_t<double> queries) {
+  py::array_t<double> nearest_pcoord_midpoint(py::array_t<double> queries,
+                                              int nthread) {
     // input arr
     py::buffer_info q_buf = queries.request();
     double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
@@ -570,59 +570,81 @@ public:
     py::buffer_info r_buf = results.request();
     double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
 
-    // TODO: turn this into multithread later
-    for (int k{0}; k < n_queries; k++) {
-      const auto hit = c_nurbs.GetProximity().FindNearestParametricCoordinate(
-          &q_buf_ptr[k * dim],
-          Nurbs::Proximity_::InitialGuess::MidPoint
-      );
-      for (int l{}; l < para_dim; ++l) {
-        r_buf_ptr[k * para_dim + l] = hit[l].Get();
-      };
-    }
+    // get proximity helper
+    auto& proximity = c_nurbs.GetProximity();    
+
+    // lambda for nearest search
+    auto nearest = [&] (int begin, int end) {
+      for (int id{begin}; id < end; id++) { // n_queries
+        // ask the proximity guy
+        const auto paracoord = proximity.FindNearestParametricCoordinate(
+            &q_buf_ptr[id * dim],
+            Nurbs::Proximity_::InitialGuess::MidPoint
+        );
+        // unpack
+        for (int l{}; l < para_dim; ++l) {
+          r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
+        }
+      }
+    };
+
+    // nthreadexecution
+    splinepy::utils::NThreadExecution(nearest, n_queries, nthread);
 
     results.resize({n_queries, para_dim});
     return  results;
   }
 
-  py::array_t<double> closest_para_coord_kdt(
-      py::array_t<double> queries,
-      py::array_t<int> resolutions,
-      int nthreads) {
+  py::array_t<double> nearest_pcoord_kdt(py::array_t<double> queries,
+                                         py::array_t<int> resolutions,
+                                         int nthread) {
     // input arr
     py::buffer_info q_buf = queries.request();
     double* q_buf_ptr = static_cast<double *>(q_buf.ptr);
     const int n_queries = q_buf.shape[0];
-    // if resolutions is negative, we don't build a new tree
-    // check the first entry
-    bool build_newtree = true;
-    int* qres_ptr = static_cast<int *>(resolutions.request().ptr);
 
-    // build new tree if requested
-    if (qres_ptr[0] != -1) {
-      std::array<int, para_dim> qres;
-      for (int k{0}; k < para_dim; k++) {
-        qres[k] = qres_ptr[k];
-      }
-      c_nurbs.GetProximity().PlantNewKdTree(qres, nthreads);
-    }
+    // resolution input
+    int* qres_ptr = static_cast<int *>(resolutions.request().ptr);
 
     // output arr
     py::array_t<double> results(n_queries * para_dim);
     py::buffer_info r_buf = results.request();
     double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
 
-    // TODO: turn this into multithread later
-    for (int k{0}; k < n_queries; k++) {
-      const auto hit = c_nurbs.GetProximity().FindNearestParametricCoordinate(
-          &q_buf_ptr[k * dim],
-          Nurbs::Proximity_::InitialGuess::KdTree
-      );
-      for (int l{}; l < para_dim; ++l) {
-        r_buf_ptr[k * para_dim + l] = hit[l].Get();
-      };
-
+    // prepare proximity
+    auto& proximity = c_nurbs.GetProximity();
+    bool plant_newtree_please = true;
+    // if resolutions of any entry is negative, we don't build a new tree
+    std::array<int, para_dim> qres;
+    for (int k{0}; k < para_dim; k++) {
+        if (qres_ptr[k] < 0) {
+            plant_newtree_please = false;
+            break;
+        }
+        qres[k] = qres_ptr[k];
     }
+    if (plant_newtree_please) {
+      proximity.PlantNewKdTree(qres, nthread);
+    }
+
+
+    // lambda for nearest search
+    auto nearest = [&] (int begin, int end) {
+      for (int id{begin}; id < end; id++) { // n_queries
+        // ask the proximity guy
+        const auto paracoord = proximity.FindNearestParametricCoordinate(
+            &q_buf_ptr[id * dim],
+            Nurbs::Proximity_::InitialGuess::KdTree
+        );
+        // unpack
+        for (int l{}; l < para_dim; ++l) {
+          r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
+        }
+      }
+    };
+
+    // nthreadexecution
+    splinepy::utils::NThreadExecution(nearest, n_queries, nthread);
 
     results.resize({n_queries, para_dim});
     return  results;
@@ -723,12 +745,13 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
                    &PyNurbs<para_dim, dim>::sample,
                    py::arg("resoultion"),
                    py::return_value_policy::move)
-          .def("closest_para_coord",
-                   &PyNurbs<para_dim, dim>::closest_para_coord,
-                   py::arg("query"))
-          .def("closest_para_coord_kdt",
-                   &PyNurbs<para_dim, dim>::closest_para_coord_kdt,
-                   py::arg("query"),
+          .def("nearest_pcoord_midpoint",
+                   &PyNurbs<para_dim, dim>::nearest_pcoord_midpoint,
+                   py::arg("queries"),
+                   py::arg("nthreads"))
+          .def("nearest_pcoord_kdt",
+                   &PyNurbs<para_dim, dim>::nearest_pcoord_kdt,
+                   py::arg("queries"),
                    py::arg("resolutions"),
                    py::arg("nthreads"))
           .def("write_iges",
