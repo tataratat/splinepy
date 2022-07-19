@@ -882,6 +882,98 @@ class Spline(abc.ABC):
 
         return self._c_spline.sample(query_resolutions)
 
+    def nearest_pcoord(
+            self,
+            queries,
+            kdt_resolutions=None,
+            n_threads=1
+    ):
+        """
+        Given physical coordinate, finds a parametric coordinate that maps to
+        the nearest physical coordinate. Also known as "point inversion".
+        Makes initial guess by searching for the nearest points with kd-tree.
+        With `kdt_resolutions` value, physical points will be sampled to plant
+        a kd-tree. Probably useful if you have a lot of queries. The planted
+        kd-tree is saved in c_spline internally and will re-plant only if
+        `kdt_resolutions` differ from previous function call. Setting any
+        entry in `kdt_resolutions` will make sure no tree is planted. Be aware,
+        if there's no tree, this will raise runtime error from c++ side.
+        Turns out, it is very important to have a good initial guess for
+        newton method. Hence, this method is default. 
+
+        Parameters
+        -----------
+        queries: (n, dim) list-like
+        kdt_resolutions: (para_dim) list-like
+          Default is None and will build [10] * para_dim tree.
+          If any entry is negative, it won't plant a tree. 
+        nthreads: int
+          number of threads for parallel execution.
+
+        Returns
+        --------
+        nearest_pcoord: (n, para_dim) np.ndarray
+        """
+        if self.whatami == "Nothing":
+            return None
+
+        queries = utils.make_c_contiguous(queries, dtype="float64")
+
+        if kdt_resolutions is None:
+            kdt_resolutions = [10] * self.para_dim
+
+        if (
+            queries.shape[1] != self.dim
+            and len(kdt_resolutions) != self.para_dim
+        ):
+            raise InputDimensionError(
+                "`queries` does not match current dimension."
+            )
+
+        logging.debug("Spline - Searching for nearest parametric coord...")
+
+        return self._c_spline.nearest_pcoord_kdt(
+            queries=queries,
+            resolutions=kdt_resolutions,
+            nthreads=n_threads
+        )
+
+    def nearest_pcoord_midpoint(self, queries, n_threads=1):
+        """
+        Given physical coordinate, finds a parametric coordinate that maps to
+        the nearest physical coordinate. Also known as "point inversion".
+        Initial guess is mid point of parametric space. This tends to fail.
+        `nearest_pcoord` is recommended.
+        
+
+        Parameters
+        -----------
+        queries: (n, dim) list-like
+        nthreads: int
+          number of threads for parallel execution.
+
+        Returns
+        --------
+        nearest_pcoord: (n, para_dim) np.ndarray
+        """
+        if self.whatami == "Nothing":
+            return None
+
+        queries = utils.make_c_contiguous(queries, dtype="float64")
+
+        if queries.shape[1] != self.dim:
+            raise InputDimensionError(
+                "`queries` does not match current dimension."
+            )
+
+        logging.debug("Spline - Searching for nearest parametric coord...")
+
+        return self._c_spline.nearest_pcoord_midpoint(
+            queries=queries,
+            nthreads=n_threads
+        )
+
+
     def export(self, fname):
         """
         Export spline. Please be aware of the limits of `.iges`
