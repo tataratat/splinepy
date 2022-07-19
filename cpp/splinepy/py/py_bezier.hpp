@@ -1,19 +1,21 @@
+#pragma once
+
 #include<type_traits>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
-#include <bezierManipulation/src/point.hpp>
-#include <bezierManipulation/src/bezier_spline.hpp>
+#include <bezman/src/point.hpp>
+#include <bezman/src/bezier_spline.hpp>
 
 namespace py = pybind11;
 
 template<int para_dim, int dim>
-using Bezier = beziermanipulation::BezierSpline<
+using Bezier = bezman::BezierSpline<
     static_cast<std::size_t>(para_dim),
     std::conditional_t<
       (dim > 1),
-      beziermanipulation::Point<static_cast<unsigned>(dim)>,
+      bezman::Point<static_cast<unsigned>(dim)>,
       double>,
     double
 >;
@@ -143,7 +145,7 @@ public:
     double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
-      beziermanipulation::Point<static_cast<unsigned>(para_dim)> qpt; // query
+      bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (int j = 0; j < para_dim; j++) {
          qpt[j] = q_buf_ptr[i * para_dim + j];
       }
@@ -174,7 +176,7 @@ public:
     double* r_buf_ptr = static_cast<double *>(r_buf.ptr);
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
-      beziermanipulation::Point<static_cast<unsigned>(para_dim)> qpt; // query
+      bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (int j = 0; j < para_dim; j++) {
          qpt[j] = q_buf_ptr[i * para_dim + j];
       }
