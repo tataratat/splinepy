@@ -9,6 +9,12 @@ from splinepy._spline import Spline
 
 class Bezier(Spline):
 
+    # Required Properties
+    _required_properties = [
+        "degrees",
+        "control_points",
+    ]
+
     def __init__(self, degrees=None, control_points=None):
         """
         Bezier (Spline).
