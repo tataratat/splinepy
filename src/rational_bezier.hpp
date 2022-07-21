@@ -74,6 +74,7 @@ public:
     // Init c_rational_bezier using move constructor
     c_rational_bezier = std::move(rhs);
     p_control_points.resize({(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+    p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
     p_degrees.resize({(int) para_dim});
     update_p();
   }
@@ -81,6 +82,7 @@ public:
   /// Transformation Constructor
   PyRationalBezier(const PyBezier<para_dim, dim>& rhs) : c_rational_bezier{rhs.c_bezier} {
     p_control_points.resize({(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+    p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
     p_degrees.resize({(int) para_dim});
     update_p();
   }
@@ -125,12 +127,27 @@ public:
     // control points
     double* cps_ptr = static_cast<double *>(p_control_points.request().ptr);
     // weights
-    double* weights_ptr = static_cast<double *>(p_control_points.request().ptr);
+    double* weights_ptr = static_cast<double *>(p_weights.request().ptr);
 
     // update degrees
     for (int i = 0; i < para_dim; i++) {
       ds_ptr[i] = c_rational_bezier.GetDegrees()[i];
     }
+
+    // update control_points
+    // Check if shape changed
+    if (c_rational_bezier.GetWeightedControlPoints().size() != 
+        p_control_points.request().shape[0]) {
+      const std::size_t number_of_ctps = 
+                  c_rational_bezier.GetWeightedControlPoints().size();
+      // Update Control Point Vector
+      p_control_points = py::array_t<double>(number_of_ctps * dim);
+      p_control_points.resize({(int) number_of_ctps, dim});
+      // Update Control Point Vector
+      p_weights = py::array_t<double>(number_of_ctps);
+      p_weights.resize({(int) number_of_ctps, 1});
+    }
+
 
     // update control_points
     for (int i = 0; i < p_control_points.request().shape[0]; i++) {
@@ -271,6 +288,9 @@ void add_rational_bezier_pyclass(py::module &m, const char *class_name) {
       // Control Point Vector
       .def_readwrite("control_points",
                          &PyRationalBezier<para_dim, dim>::p_control_points)
+      // RWeights Vector
+      .def_readwrite("weights",
+                         &PyRationalBezier<para_dim, dim>::p_weights)
       // Update Backend data
       .def("update_c",
                &PyRationalBezier<para_dim, dim>::update_c)

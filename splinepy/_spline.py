@@ -260,7 +260,7 @@ class Spline(abc.ABC):
 
         logging.debug(f"Spline - Degrees set: {self.degrees}")
 
-        self._update_c()
+        self._check_and_update_c()
 
     @property
     def knot_vectors(self):
@@ -323,7 +323,7 @@ class Spline(abc.ABC):
                 f"{len(kv)}"
             )
 
-        self._update_c()
+        self._check_and_update_c()
 
     @property
     def unique_knots(self,):
@@ -431,7 +431,7 @@ class Spline(abc.ABC):
             f"Spline - {self.control_points.shape[0]} Control points set."
         )
 
-        self._update_c()
+        self._check_and_update_c()
 
     def _lexsort_control_points(self, order):
         """
@@ -475,6 +475,61 @@ class Spline(abc.ABC):
         )
 
     @property
+    def weights(self,):
+        """
+        Returns weights.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        self._weights: (n, 1) list-like
+        """
+        if hasattr(self, "_weights"):
+            return self._weights
+
+        else:
+            return None
+
+    @weights.setter
+    def weights(self, weights):
+        """
+        Set weights.
+
+        Parameters
+        -----------
+        weights: (n,) list-like
+
+        Returns
+        --------
+        None
+        """
+        if weights is None:
+            if hasattr(self, "_weights"):
+                delattr(self, "_weights")
+            return None
+
+        weights = utils.make_c_contiguous(
+            weights,
+            dtype=np.float64
+        ).reshape(-1,1)
+
+        if self.control_points is not None:
+            if self.control_points.shape[0] != weights.shape[0]:
+                raise ValueError(
+                    "Number of control points and number of weights does not "
+                    "match."
+                )
+
+        self._weights = weights
+        
+        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
+
+        self._check_and_update_c()
+
+    @property
     def control_mesh_resolutions(self,):
         """
         Returns control mesh resolutions.
@@ -497,6 +552,62 @@ class Spline(abc.ABC):
                 cmr.append(len(kv) - d - 1)
 
         return cmr
+
+    def _check_and_update_c(self,):
+        """
+        Check all available information before updating the backend
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        # Check if all data is available for spline type
+        for i_property in self._required_properties:
+            print(getattr(self,i_property))
+            if getattr(self, i_property) is None:
+                logging.debug(
+                    "Spline - Not enough information to update cpp spline. "
+                    "Skipping update."
+                )
+                return
+
+        # Check if data is coherent
+        if not self.dim == self.control_points.shape[1]:
+            raise InputDimensionError(
+                "Mismatch between dimension and control point dimensionality"
+            ) 
+        if "knot_vectors" in self._required_properties:
+            if not len(self.knot_vectors) == self.para_dim:
+                raise InputDimensionError(
+                    "Not enough knot vectors for required parametric "
+                    "dimension."
+                ) 
+        if not self.degrees.shape[0] == self.para_dim:
+            raise InputDimensionError(
+                "RDimension mismatch between degrees and parametric dimension"
+            ) 
+        n_required_ctps = 1
+        for i_para_dim in range(self.para_dim):
+            n_ctps_per_para_dim = 0
+            n_ctps_per_para_dim += self.degrees[i_para_dim] + 1
+            if "knot_vectors" in self._required_properties:
+                n_ctps_per_para_dim -= len(self.knot_vectors[i_para_dim])
+                n_ctps_per_para_dim *= -1
+            n_required_ctps *= n_ctps_per_para_dim
+        if not n_required_ctps == self.control_points.shape[0]:
+            raise InputDimensionError(
+                "Number of control points invalid"
+                ", expected : " + str(n_required_ctps) + ", but "
+                "received" + str(self.control_points.shape[0])
+            ) 
+            
+
+        # Update Backend
+        self._update_c()
 
     @abc.abstractmethod
     def _update_c(self,):
@@ -999,7 +1110,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        self._update_c()
+        self._check_and_update_c()
 
         if self.whatami == "Nothing":
             return None
@@ -1076,3 +1187,4 @@ class Spline(abc.ABC):
     ds = degrees
     kvs = knot_vectors
     cps = control_points
+    ws = weights

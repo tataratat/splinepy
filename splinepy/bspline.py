@@ -11,6 +11,13 @@ from splinepy.nurbs import NURBS
 
 class BSpline(Spline):
 
+    # Required Properties
+    _required_properties = [
+        "degrees",
+        "control_points",
+        "knot_vectors",
+    ]
+
     def __init__(
             self,
             degrees=None,

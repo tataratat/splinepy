@@ -9,6 +9,13 @@ from splinepy._spline import Spline
 
 class RationalBezier(Spline):
 
+    # Required Properties
+    _required_properties = [
+        "degrees",
+        "control_points",
+        "weights",
+    ]
+
     def __init__(self, degrees=None, control_points=None, weights=None):
         """
         RationalBezier (Spline).
@@ -82,7 +89,7 @@ class RationalBezier(Spline):
         
         logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
 
-        self._update_c()
+        self._check_and_update_c()
 
     def _update_c(self,):
         """
