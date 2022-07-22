@@ -171,21 +171,17 @@ public:
   }
 
   /*!
-   * Builds RHS and fills "eyeders" matrix, which is also required in LHS.
-   *
-   * "eyeders" refer to collection of spline derivatives where only one
-   * parametric dimension is set to one and everythin else zero, which results
-   * in "eye"-like vectorized derivative query
+   * Builds RHS and fills spline_gradient, which is also required in LHS.
    *
    * @params[in] guess current parametric coordinate guess
    * @params[in] difference result of `GussMinusQuery()`
-   * @params[out] eyeders
+   * @params[out] spline_gradient
    * @params[out] rhs
    */
-  void FillEyeDersAndRhs(
+  void FillSplineGradientAndRhs(
       const typename SplineType::ParametricCoordinate_& guess,
       const DArrayD_& difference,
-      PxDMatrixD_& eyeders,
+      PxDMatrixD_& spline_gradient,
       PArrayD_& rhs) const {
     // btw, RHS is what's internally called as "df_dxi"
     double df_dxi_i; // temporary variable to hold sum
@@ -205,7 +201,7 @@ public:
         // cast, since d may be a NamedType.
         const double d_value = static_cast<double>(d);
         df_dxi_i += difference[j] * d_value;
-        eyeders[i][j] = d_value;
+        spline_gradient[i][j] = d_value;
         ++j;
       }
       rhs[i] = -2. * df_dxi_i; // apply minus here already!
@@ -217,16 +213,17 @@ public:
    *
    * @params[in] guess
    * @params[in] difference
-   * @params[in] eyeders
+   * @params[in] spline_gradient
    * @params[out] lhs
    */
   void FillLhs(
       const typename SplineType::ParametricCoordinate_& guess,
       const DArrayD_& difference,
-      const PxDMatrixD_& eyeders,
+      const PxDMatrixD_& spline_gradient,
       PxPMatrixD_& lhs) const {
 
-    const PxPMatrixD_ eyedersAAt = splinepy::utils::AAt(eyeders);
+    const PxPMatrixD_ spline_gradientAAt =
+        splinepy::utils::AAt(spline_gradient);
 
     typename SplineType::Derivative_ derivative_query;
     for (int i{}; i < SplineType::kParaDim; ++i) {
@@ -238,7 +235,7 @@ public:
         auto const &derivative = spline_(guess, derivative_query);
 
         lhs[i][j] = 2 * (splinepy::utils::Dot(difference, derivative)
-                         + eyedersAAt[i][j]);
+                         + spline_gradientAAt[i][j]);
 
         if (i != j) lhs[j][i] = lhs[i][j]; // fill symmetric part
       }
@@ -262,7 +259,7 @@ public:
     PArrayD_ rhs;
     PArrayD_ delta_guess;
     DArrayD_ difference;
-    PxDMatrixD_ eyeders;
+    PxDMatrixD_ spline_gradient;
     PArrayI_ clipped{}; /* clip status after most recent update */
     PArrayI_ previous_clipped{};
     PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
@@ -288,8 +285,11 @@ public:
     // newton iteration
     for (int i{}; i < max_iteration; ++i) {
       // build systems to solve
-      FillEyeDersAndRhs(current_guess, difference, eyeders, rhs);
-      FillLhs(current_guess, difference, eyeders, lhs);
+      FillSplineGradientAndRhs(current_guess,
+                               difference,
+                               spline_gradient,
+                               rhs);
+      FillLhs(current_guess, difference, spline_gradient, lhs);
 
       // solve and update
       // 1. set solver skip mask if clipping happend twice at the same place.
