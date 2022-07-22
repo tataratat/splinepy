@@ -40,11 +40,11 @@ public:
       std::array<double, SplineType::kDim>, SplineType::kParaDim
   >;
   // kdtree related alias
-  using Coordinates_ = typename std::unique_ptr<
-      typename SplineType::Coordinate_[]
-  >;
+  using Coordinates_ = typename SplineType::Coordinate_[];
   using Cloud_ =
-      typename napf::CoordinatesCloud<Coordinates_, int, SplineType::kDim>;
+      typename napf::CoordinatesCloud<std::unique_ptr<Coordinates_>,
+                                      int,
+                                      SplineType::kDim>;
   using Tree_ = typename std::conditional<
     (SplineType::kDim < 4),
     napf::CoordinatesTree<double,           /* DataT */
@@ -107,9 +107,7 @@ public:
     const auto parametric_bounds =
         splinepy::splines::GetParametricBounds(spline_);
     grid_points_ = GridPoints_(parametric_bounds, resolutions);
-    coordinates_ = std::make_unique<typename SplineType::Coordinate_[]>(
-        grid_points_.Size()
-    );
+    coordinates_ = std::make_unique<Coordinates_>(grid_points_.Size());
 
     // lambda function to allow n-thread execution
     auto sample_coordinates = [&] (int begin, int end) {
@@ -196,20 +194,18 @@ public:
     typename SplineType::Derivative_ derivative_query;
 
     for (int i{}; i < SplineType::kParaDim; ++i) {
-      // eyeder query formulation
+      // spline derivative query formulation
       derivative_query.fill(splinelib::Derivative{0});
       ++derivative_query[i];
       // derivative evaluation
       auto const &derivative = spline_(guess, derivative_query);
 
-      j = 0;
       df_dxi_i = 0.;
-      for (const auto& d : derivative) {
+      for (int j{}; j < SplineType::kDim; ++j) {
         // cast, since d may be a NamedType.
-        const double d_value = static_cast<double>(d);
+        const double d_value = static_cast<double>(derivative[j]);
         df_dxi_i += difference[j] * d_value;
         spline_gradient[i][j] = d_value;
-        ++j;
       }
       rhs[i] = -2. * df_dxi_i; // apply minus here already!
     }
@@ -339,7 +335,7 @@ protected:
   GridPoints_ grid_points_;
   PArrayI_ sampled_resolutions_;
   bool kdtree_planted_ = false;
-  Coordinates_ coordinates_;
+  std::unique_ptr<Coordinates_> coordinates_;
   std::unique_ptr<Cloud_> coordinates_cloud_;
   std::unique_ptr<Tree_> kdtree_;
 
