@@ -22,7 +22,7 @@ public:
     len_ = 1;
     for (int i{0}; i < dim; i++) {
       len_ *= resolutions[i];
-      std::vector<DataT>& entryvec = entries[i];
+      std::vector<DataT>& entryvec = entries_[i];
       entryvec.reserve(resolutions[i]);
 
       step_size_[i] = (bounds[1][i] - bounds[0][i]) / (res_[i] - 1);
