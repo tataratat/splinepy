@@ -82,16 +82,6 @@ inline void AddSecondToFirst(std::array<T1, dim>& arr1,
   }
 }
 
-/// elementwise inplace addition with a given factor.
-template<typename T1, typename T2, std::size_t dim>
-inline void AddSecondTimesThirdToFirst(std::array<T1, dim>& arr1,
-                                       const T2& factor,
-                                       const std::array<T2, dim>& arr2) {
-  for (int i{0}; i < dim; i++) {
-    arr1[i] += T1{factor * arr2[i]};
-  }
-}
-
 /*!
  * Inplace operation for para coord clipping and saving clip info
  *
@@ -133,36 +123,6 @@ inline double NormL2(std::array<T, dim>& arr) {
   return std::sqrt(returnval);
 }
 
-
-/* reorder. adapted from the world wide web.
- *
- * source:
- *  stackoverflow.com/questions/838384/reorder-vector-using-a-vector-of-indices
- * author: cgldr
- */
-template<typename T, std::size_t dim>
-void reorder(std::array<T, dim>& arr,
-             std::array<int, dim>& order) {
-
-  T ta;
-  int i, j, k;
-  /* reorder arr according to order */
-  /* every move puts an element into place */
-  /* time complexity is O(n) */
-  for(i = 0; i < dim; i++){
-    if(i != order[i]) {
-      ta = arr[i];
-      j = i;
-      while(i != (k = order[j])) {
-        arr[j] = arr[k];
-        order[j] = j;
-        j = k;
-      }
-      arr[j] = ta;
-      order[j] = j;
-    }
-  }
-}
 
 /* reorder by copying.
  * "who cares" approach
