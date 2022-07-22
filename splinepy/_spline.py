@@ -920,7 +920,20 @@ class Spline(abc.ABC):
         queries = utils.make_c_contiguous(queries, dtype="float64")
 
         if kdt_resolutions is None:
+            logging.debug(
+                "Spline - `kdt_resolutions` is None, "
+                "setting default resolution ([10] * para_dim)."
+            )
             kdt_resolutions = [10] * self.para_dim
+
+        elif isinstance(kdt_resolutions, (list, np.ndarray)):
+            if len(kdt_resolutions) != self.para_dim:
+                raise InputDimensionError(
+                    "`kdt_resolutions` does not match current para_dim"
+                )
+
+        else:
+            raise TypeError("`kdt_resolutions` should be list or np.ndarray.")
 
         if (
             queries.shape[1] != self.dim
