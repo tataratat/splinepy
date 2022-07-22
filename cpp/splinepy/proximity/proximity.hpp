@@ -13,6 +13,13 @@ namespace splinepy::proximity {
 
 /*!
  * A helper class to perform proximity operations for splines.
+ *
+ * Given a physical coordinate, this tries to find parametric coordinate that
+ * maps to the closest physical coordinate. Often referred as
+ * "point inversion". This is done by searching for a root of first derivative
+ * of squared distance between mapped coordinate and query coordinate.
+ * For detailed information, please take a look at splinepy python
+ * documentation.
  */
 template<typename SplineType>
 class Proximity {
