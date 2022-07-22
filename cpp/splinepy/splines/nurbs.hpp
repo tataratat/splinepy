@@ -55,7 +55,8 @@ public:
     return *Base_::weighted_vector_space_;
   }
 
-  /* update degrees since its size never changes
+   /* 
+    * Update degrees since its size never changes
    *
    * Parameters
    * -----------
@@ -69,7 +70,8 @@ public:
     }
   }
 
-  /* update current knot vectors to python
+  /*
+   * Update current knot vectors to python 
    * since list is mutable, update works
    *
    * Parameters
