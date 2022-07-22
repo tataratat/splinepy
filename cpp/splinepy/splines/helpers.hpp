@@ -34,11 +34,9 @@ inline void FillKnotVector(const SplineType& spline,
 
 
 /// Returns number of control_points
-template<typename SplineType, typename CountType>
-inline CountType GetNumberOfControlPoints(const SplineType& spline) {
-  return static_cast<CountType>(
-      spline.GetVectorSpace().GetNumberOfCoordinates()
-  );
+template<typename SplineType>
+inline int GetNumberOfControlPoints(const SplineType& spline) {
+  return spline.GetVectorSpace().GetNumberOfCoordinates();
 }
 
 
@@ -64,7 +62,6 @@ GetParametricBounds(const SplineType& spline) {
 
   return parametric_bounds;
 }
-
 
 
 } /* namespace splinepy::splines */
