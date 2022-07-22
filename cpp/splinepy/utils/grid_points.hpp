@@ -22,14 +22,13 @@ public:
     len_ = 1;
     for (int i{0}; i < dim; i++) {
       len_ *= resolutions[i];
-      std::vector<DataT> entryvec{};
+      std::vector<DataT>& entryvec = entries[i];
       entryvec.reserve(resolutions[i]);
 
       step_size_[i] = (bounds[1][i] - bounds[0][i]) / (res_[i] - 1);
       for (int j{0}; j < resolutions[i]; j++) {
         entryvec.emplace_back(bounds[0][i] + step_size_[i] * j);
       }
-      entries_[i] = std::move(entryvec);
     }
   }
 
