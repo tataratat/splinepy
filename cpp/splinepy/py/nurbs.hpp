@@ -358,7 +358,7 @@ public:
     Derivative derivative{};
     for (i = 0; i < o_buf.shape[0]; i++) {
       derivative[i] = splinelib::Derivative{o_buf_ptr[i]};
-                                       }
+    }
 
     // deval and fill up result array
     auto deval = [&] (int begin, int end) {
