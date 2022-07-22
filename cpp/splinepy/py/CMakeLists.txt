@@ -43,7 +43,7 @@ endif(MINIMAL)
 list(APPEND SRCS init/reader.cpp splinepy.cpp)
 
 pybind11_add_module(_splinepy ${SRCS})
-target_include_directories(_splinepy PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_include_directories(_splinepy PRIVATE "${PROJECT_SOURCE_DIR}/cpp")
 target_compile_definitions(_splinepy PRIVATE ${DEFS})
 
 target_compile_options(_splinepy PRIVATE

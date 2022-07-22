@@ -2,11 +2,11 @@
 
 #include <napf.hpp>
 
-#include <utils/arrays.hpp>
-#include <utils/print.hpp>
-#include <utils/nthreads.hpp>
-#include <utils/grid_points.hpp>
-#include <splines/helpers.hpp>
+#include <splinepy/utils/arrays.hpp>
+#include <splinepy/utils/print.hpp>
+#include <splinepy/utils/nthreads.hpp>
+#include <splinepy/utils/grid_points.hpp>
+#include <splinepy/splines/helpers.hpp>
 
 namespace splinepy::proximity {
 

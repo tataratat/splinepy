@@ -6,7 +6,7 @@
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
-#include <proximity/proximity.hpp>
+#include <splinepy/proximity/proximity.hpp>
 
 namespace splinepy::splines {
 
