@@ -239,11 +239,23 @@ public:
 
   // Composition Routine
   template<int par_dim_inner_function>
-  PyRationalBezier<par_dim_inner_function, dim> Compose(
+  PyRationalBezier<par_dim_inner_function, dim> ComposeRR(
               const PyRationalBezier<par_dim_inner_function, para_dim>& inner_function){
       // Use Composition routine
       PyRationalBezier<par_dim_inner_function, dim> result{(*this).c_rational_bezier.Compose(
                         inner_function.c_rational_bezier)
+                        };
+    result.update_p();
+    return result;
+  }
+
+  // Composition Routine
+  template<int par_dim_inner_function>
+  PyRationalBezier<par_dim_inner_function, dim> ComposeRP(
+              const PyBezier<par_dim_inner_function, para_dim>& inner_function){
+      // Use Composition routine
+      PyRationalBezier<par_dim_inner_function, dim> result{(*this).c_rational_bezier.Compose(
+                        inner_function.c_bezier)
                         };
     result.update_p();
     return result;
@@ -318,16 +330,28 @@ void add_rational_bezier_pyclass(py::module &m, const char *class_name) {
                &PyRationalBezier<para_dim, dim>::add_spline,
                py::arg("summand"))
       // Composition with one dimensional spline
-      .def("compose_line",
-               &PyRationalBezier<para_dim, dim>::template Compose<1>,
+      .def("compose_line_rr",
+               &PyRationalBezier<para_dim, dim>::template ComposeRR<1>,
                py::arg("inner_function"))
       // Composition with a surface
-      .def("compose_surface",
-               &PyRationalBezier<para_dim, dim>::template Compose<2>,
+      .def("compose_surface_rr",
+               &PyRationalBezier<para_dim, dim>::template ComposeRR<2>,
                py::arg("inner_function"))
       // Composition with a volume
-      .def("compose_volume",
-               &PyRationalBezier<para_dim, dim>::template Compose<3>,
+      .def("compose_volume_rr",
+               &PyRationalBezier<para_dim, dim>::template ComposeRR<3>,
+               py::arg("inner_function"))
+      // Composition with one dimensional spline
+      .def("compose_line_rp",
+               &PyRationalBezier<para_dim, dim>::template ComposeRP<1>,
+               py::arg("inner_function"))
+      // Composition with a surface
+      .def("compose_surface_rp",
+               &PyRationalBezier<para_dim, dim>::template ComposeRP<2>,
+               py::arg("inner_function"))
+      // Composition with a volume
+      .def("compose_volume_rp",
+               &PyRationalBezier<para_dim, dim>::template ComposeRP<3>,
                py::arg("inner_function"))
       // Picke
       .def(py::pickle(

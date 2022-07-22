@@ -20,6 +20,8 @@ using Bezier = bezman::BezierSpline<
     double
 >;
 
+template<int para_dim, int dim>
+class PyRationalBezier;
 
 template<int para_dim, int dim>
 class PyBezier {
@@ -229,7 +231,7 @@ public:
 
   // Composition Routine
   template<int par_dim_inner_function>
-  PyBezier<par_dim_inner_function, dim> Compose(
+  PyBezier<par_dim_inner_function, dim> ComposePP(
               const PyBezier<par_dim_inner_function, para_dim>& inner_function){
       // Use Composition routine
       PyBezier<par_dim_inner_function, dim> result{(*this).c_bezier.Compose(
@@ -239,6 +241,17 @@ public:
     return result;
   }
 
+  // Composition Routine with Rational Spline
+  template<int par_dim_inner_function>
+  PyRationalBezier<par_dim_inner_function, dim> ComposePR(
+              const PyRationalBezier<par_dim_inner_function, para_dim>& inner_function){
+      // Use Composition routine
+      PyRationalBezier<par_dim_inner_function, dim> result{(*this).c_bezier.Compose(
+                        inner_function.c_rational_bezier)
+                        };
+    result.update_p();
+    return result;
+  }
 
 };
 
@@ -284,14 +297,23 @@ void add_bezier_pyclass(py::module &m, const char *class_name) {
         .def("add_spline",
                  &PyBezier<para_dim, dim>::add_spline,
                  py::arg("summand"))
-        .def("compose_line",
-                 &PyBezier<para_dim, dim>::template Compose<1>,
+        .def("compose_line_pp",
+                 &PyBezier<para_dim, dim>::template ComposePP<1>,
                  py::arg("inner_function"))
-        .def("compose_surface",
-                 &PyBezier<para_dim, dim>::template Compose<2>,
+        .def("compose_surface_pp",
+                 &PyBezier<para_dim, dim>::template ComposePP<2>,
                  py::arg("inner_function"))
-        .def("compose_volume",
-                 &PyBezier<para_dim, dim>::template Compose<3>,
+        .def("compose_volume_pp",
+                 &PyBezier<para_dim, dim>::template ComposePP<3>,
+                 py::arg("inner_function"))
+        .def("compose_line_pr",
+                 &PyBezier<para_dim, dim>::template ComposePR<1>,
+                 py::arg("inner_function"))
+        .def("compose_surface_pr",
+                 &PyBezier<para_dim, dim>::template ComposePR<2>,
+                 py::arg("inner_function"))
+        .def("compose_volume_pr",
+                 &PyBezier<para_dim, dim>::template ComposePR<3>,
                  py::arg("inner_function"))
         .def(py::pickle(
                  [] (const PyBezier<para_dim, dim> &bezier) {
