@@ -261,17 +261,17 @@ class Bezier(Spline):
         """
         if isinstance(inner_function, type(self)):
             if inner_function.para_dim == 1:
-                res_c_spl = self._c_spline.compose_line(
+                res_c_spl = self._c_spline.compose_line_pp(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 2:
-                res_c_spl = self._c_spline.compose_surface(
+                res_c_spl = self._c_spline.compose_surface_pp(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 3:
-                res_c_spl = self._c_spline.compose_volume(
+                res_c_spl = self._c_spline.compose_volume_pp(
                     inner_function._c_spline
                 )
 
@@ -282,10 +282,39 @@ class Bezier(Spline):
                 )
 
             # Copy the c spline to the python object
-            result = type(self)()
+            result = type(inner_function)()
             result._c_spline = res_c_spl
             result._update_p()
             return result
+
+        if "RationalBezier" in inner_function.whatami:
+            if inner_function.para_dim == 1:
+                res_c_spl = self._c_spline.compose_line_pr(
+                    inner_function._c_spline
+                )
+
+            elif inner_function.para_dim == 2:
+                res_c_spl = self._c_spline.compose_surface_pr(
+                    inner_function._c_spline
+                )
+
+            elif inner_function.para_dim == 3:
+                res_c_spl = self._c_spline.compose_volume_pr(
+                    inner_function._c_spline
+                )
+
+            else :
+                raise TypeError(
+                    "Compositions with high"
+                    " parametric dimensions not supported."
+                )
+
+            # Copy the c spline to the python object
+            result = type(inner_function)()
+            result._c_spline = res_c_spl
+            result._update_p()
+            return result
+            
 
         else :
             raise TypeError("Composisiton must be formed with Bezier Splines")
