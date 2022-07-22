@@ -5,36 +5,36 @@ if(MINIMAL)
 else()
     set(
         SRCS
-            init/bezier1.cpp
-            init/bezier2.cpp
-            init/bezier3.cpp
-            init/bezier4.cpp
-            init/bezier5.cpp
-            init/bezier6.cpp
-            init/bezier7.cpp
-            init/bezier8.cpp
-            init/bezier9.cpp
-            init/bezier10.cpp
-            init/bspline1.cpp
-            init/bspline2.cpp
-            init/bspline3.cpp
-            init/bspline4.cpp
-            init/bspline5.cpp
-            init/bspline6.cpp
-            init/bspline7.cpp
-            init/bspline8.cpp
-            init/bspline9.cpp
-            init/bspline10.cpp
-            init/nurbs1.cpp
-            init/nurbs2.cpp
-            init/nurbs3.cpp
-            init/nurbs4.cpp
-            init/nurbs5.cpp
-            init/nurbs6.cpp
-            init/nurbs7.cpp
-            init/nurbs8.cpp
-            init/nurbs9.cpp
-            init/nurbs10.cpp
+            init/py_bezier1.cpp
+            init/py_bezier2.cpp
+            init/py_bezier3.cpp
+            init/py_bezier4.cpp
+            init/py_bezier5.cpp
+            init/py_bezier6.cpp
+            init/py_bezier7.cpp
+            init/py_bezier8.cpp
+            init/py_bezier9.cpp
+            init/py_bezier10.cpp
+            init/py_bspline1.cpp
+            init/py_bspline2.cpp
+            init/py_bspline3.cpp
+            init/py_bspline4.cpp
+            init/py_bspline5.cpp
+            init/py_bspline6.cpp
+            init/py_bspline7.cpp
+            init/py_bspline8.cpp
+            init/py_bspline9.cpp
+            init/py_bspline10.cpp
+            init/py_nurbs1.cpp
+            init/py_nurbs2.cpp
+            init/py_nurbs3.cpp
+            init/py_nurbs4.cpp
+            init/py_nurbs5.cpp
+            init/py_nurbs6.cpp
+            init/py_nurbs7.cpp
+            init/py_nurbs8.cpp
+            init/py_nurbs9.cpp
+            init/py_nurbs10.cpp
     )
 
 endif(MINIMAL)
