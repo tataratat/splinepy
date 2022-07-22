@@ -40,6 +40,7 @@ public:
       std::array<double, SplineType::kDim>, SplineType::kParaDim
   >;
   // kdtree related alias
+  // C-Array instead of vector to avoid default init
   using Coordinates_ = typename SplineType::Coordinate_[];
   using Cloud_ =
       typename napf::CoordinatesCloud<std::unique_ptr<Coordinates_>,
@@ -179,7 +180,7 @@ public:
    * Builds RHS and fills spline_gradient, which is also required in LHS.
    *
    * @params[in] guess current parametric coordinate guess
-   * @params[in] difference result of `GussMinusQuery()`
+   * @params[in] difference result of `GuessMinusQuery()`
    * @params[out] spline_gradient
    * @params[out] rhs
    */
