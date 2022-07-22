@@ -127,7 +127,7 @@ public:
 
   /// Make initial guess of choice
   typename SplineType::ParametricCoordinate_ MakeInitialGuess(
-      InitialGuess initial_guess,
+      const InitialGuess& initial_guess,
       const double* goal) const {
 
 
@@ -152,23 +152,22 @@ public:
       }
 
       // good to go. ask the tree
-      const int vote = 1;
-      int id[vote];
-      double distance[vote];
+      int id;
+      double distance;
       kdtree_->knnSearch(goal,
-                         vote /* closest neighbor */,
-                         &id[0],
-                         &distance[0]);
+                         1 /* closest neighbor */,
+                         &id,
+                         &distance);
 
       using ReturnType = typename SplineType::ParametricCoordinate_;
 
       return 
-          grid_points_.template IndexToParametricCoordinate<ReturnType>(id[0]);
+          grid_points_.template IndexToParametricCoordinate<ReturnType>(id);
     } else {
       //well, shouldn't reach here, but to fight a warning, here it is
-      splinepy::utils::PrintAndThrowError("Invalid initial guess option!");
+      splinepy::utils::PrintAndThrowError("Invalid option for initial guess!");
       return typename SplineType::ParametricCoordinate_{};
-    }// if initial_guess == ...
+    }
   }
 
   /*!
