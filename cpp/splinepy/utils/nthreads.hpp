@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cmath>
+#include <cstdlib>
 #include <thread>
 
 
@@ -30,7 +30,8 @@ void NThreadExecution(
   }
 
   // get chunk size and prepare threads
-  const IndexT chunk_size = std::ceil(total / nthread);
+  // make sure it rounds up
+  const IndexT chunk_size = std::div((total + nthread - 1), nthread).quot;
   std::vector<std::thread> thread_pool;
   thread_pool.reserve(nthread);
 
