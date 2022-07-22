@@ -85,6 +85,7 @@ flags = dict(
     have_splinelib="--have_splinelib",
     verbose_make="--verbose_make",
     minimal="--minimal",
+    enable_warning="--enable_warning",
 )
 cma = []
 
@@ -104,6 +105,11 @@ if flags["minimal"] in sys.argv:
     print("*** compiling only a minimal set of splines")
     cma += ["-DMINIMAL=ON"]
     sys.argv.remove(flags["minimal"])
+
+if flags["enable_warning"] in sys.argv:
+    print("*** adding warning flags ***")
+    cma += ["-DENABLE_WARNINGS=ON"]
+    sys.argv.remove(flags["enable_warning"])
 
 
 setup(

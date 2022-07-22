@@ -24,7 +24,7 @@ def load(fname,):
     dict_spline: dict
     """
     loaded = np.load(fname)
-    whatami = npz["whatami"][0]
+    whatami = loaded["whatami"][0]
 
     dict_spline = dict()
     # update weights
@@ -34,7 +34,7 @@ def load(fname,):
     # update the rest
     dict_spline.update(control_points=loaded["control_points"])
     dict_spline.update(degrees=loaded["degrees"])
-    dict_spline.udpate(knot_vectors=eval(loaded["knot_vectors"][0]))
+    dict_spline.update(knot_vectors=eval(loaded["knot_vectors"][0]))
 
     return dict_spline
 
@@ -56,10 +56,10 @@ def export(fname, spline):
         degrees=spline.degrees,
         knot_vectors=np.array([str(spline.knot_vectors)]),
         control_points=spline.control_points,
-        whatami=np.array([self.whatami]),
+        whatami=np.array([spline.whatami]),
     )
 
-    if self.whatami.startswith("NURBS"):
+    if spline.whatami.startswith("NURBS"):
         property_dicts.update(weights=spline.weights)
 
     np.savez(

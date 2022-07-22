@@ -130,6 +130,9 @@ class NamedType {
   friend constexpr bool operator< <Name, Type>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator> <Name, Type>(NamedType const &lhs, NamedType const &rhs);
 
+  constexpr operator Type_() const {return value_;}
+  constexpr operator Type_&() {return value_;}
+
   constexpr Type_ const & Get() const;
   constexpr Type_ & Get();
 
