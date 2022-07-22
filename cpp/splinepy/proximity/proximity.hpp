@@ -100,8 +100,8 @@ public:
     const auto parametric_bounds =
         splinepy::splines::GetParametricBounds(spline_);
     grid_points_ = GridPoints_(parametric_bounds, resolutions);
-    coordinates_ = Coordinates_(
-        new typename SplineType::Coordinate_[grid_points_.Size()]
+    coordinates_ = std::make_unique<typename SplineType::Coordinate_[]>(
+        grid_points_.Size()
     );
 
     // lambda function to allow n-thread execution
