@@ -63,7 +63,7 @@ else()
 endif()
 
 # link bezman
-target_link_libraries(_splinepy PRIVATE bezierManipulation)
+target_link_libraries(_splinepy PRIVATE bezman)
 
 # link fitting
 target_link_libraries(_splinepy PRIVATE fitting)
