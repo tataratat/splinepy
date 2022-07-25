@@ -22,6 +22,7 @@
 
 // Local
 #include <splinepy/splines/nurbs.hpp>
+#include <splinepy/splines/helpers.hpp>
 
 namespace py = pybind11;
 
@@ -399,6 +400,17 @@ public:
     return results;
   }
 
+  /// Extract Bezier Patches
+  py::list ExtractBezierPatches() {
+    std::cout << "Starting extracting patches";
+    const auto c_patches =  splinepy::splines::ExtractBezierPatches(c_nurbs);
+    py::list bezier_list{};
+    for (std::size_t i{}; i < c_patches.size(); i++){
+      bezier_list.append(PyRationalBezier<para_dim, dim>{c_patches[i]});
+    }
+    return bezier_list;    
+  }
+
   // given parametric coordinate queires,
   // returns a tuple of (basis_functions, support_control_point_ids)
   py::tuple basis_functions(py::array_t<double> queries) {
@@ -725,6 +737,8 @@ void add_nurbs_pyclass(py::module &m, const char *class_name) {
           .def("basis_functions",
                    &PyNurbs<para_dim, dim>::basis_functions,
                     py::arg("queries"))
+          .def("extract_bezier_patches",
+                    &PyNurbs<para_dim,dim>::ExtractBezierPatches)
           .def("insert_knots",
                    &PyNurbs<para_dim, dim>::insert_knots,
                    py::arg("p_dim"),
