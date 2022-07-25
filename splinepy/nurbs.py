@@ -125,6 +125,10 @@ class NURBS(Spline):
 
         return new_nurbs
 
+    def extract_bezier_patches(self):
+        return self._c_spline.extract_bezier_patches()
+
+
     def todict(self, tolist=False):
         """
         Returns copy of degrees, knot_vectors, control_points, weights in dict.
