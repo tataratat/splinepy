@@ -4,3 +4,6 @@
 [submodule "third_party/napf"]
 	path = third_party/napf
 	url = git@github.com:tataratat/napf.git
+[submodule "third_party/SplineLib"]
+	path = third_party/SplineLib
+	url = git@github.com:tataratat/SplineLib.git
