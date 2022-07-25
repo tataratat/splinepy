@@ -8,7 +8,7 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 
-#include "bezier.hpp"
+#include <splinepy/py/py_bezier.hpp>
 
 namespace py = pybind11;
 
