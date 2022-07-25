@@ -37,7 +37,7 @@ public:
   using WeightedVectorSpace = typename Nurbs::WeightedVectorSpace_;
   using Coordinates = typename WeightedVectorSpace::Coordinates_;
   using Weights = typename WeightedVectorSpace::Weights_;
-  using Weight = typename splinelib::Weight;
+  using Weight = splinelib::Weight;
   using Degrees = typename ParameterSpace::Degrees_;
   using KnotVectors = typename ParameterSpace::KnotVectors_;
   using Coordinate = typename Coordinates::value_type;

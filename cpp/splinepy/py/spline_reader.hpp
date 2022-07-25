@@ -32,7 +32,7 @@ public:
     using OutputCoordinates = typename std::tuple_element_t<0, OutputVectorSpace>;
     using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
 
-    using SplineEntry = typename input_output::SplineEntry;
+    using SplineEntry = input_output::SplineEntry;
 
     int i,j;
 
@@ -125,7 +125,7 @@ public:
     using OutputWeights = typename std::tuple_element_t<1, OutputWeightedVectorSpace>;
     using OutputDegrees = typename std::tuple_element_t<1, OutputParameterSpace>;
 
-    using SplineEntry = typename input_output::SplineEntry;
+    using SplineEntry = input_output::SplineEntry;
 
     int i,j;
 
@@ -225,8 +225,8 @@ public:
 class SplineReader {
 public:
 
-    using Splines = typename input_output::Splines;
-    using SplineEntry = typename input_output::SplineEntry;
+    using Splines = input_output::Splines;
+    using SplineEntry = input_output::SplineEntry;
 
     int i;
     int j;
