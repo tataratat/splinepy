@@ -64,7 +64,7 @@ inline std::array<std::array<T, dim1>, dim1> AAt(
   std::array<std::array<T, dim1>, dim1> out;
 
   for (int i{}; i < dim1; ++i) {
-    for (int j{i}; j < dim2; ++j) {
+    for (int j{i}; j < dim1; ++j) {
       out[i][j] = Dot(arr1[i], arr1[j]);
       if (i != j) out[j][i] = out[i][j]; // fill symmetric part
     }
