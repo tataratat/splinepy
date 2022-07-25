@@ -11,6 +11,8 @@
 
 namespace splinepy::splines{
 
+namespace py = pybind11;
+
 template<int para_dim, int dim>
 class BSpline : public splinelib::sources::splines::BSpline<para_dim, dim> {
 public:
