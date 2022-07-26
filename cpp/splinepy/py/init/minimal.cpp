@@ -1,7 +1,7 @@
 #include <splinepy/py/py_bezier.hpp>
-#include <splinepy/py/py_rational_bezier.hpp>
 #include <splinepy/py/py_bspline.hpp>
 #include <splinepy/py/py_nurbs.hpp>
+#include <splinepy/py/py_rational_bezier.hpp>
 
 // only compile a minimal set of splines
 // 3P X 3D

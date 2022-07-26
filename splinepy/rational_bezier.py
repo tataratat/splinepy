@@ -37,61 +37,6 @@ class RationalBezier(Spline):
             weights=weights
         )
 
-    @property
-    def weights(self,):
-        """
-        Returns weights.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        self._weights: (n, 1) list-like
-        """
-        if hasattr(self, "_weights"):
-            return self._weights
-
-        else:
-            return None
-
-    @weights.setter
-    def weights(self, weights):
-        """
-        Set weights.
-
-        Parameters
-        -----------
-        weights: (n,) list-like
-
-        Returns
-        --------
-        None
-        """
-        if weights is None:
-            if hasattr(self, "_weights"):
-                delattr(self, "_weights")
-            return None
-
-        weights = utils.make_c_contiguous(
-            weights,
-            dtype=np.float64
-        ).reshape(-1, 1)
-
-        if self.control_points is not None:
-            if self.control_points.shape[0] != weights.shape[0]:
-                raise ValueError(
-                    "Number of control points and number of weights does not "
-                    "match."
-                )
-
-        self._weights = weights
-
-        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
-
-        self._check_and_update_c()
-
     def _update_c(self,):
         """
         Updates/Init cpp spline, if it is ready to be updated.
