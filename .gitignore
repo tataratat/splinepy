@@ -10,3 +10,6 @@
 
 # Distribution information
 **/dist/
+
+# Ignore IDE settings
+**/.vscode/*
