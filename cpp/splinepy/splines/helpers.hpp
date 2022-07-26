@@ -161,20 +161,28 @@ auto ExtractBezierPatches(SplineType& input) {
         // Multiply to index offset
         n_ctps_in_previous_layers *= n_ctps_per_para_dim[i_para_dim];
       }
+
+      // Alias to facilitate access to control points
+      const auto& ControlPointVector = [&](const int& id) {
+        if constexpr (isNurbs_v<SplineType>) {
+          return input.GetWeightedVectorSpace()[splinelib::Index{id}];
+        } else {
+          return input.GetVectorSpace()[splinelib::Index{id}];
+        }
+      };
+
+      // Retrieve Control Point
       PointType point{};
-      // Check if scalar
+      // Check if scalar (double instead of array)
       if constexpr (dim == 1) {
-        point = input.GetWeightedVectorSpace()[splinelib::Index{global_id}][0];
+        point = ControlPointVector(global_id)[0];
       } else {
         for (int i_dim{}; i_dim < dim; i_dim++) {
-          point[i_dim] =
-              input
-                  .GetWeightedVectorSpace()[splinelib::Index{global_id}][i_dim];
+          point[i_dim] = ControlPointVector(global_id)[i_dim];
         }
       }
       if constexpr (isNurbs_v<SplineType>) {
-        const double weight =
-            input.GetWeightedVectorSpace()[splinelib::Index{global_id}][dim];
+        const double weight = ControlPointVector(global_id)[dim];
         weights.push_back(weight);
         point /= weight;
       }
@@ -198,5 +206,5 @@ auto ExtractBezierPatches(SplineType& input) {
     }
   }
   return bezier_list;
-}
+}  // namespace splinepy::splines
 }  // namespace splinepy::splines
