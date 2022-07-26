@@ -50,11 +50,6 @@ public:
   constexpr static int para_dim_ = para_dim;
   constexpr static int dim_ = dim;
 
-//  Nurbs (const Nurbs& rhs) {
-//    Base_::Base_(rhs.GetParameterSpace(), rhs.GetWeightedVectorSpace());
-//  }
-
-
   const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }

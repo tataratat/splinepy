@@ -12,6 +12,7 @@ from splinepy.nurbs import NURBS
 from splinepy.utils import abs_fname
 from splinepy import io
 
+
 def load_splines(fname, as_dict=False):
     """
     Loads spline files of extension 
@@ -86,7 +87,7 @@ def load_splines(fname, as_dict=False):
             splines.append(BSpline(**s))
         else:
             splines.append(Bezier(**s))
-            
+
     return splines
 
 
@@ -108,7 +109,7 @@ def load_solution(fname, reference_spline):
     fname = abs_fname(fname)
 
     ext = os.path.splitext(fname)[1]
-    
+
     if ext == ".gf":
         return NURBS(**io.mfem.read_solution(fname, reference_spline))
 
@@ -116,4 +117,3 @@ def load_solution(fname, reference_spline):
         raise NotImplementedError(
             "We can only import < .gf >  solution files"
         )
-

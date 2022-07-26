@@ -389,7 +389,7 @@ class PyNurbs {
     return results;
   }
 
-  /// Extract Bezier Patches
+  /// Extract Elements to Rational Bezier Patches
   py::list ExtractBezierPatches() {
     const auto c_patches = splinepy::splines::ExtractBezierPatches(c_nurbs);
     py::list bezier_list{};

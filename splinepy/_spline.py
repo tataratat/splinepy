@@ -9,6 +9,7 @@ import numpy as np
 from splinepy import utils
 from splinepy import io
 
+
 class InputDimensionError(Exception):
     """
     Raised when input dimension does not match spline's internal dimension.
@@ -575,20 +576,33 @@ class Spline(abc.ABC):
                 return
 
         # Check if data is coherent
+        # Check if control point dimension matches dim dimension
         if not self.dim == self.control_points.shape[1]:
             raise InputDimensionError(
                 "Mismatch between dimension and control point dimensionality"
             )
+        # Check if given degree match expected number of degrees
+        if not self.degrees.shape[0] == self.para_dim:
+            raise InputDimensionError(
+                "RDimension mismatch between degrees and parametric dimension"
+            )
+        # Check if enough knot vectors were given
         if "knot_vectors" in self._required_properties:
             if not len(self.knot_vectors) == self.para_dim:
                 raise InputDimensionError(
                     "Not enough knot vectors for required parametric "
                     "dimension."
                 )
-        if not self.degrees.shape[0] == self.para_dim:
-            raise InputDimensionError(
-                "RDimension mismatch between degrees and parametric dimension"
-            )
+            # Check if knot vectors are large enough
+            for i_para_dim in range(self.para_dim):
+                if not (
+                        len(self.knot_vectors[i_para_dim])
+                        >= (2 * (self.degrees[i_para_dim]+1))):
+                    raise InputDimensionError(
+                        "Not enough knots in knot vector along parametric"
+                        f" dimension  {i_para_dim}"
+                    )
+        # Check if required number of control points is present
         n_required_ctps = 1
         for i_para_dim in range(self.para_dim):
             n_ctps_per_para_dim = 0
