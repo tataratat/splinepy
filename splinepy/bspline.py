@@ -7,6 +7,7 @@ from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
 from splinepy.nurbs import NURBS
+from splinepy.bezier import Bezier
 
 
 class BSpline(Spline):
@@ -105,6 +106,32 @@ class BSpline(Spline):
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
         )
+
+    def extract_bezier_patches(self):
+        """
+        Extract all knot spans as Bezier patches to perform further operations
+        such as compositions and multiplications
+
+        Parameters
+        ----------
+        None
+
+        Returns 
+        -------
+        extracted Beziers : list
+        """
+        # Extract bezier patches and create PyRationalBezier objects
+        list_of_c_object_beziers = self._c_spline.extract_bezier_patches()
+
+        # Transform into Rational Bezier Splinepy objects
+        extracted_bezier_patches = []
+        for c_object_spline in list_of_c_object_beziers:
+            i_bezier = Bezier()
+            i_bezier._c_spline = c_object_spline
+            i_bezier._update_p()
+            extracted_bezier_patches.append(i_bezier)
+
+        return extracted_bezier_patches
 
     def interpolate_curve(
             self,
@@ -251,7 +278,7 @@ class BSpline(Spline):
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or 
           whatever.
-         
+
         Returns
         --------
         None
@@ -284,7 +311,7 @@ class BSpline(Spline):
         # Reorganize control points.
         if reorganize:
             ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
-            self.control_points = self._control_points[ri] 
+            self.control_points = self._control_points[ri]
 
         if save_query:
             self._fitting_queries = query_points
