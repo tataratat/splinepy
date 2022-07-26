@@ -72,9 +72,9 @@ auto ExtractBezierPatches(SplineType& input) {
       isBSpline_v<SplineType>,
       bezman::BezierSpline<para_dim, PointType, double>,
       bezman::RationalBezierSpline<para_dim, PointType, double>>;
+
   // Predetermine some auxiliary values
   // Access Spline Degres and determine offsets
-  std::cout << "Extract degrees from c- object\n";
   std::array<std::size_t, para_dim> degrees{};
   for (int i_p{}; i_p < para_dim; i_p++) {
     degrees[i_p] = static_cast<std::size_t>(
@@ -92,7 +92,6 @@ auto ExtractBezierPatches(SplineType& input) {
   std::array<int, para_dim> n_ctps_per_para_dim{};
 
   // Identify all internal knots and the number of required Bezier patches
-  std::cout << "Determine Bezier Patches\n";
   const auto parameter_space = input.GetParameterSpace();
   for (int i_p_dim{}; i_p_dim < para_dim; i_p_dim++) {
     // Extract internal knots
@@ -105,8 +104,9 @@ auto ExtractBezierPatches(SplineType& input) {
         n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
     const auto& knot_vector_ref = std::get<1>(bezier_information);
 
+    // Insert knot into the copy of the spline before extraction
+    // this is the most costly part of the calculation
     for (std::size_t i_knot{}; i_knot < knot_vector_ref.size(); i_knot++) {
-      std::cout << "Inserting knot at position : " << knot_vector_ref[i_knot];
       input.InsertKnot(splinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
     }
   }
@@ -116,18 +116,24 @@ auto ExtractBezierPatches(SplineType& input) {
   for (std::size_t i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
     n_total_patches *= n_patches_per_para_dim[i_para_dim];
   }
-  std::cout << "Expecting " << n_total_patches << " total patches.";
 
   // Init return value
-  std::vector<ReturnType> bezier_list(n_total_patches);
+  std::vector<ReturnType> bezier_list{};
+  bezier_list.reserve(n_total_patches);
 
+  // Loop over the individual patches
   for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
     // Determine internal postitions in local coord system
     std::array<std::size_t, para_dim> patch_ctp_id_offsets{};
     int ii{i_patch};
-    for (int i{para_dim - 1}; i >= 0; i--) {
-      const int patch_coord = static_cast<int>(ii / n_patches_per_para_dim[i]);
-      ii -= patch_coord * n_patches_per_para_dim[i];
+    // Determine the parameter wise ids of the patch (i.e. the
+    // patch-coordinates) and calculate the required index offsets
+    for (int i{}; i < para_dim; i++) {
+      // ID in spline coordinate system of current patch
+      const int patch_coord = static_cast<int>(ii % n_patches_per_para_dim[i]);
+      ii -= patch_coord;
+      ii /= n_patches_per_para_dim[i];
+      // Coordinate offset of the control points indices
       patch_ctp_id_offsets[i] = patch_coord * degrees[i];
     }
 
@@ -143,6 +149,7 @@ auto ExtractBezierPatches(SplineType& input) {
     for (std::size_t i_local_id{}; i_local_id < n_ctps_per_patch;
          i_local_id++) {
       int global_id{};
+      int n_ctps_in_previous_layers{1};
       // Determine index of local point in global spline
       for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
         // First id in local system
@@ -150,7 +157,9 @@ auto ExtractBezierPatches(SplineType& input) {
                              (degrees[i_para_dim] + 1);
         // Add patch offsets
         global_id += (local_id + patch_ctp_id_offsets[i_para_dim]) *
-                     n_ctps_per_para_dim[i_para_dim];
+                     n_ctps_in_previous_layers;
+        // Multiply to index offset
+        n_ctps_in_previous_layers *= n_ctps_per_para_dim[i_para_dim];
       }
       PointType point{};
       // Check if scalar

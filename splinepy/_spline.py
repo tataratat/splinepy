@@ -303,7 +303,7 @@ class Spline(abc.ABC):
 
         if not isinstance(knot_vectors, list):
             raise TypeError("knot_vectors should be a `list`!")
-            
+
         if self.para_dim is None:
             self._para_dim = len(knot_vectors)
 
@@ -347,7 +347,6 @@ class Spline(abc.ABC):
         else:
             for k in self.knot_vectors:
                 unique_knots.append(np.unique(k).tolist())
-            
 
         return unique_knots
 
@@ -415,7 +414,8 @@ class Spline(abc.ABC):
                 delattr(self, "_dim")
             return None
 
-        control_points = utils.make_c_contiguous(control_points, "float64").copy()
+        control_points = utils.make_c_contiguous(
+            control_points, "float64").copy()
 
         if self.dim is None:
             self._dim = control_points.shape[1]
@@ -447,7 +447,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        ind = np.lexsort([self.control_points[:,i] for i in order])
+        ind = np.lexsort([self.control_points[:, i] for i in order])
         logging.debug(f"Spline - `lexsort` control points ({order})")
         self.control_points = self.control_points[ind]
 
@@ -514,7 +514,7 @@ class Spline(abc.ABC):
         weights = utils.make_c_contiguous(
             weights,
             dtype=np.float64
-        ).reshape(-1,1)
+        ).reshape(-1, 1)
 
         if self.control_points is not None:
             if self.control_points.shape[0] != weights.shape[0]:
@@ -524,7 +524,7 @@ class Spline(abc.ABC):
                 )
 
         self._weights = weights
-        
+
         logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
 
         self._check_and_update_c()
@@ -567,7 +567,6 @@ class Spline(abc.ABC):
         """
         # Check if all data is available for spline type
         for i_property in self._required_properties:
-            print(getattr(self,i_property))
             if getattr(self, i_property) is None:
                 logging.debug(
                     "Spline - Not enough information to update cpp spline. "
@@ -579,17 +578,17 @@ class Spline(abc.ABC):
         if not self.dim == self.control_points.shape[1]:
             raise InputDimensionError(
                 "Mismatch between dimension and control point dimensionality"
-            ) 
+            )
         if "knot_vectors" in self._required_properties:
             if not len(self.knot_vectors) == self.para_dim:
                 raise InputDimensionError(
                     "Not enough knot vectors for required parametric "
                     "dimension."
-                ) 
+                )
         if not self.degrees.shape[0] == self.para_dim:
             raise InputDimensionError(
                 "RDimension mismatch between degrees and parametric dimension"
-            ) 
+            )
         n_required_ctps = 1
         for i_para_dim in range(self.para_dim):
             n_ctps_per_para_dim = 0
@@ -603,8 +602,7 @@ class Spline(abc.ABC):
                 "Number of control points invalid"
                 ", expected : " + str(n_required_ctps) + ", but "
                 "received" + str(self.control_points.shape[0])
-            ) 
-            
+            )
 
         # Update Backend
         self._update_c()
@@ -716,7 +714,6 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating derivatives of the spline...")
 
-
         if int(n_threads) > 1:
             return self._c_spline.p_derivative(
                 queries=queries,
@@ -748,7 +745,7 @@ class Spline(abc.ABC):
           second: support ids.
         """
         if self.whatami == "Nothing":
-          return None
+            return None
 
         queries = utils.make_c_contiguous(queries, dtype="float64")
 
@@ -1068,7 +1065,7 @@ class Spline(abc.ABC):
         the nearest physical coordinate. Also known as "point inversion".
         Initial guess is mid point of parametric space. This tends to fail.
         `nearest_pcoord` is recommended.
-        
+
 
         Parameters
         -----------
@@ -1097,7 +1094,6 @@ class Spline(abc.ABC):
             nthreads=n_threads
         )
 
-
     def export(self, fname):
         """
         Export spline. Please be aware of the limits of `.iges`
@@ -1122,7 +1118,7 @@ class Spline(abc.ABC):
             os.makedirs(dirname)
 
         ext = os.path.splitext(fname)[1]
-    
+
         if ext == ".iges":
             self._c_spline.write_iges(fname)
 

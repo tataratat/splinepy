@@ -49,7 +49,7 @@ class PyBezier {
 
   PyBezier(BezierSpline_ rhs) {
     // Init c_bezier using move constructor
-    c_bezier = std::move(rhs);
+    c_bezier = rhs;
     p_control_points.resize({(int)c_bezier.control_points.size(), dim});
     p_degrees.resize({(int)para_dim});
     update_p();

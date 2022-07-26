@@ -391,12 +391,11 @@ class PyNurbs {
 
   /// Extract Bezier Patches
   py::list ExtractBezierPatches() {
-    std::cout << "Starting extracting patches";
-    // const auto c_patches = splinepy::splines::ExtractBezierPatches(c_nurbs);
+    const auto c_patches = splinepy::splines::ExtractBezierPatches(c_nurbs);
     py::list bezier_list{};
-    // for (std::size_t i{}; i < c_patches.size(); i++) {
-    //   bezier_list.append(PyRationalBezier<para_dim, dim>{c_patches[i]});
-    // }
+    for (std::size_t i{}; i < c_patches.size(); i++) {
+      bezier_list.append(PyRationalBezier<para_dim, dim>{c_patches[i]});
+    }
     return bezier_list;
   }
 
@@ -728,4 +727,4 @@ void add_nurbs_pyclass(py::module& m, const char* class_name) {
             );
             return pyn;
           }));
-}
+};
