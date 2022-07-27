@@ -15,6 +15,16 @@ else()
             init/py_bezier8.cpp
             init/py_bezier9.cpp
             init/py_bezier10.cpp
+            init/py_rational_bezier1.cpp
+            init/py_rational_bezier2.cpp
+            init/py_rational_bezier3.cpp
+            init/py_rational_bezier4.cpp
+            init/py_rational_bezier5.cpp
+            init/py_rational_bezier6.cpp
+            init/py_rational_bezier7.cpp
+            init/py_rational_bezier8.cpp
+            init/py_rational_bezier9.cpp
+            init/py_rational_bezier10.cpp
             init/py_bspline1.cpp
             init/py_bspline2.cpp
             init/py_bspline3.cpp
