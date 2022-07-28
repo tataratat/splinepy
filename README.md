@@ -1,5 +1,5 @@
 # splinepy
-Python Bezier, BSpline and NURBS library with C++ backend, [bezierManipulation](https://github.com/jzwar/bezierManipulation) and [SplineLib](https://github.com/SplineLib/SplineLib).
+Python Bezier, BSpline and NURBS library with C++ backend, [bezierManipulation](https://github.com/jzwar/bezierManipulation) and [SplineLib](https://github.com/tataratat/SplineLib).
 
 
 ## Install-guide
