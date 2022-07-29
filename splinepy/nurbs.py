@@ -6,15 +6,25 @@ import numpy as np
 from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
+from splinepy.rational_bezier import RationalBezier
+
 
 class NURBS(Spline):
 
+    # Required Properties
+    _required_properties = [
+        "degrees",
+        "knot_vectors",
+        "control_points",
+        "weights",
+    ]
+
     def __init__(self,
-            degrees=None,
-            knot_vectors=None,
-            control_points=None,
-            weights=None,
-    ):
+                 degrees=None,
+                 knot_vectors=None,
+                 control_points=None,
+                 weights=None,
+                 ):
         """
         NURBS.
 
@@ -35,61 +45,6 @@ class NURBS(Spline):
             control_points=control_points,
             weights=weights,
         )
-
-    @property
-    def weights(self,):
-        """
-        Returns weights.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        self._weights: (n, 1) list-like
-        """
-        if hasattr(self, "_weights"):
-            return self._weights
-
-        else:
-            return None
-
-    @weights.setter
-    def weights(self, weights):
-        """
-        Set weights.
-
-        Parameters
-        -----------
-        weights: (n,) list-like
-
-        Returns
-        --------
-        None
-        """
-        if weights is None:
-            if hasattr(self, "_weights"):
-                delattr(self, "_weights")
-            return None
-
-        weights = utils.make_c_contiguous(
-            weights,
-            dtype=np.float64
-        ).reshape(-1,1)
-
-        if self.control_points is not None:
-            if self.control_points.shape[0] != weights.shape[0]:
-                raise ValueError(
-                    "Number of control points and number of weights does not "
-                    "match."
-                )
-
-        self._weights = weights
-        
-        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
-
-        self._update_c()
 
     def _update_c(self,):
         """
@@ -171,6 +126,32 @@ class NURBS(Spline):
 
         return new_nurbs
 
+    def extract_bezier_patches(self):
+        """
+        Extract all knot spans as Bezier patches to perform further operations
+        such as compositions and multiplications
+
+        Parameters
+        ----------
+        None
+
+        Returns 
+        -------
+        extracted Beziers : list
+        """
+        # Extract bezier patches and create PyRationalBezier objects
+        list_of_c_object_beziers = self._c_spline.extract_bezier_patches()
+
+        # Transform into Rational Bezier Splinepy objects
+        extracted_bezier_patches = []
+        for c_object_spline in list_of_c_object_beziers:
+            i_rational_bezier = RationalBezier()
+            i_rational_bezier._c_spline = c_object_spline
+            i_rational_bezier._update_p()
+            extracted_bezier_patches.append(i_rational_bezier)
+
+        return extracted_bezier_patches
+
     def todict(self, tolist=False):
         """
         Returns copy of degrees, knot_vectors, control_points, weights in dict.
@@ -199,6 +180,3 @@ class NURBS(Spline):
                 control_points=copy.deepcopy(self.control_points),
                 weights=copy.deepcopy(self.weights)
             )
-
-    # member function alias
-    ws = weights

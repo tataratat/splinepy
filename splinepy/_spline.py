@@ -9,6 +9,7 @@ import numpy as np
 from splinepy import utils
 from splinepy import io
 
+
 class InputDimensionError(Exception):
     """
     Raised when input dimension does not match spline's internal dimension.
@@ -260,7 +261,7 @@ class Spline(abc.ABC):
 
         logging.debug(f"Spline - Degrees set: {self.degrees}")
 
-        self._update_c()
+        self._check_and_update_c()
 
     @property
     def knot_vectors(self):
@@ -303,7 +304,7 @@ class Spline(abc.ABC):
 
         if not isinstance(knot_vectors, list):
             raise TypeError("knot_vectors should be a `list`!")
-            
+
         if self.para_dim is None:
             self._para_dim = len(knot_vectors)
 
@@ -323,7 +324,7 @@ class Spline(abc.ABC):
                 f"{len(kv)}"
             )
 
-        self._update_c()
+        self._check_and_update_c()
 
     @property
     def unique_knots(self,):
@@ -342,12 +343,11 @@ class Spline(abc.ABC):
         """
         logging.debug("Spline - Computing unique knots using `np.unique`.")
         unique_knots = []
-        if self.whatami.startswith("Bezier"):
+        if "Bezier" in self.whatami:
             unique_knots = [[0, 1]] * self.para_dim
         else:
             for k in self.knot_vectors:
                 unique_knots.append(np.unique(k).tolist())
-            
 
         return unique_knots
 
@@ -415,7 +415,8 @@ class Spline(abc.ABC):
                 delattr(self, "_dim")
             return None
 
-        control_points = utils.make_c_contiguous(control_points, "float64").copy()
+        control_points = utils.make_c_contiguous(
+            control_points, "float64").copy()
 
         if self.dim is None:
             self._dim = control_points.shape[1]
@@ -431,7 +432,7 @@ class Spline(abc.ABC):
             f"Spline - {self.control_points.shape[0]} Control points set."
         )
 
-        self._update_c()
+        self._check_and_update_c()
 
     def _lexsort_control_points(self, order):
         """
@@ -447,7 +448,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        ind = np.lexsort([self.control_points[:,i] for i in order])
+        ind = np.lexsort([self.control_points[:, i] for i in order])
         logging.debug(f"Spline - `lexsort` control points ({order})")
         self.control_points = self.control_points[ind]
 
@@ -475,6 +476,61 @@ class Spline(abc.ABC):
         )
 
     @property
+    def weights(self,):
+        """
+        Returns weights.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        self._weights: (n, 1) list-like
+        """
+        if hasattr(self, "_weights"):
+            return self._weights
+
+        else:
+            return None
+
+    @weights.setter
+    def weights(self, weights):
+        """
+        Set weights.
+
+        Parameters
+        -----------
+        weights: (n,) list-like
+
+        Returns
+        --------
+        None
+        """
+        if weights is None:
+            if hasattr(self, "_weights"):
+                delattr(self, "_weights")
+            return None
+
+        weights = utils.make_c_contiguous(
+            weights,
+            dtype=np.float64
+        ).reshape(-1, 1)
+
+        if self.control_points is not None:
+            if self.control_points.shape[0] != weights.shape[0]:
+                raise ValueError(
+                    "Number of control points and number of weights does not "
+                    "match."
+                )
+
+        self._weights = weights
+
+        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
+
+        self._check_and_update_c()
+
+    @property
     def control_mesh_resolutions(self,):
         """
         Returns control mesh resolutions.
@@ -490,13 +546,80 @@ class Spline(abc.ABC):
         cmr = []
 
         # Special case Bezier
-        if self.whatami.startswith("Bezier"):
+        if "Bezier" in self.whatami:
             cmr = (self.degrees + 1).tolist()
         else:
             for kv, d in zip(self.knot_vectors, self.degrees):
                 cmr.append(len(kv) - d - 1)
 
         return cmr
+
+    def _check_and_update_c(self,):
+        """
+        Check all available information before updating the backend
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        # Check if all data is available for spline type
+        for i_property in self._required_properties:
+            if getattr(self, i_property) is None:
+                logging.debug(
+                    "Spline - Not enough information to update cpp spline. "
+                    "Skipping update."
+                )
+                return
+
+        # Check if data is coherent
+        # Check if control point dimension matches dim dimension
+        if not self.dim == self.control_points.shape[1]:
+            raise InputDimensionError(
+                "Mismatch between dimension and control point dimensionality"
+            )
+        # Check if given degree match expected number of degrees
+        if not self.degrees.shape[0] == self.para_dim:
+            raise InputDimensionError(
+                "RDimension mismatch between degrees and parametric dimension"
+            )
+        # Check if enough knot vectors were given
+        if "knot_vectors" in self._required_properties:
+            if not len(self.knot_vectors) == self.para_dim:
+                raise InputDimensionError(
+                    "Not enough knot vectors for required parametric "
+                    "dimension."
+                )
+            # Check if knot vectors are large enough
+            for i_para_dim in range(self.para_dim):
+                if not (
+                        len(self.knot_vectors[i_para_dim])
+                        >= (2 * (self.degrees[i_para_dim]+1))):
+                    raise InputDimensionError(
+                        "Not enough knots in knot vector along parametric"
+                        f" dimension  {i_para_dim}"
+                    )
+        # Check if required number of control points is present
+        n_required_ctps = 1
+        for i_para_dim in range(self.para_dim):
+            n_ctps_per_para_dim = 0
+            n_ctps_per_para_dim += self.degrees[i_para_dim] + 1
+            if "knot_vectors" in self._required_properties:
+                n_ctps_per_para_dim -= len(self.knot_vectors[i_para_dim])
+                n_ctps_per_para_dim *= -1
+            n_required_ctps *= n_ctps_per_para_dim
+        if not n_required_ctps == self.control_points.shape[0]:
+            raise InputDimensionError(
+                "Number of control points invalid"
+                ", expected : " + str(n_required_ctps) + ", but "
+                "received" + str(self.control_points.shape[0])
+            )
+
+        # Update Backend
+        self._update_c()
 
     @abc.abstractmethod
     def _update_c(self,):
@@ -605,7 +728,6 @@ class Spline(abc.ABC):
 
         logging.debug("Spline - Evaluating derivatives of the spline...")
 
-
         if int(n_threads) > 1:
             return self._c_spline.p_derivative(
                 queries=queries,
@@ -637,7 +759,7 @@ class Spline(abc.ABC):
           second: support ids.
         """
         if self.whatami == "Nothing":
-          return None
+            return None
 
         queries = utils.make_c_contiguous(queries, dtype="float64")
 
@@ -957,7 +1079,7 @@ class Spline(abc.ABC):
         the nearest physical coordinate. Also known as "point inversion".
         Initial guess is mid point of parametric space. This tends to fail.
         `nearest_pcoord` is recommended.
-        
+
 
         Parameters
         -----------
@@ -986,7 +1108,6 @@ class Spline(abc.ABC):
             nthreads=n_threads
         )
 
-
     def export(self, fname):
         """
         Export spline. Please be aware of the limits of `.iges`
@@ -999,7 +1120,7 @@ class Spline(abc.ABC):
         --------
         None
         """
-        self._update_c()
+        self._check_and_update_c()
 
         if self.whatami == "Nothing":
             return None
@@ -1011,7 +1132,7 @@ class Spline(abc.ABC):
             os.makedirs(dirname)
 
         ext = os.path.splitext(fname)[1]
-    
+
         if ext == ".iges":
             self._c_spline.write_iges(fname)
 
@@ -1076,3 +1197,4 @@ class Spline(abc.ABC):
     ds = degrees
     kvs = knot_vectors
     cps = control_points
+    ws = weights
