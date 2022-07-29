@@ -91,7 +91,7 @@ cma = []
 
 if flags["have_splinelib"] not in sys.argv:
     print("*** compiling splinelib ***")
-    cma.append("-DCOMPILE_SPLINELIB=ON")
+    cma.append("-DSPLINEPY_COMPILE_SPLINELIB=ON")
 else:
     print("*** NOT compiling splinelib ***")
     sys.argv.remove(flags["have_splinelib"])

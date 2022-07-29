@@ -1,5 +1,5 @@
 # splinepy
-Python Bezier, BSpline and NURBS library with C++ backend, [bezierManipulation](https://github.com/jzwar/bezierManipulation) and [SplineLib](https://github.com/SplineLib/SplineLib).
+Python Bezier, BSpline and NURBS library with C++ backend, [bezierManipulation](https://github.com/jzwar/bezierManipulation) and [SplineLib](https://github.com/tataratat/SplineLib).
 
 
 ## Install-guide
@@ -16,6 +16,6 @@ and cmake version 3.16 or higher.
 ```
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
-git submodule update --init
+git submodule update --init --recursive
 python3 setup.py install
 ```

@@ -1,6 +1,4 @@
-add_subdirectory(pugixml)
-if(COMPILE_SPLINELIB)
-    set(SHARED OFF)
+if(SPLINEPY_COMPILE_SPLINELIB)
     add_subdirectory(SplineLib)
 endif()
 add_subdirectory(bezierManipulation)
