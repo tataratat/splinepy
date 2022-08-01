@@ -48,6 +48,9 @@ public:
   // Constructor
   using Base_::Base_;
 
+  constexpr static int para_dim_ = para_dim;
+  constexpr static int dim_ = dim;
+
   const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }
