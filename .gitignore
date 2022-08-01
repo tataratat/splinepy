@@ -13,3 +13,8 @@
 
 # Ignore IDE settings
 **/.vscode/*
+
+# CMake
+**/CMakeFiles/
+**/Makefile
+**/cmake_install.cmake
