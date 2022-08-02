@@ -682,26 +682,8 @@ class Spline(abc.ABC):
                 )
                 return None
 
-        # Check if data is coherent
-        # Check if control point dimension matches dim dimension
-        #if not self.dim == self.control_points.shape[1]:
-        #    raise InputDimensionError(
-        #        "Mismatch between dimension and control point dimensionality"
-        #    )
-        # Check if given degree match expected number of degrees
-        #if not self.degrees.shape[0] == self.para_dim:
-        #    raise InputDimensionError(
-        #        "RDimension mismatch between degrees and parametric dimension"
-        #    )
-
         # Check if enough knot vectors were given
         if "knot_vectors" in required_props:
-            #if not len(self.knot_vectors) == self.para_dim:
-            #    raise InputDimensionError(
-            #        "Not enough knot vectors for required parametric "
-            #        "dimension."
-            #    )
-
             if len(self.degrees) != len(self.knot_vectors):
                 raise InputDimensionError(
                     "Dimension mis-match between `degrees` and `knot_vectors`"
@@ -710,26 +692,11 @@ class Spline(abc.ABC):
             # Check if knot vectors are large enough
             for d, kv in zip(self.degrees, self.knot_vectors):
                 if len(kv) < int(2 * (d+1)):
-            #for i_para_dim in range(self.para_dim):
-            #    if not (
-            #        len(self.knot_vectors[i_para_dim])
-            #        >= (2 * (self.degrees[i_para_dim]+1))
-            #    ):
                     raise InputDimensionError(
                         "Not enough knots in knot vector along parametric"
                         f" dimension  {i_para_dim}"
                     )
         # Check if required number of control points is present
-        #n_required_ctps = 1
-        #for i_para_dim in range(self.para_dim):
-        #    n_ctps_per_para_dim = 0
-        #    n_ctps_per_para_dim += self.degrees[i_para_dim] + 1
-        #    if "knot_vectors" in required_p:
-        #        n_ctps_per_para_dim -= len(self.knot_vectors[i_para_dim])
-        #        n_ctps_per_para_dim *= -1
-        #    n_required_ctps *= n_ctps_per_para_dim
-        #if not n_required_ctps == self.control_points.shape[0]:
-
         n_required_cps = np.prod(self.control_mesh_resolutions)
         n_defined_cps = self.control_points.shape[0]
         if n_required_cps != n_defined_cps:
