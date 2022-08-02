@@ -17,6 +17,94 @@ class InputDimensionError(Exception):
     pass
 
 
+class _RequiredProperties:
+    """
+    Helper class to hold required properties of each spline.
+    """
+
+    # name mangling to make direct access very annoying 
+    __required_spline_properties = {
+        "Bezier": ["degrees", "control_points"],
+        "RationalBezier": ["degrees", "control_points", "weights"],
+        "BSpline": ["degrees", "knot_vectors", "control_points"],
+        "NURBS": ["degrees", "knot_vectors", "control_points", "weights"],
+    }
+
+    @classmethod
+    def __call__(cls, spline):
+        """
+        Given splinepy.Spline, returns required properties.
+        Wraps `__getitem__`.
+
+        Parameters
+        -----------
+        spline: Spline or type
+
+        Returns
+        --------
+        required_spline_properties: list
+        """
+        # extract pure `type`
+        s_type = spline if isinstance(spline, type) else type(spline)
+
+        # __getitem__ checks if it is supported
+        return cls.__getitem__(s_type.__qualname__)
+
+    @classmethod
+    def __getitem__(cls, spline_type):
+        """
+        Given a name of spline type in str, returns required properties.
+        Checks if given spline type is supported.
+
+        Parameters
+        -----------
+        spline_type: str
+
+        Returns
+        --------
+        required_spline_properties: list
+        """
+        # do we support this spline type?
+        if spline_type not in cls.__required_spline_properties:
+            raise ValueError(
+                f"Sorry, we don't have support for ({spline_type})-types."
+                "Supported spline types are:"
+                f"{list(cls.__required_spline_properties.keys())}"
+            )
+
+        # copy to avoid inplace manipulation
+        return cls.__required_spline_properties[spline_type].copy()
+
+    @classmethod
+    def of(cls, spline):
+        """
+        Wrapper of __call__ and __getitem__ as classmethod.
+
+        Parameters
+        -----------
+        spline: Spline or str
+
+        Returns
+        --------
+        required_spline_properties: list
+
+        Examples
+        ---------
+        >>> myspline = NURBS(...)
+        >>> requirements = RequiredSplineProperties.of(myspline)
+        >>> requirements
+        ['degrees', 'knot_vectors', 'control_points', 'weights']
+        """
+        if isinstance(spline, str):
+            return cls.__getitem__(spline)
+        else:
+            return cls.__call__(spline)
+
+
+# initialize one for direct use
+required_properties = _RequiredProperties()
+        
+
 class Spline(abc.ABC):
     """
     Abstract Spline Class.
@@ -416,7 +504,9 @@ class Spline(abc.ABC):
             return None
 
         control_points = utils.make_c_contiguous(
-            control_points, "float64").copy()
+            control_points,
+            "float64"
+        ).copy()
 
         if self.dim is None:
             self._dim = control_points.shape[1]
@@ -554,6 +644,21 @@ class Spline(abc.ABC):
 
         return cmr
 
+    @property
+    def required_properties(self,):
+        """
+        Returns required properties to define spline.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        required_properties: list
+        """
+        return required_properties(self)
+
     def _check_and_update_c(self,):
         """
         Check all available information before updating the backend
@@ -566,56 +671,71 @@ class Spline(abc.ABC):
         -------
         None
         """
+        required_props = self.required_properties
+
         # Check if all data is available for spline type
-        for i_property in self._required_properties:
+        for i_property in required_props:
             if getattr(self, i_property) is None:
                 logging.debug(
                     "Spline - Not enough information to update cpp spline. "
                     "Skipping update."
                 )
-                return
+                return None
 
         # Check if data is coherent
         # Check if control point dimension matches dim dimension
-        if not self.dim == self.control_points.shape[1]:
-            raise InputDimensionError(
-                "Mismatch between dimension and control point dimensionality"
-            )
+        #if not self.dim == self.control_points.shape[1]:
+        #    raise InputDimensionError(
+        #        "Mismatch between dimension and control point dimensionality"
+        #    )
         # Check if given degree match expected number of degrees
-        if not self.degrees.shape[0] == self.para_dim:
-            raise InputDimensionError(
-                "RDimension mismatch between degrees and parametric dimension"
-            )
+        #if not self.degrees.shape[0] == self.para_dim:
+        #    raise InputDimensionError(
+        #        "RDimension mismatch between degrees and parametric dimension"
+        #    )
+
         # Check if enough knot vectors were given
-        if "knot_vectors" in self._required_properties:
-            if not len(self.knot_vectors) == self.para_dim:
+        if "knot_vectors" in required_props:
+            #if not len(self.knot_vectors) == self.para_dim:
+            #    raise InputDimensionError(
+            #        "Not enough knot vectors for required parametric "
+            #        "dimension."
+            #    )
+
+            if len(self.degrees) != len(self.knot_vectors):
                 raise InputDimensionError(
-                    "Not enough knot vectors for required parametric "
-                    "dimension."
+                    "Dimension mis-match between `degrees` and `knot_vectors`"
                 )
+
             # Check if knot vectors are large enough
-            for i_para_dim in range(self.para_dim):
-                if not (
-                        len(self.knot_vectors[i_para_dim])
-                        >= (2 * (self.degrees[i_para_dim]+1))):
+            for d, kv in zip(self.degrees, self.knot_vectors):
+                if len(kv) < int(2 * (d+1)):
+            #for i_para_dim in range(self.para_dim):
+            #    if not (
+            #        len(self.knot_vectors[i_para_dim])
+            #        >= (2 * (self.degrees[i_para_dim]+1))
+            #    ):
                     raise InputDimensionError(
                         "Not enough knots in knot vector along parametric"
                         f" dimension  {i_para_dim}"
                     )
         # Check if required number of control points is present
-        n_required_ctps = 1
-        for i_para_dim in range(self.para_dim):
-            n_ctps_per_para_dim = 0
-            n_ctps_per_para_dim += self.degrees[i_para_dim] + 1
-            if "knot_vectors" in self._required_properties:
-                n_ctps_per_para_dim -= len(self.knot_vectors[i_para_dim])
-                n_ctps_per_para_dim *= -1
-            n_required_ctps *= n_ctps_per_para_dim
-        if not n_required_ctps == self.control_points.shape[0]:
+        #n_required_ctps = 1
+        #for i_para_dim in range(self.para_dim):
+        #    n_ctps_per_para_dim = 0
+        #    n_ctps_per_para_dim += self.degrees[i_para_dim] + 1
+        #    if "knot_vectors" in required_p:
+        #        n_ctps_per_para_dim -= len(self.knot_vectors[i_para_dim])
+        #        n_ctps_per_para_dim *= -1
+        #    n_required_ctps *= n_ctps_per_para_dim
+        #if not n_required_ctps == self.control_points.shape[0]:
+
+        n_required_cps = np.prod(self.control_mesh_resolutions)
+        n_defined_cps = self.control_points.shape[0]
+        if n_required_cps != n_defined_cps:
             raise InputDimensionError(
-                "Number of control points invalid"
-                ", expected : " + str(n_required_ctps) + ", but "
-                "received" + str(self.control_points.shape[0])
+                "Number of control points invalid:"
+                f"expected {n_required_cps}, but given {n_defined_cps}"
             )
 
         # Update Backend
@@ -1160,12 +1280,47 @@ class Spline(abc.ABC):
 
         logging.info(f"Spline - Exported current spline as {fname}.")
 
-    @abc.abstractmethod
+    def todict(self, tolist=False):
+        """
+        Return current spline as dict. Copies all the dict values.
+        Does not check current status
+
+        Parameters
+        -----------
+        tolist: bool
+          Default is False. Converts `np.ndarray` into lists.
+
+        Returns
+        --------
+        dict_spline: dict
+        """
+        logging.debug("Spline - Preparing dict_spline...")
+        dict_spline = dict()
+        # loop and copy entries.
+        for p in self.required_properties:
+            # no prop? no prob. default is None
+            tmp_prop = None
+
+            # prepare copy if there's prop
+            if hasattr(self, p):
+                tmp_prop = getattr(self, p)
+                should_copy = True
+                # attr are either list or np.ndarray
+                # prepare list if needed.
+                if isinstance(tmp_prop, np.ndarray) and tolist:
+                    tmp_prop = tmp_prop.tolist() # copies
+                    should_copy = False
+
+                if should_copy:
+                    tmp_prop = copy.deepcopy(tmp_prop)
+            # update 
+            dict_spline[p] = tmp_prop
+
+        return dict_spline
+
     def copy(self,):
         """
-        Returns freshly initialized Spline of self.
-
-        Needs to be implemented separately
+        Returns deepcopy of self.
 
         Parameters
         -----------
@@ -1173,24 +1328,10 @@ class Spline(abc.ABC):
 
         Returns
         --------
-        new_spline: `Spline`
+        new_spline: type(self)
         """
-        pass
-
-    @abc.abstractmethod
-    def todict(self,):
-        """
-        Return current spline as dict
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        spline_as_dict: `Spline`
-        """
-        pass
+        # all the properties are deepcopyable
+        return copy.deepcopy(self)
 
     # member function aliases for urgent situations
     # `weights` is defined in `NURBS`

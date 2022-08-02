@@ -1,5 +1,4 @@
 import logging
-import copy
 
 import numpy as np
 
@@ -11,13 +10,6 @@ from splinepy.bezier import Bezier
 
 
 class BSpline(Spline):
-
-    # Required Properties
-    _required_properties = [
-        "degrees",
-        "control_points",
-        "knot_vectors",
-    ]
 
     def __init__(
             self,
@@ -336,50 +328,3 @@ class BSpline(Spline):
         )
 
         return same_nurbs
-
-    def copy(self,):
-        """
-        Returns freshly initialized BSpline of self.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        new_bspline: `BSpline`
-        """
-        new_bspline = BSpline(**self.todict())
-
-        # add fitting_queries if it has one.
-        if hasattr(self, "_fitting_queries"):
-            new_bspline._fitting_queries = copy.deepcopy(self._fitting_queries)
-
-        return new_bspline
-
-    def todict(self, tolist=False):
-        """
-        Returns copy of degrees, knot_vectors, control_points in dict.
-
-        Parameters
-        -----------
-        tolist : bool
-          Default is False. Convert numpy properties into lists
-
-        Returns
-        --------
-        dict_spline: dict
-          Keys are {degrees, knot_vectors, control_points}.
-        """
-        if tolist:
-            return dict(
-                degrees=self.degrees.tolist(),
-                knot_vectors=self.knot_vectors.tolist(),
-                control_points=self.control_points.tolist(),
-            )
-        else:
-            return dict(
-                degrees=copy.deepcopy(self.degrees),
-                knot_vectors=copy.deepcopy(self.knot_vectors),
-                control_points=copy.deepcopy(self.control_points)
-            )

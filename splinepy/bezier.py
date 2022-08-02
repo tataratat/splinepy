@@ -1,5 +1,4 @@
 import logging
-import copy
 
 import numpy as np
 
@@ -8,12 +7,6 @@ from splinepy._splinepy import *
 from splinepy._spline import Spline
 
 class Bezier(Spline):
-
-    # Required Properties
-    _required_properties = [
-        "degrees",
-        "control_points",
-    ]
 
     def __init__(self, degrees=None, control_points=None):
         """
@@ -318,43 +311,3 @@ class Bezier(Spline):
 
         else :
             raise TypeError("Composisiton must be formed with Bezier Splines")
-
-    def copy(self):
-        """
-        Creates a copy of the spline
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        : `Bezier`
-        """
-        return type(self)(**self.todict())
-
-    def todict(self, tolist=False):
-        """
-        Returns copy of degrees, control_points in dict.
-
-        Parameters
-        -----------
-        tolist : bool
-          Default is False. Convert numpy properties into lists
-
-        Returns
-        --------
-        dict_spline: dict
-          Keys are {degrees, control_points}.
-        """
-        if tolist:
-            return dict(
-                degrees=self.degrees.tolist(),
-                control_points=self.control_points.tolist(),
-            )
-
-        else:
-            return dict(
-                degrees=copy.deepcopy(self.degrees),
-                control_points=copy.deepcopy(self.control_points),
-            )
