@@ -297,8 +297,9 @@ class PyBSpline {
   }
 
   // multithread `derivative` using std::thread
-  py::array_t<double> p_derivative(py::array_t<double> queries,
-                                   py::array_t<int> orders, int n_workers) {
+  py::array_t<double> p_derivative(py::array_t<double> queries,  //
+                                   py::array_t<int> orders,      //
+                                   int n_workers) {
     // Extract input arrays info.
     py::buffer_info q_buf = queries.request(), o_buf = orders.request();
     double* q_buf_ptr = static_cast<double*>(q_buf.ptr);
@@ -517,8 +518,10 @@ class PyBSpline {
     return results;
   }
 
-  double fit_curve(py::array_t<double> points, int degree,
-                   int num_control_points, bool centripetal,
+  double fit_curve(py::array_t<double> points,  //
+                   int degree,                  //
+                   int num_control_points,      //
+                   bool centripetal,            //
                    py::list knot_vectors) {
     if (para_dim != 1) {
       throw std::invalid_argument(
@@ -582,7 +585,8 @@ class PyBSpline {
     return residual;
   }
 
-  void interpolate_curve(py::array_t<double> points, int degree,
+  void interpolate_curve(py::array_t<double> points,  //
+                         int degree,                  //
                          bool centripetal) {
     py::buffer_info p_buf = points.request();
     int num_control_points = p_buf.shape[0];
@@ -595,8 +599,12 @@ class PyBSpline {
                      p_knot_vectors);
   }
 
-  void fit_surface(py::array_t<double> points, int size_u, int size_v,
-                   int degree_u, int degree_v, bool centripetal) {
+  void fit_surface(py::array_t<double> points,  //
+                   int size_u,                  //
+                   int size_v,                  //
+                   int degree_u,                //
+                   int degree_v,                //
+                   bool centripetal) {
     if (para_dim != 2) {
       throw std::invalid_argument(
           "parametric dimension should be 2 for surface interpolation.");
@@ -615,9 +623,18 @@ class PyBSpline {
     }
     std::vector<double> knot_vector_u, knot_vector_v, control_points;
 
-    FitSurface(p_buf_ptr, num_points, surface_dim, degree_u, degree_v, size_u,
-               size_v, centripetal, knot_vector_u, knot_vector_v,
-               control_points);
+    FitSurface(p_buf_ptr,      //
+               num_points,     //
+               surface_dim,    //
+               degree_u,       //
+               degree_v,       //
+               size_u,         //
+               size_v,         //
+               centripetal,    //
+               knot_vector_u,  //
+               knot_vector_v,  //
+               control_points  //
+    );
 
     // Write degree
     p_degrees = py::array_t<int>(para_dim);
@@ -654,8 +671,12 @@ class PyBSpline {
     update_c();
   }
 
-  void interpolate_surface(py::array_t<double> points, int size_u, int size_v,
-                           int degree_u, int degree_v, bool centripetal) {
+  void interpolate_surface(py::array_t<double> points,  //
+                           int size_u,                  //
+                           int size_v,                  //
+                           int degree_u,                //
+                           int degree_v,                //
+                           bool centripetal) {
     fit_surface(points, size_u, size_v, degree_u, degree_v, centripetal);
   }
 

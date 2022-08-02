@@ -82,8 +82,10 @@ class PyNurbs {
 
   // Constructor.
   PyNurbs() {}
-  PyNurbs(py::array_t<int> degrees, py::list knot_vectors,
-          py::array_t<double> control_points, py::array_t<double> weights)
+  PyNurbs(py::array_t<int> degrees,            //
+          py::list knot_vectors,               //
+          py::array_t<double> control_points,  //
+          py::array_t<double> weights)
       : p_degrees(degrees),
         p_knot_vectors(knot_vectors),
         p_control_points(control_points),
@@ -327,8 +329,9 @@ class PyNurbs {
   }
 
   // multithread `derivative` using std::thread
-  py::array_t<double> p_derivative(py::array_t<double> queries,
-                                   py::array_t<int> orders, int n_workers) {
+  py::array_t<double> p_derivative(py::array_t<double> queries,  //
+                                   py::array_t<int> orders,      //
+                                   int n_workers) {
     if (!skip_update) {
       update_c();
     }

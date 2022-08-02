@@ -11,9 +11,10 @@ namespace py = pybind11;
 
 template <int para_dim, int dim>
 using Bezier = bezman::BezierSpline<
-    static_cast<std::size_t>(para_dim),
-    std::conditional_t<(dim > 1), bezman::Point<static_cast<unsigned>(dim)>,
-                       double>,
+    static_cast<std::size_t>(para_dim),                            //
+    std::conditional_t<(dim > 1),                                  //
+                       bezman::Point<static_cast<unsigned>(dim)>,  //
+                       double>,                                    //
     double>;
 
 template <int para_dim, int dim>

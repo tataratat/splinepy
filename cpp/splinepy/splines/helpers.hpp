@@ -184,6 +184,9 @@ auto ExtractBezierPatches(SplineType& input) {
       if constexpr (isNurbs_v<SplineType>) {
         const double weight = ControlPointVector(global_id)[dim];
         weights.push_back(weight);
+        // control points are weighted in non-rational splines to facilitate
+        // calculations. They therefore need to be divided by the weight to get
+        // the true control point positions
         point /= weight;
       }
       ctps.push_back(point);
@@ -206,5 +209,5 @@ auto ExtractBezierPatches(SplineType& input) {
     }
   }
   return bezier_list;
-}  // namespace splinepy::splines
+}
 }  // namespace splinepy::splines
