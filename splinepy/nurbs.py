@@ -1,5 +1,4 @@
 import logging
-import copy
 
 import numpy as np
 
@@ -10,14 +9,6 @@ from splinepy.rational_bezier import RationalBezier
 
 
 class NURBS(Spline):
-
-    # Required Properties
-    _required_properties = [
-        "degrees",
-        "knot_vectors",
-        "control_points",
-        "weights",
-    ]
 
     def __init__(self,
                  degrees=None,
@@ -110,22 +101,6 @@ class NURBS(Spline):
             "now identical."
         )
 
-    def copy(self,):
-        """
-        Returns freshly initialized Nurbs of self.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        new_nurbs: `NURBS`
-        """
-        new_nurbs = NURBS(**self.todict())
-
-        return new_nurbs
-
     def extract_bezier_patches(self):
         """
         Extract all knot spans as Bezier patches to perform further operations
@@ -151,32 +126,3 @@ class NURBS(Spline):
             extracted_bezier_patches.append(i_rational_bezier)
 
         return extracted_bezier_patches
-
-    def todict(self, tolist=False):
-        """
-        Returns copy of degrees, knot_vectors, control_points, weights in dict.
-
-        Parameters
-        -----------
-        tolist : bool
-          Default is False. Convert numpy properties into lists
-
-        Returns
-        --------
-        dict_spline: dict
-          Keys are {degrees, knot_vectors, control_points, weights}.
-        """
-        if tolist:
-            return dict(
-                degrees=self.degrees.tolist(),
-                knot_vectors=self.knot_vectors.tolist(),
-                control_points=self.control_points.tolist(),
-                weights=self.weights.tolist()
-            )
-        else:
-            return dict(
-                degrees=copy.deepcopy(self.degrees),
-                knot_vectors=copy.deepcopy(self.knot_vectors),
-                control_points=copy.deepcopy(self.control_points),
-                weights=copy.deepcopy(self.weights)
-            )
