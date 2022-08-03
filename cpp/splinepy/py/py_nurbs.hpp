@@ -23,6 +23,7 @@
 // Local
 #include <splinepy/splines/helpers.hpp>
 #include <splinepy/splines/nurbs.hpp>
+#include <splinepy/py/py_rational_bezier.hpp>
 
 namespace py = pybind11;
 
