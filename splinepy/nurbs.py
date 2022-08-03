@@ -1,20 +1,21 @@
 import logging
-import copy
 
 import numpy as np
 
 from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
+from splinepy.rational_bezier import RationalBezier
+
 
 class NURBS(Spline):
 
     def __init__(self,
-            degrees=None,
-            knot_vectors=None,
-            control_points=None,
-            weights=None,
-    ):
+                 degrees=None,
+                 knot_vectors=None,
+                 control_points=None,
+                 weights=None,
+                 ):
         """
         NURBS.
 
@@ -35,61 +36,6 @@ class NURBS(Spline):
             control_points=control_points,
             weights=weights,
         )
-
-    @property
-    def weights(self,):
-        """
-        Returns weights.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        self._weights: (n, 1) list-like
-        """
-        if hasattr(self, "_weights"):
-            return self._weights
-
-        else:
-            return None
-
-    @weights.setter
-    def weights(self, weights):
-        """
-        Set weights.
-
-        Parameters
-        -----------
-        weights: (n,) list-like
-
-        Returns
-        --------
-        None
-        """
-        if weights is None:
-            if hasattr(self, "_weights"):
-                delattr(self, "_weights")
-            return None
-
-        weights = utils.make_c_contiguous(
-            weights,
-            dtype=np.float64
-        ).reshape(-1,1)
-
-        if self.control_points is not None:
-            if self.control_points.shape[0] != weights.shape[0]:
-                raise ValueError(
-                    "Number of control points and number of weights does not "
-                    "match."
-                )
-
-        self._weights = weights
-        
-        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
-
-        self._update_c()
 
     def _update_c(self,):
         """
@@ -155,50 +101,28 @@ class NURBS(Spline):
             "now identical."
         )
 
-    def copy(self,):
+    def extract_bezier_patches(self):
         """
-        Returns freshly initialized Nurbs of self.
+        Extract all knot spans as Bezier patches to perform further operations
+        such as compositions and multiplications
 
         Parameters
-        -----------
+        ----------
         None
 
-        Returns
-        --------
-        new_nurbs: `NURBS`
+        Returns 
+        -------
+        extracted Beziers : list
         """
-        new_nurbs = NURBS(**self.todict())
+        # Extract bezier patches and create PyRationalBezier objects
+        list_of_c_object_beziers = self._c_spline.extract_bezier_patches()
 
-        return new_nurbs
+        # Transform into Rational Bezier Splinepy objects
+        extracted_bezier_patches = []
+        for c_object_spline in list_of_c_object_beziers:
+            i_rational_bezier = RationalBezier()
+            i_rational_bezier._c_spline = c_object_spline
+            i_rational_bezier._update_p()
+            extracted_bezier_patches.append(i_rational_bezier)
 
-    def todict(self, tolist=False):
-        """
-        Returns copy of degrees, knot_vectors, control_points, weights in dict.
-
-        Parameters
-        -----------
-        tolist : bool
-          Default is False. Convert numpy properties into lists
-
-        Returns
-        --------
-        dict_spline: dict
-          Keys are {degrees, knot_vectors, control_points, weights}.
-        """
-        if tolist:
-            return dict(
-                degrees=self.degrees.tolist(),
-                knot_vectors=self.knot_vectors.tolist(),
-                control_points=self.control_points.tolist(),
-                weights=self.weights.tolist()
-            )
-        else:
-            return dict(
-                degrees=copy.deepcopy(self.degrees),
-                knot_vectors=copy.deepcopy(self.knot_vectors),
-                control_points=copy.deepcopy(self.control_points),
-                weights=copy.deepcopy(self.weights)
-            )
-
-    # member function alias
-    ws = weights
+        return extracted_bezier_patches

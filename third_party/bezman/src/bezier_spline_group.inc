@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2022 zwar@ilsb.tuwien.ac.at
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #ifndef SRC_BEZIER_SPLINE_GROUP_INC
 #define SRC_BEZIER_SPLINE_GROUP_INC
 
@@ -7,9 +31,11 @@ constexpr bool BezierSplineGroup<parametric_dimension, PhysicalPointType,
                                  ScalarType>::FitsIntoUnitCube() const {
   for (auto spline : (*this)) {
     if (!spline.FitsIntoUnitCube()) {
+      utils::Logger::Logging("Group doesn't fit into the unit cube");
       return false;
     }
   }
+  utils::Logger::Logging("Group fits into the unit cube");
   return true;
 }
 
@@ -27,6 +53,8 @@ BezierSplineGroup<parametric_dimension, PhysicalPointType,
           std::max(maximum_corner[i_dim], maximum_corner_i[i_dim]);
     }
   }
+  utils::Logger::ExtendedInformation("Found max. corner at position:" +
+                                     maximum_corner.toString());
   return maximum_corner;
 }
 
@@ -44,6 +72,9 @@ BezierSplineGroup<parametric_dimension, PhysicalPointType,
           std::min(minimum_corner[i_dim], minimum_corner_i[i_dim]);
     }
   }
+  utils::Logger::ExtendedInformation("Found max. corner at position:" +
+                                     minimum_corner.toString());
+
   return minimum_corner;
 }
 
@@ -73,6 +104,10 @@ BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>::Compose(
   // Initiate return value
   const auto number_of_splines_in_group = this->size();
   BezierSplineGroup composed_group{number_of_splines_in_group};
+
+  utils::Logger::ExtendedInformation(
+      "Composing " + std::to_string(number_of_splines_in_group) +
+      " splines into the outer function spline");
 
   // Compose each part of the structure individually
   for (IndexingType i{}; i < number_of_splines_in_group; i++) {
@@ -109,6 +144,7 @@ template <std::size_t parametric_dimension, typename PhysicalPointType,
 constexpr BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>
 BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>::
     DerivativeWRTParametricDimension(const IndexingType par_dim) const {
+  utils::Logger::Logging("Iterating over spline group for derivatives");
   // Initialize return value with size of current group
   BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>
       derived_group{this->size()};
@@ -123,12 +159,17 @@ template <std::size_t parametric_dimension, typename PhysicalPointType,
           typename ScalarType>
 constexpr BezierSplineGroup<parametric_dimension, ScalarType, ScalarType>
 BezierSplineGroup<parametric_dimension, PhysicalPointType,
-                  ScalarType>::ExtractDimension(unsigned int par_dim) const {
+                  ScalarType>::ExtractDimension(unsigned int physical_dimension)
+    const {
+  utils::Logger::ExtendedInformation(
+      "Extract component (dimension: " + std::to_string(physical_dimension) +
+      ") from spline group");
   // Initialize return value with size of current group
   BezierSplineGroup<parametric_dimension, ScalarType, ScalarType> derived_group{
       this->size()};
   for (IndexingType i_spline{}; i_spline < this->size(); i_spline++) {
-    derived_group[i_spline] = (*this)[i_spline].ExtractDimension(par_dim);
+    derived_group[i_spline] =
+        (*this)[i_spline].ExtractDimension(physical_dimension);
   }
   return derived_group;
 }
@@ -138,7 +179,14 @@ template <std::size_t parametric_dimension, typename PhysicalPointType,
 constexpr BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>
     &BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>::
         AddComponentwise(const BezierSplineGroup &rhs) {
-  assert(("Size Mismatch", this->size() == rhs.size()));
+  utils::Logger::Logging(
+      "Adding two Bezier Spline Groups comonentwise "
+      "to the current Group");
+
+  if (this->size() != rhs.size()) {
+    utils::Logger::TerminatingError(
+        "Size Mismatch for entry-wise Addition between Spline Groups");
+  }
   for (IndexingType i_spline{}; i_spline < this->size(); i_spline++) {
     (*this)[i_spline] += rhs[i_spline];
   }
@@ -155,7 +203,14 @@ BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>::
     MultiplyComponentwise(
         const BezierSplineGroup<parametric_dimension, PointTypeRHS, ScalarRHS>
             &rhs) const {
-  assert(("Size Mismatch", this->size() == rhs.size()));
+  utils::Logger::Logging(
+      "Adding two Bezier Spline Groups comonentwise "
+      "to the current Group");
+
+  if (this->size() != rhs.size()) {
+    utils::Logger::TerminatingError(
+        "Size Mismatch for Entry-wise Multiplication between two groups");
+  }
   BezierSplineGroup<parametric_dimension,
                     decltype(PhysicalPointType{} * PointTypeRHS{}),
                     decltype(ScalarType{} * ScalarRHS{})>
@@ -181,7 +236,7 @@ template <std::size_t parametric_dimension, typename PhysicalPointType,
 constexpr BezierSplineGroup<parametric_dimension, PhysicalPointType, ScalarType>
     &BezierSplineGroup<parametric_dimension, PhysicalPointType,
                        ScalarType>::operator+=(const BezierSplineGroup &rhs) {
-  (*this).insert(this->begin(), rhs.begin(), rhs.end());
+  (*this).insert(this->end(), rhs.begin(), rhs.end());
   return (*this);
 }
 

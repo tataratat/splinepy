@@ -6,16 +6,18 @@ from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
 
-class Bezier(Spline):
 
-    def __init__(self, degrees=None, control_points=None):
+class RationalBezier(Spline):
+
+    def __init__(self, degrees=None, control_points=None, weights=None):
         """
-        Bezier (Spline).
+        RationalBezier (Spline).
 
         Parameters
         -----------
         degrees: (para_dim,) list-like
         control_points: (m, dim) list-like
+        weights: (m) list-like
 
         Returns
         --------
@@ -24,6 +26,7 @@ class Bezier(Spline):
         super().__init__(
             degrees=degrees,
             control_points=control_points,
+            weights=weights
         )
 
     def _update_c(self,):
@@ -44,6 +47,7 @@ class Bezier(Spline):
             or self.para_dim is None
             or self.degrees is None
             or self.control_points is None
+            or self.weights is None
         ):
             logging.debug(
                 "Spline - Not enough information to update cpp spline. "
@@ -53,10 +57,11 @@ class Bezier(Spline):
                 delattr(self, "_c_spline")
             return None
 
-        c_spline_class = f"Bezier{self.para_dim}P{self.dim}D"
+        c_spline_class = f"RationalBezier{self.para_dim}P{self.dim}D"
         self._c_spline = eval(c_spline_class)(
             degrees=self.degrees,
             control_points=self.control_points,
+            weights=self.weights
         )
 
         logging.debug(f"Spline - Your spline is {self.whatami}.")
@@ -78,6 +83,7 @@ class Bezier(Spline):
         # and it causes us to lose array references.
         self._degrees = self._c_spline.degrees
         self._control_points = self._c_spline.control_points
+        self._weights = self._c_spline.weights
         # silent setter
         self._para_dim = self._c_spline.para_dim
         self._dim = self._c_spline.dim
@@ -85,32 +91,6 @@ class Bezier(Spline):
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
         )
-
-    def recursive_evaluate(self, queries, n_threads=1):
-        """
-        Evaluates spline, classique (de Casteljau) way.
-
-        Parameters
-        -----------
-        queries: (n, para_dim) list-like
-
-        Returns
-        --------
-        results: (n, dim) np.ndarray
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-
-        if queries.shape[1] != self.para_dim:
-            raise InputDimensionError(
-                "`queries` does not match current pametric dimension."
-            )
-
-        logging.debug("Spline - Evaluating spline...")
-
-        return self._c_spline.recursive_evaluate(queries=queries)
 
     def sample(self, resolution):
         """
@@ -161,16 +141,17 @@ class Bezier(Spline):
         spline : New spline with updated types
         """
         if isinstance(factor, float):
-          return Bezier(
-              control_points=self._control_points * factor,
-              degrees=self._degrees
-          )
+            return RationalBezier(
+                control_points=self._control_points * factor,
+                degrees=self._degrees,
+                weights=self._weights
+            )
 
         elif isinstance(factor, type(self)):
             if len(factor.degrees) == len(self._degrees):
                 if factor.dim == self.dim:
                     res_c_spl = self._c_spline.multiply_with_spline(
-                      factor._c_spline
+                        factor._c_spline
                     )
                 elif factor.dim == 1:
                     res_c_spl = self._c_spline.multiply_with_scalar_spline(
@@ -181,7 +162,7 @@ class Bezier(Spline):
                         self._c_spline
                     )
                 else:
-                  raise NotImplementedError()
+                    raise NotImplementedError()
 
                 # Copy the c spline to the python object
                 result = type(self)()
@@ -205,35 +186,36 @@ class Bezier(Spline):
 
         Parameters
         ----------
-        summand : Bezier
+        summand : RationalBezier
           spline with same parametric and physical dimension
 
         Returns
         -------
-        spline : Bezier
+        spline : RationalBezier
           New spline that describes sum
         """
         if isinstance(summand, type(self)):
-          if (
-              summand.para_dim == self.para_dim
-              and summand.dim == self.dim
-          ):
-              # Calculate Spline sum
-              resulting_c_spline = self._c_spline.add_spline(
-                  summand._c_spline
-              )
+            if (
+                summand.para_dim == self.para_dim
+                and summand.dim == self.dim
+            ):
+                # Calculate Spline sum
+                resulting_c_spline = self._c_spline.add_spline(
+                    summand._c_spline
+                )
 
-              # Copy the c spline to the python object
-              result = type(self)()
-              result._c_spline = resulting_c_spline
-              result._update_p()
-              return result
+                # Copy the c spline to the python object
+                result = type(self)()
+                result._c_spline = resulting_c_spline
+                result._update_p()
+                return result
 
-          else :
-              raise TypeError("Dimension Mismatch.")
+            else:
+                raise TypeError("Dimension Mismatch.")
 
-        else :
-            raise TypeError("Sum must be formed between Bezier Splines")
+        else:
+            raise TypeError(
+                "Sum must be formed between RationalBezier Splines")
 
     def compose(self, inner_function):
         """
@@ -253,61 +235,67 @@ class Bezier(Spline):
         spline : New spline that describes composition
         """
         if isinstance(inner_function, type(self)):
+            if not inner_function.dim == self.para_dim:
+                raise TypeError(
+                    "Dimension Mismatch - Physical Dimension of inner spline "
+                    "must match parametric dimension of outer spline"
+                )
             if inner_function.para_dim == 1:
-                res_c_spl = self._c_spline.compose_line_pp(
+                res_c_spl = self._c_spline.compose_line_rr(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 2:
-                res_c_spl = self._c_spline.compose_surface_pp(
+                res_c_spl = self._c_spline.compose_surface_rr(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 3:
-                res_c_spl = self._c_spline.compose_volume_pp(
+                res_c_spl = self._c_spline.compose_volume_rr(
                     inner_function._c_spline
                 )
 
-            else :
+            else:
                 raise TypeError(
                     "Compositions with high"
                     " parametric dimensions not supported."
                 )
 
             # Copy the c spline to the python object
-            result = type(inner_function)()
+            result = type(self)()
             result._c_spline = res_c_spl
             result._update_p()
             return result
 
-        if "RationalBezier" in inner_function.whatami:
+        if inner_function.whatami.startswith("Bezier"):
             if inner_function.para_dim == 1:
-                res_c_spl = self._c_spline.compose_line_pr(
+                res_c_spl = self._c_spline.compose_line_rp(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 2:
-                res_c_spl = self._c_spline.compose_surface_pr(
+                res_c_spl = self._c_spline.compose_surface_rp(
                     inner_function._c_spline
                 )
 
             elif inner_function.para_dim == 3:
-                res_c_spl = self._c_spline.compose_volume_pr(
+                res_c_spl = self._c_spline.compose_volume_rp(
                     inner_function._c_spline
                 )
 
-            else :
+            else:
                 raise TypeError(
                     "Compositions with high"
                     " parametric dimensions not supported."
                 )
 
             # Copy the c spline to the python object
-            result = type(inner_function)()
+            result = type(self)()
             result._c_spline = res_c_spl
             result._update_p()
             return result
-            
 
-        else :
-            raise TypeError("Composisiton must be formed with Bezier Splines")
+        else:
+            raise TypeError(
+                "Composisiton must be formed with RationalBezier Splines"
+            )

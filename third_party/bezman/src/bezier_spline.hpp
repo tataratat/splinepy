@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2022 zwar@ilsb.tuwien.ac.at
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #ifndef SRC_BEZIER_SPLINE_HPP
 #define SRC_BEZIER_SPLINE_HPP
 
@@ -7,15 +31,21 @@
 #include <numeric>
 #include <vector>
 
-#include "bezierManipulation/src/point.hpp"
-#include "bezierManipulation/src/utils/fastbinomialcoefficient.hpp"
+#include "bezman/src/point.hpp"
+#include "bezman/src/utils/fastbinomialcoefficient.hpp"
+#include "bezman/src/utils/logger.hpp"
+#include "bezman/src/utils/type_traits/is_bezier_spline.hpp"
+#include "bezman/src/utils/type_traits/is_rational_bezier_spline.hpp"
 
-namespace beziermanipulation {
+namespace bezman {
 
 // Forward declaration for later use
 template <std::size_t parametric_dimension, typename PhysicalPointType,
           typename ScalarType>
 class BezierSplineGroup;
+template <std::size_t parametric_dimension, typename PhysicalPointType,
+          typename ScalarType>
+class RationalBezierSpline;
 
 /*
  * Class describing BezierSplines
@@ -31,6 +61,11 @@ class BezierSplineGroup;
 template <std::size_t parametric_dimension, typename PhysicalPointType,
           typename ScalarType = typename PhysicalPointType::Scalar>
 class BezierSpline {
+  // Friend declaration
+  template <std::size_t parent_parametric_dimension,
+            typename ParentPhysicalPointType, typename ParentScalarType>
+  friend class RationalBezierSpline;
+
  private:
   using IndexingType = std::size_t;
   using PointTypePhysical_ = PhysicalPointType;
@@ -49,14 +84,41 @@ class BezierSpline {
   template <typename... Indices>
   constexpr PhysicalPointType AddUpContributionsToControlPointVector_(
       PhysicalPointType& evaluation_point,
-      const std::array<std::array<ScalarType, MAX_BINOMIAL_DEGREE + 1>,
-                       parametric_dimension>& factors,
+      const std::array<std::vector<ScalarType>, parametric_dimension>& factors,
       const ScalarType& factor_product, const Indices&... indices) const;
 
   /// Polynomial degrees
   std::array<IndexingType, parametric_dimension> degrees{};
 
+  /**
+   * @brief Compose the Numerator Function of a polynomial and rational spline
+   *
+   * This function composes the Numerator only, so it can be reused to work with
+   * rational-rational-spline-compositions
+   */
+  template <typename SplineType,
+            std::enable_if_t<
+                utils::type_traits::isBezierSpline_v<SplineType>>* = nullptr>
+  constexpr auto ComposeNumeratorSpline(const SplineType& inner_function) const;
+
+  /**
+   * @brief Compose the Numerator Function of a polynomial and rational spline
+   *
+   * This function composes the Numerator only, so it can be reused to work with
+   * rational-rational-spline-compositions
+   */
+  template <std::size_t parametric_dimension_inner_spline,
+            typename PointTypeRHS, typename ScalarRHS>
+  constexpr BezierSpline<parametric_dimension_inner_spline,
+                         decltype(ScalarType{} * ScalarRHS{}),
+                         decltype(ScalarType{} * ScalarRHS{})>
+  ComposeDenominatorSpline(
+      const RationalBezierSpline<parametric_dimension_inner_spline,
+                                 PointTypeRHS, ScalarRHS>& inner_function)
+      const;
+
  public:
+  /// Make ScalarType publicly available
   using ScalarType_ = ScalarType;
 
   /// Offsets in Row based control point storage
@@ -111,8 +173,8 @@ class BezierSpline {
 
   /// Constructor with control point list
   constexpr BezierSpline(
-      const std::array<std::size_t, parametric_dimension> deg,
-      const std::vector<PointTypePhysical_> points)
+      const std::array<std::size_t, parametric_dimension>& deg,
+      const std::vector<PhysicalPointType>& points)
       : degrees{deg}, control_points{points} {
     NumberOfControlPoints = 1u;
     for (unsigned int i{}; i < parametric_dimension; i++)
@@ -143,6 +205,7 @@ class BezierSpline {
   constexpr void UpdateDegrees(
       const std::array<std::size_t, parametric_dimension>& new_degrees) {
     degrees = new_degrees;
+    NumberOfControlPoints = 1u;
     for (unsigned int i{}; i < parametric_dimension; i++)
       NumberOfControlPoints *= degrees[i] + 1;
     control_points.resize(NumberOfControlPoints);
@@ -183,7 +246,19 @@ class BezierSpline {
   constexpr PointTypePhysical_ Evaluate(
       const PointTypeParametric_& par_coords) const;
 
-  /// Evaluate the spline via the explicit precomputation of bernstein values
+  /// Evaluate Basis Functions
+  template <typename... T>
+  constexpr std::array<std::vector<ScalarType>, parametric_dimension>
+  BasisFunctions(const T&... par_coords) const {
+    return BasisFunctions(PointTypeParametric_{par_coords...});
+  }
+
+  /// Evaluate Basis Functions
+  constexpr std::array<std::vector<ScalarType>, parametric_dimension>
+  BasisFunctions(const PointTypeParametric_& par_coords) const;
+
+  /// Evaluate the spline via the explicit precomputation of bernstein
+  /// values
   constexpr PointTypePhysical_ ForwardEvaluate(
       const PointTypeParametric_& par_coords) const;
 
@@ -205,6 +280,18 @@ class BezierSpline {
   /// Add two splines of same type
   constexpr BezierSpline& operator+=(BezierSpline rhs);
 
+  /// Substraction of Two Splines resulting in a new spline that describes the
+  /// pointwise addition of the two Beziers
+  template <typename PointTypeRHS, typename ScalarRHS>
+  constexpr BezierSpline<parametric_dimension,
+                         decltype(PhysicalPointType{} - PointTypeRHS{}),
+                         decltype(ScalarType_{} * ScalarRHS{})>
+  operator-(
+      BezierSpline<parametric_dimension, PointTypeRHS, ScalarRHS> rhs) const;
+
+  /// Add two splines of same type
+  constexpr BezierSpline& operator-=(BezierSpline rhs);
+
   /// Check if two splines are equivalent
   constexpr bool operator==(const BezierSpline& rhs) const;
 
@@ -218,10 +305,10 @@ class BezierSpline {
 
   /// Extract single coordinate spline
   constexpr BezierSpline<parametric_dimension, ScalarType, ScalarType>
-  ExtractDimension(unsigned int dimension) const;
+  ExtractDimension(const IndexingType& dimension) const;
 
   constexpr BezierSpline<parametric_dimension, PhysicalPointType, ScalarType>
-  RaisePower(const unsigned int power) const;
+  RaisePower(const IndexingType power) const;
 
   /// Multiplication with scalar
   constexpr BezierSpline& operator*=(const ScalarType& scalar);
@@ -327,6 +414,23 @@ class BezierSpline {
                               ScalarRHS>& inner_function_group) const;
 
   /*
+   * Functional Composition between a polynomial and rational spline
+   *
+   * Compose two splines, taking the (*this) spline as the outer funtion and the
+   * function argument as the inner function. This works so long as the
+   * parametric dimension of the outer function matches the physical dimension
+   * of the inner function.
+   */
+  template <std::size_t parametric_dimension_inner_spline,
+            typename PointTypeRHS, typename ScalarRHS>
+  constexpr RationalBezierSpline<parametric_dimension_inner_spline,
+                                 PhysicalPointType,
+                                 decltype(ScalarType_{} * ScalarRHS{})>
+  Compose(const RationalBezierSpline<parametric_dimension_inner_spline,
+                                     PointTypeRHS, ScalarRHS>& inner_function)
+      const;
+
+  /*
    * Split the Bezier Spline into two distinct subdivisions
    *
    * Splits the Spline along a specific dimension and returns a group
@@ -349,8 +453,8 @@ class BezierSpline {
                   const IndexingType splitting_dimension = 0) const;
 };
 
-#include "bezierManipulation/src/bezier_spline.inc"
+#include "bezman/src/bezier_spline.inc"
 
-}  // namespace beziermanipulation
+}  // namespace bezman
 
 #endif  // SRC_BEZIER_SPLINE_HPP

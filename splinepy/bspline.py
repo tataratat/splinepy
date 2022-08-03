@@ -1,5 +1,4 @@
 import logging
-import copy
 
 import numpy as np
 
@@ -7,6 +6,7 @@ from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
 from splinepy.nurbs import NURBS
+from splinepy.bezier import Bezier
 
 
 class BSpline(Spline):
@@ -98,6 +98,32 @@ class BSpline(Spline):
             "Spline - Updated python spline. CPP spline and python spline are "
             "now identical."
         )
+
+    def extract_bezier_patches(self):
+        """
+        Extract all knot spans as Bezier patches to perform further operations
+        such as compositions and multiplications
+
+        Parameters
+        ----------
+        None
+
+        Returns 
+        -------
+        extracted Beziers : list
+        """
+        # Extract bezier patches and create PyRationalBezier objects
+        list_of_c_object_beziers = self._c_spline.extract_bezier_patches()
+
+        # Transform into Rational Bezier Splinepy objects
+        extracted_bezier_patches = []
+        for c_object_spline in list_of_c_object_beziers:
+            i_bezier = Bezier()
+            i_bezier._c_spline = c_object_spline
+            i_bezier._update_p()
+            extracted_bezier_patches.append(i_bezier)
+
+        return extracted_bezier_patches
 
     def interpolate_curve(
             self,
@@ -244,7 +270,7 @@ class BSpline(Spline):
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or 
           whatever.
-         
+
         Returns
         --------
         None
@@ -277,7 +303,7 @@ class BSpline(Spline):
         # Reorganize control points.
         if reorganize:
             ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
-            self.control_points = self._control_points[ri] 
+            self.control_points = self._control_points[ri]
 
         if save_query:
             self._fitting_queries = query_points
@@ -302,50 +328,3 @@ class BSpline(Spline):
         )
 
         return same_nurbs
-
-    def copy(self,):
-        """
-        Returns freshly initialized BSpline of self.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        new_bspline: `BSpline`
-        """
-        new_bspline = BSpline(**self.todict())
-
-        # add fitting_queries if it has one.
-        if hasattr(self, "_fitting_queries"):
-            new_bspline._fitting_queries = copy.deepcopy(self._fitting_queries)
-
-        return new_bspline
-
-    def todict(self, tolist=False):
-        """
-        Returns copy of degrees, knot_vectors, control_points in dict.
-
-        Parameters
-        -----------
-        tolist : bool
-          Default is False. Convert numpy properties into lists
-
-        Returns
-        --------
-        dict_spline: dict
-          Keys are {degrees, knot_vectors, control_points}.
-        """
-        if tolist:
-            return dict(
-                degrees=self.degrees.tolist(),
-                knot_vectors=self.knot_vectors.tolist(),
-                control_points=self.control_points.tolist(),
-            )
-        else:
-            return dict(
-                degrees=copy.deepcopy(self.degrees),
-                knot_vectors=copy.deepcopy(self.knot_vectors),
-                control_points=copy.deepcopy(self.control_points)
-            )
