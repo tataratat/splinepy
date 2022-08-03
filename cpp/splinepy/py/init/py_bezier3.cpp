@@ -1,4 +1,5 @@
 #include <splinepy/py/py_bezier.hpp>
+#include <splinepy/py/py_rational_bezier.hpp>
 
 void init_bezier3(py::module_ &m) {
     // 3P (Pamametric dimension)

@@ -23,6 +23,7 @@
 // Local
 #include <splinepy/fitting/fitting.hpp>
 #include <splinepy/splines/bspline.hpp>
+#include <splinepy/py/py_bezier.hpp>
 
 namespace py = pybind11;
 
