@@ -632,6 +632,11 @@ class Spline(abc.ABC):
         Returns
         --------
         control_mesh_resolutions: list
+
+        Raises
+        -------
+        TypeError: if one of the required properties to compute
+          control_mesh_resolutions is missing.
         """
         cmr = []
 
