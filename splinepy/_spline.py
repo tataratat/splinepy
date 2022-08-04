@@ -8,6 +8,7 @@ import numpy as np
 
 from splinepy import utils
 from splinepy import io
+from splinepy import _splinepy as core
 
 
 class InputDimensionError(Exception):
@@ -678,14 +679,25 @@ class Spline(abc.ABC):
         """
         required_props = self.required_properties
 
+        # gather properties into dict while we loop through each props.
+        # will be used  to init core class later.
+        dict_spline = dict()
+
         # Check if all data is available for spline type
-        for i_property in required_props:
-            if getattr(self, i_property) is None:
+        for rp in required_props:
+            tmp_rp = getattr(self, rp)
+            if tmp_rp is None:
                 logging.debug(
                     "Spline - Not enough information to update cpp spline. "
-                    "Skipping update."
+                    "Skipping update / removing existing backend spline."
                 )
+                if hasattr(self, "_c_spline"):
+                    delattr(self, "_c_spline")
                 return None
+
+            else:
+                # update
+                dict_spline[rp] = tmp_rp
 
         # Check if enough knot vectors were given
         if "knot_vectors" in required_props:
@@ -710,37 +722,17 @@ class Spline(abc.ABC):
                 f"expected {n_required_cps}, but given {n_defined_cps}"
             )
 
-        # Update Backend
-        self._update_c()
+        # template splines are instantiated with following naming rules.
+        c_spline_cls = (
+            f"core.{type(self).__qualname__}{self.para_dim}P{self.dim}D"
+        )
+        self._c_spline = eval(c_spline_cls)(**dict_spline)
 
-    @abc.abstractmethod
-    def _update_c(self,):
-        """
-        Updates/Init cpp spline, if it is ready to be updated.
-        Checks if all the entries are filled before updating.
-
-        This needs to be separately implemented, as BSpline and NURBS have 
-        different update process. 
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        None
-        """
-        pass
-
-    @abc.abstractmethod
     def _update_p(self,):
         """
         Reads cpp spline and writes it here.
         Probably get an error if cpp isn't ready for this.
 
-        This needs to be separately implemented, as BSpline and NURBS have 
-        different update process. 
-
         Parameters
         -----------
         None
@@ -749,7 +741,20 @@ class Spline(abc.ABC):
         --------
         None
         """
-        pass
+        required_props = self.required_properties
+
+        # don't use setters here, as it will call `check_and_update_c` each
+        # time and it causes us to lose array ref.
+        for rp in required_props:
+            setattr(self, f"_{rp}", getattr(self._c_spline, rp))
+
+        # but, we still need to do setter's job.
+        self._para_dim = self._c_spline.para_dim
+        self._dim = self._c_spline.dim
+        logging.debug(
+            "Spline - Updated python spline. CPP spline and python spline are"
+            "now identical."
+        )
 
     def evaluate(self, queries, n_threads=1):
         """

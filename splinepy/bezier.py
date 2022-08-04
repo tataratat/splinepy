@@ -26,66 +26,6 @@ class Bezier(Spline):
             control_points=control_points,
         )
 
-    def _update_c(self,):
-        """
-        Updates/Init cpp spline, if it is ready to be updated.
-        Checks if all the entries are filled before updating.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        None
-        """
-        if (
-            self.dim is None
-            or self.para_dim is None
-            or self.degrees is None
-            or self.control_points is None
-        ):
-            logging.debug(
-                "Spline - Not enough information to update cpp spline. "
-                "Skipping update or removing existing backend spline."
-            )
-            if hasattr(self, "_c_spline"):
-                delattr(self, "_c_spline")
-            return None
-
-        c_spline_class = f"Bezier{self.para_dim}P{self.dim}D"
-        self._c_spline = eval(c_spline_class)(
-            degrees=self.degrees,
-            control_points=self.control_points,
-        )
-
-        logging.debug(f"Spline - Your spline is {self.whatami}.")
-
-    def _update_p(self,):
-        """
-        Reads cpp spline and writes it here.
-        Probably get an error if cpp isn't ready for this.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        None
-        """
-        # Don't use setters here, since it calls update_c each time
-        # and it causes us to lose array references.
-        self._degrees = self._c_spline.degrees
-        self._control_points = self._c_spline.control_points
-        # silent setter
-        self._para_dim = self._c_spline.para_dim
-        self._dim = self._c_spline.dim
-        logging.debug(
-            "Spline - Updated python spline. CPP spline and python spline are "
-            "now identical."
-        )
-
     def recursive_evaluate(self, queries, n_threads=1):
         """
         Evaluates spline, classique (de Casteljau) way.
