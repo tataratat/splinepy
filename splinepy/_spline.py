@@ -636,7 +636,7 @@ class Spline(abc.ABC):
         cmr = []
 
         # Special case Bezier
-        if "Bezier" in self.whatami:
+        if "Bezier" in type(self).__qualname__:
             cmr = (self.degrees + 1).tolist()
         else:
             for kv, d in zip(self.knot_vectors, self.degrees):
