@@ -86,36 +86,36 @@ class PyBezier {
 
   void update_p() {
     // degrees
-    py::buffer_info ds_buf = p_degrees.request();
-    int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
+    int* ds_ptr = static_cast<int*>(p_degrees.request().ptr);
     // control points
-    py::buffer_info cps_buf = p_control_points.request();
-    double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
+    double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
 
     // update degrees
-    auto const& c_ds = c_bezier.GetDegrees();
     for (int i = 0; i < para_dim; i++) {
-      ds_buf_ptr[i] = c_ds[i];
+      ds_ptr[i] = c_bezier.GetDegrees()[i];
     }
 
     // update control_points
+    const std::size_t number_of_ctps = c_bezier.control_points.size();
     // Check if shape changed
-    if (c_bezier.control_points.size() != cps_buf.shape[0]) {
-      p_control_points =
-          py::array_t<double>(c_bezier.control_points.size() * dim);
-      cps_buf = p_control_points.request();
-      cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
-      p_control_points.resize({(int)c_bezier.control_points.size(), dim});
+    if (c_bezier.control_points.size() != 
+        p_control_points.request().shape[0]) {
+      // Update Control Point Vector
+      p_control_points = 
+        py::array_t<double>(number_of_ctps * dim);
+      p_control_points.resize({(int)number_of_ctps, dim});
+      // Update pointers
+      cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     }
 
     // Update point coordinates
-    for (int i = 0; i < cps_buf.shape[0]; i++) {
+    for (int i = 0; i < number_of_ctps; i++) {
       if constexpr (dim > 1) {
         for (int j = 0; j < dim; j++) {
-          cps_buf_ptr[i * dim + j] = c_bezier.control_points[i][j];
+          cps_ptr[i * dim + j] = c_bezier.control_points[i][j];
         }
       } else {
-        cps_buf_ptr[i] = c_bezier.control_points[i];
+        cps_ptr[i] = c_bezier.control_points[i];
       }
     }
   }
