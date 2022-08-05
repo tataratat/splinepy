@@ -139,6 +139,9 @@ class PyRationalBezier {
       // Update Control Point Vector
       p_weights = py::array_t<double>(number_of_ctps);
       p_weights.resize({(int)number_of_ctps, 1});
+      // Update pointers
+      cps_ptr = static_cast<double*>(p_control_points.request().ptr);
+      weights_ptr = static_cast<double*>(p_weights.request().ptr);
     }
 
     // update control_points
