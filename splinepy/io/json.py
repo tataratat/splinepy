@@ -20,6 +20,9 @@ def load(fname):
     --------
     spline_list: list
     """
+    # Make Required Properties locally accessible
+    from splinepy._spline import _RequiredProperties
+
     # Import data from file into dict format
     jsonbz = json.load(open(fname, "r"))
 
@@ -30,47 +33,33 @@ def load(fname):
     return_dict = {
         "Bezier" : [],
         "NURBS" : [],
-        "BSpline" : []
+        "BSpline" : [],
+        "RationalBezier" : []
     }
 
     for jbz in jsonbz["SplineList"]:
-
         # Convert Base64 str into np array
         if base64encoding:
             jbz["control_points"] = np.frombuffer(
-              base64.b64decode(
-                jbz["control_points"].encode('ascii')
+                base64.b64decode(
+                    jbz["control_points"].encode('ascii')
               ),
               dtype=np.float64
               ).reshape((-1, jbz["dim"]))
+            if jbz["weights"] is not None:
+                jbz["weights"] = np.frombuffer(
+                    base64.b64decode(
+                        jbz["weights"].encode('ascii')
+                    ),
+                    dtype=np.float64
+                ).reshape((-1, 1))
 
-        # Transform data into Splines
-        if jbz["SplineType"] == "Bezier":
-            return_dict["Bezier"].append(
-              {
-                "control_points" : jbz["control_points"],
-                "degrees" : jbz["degrees"]
-              }
-            )
-        elif jbz["SplineType"] == "NURBS":
-            return_dict["NURBS"].append(
-              {
-                "control_points" : jbz["control_points"],
-                "degrees" : jbz["degrees"],
-                "weights" : jbz["weights"],
-                "knot_vectors" : jbz["knot_vectors"]
-              }
-            )
-        elif jbz["SplineType"] == "BSpline":
-            return_dict["BSpline"].append(
-              {
-                "control_points" : jbz["control_points"],
-                "degrees" : jbz["degrees"],
-                "knot_vectors" : jbz["knot_vectors"]
-              }
-            )
-        else :
-            logging.warning("Found unknown spline-type: " + str(jbz))
+        # Declare Type and get required properties
+        req_props = _RequiredProperties.of(jbz["SplineType"])
+        data_dict = {}
+        for prop in req_props:
+           data_dict[prop] = jbz[prop]
+        return_dict[jbz["SplineType"]].append(data_dict)
 
     logging.debug("Imported " + str(len(spline_list)) + " splines from file.")
 
