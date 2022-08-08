@@ -707,18 +707,18 @@ class Spline(abc.ABC):
                 )
 
             # Check if knot vectors are large enough
-            for d, kv in zip(self.degrees, self.knot_vectors):
+            for i, (d, kv) in enumerate(zip(self.degrees, self.knot_vectors)):
                 if len(kv) < int(2 * (d+1)):
                     raise InputDimensionError(
                         "Not enough knots in knot vector along parametric"
-                        f" dimension  {i_para_dim}"
+                        f" dimension {i}"
                     )
         # Check if required number of control points is present
         n_required_cps = np.prod(self.control_mesh_resolutions)
         n_defined_cps = self.control_points.shape[0]
         if n_required_cps != n_defined_cps:
             raise InputDimensionError(
-                "Number of control points invalid:"
+                "Number of control points invalid: "
                 f"expected {n_required_cps}, but given {n_defined_cps}"
             )
 
