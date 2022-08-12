@@ -3,8 +3,10 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
+#include <bezman/src/utils/export.hpp>
 #include <splinepy/py/py_bezier.hpp>
 #include <type_traits>
 
@@ -36,7 +38,7 @@ class PyRationalBezier {
   bool skip_update = false;
 
   /// C++ object from bezman backend
-  RationalBezier<para_dim, dim> c_rational_bezier;
+  RationalBezierSpline_ c_rational_bezier;
 
   /// Identifier
   const std::string whatami =
@@ -89,7 +91,7 @@ class PyRationalBezier {
     std::copy_n(ds_ptr, para_dim, c_degrees.begin());
 
     // (re)init c++ object
-    c_rational_bezier = std::move(RationalBezier<para_dim, dim>{c_degrees});
+    c_rational_bezier = std::move(RationalBezierSpline_{c_degrees});
 
     // update ctps and weights
     double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
@@ -260,7 +262,7 @@ class PyRationalBezier {
   void ExportMFEM(const py::list& list_of_beziers, const std::string& fname) {
     // Copy all bezier entries into a bezier_group
     if constexpr (para_dim == dim && (para_dim == 2 || para_dim == 3)) {
-      bezman::BezierGroup<RationalBezier> bezier_group;
+      bezman::BezierGroup<RationalBezierSpline_> bezier_group;
       bezier_group.reserve(list_of_beziers.size());
       for (py::handle bezier : list_of_beziers) {
         bezier_group.push_back(

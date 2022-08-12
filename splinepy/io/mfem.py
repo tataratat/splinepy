@@ -278,6 +278,42 @@ def mfem_index_mapping(
         raise NotImplementedError
     
 
+def export_list(fname , bezier_list):
+    """
+    Export list of bezier splines in mfem export
+
+    Parameters
+    ----------
+    fname: string
+      file name
+    bezier_list: list
+      list of bezier spline objects
+    
+    Returns
+    -------
+    None
+    """
+    from splinepy.rational_bezier import RationalBezier
+
+    # Create list
+    c_spline_list = []
+    for bezier in bezier_list:
+        if not "Bezier" in bezier.whatami:
+            raise ValueError("Only Beziers can be exported")
+        if not "Rational" in bezier.whatami:
+            c_spline_list.append(
+                RationalBezier(
+                    **bezier.todict(),
+                    weights=np.ones(bezier.control_points.shape[0])
+                )._c_spline
+            )
+        else:
+            c_spline_list.append(bezier._c_spline)
+
+    bezier_list[0]._c_spline.export_mfem(c_spline_list, fname)
+
+
+
 
 def export(fname, nurbs, precision=10):
     """
