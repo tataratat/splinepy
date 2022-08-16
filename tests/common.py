@@ -1,4 +1,3 @@
-from math import degrees
 import unittest
 
 import numpy as np
