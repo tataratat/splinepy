@@ -64,6 +64,27 @@ class TestSplinepyEvaluation(unittest.TestCase):
             nurbs_ref_basis_functions
             )
         )
+
+        # test partition of unity of basis functions
+        def basis_functions_sum(basis_functions):
+            bf = np.array(basis_functions[0])
+            u = np.zeros(np.shape(bf)[0])
+            for i in range(0,np.shape(bf)[0]):
+                u[i] = np.sum(bf[i])
+            return u
+
+        u_bspline = basis_functions_sum(self.bspline.basis_functions(c.q2D))
+        self.assertTrue(np.allclose(
+            u_bspline, 
+            np.ones(np.shape(u_bspline))
+            )
+        )
+        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(c.q2D))
+        self.assertTrue(np.allclose(
+            u_nurbs, 
+            np.ones(np.shape(u_nurbs))
+            )
+        )
     
     def test_evaluate(self):
         """ Test the correct spline evaluation in the physical space.
