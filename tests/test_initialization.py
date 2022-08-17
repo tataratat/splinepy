@@ -16,7 +16,6 @@ class TestSplinepyInitialization(unittest.TestCase):
 
     def test_constructor_raise_nonmatching_degree(self):
         """ Test the raise Error for mismatch of degree and par_dim. """
-        # in def knot_vector
 
         self.b2P2D["degrees"] = [2,]
         self.n2P2D["degrees"] = [2,]
@@ -34,7 +33,6 @@ class TestSplinepyInitialization(unittest.TestCase):
 
     def test_constructor_raise_nonmatching_kv_number(self):
         """ Test the raise Error for missing knot vectors. """
-        # in def check_and_update
 
         self.b2P2D["knot_vectors"] = [[0, 0, 0, 0.5, 1, 1, 1]]
         self.n2P2D["knot_vectors"] = [[0, 0, 0, 1, 1, 1]]
@@ -46,7 +44,6 @@ class TestSplinepyInitialization(unittest.TestCase):
 
     def test_constructor_raise_nonmatching_kv_length(self):
         """ Test the raise Error for length of knot vectors. """
-        # in def check_and_update
 
         self.b2P2D["knot_vectors"] = [
             [0, 0, 0.5, 1, 1], 
@@ -64,7 +61,6 @@ class TestSplinepyInitialization(unittest.TestCase):
 
     def test_constructor_raise_nonmatching_cp_number(self):
         """ Test the raise Error for invalid number of control points. """
-        # in def check_and_update
 
         self.b2P2D["control_points"] = [
             [0, 0],

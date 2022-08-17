@@ -54,6 +54,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
                 3.90985271e-01, 1.84312224e-01]]
         )
 
+        # test basis functions
         self.assertTrue(np.allclose(
             self.bspline.basis_functions(c.q2D)[0], 
             bspline_ref_basis_functions
@@ -120,6 +121,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
              [-1.61951381,  1.15640608]]
         )
 
+        # test evaluation
         self.assertTrue(np.allclose(
             np.array(self.bspline.evaluate(c.q2D)), 
             bspline_ref_evaluate
@@ -144,7 +146,6 @@ class TestSplinepyEvaluation(unittest.TestCase):
     def test_derivative(self):
         """ Test the correct calculation of the first derivative.  
         (.derivative()) """
-        # add for Bezier?
 
         # reference solutions
         bspline_ref_derivative = np.array(
@@ -165,6 +166,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
         # order
         o1 = [[1,1]]
 
+        # test derivative evaluation
         self.assertTrue(np.allclose(
             np.array(self.bspline.derivative(c.q2D,o1)), 
             bspline_ref_derivative

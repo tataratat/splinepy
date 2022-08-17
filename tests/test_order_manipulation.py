@@ -21,10 +21,11 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
         self.rational = splinepy.RationalBezier(**self.r2P2D)
         self.ref_bspline = splinepy.BSpline(**c.b2P2D)
         self.ref_nurbs = splinepy.NURBS(**c.n2P2D)
+        self.ref_bezier = splinepy.Bezier(**c.z2P2D)
+        self.ref_rational = splinepy.RationalBezier(**c.r2P2D)
 
     def test_elevate_degree(self):
         """ Test the order elevation function (.elevate_degree()). """
-        # TODO: add for Bezier
 
         # reference solution
         bspline_ref_kv = [
@@ -41,9 +42,15 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
 
         self.nurbs.elevate_degree(0)
 
-        # test degree
+        self.bezier.elevate_degree(0)
+
+        self.rational.elevate_degree(0)
+
+        # test degrees
         self.assertTrue(np.allclose(self.bspline.degrees, [3,2]))
         self.assertTrue(np.allclose(self.nurbs.degrees, [3,1]))
+        self.assertTrue(np.allclose(self.bezier.degrees, [3,1]))
+        self.assertTrue(np.allclose(self.rational.degrees, [3,1]))
 
         # test knot_vectors
         self.assertEqual(self.bspline.knot_vectors, bspline_ref_kv)
@@ -60,11 +67,20 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
             self.ref_nurbs.evaluate(c.q2D)
             )
         )
+        self.assertTrue(np.allclose(
+            self.bezier.evaluate(c.q2D), 
+            self.ref_bezier.evaluate(c.q2D)
+            )
+        )
+        self.assertTrue(np.allclose(
+            self.rational.evaluate(c.q2D), 
+            self.ref_rational.evaluate(c.q2D)
+            )
+        )
 
     def test_reduce_degree(self):
         """ Test the function .reduce_degree. 
         This test also depends on the function .elevate_degree! """
-        # TODO: add for Bazier
 
         # elevate and reduce order
         self.bspline.elevate_degree(0)
