@@ -13,12 +13,8 @@ class TestSplinepyKnotVectorManipulation(unittest.TestCase):
     def setUp(self):
         self.b2P2D = c.b2P2D.copy()
         self.n2P2D = c.n2P2D.copy()
-        self.z2P2D = c.z2P2D.copy()
-        self.r2P2D = c.r2P2D.copy()
         self.bspline = splinepy.BSpline(**self.b2P2D)
         self.nurbs = splinepy.NURBS(**self.n2P2D)
-        self.bezier = splinepy.Bezier(**self.z2P2D)
-        self.rational = splinepy.RationalBezier(**self.r2P2D)
         self.ref_bspline = splinepy.BSpline(**c.b2P2D)
         self.ref_nurbs = splinepy.NURBS(**c.n2P2D)
 
@@ -61,8 +57,6 @@ class TestSplinepyKnotVectorManipulation(unittest.TestCase):
     def test_remove_knot(self):
         """ Test the function .remove_knots. 
         This test also depends on the function .insert_knots! """
-
-        # reference solutions
 
         # insert and remove knots
         self.bspline.insert_knots(0,[.2, .7,])
