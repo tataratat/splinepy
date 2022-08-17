@@ -50,7 +50,7 @@ else()
 endif(MINIMAL)
 
 # reader and pyhton module
-list(APPEND SRCS init/reader.cpp splinepy.cpp)
+list(APPEND SRCS init/reader.cpp init/exporter.cpp splinepy.cpp)
 
 pybind11_add_module(_splinepy ${SRCS})
 target_include_directories(_splinepy PRIVATE "${PROJECT_SOURCE_DIR}/cpp")

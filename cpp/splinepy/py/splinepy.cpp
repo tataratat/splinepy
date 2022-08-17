@@ -44,8 +44,10 @@ void init_minimal(py::module_ &);
 // Reader
 void init_reader(py::module_ &);
 
-PYBIND11_MODULE(_splinepy, m) {
+// Exporter
+void init_exporter(py::module_ &);
 
+PYBIND11_MODULE(_splinepy, m) {
 #ifdef _MINIMAL_
   init_minimal(m);
 #else
@@ -84,4 +86,5 @@ PYBIND11_MODULE(_splinepy, m) {
 #endif
 
   init_reader(m);
+  init_exporter(m);
 }
