@@ -23,9 +23,11 @@ namespace py = pybind11;
 std::tuple<py::array_t<int>,  // connectivity
            py::array_t<int>,  // vertex_ids
            py::array_t<int>,  // edges
-           py::array_t<int>   // boundaries
+           py::array_t<int>,  // boundaries
+           bool               // is structured mesh
            >
-retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
+retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
+                          const double& tolerance) {
   // Unfortunatly bezman requires point-types to perform routines and does not
   // work on py arrays All of the arguments serve as outputs except for
   // corner_vertices
@@ -33,6 +35,8 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
   double* corner_ptr = static_cast<double*>(corner_vertex_buffer.ptr);
   const std::size_t problem_dimension = corner_vertex_buffer.shape[1];
   const std::size_t number_of_corner_points = corner_vertex_buffer.shape[0];
+  // Check if mesh can be used for mfem mesh
+  bool is_structured{true};
   if (problem_dimension == 2) {
     // Check if vertex size checks out
     assert(number_of_corner_points % 4 == 0);
@@ -56,22 +60,31 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     // Retrieve MFEM information using bezman
-    // Connectivity : std::vector<std::array<std::size_t, 4>>
-    // Vertex_ids : std::vector<std::std::size_t>
-    // edge_information : std::vector<std::array<std::size_t,3>
-    // boundaries : std::vector<std::array<std::size_t,2>
-    const auto [connectivity, vertex_ids, edge_information, boundaries] =
-        bezman::utils::algorithms::ExtractMFEMInformation(
-            corner_vertices, maxvertex - minvertex);
-
-    // Sanity checks
-    assert(connectivity.size() == number_of_patches);
-    assert(vertex_ids.size() == corner_vertices.size());
-    assert(edge_information.size() > 0);
-    assert(boundaries.size() > 0);
+    // Connectivity :     std::vector<std::array<std::size_t, 4>>
+    // Vertex_ids :       std::vector<std::size_t>
+    // edge_information : std::vector<std::array<std::size_t,3>>
+    // boundaries :       std::vector<std::array<std::size_t,2>>
+    const auto [connectivity, vertex_ids, edge_information,
+                boundaries] = [&]() {
+      try {
+        return bezman::utils::algorithms::ExtractMFEMInformation(
+            corner_vertices, maxvertex - minvertex, tolerance);
+      } catch (...) {
+        is_structured = false;
+        return std::make_tuple(
+            // Connectivity
+            bezman::utils::algorithms::FindConnectivity(
+                corner_vertices, maxvertex - minvertex, tolerance, false),
+            // All others initialized empty
+            std::vector<std::size_t>{},
+            std::vector<std::array<std::size_t, 3>>{},
+            std::vector<std::array<std::size_t, 2>>{});
+      }
+    }();
 
     // -- Transform data to python format --
     // Connectivity
+    assert(connectivity.size() == number_of_patches);
     py::array_t<int> py_connectivity =
         py::array_t<int>(connectivity.size() * 4);
     py_connectivity.resize({(int)number_of_patches, (int)4});
@@ -83,7 +96,16 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
       }
     }
 
+    // Return only connectivity if the mesh is unstructured and can not be used
+    // for mfem export
+    if (!is_structured) {
+      return std::make_tuple(py_connectivity, py::array_t<int>{},
+                             py::array_t<int>{}, py::array_t<int>{},
+                             is_structured);
+    }
+
     // Vertex IDS
+    assert(vertex_ids.size() == corner_vertices.size());
     py::array_t<int> py_vertex_ids = py::array_t<int>(number_of_corner_points);
     py_vertex_ids.resize({(int)number_of_corner_points});
     int* py_vertex_ids_ptr = static_cast<int*>(py_vertex_ids.request().ptr);
@@ -92,6 +114,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     // Edges
+    assert(edge_information.size() > 0);
     py::array_t<int> py_edges = py::array_t<int>(edge_information.size() * 3);
     py_edges.resize({(int)edge_information.size(), (int)3});
     int* py_edges_ptr = static_cast<int*>(py_edges.request().ptr);
@@ -103,6 +126,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     // Boundaries
+    assert(boundaries.size() > 0);
     py::array_t<int> py_boundaries = py::array_t<int>(boundaries.size() * 2);
     py_boundaries.resize({(int)boundaries.size(), (int)2});
     int* py_boundaries_ptr = static_cast<int*>(py_boundaries.request().ptr);
@@ -115,7 +139,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     return std::make_tuple(py_connectivity, py_vertex_ids, py_edges,
-                           py_boundaries);
+                           py_boundaries, is_structured);
 
   } else if (problem_dimension == 3) {
     // Check if vertex size checks out
@@ -143,18 +167,27 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     // Vertex_ids : std::vector<std::std::size_t>
     // edge_information : std::vector<std::array<std::size_t,3>
     // boundaries : std::vector<std::array<std::size_t,4>
-    const auto [connectivity, vertex_ids, edge_information, boundaries] =
-        bezman::utils::algorithms::ExtractMFEMInformation(
-            corner_vertices, maxvertex - minvertex);
-
-    // Sanity checks
-    assert(connectivity.size() == number_of_patches);
-    assert(vertex_ids.size() == corner_vertices.size());
-    assert(edge_information.size() > 0);
-    assert(boundaries.size() > 0);
+    const auto [connectivity, vertex_ids, edge_information,
+                boundaries] = [&]() {
+      try {
+        return bezman::utils::algorithms::ExtractMFEMInformation(
+            corner_vertices, maxvertex - minvertex, tolerance);
+      } catch (...) {
+        is_structured = false;
+        return std::make_tuple(
+            // Connectivity
+            bezman::utils::algorithms::FindConnectivity(
+                corner_vertices, maxvertex - minvertex, tolerance, false),
+            // All others initialized empty
+            std::vector<std::size_t>{},
+            std::vector<std::array<std::size_t, 3>>{},
+            std::vector<std::array<std::size_t, 4>>{});
+      }
+    }();
 
     // -- Transform data to python format --
     // Connectivity
+    assert(connectivity.size() == number_of_patches);
     py::array_t<int> py_connectivity =
         py::array_t<int>(connectivity.size() * 6);
     py_connectivity.resize({(int)number_of_patches, (int)6});
@@ -166,7 +199,16 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
       }
     }
 
+    // Return only connectivity if the mesh is unstructured and can not be used
+    // for mfem export
+    if (!is_structured) {
+      return std::make_tuple(py_connectivity, py::array_t<int>{},
+                             py::array_t<int>{}, py::array_t<int>{},
+                             is_structured);
+    }
+
     // Vertex IDS
+    assert(vertex_ids.size() == corner_vertices.size());
     py::array_t<int> py_vertex_ids = py::array_t<int>(number_of_corner_points);
     py_vertex_ids.resize({(int)number_of_corner_points});
     int* py_vertex_ids_ptr = static_cast<int*>(py_vertex_ids.request().ptr);
@@ -175,6 +217,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     // Edges
+    assert(edge_information.size() > 0);
     py::array_t<int> py_edges = py::array_t<int>(edge_information.size() * 3);
     py_edges.resize({(int)edge_information.size(), (int)3});
     int* py_edges_ptr = static_cast<int*>(py_edges.request().ptr);
@@ -186,6 +229,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     // Boundaries
+    assert(boundaries.size() > 0);
     py::array_t<int> py_boundaries = py::array_t<int>(boundaries.size() * 4);
     py_boundaries.resize({(int)boundaries.size(), (int)4});
     int* py_boundaries_ptr = static_cast<int*>(py_boundaries.request().ptr);
@@ -198,7 +242,7 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
     }
 
     return std::make_tuple(py_connectivity, py_vertex_ids, py_edges,
-                           py_boundaries);
+                           py_boundaries, is_structured);
   } else {
     throw std::runtime_error("Dimension mismatch");
   }

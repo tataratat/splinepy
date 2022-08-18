@@ -277,7 +277,7 @@ def mfem_index_mapping(
         raise NotImplementedError
 
 
-def export_cartesian(fname, spline_list):
+def export_cartesian(fname, spline_list, tolerance=1e-5):
     """
     Export list of bezier splines in mfem export
 
@@ -359,11 +359,13 @@ def export_cartesian(fname, spline_list):
             corner_vertices, spline.control_points[corner_vertex_ids, :]))
 
     # Retrieve information using bezman
-    try:
-        connectivity, vertex_ids, edges, boundaries = retrieve_mfem_information(
-            corner_vertices)
-    except:
-        print("ALAAAAARM")
+    connectivity, vertex_ids, edges, boundaries, success = retrieve_mfem_information(
+        corner_vertices, tolerance)
+    if not success:
+        # todo : only connectivity stores data, see issue #33
+        print(connectivity)
+        raise NotImplementedError(
+            "MFEM export not implemented for unstructured meshes")
 
     # Write all gathered information into a file
     with open(fname, "w") as f:
