@@ -332,7 +332,7 @@ def export_cartesian(fname, spline_list):
                 cmr[0] * (cmr[1] - 1)
             ]
     elif para_dim == 3:
-        geometry_type = 6
+        geometry_type = 5
         boundary_type = 3
         n_vertex_per_element = 8
         n_vertex_per_boundary = 4
@@ -346,7 +346,7 @@ def export_cartesian(fname, spline_list):
                 cmr[0] * (cmr[1] - 1),
                 (cmr[2] - 1) * cmr[1] * cmr[0],
                 (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] - 1,
-                (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * cmr[1],
+                (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * cmr[1] - 1,
                 (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * (cmr[1] - 1),
             ]
 

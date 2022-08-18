@@ -147,16 +147,59 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices) {
         bezman::utils::algorithms::ExtractMFEMInformation(
             corner_vertices, maxvertex - minvertex);
 
-    return std::make_tuple(py::array_t<int>{}, py::array_t<int>{},
-                           py::array_t<int>{}, py::array_t<int>{});
+    // Sanity checks
+    assert(connectivity.size() == number_of_patches);
+    assert(vertex_ids.size() == corner_vertices.size());
+    assert(edge_information.size() > 0);
+    assert(boundaries.size() > 0);
+
+    // -- Transform data to python format --
+    // Connectivity
+    py::array_t<int> py_connectivity =
+        py::array_t<int>(connectivity.size() * 6);
+    py_connectivity.resize({(int)number_of_patches, (int)6});
+    int* py_connectivity_ptr = static_cast<int*>(py_connectivity.request().ptr);
+    for (std::size_t i_patch{}; i_patch < connectivity.size(); i_patch++) {
+      for (std::size_t i_face{}; i_face < 6ul; i_face++) {
+        py_connectivity_ptr[i_patch * 6ul + i_face] =
+            static_cast<int>(connectivity[i_patch][i_face]);
+      }
+    }
+
+    // Vertex IDS
+    py::array_t<int> py_vertex_ids = py::array_t<int>(number_of_corner_points);
+    py_vertex_ids.resize({(int)number_of_corner_points});
+    int* py_vertex_ids_ptr = static_cast<int*>(py_vertex_ids.request().ptr);
+    for (std::size_t i_ctps{}; i_ctps < number_of_corner_points; i_ctps++) {
+      py_vertex_ids_ptr[i_ctps] = static_cast<int>(vertex_ids[i_ctps]);
+    }
+
+    // Edges
+    py::array_t<int> py_edges = py::array_t<int>(edge_information.size() * 3);
+    py_edges.resize({(int)edge_information.size(), (int)3});
+    int* py_edges_ptr = static_cast<int*>(py_edges.request().ptr);
+    for (std::size_t i_edge{}; i_edge < edge_information.size(); i_edge++) {
+      for (std::size_t i_face{}; i_face < 3ul; i_face++) {
+        py_edges_ptr[i_edge * 3ul + i_face] =
+            static_cast<int>(edge_information[i_edge][i_face]);
+      }
+    }
+
+    // Boundaries
+    py::array_t<int> py_boundaries = py::array_t<int>(boundaries.size() * 4);
+    py_boundaries.resize({(int)boundaries.size(), (int)4});
+    int* py_boundaries_ptr = static_cast<int*>(py_boundaries.request().ptr);
+    for (std::size_t i_boundary{}; i_boundary < boundaries.size();
+         i_boundary++) {
+      for (std::size_t i_id{}; i_id < 4ul; i_id++) {
+        py_boundaries_ptr[i_boundary * 4ul + i_id] =
+            static_cast<int>(boundaries[i_boundary][i_id]);
+      }
+    }
+
+    return std::make_tuple(py_connectivity, py_vertex_ids, py_edges,
+                           py_boundaries);
   } else {
-    std::cout << "Can not export requested corners";
-    return std::make_tuple(py::array_t<int>{}, py::array_t<int>{},
-                           py::array_t<int>{}, py::array_t<int>{});
+    throw std::runtime_error("Dimension mismatch");
   }
-  // Transform into points
 }
-// py::array_t<int> p_degrees;
-// py::array_t<double> p_control_points;
-// connectivity, vertex_ids, edge_information,
-// boundaries
