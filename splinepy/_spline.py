@@ -23,7 +23,7 @@ class _RequiredProperties:
     Helper class to hold required properties of each spline.
     """
 
-    # name mangling to make direct access very annoying 
+    # name mangling to make direct access very annoying
     __required_spline_properties = {
         "Bezier": ["degrees", "control_points"],
         "RationalBezier": ["degrees", "control_points", "weights"],
@@ -104,7 +104,7 @@ class _RequiredProperties:
 
 # initialize one for direct use
 required_properties = _RequiredProperties()
-        
+
 
 class Spline(abc.ABC):
     """
@@ -987,6 +987,25 @@ class Spline(abc.ABC):
             )
         )
 
+    def normalize_knot_vectors(self,):
+        """
+        Sets all knotvectors into a range if [0,1], where applicable
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        if "knot_vectors" in self.required_properties:
+            for (i, kv) in enumerate(self.knot_vectors):
+                n_kv = [k - kv[0] for k in kv]
+                n_kv = [k / kv[-1] for k in kv]
+                self.knot_vectors[i] = n_kv
+            self._check_and_update_c()
+
     def elevate_degree(self, parametric_dimension):
         """
         Elevate degree.
@@ -1285,12 +1304,12 @@ class Spline(abc.ABC):
                 # attr are either list or np.ndarray
                 # prepare list if needed.
                 if isinstance(tmp_prop, np.ndarray) and tolist:
-                    tmp_prop = tmp_prop.tolist() # copies
+                    tmp_prop = tmp_prop.tolist()  # copies
                     should_copy = False
 
                 if should_copy:
                     tmp_prop = copy.deepcopy(tmp_prop)
-            # update 
+            # update
             dict_spline[p] = tmp_prop
 
         return dict_spline
