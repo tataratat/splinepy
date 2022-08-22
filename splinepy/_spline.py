@@ -989,7 +989,7 @@ class Spline(abc.ABC):
 
     def normalize_knot_vectors(self,):
         """
-        Sets all knotvectors into a range if [0,1], where applicable
+        Sets all knot vectors into a range of [0,1], if applicable
 
         Parameters
         ----------
