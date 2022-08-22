@@ -871,7 +871,7 @@ class Spline(abc.ABC):
 
     def insert_knots(self, parametric_dimension, knots):
         """
-        Inserts knots. 
+        Inserts knots.
 
         Parameters
         -----------
@@ -924,7 +924,7 @@ class Spline(abc.ABC):
         """
         Tries to removes knots. If you've compiled `splinepy` in `Debug`
         and your removal request is not "accepted", you will get an error.
-        See the comments for `Nurbs::remove_knots` @ 
+        See the comments for `Nurbs::remove_knots` @
         `splinepy/src/nurbs.hpp` for more info.
 
         Parameters
@@ -1007,6 +1007,70 @@ class Spline(abc.ABC):
                 self._knot_vectors[i] = n_kv
 
             self._check_and_update_c()
+
+    def permute_parametric_dimensions(self, permutation_list):
+        """
+        Permutates the parametric dimensions
+
+        This function can be used, e.g., to  interchange the parametric
+        dimensions xi and eta in order to have them in the right orientation
+        (applications in boundary condition definition or mfem export)
+
+        Parameters
+        ----------
+        permutation_list : list
+            New order of parametric dimensions
+
+        Returns
+        -------
+        modified_spline : type(self)
+            spline with reordered parametric dimensions
+        """
+        # Data collector for new spline object
+        spline_data_dict = {}
+
+        # Sanity checks
+        if not isinstance(permutation_list, list):
+            raise ValueError("Permutation list incomprehensive")
+        if not set(range(self.para_dim)) == set(permutation_list):
+            raise ValueError("Permutation list invalid")
+
+        # Update knot_vectors where applicable
+        if "knot_vectors" in self.required_properties:
+            spline_data_dict["knot_vectors"] = [self.knot_vectors[permutation_list[i]]
+                                                for i in range(self.para_dim)]
+        # Update degrees
+        spline_data_dict["degrees"] = [self.degrees[permutation_list[i]]
+                                       for i in range(self.para_dim)]
+
+        # Retrieve control mesh resolutions
+        ctps_dims = self.control_mesh_resolutions
+        new_ctps_dims = [ctps_dims[permutation_list[i]]
+                         for i in range(self.para_dim)]
+        n_ctps = self.control_points.shape[0]
+
+        # Map global to local index
+        # i_glob = i + n_i * j  + n_i * n_j * k ...
+        local_indices = np.empty([n_ctps, self.para_dim], dtype=int)
+        global_indices = np.arange(n_ctps, dtype=int)
+        for i_p in range(self.para_dim):
+            local_indices[:, i_p] = global_indices % ctps_dims[i_p]
+            global_indices -= local_indices[:, i_p]
+            global_indices = np.floor_divide(global_indices, ctps_dims[i_p])
+
+        # Reorder indices
+        local_indices[:] = local_indices[:, permutation_list]
+
+        # Rearange global to local
+        global_indices = np.matmul(
+            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1])
+        # Get inverse mapping
+        global_indices = np.argsort(global_indices)
+        if "weights" in self.required_properties:
+            spline_data_dict["weights"] = self.weights[global_indices]
+        spline_data_dict["control_points"] = self.control_points[global_indices, :]
+
+        return type(self)(**spline_data_dict)
 
     def elevate_degree(self, parametric_dimension):
         """
@@ -1139,14 +1203,14 @@ class Spline(abc.ABC):
         entry in `kdt_resolutions` will make sure no tree is planted. Be aware,
         if there's no tree, this will raise runtime error from c++ side.
         Turns out, it is very important to have a good initial guess for
-        newton method. Hence, this method is default. 
+        newton method. Hence, this method is default.
 
         Parameters
         -----------
         queries: (n, dim) list-like
         kdt_resolutions: (para_dim) list-like
           Default is None and will build [10] * para_dim tree.
-          If any entry is negative, it won't plant a tree. 
+          If any entry is negative, it won't plant a tree.
         nthreads: int
           number of threads for parallel execution.
 
