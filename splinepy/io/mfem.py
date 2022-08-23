@@ -277,7 +277,11 @@ def mfem_index_mapping(
         raise NotImplementedError
 
 
-def export_cartesian(fname, spline_list, tolerance=1e-5):
+def export_cartesian(
+        fname,
+        spline_list,
+        tolerance=1e-5,
+        boundary_functions=None):
     """
     Export list of bezier splines in mfem export
 
@@ -287,6 +291,10 @@ def export_cartesian(fname, spline_list, tolerance=1e-5):
       file name
     bezier_list: list
       list of bezier spline objects
+    tolerance : float
+      tolerance to collapse two neighboring points
+    boundary_functions : list(Callable)
+      Functions that define boundaries 
 
     Returns
     -------
@@ -361,6 +369,29 @@ def export_cartesian(fname, spline_list, tolerance=1e-5):
     # Retrieve information using bezman
     connectivity, vertex_ids, edges, boundaries, success = retrieve_mfem_information(
         corner_vertices, tolerance)
+
+    boundary_ids = np.ones(boundaries.shape[0], dtype=int)
+    if not len(boundary_functions) == 0:
+        # Retrieve all boundary points (to minimize computations)
+        boundary_vertex_ids = np.unique(boundaries)
+        # Boundary_vertex_ids refer to the new enumeration
+        _, vertex_ids_unique = np.unique(
+            vertex_ids, return_index=True)
+        boundary_corner_verts = corner_vertices[vertex_ids_unique[boundary_vertex_ids], :]
+        # Loop over all boundary functions to identify boundaries
+        for i_bound, b_func in enumerate(boundary_functions):
+            try:
+                is_on_boundary = b_func(boundary_corner_verts)
+            except:
+                raise ValueError("Boundary Function Layout incompatible")
+            set_boundary = np.sum(
+                np.isin(
+                    boundaries,
+                    boundary_vertex_ids[is_on_boundary]
+                ), axis=1) == n_vertex_per_boundary
+            boundary_ids[set_boundary] = i_bound + 2
+
+    # Check if algorithm was successfull
     if not success:
         # todo : only connectivity stores data, see issue #33
         print(connectivity)
@@ -386,9 +417,12 @@ def export_cartesian(fname, spline_list, tolerance=1e-5):
         f.write(f"\n\nboundary\n{n_boundaries}\n")
         # Here currently all boudaries are set to 1
         f.write('\n'.join(
-            f"1 {boundary_type} "
+            f"{boundary_id} {boundary_type} "
             + ' '.join(str(id) for id in row)
-            for row in boundaries.reshape(-1, n_vertex_per_boundary).tolist()
+            for row, boundary_id in zip(
+                boundaries.reshape(-1, n_vertex_per_boundary).tolist(),
+                boundary_ids.tolist()
+            )
         ))
 
         # Edges
