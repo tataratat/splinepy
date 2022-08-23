@@ -460,7 +460,7 @@ def export_cartesian(
                             for kvi in spline.kvs[i_para_dim]) + "\n")
             f.write(f"dimension\n{dim}\n")
             f.write(f"controlpoints_cartesian\n")
-            if not "weigts" in spline.required_properties:
+            if not "weights" in spline.required_properties:
                 f.write(
                     '\n'.join(
                         (' '.join(str(x_i) for x_i in row) + " 1.0")
@@ -471,7 +471,7 @@ def export_cartesian(
                 f.write(
                     '\n'.join(
                         (' '.join(str(x_i)
-                         for x_i in coords) + " " + str(weight))
+                                  for x_i in coords) + " " + str(weight[0]))
                         for (coords, weight) in zip(
                             spline.control_points.tolist(),
                             spline.weights.tolist()
