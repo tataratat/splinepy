@@ -5,7 +5,7 @@
 
 // only compile a minimal set of splines
 // 3P X 3D
-void init_minimal(py::module_ &m) {
+void init_minimal(py::module_& m) {
   // Bezier
   add_bezier_pyclass<1, 1>(m, "Bezier1P1D");
   add_bezier_pyclass<1, 2>(m, "Bezier1P2D");

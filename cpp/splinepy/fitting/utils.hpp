@@ -1,12 +1,12 @@
-#include <vector>
 #include <cmath>
+#include <vector>
 
-inline double square(double x) {return x*x;}
+inline double square(double x) { return x * x; }
 
 inline std::vector<double> ParametrizeCurve(double* points,
                                             int& num_points,
                                             int& dim,
-                                            bool centripetal=true) {
+                                            bool centripetal = true) {
   // Computes u_k
   int i, j;
 
@@ -17,8 +17,8 @@ inline std::vector<double> ParametrizeCurve(double* points,
   double total_chord_length = 0.0;
   for (i = 1; i < num_points; i++) {
     for (j = 0; j < dim; j++) {
-      chord_length[i] += square(points[i * dim + j] 
-          - points[(i - 1) * dim + j]);
+      chord_length[i] +=
+          square(points[i * dim + j] - points[(i - 1) * dim + j]);
     }
     chord_length[i] = sqrt(chord_length[i]);
     if (centripetal) {
@@ -38,7 +38,6 @@ inline std::vector<double> ParametrizeCurve(double* points,
   }
 
   return u_k;
-
 }
 
 inline void ParametrizeSurface(double* points,
@@ -66,17 +65,18 @@ inline void ParametrizeSurface(double* points,
       }
     }
     tmp_tmp_u_k = ParametrizeCurve(pts_u, size_u, dim, centripetal);
-    std::move(tmp_tmp_u_k.begin(), tmp_tmp_u_k.end(), std::back_inserter(tmp_u_k));
+    std::move(tmp_tmp_u_k.begin(),
+              tmp_tmp_u_k.end(),
+              std::back_inserter(tmp_u_k));
   }
 
   // Average u - direction
   for (u = 0; u < size_u; u++) {
     for (v = 0; v < size_v; v++) {
-      u_k[u] += tmp_u_k[u + (size_u * v)]; 
+      u_k[u] += tmp_u_k[u + (size_u * v)];
     }
     u_k[u] /= size_v;
   }
-
 
   // Compute u_k
   v_l.assign(size_v, 0.0);
@@ -89,14 +89,15 @@ inline void ParametrizeSurface(double* points,
       }
     }
     tmp_tmp_v_l = ParametrizeCurve(pts_v, size_v, dim, centripetal);
-    std::move(tmp_tmp_v_l.begin(), tmp_tmp_v_l.end(), std::back_inserter(tmp_v_l));
+    std::move(tmp_tmp_v_l.begin(),
+              tmp_tmp_v_l.end(),
+              std::back_inserter(tmp_v_l));
   }
-
 
   // Average v - direction
   for (v = 0; v < size_v; v++) {
     for (u = 0; u < size_u; u++) {
-      v_l[v] += tmp_v_l[v + (size_v * u)]; 
+      v_l[v] += tmp_v_l[v + (size_v * u)];
     }
     v_l[v] /= size_u;
   }
@@ -126,12 +127,12 @@ inline std::vector<double> ComputeKnotVector(const int& degree,
     }
   } else {
     // Equation 9,63 (note the index shift as num_control_points=n+1)
-    const double d = ((double) num_points) / 
-      ( (double) (num_control_points - degree));
+    const double d =
+        ((double) num_points) / ((double) (num_control_points - degree));
     for (j = 1; j < num_control_points - degree; j++) {
       const unsigned int i = (int) (j * d);
-      const double alpha =  (j * d) - i;
-      knot_vector[j + degree] = (1- alpha) * u_k[i - 1] + alpha * u_k[i];
+      const double alpha = (j * d) - i;
+      knot_vector[j + degree] = (1 - alpha) * u_k[i - 1] + alpha * u_k[i];
     }
   }
 
@@ -140,7 +141,6 @@ inline std::vector<double> ComputeKnotVector(const int& degree,
   }
 
   return knot_vector;
-
 }
 
 inline int FindSingleKnotSpan(int& degree,
@@ -154,7 +154,6 @@ inline int FindSingleKnotSpan(int& degree,
   }
 
   return span - 1;
-
 }
 
 inline std::vector<double> BasisFunction(int& degree,
@@ -184,14 +183,14 @@ inline std::vector<double> BasisFunction(int& degree,
   }
 
   return N;
-
 }
 
-inline std::vector<double> BuildCoefficientMatrix(int& degree,
-                                                  std::vector<double>& knot_vector,
-                                                  std::vector<double>& u_k,
-                                                  const int& num_points,
-                                                  const int& num_control_points) {
+inline std::vector<double>
+BuildCoefficientMatrix(int& degree,
+                       std::vector<double>& knot_vector,
+                       std::vector<double>& u_k,
+                       const int& num_points,
+                       const int& num_control_points) {
 
   std::vector<double> coefficient_matrix;
   coefficient_matrix.assign(num_points * num_control_points, 0.0);
@@ -199,8 +198,7 @@ inline std::vector<double> BuildCoefficientMatrix(int& degree,
   int i, j, k, span;
 
   for (i = 0; i < num_points; i++) {
-    span = FindSingleKnotSpan(degree, knot_vector,
-        num_control_points, u_k[i]);
+    span = FindSingleKnotSpan(degree, knot_vector, num_control_points, u_k[i]);
     basis_function = BasisFunction(degree, knot_vector, span, u_k[i]);
     k = 0;
     for (j = span - degree; j < span + 1; j++) {
@@ -210,5 +208,4 @@ inline std::vector<double> BuildCoefficientMatrix(int& degree,
   }
 
   return coefficient_matrix;
-
 }

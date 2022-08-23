@@ -21,7 +21,8 @@ inline void FillDegrees(const SplineType& spline, DegreeType* degree_ptr) {
 
 /// Fills raw pointer with knot_vector. applicable for both nurbs and bspline
 template <typename SplineType, typename IndexT, typename KnotType>
-inline void FillKnotVector(const SplineType& spline, IndexT para_dim,
+inline void FillKnotVector(const SplineType& spline,
+                           IndexT para_dim,
                            KnotType* knot_vector) {
   const auto& parameter_space = spline.GetParameterSpace();
   const auto& requested_knot_vector =
@@ -153,11 +154,11 @@ auto ExtractBezierPatches(SplineType& input) {
       // Determine index of local point in global spline
       for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
         // First id in local system
-        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim]) %
-                             (degrees[i_para_dim] + 1);
+        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim])
+                             % (degrees[i_para_dim] + 1);
         // Add patch offsets
-        global_id += (local_id + patch_ctp_id_offsets[i_para_dim]) *
-                     n_ctps_in_previous_layers;
+        global_id += (local_id + patch_ctp_id_offsets[i_para_dim])
+                     * n_ctps_in_previous_layers;
         // Multiply to index offset
         n_ctps_in_previous_layers *= n_ctps_per_para_dim[i_para_dim];
       }
@@ -210,4 +211,4 @@ auto ExtractBezierPatches(SplineType& input) {
   }
   return bezier_list;
 }
-}  // namespace splinepy::splines
+} // namespace splinepy::splines
