@@ -1002,7 +1002,7 @@ class Spline(abc.ABC):
         if "knot_vectors" in self.required_properties:
             for (i, kv) in enumerate(self.knot_vectors):
                 n_kv = [k - kv[0] for k in kv]
-                n_kv = [k / kv[-1] for k in n_kv]
+                n_kv = [k / n_kv[-1] for k in n_kv]
                 self._knot_vectors[i] = n_kv
             self._check_and_update_c()
 
