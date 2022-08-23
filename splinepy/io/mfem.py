@@ -280,7 +280,7 @@ def mfem_index_mapping(
 def export_cartesian(
         fname,
         spline_list,
-        tolerance=1e-5,
+        tolerance=None,
         boundary_functions=None):
     """
     Export list of bezier splines in mfem export
@@ -307,6 +307,13 @@ def export_cartesian(
         raise ValueError("export_cartesian expects list for export.")
     if not issubclass(type(spline_list[0]), Spline):
         raise ValueError("Unsupported type in list")
+
+    # Set Tolerance
+    if tolerance is None:
+        tolerance = 1e-5
+    # Set boundary list
+    if boundary_functions is None:
+        boundary_functions = []
 
     # Set Problem dimensions
     para_dim = spline_list[0].para_dim
