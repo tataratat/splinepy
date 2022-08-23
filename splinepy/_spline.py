@@ -1000,10 +1000,12 @@ class Spline(abc.ABC):
         None
         """
         if "knot_vectors" in self.required_properties:
-            for (i, kv) in enumerate(self.knot_vectors):
-                n_kv = [k - kv[0] for k in kv]
-                n_kv = [k / kv[-1] for k in n_kv]
+            for i, kv in enumerate(self.knot_vectors):
+                offset = kv[0]
+                scale = 1 / (kv[-1] - offset) 
+                n_kv = [(k - offset) * scale for k in kv]
                 self._knot_vectors[i] = n_kv
+
             self._check_and_update_c()
 
     def elevate_degree(self, parametric_dimension):
