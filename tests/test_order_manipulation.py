@@ -56,25 +56,28 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
         self.assertEqual(self.bspline.knot_vectors, bspline_ref_kv)
         self.assertEqual(self.nurbs.knot_vectors, nurbs_ref_kv)
 
+        # use random query points
+        q2D = np.random.rand(10,2)
+
         # test evaluation
         self.assertTrue(np.allclose(
-            self.bspline.evaluate(c.q2D), 
-            self.ref_bspline.evaluate(c.q2D)
+            self.bspline.evaluate(q2D), 
+            self.ref_bspline.evaluate(q2D)
             )
         )
         self.assertTrue(np.allclose(
-            self.nurbs.evaluate(c.q2D), 
-            self.ref_nurbs.evaluate(c.q2D)
+            self.nurbs.evaluate(q2D), 
+            self.ref_nurbs.evaluate(q2D)
             )
         )
         self.assertTrue(np.allclose(
-            self.bezier.evaluate(c.q2D), 
-            self.ref_bezier.evaluate(c.q2D)
+            self.bezier.evaluate(q2D), 
+            self.ref_bezier.evaluate(q2D)
             )
         )
         self.assertTrue(np.allclose(
-            self.rational.evaluate(c.q2D), 
-            self.ref_rational.evaluate(c.q2D)
+            self.rational.evaluate(q2D), 
+            self.ref_rational.evaluate(q2D)
             )
         )
 
@@ -111,15 +114,18 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
             self.ref_nurbs.knot_vectors
         )
 
+        # use random query points
+        q2D = np.random.rand(10,2)
+
         # test evaluation
         self.assertTrue(np.allclose(
-            self.bspline.evaluate(c.q2D), 
-            self.ref_bspline.evaluate(c.q2D)
+            self.bspline.evaluate(q2D), 
+            self.ref_bspline.evaluate(q2D)
             )
         )
         self.assertTrue(np.allclose(
-            self.nurbs.evaluate(c.q2D), 
-            self.ref_nurbs.evaluate(c.q2D)
+            self.nurbs.evaluate(q2D), 
+            self.ref_nurbs.evaluate(q2D)
             )
         )
 

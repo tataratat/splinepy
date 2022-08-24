@@ -102,7 +102,7 @@ class TestSplinepyInitialization(unittest.TestCase):
             [1.],
             [1.],
             [1.],
-            [(2** -.5)],
+            [2** -.5],
             [1.],
         ]
         

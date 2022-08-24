@@ -65,8 +65,10 @@ class TestSplinepyEvaluation(unittest.TestCase):
             nurbs_ref_basis_functions
             )
         )
+    
+    def test_partition_of_unity(self):
+        """ Test the partition of unity of the calculated basis functions. """
 
-        # test partition of unity of basis functions
         def basis_functions_sum(basis_functions):
             bf = np.array(basis_functions[0])
             u = np.zeros(np.shape(bf)[0])
@@ -74,13 +76,16 @@ class TestSplinepyEvaluation(unittest.TestCase):
                 u[i] = np.sum(bf[i])
             return u
 
-        u_bspline = basis_functions_sum(self.bspline.basis_functions(c.q2D))
+        # use random query points
+        q2D = np.random.rand(10,2)
+
+        u_bspline = basis_functions_sum(self.bspline.basis_functions(q2D))
         self.assertTrue(np.allclose(
             u_bspline, 
             np.ones(np.shape(u_bspline))
             )
         )
-        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(c.q2D))
+        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(q2D))
         self.assertTrue(np.allclose(
             u_nurbs, 
             np.ones(np.shape(u_nurbs))
