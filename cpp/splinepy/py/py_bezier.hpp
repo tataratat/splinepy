@@ -98,11 +98,9 @@ class PyBezier {
     // update control_points
     const std::size_t number_of_ctps = c_bezier.control_points.size();
     // Check if shape changed
-    if (c_bezier.control_points.size() != 
-        p_control_points.request().shape[0]) {
+    if (c_bezier.control_points.size() != p_control_points.request().shape[0]) {
       // Update Control Point Vector
-      p_control_points = 
-        py::array_t<double>(number_of_ctps * dim);
+      p_control_points = py::array_t<double>(number_of_ctps * dim);
       p_control_points.resize({(int)number_of_ctps, dim});
       // Update pointers
       cps_ptr = static_cast<double*>(p_control_points.request().ptr);

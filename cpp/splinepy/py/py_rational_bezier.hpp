@@ -6,7 +6,6 @@
 #include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
-#include <bezman/src/utils/export.hpp>
 #include <splinepy/py/py_bezier.hpp>
 #include <type_traits>
 
@@ -99,7 +98,7 @@ class PyRationalBezier {
     // Check if size matches
     assert(p_control_points.request().shape[0] ==
            c_rational_bezier.NumberOfControlPoints);
-    for (int i = 0; i < p_control_points.request().shape[0]; i++) {
+    for (std::size_t i = 0; i < p_control_points.request().shape[0]; i++) {
       // Update weight
       c_rational_bezier.GetWeights()[i] = weights_ptr[i];
       // Update CTPS

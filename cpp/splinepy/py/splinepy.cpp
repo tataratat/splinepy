@@ -14,6 +14,18 @@ void init_bezier8(py::module_ &);
 void init_bezier9(py::module_ &);
 void init_bezier10(py::module_ &);
 
+// Rational Bezier
+void init_rational_bezier1(py::module_ &);
+void init_rational_bezier2(py::module_ &);
+void init_rational_bezier3(py::module_ &);
+void init_rational_bezier4(py::module_ &);
+void init_rational_bezier5(py::module_ &);
+void init_rational_bezier6(py::module_ &);
+void init_rational_bezier7(py::module_ &);
+void init_rational_bezier8(py::module_ &);
+void init_rational_bezier9(py::module_ &);
+void init_rational_bezier10(py::module_ &);
+
 // BSpline
 void init_bspline1(py::module_ &);
 void init_bspline2(py::module_ &);
