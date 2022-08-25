@@ -105,11 +105,11 @@ class TestSplinepyOrderManipulation(unittest.TestCase):
         )
 
         # test knot_vectors
-        self.assertTrue(
+        self.assertEqual(
             self.bspline.knot_vectors, 
             self.ref_bspline.knot_vectors
         )
-        self.assertTrue(
+        self.assertEqual(
             self.nurbs.knot_vectors, 
             self.ref_nurbs.knot_vectors
         )

@@ -70,22 +70,18 @@ class TestSplinepyEvaluation(unittest.TestCase):
         """ Test the partition of unity of the calculated basis functions. """
 
         def basis_functions_sum(basis_functions):
-            bf = np.array(basis_functions[0])
-            u = np.zeros(np.shape(bf)[0])
-            for i in range(0,np.shape(bf)[0]):
-                u[i] = np.sum(bf[i])
-            return u
+            return basis_functions.sum(axis=1)
 
         # use random query points
         q2D = np.random.rand(10,2)
 
-        u_bspline = basis_functions_sum(self.bspline.basis_functions(q2D))
+        u_bspline = basis_functions_sum(self.bspline.basis_functions(q2D)[0])
         self.assertTrue(np.allclose(
             u_bspline, 
             np.ones(np.shape(u_bspline))
             )
         )
-        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(q2D))
+        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(q2D)[0])
         self.assertTrue(np.allclose(
             u_nurbs, 
             np.ones(np.shape(u_nurbs))
@@ -128,22 +124,22 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test evaluation
         self.assertTrue(np.allclose(
-            np.array(self.bspline.evaluate(c.q2D)), 
+            self.bspline.evaluate(c.q2D), 
             bspline_ref_evaluate
             )
         )
         self.assertTrue(np.allclose(
-            np.array(self.nurbs.evaluate(c.q2D)), 
+            self.nurbs.evaluate(c.q2D), 
             nurbs_ref_evaluate
             )
         )
         self.assertTrue(np.allclose(
-            np.array(self.bezier.evaluate(c.q2D)), 
+            self.bezier.evaluate(c.q2D), 
             bezier_ref_evaluate
             )
         )
         self.assertTrue(np.allclose(
-            np.array(self.rational.evaluate(c.q2D)), 
+            self.rational.evaluate(c.q2D), 
             rational_ref_evaluate
             )
         )
@@ -173,12 +169,12 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test derivative evaluation
         self.assertTrue(np.allclose(
-            np.array(self.bspline.derivative(c.q2D,o1)), 
+            self.bspline.derivative(c.q2D,o1), 
             bspline_ref_derivative
             )
         )
         self.assertTrue(np.allclose(
-            np.array(self.nurbs.derivative(c.q2D,o1)), 
+            self.nurbs.derivative(c.q2D,o1), 
             nurbs_ref_derivative
             )
         )
