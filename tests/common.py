@@ -4,6 +4,7 @@ import numpy as np
 
 ## abbreviation
 # z: bezier
+# r: rational bezier
 # b: bspline
 # n: nurbs
 
@@ -47,11 +48,33 @@ n2P2D = dict(
         [ 0.,  2.],
     ],
     weights=[
-       [1.],
-       [(2 ** .5) / 2],
-       [1.],
-       [1.],
-       [(2 ** .5) / 2],
-       [1.],
+        [1.],
+        [2 ** -.5],
+        [1.],
+        [1.],
+        [2 ** -.5],
+        [1.],
     ],
 )
+
+# 
+z2P2D = dict(
+    degrees=n2P2D["degrees"], 
+    control_points=n2P2D["control_points"]
+)
+
+# 
+r2P2D = dict(
+    degrees=n2P2D["degrees"], 
+    control_points=n2P2D["control_points"], 
+    weights=n2P2D["weights"]
+)
+
+# query points
+q2D = [
+    [.01, .01], 
+    [.01, .5], 
+    [.9, .1], 
+    [.8, .7], 
+    [.4, .99],
+]
