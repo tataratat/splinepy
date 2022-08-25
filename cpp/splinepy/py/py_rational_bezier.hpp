@@ -258,23 +258,6 @@ class PyRationalBezier {
     result.update_p();
     return result;
   }
-
-  void ExportMFEM(const py::list& list_of_beziers, const std::string& fname) {
-    // Copy all bezier entries into a bezier_group
-    if constexpr (para_dim == dim && (para_dim == 2 || para_dim == 3)) {
-      bezman::BezierGroup<RationalBezierSpline_> bezier_group;
-      bezier_group.reserve(list_of_beziers.size());
-      for (py::handle bezier : list_of_beziers) {
-        bezier_group.push_back(
-            bezier.cast<PyRationalBezier>().c_rational_bezier);
-      }
-      bezman::utils::Export::AsMFEM(bezier_group, fname);
-      return;
-    } else {
-      std::cout << "Can only export 2D and 3D splines" << std::endl;
-      return;
-    }
-  }
 };
 
 // Start defining the python interface
@@ -352,9 +335,6 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
       .def("compose_volume_rp",
            &PyRationalBezier<para_dim, dim>::template ComposeRP<3>,
            py::arg("inner_function"))
-      // @Experimental export as mfem
-      .def("export_mfem", &PyRationalBezier<para_dim, dim>::template ExportMFEM,
-           py::arg("py_list"), py::arg("fname"))
       // Picke
       .def(py::pickle(
           [](const PyRationalBezier<para_dim, dim>& RationalBezier) {
