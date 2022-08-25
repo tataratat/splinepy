@@ -29,11 +29,11 @@ jobs:
             
     - name: build splinepy linux
       if: matrix.os == 'ubuntu-latest'
-      run: CC=gcc-10 CXX=g++-10 python3 setup.py develop --minimal 
+      run: CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal 
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
-      run: python3 setup.py develop --minimal
+      run: python3 setup.py install --minimal
       
     - name: test
       run: pytest tests
