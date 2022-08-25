@@ -15,19 +15,19 @@
 namespace py = pybind11;
 
 /**
- * @brief Retrieve information regarding export
+ * @brief Retrieve information related to mfem export
  *
- * @param coordinates
- *
+ * @param py_corner_vertices vertices at the spline-corners
+ * @param tolerance tolerance to delete duplicates
+ * @return py::tuple with
+ *    py::array_t<int> : connectivity
+ *    py::array_t<int> : vertex_ids
+ *    py::array_t<int> : edges
+ *    py::array_t<int> : boundaries
+ *    bool             : is structured mesh
  */
-std::tuple<py::array_t<int>,  // connectivity
-           py::array_t<int>,  // vertex_ids
-           py::array_t<int>,  // edges
-           py::array_t<int>,  // boundaries
-           bool               // is structured mesh
-           >
-retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
-                          const double& tolerance) {
+py::tuple retrieve_MFEM_information(
+    const py::array_t<double>& py_corner_vertices, const double& tolerance) {
   // Unfortunatly bezman requires point-types to perform routines and does not
   // work on py arrays All of the arguments serve as outputs except for
   // corner_vertices
@@ -99,9 +99,9 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
     // Return only connectivity if the mesh is unstructured and can not be used
     // for mfem export
     if (!is_structured) {
-      return std::make_tuple(py_connectivity, py::array_t<int>{},
-                             py::array_t<int>{}, py::array_t<int>{},
-                             is_structured);
+      return py::make_tuple(py_connectivity, py::array_t<int>{},
+                            py::array_t<int>{}, py::array_t<int>{},
+                            is_structured);
     }
 
     // Vertex IDS
@@ -138,8 +138,8 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
       }
     }
 
-    return std::make_tuple(py_connectivity, py_vertex_ids, py_edges,
-                           py_boundaries, is_structured);
+    return py::make_tuple(py_connectivity, py_vertex_ids, py_edges,
+                          py_boundaries, is_structured);
 
   } else if (problem_dimension == 3) {
     // Check if vertex size checks out
@@ -202,9 +202,9 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
     // Return only connectivity if the mesh is unstructured and can not be used
     // for mfem export
     if (!is_structured) {
-      return std::make_tuple(py_connectivity, py::array_t<int>{},
-                             py::array_t<int>{}, py::array_t<int>{},
-                             is_structured);
+      return py::make_tuple(py_connectivity, py::array_t<int>{},
+                            py::array_t<int>{}, py::array_t<int>{},
+                            is_structured);
     }
 
     // Vertex IDS
@@ -241,8 +241,8 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
       }
     }
 
-    return std::make_tuple(py_connectivity, py_vertex_ids, py_edges,
-                           py_boundaries, is_structured);
+    return py::make_tuple(py_connectivity, py_vertex_ids, py_edges,
+                          py_boundaries, is_structured);
   } else {
     throw std::runtime_error("Dimension mismatch");
   }
