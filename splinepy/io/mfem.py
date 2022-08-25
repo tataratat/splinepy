@@ -374,8 +374,11 @@ def export_cartesian(
             corner_vertices, spline.control_points[corner_vertex_ids, :]))
 
     # Retrieve information using bezman
-    connectivity, vertex_ids, edges, boundaries, success = retrieve_mfem_information(
-        corner_vertices, tolerance)
+    (connectivity,
+     vertex_ids,
+     edges,
+     boundaries,
+     success) = retrieve_mfem_information(corner_vertices, tolerance)
 
     boundary_ids = np.ones(boundaries.shape[0], dtype=int)
     if not len(boundary_functions) == 0:
@@ -384,7 +387,8 @@ def export_cartesian(
         # Boundary_vertex_ids refer to the new enumeration
         _, vertex_ids_unique = np.unique(
             vertex_ids, return_index=True)
-        boundary_corner_verts = corner_vertices[vertex_ids_unique[boundary_vertex_ids], :]
+        boundary_corner_verts = corner_vertices[
+            vertex_ids_unique[boundary_vertex_ids], :]
         # Loop over all boundary functions to identify boundaries
         for i_bound, b_func in enumerate(boundary_functions):
             try:
@@ -401,7 +405,7 @@ def export_cartesian(
     # Check if algorithm was successfull
     if not success:
         # todo : only connectivity stores data, see issue #33
-        print(connectivity)
+        # Use <SplineBase>.permute to potentially save mesh export
         raise NotImplementedError(
             "MFEM export not implemented for unstructured meshes")
 
