@@ -5,11 +5,13 @@ project(splinepy VERSION 0.0.2 LANGUAGES CXX)
 option(SPLINEPY_COMPILE_SPLINELIB "Compile splinelib together." ON)
 option(VERBOSE_MAKE "Verbose `make` output." OFF)
 option(MINIMAL "Compile a minimal set of splines." OFF)
-option(COMPILE_PYTHON "Compile python module." ON)
-option(ENABLE_WARNINGS "Add warning flags" OFF)
+option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
+option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
 
 set(SPLINEPY_FLAGS -fPIC)
-if(ENABLE_WARNINGS)
+
+# Note: currently a rich set of warning flag is propagated from `bezman`
+if(SPLINEPY_ENABLE_WARNINGS)
     set(SPLINEPY_FLAGS ${SPLINEPY_FLAGS} -Wall)
 endif()
 

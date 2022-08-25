@@ -58,7 +58,7 @@ target_compile_definitions(_splinepy PRIVATE ${DEFS})
 
 target_compile_options(_splinepy PRIVATE
     ${SPLINEPY_FLAGS}
-    ${SPLINEPY_OPTIMIZATION_FLAGS})
+    $<$<NOT:$<CONFIG:Debug>>:${SPLINEPY_OPTIMIZATION_FLAGS}>)
 
 # link splinelib
 if(SPLINEPY_COMPILE_SPLINELIB)
