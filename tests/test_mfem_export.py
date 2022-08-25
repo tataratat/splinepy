@@ -71,7 +71,7 @@ class MFEMExportTest(c.unittest.TestCase):
         # Compare to existing file
         self.assertTrue(filecmp.cmp(
             "test_mfem_r0.mesh",
-            "reference_solution/test_mfem_r0.mesh.reference"
+            "tests/reference_solution/test_mfem_r0.mesh.reference"
         ))
         os.remove("test_mfem_r0.mesh")
 
@@ -149,7 +149,7 @@ class MFEMExportTest(c.unittest.TestCase):
         # Compare to existing file
         self.assertTrue(filecmp.cmp(
             "test_mfem_r1.mesh",
-            "reference_solution/test_mfem_r1.mesh.reference"
+            "tests/reference_solution/test_mfem_r1.mesh.reference"
         ))
         os.remove("test_mfem_r1.mesh")
 
