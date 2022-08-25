@@ -1,12 +1,14 @@
 import splinepy
 import numpy as np
+import filecmp
+import os
 try:
     from . import common as c
 except:
     import common as c
 
 
-class ProximityTest(c.unittest.TestCase):
+class MFEMExportTest(c.unittest.TestCase):
 
     def test_mfem_export(self):
         """
@@ -66,8 +68,14 @@ class ProximityTest(c.unittest.TestCase):
         splinepy.io.mfem.export_cartesian(
             "test_mfem_r0.mesh", [bez_el0, bsp_el2, nur_el3, rbz_el1])
 
-        # Test Also 3D Meshes
+        # Compare to existing file
+        self.assertTrue(filecmp.cmp(
+            "test_mfem_r0.mesh",
+            "reference_solution/test_mfem_r0.mesh.reference"
+        ))
+        os.remove("test_mfem_r0.mesh")
 
+        # Test Also 3D Meshes
         bez_el0 = splinepy.Bezier(
             degrees=[1, 1, 1],
             control_points=[
@@ -137,6 +145,13 @@ class ProximityTest(c.unittest.TestCase):
         # Export new mesh
         splinepy.io.mfem.export_cartesian(
             "test_mfem_r1.mesh", [bez_el0, bsp_el2, nur_el3, rbz_el1])
+
+        # Compare to existing file
+        self.assertTrue(filecmp.cmp(
+            "test_mfem_r1.mesh",
+            "reference_solution/test_mfem_r1.mesh.reference"
+        ))
+        os.remove("test_mfem_r1.mesh")
 
 
 if __name__ == "__main__":
