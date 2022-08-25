@@ -62,6 +62,17 @@ PYBIND11_MODULE(_splinepy, m) {
   init_bezier9(m);
   init_bezier10(m);
 
+  init_rational_bezier1(m);
+  init_rational_bezier2(m);
+  init_rational_bezier3(m);
+  init_rational_bezier4(m);
+  init_rational_bezier5(m);
+  init_rational_bezier6(m);
+  init_rational_bezier7(m);
+  init_rational_bezier8(m);
+  init_rational_bezier9(m);
+  init_rational_bezier10(m);
+
   init_bspline1(m);
   init_bspline2(m);
   init_bspline3(m);
