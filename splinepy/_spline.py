@@ -1008,7 +1008,7 @@ class Spline(abc.ABC):
 
             self._check_and_update_c()
 
-    def permute_parametric_dimensions(self, permutation_list):
+    def permute_parametric_axes(self, permutation_list):
         """
         Permutates the parametric dimensions
 
