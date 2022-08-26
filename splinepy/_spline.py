@@ -1081,6 +1081,8 @@ class Spline(abc.ABC):
             for rp in self.required_properties:
                 setattr(self, rp, spline_data_dict[rp])
 
+            return None
+
         else:
             logging.debug("Spline -   returning permuted spline")
             return type(self)(**spline_data_dict)
