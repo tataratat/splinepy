@@ -15,29 +15,54 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
         test permute
         """
         # Define some splines
-        z = splinepy.Bezier(**c.z2P2D)
-        r = splinepy.RationalBezier(**c.r2P2D)
-        b = splinepy.BSpline(**c.b2P2D)
-        n = splinepy.NURBS(**c.n2P2D)
-        tobepermuted = (z, r, b, n)
-        permutation = [1, 0]
+        z = splinepy.Bezier(**c.z3P3D)
+        r = splinepy.RationalBezier(**c.r3P3D)
+        b = splinepy.BSpline(**c.b3P3D)
+        n = splinepy.NURBS(**c.n3P3D)
+        originals = (z, r, b, n)
 
-        # save original
-        zo, ro, bo, no = z.copy(), r.copy(), b.copy(), n.copy()
-        originals = (zo, ro, bo, no)
+        # save originals
+        #originals = (z.copy(), r.copy(), b.copy(), n.copy())
 
-        for orig, tbp in zip(originals, tobepermuted):
-            perm = tbp.permute_parametric_axes(permutation)
-            queries = np.asarray(c.q2D)
+        # define permutation
+        permutation = [2, 0, 1]
+
+        # return permuted
+        for orig in originals:
+            # make more work
+            orig.elevate_degree(1)
+            orig.elevate_degree(2)
+            orig.elevate_degree(2)
+            if "knot_vectors" in orig.required_properties:
+                orig.insert_knots(0, [.4, .7, .8])
+                orig.insert_knots(1, [.1, .2])
+                orig.insert_knots(2, [.3, .5, .6, .9])
+
+            perm = orig.permute_parametric_axes(permutation, inplace=False)
+            queries = np.asarray(c.q3D)
 
             self.assertTrue(
-                np.allclose(
-                    orig.evaluate(queries),
-                    perm.evaluate(queries[:, permutation]),
-                ),
-                f"{tbp.whatami} failed to permute.",
+                    np.allclose(
+                        orig.evaluate(queries),
+                        perm.evaluate(queries[:, permutation]),
+                    ),
+                    f"{perm.whatami} failed to permute.",
             )
 
+        # inplace
+        for orig in originals:
+            perm = orig.copy()
+            perm.permute_parametric_axes(permutation, inplace=True)
+            queries = np.asarray(c.q3D)
+
+            self.assertTrue(
+                    np.allclose(
+                        orig.evaluate(queries),
+                        perm.evaluate(queries[:, permutation])
+                    ),
+                    f"{perm.whatami} failed to permute inplace.",
+            )
+        
 
 if __name__ == "__main__":
     c.unittest.main()
