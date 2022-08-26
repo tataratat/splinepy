@@ -108,7 +108,7 @@ if flags["minimal"] in sys.argv:
 
 if flags["enable_warning"] in sys.argv:
     print("*** adding warning flags ***")
-    cma += ["-DENABLE_WARNINGS=ON"]
+    cma += ["-DSPLINEPY_ENABLE_WARNINGS=ON"]
     sys.argv.remove(flags["enable_warning"])
 
 
