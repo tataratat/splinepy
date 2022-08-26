@@ -1,3 +1,6 @@
+# disable tests for splinelib and bezman
+set(GOOGLETEST OFF)
+
 if(SPLINEPY_COMPILE_SPLINELIB)
     add_subdirectory(SplineLib)
 endif()
