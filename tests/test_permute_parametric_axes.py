@@ -21,9 +21,6 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
         n = splinepy.NURBS(**c.n3P3D)
         originals = (z, r, b, n)
 
-        # save originals
-        #originals = (z.copy(), r.copy(), b.copy(), n.copy())
-
         # define permutation
         permutation = [2, 0, 1]
 
