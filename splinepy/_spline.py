@@ -1008,7 +1008,7 @@ class Spline(abc.ABC):
 
             self._check_and_update_c()
 
-    def permute_parametric_axes(self, permutation_list):
+    def permute_parametric_axes(self, permutation_list, inplace=True):
         """
         Permutates the parametric dimensions
 
@@ -1020,11 +1020,14 @@ class Spline(abc.ABC):
         ----------
         permutation_list : list
             New order of parametric dimensions
+        inplace: bool
+            Default is True. If True, modifies spline inplace, else, returns
+            a modified_spline.
 
         Returns
         -------
         modified_spline : type(self)
-            spline with reordered parametric dimensions
+            spline with reordered parametric dimensions. iff `inplace=True`.
         """
         # Data collector for new spline object
         spline_data_dict = {}
@@ -1034,6 +1037,8 @@ class Spline(abc.ABC):
             raise ValueError("Permutation list incomprehensive")
         if not set(range(self.para_dim)) == set(permutation_list):
             raise ValueError("Permutation list invalid")
+
+        logging.debug("Spline - Permuting parametric axes...")
 
         # Update knot_vectors where applicable
         if "knot_vectors" in self.required_properties:
@@ -1070,7 +1075,15 @@ class Spline(abc.ABC):
             spline_data_dict["weights"] = self.weights[global_indices]
         spline_data_dict["control_points"] = self.control_points[global_indices, :]
 
-        return type(self)(**spline_data_dict)
+        if inplace:
+            logging.debug("Spline -   applying permutation inplace")
+            self.clear()
+            for rp in self.required_properties:
+                setattr(self, rp, spline_data_dict[rp])
+
+        else:
+            logging.debug("Spline -   returning permuted spline")
+            return type(self)(**spline_data_dict)
 
     def elevate_degree(self, parametric_dimension):
         """
