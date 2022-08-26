@@ -14,17 +14,18 @@ namespace py = pybind11;
 template <int para_dim, int dim>
 using RationalBezier = bezman::RationalBezierSpline<
     static_cast<std::size_t>(para_dim),
-    std::conditional_t<(dim > 1), bezman::Point<static_cast<unsigned>(dim)>,
+    std::conditional_t<(dim > 1),
+                       bezman::Point<static_cast<unsigned>(dim)>,
                        double>,
     double>;
 
 template <int para_dim, int dim>
 class PyRationalBezier {
- private:
+private:
   // Alias to the internal RationalBezier type
   using RationalBezierSpline_ = RationalBezier<para_dim, dim>;
 
- public:
+public:
   int para_dim_ = para_dim;
   int dim_ = dim;
 
@@ -41,8 +42,8 @@ class PyRationalBezier {
 
   /// Identifier
   const std::string whatami =
-      "RationalBezier, parametric dimension: " + std::to_string(para_dim) +
-      ", physical dimension: " + std::to_string(dim);
+      "RationalBezier, parametric dimension: " + std::to_string(para_dim)
+      + ", physical dimension: " + std::to_string(dim);
 
   /// Empty constructor
   PyRationalBezier() = default;
@@ -66,9 +67,9 @@ class PyRationalBezier {
     // Init c_rational_bezier using move constructor
     c_rational_bezier = std::move(rhs);
     p_control_points.resize(
-        {(int)c_rational_bezier.GetWeightedControlPoints().size(), dim});
-    p_weights.resize({(int)c_rational_bezier.GetWeights().size(), 1});
-    p_degrees.resize({(int)para_dim});
+        {(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+    p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
+    p_degrees.resize({(int) para_dim});
     update_p();
   }
 
@@ -76,9 +77,9 @@ class PyRationalBezier {
   PyRationalBezier(const PyBezier<para_dim, dim>& rhs)
       : c_rational_bezier{rhs.c_bezier} {
     p_control_points.resize(
-        {(int)c_rational_bezier.GetWeightedControlPoints().size(), dim});
-    p_weights.resize({(int)c_rational_bezier.GetWeights().size(), 1});
-    p_degrees.resize({(int)para_dim});
+        {(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+    p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
+    p_degrees.resize({(int) para_dim});
     update_p();
   }
 
@@ -96,8 +97,8 @@ class PyRationalBezier {
     double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     double* weights_ptr = static_cast<double*>(p_weights.request().ptr);
     // Check if size matches
-    assert(p_control_points.request().shape[0] ==
-           c_rational_bezier.NumberOfControlPoints);
+    assert(p_control_points.request().shape[0]
+           == c_rational_bezier.NumberOfControlPoints);
     for (std::size_t i = 0; i < p_control_points.request().shape[0]; i++) {
       // Update weight
       c_rational_bezier.GetWeights()[i] = weights_ptr[i];
@@ -130,16 +131,16 @@ class PyRationalBezier {
 
     // update control_points
     // Check if shape changed
-    if (c_rational_bezier.GetWeightedControlPoints().size() !=
-        p_control_points.request().shape[0]) {
+    if (c_rational_bezier.GetWeightedControlPoints().size()
+        != p_control_points.request().shape[0]) {
       const std::size_t number_of_ctps =
           c_rational_bezier.GetWeightedControlPoints().size();
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int)number_of_ctps, dim});
+      p_control_points.resize({(int) number_of_ctps, dim});
       // Update Control Point Vector
       p_weights = py::array_t<double>(number_of_ctps);
-      p_weights.resize({(int)number_of_ctps, 1});
+      p_weights.resize({(int) number_of_ctps, 1});
       // Update pointers
       cps_ptr = static_cast<double*>(p_control_points.request().ptr);
       weights_ptr = static_cast<double*>(p_weights.request().ptr);
@@ -195,7 +196,7 @@ class PyRationalBezier {
       }
     }
 
-    results.resize({(int)queries.request().shape[0], dim});
+    results.resize({(int) queries.request().shape[0], dim});
 
     return results;
   }
@@ -211,10 +212,10 @@ class PyRationalBezier {
   }
 
   // Multiplication routines
-  PyRationalBezier<para_dim, 1> multiply_with_spline(
-      const PyRationalBezier& a) {
-    PyRationalBezier<para_dim, 1> result{(*this).c_rational_bezier *
-                                         a.c_rational_bezier};
+  PyRationalBezier<para_dim, 1>
+  multiply_with_spline(const PyRationalBezier& a) {
+    PyRationalBezier<para_dim, 1> result{(*this).c_rational_bezier
+                                         * a.c_rational_bezier};
     result.update_p();
     return result;
   }
@@ -226,8 +227,8 @@ class PyRationalBezier {
     return result;
   }
 
-  PyRationalBezier multiply_with_scalar_spline(
-      const PyRationalBezier<para_dim, 1>& a) {
+  PyRationalBezier
+  multiply_with_scalar_spline(const PyRationalBezier<para_dim, 1>& a) {
     PyRationalBezier result{(*this).c_rational_bezier * a.c_rational_bezier};
     result.update_p();
     return result;
@@ -237,9 +238,9 @@ class PyRationalBezier {
 
   // Composition Routine
   template <int par_dim_inner_function>
-  PyRationalBezier<par_dim_inner_function, dim> ComposeRR(
-      const PyRationalBezier<par_dim_inner_function, para_dim>&
-          inner_function) {
+  PyRationalBezier<par_dim_inner_function, dim>
+  ComposeRR(const PyRationalBezier<par_dim_inner_function, para_dim>&
+                inner_function) {
     // Use Composition routine
     PyRationalBezier<par_dim_inner_function, dim> result{
         (*this).c_rational_bezier.Compose(inner_function.c_rational_bezier)};
@@ -249,8 +250,8 @@ class PyRationalBezier {
 
   // Composition Routine
   template <int par_dim_inner_function>
-  PyRationalBezier<par_dim_inner_function, dim> ComposeRP(
-      const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
+  PyRationalBezier<par_dim_inner_function, dim>
+  ComposeRP(const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
     // Use Composition routine
     PyRationalBezier<par_dim_inner_function, dim> result{
         (*this).c_rational_bezier.Compose(inner_function.c_bezier)};
@@ -268,9 +269,12 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
       // Default initializer
       .def(py::init<>())
       // initializer with values
-      .def(py::init<py::array_t<int>, py::array_t<double>,
+      .def(py::init<py::array_t<int>,
+                    py::array_t<double>,
                     py::array_t<double>>(),
-           py::arg("degrees"), py::arg("control_points"), py::arg("weights"))
+           py::arg("degrees"),
+           py::arg("control_points"),
+           py::arg("weights"))
       // Transformation Copy constructor
       .def(py::init<PyBezier<para_dim, dim>>())
       // Identifier
@@ -294,10 +298,12 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
       // Update Python side
       .def("update_p", &PyRationalBezier<para_dim, dim>::update_p)
       // Evaluate
-      .def("evaluate", &PyRationalBezier<para_dim, dim>::evaluate,
+      .def("evaluate",
+           &PyRationalBezier<para_dim, dim>::evaluate,
            py::arg("queries"))
       // Degree elevation
-      .def("elevate_degree", &PyRationalBezier<para_dim, dim>::elevate_degree,
+      .def("elevate_degree",
+           &PyRationalBezier<para_dim, dim>::elevate_degree,
            py::arg("p_dim"))
       // Multiplication
       .def("multiply_with_spline",
@@ -308,7 +314,8 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
            &PyRationalBezier<para_dim, dim>::multiply_with_scalar_spline,
            py::arg("factor"))
       // Addition
-      .def("add_spline", &PyRationalBezier<para_dim, dim>::add_spline,
+      .def("add_spline",
+           &PyRationalBezier<para_dim, dim>::add_spline,
            py::arg("summand"))
       // Composition with one dimensional spline
       .def("compose_line_rr",
@@ -347,7 +354,8 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
             }
 
             PyRationalBezier<para_dim, dim> pyb(
-                t[0].cast<py::array_t<int>>(), t[1].cast<py::array_t<double>>(),
+                t[0].cast<py::array_t<int>>(),
+                t[1].cast<py::array_t<double>>(),
                 t[2].cast<py::array_t<double>>());
 
             return pyb;

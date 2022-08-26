@@ -36,4 +36,4 @@ struct isBSpline<BSpline<para_dim, dim>> {
 template <typename SplineType>
 constexpr bool isBSpline_v = isBSpline<SplineType>::value;
 
-}  // namespace splinepy::splines
+} // namespace splinepy::splines
