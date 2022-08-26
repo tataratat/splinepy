@@ -1002,7 +1002,7 @@ class Spline(abc.ABC):
         if "knot_vectors" in self.required_properties:
             for i, kv in enumerate(self.knot_vectors):
                 offset = kv[0]
-                scale = 1 / (kv[-1] - offset) 
+                scale = 1 / (kv[-1] - offset)
                 n_kv = [(k - offset) * scale for k in kv]
                 self._knot_vectors[i] = n_kv
 
@@ -1152,12 +1152,13 @@ class Spline(abc.ABC):
                 "degree"
             )
             self._update_p()
-
         else:
             logging.debug(
                 f"Spline - Could not reduce {parametric_dimension}.-dim. "
                 "degree"
             )
+
+        return reduced
 
     def sample(self, query_resolutions):
         """
