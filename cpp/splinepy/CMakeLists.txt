@@ -16,6 +16,7 @@ else()
     # link
     target_link_libraries(splinepy
         INTERFACE
+            pybind11::headers
             fitting
             bezman
             napf
