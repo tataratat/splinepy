@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 #include <splinepy/py/py_bezier.hpp>
@@ -36,7 +37,7 @@ class PyRationalBezier {
   bool skip_update = false;
 
   /// C++ object from bezman backend
-  RationalBezier<para_dim, dim> c_rational_bezier;
+  RationalBezierSpline_ c_rational_bezier;
 
   /// Identifier
   const std::string whatami =
@@ -89,7 +90,7 @@ class PyRationalBezier {
     std::copy_n(ds_ptr, para_dim, c_degrees.begin());
 
     // (re)init c++ object
-    c_rational_bezier = std::move(RationalBezier<para_dim, dim>{c_degrees});
+    c_rational_bezier = std::move(RationalBezierSpline_{c_degrees});
 
     // update ctps and weights
     double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
@@ -97,7 +98,7 @@ class PyRationalBezier {
     // Check if size matches
     assert(p_control_points.request().shape[0] ==
            c_rational_bezier.NumberOfControlPoints);
-    for (int i = 0; i < p_control_points.request().shape[0]; i++) {
+    for (std::size_t i = 0; i < p_control_points.request().shape[0]; i++) {
       // Update weight
       c_rational_bezier.GetWeights()[i] = weights_ptr[i];
       // Update CTPS

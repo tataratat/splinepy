@@ -9,8 +9,9 @@ import numpy as np
 # single function imports
 from splinepy.utils import make_c_contiguous
 from splinepy.io.utils import (form_lines,
-                                  next_line,
-                                  make_meaningful)
+                               next_line,
+                               make_meaningful)
+from splinepy._splinepy import retrieve_mfem_information
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -48,7 +49,7 @@ def load(fname,):
     mk = deepcopy(_mfem_meaningful_keywords)
     # they follow a strict order or keywords, so just gather those in order
     # Ordering is a hotkey because control points comes right after
-    hotkeys = ["knotvectors", "weights", "Ordering",]
+    hotkeys = ["knotvectors", "weights", "Ordering", ]
     nurbs_dict = dict(knotvectors=[], weights=[], Ordering=[])
     collect = False
     with open(fname, "r") as f:
@@ -104,7 +105,7 @@ def load(fname,):
     ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
     # ws
     weights = nurbs_dict["weights"]
-    weights = [eval(w) for w in weights] # hopefully not too slow
+    weights = [eval(w) for w in weights]  # hopefully not too slow
     # cps
     control_points = nurbs_dict["Ordering"]
     control_points = [
@@ -156,7 +157,7 @@ def read_solution(fname, reference_nurbs,):
         solution = []
         collect = False
         while line is not None:
-            if collect: # check this first. should be true most time
+            if collect:  # check this first. should be true most time
                 solution.append(eval(f"[{line.replace(' ', ',')}]"))
             elif hotkey in line:
                 collect = True
@@ -226,14 +227,13 @@ def mfem_index_mapping(
         if len(l) == 0:
             return l
         if isinstance(l[0], list):
-           return flatten(l[0]) + flatten(l[1:])
+            return flatten(l[0]) + flatten(l[1:])
         return l[:1] + flatten(l[1:])
-
 
     if int(para_dim) == 2:
         cps_per_dim = [
             len(knot_vectors[i]) - degrees[i] - 1 for i in range(para_dim)
-        ] # degrees = order - 1
+        ]  # degrees = order - 1
         cp_ids = np.arange(np.prod(cps_per_dim)).tolist()
 
         # group0 - list of int
@@ -269,14 +269,221 @@ def mfem_index_mapping(
             "Something went wrong during reorganizing indices for MFEM."
 
         return (
-            flat_groups if flat_list else groups, # to_mfem
-            np.argsort(flat_groups) # inverse
+            flat_groups if flat_list else groups,  # to_mfem
+            np.argsort(flat_groups)  # inverse
         )
-        
 
     else:
         raise NotImplementedError
-    
+
+
+def export_cartesian(
+        fname,
+        spline_list,
+        tolerance=None,
+        boundary_functions=None):
+    """
+    Export list of bezier splines in mfem export
+
+    Parameters
+    ----------
+    fname: string
+      file name
+    bezier_list: list
+      list of bezier spline objects
+    tolerance : float
+      tolerance to collapse two neighboring points
+    boundary_functions : list(Callable)
+      Functions that define boundaries 
+
+    Returns
+    -------
+    None
+    """
+    from splinepy._spline import Spline
+
+    # Check first spline
+    if not type(spline_list) == list:
+        raise ValueError("export_cartesian expects list for export.")
+    if not issubclass(type(spline_list[0]), Spline):
+        raise ValueError("Unsupported type in list")
+
+    # Set Tolerance
+    if tolerance is None:
+        tolerance = 1e-5
+    # Set boundary list
+    if boundary_functions is None:
+        boundary_functions = []
+
+    # Set Problem dimensions
+    para_dim = spline_list[0].para_dim
+    dim = spline_list[0].dim
+    if not ((para_dim == dim) and (dim == 3 or dim == 2)):
+        raise ValueError("Only 2D2D or 3D3D splines are supported")
+
+    # For use in loop
+    def _sanity_check(spline):
+        if not issubclass(type(spline), Spline):
+            raise ValueError("Unsupported type in list")
+        if not (spline.dim == dim and spline.para_dim == para_dim):
+            raise ValueError("Dimension Mismatch between splines")
+
+    # Auxiliary function to identify corner vertices of the underlying spline
+    #  representation. As this function requires the numeration of its
+    # underlying hypercube Element, the following part needs to be different
+    # for the 2D and the 3D case
+    if para_dim == 2:
+        geometry_type = 3
+        boundary_type = 1
+        n_vertex_per_element = 4
+        n_vertex_per_boundary = 2
+
+        def _corner_vertex_ids(spline):
+            cmr = spline.control_mesh_resolutions
+            return [
+                0,
+                cmr[0] - 1,
+                cmr[0] * cmr[1] - 1,
+                cmr[0] * (cmr[1] - 1)
+            ]
+    elif para_dim == 3:
+        geometry_type = 5
+        boundary_type = 3
+        n_vertex_per_element = 8
+        n_vertex_per_boundary = 4
+
+        def _corner_vertex_ids(spline):
+            cmr = spline.control_mesh_resolutions
+            return [
+                0,
+                cmr[0] - 1,
+                cmr[0] * cmr[1] - 1,
+                cmr[0] * (cmr[1] - 1),
+                (cmr[2] - 1) * cmr[1] * cmr[0],
+                (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] - 1,
+                (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * cmr[1] - 1,
+                (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * (cmr[1] - 1),
+            ]
+
+    # Create a list of all corner vertices ordered by spline patch number
+    corner_vertices = np.empty((0, dim))
+    for spline in spline_list:
+        _sanity_check(spline)
+        corner_vertex_ids = _corner_vertex_ids(spline)
+        corner_vertices = np.vstack((
+            corner_vertices, spline.control_points[corner_vertex_ids, :]))
+
+    # Retrieve information using bezman
+    (connectivity,
+     vertex_ids,
+     edges,
+     boundaries,
+     success) = retrieve_mfem_information(corner_vertices, tolerance)
+
+    boundary_ids = np.ones(boundaries.shape[0], dtype=int)
+    if not len(boundary_functions) == 0:
+        # Retrieve all boundary points (to minimize computations)
+        boundary_vertex_ids = np.unique(boundaries)
+        # Boundary_vertex_ids refer to the new enumeration
+        _, vertex_ids_unique = np.unique(
+            vertex_ids, return_index=True)
+        boundary_corner_verts = corner_vertices[
+            vertex_ids_unique[boundary_vertex_ids], :]
+        # Loop over all boundary functions to identify boundaries
+        for i_bound, b_func in enumerate(boundary_functions):
+            try:
+                is_on_boundary = b_func(boundary_corner_verts)
+            except:
+                raise ValueError("Boundary Function Layout incompatible")
+            set_boundary = np.sum(
+                np.isin(
+                    boundaries,
+                    boundary_vertex_ids[is_on_boundary]
+                ), axis=1) == n_vertex_per_boundary
+            boundary_ids[set_boundary] = i_bound + 2
+
+    # Check if algorithm was successfull
+    if not success:
+        # todo : only connectivity stores data, see issue #33
+        # Use <SplineBase>.permute to potentially save mesh export
+        raise NotImplementedError(
+            "MFEM export not implemented for unstructured meshes")
+
+    # Write all gathered information into a file
+    with open(fname, "w") as f:
+        # Header
+        f.write(f"MFEM NURBS mesh v1.0\n\ndimension\n{dim}\n\n")
+
+        # Elements
+        n_elements = len(spline_list)
+        f.write(f"elements\n{n_elements}\n")
+        f.write('\n'.join(
+            f"1 {geometry_type} "
+            + ' '.join(str(id) for id in row)
+            for row in vertex_ids.reshape(-1, n_vertex_per_element).tolist()
+        ))
+
+        # Boundaries
+        n_boundaries = boundaries.shape[0]
+        f.write(f"\n\nboundary\n{n_boundaries}\n")
+        # Here currently all boudaries are set to 1
+        f.write('\n'.join(
+            f"{boundary_id} {boundary_type} "
+            + ' '.join(str(id) for id in row)
+            for row, boundary_id in zip(
+                boundaries.reshape(-1, n_vertex_per_boundary).tolist(),
+                boundary_ids.tolist()
+            )
+        ))
+
+        # Edges
+        n_edges = edges.shape[0]
+        f.write(f"\n\nedges\n{n_edges}\n")
+        # Here currently all boudaries are set to 1
+        f.write('\n'.join(
+            ' '.join(str(id) for id in row)
+            for row in edges.reshape(-1, 3).tolist()
+        ))
+
+        # Write Number Of vertices
+        f.write(f"\n\nvertices\n{np.max(vertex_ids)+1}\n\n")
+
+        # Export Splines
+        f.write("patches\n\n")
+        for spline in spline_list:
+            f.write(f"knotvectors\n{para_dim}\n")
+            cmr = spline.control_mesh_resolutions
+            for i_para_dim in range(para_dim):
+                f.write(f"{spline.degrees[i_para_dim]} ")
+                f.write(f"{cmr[i_para_dim]} ")
+                if not "knot_vectors" in spline.required_properties:
+                    f.write("0.0 " * (spline.degrees[i_para_dim]+1))
+                    f.write("1.0 " * (spline.degrees[i_para_dim]+1) + "\n")
+                else:
+                    f.write(' '.join(str(kvi)
+                            for kvi in spline.kvs[i_para_dim]) + "\n")
+            f.write(f"dimension\n{dim}\n")
+            f.write(f"controlpoints_cartesian\n")
+            if not "weights" in spline.required_properties:
+                f.write(
+                    '\n'.join(
+                        (' '.join(str(x_i) for x_i in row) + " 1.0")
+                        for row in spline.control_points.tolist()
+                    ) + "\n\n"
+                )
+            else:
+                f.write(
+                    '\n'.join(
+                        (' '.join(str(x_i)
+                                  for x_i in coords) + " " + str(weight[0]))
+                        for (coords, weight) in zip(
+                            spline.control_points.tolist(),
+                            spline.weights.tolist()
+                        )
+                    ) + "\n\n"
+                )
+
+        f.close()
 
 
 def export(fname, nurbs, precision=10):
@@ -313,7 +520,7 @@ def export(fname, nurbs, precision=10):
     if nurbs.whatami.startswith("NURBS"):
         pass
     elif nurbs.whatami.startswith("BSpline"):
-        nurbs = nurbs.nurbs # if bspline, turn it into nurbs
+        nurbs = nurbs.nurbs  # if bspline, turn it into nurbs
     else:
         raise TypeError("Sorry, invalid spline object.")
 
@@ -408,7 +615,7 @@ def export(fname, nurbs, precision=10):
 
             kvs = kvs + kvs2
 
-            kvs += "\n" # missing empty line
+            kvs += "\n"  # missing empty line
 
             return kvs
 
@@ -430,19 +637,19 @@ def export(fname, nurbs, precision=10):
     ):
         # weights - string operation
         weights_sec = str(nurbs.weights.flatten()[reorder_ids].tolist())
-        weights_sec = weights_sec[1:-1] # remove []
-        weights_sec = weights_sec.replace("\n", "") # remove \n
-        weights_sec = weights_sec.replace(",", "") # remove ,
-        weights_sec = weights_sec.replace(" ", "\n") # add \n
-        weights_sec = "weights\n" + weights_sec # add title
-        weights_sec += "\n\n" # empty line 
+        weights_sec = weights_sec[1:-1]  # remove []
+        weights_sec = weights_sec.replace("\n", "")  # remove \n
+        weights_sec = weights_sec.replace(",", "")  # remove ,
+        weights_sec = weights_sec.replace(" ", "\n")  # add \n
+        weights_sec = "weights\n" + weights_sec  # add title
+        weights_sec += "\n\n"  # empty line
 
         # cps
         cps_sec = str(nurbs.control_points[reorder_ids].tolist())
-        cps_sec = cps_sec.replace("[", "") # remove [
-        cps_sec = cps_sec.replace(",", "") # remove ,
-        cps_sec = cps_sec.replace("\n", "") # remove \n
-        cps_sec = cps_sec.replace("]", "\n") # replace ] with \n
+        cps_sec = cps_sec.replace("[", "")  # remove [
+        cps_sec = cps_sec.replace(",", "")  # remove ,
+        cps_sec = cps_sec.replace("\n", "")  # remove \n
+        cps_sec = cps_sec.replace("]", "\n")  # replace ] with \n
 
     fe_space_sec = form_lines(
         "FiniteElementSpace",

@@ -14,6 +14,18 @@ void init_bezier8(py::module_ &);
 void init_bezier9(py::module_ &);
 void init_bezier10(py::module_ &);
 
+// Rational Bezier
+void init_rational_bezier1(py::module_ &);
+void init_rational_bezier2(py::module_ &);
+void init_rational_bezier3(py::module_ &);
+void init_rational_bezier4(py::module_ &);
+void init_rational_bezier5(py::module_ &);
+void init_rational_bezier6(py::module_ &);
+void init_rational_bezier7(py::module_ &);
+void init_rational_bezier8(py::module_ &);
+void init_rational_bezier9(py::module_ &);
+void init_rational_bezier10(py::module_ &);
+
 // BSpline
 void init_bspline1(py::module_ &);
 void init_bspline2(py::module_ &);
@@ -44,8 +56,10 @@ void init_minimal(py::module_ &);
 // Reader
 void init_reader(py::module_ &);
 
-PYBIND11_MODULE(_splinepy, m) {
+// Exporter
+void init_exporter(py::module_ &);
 
+PYBIND11_MODULE(_splinepy, m) {
 #ifdef _MINIMAL_
   init_minimal(m);
 #else
@@ -59,6 +73,17 @@ PYBIND11_MODULE(_splinepy, m) {
   init_bezier8(m);
   init_bezier9(m);
   init_bezier10(m);
+
+  init_rational_bezier1(m);
+  init_rational_bezier2(m);
+  init_rational_bezier3(m);
+  init_rational_bezier4(m);
+  init_rational_bezier5(m);
+  init_rational_bezier6(m);
+  init_rational_bezier7(m);
+  init_rational_bezier8(m);
+  init_rational_bezier9(m);
+  init_rational_bezier10(m);
 
   init_bspline1(m);
   init_bspline2(m);
@@ -84,4 +109,5 @@ PYBIND11_MODULE(_splinepy, m) {
 #endif
 
   init_reader(m);
+  init_exporter(m);
 }
