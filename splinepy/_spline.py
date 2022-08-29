@@ -745,7 +745,6 @@ class Spline(abc.ABC):
                         f"{i}. knot vector includes negative knots."
                     )
             
-
         # Check if required number of control points is present
         n_required_cps = np.prod(self.control_mesh_resolutions)
         n_defined_cps = self.control_points.shape[0]
