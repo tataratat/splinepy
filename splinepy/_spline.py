@@ -146,7 +146,7 @@ class Spline(abc.ABC):
         degrees: np.ndarray
         knot_vectors: list
         control_points: np.ndarray
-        knot_vector_bounds: np.ndarray
+        parametric_bounds: np.ndarray
         control_point_bounds: np.ndarray
         skip_update: bool
 
@@ -441,9 +441,9 @@ class Spline(abc.ABC):
         return unique_knots
 
     @property
-    def knot_vector_bounds(self,):
+    def parametric_bounds(self,):
         """
-        Returns bounds of knot vectors.
+        Returns bounds of parametric_space.
 
         Parameters
         -----------
@@ -451,20 +451,28 @@ class Spline(abc.ABC):
 
         Returns
         --------
-        knot_vector_bounds: (2, para_dim) np.ndarray
+        parametric_bounds: (2, para_dim) np.ndarray
         """
-        if self.knot_vectors is None:
+        logging.debug("Spline - Computing knot_vectors_bounds")
+        # beziers
+        if "knot_vectors" not in self.required_properties:
+            return [[0, 1] * self.para_dim]
+
+        # bsplines
+        kvs = self.knot_vectors
+        if kvs is None:
             return None
 
-        logging.debug("Spline - Computing knot_vectors_bounds")
         lower_bounds = []
         upper_bounds = []
-        kvs = self.knot_vectors
-        for i in range(self.para_dim):
-            lower_bounds.append(min(kvs[i]))
-            upper_bounds.append(max(kvs[i]))
+        for kv in range(kvs):
+            lower_bounds.append(kv[0])
+            upper_bounds.append(kv[-1])
 
         return np.vstack((lower_bounds, upper_bounds))
+
+    # keep this until gustaf stops using knot_vector_bounds
+    knot_vector_bounds = parametric_bounds
 
     @property
     def control_points(self,):
