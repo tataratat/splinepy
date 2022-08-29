@@ -465,7 +465,7 @@ class Spline(abc.ABC):
 
         lower_bounds = []
         upper_bounds = []
-        for kv in range(kvs):
+        for kv in kvs:
             lower_bounds.append(kv[0])
             upper_bounds.append(kv[-1])
 
