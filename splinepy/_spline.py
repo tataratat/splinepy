@@ -453,7 +453,7 @@ class Spline(abc.ABC):
         --------
         parametric_bounds: (2, para_dim) np.ndarray
         """
-        logging.debug("Spline - Computing knot_vectors_bounds")
+        logging.debug("Spline - Computing parametric_bounds")
         # beziers
         if "knot_vectors" not in self.required_properties:
             return [[0, 1] * self.para_dim]
@@ -465,9 +465,19 @@ class Spline(abc.ABC):
 
         lower_bounds = []
         upper_bounds = []
+
+        use_minmax = False
+        if not hasattr(self, "_c_spline"):
+            # in this case, `_check_and_update_c()` wasn't called.
+            logging.debug(
+                "Spline - entries of `knot_vectors` has not been checked. "
+                "Values of `parametric_bounds` will be min and max."
+            )
+            use_minmax = True
+
         for kv in kvs:
-            lower_bounds.append(kv[0])
-            upper_bounds.append(kv[-1])
+            lower_bounds.append(min(kv) if use_minmax else kv[0])
+            upper_bounds.append(max(kv) if use_minmax else kv[-1])
 
         return np.vstack((lower_bounds, upper_bounds))
 
@@ -651,7 +661,7 @@ class Spline(abc.ABC):
 
         # Special case Bezier
         if "Bezier" in type(self).__qualname__:
-            cmr = (self.degrees + 1).tolist()
+            cmr = [d + 1 for d in self.degrees]
         else:
             for kv, d in zip(self.knot_vectors, self.degrees):
                 cmr.append(len(kv) - d - 1)
@@ -721,6 +731,21 @@ class Spline(abc.ABC):
                         "Not enough knots in knot vector along parametric"
                         f" dimension {i}"
                     )
+
+                # check if knots are in increasing order
+                if (np.diff(kv) < 0).any():
+                    raise ValueError(
+                        f"Knots of {i}. "
+                        "knot vector are not in increasing order."
+                    )
+                # we know that knot vector is sorted by now.
+                # check if knots are >= 0.
+                if kv[0] < 0:
+                    raise ValueError(
+                        f"{i}. knot vector includes negative knots."
+                    )
+            
+
         # Check if required number of control points is present
         n_required_cps = np.prod(self.control_mesh_resolutions)
         n_defined_cps = self.control_points.shape[0]
