@@ -9,18 +9,15 @@
 
 namespace py = pybind11;
 
-template<int para_dim, int dim>
+template<std::size_t para_dim, std::size_t dim>
 using Bezier = bezman::BezierSpline<
-    static_cast<std::size_t>(para_dim),                           //
-    std::conditional_t<(dim > 1),                                 //
-                       bezman::Point<static_cast<unsigned>(dim)>, //
-                       double>,                                   //
-    double>;
+    static_cast<std::size_t>(para_dim),                          
+    std::conditional_t<(dim > 1), bezman::Point<dim>, double>, double>;
 
-template<int para_dim, int dim>
+template<std::size_t para_dim, std::size_t dim>
 class PyRationalBezier;
 
-template<int para_dim, int dim>
+template<std::size_t para_dim, std::size_t dim>
 class PyBezier {
 private:
   // Alias to the internal Bezier type
@@ -52,7 +49,7 @@ public:
   PyBezier(BezierSpline_ rhs) {
     // Init c_bezier using move constructor
     c_bezier = rhs;
-    p_control_points.resize({(int) c_bezier.control_points.size(), dim});
+    p_control_points.resize({(int) c_bezier.control_points.size(), (int) dim});
     p_degrees.resize({(int) para_dim});
     update_p();
   }
@@ -64,7 +61,7 @@ public:
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
 
-    for (int i = 0; i < para_dim; i++) {
+    for (std::size_t i = 0; i < para_dim; i++) {
       c_degrees[i] = ds_buf_ptr[i];
     }
 
@@ -74,9 +71,9 @@ public:
     // update cps
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
-    for (int i = 0; i < cps_buf.shape[0]; i++) {
+    for (std::size_t i = 0; i < static_cast<std::size_t>(cps_buf.shape[0]); i++) {
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
         }
       } else {
@@ -92,25 +89,25 @@ public:
     double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
 
     // update degrees
-    for (int i = 0; i < para_dim; i++) {
+    for (std::size_t i = 0; i < para_dim; i++) {
       ds_ptr[i] = c_bezier.GetDegrees()[i];
     }
 
     // update control_points
     const std::size_t number_of_ctps = c_bezier.control_points.size();
     // Check if shape changed
-    if (c_bezier.control_points.size() != p_control_points.request().shape[0]) {
+    if (static_cast<long int>(c_bezier.control_points.size()) != p_control_points.request().shape[0]) {
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int) number_of_ctps, dim});
+      p_control_points.resize({(int) number_of_ctps, (int) dim});
       // Update pointers
       cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     }
 
     // Update point coordinates
-    for (int i = 0; i < number_of_ctps; i++) {
+    for (std::size_t i = 0; i < number_of_ctps; i++) {
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           cps_ptr[i * dim + j] = c_bezier.control_points[i][j];
         }
       } else {
@@ -138,12 +135,12 @@ public:
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
-      for (int j = 0; j < para_dim; j++) {
+      for (std::size_t j = 0; j < para_dim; j++) {
         qpt[j] = q_buf_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_bezier.ForwardEvaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           r_buf_ptr[i * dim + j] = eqpt[j];
         }
       } else {
@@ -151,7 +148,7 @@ public:
       }
     }
 
-    results.resize({(int) q_buf.shape[0], dim});
+    results.resize({(int) q_buf.shape[0], (int) dim});
 
     return results;
   }
@@ -167,14 +164,14 @@ public:
     py::buffer_info r_buf = results.request();
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
-    for (int i = 0; i < q_buf.shape[0]; i++) {
+    for (std::size_t i = 0; i < static_cast<std::size_t>(q_buf.shape[0]); i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
-      for (int j = 0; j < para_dim; j++) {
+      for (std::size_t j = 0; j < para_dim; j++) {
         qpt[j] = q_buf_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_bezier.Evaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           r_buf_ptr[i * dim + j] = eqpt[j];
         }
       } else {
@@ -182,7 +179,7 @@ public:
       }
     }
 
-    results.resize({(int) q_buf.shape[0], dim});
+    results.resize({(int) q_buf.shape[0], (int)dim});
 
     return results;
   }

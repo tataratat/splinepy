@@ -83,7 +83,7 @@ auto ExtractBezierPatches(SplineType& input) {
   }
   std::array<std::size_t, para_dim> bezier_index_offsets{};
   bezier_index_offsets[0] = 1;
-  int n_ctps_per_patch = degrees[0] + 1;
+  std::size_t n_ctps_per_patch = degrees[0] + 1;
   for (std::size_t i{1}; i < para_dim; i++) {
     bezier_index_offsets[i] =
         bezier_index_offsets[i - 1] * (degrees[i - 1] + 1);
