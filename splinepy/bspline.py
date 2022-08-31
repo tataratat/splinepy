@@ -102,7 +102,7 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        self.logd(
+        self._logd(
             "BSpline curve interpolation complete. "
             f"Your spline is {self.whatami}."
         )
@@ -162,11 +162,11 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        self.logd(
+        self._logd(
             "BSpline curve approximation complete. "
             f"Your spline is {self.whatami}."
         )
-        self.logd(f"  Approximation residual: {res}")
+        self._logd(f"  Approximation residual: {res}")
 
         if save_query:
             self._fitting_queries = query_points
@@ -225,7 +225,7 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        self.logd(
+        self._logd(
             "BSpline surface interpolation complete. "
             f"Your spline is {self.whatami}."
         )
