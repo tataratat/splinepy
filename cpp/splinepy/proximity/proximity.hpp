@@ -2,14 +2,13 @@
 
 #include <napf.hpp>
 
-#include <splinepy/utils/arrays.hpp>
-#include <splinepy/utils/print.hpp>
-#include <splinepy/utils/nthreads.hpp>
-#include <splinepy/utils/grid_points.hpp>
 #include <splinepy/splines/helpers.hpp>
+#include <splinepy/utils/arrays.hpp>
+#include <splinepy/utils/grid_points.hpp>
+#include <splinepy/utils/nthreads.hpp>
+#include <splinepy/utils/print.hpp>
 
 namespace splinepy::proximity {
-
 
 /*!
  * A helper class to perform proximity operations for splines.
@@ -24,50 +23,43 @@ namespace splinepy::proximity {
 template<typename SplineType>
 class Proximity {
 public:
-
   /// Options for initial guess
-  enum class InitialGuess {MidPoint, KdTree};
+  enum class InitialGuess { MidPoint, KdTree };
 
   // Frequently used array alias
   using DArrayD_ = std::array<double, SplineType::kDim>;
   using PArrayD_ = std::array<double, SplineType::kParaDim>;
   using DArrayI_ = std::array<int, SplineType::kDim>;
   using PArrayI_ = std::array<int, SplineType::kParaDim>;
-  using PxPMatrixD_ = std::array<
-      std::array<double, SplineType::kParaDim>, SplineType::kParaDim
-  >;
-  using PxDMatrixD_ = std::array<
-      std::array<double, SplineType::kDim>, SplineType::kParaDim
-  >;
+  using PxPMatrixD_ = std::array<std::array<double, SplineType::kParaDim>,
+                                 SplineType::kParaDim>;
+  using PxDMatrixD_ =
+      std::array<std::array<double, SplineType::kDim>, SplineType::kParaDim>;
   // kdtree related alias
   // C-Array instead of vector to avoid default init
   using Coordinates_ = typename SplineType::Coordinate_[];
-  using Cloud_ =
-      typename napf::CoordinatesCloud<std::unique_ptr<Coordinates_>,
-                                      int,
-                                      SplineType::kDim>;
-  using Tree_ = typename std::conditional<
-    (SplineType::kDim < 4),
-    napf::CoordinatesTree<double,           /* DataT */
-                          double,           /* DistT */
-                          int,              /* IndexT */
-                          SplineType::kDim, /* dim */
-                          1,                /* metric (L1) */
-                          Cloud_>,          /* Cloud T */
-    napf::CoordinatesHighDimTree<double,
-                                 double,
-                                 int,
-                                 SplineType::kDim,
-                                 1,
-                                 Cloud_>
-  >::type;
-  using GridPoints_ = splinepy::utils::GridPoints<double,
-                                                  int,
-                                                  SplineType::kParaDim>;
+  using Cloud_ = typename napf::
+      CoordinatesCloud<std::unique_ptr<Coordinates_>, int, SplineType::kDim>;
+  using Tree_ =
+      typename std::conditional<(SplineType::kDim < 4),
+                                napf::CoordinatesTree<double, /* DataT */
+                                                      double, /* DistT */
+                                                      int,    /* IndexT */
+                                                      SplineType::kDim, /* dim
+                                                                         */
+                                                      1,       /* metric (L1) */
+                                                      Cloud_>, /* Cloud T */
+                                napf::CoordinatesHighDimTree<double,
+                                                             double,
+                                                             int,
+                                                             SplineType::kDim,
+                                                             1,
+                                                             Cloud_>>::type;
+  using GridPoints_ =
+      splinepy::utils::GridPoints<double, int, SplineType::kParaDim>;
 
   /// Constructor. As a spline helper class, always need a spline.
-  Proximity(SplineType const &spline) : spline_(spline) {};
-
+  Proximity(SplineType const& spline) : spline_(spline){};
 
   /*!
    * Computes difference between physical query and current parametric guess.
@@ -80,12 +72,9 @@ public:
                        const double* query,
                        DArrayD_& difference) const {
 
-    splinepy::utils::FirstMinusSecondEqualsThird(
-        spline_(guess),
-        query,
-        difference
-    );
-
+    splinepy::utils::FirstMinusSecondEqualsThird(spline_(guess),
+                                                 query,
+                                                 difference);
   }
 
   /*!
@@ -98,7 +87,7 @@ public:
    * @param resolutions parameter space sampling resolution
    * @param n_thread number of threads to be used for sampling
    */
-  void PlantNewKdTree(const PArrayI_& resolutions, const int n_thread=1) {
+  void PlantNewKdTree(const PArrayI_& resolutions, const int n_thread = 1) {
     // skip early, if requested resolutions are the as existing kdtree
     if (kdtree_planted_ && sampled_resolutions_ == resolutions) {
       return;
@@ -111,7 +100,7 @@ public:
     coordinates_ = std::make_unique<Coordinates_>(grid_points_.Size());
 
     // lambda function to allow n-thread execution
-    auto sample_coordinates = [&] (int begin, int end) {
+    auto sample_coordinates = [&](int begin, int end) {
       typename SplineType::ParametricCoordinate_ parametric_coordinate;
       for (int i{begin}; i < end; ++i) {
         grid_points_.IndexToParametricCoordinate(i, parametric_coordinate);
@@ -125,17 +114,16 @@ public:
                                       n_thread);
 
     // plant a new tree
-    coordinates_cloud_ = std::make_unique<Cloud_>(coordinates_,
-                                                  grid_points_.Size());
+    coordinates_cloud_ =
+        std::make_unique<Cloud_>(coordinates_, grid_points_.Size());
     kdtree_ = std::make_unique<Tree_>(SplineType::kDim, *coordinates_cloud_);
     kdtree_planted_ = true;
   }
 
   /// Make initial guess of choice
-  typename SplineType::ParametricCoordinate_ MakeInitialGuess(
-      const InitialGuess& initial_guess,
-      const double* goal) const {
-
+  typename SplineType::ParametricCoordinate_
+  MakeInitialGuess(const InitialGuess& initial_guess,
+                   const double* goal) const {
 
     if (initial_guess == InitialGuess::MidPoint) {
       using ReturnValueType =
@@ -144,33 +132,26 @@ public:
           splinepy::splines::GetParametricBounds(spline_);
 
       // mid point is mean of parametric bounds. doesn't consider the goal.
-      return splinepy::utils::Mean<ReturnValueType>(
-          parametric_bounds[0],
-          parametric_bounds[1]
-      );
+      return splinepy::utils::Mean<ReturnValueType>(parametric_bounds[0],
+                                                    parametric_bounds[1]);
 
     } else if (initial_guess == InitialGuess::KdTree) {
       if (!kdtree_planted_) {
         // hate to be aggresive, but here it is.
         splinepy::utils::PrintAndThrowError(
-            "to use InitialGuess::Kdtree, please first plant the kdtree!"
-        );
+            "to use InitialGuess::Kdtree, please first plant the kdtree!");
       }
 
       // good to go. ask the tree
       int id;
       double distance;
-      kdtree_->knnSearch(goal,
-                         1 /* closest neighbor */,
-                         &id,
-                         &distance);
+      kdtree_->knnSearch(goal, 1 /* closest neighbor */, &id, &distance);
 
       using ReturnType = typename SplineType::ParametricCoordinate_;
 
-      return 
-          grid_points_.template IndexToParametricCoordinate<ReturnType>(id);
+      return grid_points_.template IndexToParametricCoordinate<ReturnType>(id);
     } else {
-      //well, shouldn't reach here, but to fight a warning, here it is
+      // well, shouldn't reach here, but to fight a warning, here it is
       splinepy::utils::PrintAndThrowError("Invalid option for initial guess!");
       return typename SplineType::ParametricCoordinate_{};
     }
@@ -199,7 +180,7 @@ public:
       derivative_query.fill(splinelib::Derivative{0});
       ++derivative_query[i];
       // derivative evaluation
-      auto const &derivative = spline_(guess, derivative_query);
+      auto const& derivative = spline_(guess, derivative_query);
 
       df_dxi_i = 0.;
       for (int j{}; j < SplineType::kDim; ++j) {
@@ -220,11 +201,10 @@ public:
    * @params[in] spline_gradient
    * @params[out] lhs
    */
-  void FillLhs(
-      const typename SplineType::ParametricCoordinate_& guess,
-      const DArrayD_& difference,
-      const PxDMatrixD_& spline_gradient,
-      PxPMatrixD_& lhs) const {
+  void FillLhs(const typename SplineType::ParametricCoordinate_& guess,
+               const DArrayD_& difference,
+               const PxDMatrixD_& spline_gradient,
+               PxPMatrixD_& lhs) const {
 
     const PxPMatrixD_ spline_gradientAAt =
         splinepy::utils::AAt(spline_gradient);
@@ -236,15 +216,16 @@ public:
         ++derivative_query[i];
         ++derivative_query[j];
 
-        auto const &derivative = spline_(guess, derivative_query);
+        auto const& derivative = spline_(guess, derivative_query);
 
-        lhs[i][j] = 2 * (splinepy::utils::Dot(difference, derivative)
-                         + spline_gradientAAt[i][j]);
+        lhs[i][j] = 2
+                    * (splinepy::utils::Dot(difference, derivative)
+                       + spline_gradientAAt[i][j]);
 
-        if (i != j) lhs[j][i] = lhs[i][j]; // fill symmetric part
+        if (i != j)
+          lhs[j][i] = lhs[i][j]; // fill symmetric part
       }
     }
-
   }
 
   /*!
@@ -254,10 +235,10 @@ public:
    * @params initial_guess
    * @params tolerance
    */
-  typename SplineType::ParametricCoordinate_ FindNearestParametricCoordinate(
-      const double* query,
-      InitialGuess initial_guess,
-      double tolerance = 1e-12) const {
+  typename SplineType::ParametricCoordinate_
+  FindNearestParametricCoordinate(const double* query,
+                                  InitialGuess initial_guess,
+                                  double tolerance = 1e-12) const {
 
     PxPMatrixD_ lhs;
     PArrayD_ rhs;
@@ -270,8 +251,7 @@ public:
     bool solver_skip_mask_activated = false;
 
     // search_bounds is parametric bounds.
-    const auto search_bounds =
-        splinepy::splines::GetParametricBounds(spline_);
+    const auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
 
     typename SplineType::ParametricCoordinate_ current_guess =
         MakeInitialGuess(initial_guess, query);
@@ -289,10 +269,7 @@ public:
     // newton iteration
     for (int i{}; i < max_iteration; ++i) {
       // build systems to solve
-      FillSplineGradientAndRhs(current_guess,
-                               difference,
-                               spline_gradient,
-                               rhs);
+      FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
       FillLhs(current_guess, difference, spline_gradient, lhs);
 
       // solve and update
@@ -301,8 +278,8 @@ public:
         solver_skip_mask = clipped;
         solver_skip_mask_activated = true;
         // if skip mask is on for all entries, return now.
-        if (splinepy::utils::NonZeros(solver_skip_mask) ==
-                SplineType::kParaDim) {
+        if (splinepy::utils::NonZeros(solver_skip_mask)
+            == SplineType::kParaDim) {
           // current_guess should be clipped at this point.
           return current_guess;
         }
@@ -316,13 +293,14 @@ public:
       // Update
       splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
       // Clip
-      previous_clipped = clipped; //swap?
+      previous_clipped = clipped; // swap?
       splinepy::utils::Clip(search_bounds, current_guess, clipped);
       // Converged?
       current_norm = splinepy::utils::NormL2(rhs);
       GuessMinusQuery(current_guess, query, difference);
       if (std::abs(previous_norm - current_norm) < tolerance
-          || splinepy::utils::NormL2(difference) < tolerance) break;
+          || splinepy::utils::NormL2(difference) < tolerance)
+        break;
 
       // prepare next round
       previous_norm = current_norm;
@@ -331,7 +309,7 @@ public:
   }
 
 protected:
-  SplineType const &spline_;
+  SplineType const& spline_;
   // kdtree related variables
   GridPoints_ grid_points_;
   PArrayI_ sampled_resolutions_;
@@ -339,7 +317,6 @@ protected:
   std::unique_ptr<Coordinates_> coordinates_;
   std::unique_ptr<Cloud_> coordinates_cloud_;
   std::unique_ptr<Tree_> kdtree_;
-
 };
 
-} /* namespace proximity */
+} // namespace splinepy::proximity

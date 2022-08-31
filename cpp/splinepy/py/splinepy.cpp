@@ -3,61 +3,61 @@
 namespace py = pybind11;
 
 // Bezier
-void init_bezier1(py::module_ &);
-void init_bezier2(py::module_ &);
-void init_bezier3(py::module_ &);
-void init_bezier4(py::module_ &);
-void init_bezier5(py::module_ &);
-void init_bezier6(py::module_ &);
-void init_bezier7(py::module_ &);
-void init_bezier8(py::module_ &);
-void init_bezier9(py::module_ &);
-void init_bezier10(py::module_ &);
+void init_bezier1(py::module_&);
+void init_bezier2(py::module_&);
+void init_bezier3(py::module_&);
+void init_bezier4(py::module_&);
+void init_bezier5(py::module_&);
+void init_bezier6(py::module_&);
+void init_bezier7(py::module_&);
+void init_bezier8(py::module_&);
+void init_bezier9(py::module_&);
+void init_bezier10(py::module_&);
 
 // Rational Bezier
-void init_rational_bezier1(py::module_ &);
-void init_rational_bezier2(py::module_ &);
-void init_rational_bezier3(py::module_ &);
-void init_rational_bezier4(py::module_ &);
-void init_rational_bezier5(py::module_ &);
-void init_rational_bezier6(py::module_ &);
-void init_rational_bezier7(py::module_ &);
-void init_rational_bezier8(py::module_ &);
-void init_rational_bezier9(py::module_ &);
-void init_rational_bezier10(py::module_ &);
+void init_rational_bezier1(py::module_&);
+void init_rational_bezier2(py::module_&);
+void init_rational_bezier3(py::module_&);
+void init_rational_bezier4(py::module_&);
+void init_rational_bezier5(py::module_&);
+void init_rational_bezier6(py::module_&);
+void init_rational_bezier7(py::module_&);
+void init_rational_bezier8(py::module_&);
+void init_rational_bezier9(py::module_&);
+void init_rational_bezier10(py::module_&);
 
 // BSpline
-void init_bspline1(py::module_ &);
-void init_bspline2(py::module_ &);
-void init_bspline3(py::module_ &);
-void init_bspline4(py::module_ &);
-void init_bspline5(py::module_ &);
-void init_bspline6(py::module_ &);
-void init_bspline7(py::module_ &);
-void init_bspline8(py::module_ &);
-void init_bspline9(py::module_ &);
-void init_bspline10(py::module_ &);
+void init_bspline1(py::module_&);
+void init_bspline2(py::module_&);
+void init_bspline3(py::module_&);
+void init_bspline4(py::module_&);
+void init_bspline5(py::module_&);
+void init_bspline6(py::module_&);
+void init_bspline7(py::module_&);
+void init_bspline8(py::module_&);
+void init_bspline9(py::module_&);
+void init_bspline10(py::module_&);
 
 // NURBS
-void init_nurbs1(py::module_ &);
-void init_nurbs2(py::module_ &);
-void init_nurbs3(py::module_ &);
-void init_nurbs4(py::module_ &);
-void init_nurbs5(py::module_ &);
-void init_nurbs6(py::module_ &);
-void init_nurbs7(py::module_ &);
-void init_nurbs8(py::module_ &);
-void init_nurbs9(py::module_ &);
-void init_nurbs10(py::module_ &);
+void init_nurbs1(py::module_&);
+void init_nurbs2(py::module_&);
+void init_nurbs3(py::module_&);
+void init_nurbs4(py::module_&);
+void init_nurbs5(py::module_&);
+void init_nurbs6(py::module_&);
+void init_nurbs7(py::module_&);
+void init_nurbs8(py::module_&);
+void init_nurbs9(py::module_&);
+void init_nurbs10(py::module_&);
 
 // minimal
-void init_minimal(py::module_ &);
+void init_minimal(py::module_&);
 
 // Reader
-void init_reader(py::module_ &);
+void init_reader(py::module_&);
 
 // Exporter
-void init_exporter(py::module_ &);
+void init_exporter(py::module_&);
 
 PYBIND11_MODULE(_splinepy, m) {
 #ifdef _MINIMAL_

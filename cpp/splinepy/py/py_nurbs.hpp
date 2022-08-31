@@ -21,17 +21,17 @@
 #include <Sources/Utilities/string_operations.hpp>
 
 // Local
+#include <splinepy/py/py_rational_bezier.hpp>
 #include <splinepy/splines/helpers.hpp>
 #include <splinepy/splines/nurbs.hpp>
-#include <splinepy/py/py_rational_bezier.hpp>
 
 namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyNurbs {
- public:
+public:
   using Nurbs = splinepy::splines::Nurbs<para_dim, dim>;
 
   // For writing cpp splines
@@ -69,8 +69,8 @@ class PyNurbs {
 
   // Fr. Nurbs' answer to the question "What am I?"
   const std::string whatami =
-      "NURBS, parametric dimension: " + std::to_string(para_dim) +
-      ", physical dimension: " + std::to_string(dim);
+      "NURBS, parametric dimension: " + std::to_string(para_dim)
+      + ", physical dimension: " + std::to_string(dim);
 
   // Fr. Nurbs' python Family
   py::list p_knot_vectors;
@@ -83,9 +83,9 @@ class PyNurbs {
 
   // Constructor.
   PyNurbs() {}
-  PyNurbs(py::array_t<int> degrees,            //
-          py::list knot_vectors,               //
-          py::array_t<double> control_points,  //
+  PyNurbs(py::array_t<int> degrees,           //
+          py::list knot_vectors,              //
+          py::array_t<double> control_points, //
           py::array_t<double> weights)
       : p_degrees(degrees),
         p_knot_vectors(knot_vectors),
@@ -97,10 +97,10 @@ class PyNurbs {
   // Pass python values to cpp object.
   void update_c() {
     // Temporary containers
-    Knots c_knots;                   // std::vector
-    Coordinates c_control_points{};  // std::vector
-    Degrees c_degrees{};             // std::array
-    Weights c_weights{};             // std::vector
+    Knots c_knots;                  // std::vector
+    Coordinates c_control_points{}; // std::vector
+    Degrees c_degrees{};            // std::array
+    Weights c_weights{};            // std::vector
 
     // Formulate Degrees
     py::buffer_info ds_buf = p_degrees.request();
@@ -113,7 +113,7 @@ class PyNurbs {
     i = 0;
     KnotVectors c_knot_vectors{};
     for (py::handle kv : p_knot_vectors) {
-      c_knots.clear();  // Clear each time.
+      c_knots.clear(); // Clear each time.
       for (py::handle k : kv) {
         c_knots.push_back(Knot(k.cast<double>()));
       }
@@ -133,10 +133,9 @@ class PyNurbs {
     c_control_points.clear();
     c_control_points.assign(cps_buf.shape[0], Coordinate{});
 
-    for (i = 0; i < cps_buf.shape[0];
-         i++) {  // cps_buf.shape[0] : number of cps
+    for (i = 0; i < cps_buf.shape[0]; i++) { // cps_buf.shape[0] : number of cps
       Coordinate control_point{};
-      for (j = 0; j < dim; j++) {  // dim : cps_bus.shape[1]
+      for (j = 0; j < dim; j++) { // dim : cps_bus.shape[1]
         control_point[j] = ScalarCoordinate{cps_buf_ptr[i * dim + j]};
       }
       c_control_points[i] = control_point;
@@ -219,7 +218,7 @@ class PyNurbs {
       }
       Coordinate const& c_result = c_nurbs(pc);
       j = 0;
-      for (auto& sc : c_result) {  // `sc` : ScarlarCoordinate
+      for (auto& sc : c_result) { // `sc` : ScarlarCoordinate
         r_buf_ptr[i * dim + j] = sc.Get();
         j++;
       }
@@ -248,7 +247,7 @@ class PyNurbs {
 
     // eval and fill up result array
     auto eval = [&](int begin, int end) {
-      for (int id = begin; id < end; id++) {  // n_queries
+      for (int id = begin; id < end; id++) { // n_queries
         ParametricCoordinate pc{};
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
@@ -318,7 +317,7 @@ class PyNurbs {
 
       // Write `c_result` to `results`.
       j = 0;
-      for (const auto& sc : c_result) {  // `sc` : ScalarCoordinate
+      for (const auto& sc : c_result) { // `sc` : ScalarCoordinate
         r_buf_ptr[i * dim + j] = sc.Get();
         j++;
       }
@@ -330,8 +329,8 @@ class PyNurbs {
   }
 
   // multithread `derivative` using std::thread
-  py::array_t<double> p_derivative(py::array_t<double> queries,  //
-                                   py::array_t<int> orders,      //
+  py::array_t<double> p_derivative(py::array_t<double> queries, //
+                                   py::array_t<int> orders,     //
                                    int n_workers) {
     if (!skip_update) {
       update_c();
@@ -356,7 +355,7 @@ class PyNurbs {
 
     // deval and fill up result array
     auto deval = [&](int begin, int end) {
-      for (int id = begin; id < end; id++) {  // n_queries
+      for (int id = begin; id < end; id++) { // n_queries
         ParametricCoordinate pc{};
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
@@ -574,10 +573,11 @@ class PyNurbs {
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
-      for (int id{begin}; id < end; id++) {  // n_queries
+      for (int id{begin}; id < end; id++) { // n_queries
         // ask the proximity guy
         const auto paracoord = proximity.FindNearestParametricCoordinate(
-            &q_buf_ptr[id * dim], Nurbs::Proximity_::InitialGuess::MidPoint);
+            &q_buf_ptr[id * dim],
+            Nurbs::Proximity_::InitialGuess::MidPoint);
         // unpack
         for (int l{}; l < para_dim; ++l) {
           r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
@@ -626,10 +626,11 @@ class PyNurbs {
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
-      for (int id{begin}; id < end; id++) {  // n_queries
+      for (int id{begin}; id < end; id++) { // n_queries
         // ask the proximity guy
         const auto paracoord = proximity.FindNearestParametricCoordinate(
-            &q_buf_ptr[id * dim], Nurbs::Proximity_::InitialGuess::KdTree);
+            &q_buf_ptr[id * dim],
+            Nurbs::Proximity_::InitialGuess::KdTree);
         // unpack
         for (int l{}; l < para_dim; ++l) {
           r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
@@ -663,15 +664,19 @@ class PyNurbs {
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_nurbs_pyclass(py::module& m, const char* class_name) {
   py::class_<PyNurbs<para_dim, dim>> klasse(m, class_name);
 
   klasse.def(py::init<>())
-      .def(py::init<py::array_t<int>, py::list, py::array_t<double>,
+      .def(py::init<py::array_t<int>,
+                    py::list,
+                    py::array_t<double>,
                     py::array_t<double>>(),
-           py::arg("degrees"), py::arg("knot_vectors"),
-           py::arg("control_points"), py::arg("weights"))
+           py::arg("degrees"),
+           py::arg("knot_vectors"),
+           py::arg("control_points"),
+           py::arg("weights"))
       .def_readwrite("knot_vectors", &PyNurbs<para_dim, dim>::p_knot_vectors)
       .def_readwrite("degrees", &PyNurbs<para_dim, dim>::p_degrees)
       .def_readwrite("control_points",
@@ -681,33 +686,58 @@ void add_nurbs_pyclass(py::module& m, const char* class_name) {
       .def_readonly("whatami", &PyNurbs<para_dim, dim>::whatami)
       .def_readonly("dim", &PyNurbs<para_dim, dim>::dim_)
       .def_readonly("para_dim", &PyNurbs<para_dim, dim>::para_dim_)
-      .def("evaluate", &PyNurbs<para_dim, dim>::evaluate, py::arg("queries"),
+      .def("evaluate",
+           &PyNurbs<para_dim, dim>::evaluate,
+           py::arg("queries"),
            py::return_value_policy::move)
-      .def("derivative", &PyNurbs<para_dim, dim>::derivative,
-           py::arg("queries"), py::arg("orders"), py::return_value_policy::move)
-      .def("p_evaluate", &PyNurbs<para_dim, dim>::p_evaluate,
-           py::arg("queries"), py::arg("n_threads"))
-      .def("p_derivative", &PyNurbs<para_dim, dim>::p_derivative,
-           py::arg("queries"), py::arg("orders"), py::arg("n_threads"))
-      .def("basis_functions", &PyNurbs<para_dim, dim>::basis_functions,
+      .def("derivative",
+           &PyNurbs<para_dim, dim>::derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::return_value_policy::move)
+      .def("p_evaluate",
+           &PyNurbs<para_dim, dim>::p_evaluate,
+           py::arg("queries"),
+           py::arg("n_threads"))
+      .def("p_derivative",
+           &PyNurbs<para_dim, dim>::p_derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::arg("n_threads"))
+      .def("basis_functions",
+           &PyNurbs<para_dim, dim>::basis_functions,
            py::arg("queries"))
       .def("extract_bezier_patches",
            &PyNurbs<para_dim, dim>::ExtractBezierPatches)
-      .def("insert_knots", &PyNurbs<para_dim, dim>::insert_knots,
-           py::arg("p_dim"), py::arg("knots"))
-      .def("remove_knots", &PyNurbs<para_dim, dim>::remove_knots,
-           py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-      .def("elevate_degree", &PyNurbs<para_dim, dim>::elevate_degree,
+      .def("insert_knots",
+           &PyNurbs<para_dim, dim>::insert_knots,
+           py::arg("p_dim"),
+           py::arg("knots"))
+      .def("remove_knots",
+           &PyNurbs<para_dim, dim>::remove_knots,
+           py::arg("p_dim"),
+           py::arg("knots"),
+           py::arg("tolerance"))
+      .def("elevate_degree",
+           &PyNurbs<para_dim, dim>::elevate_degree,
            py::arg("p_dim"))
-      .def("reduce_degree", &PyNurbs<para_dim, dim>::reduce_degree,
-           py::arg("p_dim"), py::arg("tolerance"))
-      .def("sample", &PyNurbs<para_dim, dim>::sample, py::arg("resoultion"),
+      .def("reduce_degree",
+           &PyNurbs<para_dim, dim>::reduce_degree,
+           py::arg("p_dim"),
+           py::arg("tolerance"))
+      .def("sample",
+           &PyNurbs<para_dim, dim>::sample,
+           py::arg("resoultion"),
            py::return_value_policy::move)
       .def("nearest_pcoord_midpoint",
-           &PyNurbs<para_dim, dim>::nearest_pcoord_midpoint, py::arg("queries"),
+           &PyNurbs<para_dim, dim>::nearest_pcoord_midpoint,
+           py::arg("queries"),
            py::arg("nthreads"))
-      .def("nearest_pcoord_kdt", &PyNurbs<para_dim, dim>::nearest_pcoord_kdt,
-           py::arg("queries"), py::arg("resolutions"), py::arg("nthreads"))
+      .def("nearest_pcoord_kdt",
+           &PyNurbs<para_dim, dim>::nearest_pcoord_kdt,
+           py::arg("queries"),
+           py::arg("resolutions"),
+           py::arg("nthreads"))
       .def("write_iges", &PyNurbs<para_dim, dim>::write_iges, py::arg("fname"))
       .def("write_xml", &PyNurbs<para_dim, dim>::write_xml, py::arg("fname"))
       .def("write_irit", &PyNurbs<para_dim, dim>::write_irit, py::arg("fname"))
@@ -715,8 +745,10 @@ void add_nurbs_pyclass(py::module& m, const char* class_name) {
       .def("update_p", &PyNurbs<para_dim, dim>::update_p)
       .def(py::pickle(
           [](const PyNurbs<para_dim, dim>& nurbs) {
-            return py::make_tuple(nurbs.p_degrees, nurbs.p_knot_vectors,
-                                  nurbs.p_control_points, nurbs.p_weights);
+            return py::make_tuple(nurbs.p_degrees,
+                                  nurbs.p_knot_vectors,
+                                  nurbs.p_control_points,
+                                  nurbs.p_weights);
           },
           [](py::tuple t) {
             if (t.size() != 4) {
@@ -724,10 +756,10 @@ void add_nurbs_pyclass(py::module& m, const char* class_name) {
             }
 
             PyNurbs<para_dim, dim> pyn(
-                t[0].cast<py::array_t<int>>(),     // degrees
-                t[1].cast<py::list>(),             // knot vectors
-                t[2].cast<py::array_t<double>>(),  // control points
-                t[3].cast<py::array_t<double>>()   // weights
+                t[0].cast<py::array_t<int>>(),    // degrees
+                t[1].cast<py::list>(),            // knot vectors
+                t[2].cast<py::array_t<double>>(), // control points
+                t[3].cast<py::array_t<double>>()  // weights
             );
             return pyn;
           }));

@@ -22,16 +22,16 @@
 
 // Local
 #include <splinepy/fitting/fitting.hpp>
-#include <splinepy/splines/bspline.hpp>
 #include <splinepy/py/py_bezier.hpp>
+#include <splinepy/splines/bspline.hpp>
 
 namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyBSpline {
- public:
+public:
   using BSpline = splinepy::splines::BSpline<para_dim, dim>;
 
   // For writing cpp splines
@@ -68,8 +68,8 @@ class PyBSpline {
 
   // Hr. BSpline's answer to the question "What am I?"
   const std::string whatami =
-      "BSpline, parametric dimension: " + std::to_string(para_dim) +
-      ", physical dimension: " + std::to_string(dim);
+      "BSpline, parametric dimension: " + std::to_string(para_dim)
+      + ", physical dimension: " + std::to_string(dim);
 
   // Hr. BSpline's python Family
   py::list p_knot_vectors;
@@ -85,7 +85,8 @@ class PyBSpline {
     p_knot_vectors.attr("clear")();
     p_knot_vectors.append(empty_list);
   }
-  PyBSpline(py::array_t<int> degrees, py::list knot_vectors,
+  PyBSpline(py::array_t<int> degrees,
+            py::list knot_vectors,
             py::array_t<double> control_points)
       : p_degrees(degrees),
         p_knot_vectors(knot_vectors),
@@ -96,9 +97,9 @@ class PyBSpline {
   // Pass python values to cpp object.
   void update_c() {
     // Temporary containers
-    Knots c_knots;                   // std::vector
-    Coordinates c_control_points{};  // std::vector
-    Degrees c_degrees{};             // std::array
+    Knots c_knots;                  // std::vector
+    Coordinates c_control_points{}; // std::vector
+    Degrees c_degrees{};            // std::array
 
     // Formulate Degrees
     py::buffer_info ds_buf = p_degrees.request();
@@ -111,7 +112,7 @@ class PyBSpline {
     i = 0;
     KnotVectors c_knot_vectors{};
     for (py::handle kv : p_knot_vectors) {
-      c_knots.clear();  // Clear each time.
+      c_knots.clear(); // Clear each time.
       for (py::handle k : kv) {
         c_knots.push_back(Knot(k.cast<double>()));
       }
@@ -129,10 +130,9 @@ class PyBSpline {
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
 
-    for (i = 0; i < cps_buf.shape[0];
-         i++) {  // cps_buf.shape[0] : number of cps
+    for (i = 0; i < cps_buf.shape[0]; i++) { // cps_buf.shape[0] : number of cps
       Coordinate control_point{};
-      for (j = 0; j < dim; j++) {  // dim : cps_buf.shape[1]
+      for (j = 0; j < dim; j++) { // dim : cps_buf.shape[1]
         control_point[j] = ScalarCoordinate{cps_buf_ptr[i * dim + j]};
       }
       c_control_points.push_back(control_point);
@@ -152,7 +152,7 @@ class PyBSpline {
 
     // Unpack - degrees
     // Edit existing array, since it never changes in size.
-    p_degrees.resize({para_dim});  // inplace "flatten"
+    p_degrees.resize({para_dim}); // inplace "flatten"
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
     c_bspline.UpdateDegrees(ds_buf_ptr);
@@ -191,7 +191,7 @@ class PyBSpline {
       Coordinate const& c_result = c_bspline(pc);
 
       j = 0;
-      for (auto& sc : c_result) {  // `sc` : ScarlarCoordinate
+      for (auto& sc : c_result) { // `sc` : ScarlarCoordinate
         r_buf_ptr[i * dim + j] = sc.Get();
         j++;
       }
@@ -216,7 +216,7 @@ class PyBSpline {
 
     // eval and fill up result array
     auto eval = [&](int begin, int end) {
-      for (int id = begin; id < end; id++) {  // n_queries
+      for (int id = begin; id < end; id++) { // n_queries
         ParametricCoordinate pc{};
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
@@ -286,7 +286,7 @@ class PyBSpline {
 
       // Write `c_result` to `results`.
       j = 0;
-      for (const auto& sc : c_result) {  // `sc` : ScalarCoordinate
+      for (const auto& sc : c_result) { // `sc` : ScalarCoordinate
         r_buf_ptr[i * dim + j] = sc.Get();
         j++;
       }
@@ -298,8 +298,8 @@ class PyBSpline {
   }
 
   // multithread `derivative` using std::thread
-  py::array_t<double> p_derivative(py::array_t<double> queries,  //
-                                   py::array_t<int> orders,      //
+  py::array_t<double> p_derivative(py::array_t<double> queries, //
+                                   py::array_t<int> orders,     //
                                    int n_workers) {
     // Extract input arrays info.
     py::buffer_info q_buf = queries.request(), o_buf = orders.request();
@@ -320,7 +320,7 @@ class PyBSpline {
 
     // deval and fill up result array
     auto deval = [&](int begin, int end) {
-      for (int id = begin; id < end; id++) {  // n_queries
+      for (int id = begin; id < end; id++) { // n_queries
         ParametricCoordinate pc{};
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
@@ -519,10 +519,10 @@ class PyBSpline {
     return results;
   }
 
-  double fit_curve(py::array_t<double> points,  //
-                   int degree,                  //
-                   int num_control_points,      //
-                   bool centripetal,            //
+  double fit_curve(py::array_t<double> points, //
+                   int degree,                 //
+                   int num_control_points,     //
+                   bool centripetal,           //
                    py::list knot_vectors) {
     if (para_dim != 1) {
       throw std::invalid_argument(
@@ -550,9 +550,14 @@ class PyBSpline {
       }
     }
 
-    double residual =
-        FitCurve(p_buf_ptr, num_points, curve_dim, degree, num_control_points,
-                 centripetal, knot_vector, control_points);
+    double residual = FitCurve(p_buf_ptr,
+                               num_points,
+                               curve_dim,
+                               degree,
+                               num_control_points,
+                               centripetal,
+                               knot_vector,
+                               control_points);
 
     // Write degree
     p_degrees = py::array_t<int>(para_dim);
@@ -586,25 +591,30 @@ class PyBSpline {
     return residual;
   }
 
-  void interpolate_curve(py::array_t<double> points,  //
-                         int degree,                  //
+  void interpolate_curve(py::array_t<double> points, //
+                         int degree,                 //
                          bool centripetal) {
     py::buffer_info p_buf = points.request();
     int num_control_points = p_buf.shape[0];
     fit_curve(points, degree, num_control_points, centripetal, p_knot_vectors);
   }
 
-  double approximate_curve(py::array_t<double> points, int degree,
-                           int num_control_points, bool centripetal) {
-    return fit_curve(points, degree, num_control_points, centripetal,
+  double approximate_curve(py::array_t<double> points,
+                           int degree,
+                           int num_control_points,
+                           bool centripetal) {
+    return fit_curve(points,
+                     degree,
+                     num_control_points,
+                     centripetal,
                      p_knot_vectors);
   }
 
-  void fit_surface(py::array_t<double> points,  //
-                   int size_u,                  //
-                   int size_v,                  //
-                   int degree_u,                //
-                   int degree_v,                //
+  void fit_surface(py::array_t<double> points, //
+                   int size_u,                 //
+                   int size_v,                 //
+                   int degree_u,               //
+                   int degree_v,               //
                    bool centripetal) {
     if (para_dim != 2) {
       throw std::invalid_argument(
@@ -624,17 +634,17 @@ class PyBSpline {
     }
     std::vector<double> knot_vector_u, knot_vector_v, control_points;
 
-    FitSurface(p_buf_ptr,      //
-               num_points,     //
-               surface_dim,    //
-               degree_u,       //
-               degree_v,       //
-               size_u,         //
-               size_v,         //
-               centripetal,    //
-               knot_vector_u,  //
-               knot_vector_v,  //
-               control_points  //
+    FitSurface(p_buf_ptr,     //
+               num_points,    //
+               surface_dim,   //
+               degree_u,      //
+               degree_v,      //
+               size_u,        //
+               size_v,        //
+               centripetal,   //
+               knot_vector_u, //
+               knot_vector_v, //
+               control_points //
     );
 
     // Write degree
@@ -672,11 +682,11 @@ class PyBSpline {
     update_c();
   }
 
-  void interpolate_surface(py::array_t<double> points,  //
-                           int size_u,                  //
-                           int size_v,                  //
-                           int degree_u,                //
-                           int degree_v,                //
+  void interpolate_surface(py::array_t<double> points, //
+                           int size_u,                 //
+                           int size_v,                 //
+                           int degree_u,               //
+                           int degree_v,               //
                            bool centripetal) {
     fit_surface(points, size_u, size_v, degree_u, degree_v, centripetal);
   }
@@ -698,10 +708,11 @@ class PyBSpline {
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
-      for (int id{begin}; id < end; id++) {  // n_queries
+      for (int id{begin}; id < end; id++) { // n_queries
         // ask the proximity guy
         const auto paracoord = proximity.FindNearestParametricCoordinate(
-            &q_buf_ptr[id * dim], BSpline::Proximity_::InitialGuess::MidPoint);
+            &q_buf_ptr[id * dim],
+            BSpline::Proximity_::InitialGuess::MidPoint);
         // unpack
         for (int l{}; l < para_dim; ++l) {
           r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
@@ -750,10 +761,11 @@ class PyBSpline {
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
-      for (int id{begin}; id < end; id++) {  // n_queries
+      for (int id{begin}; id < end; id++) { // n_queries
         // ask the proximity guy
         const auto paracoord = proximity.FindNearestParametricCoordinate(
-            &q_buf_ptr[id * dim], BSpline::Proximity_::InitialGuess::KdTree);
+            &q_buf_ptr[id * dim],
+            BSpline::Proximity_::InitialGuess::KdTree);
         // unpack
         for (int l{}; l < para_dim; ++l) {
           r_buf_ptr[id * para_dim + l] = paracoord[l].Get();
@@ -770,27 +782,31 @@ class PyBSpline {
 
   void write_iges(std::string fname) {
     input_output::iges::Write(
-        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)}, fname);
+        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)},
+        fname);
   }
 
   void write_xml(std::string fname) {
     input_output::xml::Write(
-        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)}, fname);
+        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)},
+        fname);
   }
 
   void write_irit(std::string fname) {
     input_output::irit::Write(
-        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)}, fname);
+        {std::make_shared<BSpline>(c_parameter_space, c_vector_space)},
+        fname);
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_bspline_pyclass(py::module& m, const char* class_name) {
   py::class_<PyBSpline<para_dim, dim>> klasse(m, class_name);
 
   klasse.def(py::init<>())
       .def(py::init<py::array_t<int>, py::list, py::array_t<double>>(),
-           py::arg("degrees"), py::arg("knot_vectors"),
+           py::arg("degrees"),
+           py::arg("knot_vectors"),
            py::arg("control_points"))
       .def_readwrite("knot_vectors", &PyBSpline<para_dim, dim>::p_knot_vectors)
       .def_readwrite("degrees", &PyBSpline<para_dim, dim>::p_degrees)
@@ -800,43 +816,71 @@ void add_bspline_pyclass(py::module& m, const char* class_name) {
       .def_readonly("whatami", &PyBSpline<para_dim, dim>::whatami)
       .def_readonly("dim", &PyBSpline<para_dim, dim>::dim_)
       .def_readonly("para_dim", &PyBSpline<para_dim, dim>::para_dim_)
-      .def("evaluate", &PyBSpline<para_dim, dim>::evaluate, py::arg("queries"),
+      .def("evaluate",
+           &PyBSpline<para_dim, dim>::evaluate,
+           py::arg("queries"),
            py::return_value_policy::move)
-      .def("derivative", &PyBSpline<para_dim, dim>::derivative,
-           py::arg("queries"), py::arg("orders"), py::return_value_policy::move)
-      .def("p_evaluate", &PyBSpline<para_dim, dim>::p_evaluate,
-           py::arg("queries"), py::arg("n_threads"))
-      .def("p_derivative", &PyBSpline<para_dim, dim>::p_derivative,
-           py::arg("queries"), py::arg("orders"), py::arg("n_threads"))
+      .def("derivative",
+           &PyBSpline<para_dim, dim>::derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::return_value_policy::move)
+      .def("p_evaluate",
+           &PyBSpline<para_dim, dim>::p_evaluate,
+           py::arg("queries"),
+           py::arg("n_threads"))
+      .def("p_derivative",
+           &PyBSpline<para_dim, dim>::p_derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::arg("n_threads"))
       .def("extract_bezier_patches",
            &PyBSpline<para_dim, dim>::ExtractBezierPatches)
-      .def("basis_functions", &PyBSpline<para_dim, dim>::basis_functions,
+      .def("basis_functions",
+           &PyBSpline<para_dim, dim>::basis_functions,
            py::arg("queries"))
-      .def("insert_knots", &PyBSpline<para_dim, dim>::insert_knots,
-           py::arg("p_dim"), py::arg("knots"))
-      .def("remove_knots", &PyBSpline<para_dim, dim>::remove_knots,
-           py::arg("p_dim"), py::arg("knots"), py::arg("tolerance"))
-      .def("elevate_degree", &PyBSpline<para_dim, dim>::elevate_degree,
+      .def("insert_knots",
+           &PyBSpline<para_dim, dim>::insert_knots,
+           py::arg("p_dim"),
+           py::arg("knots"))
+      .def("remove_knots",
+           &PyBSpline<para_dim, dim>::remove_knots,
+           py::arg("p_dim"),
+           py::arg("knots"),
+           py::arg("tolerance"))
+      .def("elevate_degree",
+           &PyBSpline<para_dim, dim>::elevate_degree,
            py::arg("p_dim"))
-      .def("reduce_degree", &PyBSpline<para_dim, dim>::reduce_degree,
-           py::arg("p_dim"), py::arg("tolerance"))
-      .def("sample", &PyBSpline<para_dim, dim>::sample, py::arg("resoultion"),
+      .def("reduce_degree",
+           &PyBSpline<para_dim, dim>::reduce_degree,
+           py::arg("p_dim"),
+           py::arg("tolerance"))
+      .def("sample",
+           &PyBSpline<para_dim, dim>::sample,
+           py::arg("resoultion"),
            py::return_value_policy::move)
       .def("nearest_pcoord_midpoint",
            &PyBSpline<para_dim, dim>::nearest_pcoord_midpoint,
-           py::arg("queries"), py::arg("nthreads"))
-      .def("nearest_pcoord_kdt", &PyBSpline<para_dim, dim>::nearest_pcoord_kdt,
-           py::arg("queries"), py::arg("resolutions"), py::arg("nthreads"))
-      .def("write_iges", &PyBSpline<para_dim, dim>::write_iges,
+           py::arg("queries"),
+           py::arg("nthreads"))
+      .def("nearest_pcoord_kdt",
+           &PyBSpline<para_dim, dim>::nearest_pcoord_kdt,
+           py::arg("queries"),
+           py::arg("resolutions"),
+           py::arg("nthreads"))
+      .def("write_iges",
+           &PyBSpline<para_dim, dim>::write_iges,
            py::arg("fname"))
       .def("write_xml", &PyBSpline<para_dim, dim>::write_xml, py::arg("fname"))
-      .def("write_irit", &PyBSpline<para_dim, dim>::write_irit,
+      .def("write_irit",
+           &PyBSpline<para_dim, dim>::write_irit,
            py::arg("fname"))
       .def("update_c", &PyBSpline<para_dim, dim>::update_c)
       .def("update_p", &PyBSpline<para_dim, dim>::update_p)
       .def(py::pickle(
           [](const PyBSpline<para_dim, dim>& bspl) {
-            return py::make_tuple(bspl.p_degrees, bspl.p_knot_vectors,
+            return py::make_tuple(bspl.p_degrees,
+                                  bspl.p_knot_vectors,
                                   bspl.p_control_points);
           },
           [](py::tuple t) {
@@ -853,25 +897,43 @@ void add_bspline_pyclass(py::module& m, const char* class_name) {
 
   if constexpr (para_dim == 1) {
     klasse
-        .def("fit_curve", &PyBSpline<para_dim, dim>::fit_curve,
-             py::arg("points"), py::arg("degree"),
-             py::arg("num_control_points"), py::arg("centripetal"),
+        .def("fit_curve",
+             &PyBSpline<para_dim, dim>::fit_curve,
+             py::arg("points"),
+             py::arg("degree"),
+             py::arg("num_control_points"),
+             py::arg("centripetal"),
              py::arg("knot_vector"))
-        .def("interpolate_curve", &PyBSpline<para_dim, dim>::interpolate_curve,
-             py::arg("points"), py::arg("degree"), py::arg("centripetal"))
-        .def("approximate_curve", &PyBSpline<para_dim, dim>::approximate_curve,
-             py::arg("points"), py::arg("degree"),
-             py::arg("num_control_points"), py::arg("centripetal"));
+        .def("interpolate_curve",
+             &PyBSpline<para_dim, dim>::interpolate_curve,
+             py::arg("points"),
+             py::arg("degree"),
+             py::arg("centripetal"))
+        .def("approximate_curve",
+             &PyBSpline<para_dim, dim>::approximate_curve,
+             py::arg("points"),
+             py::arg("degree"),
+             py::arg("num_control_points"),
+             py::arg("centripetal"));
   }
 
   if constexpr (para_dim == 2) {
     klasse
-        .def("fit_surface", &PyBSpline<para_dim, dim>::fit_surface,
-             py::arg("points"), py::arg("size_u"), py::arg("size_v"),
-             py::arg("degree_u"), py::arg("degree_v"), py::arg("centripetal"))
+        .def("fit_surface",
+             &PyBSpline<para_dim, dim>::fit_surface,
+             py::arg("points"),
+             py::arg("size_u"),
+             py::arg("size_v"),
+             py::arg("degree_u"),
+             py::arg("degree_v"),
+             py::arg("centripetal"))
         .def("interpolate_surface",
-             &PyBSpline<para_dim, dim>::interpolate_surface, py::arg("points"),
-             py::arg("size_u"), py::arg("size_v"), py::arg("degree_u"),
-             py::arg("degree_v"), py::arg("centripetal"));
+             &PyBSpline<para_dim, dim>::interpolate_surface,
+             py::arg("points"),
+             py::arg("size_u"),
+             py::arg("size_v"),
+             py::arg("degree_u"),
+             py::arg("degree_v"),
+             py::arg("centripetal"));
   }
 }

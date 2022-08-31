@@ -1,5 +1,5 @@
-#include "utils.hpp"
 #include "lu_solve.hpp"
+#include "utils.hpp"
 
 double FitCurve(double* points,
                 int& num_points,

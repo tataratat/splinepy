@@ -11,7 +11,7 @@
 namespace splinepy::splines {
 
 /// Fills raw pointer with degrees. applicable for both nurbs and bspline
-template <typename SplineType, typename DegreeType>
+template<typename SplineType, typename DegreeType>
 inline void FillDegrees(const SplineType& spline, DegreeType* degree_ptr) {
   const auto& parameter_space = spline.GetParameterSpace();
   for (int i{}; i < SplineType::kParaDim; ++i) {
@@ -20,8 +20,9 @@ inline void FillDegrees(const SplineType& spline, DegreeType* degree_ptr) {
 }
 
 /// Fills raw pointer with knot_vector. applicable for both nurbs and bspline
-template <typename SplineType, typename IndexT, typename KnotType>
-inline void FillKnotVector(const SplineType& spline, IndexT para_dim,
+template<typename SplineType, typename IndexT, typename KnotType>
+inline void FillKnotVector(const SplineType& spline,
+                           IndexT para_dim,
                            KnotType* knot_vector) {
   const auto& parameter_space = spline.GetParameterSpace();
   const auto& requested_knot_vector =
@@ -33,7 +34,7 @@ inline void FillKnotVector(const SplineType& spline, IndexT para_dim,
 }
 
 /// Returns number of control_points
-template <typename SplineType>
+template<typename SplineType>
 inline int GetNumberOfControlPoints(const SplineType& spline) {
   return spline.GetVectorSpace().GetNumberOfCoordinates();
 }
@@ -43,7 +44,7 @@ inline int GetNumberOfControlPoints(const SplineType& spline) {
 // Hence, not here.
 
 /// Returns parametric bounds as (para_dim x 2) array.
-template <typename SplineType>
+template<typename SplineType>
 inline std::array<std::array<double, SplineType::kParaDim>, 2>
 GetParametricBounds(const SplineType& spline) {
   std::array<std::array<double, SplineType::kParaDim>, 2> parametric_bounds{};
@@ -59,9 +60,9 @@ GetParametricBounds(const SplineType& spline) {
   return parametric_bounds;
 }
 
-template <typename SplineType,
-          std::enable_if_t<isBSpline_v<SplineType> || isNurbs_v<SplineType>>* =
-              nullptr>
+template<typename SplineType,
+         std::enable_if_t<isBSpline_v<SplineType> || isNurbs_v<SplineType>>* =
+             nullptr>
 auto ExtractBezierPatches(SplineType& input) {
   // Start by identifying types
   constexpr int para_dim = SplineType::para_dim_;
@@ -153,11 +154,11 @@ auto ExtractBezierPatches(SplineType& input) {
       // Determine index of local point in global spline
       for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
         // First id in local system
-        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim]) %
-                             (degrees[i_para_dim] + 1);
+        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim])
+                             % (degrees[i_para_dim] + 1);
         // Add patch offsets
-        global_id += (local_id + patch_ctp_id_offsets[i_para_dim]) *
-                     n_ctps_in_previous_layers;
+        global_id += (local_id + patch_ctp_id_offsets[i_para_dim])
+                     * n_ctps_in_previous_layers;
         // Multiply to index offset
         n_ctps_in_previous_layers *= n_ctps_per_para_dim[i_para_dim];
       }
@@ -210,4 +211,4 @@ auto ExtractBezierPatches(SplineType& input) {
   }
   return bezier_list;
 }
-}  // namespace splinepy::splines
+} // namespace splinepy::splines

@@ -9,24 +9,24 @@
 
 namespace py = pybind11;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 using Bezier = bezman::BezierSpline<
-    static_cast<std::size_t>(para_dim),                            //
-    std::conditional_t<(dim > 1),                                  //
-                       bezman::Point<static_cast<unsigned>(dim)>,  //
-                       double>,                                    //
+    static_cast<std::size_t>(para_dim),                           //
+    std::conditional_t<(dim > 1),                                 //
+                       bezman::Point<static_cast<unsigned>(dim)>, //
+                       double>,                                   //
     double>;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyRationalBezier;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyBezier {
- private:
+private:
   // Alias to the internal Bezier type
   using BezierSpline_ = Bezier<para_dim, dim>;
 
- public:
+public:
   int para_dim_ = para_dim;
   int dim_ = dim;
 
@@ -39,20 +39,21 @@ class PyBezier {
   Bezier<para_dim, dim> c_bezier;
 
   const std::string whatami =
-      "Bezier, parametric dimension: " + std::to_string(para_dim) +
-      ", physical dimension: " + std::to_string(dim);
+      "Bezier, parametric dimension: " + std::to_string(para_dim)
+      + ", physical dimension: " + std::to_string(dim);
 
   PyBezier() = default;
   PyBezier(py::array_t<int> degrees, py::array_t<double> control_points)
-      : p_degrees(degrees), p_control_points(control_points) {
+      : p_degrees(degrees),
+        p_control_points(control_points) {
     update_c();
   }
 
   PyBezier(BezierSpline_ rhs) {
     // Init c_bezier using move constructor
     c_bezier = rhs;
-    p_control_points.resize({(int)c_bezier.control_points.size(), dim});
-    p_degrees.resize({(int)para_dim});
+    p_control_points.resize({(int) c_bezier.control_points.size(), dim});
+    p_degrees.resize({(int) para_dim});
     update_p();
   }
 
@@ -101,7 +102,7 @@ class PyBezier {
     if (c_bezier.control_points.size() != p_control_points.request().shape[0]) {
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int)number_of_ctps, dim});
+      p_control_points.resize({(int) number_of_ctps, dim});
       // Update pointers
       cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     }
@@ -136,11 +137,11 @@ class PyBezier {
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
-      bezman::Point<static_cast<unsigned>(para_dim)> qpt;  // query
+      bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (int j = 0; j < para_dim; j++) {
         qpt[j] = q_buf_ptr[i * para_dim + j];
       }
-      const auto& eqpt = c_bezier.ForwardEvaluate(qpt);  // evaluated query pt
+      const auto& eqpt = c_bezier.ForwardEvaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
         for (int j = 0; j < dim; j++) {
           r_buf_ptr[i * dim + j] = eqpt[j];
@@ -150,7 +151,7 @@ class PyBezier {
       }
     }
 
-    results.resize({(int)q_buf.shape[0], dim});
+    results.resize({(int) q_buf.shape[0], dim});
 
     return results;
   }
@@ -167,11 +168,11 @@ class PyBezier {
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
-      bezman::Point<static_cast<unsigned>(para_dim)> qpt;  // query
+      bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (int j = 0; j < para_dim; j++) {
         qpt[j] = q_buf_ptr[i * para_dim + j];
       }
-      const auto& eqpt = c_bezier.Evaluate(qpt);  // evaluated query pt
+      const auto& eqpt = c_bezier.Evaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
         for (int j = 0; j < dim; j++) {
           r_buf_ptr[i * dim + j] = eqpt[j];
@@ -181,7 +182,7 @@ class PyBezier {
       }
     }
 
-    results.resize({(int)q_buf.shape[0], dim});
+    results.resize({(int) q_buf.shape[0], dim});
 
     return results;
   }
@@ -218,9 +219,9 @@ class PyBezier {
   // Addition Routines
 
   // Composition Routine
-  template <int par_dim_inner_function>
-  PyBezier<par_dim_inner_function, dim> ComposePP(
-      const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
+  template<int par_dim_inner_function>
+  PyBezier<par_dim_inner_function, dim>
+  ComposePP(const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
     // Use Composition routine
     PyBezier<par_dim_inner_function, dim> result{
         (*this).c_bezier.Compose(inner_function.c_bezier)};
@@ -229,10 +230,10 @@ class PyBezier {
   }
 
   // Composition Routine with Rational Spline
-  template <int par_dim_inner_function>
-  PyRationalBezier<par_dim_inner_function, dim> ComposePR(
-      const PyRationalBezier<par_dim_inner_function, para_dim>&
-          inner_function) {
+  template<int par_dim_inner_function>
+  PyRationalBezier<par_dim_inner_function, dim>
+  ComposePR(const PyRationalBezier<par_dim_inner_function, para_dim>&
+                inner_function) {
     // Use Composition routine
     PyRationalBezier<par_dim_inner_function, dim> result{
         (*this).c_bezier.Compose(inner_function.c_rational_bezier)};
@@ -241,13 +242,14 @@ class PyBezier {
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_bezier_pyclass(py::module& m, const char* class_name) {
   py::class_<PyBezier<para_dim, dim>> klasse(m, class_name);
 
   klasse.def(py::init<>())
       .def(py::init<py::array_t<int>, py::array_t<double>>(),
-           py::arg("degrees"), py::arg("control_points"))
+           py::arg("degrees"),
+           py::arg("control_points"))
       .def_readonly("whatami", &PyBezier<para_dim, dim>::whatami)
       .def_readonly("dim", &PyBezier<para_dim, dim>::dim_)
       .def_readonly("para_dim", &PyBezier<para_dim, dim>::para_dim_)
@@ -261,28 +263,35 @@ void add_bezier_pyclass(py::module& m, const char* class_name) {
       .def("recursive_evaluate",
            &PyBezier<para_dim, dim>::pseudorecursive_evaluate,
            py::arg("queries"))
-      .def("elevate_degree", &PyBezier<para_dim, dim>::elevate_degree,
+      .def("elevate_degree",
+           &PyBezier<para_dim, dim>::elevate_degree,
            py::arg("p_dim"))
       .def("multiply_with_spline",
-           &PyBezier<para_dim, dim>::multiply_with_spline, py::arg("factor"))
+           &PyBezier<para_dim, dim>::multiply_with_spline,
+           py::arg("factor"))
       .def("multiply_with_scalar_spline",
            &PyBezier<para_dim, dim>::multiply_with_scalar_spline,
            py::arg("factor"))
-      .def("add_spline", &PyBezier<para_dim, dim>::add_spline,
+      .def("add_spline",
+           &PyBezier<para_dim, dim>::add_spline,
            py::arg("summand"))
-      .def("compose_line_pp", &PyBezier<para_dim, dim>::template ComposePP<1>,
+      .def("compose_line_pp",
+           &PyBezier<para_dim, dim>::template ComposePP<1>,
            py::arg("inner_function"))
       .def("compose_surface_pp",
            &PyBezier<para_dim, dim>::template ComposePP<2>,
            py::arg("inner_function"))
-      .def("compose_volume_pp", &PyBezier<para_dim, dim>::template ComposePP<3>,
+      .def("compose_volume_pp",
+           &PyBezier<para_dim, dim>::template ComposePP<3>,
            py::arg("inner_function"))
-      .def("compose_line_pr", &PyBezier<para_dim, dim>::template ComposePR<1>,
+      .def("compose_line_pr",
+           &PyBezier<para_dim, dim>::template ComposePR<1>,
            py::arg("inner_function"))
       .def("compose_surface_pr",
            &PyBezier<para_dim, dim>::template ComposePR<2>,
            py::arg("inner_function"))
-      .def("compose_volume_pr", &PyBezier<para_dim, dim>::template ComposePR<3>,
+      .def("compose_volume_pr",
+           &PyBezier<para_dim, dim>::template ComposePR<3>,
            py::arg("inner_function"))
       .def(py::pickle(
           [](const PyBezier<para_dim, dim>& bezier) {
