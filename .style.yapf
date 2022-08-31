@@ -1,9 +1,0 @@
-[style]
-#based_on_style = pep8
-continuation_align_style = valign-right
-split_before_first_argument = true
-dedent_closing_brackets = true
-#coalesce_brackets = true
-split_all_top_level_comma_separated_values = true
-#split_all_comma_separated_values = True
-split_before_arithmetic_operator = true
