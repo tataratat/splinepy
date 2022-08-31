@@ -4,33 +4,10 @@ Utility functions.
 """
 
 import os
-import logging
 
 import numpy as np
 
-
-def configure_logging(debug=False, logfile=None):
-    """
-    Logging configurator.
-
-    Parameters
-    -----------
-    debug: bool
-    logfile: str
-
-    Returns
-    --------
-    None
-    """
-    logger = logging.getLogger()
-    if debug:
-        logger.setLevel(logging.DEBUG)
-
-    else:
-        logger.setLevel(logging.INFO)
-
-    if logfile is not None:
-        file_logger_handler = logging.FileHandler(logfile)
+from splinepy.log import debug 
 
 
 def is_property(property_dict, key, class_name):
@@ -51,7 +28,7 @@ def is_property(property_dict, key, class_name):
         return True
 
     else:
-        logging.debug(
+        debug(
             class_name
             + " - `"
             + key
