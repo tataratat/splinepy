@@ -1,0 +1,4 @@
+graft third_party
+graft cpp
+global-include CMakeLists.txt
+global-exclude .git .git*
