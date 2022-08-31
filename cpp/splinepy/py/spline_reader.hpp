@@ -19,7 +19,7 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class BSplineParser {
 public:
   using BSpline = typename splines::BSpline<para_dim, dim>;
@@ -109,7 +109,7 @@ public:
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class NurbsParser {
 public:
   using Nurbs = typename splines::Nurbs<para_dim, dim>;

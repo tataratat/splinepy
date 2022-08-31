@@ -9,7 +9,7 @@
 
 namespace py = pybind11;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 using Bezier = bezman::BezierSpline<
     static_cast<std::size_t>(para_dim),                           //
     std::conditional_t<(dim > 1),                                 //
@@ -17,10 +17,10 @@ using Bezier = bezman::BezierSpline<
                        double>,                                   //
     double>;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyRationalBezier;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyBezier {
 private:
   // Alias to the internal Bezier type
@@ -219,7 +219,7 @@ public:
   // Addition Routines
 
   // Composition Routine
-  template <int par_dim_inner_function>
+  template<int par_dim_inner_function>
   PyBezier<par_dim_inner_function, dim>
   ComposePP(const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
     // Use Composition routine
@@ -230,7 +230,7 @@ public:
   }
 
   // Composition Routine with Rational Spline
-  template <int par_dim_inner_function>
+  template<int par_dim_inner_function>
   PyRationalBezier<par_dim_inner_function, dim>
   ComposePR(const PyRationalBezier<par_dim_inner_function, para_dim>&
                 inner_function) {
@@ -242,7 +242,7 @@ public:
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_bezier_pyclass(py::module& m, const char* class_name) {
   py::class_<PyBezier<para_dim, dim>> klasse(m, class_name);
 

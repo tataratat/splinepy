@@ -7,7 +7,7 @@ namespace splinepy::utils {
 
 /// N-Thread execution. Queries will be splitted into chunks and each thread
 /// will execute those.
-template <typename Func, typename IndexT>
+template<typename Func, typename IndexT>
 void NThreadExecution(const Func& f,
                       const IndexT& total,
                       IndexT nthread /* copy */

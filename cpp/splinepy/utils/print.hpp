@@ -5,7 +5,7 @@
 
 namespace splinepy::utils {
 
-template <typename... Args>
+template<typename... Args>
 void PrintInfo(Args&&... args) {
   std::cout << "INFO - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);
@@ -13,7 +13,7 @@ void PrintInfo(Args&&... args) {
 }
 
 /// debug printer - first argument is bool, so <on, off> is switchable.
-template <typename... Args>
+template<typename... Args>
 void PrintDebug(bool on, Args&&... args) {
   if (on) {
     std::cout << "DEBUG - ";
@@ -22,14 +22,14 @@ void PrintDebug(bool on, Args&&... args) {
   }
 }
 
-template <typename... Args>
+template<typename... Args>
 void PrintWarning(Args&&... args) {
   std::cout << "WARNING - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);
   std::cout << "\n";
 }
 
-template <typename... Args>
+template<typename... Args>
 void PrintAndThrowError(Args&&... args) {
   std::cout << "ERROR - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);

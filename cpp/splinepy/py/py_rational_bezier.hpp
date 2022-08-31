@@ -11,7 +11,7 @@
 
 namespace py = pybind11;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 using RationalBezier = bezman::RationalBezierSpline<
     static_cast<std::size_t>(para_dim),
     std::conditional_t<(dim > 1),
@@ -19,7 +19,7 @@ using RationalBezier = bezman::RationalBezierSpline<
                        double>,
     double>;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyRationalBezier {
 private:
   // Alias to the internal RationalBezier type
@@ -237,7 +237,7 @@ public:
   // Addition Routines
 
   // Composition Routine
-  template <int par_dim_inner_function>
+  template<int par_dim_inner_function>
   PyRationalBezier<par_dim_inner_function, dim>
   ComposeRR(const PyRationalBezier<par_dim_inner_function, para_dim>&
                 inner_function) {
@@ -249,7 +249,7 @@ public:
   }
 
   // Composition Routine
-  template <int par_dim_inner_function>
+  template<int par_dim_inner_function>
   PyRationalBezier<par_dim_inner_function, dim>
   ComposeRP(const PyBezier<par_dim_inner_function, para_dim>& inner_function) {
     // Use Composition routine
@@ -261,7 +261,7 @@ public:
 };
 
 // Start defining the python interface
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
   py::class_<PyRationalBezier<para_dim, dim>> klasse(m, class_name);
 

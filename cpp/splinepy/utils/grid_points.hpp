@@ -5,7 +5,7 @@
 
 namespace splinepy::utils {
 
-template <typename DataT, typename IndexT, int dim>
+template<typename DataT, typename IndexT, int dim>
 class GridPoints {
 public:
   // could be useful for setting searchbounds aggresively
@@ -33,7 +33,7 @@ public:
     return IndexToParametricCoordinate<std::array<DataT, dim>>(id);
   }
 
-  template <typename ParaCoord>
+  template<typename ParaCoord>
   ParaCoord IndexToParametricCoordinate(const IndexT& id) const {
 
     using ValueType = typename ParaCoord::value_type;
@@ -50,7 +50,7 @@ public:
   }
 
   /// subroutine variation
-  template <typename ParaCoord>
+  template<typename ParaCoord>
   void IndexToParametricCoordinate(const IndexT& id, ParaCoord& pcoord) const {
 
     using ValueType = typename ParaCoord::value_type;

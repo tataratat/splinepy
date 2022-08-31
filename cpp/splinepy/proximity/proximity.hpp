@@ -20,7 +20,7 @@ namespace splinepy::proximity {
  * For detailed information, please take a look at splinepy python
  * documentation.
  */
-template <typename SplineType>
+template<typename SplineType>
 class Proximity {
 public:
   /// Options for initial guess

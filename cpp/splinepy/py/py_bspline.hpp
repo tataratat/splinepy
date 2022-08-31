@@ -29,7 +29,7 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class PyBSpline {
 public:
   using BSpline = splinepy::splines::BSpline<para_dim, dim>;
@@ -799,7 +799,7 @@ public:
   }
 };
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 void add_bspline_pyclass(py::module& m, const char* class_name) {
   py::class_<PyBSpline<para_dim, dim>> klasse(m, class_name);
 

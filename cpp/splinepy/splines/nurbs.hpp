@@ -12,7 +12,7 @@ namespace splinepy::splines {
 
 namespace py = pybind11;
 
-template <int para_dim, int dim>
+template<int para_dim, int dim>
 class Nurbs : public splinelib::sources::splines::Nurbs<para_dim, dim> {
 public:
   static constexpr int kParaDim = para_dim;

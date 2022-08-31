@@ -10,7 +10,7 @@ namespace splinepy::utils {
 using namespace splinelib::sources;
 
 /// Elementwise subtraction
-template <typename T, typename NamedType, std::size_t dim>
+template<typename T, typename NamedType, std::size_t dim>
 inline void FirstMinusSecondEqualsThird(const std::array<NamedType, dim>& first,
                                         const T* second, /* c array */
                                         std::array<T, dim>& third) {
@@ -22,7 +22,7 @@ inline void FirstMinusSecondEqualsThird(const std::array<NamedType, dim>& first,
 }
 
 /// Elementwise mean
-template <typename T, std::size_t dim>
+template<typename T, std::size_t dim>
 inline std::array<T, dim> Mean(const std::array<T, dim>& arr1,
                                const std::array<T, dim>& arr2) {
   std::array<T, dim> out;
@@ -34,7 +34,7 @@ inline std::array<T, dim> Mean(const std::array<T, dim>& arr1,
 
 /// Elementwise mean overload, you can specified return value_type.
 /// Useful for returning NamedType.
-template <typename ReturnT, typename T, std::size_t dim>
+template<typename ReturnT, typename T, std::size_t dim>
 inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
                                      const std::array<T, dim>& arr2) {
   std::array<ReturnT, dim> out;
@@ -45,7 +45,7 @@ inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
 }
 
 /// Dot product
-template <typename T1, typename T2, std::size_t dim>
+template<typename T1, typename T2, std::size_t dim>
 inline T1 Dot(const std::array<T1, dim>& arr1,
               const std::array<T2, dim>& arr2) {
   T1 dotted{}; /* default value should be 0. */
@@ -56,7 +56,7 @@ inline T1 Dot(const std::array<T1, dim>& arr1,
 }
 
 /// AAt
-template <typename T, std::size_t dim1, std::size_t dim2>
+template<typename T, std::size_t dim1, std::size_t dim2>
 inline std::array<std::array<T, dim1>, dim1>
 AAt(const std::array<std::array<T, dim2>, dim1>& arr1) {
 
@@ -74,7 +74,7 @@ AAt(const std::array<std::array<T, dim2>, dim1>& arr1) {
 }
 
 /// elementwise inplace addition
-template <typename T1, typename T2, std::size_t dim>
+template<typename T1, typename T2, std::size_t dim>
 inline void AddSecondToFirst(std::array<T1, dim>& arr1,
                              const std::array<T2, dim>& arr2) {
   for (int i{0}; i < dim; i++) {
@@ -91,7 +91,7 @@ inline void AddSecondToFirst(std::array<T1, dim>& arr1,
  * @param[out] para_coord
  * @param[out] clipped (-1) minimum clip; (0) no clip; (1) maximum clip
  */
-template <typename T1, typename T2, std::size_t para_dim>
+template<typename T1, typename T2, std::size_t para_dim>
 inline void Clip(const std::array<std::array<T1, para_dim>, 2>& bounds,
                  std::array<T2, para_dim>& para_coord,
                  std::array<int, para_dim>& clipped) {
@@ -112,7 +112,7 @@ inline void Clip(const std::array<std::array<T1, para_dim>, 2>& bounds,
 }
 
 /// L2 Norm
-template <typename T, std::size_t dim>
+template<typename T, std::size_t dim>
 inline double NormL2(std::array<T, dim>& arr) {
   double returnval{};
   for (int i{}; i < dim; ++i) {
@@ -130,7 +130,7 @@ inline double NormL2(std::array<T, dim>& arr) {
  * arr: inout  <- altered inplace
  * order: in
  */
-template <typename T, typename IndexT, std::size_t dim>
+template<typename T, typename IndexT, std::size_t dim>
 void CopyReorder(std::array<T, dim>& arr, std::array<IndexT, dim>& order) {
   const auto copyarr = arr; // should copy.
   for (IndexT i{0}; i < dim; i++) {
@@ -149,7 +149,7 @@ void CopyReorder(std::array<T, dim>& arr, std::array<IndexT, dim>& order) {
  * skipmask: in
  * x: out
  */
-template <std::size_t para_dim>
+template<std::size_t para_dim>
 inline void
 GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,
                std::array<double, para_dim>& b,
@@ -227,7 +227,7 @@ GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,
   CopyReorder(skipmask, indexmap);
 }
 
-template <typename T, std::size_t dim>
+template<typename T, std::size_t dim>
 inline int NonZeros(std::array<T, dim>& arr) {
   int nonzeros{};
   for (const auto& a : arr) {
