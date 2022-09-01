@@ -1,5 +1,3 @@
-import logging
-
 import numpy as np
 
 from splinepy import utils
@@ -104,8 +102,8 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        logging.debug(
-            "Spline - BSpline curve interpolation complete. "
+        self._logd(
+            "BSpline curve interpolation complete. "
             f"Your spline is {self.whatami}."
         )
 
@@ -164,11 +162,11 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        logging.debug(
-            "Spline - BSpline curve approximation complete. "
+        self._logd(
+            "BSpline curve approximation complete. "
             f"Your spline is {self.whatami}."
         )
-        logging.debug(f"Spline -   Approximation residual: {res}")
+        self._logd(f"  Approximation residual: {res}")
 
         if save_query:
             self._fitting_queries = query_points
@@ -227,8 +225,8 @@ class BSpline(Spline):
         )
         self._c_spline = c_spline
 
-        logging.debug(
-            "Spline - BSpline surface interpolation complete. "
+        self._logd(
+            "BSpline surface interpolation complete. "
             f"Your spline is {self.whatami}."
         )
 

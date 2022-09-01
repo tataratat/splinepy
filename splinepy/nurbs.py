@@ -1,8 +1,3 @@
-import logging
-
-import numpy as np
-
-from splinepy import utils
 from splinepy._splinepy import *
 from splinepy._spline import Spline
 from splinepy.rational_bezier import RationalBezier
