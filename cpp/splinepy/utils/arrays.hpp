@@ -210,8 +210,8 @@ GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,
 
   // back substitution
   double sum;
-  for (std::size_t i_para_dim{}; i_para_dim <para_dim; i_para_dim++) {
-    std::size_t i = para_dim -1 -i_para_dim;
+  for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
+    std::size_t i{para_dim - 1 - i_para_dim};
     // ignore clipped entries
     if (skipmask[i] != 0)
       continue;

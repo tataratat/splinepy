@@ -14,7 +14,8 @@ double FitCurve(double* points,
   u_k = ParametrizeCurve(points, num_points, dim, centripetal);
 
   // Check knot_vector dimensions and updated if required
-  if (knot_vector.size() != static_cast<std::size_t>(num_control_points + degree + 1)) {
+  if (knot_vector.size()
+      != static_cast<std::size_t>(num_control_points + degree + 1)) {
     knot_vector =
         ComputeKnotVector(degree, num_points, num_control_points, u_k);
   }

@@ -11,8 +11,9 @@ namespace py = pybind11;
 
 template<std::size_t para_dim, std::size_t dim>
 using Bezier = bezman::BezierSpline<
-    static_cast<std::size_t>(para_dim),                          
-    std::conditional_t<(dim > 1), bezman::Point<dim>, double>, double>;
+    static_cast<std::size_t>(para_dim),
+    std::conditional_t<(dim > 1), bezman::Point<dim>, double>,
+    double>;
 
 template<std::size_t para_dim, std::size_t dim>
 class PyRationalBezier;
@@ -71,7 +72,8 @@ public:
     // update cps
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
-    for (std::size_t i = 0; i < static_cast<std::size_t>(cps_buf.shape[0]); i++) {
+    for (std::size_t i = 0; i < static_cast<std::size_t>(cps_buf.shape[0]);
+         i++) {
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
           c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
@@ -96,7 +98,8 @@ public:
     // update control_points
     const std::size_t number_of_ctps = c_bezier.control_points.size();
     // Check if shape changed
-    if (static_cast<long int>(c_bezier.control_points.size()) != p_control_points.request().shape[0]) {
+    if (static_cast<long int>(c_bezier.control_points.size())
+        != p_control_points.request().shape[0]) {
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
       p_control_points.resize({(int) number_of_ctps, (int) dim});
@@ -179,7 +182,7 @@ public:
       }
     }
 
-    results.resize({(int) q_buf.shape[0], (int)dim});
+    results.resize({(int) q_buf.shape[0], (int) dim});
 
     return results;
   }

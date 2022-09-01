@@ -99,7 +99,9 @@ public:
     // Check if size matches
     assert(p_control_points.request().shape[0]
            == c_rational_bezier.NumberOfControlPoints);
-    for (std::size_t i = 0; i < static_cast<std::size_t>(p_control_points.request().shape[0]); i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(p_control_points.request().shape[0]);
+         i++) {
       // Update weight
       c_rational_bezier.GetWeights()[i] = weights_ptr[i];
       // Update CTPS
@@ -131,13 +133,14 @@ public:
 
     // update control_points
     // Check if shape changed
-    if (static_cast<long int>(c_rational_bezier.GetWeightedControlPoints().size())
+    if (static_cast<long int>(
+            c_rational_bezier.GetWeightedControlPoints().size())
         != p_control_points.request().shape[0]) {
       const std::size_t number_of_ctps =
           c_rational_bezier.GetWeightedControlPoints().size();
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int) number_of_ctps, (int)dim});
+      p_control_points.resize({(int) number_of_ctps, (int) dim});
       // Update Control Point Vector
       p_weights = py::array_t<double>(number_of_ctps);
       p_weights.resize({(int) number_of_ctps, 1});
@@ -147,7 +150,9 @@ public:
     }
 
     // update control_points
-    for (std::size_t i = 0; i < static_cast<std::size_t>(p_control_points.request().shape[0]); i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(p_control_points.request().shape[0]);
+         i++) {
       weights_ptr[i] = c_rational_bezier.GetWeights()[i];
       double inv_weight_i = static_cast<double>(1.) / weights_ptr[i];
       if constexpr (dim > 1) {
@@ -181,7 +186,9 @@ public:
     double* r_ptr = static_cast<double*>(results.request().ptr);
 
     // Loop over query points for evaluation
-    for (std::size_t i = 0; i < static_cast<std::size_t>(queries.request().shape[0]); i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(queries.request().shape[0]);
+         i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> query_ptr;
       for (std::size_t j = 0; j < para_dim; j++) {
         query_ptr[j] = q_ptr[i * para_dim + j];

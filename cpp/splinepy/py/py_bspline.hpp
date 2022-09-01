@@ -128,10 +128,12 @@ public:
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
 
-    for (int i_cps = 0; i_cps < cps_buf.shape[0]; i_cps++) { // cps_buf.shape[0] : number of cps
+    for (int i_cps = 0; i_cps < cps_buf.shape[0];
+         i_cps++) { // cps_buf.shape[0] : number of cps
       Coordinate control_point{};
       for (int j_dim = 0; j_dim < dim; j_dim++) { // dim : cps_buf.shape[1]
-        control_point[j_dim] = ScalarCoordinate{cps_buf_ptr[i_cps * dim + j_dim]};
+        control_point[j_dim] =
+            ScalarCoordinate{cps_buf_ptr[i_cps * dim + j_dim]};
       }
       c_control_points.push_back(control_point);
     }
@@ -184,7 +186,8 @@ public:
     for (int i_query = 0; i_query < num_queries; i_query++) {
       ParametricCoordinate pc{};
       for (int j_para_dim = 0; j_para_dim < para_dim; j_para_dim++) {
-        pc[j_para_dim] = ScalarParametricCoordinate{(q_buf_ptr[i_query * para_dim + j_para_dim])};
+        pc[j_para_dim] = ScalarParametricCoordinate{
+            (q_buf_ptr[i_query * para_dim + j_para_dim])};
       }
       Coordinate const& c_result = c_bspline(pc);
 
@@ -278,7 +281,8 @@ public:
     for (int i_query = 0; i_query < num_queries; i_query++) {
       ParametricCoordinate pc{};
       for (int j_para_dim = 0; j_para_dim < para_dim; j_para_dim++) {
-        pc[j_para_dim] = ScalarParametricCoordinate{q_buf_ptr[i_query * para_dim + j_para_dim]};
+        pc[j_para_dim] = ScalarParametricCoordinate{
+            q_buf_ptr[i_query * para_dim + j_para_dim]};
       }
       Coordinate const& c_result = c_bspline(pc, derivative);
 
@@ -396,7 +400,8 @@ public:
     for (int i_query = 0; i_query < n_queries; i_query++) {
       ParametricCoordinate pc{};
       for (int j_para_dim = 0; j_para_dim < para_dim; j_para_dim++) {
-        pc[j_para_dim] = ScalarParametricCoordinate{q_buf_ptr[i_query * para_dim + j_para_dim]};
+        pc[j_para_dim] = ScalarParametricCoordinate{
+            q_buf_ptr[i_query * para_dim + j_para_dim]};
       }
       double* bf_current_ptr = &bf_buf_ptr[i_query * n_supports];
       int* sci_current_ptr = &sci_buf_ptr[i_query * n_supports];
@@ -502,7 +507,8 @@ public:
 
     // Sample and write to `results`
     Coordinates sampled_coordinates = c_bspline.Sample(npc);
-    for (std::size_t i_sample = 0; i_sample < sampled_coordinates.size(); i_sample++) {
+    for (std::size_t i_sample = 0; i_sample < sampled_coordinates.size();
+         i_sample++) {
       Coordinate c = sampled_coordinates[i_sample];
 
       int j_dim = 0;
