@@ -4,9 +4,8 @@ Export splines in custom json format
 
 import base64
 import json
+import logging
 import numpy as np
-
-from splinepy.log import debug
 
 
 def load(fname):
@@ -62,7 +61,7 @@ def load(fname):
             data_dict[prop] = jbz[prop]
         return_dict[jbz["SplineType"]].append(data_dict)
 
-    debug("Imported " + str(len(spline_list)) + " splines from file.")
+    logging.debug("Imported " + str(len(spline_list)) + " splines from file.")
 
     return return_dict
 
