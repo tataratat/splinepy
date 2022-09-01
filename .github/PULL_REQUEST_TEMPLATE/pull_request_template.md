@@ -19,8 +19,8 @@ more details
 ### Subsubsection 2
 more and more details
 
-## New Feature mini-syntax
-Where applicable, dedicate a short section to a oneliner example, with the new feature
+## New Feature Showcase 
+If applicable, a short / one-liner example to highlight the new feature
 
 
 # Check list
@@ -31,10 +31,9 @@ Where applicable, dedicate a short section to a oneliner example, with the new f
 * [ ]  Executed Examples
 
 ### Documentation of changes and theory
-* [ ]  I have updated the relevant sections in the technical notes, as far as necessary.
-* [ ]  I have updated and built the Doxygen documentation.
+* [ ]  I have updated the relevant documentations, as far as necessary.
 
 ### Style guide compliance
 * [ ]  Edited `C++` files formatted with clang-format (`14.x.x`+)
-* [ ]  Edited Python files formatted to PEP8 standard
+* [ ]  Edited Python files formatted to style guide from PEP8
 
