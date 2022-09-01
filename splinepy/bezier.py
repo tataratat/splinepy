@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 
 from splinepy import utils
@@ -46,7 +48,7 @@ class Bezier(Spline):
                 "`queries` does not match current pametric dimension."
             )
 
-        self.logd("Evaluating spline...")
+        logging.debug("Spline - Evaluating spline...")
 
         return self._c_spline.recursive_evaluate(queries=queries)
 

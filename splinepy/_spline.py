@@ -1,11 +1,14 @@
+import abc
+import logging
 import copy
 import os
+import itertools
 
 import numpy as np
 
 from splinepy import utils
 from splinepy import io
-from splinepy._base import SplinepyBase
+from splinepy import _splinepy as core
 
 
 class InputDimensionError(Exception):
@@ -103,7 +106,7 @@ class _RequiredProperties:
 required_properties = _RequiredProperties()
 
 
-class Spline(SplinepyBase):
+class Spline(abc.ABC):
     """
     Abstract Spline Class.
     """
@@ -179,7 +182,7 @@ class Spline(SplinepyBase):
             if hasattr(self, s):
                 delattr(self, s)
 
-        self._logd("All attributes are cleared!")
+        logging.debug("Spline - All attributes are cleared!")
 
     @property
     def whatami(self):
@@ -214,7 +217,7 @@ class Spline(SplinepyBase):
         --------
         None
         """
-        self.logw("Excuse me, you cannot tell me what I am.")
+        logging.warning("Spline - Excuse me, you cannot tell me what I am.")
 
     @property
     def skip_update(self):
@@ -345,7 +348,7 @@ class Spline(SplinepyBase):
 
         self._degrees = degrees
 
-        self.logd(f"Degrees set: {self.degrees}")
+        logging.debug(f"Spline - Degrees set: {self.degrees}")
 
         self._check_and_update_c()
 
@@ -402,10 +405,10 @@ class Spline(SplinepyBase):
 
         self._knot_vectors = copy.deepcopy(knot_vectors)
 
-        self.logd("Knot vectors set:")
+        logging.debug("Spline - Knot vectors set:")
         for i, kv in enumerate(self.knot_vectors):
-            self.logd(
-                f"  {i}"
+            logging.debug(
+                f"Spline -   {i}"
                 ". knot vector length: "
                 f"{len(kv)}"
             )
@@ -427,7 +430,7 @@ class Spline(SplinepyBase):
         --------
         unique_knots: list
         """
-        self.logd("Computing unique knots using `np.unique`.")
+        logging.debug("Spline - Computing unique knots using `np.unique`.")
         unique_knots = []
         if "Bezier" in self.whatami:
             unique_knots = [[0, 1]] * self.para_dim
@@ -450,7 +453,7 @@ class Spline(SplinepyBase):
         --------
         parametric_bounds: (2, para_dim) np.ndarray
         """
-        self.logd("Computing parametric_bounds")
+        logging.debug("Spline - Computing parametric_bounds")
         # beziers
         if "knot_vectors" not in self.required_properties:
             return [[0, 1] * self.para_dim]
@@ -466,8 +469,8 @@ class Spline(SplinepyBase):
         use_minmax = False
         if not hasattr(self, "_c_spline"):
             # in this case, `_check_and_update_c()` wasn't called.
-            self.logd(
-                "Entries of `knot_vectors` has not been checked. "
+            logging.debug(
+                "Spline - entries of `knot_vectors` has not been checked. "
                 "Values of `parametric_bounds` will be min and max."
             )
             use_minmax = True
@@ -534,8 +537,8 @@ class Spline(SplinepyBase):
                 )
 
         self._control_points = control_points
-        self.logd(
-            f"{self.control_points.shape[0]} Control points set."
+        logging.debug(
+            f"Spline - {self.control_points.shape[0]} Control points set."
         )
 
         self._check_and_update_c()
@@ -555,7 +558,7 @@ class Spline(SplinepyBase):
         None
         """
         ind = np.lexsort([self.control_points[:, i] for i in order])
-        self.logd(f"`lexsort` control points ({order})")
+        logging.debug(f"Spline - `lexsort` control points ({order})")
         self.control_points = self.control_points[ind]
 
     @property
@@ -571,7 +574,7 @@ class Spline(SplinepyBase):
         --------
         control_point_bounds: (2, dim) np.ndarray
         """
-        self.logd("Computing control_point_bounds")
+        logging.debug("Spline - Computing control_point_bounds")
         cps = self.control_points
 
         return np.vstack(
@@ -632,7 +635,7 @@ class Spline(SplinepyBase):
 
         self._weights = weights
 
-        self.logd(f"{self.weights.shape[0]} Weights set.")
+        logging.debug(f"Spline - {self.weights.shape[0]} Weights set.")
 
         self._check_and_update_c()
 
@@ -702,8 +705,8 @@ class Spline(SplinepyBase):
         for rp in required_props:
             tmp_rp = getattr(self, rp)
             if tmp_rp is None:
-                self.logd(
-                    "Not enough information to update cpp spline. "
+                logging.debug(
+                    "Spline - Not enough information to update cpp spline. "
                     "Skipping update / removing existing backend spline."
                 )
                 if hasattr(self, "_c_spline"):
@@ -780,8 +783,8 @@ class Spline(SplinepyBase):
         # but, we still need to do setter's job.
         self._para_dim = self._c_spline.para_dim
         self._dim = self._c_spline.dim
-        self.logd(
-            "Updated python spline. CPP spline and python spline are"
+        logging.debug(
+            "Spline - Updated python spline. CPP spline and python spline are"
             "now identical."
         )
 
@@ -810,7 +813,7 @@ class Spline(SplinepyBase):
                 "`queries` does not match current pametric dimension."
             )
 
-        self.logd("Evaluating spline...")
+        logging.debug("Spline - Evaluating spline...")
 
         if int(n_threads) > 1:
             return self._c_spline.p_evaluate(
@@ -852,7 +855,7 @@ class Spline(SplinepyBase):
                 "`orders` does not match current pametric dimension."
             )
 
-        self.logd("Evaluating derivatives of the spline...")
+        logging.debug("Spline - Evaluating derivatives of the spline...")
 
         if int(n_threads) > 1:
             return self._c_spline.p_derivative(
@@ -894,7 +897,7 @@ class Spline(SplinepyBase):
                 "`queries` does not match current pametric dimension."
             )
 
-        self.logd("Evaluating basis functions")
+        logging.debug("Spline - evaluating basis functions")
 
         return self._c_spline.basis_functions(queries)
 
@@ -945,7 +948,7 @@ class Spline(SplinepyBase):
             knots
         )
 
-        self.logd(f"Inserted {len(knots)} knot(s).")
+        logging.debug(f"Spline - Inserted {len(knots)} knot(s).")
 
         self._update_p()
 
@@ -1004,11 +1007,11 @@ class Spline(SplinepyBase):
 
         self._update_p()
 
-        self.logd(
-            f"Tried to remove {len(knots)} knot(s)."
+        logging.debug(
+            f"Spline - Tried to remove {len(knots)} knot(s)."
         )
-        self.logd(
-            "Actually removed {nk} knot(s).".format(
+        logging.debug(
+            "Spline - Actually removed {nk} knot(s).".format(
                 nk=(
                     total_knots_before
                     - len(self.knot_vectors[int(parametric_dimension)])
@@ -1067,7 +1070,7 @@ class Spline(SplinepyBase):
         if not set(range(self.para_dim)) == set(permutation_list):
             raise ValueError("Permutation list invalid")
 
-        self.logd("Permuting parametric axes...")
+        logging.debug("Spline - Permuting parametric axes...")
 
         # Update knot_vectors where applicable
         if "knot_vectors" in self.required_properties:
@@ -1105,7 +1108,7 @@ class Spline(SplinepyBase):
         spline_data_dict["control_points"] = self.control_points[global_indices, :]
 
         if inplace:
-            self.logd("  applying permutation inplace")
+            logging.debug("Spline -   applying permutation inplace")
             self.clear()
             for rp in self.required_properties:
                 setattr(self, rp, spline_data_dict[rp])
@@ -1113,7 +1116,7 @@ class Spline(SplinepyBase):
             return None
 
         else:
-            self.logd("  returning permuted spline")
+            logging.debug("Spline -   returning permuted spline")
             return type(self)(**spline_data_dict)
 
     def elevate_degree(self, parametric_dimension):
@@ -1137,8 +1140,8 @@ class Spline(SplinepyBase):
             )
 
         self._c_spline.elevate_degree(parametric_dimension)
-        self.logd(
-            f"Elevated {parametric_dimension}.-dim. "
+        logging.debug(
+            f"Spline - Elevated {parametric_dimension}.-dim. "
             "degree of the spline."
         )
 
@@ -1170,20 +1173,20 @@ class Spline(SplinepyBase):
             tolerance
         )
 
-        self.logd(
-            f"Tried to reduce {parametric_dimension}.-dim. "
+        logging.debug(
+            f"Spline - Tried to reduce {parametric_dimension}.-dim. "
             "degree of the spline."
         )
 
         if reduced:
-            self.logd(
-                f"Successfully reduced {parametric_dimension}.-dim. "
+            logging.debug(
+                f"Spline - Successfully reduced {parametric_dimension}.-dim. "
                 "degree"
             )
             self._update_p()
         else:
-            self.logd(
-                f"Could not reduce {parametric_dimension}.-dim. "
+            logging.debug(
+                f"Spline - Could not reduce {parametric_dimension}.-dim. "
                 "degree"
             )
 
@@ -1216,16 +1219,16 @@ class Spline(SplinepyBase):
 
         is_one_or_less = [int(qr) <= 1 for qr in query_resolutions]
         if any(is_one_or_less):
-            self.logd(
-                "You cannot sample less than 2 points per each "
+            logging.debug(
+                "Spline - You cannot sample less than 2 points per each "
                 "parametric dimension."
             )
-            self.logd("Applying minimum sampling resolution 2.")
+            logging.debug("Spline - Applying minimum sampling resolution 2.")
 
             query_resolutions[is_one_or_less] = int(2)
 
-        self.logd(
-            f"Sampling {np.product(query_resolutions)} "
+        logging.debug(
+            f"Spline - Sampling {np.product(query_resolutions)} "
             "points from spline."
         )
 
@@ -1269,8 +1272,8 @@ class Spline(SplinepyBase):
         queries = utils.make_c_contiguous(queries, dtype="float64")
 
         if kdt_resolutions is None:
-            self.logd(
-                "`kdt_resolutions` is None, "
+            logging.debug(
+                "Spline - `kdt_resolutions` is None, "
                 "setting default resolution ([10] * para_dim)."
             )
             kdt_resolutions = [10] * self.para_dim
@@ -1292,7 +1295,7 @@ class Spline(SplinepyBase):
                 "`queries` does not match current dimension."
             )
 
-        self.logd("Searching for nearest parametric coord...")
+        logging.debug("Spline - Searching for nearest parametric coord...")
 
         return self._c_spline.nearest_pcoord_kdt(
             queries=queries,
@@ -1328,7 +1331,7 @@ class Spline(SplinepyBase):
                 "`queries` does not match current dimension."
             )
 
-        self.logd("Searching for nearest parametric coord...")
+        logging.debug("Spline - Searching for nearest parametric coord...")
 
         return self._c_spline.nearest_pcoord_midpoint(
             queries=queries,
@@ -1385,7 +1388,7 @@ class Spline(SplinepyBase):
                 "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
             )
 
-        self.logi(f"Exported current spline as {fname}.")
+        logging.info(f"Spline - Exported current spline as {fname}.")
 
     def todict(self, tolist=False):
         """
@@ -1401,7 +1404,7 @@ class Spline(SplinepyBase):
         --------
         dict_spline: dict
         """
-        self.logd("Preparing dict_spline...")
+        logging.debug("Spline - Preparing dict_spline...")
         dict_spline = dict()
         # loop and copy entries.
         for p in self.required_properties:
