@@ -13,7 +13,6 @@
 #include <Sources/InputOutput/xml.hpp>
 #include <Sources/Splines/b_spline.hpp>
 #include <Sources/Utilities/named_type.hpp>
-//#include <Sources/Splines/nurbs.hpp>
 
 namespace py = pybind11;
 

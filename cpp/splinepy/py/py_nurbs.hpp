@@ -58,10 +58,6 @@ public:
   int para_dim_ = para_dim;
   int dim_ = dim;
 
-  // Counters
-  int i = 0;
-  int j = 0;
-
   // Fr. Nurbs herself
   Nurbs c_nurbs;
   std::shared_ptr<ParameterSpace> c_parameter_space;
@@ -73,9 +69,9 @@ public:
       + ", physical dimension: " + std::to_string(dim);
 
   // Fr. Nurbs' python Family
-  py::list p_knot_vectors;
   py::array_t<int> p_degrees;
   py::array_t<double> p_control_points;
+  py::list p_knot_vectors;
   py::array_t<double> p_weights;
 
   // Fr. Nurbs' switch to skip update_c
@@ -88,8 +84,8 @@ public:
           py::array_t<double> control_points, //
           py::array_t<double> weights)
       : p_degrees(degrees),
-        p_knot_vectors(knot_vectors),
         p_control_points(control_points),
+        p_knot_vectors(knot_vectors),
         p_weights(weights) {
     update_c();
   }
@@ -105,12 +101,12 @@ public:
     // Formulate Degrees
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
-    for (i = 0; i < para_dim; i++) {
-      c_degrees[i] = Degree{ds_buf_ptr[i]};
+    for (int i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+      c_degrees[i_para_dim] = Degree{ds_buf_ptr[i_para_dim]};
     }
 
     // Formulate Knotvectors
-    i = 0;
+    int i_kv = 0;
     KnotVectors c_knot_vectors{};
     for (py::handle kv : p_knot_vectors) {
       c_knots.clear(); // Clear each time.
@@ -118,8 +114,8 @@ public:
         c_knots.push_back(Knot(k.cast<double>()));
       }
       std::shared_ptr knot_vector{std::make_shared<KnotVector>(c_knots)};
-      c_knot_vectors[i] = knot_vector;
-      i++;
+      c_knot_vectors[i_kv] = knot_vector;
+      i_kv++;
     }
 
     // Formulate Parameter_space
@@ -133,12 +129,14 @@ public:
     c_control_points.clear();
     c_control_points.assign(cps_buf.shape[0], Coordinate{});
 
-    for (i = 0; i < cps_buf.shape[0]; i++) { // cps_buf.shape[0] : number of cps
+    for (int i_cps = 0; i_cps < cps_buf.shape[0];
+         i_cps++) { // cps_buf.shape[0] : number of cps
       Coordinate control_point{};
-      for (j = 0; j < dim; j++) { // dim : cps_bus.shape[1]
-        control_point[j] = ScalarCoordinate{cps_buf_ptr[i * dim + j]};
+      for (int j_dim = 0; j_dim < dim; j_dim++) { // dim : cps_bus.shape[1]
+        control_point[j_dim] =
+            ScalarCoordinate{cps_buf_ptr[i_cps * dim + j_dim]};
       }
-      c_control_points[i] = control_point;
+      c_control_points[i_cps] = control_point;
     }
 
     // Formulate Weights
@@ -154,8 +152,8 @@ public:
           "Number of control points and number of weights does not match.");
     }
 
-    for (i = 0; i < ws_buf.shape[0]; i++) {
-      c_weights[i] = Weight{ws_buf_ptr[i]};
+    for (int i_weight = 0; i_weight < ws_buf.shape[0]; i_weight++) {
+      c_weights[i_weight] = Weight{ws_buf_ptr[i_weight]};
     }
 
     // Formulate Weighted Vector Space
@@ -211,15 +209,16 @@ public:
 
     // Loop.
     int num_queries = q_buf.shape[0];
-    for (i = 0; i < num_queries; i++) {
+    for (int i_query = 0; i_query < num_queries; i_query++) {
       ParametricCoordinate pc{};
-      for (j = 0; j < para_dim; j++) {
-        pc[j] = ScalarParametricCoordinate{(q_buf_ptr[i * para_dim + j])};
+      for (int j_para_dim = 0; j_para_dim < para_dim; j_para_dim++) {
+        pc[j_para_dim] = ScalarParametricCoordinate{
+            (q_buf_ptr[i_query * para_dim + j_para_dim])};
       }
       Coordinate const& c_result = c_nurbs(pc);
-      j = 0;
+      int j = 0;
       for (auto& sc : c_result) { // `sc` : ScarlarCoordinate
-        r_buf_ptr[i * dim + j] = sc.Get();
+        r_buf_ptr[i_query * dim + j] = sc.Get();
         j++;
       }
     }
@@ -264,13 +263,13 @@ public:
     // thread exe
     const int chunk_size = std::ceil(n_queries / n_workers);
     std::vector<std::thread> pool;
-    for (i = 0; i < (n_workers - 1); i++) {
-      std::thread th(eval, i * chunk_size, (i + 1) * chunk_size);
+    for (int i_thread = 0; i_thread < (n_workers - 1); i_thread++) {
+      std::thread th(eval, i_thread * chunk_size, (i_thread + 1) * chunk_size);
       pool.push_back(std::move(th));
     }
     {
       // last one
-      std::thread th(eval, i * chunk_size, n_queries);
+      std::thread th(eval, (n_workers - 1) * chunk_size, n_queries);
       pool.push_back(std::move(th));
     }
 
@@ -302,24 +301,25 @@ public:
 
     // Formulate Derivative Orders.
     Derivative derivative{};
-    for (i = 0; i < o_buf.shape[0]; i++) {
-      derivative[i] = splinelib::Derivative{o_buf_ptr[i]};
+    for (int i_para_dim = 0; i_para_dim < o_buf.shape[0]; i_para_dim++) {
+      derivative[i_para_dim] = splinelib::Derivative{o_buf_ptr[i_para_dim]};
     }
 
     // Loop - Queries.
     int num_queries = q_buf.shape[0];
-    for (i = 0; i < num_queries; i++) {
+    for (int i_query = 0; i_query < num_queries; i_query++) {
       ParametricCoordinate pc{};
-      for (j = 0; j < para_dim; j++) {
-        pc[j] = ScalarParametricCoordinate{q_buf_ptr[i * para_dim + j]};
+      for (int i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+        pc[i_para_dim] = ScalarParametricCoordinate{
+            q_buf_ptr[i_query * para_dim + i_para_dim]};
       }
       Coordinate const& c_result = c_nurbs(pc, derivative);
 
       // Write `c_result` to `results`.
-      j = 0;
+      int j_dim = 0;
       for (const auto& sc : c_result) { // `sc` : ScalarCoordinate
-        r_buf_ptr[i * dim + j] = sc.Get();
-        j++;
+        r_buf_ptr[i_query * dim + j_dim] = sc.Get();
+        j_dim++;
       }
     }
 
@@ -349,8 +349,8 @@ public:
 
     // Formulate Derivative Orders.
     Derivative derivative{};
-    for (i = 0; i < o_buf.shape[0]; i++) {
-      derivative[i] = splinelib::Derivative{o_buf_ptr[i]};
+    for (int i_para_dim = 0; i_para_dim < o_buf.shape[0]; i_para_dim++) {
+      derivative[i_para_dim] = splinelib::Derivative{o_buf_ptr[i_para_dim]};
     }
 
     // deval and fill up result array
@@ -372,14 +372,14 @@ public:
     // thread exe
     const int chunk_size = std::ceil(n_queries / n_workers);
     std::vector<std::thread> pool;
-    for (i = 0; i < (n_workers - 1); i++) {
-      std::thread th(deval, i * chunk_size, (i + 1) * chunk_size);
+    for (int i_thread = 0; i_thread < (n_workers - 1); i_thread++) {
+      std::thread th(deval, i_thread * chunk_size, (i_thread + 1) * chunk_size);
       pool.push_back(std::move(th));
     }
 
     {
       // last one
-      std::thread th(deval, i * chunk_size, n_queries);
+      std::thread th(deval, (n_workers - 1) * chunk_size, n_queries);
       pool.push_back(std::move(th));
     }
 
@@ -417,8 +417,8 @@ public:
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
     int n_supports = 1;
-    for (i = 0; i < para_dim; i++) {
-      n_supports *= (ds_buf_ptr[i] + 1);
+    for (int i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+      n_supports *= (ds_buf_ptr[i_para_dim] + 1);
     }
 
     // prepare results array
@@ -431,13 +431,14 @@ public:
     int* sci_buf_ptr = static_cast<int*>(sci_buf.ptr);
 
     // iterate queries and fill up result arrays
-    for (i = 0; i < n_queries; i++) {
+    for (int i_query = 0; i_query < n_queries; i_query++) {
       ParametricCoordinate pc{};
-      for (j = 0; j < para_dim; j++) {
-        pc[j] = ScalarParametricCoordinate{q_buf_ptr[i * para_dim + j]};
+      for (int j_para_dim = 0; j_para_dim < para_dim; j_para_dim++) {
+        pc[j_para_dim] = ScalarParametricCoordinate{
+            q_buf_ptr[i_query * para_dim + j_para_dim]};
       }
-      double* bf_current_ptr = &bf_buf_ptr[i * n_supports];
-      int* sci_current_ptr = &sci_buf_ptr[i * n_supports];
+      double* bf_current_ptr = &bf_buf_ptr[i_query * n_supports];
+      int* sci_current_ptr = &sci_buf_ptr[i_query * n_supports];
       c_nurbs.BasisFunctionsAndIDs(pc, bf_current_ptr, sci_current_ptr);
     }
 
@@ -523,8 +524,8 @@ public:
 
     // Prepare results array.
     int num_results = 1;
-    for (i = 0; i < para_dim; i++) {
-      num_results *= q_buf_ptr[i];
+    for (int i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+      num_results *= q_buf_ptr[i_para_dim];
     }
 
     py::array_t<double> results(num_results * dim);
@@ -535,19 +536,20 @@ public:
     //   Could be done with "Prepare results array", but easier to read this
     //   way.
     NumberOfParametricCoordinates npc{};
-    for (i = 0; i < para_dim; i++) {
-      npc[i] = splinelib::Length{q_buf_ptr[i]};
+    for (int i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+      npc[i_para_dim] = splinelib::Length{q_buf_ptr[i_para_dim]};
     }
 
     // Sample and write to `results`
     Coordinates sampled_coordinates = c_nurbs.Sample(npc);
-    for (int i = 0; i < sampled_coordinates.size(); i++) {
-      Coordinate c = sampled_coordinates[i];
+    for (std::size_t i_coord = 0; i_coord < sampled_coordinates.size();
+         i_coord++) {
+      Coordinate c = sampled_coordinates[i_coord];
 
-      j = 0;
+      int j_dim = 0;
       for (const auto& sc : c) {
-        r_buf_ptr[i * dim + j] = sc.Get();
-        j++;
+        r_buf_ptr[i_coord * dim + j_dim] = sc.Get();
+        j_dim++;
       }
     }
 
@@ -763,4 +765,4 @@ void add_nurbs_pyclass(py::module& m, const char* class_name) {
             );
             return pyn;
           }));
-};
+}

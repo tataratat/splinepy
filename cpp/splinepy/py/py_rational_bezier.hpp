@@ -11,7 +11,7 @@
 
 namespace py = pybind11;
 
-template<int para_dim, int dim>
+template<std::size_t para_dim, std::size_t dim>
 using RationalBezier = bezman::RationalBezierSpline<
     static_cast<std::size_t>(para_dim),
     std::conditional_t<(dim > 1),
@@ -19,7 +19,7 @@ using RationalBezier = bezman::RationalBezierSpline<
                        double>,
     double>;
 
-template<int para_dim, int dim>
+template<std::size_t para_dim, std::size_t dim>
 class PyRationalBezier {
 private:
   // Alias to the internal RationalBezier type
@@ -67,7 +67,7 @@ public:
     // Init c_rational_bezier using move constructor
     c_rational_bezier = std::move(rhs);
     p_control_points.resize(
-        {(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+        {(int) c_rational_bezier.GetWeightedControlPoints().size(), (int) dim});
     p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
     p_degrees.resize({(int) para_dim});
     update_p();
@@ -77,7 +77,7 @@ public:
   PyRationalBezier(const PyBezier<para_dim, dim>& rhs)
       : c_rational_bezier{rhs.c_bezier} {
     p_control_points.resize(
-        {(int) c_rational_bezier.GetWeightedControlPoints().size(), dim});
+        {(int) c_rational_bezier.GetWeightedControlPoints().size(), (int) dim});
     p_weights.resize({(int) c_rational_bezier.GetWeights().size(), 1});
     p_degrees.resize({(int) para_dim});
     update_p();
@@ -99,12 +99,14 @@ public:
     // Check if size matches
     assert(p_control_points.request().shape[0]
            == c_rational_bezier.NumberOfControlPoints);
-    for (std::size_t i = 0; i < p_control_points.request().shape[0]; i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(p_control_points.request().shape[0]);
+         i++) {
       // Update weight
       c_rational_bezier.GetWeights()[i] = weights_ptr[i];
       // Update CTPS
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           c_rational_bezier.GetWeightedControlPoints()[i][j] =
               cps_ptr[i * dim + j] * weights_ptr[i];
         }
@@ -125,19 +127,20 @@ public:
     double* weights_ptr = static_cast<double*>(p_weights.request().ptr);
 
     // update degrees
-    for (int i = 0; i < para_dim; i++) {
+    for (std::size_t i = 0; i < para_dim; i++) {
       ds_ptr[i] = c_rational_bezier.GetDegrees()[i];
     }
 
     // update control_points
     // Check if shape changed
-    if (c_rational_bezier.GetWeightedControlPoints().size()
+    if (static_cast<long int>(
+            c_rational_bezier.GetWeightedControlPoints().size())
         != p_control_points.request().shape[0]) {
       const std::size_t number_of_ctps =
           c_rational_bezier.GetWeightedControlPoints().size();
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int) number_of_ctps, dim});
+      p_control_points.resize({(int) number_of_ctps, (int) dim});
       // Update Control Point Vector
       p_weights = py::array_t<double>(number_of_ctps);
       p_weights.resize({(int) number_of_ctps, 1});
@@ -147,11 +150,13 @@ public:
     }
 
     // update control_points
-    for (int i = 0; i < p_control_points.request().shape[0]; i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(p_control_points.request().shape[0]);
+         i++) {
       weights_ptr[i] = c_rational_bezier.GetWeights()[i];
       double inv_weight_i = static_cast<double>(1.) / weights_ptr[i];
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           cps_ptr[i * dim + j] =
               c_rational_bezier.GetWeightedControlPoints()[i][j] * inv_weight_i;
         }
@@ -181,14 +186,16 @@ public:
     double* r_ptr = static_cast<double*>(results.request().ptr);
 
     // Loop over query points for evaluation
-    for (int i = 0; i < queries.request().shape[0]; i++) {
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(queries.request().shape[0]);
+         i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> query_ptr;
-      for (int j = 0; j < para_dim; j++) {
+      for (std::size_t j = 0; j < para_dim; j++) {
         query_ptr[j] = q_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_rational_bezier.ForwardEvaluate(query_ptr);
       if constexpr (dim > 1) {
-        for (int j = 0; j < dim; j++) {
+        for (std::size_t j = 0; j < dim; j++) {
           r_ptr[i * dim + j] = eqpt[j];
         }
       } else {
@@ -196,7 +203,7 @@ public:
       }
     }
 
-    results.resize({(int) queries.request().shape[0], dim});
+    results.resize({(int) queries.request().shape[0], (int) dim});
 
     return results;
   }
