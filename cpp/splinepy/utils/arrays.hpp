@@ -59,7 +59,6 @@ inline T1 Dot(const std::array<T1, dim>& arr1,
 template<typename T, std::size_t dim1, std::size_t dim2>
 inline std::array<std::array<T, dim1>, dim1>
 AAt(const std::array<std::array<T, dim2>, dim1>& arr1) {
-
   std::array<std::array<T, dim1>, dim1> out;
 
   for (std::size_t i{}; i < dim1; ++i) {
@@ -95,7 +94,6 @@ template<typename T1, typename T2, std::size_t para_dim>
 inline void Clip(const std::array<std::array<T1, para_dim>, 2>& bounds,
                  std::array<T2, para_dim>& para_coord,
                  std::array<int, para_dim>& clipped) {
-
   for (std::size_t i{0}; i < para_dim; i++) {
     // check max
     if (static_cast<T1>(para_coord[i]) > bounds[1][i]) {
@@ -155,7 +153,6 @@ GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,
                std::array<double, para_dim>& b,
                std::array<int, para_dim>& skipmask,
                std::array<double, para_dim>& x) {
-
   std::size_t maxrow;
   double maxval, maybemax;
   std::array<int, para_dim> indexmap;
@@ -210,8 +207,9 @@ GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,
 
   // back substitution
   double sum;
-  for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
-    std::size_t i{para_dim - 1 - i_para_dim};
+  // Looping backwards, stopping once overflow is reached, which corresponds to
+  // (-1), i.e., such that the last value is 0
+  for (std::size_t i{para_dim - 1}; i != static_cast<std::size_t>(-1); --i) {
     // ignore clipped entries
     if (skipmask[i] != 0)
       continue;
