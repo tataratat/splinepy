@@ -40,6 +40,7 @@ public:
   using Coordinates_ = typename SplineType::Coordinate_[];
   using Cloud_ = typename napf::
       CoordinatesCloud<std::unique_ptr<Coordinates_>, int, SplineType::kDim>;
+  // metric is L2 and returned distance will be squared.
   using Tree_ =
       typename std::conditional<(SplineType::kDim < 4),
                                 napf::CoordinatesTree<double, /* DataT */
@@ -47,13 +48,13 @@ public:
                                                       int,    /* IndexT */
                                                       SplineType::kDim, /* dim
                                                                          */
-                                                      1,       /* metric (L1) */
+                                                      2,       /* metric (L2) */
                                                       Cloud_>, /* Cloud T */
                                 napf::CoordinatesHighDimTree<double,
                                                              double,
                                                              int,
                                                              SplineType::kDim,
-                                                             1,
+                                                             2,
                                                              Cloud_>>::type;
   using GridPoints_ =
       splinepy::utils::GridPoints<double, int, SplineType::kParaDim>;
@@ -238,7 +239,8 @@ public:
   typename SplineType::ParametricCoordinate_
   FindNearestParametricCoordinate(const double* query,
                                   InitialGuess initial_guess,
-                                  double tolerance = 1e-12) const {
+                                  double tolerance = 1e-12,
+                                  bool aggressive_bounds = false) const {
 
     PxPMatrixD_ lhs;
     PArrayD_ rhs;
@@ -251,7 +253,7 @@ public:
     bool solver_skip_mask_activated = false;
 
     // search_bounds is parametric bounds.
-    const auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
+    auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
 
     typename SplineType::ParametricCoordinate_ current_guess =
         MakeInitialGuess(initial_guess, query);
@@ -261,6 +263,21 @@ public:
     GuessMinusQuery(current_guess, query, difference);
     if (splinepy::utils::NormL2(difference) < tolerance) {
       return current_guess;
+    }
+
+    // Let's try aggresive search bounds
+    if (initial_guess == InitialGuess::KdTree && aggressive_bounds) {
+      // you need to be sure that you have sampled your spline fine enough
+      for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+        // adjust lower (0) and upper (1) bounds aggressively
+        // but of course, not so aggresive that it is out of bound.
+        search_bounds[0][i] =
+            std::max(search_bounds[0][i],
+                     current_guess[i] - grid_points_.step_size_[i]);
+        search_bounds[1][i] =
+            std::min(search_bounds[1][i],
+                     current_guess[i] + grid_points_.step_size_[i]);
+      }
     }
 
     const int max_iteration = SplineType::kParaDim * 20;
@@ -289,7 +306,6 @@ public:
       // -> can't use lhs and rhs afterwards, and we don't need them.
       // -> solver_skip_mask and delta_guess is reordered to rewind swaps
       splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
-
       // Update
       splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
       // Clip
@@ -307,6 +323,8 @@ public:
     }
     return current_guess;
   }
+
+  void FirstOrderFallBack() {}
 
 protected:
   SplineType const& spline_;
