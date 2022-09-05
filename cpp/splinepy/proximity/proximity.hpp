@@ -40,6 +40,7 @@ public:
   using Coordinates_ = typename SplineType::Coordinate_[];
   using Cloud_ = typename napf::
       CoordinatesCloud<std::unique_ptr<Coordinates_>, int, SplineType::kDim>;
+  // metric is L2 and returned distance will be squared.
   using Tree_ =
       typename std::conditional<(SplineType::kDim < 4),
                                 napf::CoordinatesTree<double, /* DataT */
@@ -47,13 +48,13 @@ public:
                                                       int,    /* IndexT */
                                                       SplineType::kDim, /* dim
                                                                          */
-                                                      1,       /* metric (L1) */
+                                                      2,       /* metric (L2) */
                                                       Cloud_>, /* Cloud T */
                                 napf::CoordinatesHighDimTree<double,
                                                              double,
                                                              int,
                                                              SplineType::kDim,
-                                                             1,
+                                                             2,
                                                              Cloud_>>::type;
   using GridPoints_ =
       splinepy::utils::GridPoints<double, int, SplineType::kParaDim>;
@@ -238,7 +239,8 @@ public:
   typename SplineType::ParametricCoordinate_
   FindNearestParametricCoordinate(const double* query,
                                   InitialGuess initial_guess,
-                                  double tolerance = 1e-12) const {
+                                  double tolerance = 1e-12,
+                                  bool aggressive_bounds = false) const {
 
     PxPMatrixD_ lhs;
     PArrayD_ rhs;
@@ -251,7 +253,7 @@ public:
     bool solver_skip_mask_activated = false;
 
     // search_bounds is parametric bounds.
-    const auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
+    auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
 
     typename SplineType::ParametricCoordinate_ current_guess =
         MakeInitialGuess(initial_guess, query);
@@ -261,6 +263,21 @@ public:
     GuessMinusQuery(current_guess, query, difference);
     if (splinepy::utils::NormL2(difference) < tolerance) {
       return current_guess;
+    }
+
+    // Let's try aggresive search bounds
+    if (initial_guess == InitialGuess::KdTree && aggressive_bounds) {
+      // you need to be sure that you have sampled your spline fine enough
+      for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+          // adjust lower (0) and upper (1) bounds aggressively
+          // but of course, not so aggresive that it is out of bound.
+          search_bounds[0][i] = std::max(
+              search_bounds[0][i], current_guess[i] - grid_points_.step_size_[i]
+          );
+          search_bounds[1][i] = std::min(
+              search_bounds[1][i], current_guess[i] + grid_points_.step_size_[i]
+          );
+      }
     }
 
     const int max_iteration = SplineType::kParaDim * 20;
@@ -289,7 +306,6 @@ public:
       // -> can't use lhs and rhs afterwards, and we don't need them.
       // -> solver_skip_mask and delta_guess is reordered to rewind swaps
       splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
-
       // Update
       splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
       // Clip
@@ -310,97 +326,6 @@ public:
 
   void FirstOrderFallBack() {}
 
-  /*!
-   * Given physical coordinate, finds closest parametric coordinate.
-   * Experimental and hardcoded for 2P2D splines.
-   * Subroutine style, returns also normals, difference, normal gap.
-   *
-   * @params query_dim 
-   * @params boundary
-   * @params query
-   * @params initial_guess
-   * @params tolerance
-   */
-  void BoundaryQuery(const int& query_dim,
-                     const int& boundary,
-                     const double* query,
-                     InitialGuess initial_guess,
-                     const double& tolerance = 1e-12,
-                     double& distance,
-                     double& difference,
-                     double* normal,
-                     double& normal_gap) const {
-
-    PxPMatrixD_ lhs;
-    PArrayD_ rhs;
-    PArrayD_ delta_guess;
-    DArrayD_ difference;
-    PxDMatrixD_ spline_gradient;
-    PArrayI_ clipped{}; /* clip status after most recent update */
-    PArrayI_ previous_clipped{};
-    PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
-    bool solver_skip_mask_activated = false;
-
-    // search_bounds is parametric bounds.
-    const auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
-
-    typename SplineType::ParametricCoordinate_ current_guess =
-        MakeInitialGuess(initial_guess, query);
-
-    // Be optimistic and check if initial guess was awesome
-    // If it is awesome, return and have feierabend
-    GuessMinusQuery(current_guess, query, difference);
-    if (splinepy::utils::NormL2(difference) < tolerance) {
-      return current_guess;
-    }
-
-    const int max_iteration = SplineType::kParaDim * 20;
-    double previous_norm{}, current_norm;
-
-    // newton iteration
-    for (int i{}; i < max_iteration; ++i) {
-      // build systems to solve
-      FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
-      FillLhs(current_guess, difference, spline_gradient, lhs);
-
-      // solve and update
-      // 1. set solver skip mask if clipping happend twice at the same place.
-      if (previous_clipped == clipped && !solver_skip_mask_activated) {
-        solver_skip_mask = clipped;
-        solver_skip_mask_activated = true;
-        // if skip mask is on for all entries, return now.
-        if (splinepy::utils::NonZeros(solver_skip_mask)
-            == SplineType::kParaDim) {
-          // current_guess should be clipped at this point.
-          return current_guess;
-        }
-      }
-
-      // GaussWithPivot may swap and modify enties of all the input
-      // -> can't use lhs and rhs afterwards, and we don't need them.
-      // -> solver_skip_mask and delta_guess is reordered to rewind swaps
-      splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
-
-      // Update
-      splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
-      // Clip
-      previous_clipped = clipped; // swap?
-      splinepy::utils::Clip(search_bounds, current_guess, clipped);
-      // Converged?
-      current_norm = splinepy::utils::NormL2(rhs);
-      GuessMinusQuery(current_guess, query, difference);
-      if (std::abs(previous_norm - current_norm) < tolerance
-          || splinepy::utils::NormL2(difference) < tolerance)
-        break;
-
-      // prepare next round
-      previous_norm = current_norm;
-    }
-
-
-    return current_guess;
-  }
-
 protected:
   SplineType const& spline_;
   // kdtree related variables
@@ -413,3 +338,4 @@ protected:
 };
 
 } // namespace splinepy::proximity
+
