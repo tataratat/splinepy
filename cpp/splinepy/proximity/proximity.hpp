@@ -269,14 +269,14 @@ public:
     if (initial_guess == InitialGuess::KdTree && aggressive_bounds) {
       // you need to be sure that you have sampled your spline fine enough
       for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
-          // adjust lower (0) and upper (1) bounds aggressively
-          // but of course, not so aggresive that it is out of bound.
-          search_bounds[0][i] = std::max(
-              search_bounds[0][i], current_guess[i] - grid_points_.step_size_[i]
-          );
-          search_bounds[1][i] = std::min(
-              search_bounds[1][i], current_guess[i] + grid_points_.step_size_[i]
-          );
+        // adjust lower (0) and upper (1) bounds aggressively
+        // but of course, not so aggresive that it is out of bound.
+        search_bounds[0][i] =
+            std::max(search_bounds[0][i],
+                     current_guess[i] - grid_points_.step_size_[i]);
+        search_bounds[1][i] =
+            std::min(search_bounds[1][i],
+                     current_guess[i] + grid_points_.step_size_[i]);
       }
     }
 
@@ -338,4 +338,3 @@ protected:
 };
 
 } // namespace splinepy::proximity
-
