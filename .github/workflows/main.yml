@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "docs"]
 
 jobs:
   full_build_plus_tests_plus_update_docs:
@@ -10,8 +10,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
-        os: [macos-latest, ubuntu-latest]
+        #python-version: [3.8, 3.9]
+        python-version: [3.9]
+        #os: [macos-latest, ubuntu-latest]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -27,7 +29,7 @@ jobs:
             
     - name: build splinepy linux
       if: matrix.os == 'ubuntu-latest'
-      run: CC=gcc-10 CXX=g++-10 python3 setup.py install
+      run: CC=gcc-10 CXX=g++-10 python3 setup.py develop --minimal
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
