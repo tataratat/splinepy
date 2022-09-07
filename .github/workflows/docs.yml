@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: checkout git
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: setup python
         uses: actions/setup-python@v3
