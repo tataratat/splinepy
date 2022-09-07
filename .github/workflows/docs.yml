@@ -1,0 +1,46 @@
+name: build docs
+
+# once docs are stable, this will be part of main
+on:
+  push:
+    branches: ["main", "docs"]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git
+        uses: actions/checkout@v3
+
+      - name: setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      - name: install gustaf
+        run:  python3 setup.py develop
+
+      - name: Install dependencies
+        run:  pip install -r ./docs/requirements.txt
+
+      - name: install splinepy
+        run: |
+          # test version of v0.0.3
+          pip install -i https://test.pypi.org/simple/ splinepy==0.0.3
+
+      - name: Sphinx config
+        run: |
+          sphinx-apidoc -f -t docs/source/_templates -o docs/source splinepy
+
+      - name: Sphinx build
+        run: |
+          sphinx-build -b html docs/source docs/build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        with:
+          #publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build
+          force_orphan: true

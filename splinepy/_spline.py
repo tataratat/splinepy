@@ -1,3 +1,7 @@
+"""
+Abstract Spline
+"""
+
 import copy
 import os
 
@@ -43,6 +47,9 @@ class _RequiredProperties:
         --------
         required_spline_properties: list
         """
+        if isinstance(spline, str):
+            return cls.__getitem__(spline)
+
         # extract pure `type`
         s_type = spline if isinstance(spline, type) else type(spline)
 
