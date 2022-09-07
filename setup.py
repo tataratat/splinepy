@@ -125,6 +125,9 @@ setup(
         "splinepy",
         "splinepy.io",
     ],
+    install_requires=[
+        "numpy",
+    ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'License :: OSI Approved :: MIT License',
