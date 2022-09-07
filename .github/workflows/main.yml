@@ -10,10 +10,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #python-version: [3.8, 3.9]
-        python-version: [3.9]
-        #os: [macos-latest, ubuntu-latest]
-        os: [ubuntu-latest]
+        python-version: [3.8, 3.9]
+        os: [macos-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -28,12 +26,19 @@ jobs:
       run: pip install numpy pytest
             
     - name: build splinepy linux
-      if: matrix.os == 'ubuntu-latest'
-      run: CC=gcc-10 CXX=g++-10 python3 setup.py develop --minimal
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version != '3.9' }}
+      run: CC=gcc-10 CXX=g++-10 python3 setup.py install
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
       run: python3 setup.py install
+
+    - name: build splinepy linux
+      # doc-build works very well with develop install.
+      # build and deploy docs with ubuntu + python3.9
+      # TODO: is there a way to keep previous job's env?
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
+      run: CC=gcc-10 CXX=g++-10 python3 setup.py develop
       
     - name: test
       run: pytest tests
