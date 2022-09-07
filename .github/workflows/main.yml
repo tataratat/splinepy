@@ -44,6 +44,7 @@ jobs:
     name: Build Docs
     needs: [full_build_and_tests]
     runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v3
     - name: set up Python
       uses: actions/setup-python@v3
