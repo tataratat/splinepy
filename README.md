@@ -1,4 +1,6 @@
 # splinepy
+![splinepy main](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)  
 Python Bezier, BSpline and NURBS library with C++ backend, [bezman](https://github.com/tataratat/bezman) and [SplineLib](https://github.com/tataratat/SplineLib).
 
 
@@ -7,6 +9,10 @@ Option 1: `pip`
 ```
 pip install --upgrade pip
 pip install splinepy
+```
+It is also possible to install current development version. It requires that your system has a compiler that supports C++17 or higher (It is tested with gcc-10.3 and clang-12)
+```
+pip install git+https://github.com/tataratat/splinepy.git@main
 ```
 
 Option 2: `setup.py`  
