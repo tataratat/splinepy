@@ -1,6 +1,5 @@
 # splinepy
-[![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)
-[![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)  
+[![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)   [![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)  
 Python Bezier, BSpline and NURBS library with C++ backend, [bezman](https://github.com/tataratat/bezman) and [SplineLib](https://github.com/tataratat/SplineLib).
 
 
