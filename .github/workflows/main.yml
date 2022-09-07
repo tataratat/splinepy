@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: ["main", "docs"]
+    branches: ["main"]
 
 jobs:
   full_build_plus_tests_plus_update_docs:
