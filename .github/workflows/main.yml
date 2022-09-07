@@ -1,4 +1,4 @@
-name: Release to main
+name: main
 
 on:
   push:
@@ -38,3 +38,35 @@ jobs:
       
     - name: test
       run: pytest tests
+
+
+  release_docs:
+    name: Build Docs
+    needs: [full_build_and_tests]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+
+    - name: Install doc dependencies
+      run:  pip install -r ./docs/requirements.txt
+
+    - name: Sphinx config
+      run: |
+        sphinx-apidoc -f -t docs/source/_templates -o docs/source splinepy
+
+    - name: Sphinx build
+      run: |
+        sphinx-build -b html docs/source docs/build
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      with:
+        #publish_branch: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/build
+        force_orphan: true
