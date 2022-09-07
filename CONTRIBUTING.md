@@ -28,7 +28,7 @@ splinepy implementations tries to follow [pep8](pep8.org)'s suggestion closely. 
 For c++, we've prepared a `.clang-format`, with that you can just run `clang-format`. We closely follow naming scheme suggested by [google stype guide](https://google.github.io/styleguide/cppguide.html#Naming), with a clear exception of file naming.
 Followings are some preferences:
 - `i`, `j`, `k`, `l` for pure index
-- `#pragma once`
+- `#pragma once`  
 We are aware that there are inconsistency. However, it will be updated! And new implementations from now on will follow the preferences above.
 
 ## Pull request suggessions
