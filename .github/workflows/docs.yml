@@ -17,16 +17,11 @@ jobs:
         with:
           python-version: 3.9
 
-      #- name: install gustaf
-      #  run:  python3 setup.py develop
+      - name: install splinepy
+        run:  python3 setup.py develop --minimal
 
       - name: Install dependencies
         run:  pip install -r ./docs/requirements.txt
-
-      - name: install splinepy
-        run: |
-          # test version of v0.0.3
-          pip install -i https://test.pypi.org/simple/ splinepy==0.0.3
 
       - name: Sphinx config
         run: |
