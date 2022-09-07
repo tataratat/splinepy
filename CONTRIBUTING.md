@@ -29,6 +29,7 @@ For c++, we've prepared a `.clang-format`, with that you can just run `clang-for
 Followings are some preferences:
 - `i`, `j`, `k`, `l` for pure index
 - `#pragma once`  
+
 We are aware that there are inconsistency. However, it will be updated! And new implementations from now on will follow the preferences above.
 
 ## Pull request suggessions
