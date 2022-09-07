@@ -4,17 +4,14 @@ on:
   push:
     branches: ["main"]
 
-permissions:
-  contents: read
-
 jobs:
-  full_build_and_tests:
+  full_build_plus_tests_plus_update_docs:
 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python-version: [3.8, 3.9]
-        os: [ubuntu-latest, macos-latest]
+        os: [macos-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -39,30 +36,16 @@ jobs:
     - name: test
       run: pytest tests
 
-
-  release_docs:
-    name: Build Docs
-    needs: [full_build_and_tests]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.9
-
-    - name: Install doc dependencies
-      run:  pip install -r ./docs/requirements.txt
-
-    - name: Sphinx config
+    - name: build docs
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
+      # Install doc dependencies
       run: |
+        pip install -r ./docs/requirements.txt
         sphinx-apidoc -f -t docs/source/_templates -o docs/source splinepy
-
-    - name: Sphinx build
-      run: |
         sphinx-build -b html docs/source docs/build
 
-    - name: Deploy
+    - name: deploy docs
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
       uses: peaceiris/actions-gh-pages@v3
       #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       with:
