@@ -20,7 +20,7 @@ jobs:
           python-version: 3.9
 
       - name: install splinepy
-        run:  python3 setup.py develop --minimal
+        run: CC=gcc-10 CXX=g++-10 python3 setup.py develop --minimal
 
       - name: Install dependencies
         run:  pip install -r ./docs/requirements.txt
