@@ -1,4 +1,4 @@
 ------------
 Contributing
--------------
+------------
 .. mdinclude:: ../../CONTRIBUTING.md
