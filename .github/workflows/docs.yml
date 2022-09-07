@@ -1,9 +1,9 @@
 name: build docs
 
-# once docs are stable, this will be part of main
+# once docs are stable, this will be part of test also.
 on:
   push:
-    branches: ["main", "docs"]
+    branches: ["docs"]
 
 jobs:
   docs:
