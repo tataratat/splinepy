@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        sutbmodules: recursive
+        submodules: recursive
     - name: Set up  ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
