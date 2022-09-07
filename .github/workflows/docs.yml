@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: install gustaf
-        run:  python3 setup.py develop
+      #- name: install gustaf
+      #  run:  python3 setup.py develop
 
       - name: Install dependencies
         run:  pip install -r ./docs/requirements.txt
