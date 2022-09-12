@@ -313,7 +313,7 @@ public:
         pc[i_para_dim] = ScalarParametricCoordinate{
             q_buf_ptr[i_query * para_dim + i_para_dim]};
       }
-      Coordinate const& c_result = c_nurbs(pc, derivative);
+      Coordinate const c_result = c_nurbs(pc, derivative);
 
       // Write `c_result` to `results`.
       int j_dim = 0;

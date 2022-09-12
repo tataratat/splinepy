@@ -55,31 +55,33 @@ public:
     update_p();
   }
 
+  ~PyBezier() = default;
+
   void update_c() {
-    std::array<std::size_t, para_dim> c_degrees;
+    std::array<std::size_t, para_dim> c_degrees{};
 
     // update degrees
-    py::buffer_info ds_buf = p_degrees.request();
-    int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
+    const int* degree_ptr = static_cast<int*>(p_degrees.request().ptr);
 
     for (std::size_t i = 0; i < para_dim; i++) {
-      c_degrees[i] = ds_buf_ptr[i];
+      c_degrees[i] = degree_ptr[i];
     }
 
     // (re)init
-    c_bezier = std::move(Bezier<para_dim, dim>{c_degrees});
+    c_bezier = Bezier<para_dim, dim>{c_degrees};
 
     // update cps
-    py::buffer_info cps_buf = p_control_points.request();
-    double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
-    for (std::size_t i = 0; i < static_cast<std::size_t>(cps_buf.shape[0]);
+    const double* ctps_ptr =
+        static_cast<double*>(p_control_points.request().ptr);
+    for (std::size_t i = 0;
+         i < static_cast<std::size_t>(p_control_points.request().shape[0]);
          i++) {
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          c_bezier.control_points[i][j] = cps_buf_ptr[i * dim + j];
+          c_bezier.control_points[i][j] = ctps_ptr[i * dim + j];
         }
       } else {
-        c_bezier.control_points[i] = cps_buf_ptr[i];
+        c_bezier.control_points[i] = ctps_ptr[i];
       }
     }
   }
@@ -102,7 +104,7 @@ public:
         != p_control_points.request().shape[0]) {
       // Update Control Point Vector
       p_control_points = py::array_t<double>(number_of_ctps * dim);
-      p_control_points.resize({(int) number_of_ctps, (int) dim});
+      p_control_points.reshape({(int) number_of_ctps, (int) dim});
       // Update pointers
       cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     }
@@ -129,25 +131,25 @@ public:
     update_unless_skip();
 
     py::buffer_info q_buf = queries.request();
-    double* q_buf_ptr = static_cast<double*>(q_buf.ptr);
+    double* query_ptr = static_cast<double*>(q_buf.ptr);
 
     // prepare result arr
     py::array_t<double> results(q_buf.shape[0] * dim);
     py::buffer_info r_buf = results.request();
-    double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
+    double* result_ptr = static_cast<double*>(r_buf.ptr);
 
     for (int i = 0; i < q_buf.shape[0]; i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (std::size_t j = 0; j < para_dim; j++) {
-        qpt[j] = q_buf_ptr[i * para_dim + j];
+        qpt[j] = query_ptr[i * para_dim + j];
       }
       const auto& eqpt = c_bezier.ForwardEvaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          r_buf_ptr[i * dim + j] = eqpt[j];
+          result_ptr[i * dim + j] = eqpt[j];
         }
       } else {
-        r_buf_ptr[i * dim] = eqpt;
+        result_ptr[i * dim] = eqpt;
       }
     }
 
@@ -156,29 +158,76 @@ public:
     return results;
   }
 
+  // Derivative.
+  py::array_t<double> derivative(py::array_t<double> queries,
+                                 py::array_t<int> orders) {
+    if (!skip_update) {
+      update_c();
+    }
+
+    // Extract input arrays info.
+    double* query_ptr = static_cast<double*>(queries.request().ptr);
+    int* order_ptr = static_cast<int*>(orders.request().ptr);
+
+    // Init results array.
+    std::size_t num_queries =
+        static_cast<std::size_t>(queries.request().shape[0]);
+    py::array_t<double> results(num_queries * dim);
+    double* result_ptr = static_cast<double*>(results.request().ptr);
+    results.resize({(int) num_queries, (int) dim});
+
+    // transform order format
+    std::array<std::size_t, para_dim> derivative{};
+    assert(para_dim == orders.request().shape[0]);
+    for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
+      derivative[i_para_dim] = order_ptr[i_para_dim];
+    }
+
+    // Loop - Queries.
+    for (std::size_t i_query{}; i_query < num_queries; i_query++) {
+      bezman::Point<para_dim, double> pc{};
+      for (std::size_t i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+        pc[i_para_dim] = query_ptr[i_query * para_dim + i_para_dim];
+      }
+      // Evaluate derivate
+      const auto c_result = c_bezier.EvaluateDerivative(pc, derivative);
+
+      // Write `c_result` to `results`.
+      if constexpr (dim == 1) {
+        result_ptr[i_query] = c_result;
+      } else {
+        for (std::size_t i_dim{}; i_dim < dim; ++i_dim) {
+          result_ptr[i_query * dim + i_dim] = c_result[i_dim];
+        }
+      }
+    }
+
+    return results;
+  }
+
   py::array_t<double> pseudorecursive_evaluate(py::array_t<double> queries) {
     update_unless_skip();
 
     py::buffer_info q_buf = queries.request();
-    double* q_buf_ptr = static_cast<double*>(q_buf.ptr);
+    double* query_ptr = static_cast<double*>(q_buf.ptr);
 
     // prepare result arr
     py::array_t<double> results(q_buf.shape[0] * dim);
     py::buffer_info r_buf = results.request();
-    double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
+    double* result_ptr = static_cast<double*>(r_buf.ptr);
 
     for (std::size_t i = 0; i < static_cast<std::size_t>(q_buf.shape[0]); i++) {
       bezman::Point<static_cast<unsigned>(para_dim)> qpt; // query
       for (std::size_t j = 0; j < para_dim; j++) {
-        qpt[j] = q_buf_ptr[i * para_dim + j];
+        qpt[j] = query_ptr[i * para_dim + j];
       }
-      const auto& eqpt = c_bezier.Evaluate(qpt); // evaluated query pt
+      const auto eqpt = c_bezier.Evaluate(qpt); // evaluated query pt
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          r_buf_ptr[i * dim + j] = eqpt[j];
+          result_ptr[i * dim + j] = eqpt[j];
         }
       } else {
-        r_buf_ptr[i * dim] = eqpt;
+        result_ptr[i * dim] = eqpt;
       }
     }
 
@@ -215,8 +264,6 @@ public:
     result.update_p();
     return result;
   }
-
-  // Addition Routines
 
   // Composition Routine
   template<int par_dim_inner_function>
@@ -290,6 +337,11 @@ void add_bezier_pyclass(py::module& m, const char* class_name) {
       .def("compose_surface_pr",
            &PyBezier<para_dim, dim>::template ComposePR<2>,
            py::arg("inner_function"))
+      .def("derivative",
+           &PyBezier<para_dim, dim>::derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::return_value_policy::move)
       .def("compose_volume_pr",
            &PyBezier<para_dim, dim>::template ComposePR<3>,
            py::arg("inner_function"))

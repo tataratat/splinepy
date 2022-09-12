@@ -97,8 +97,8 @@ public:
     double* cps_ptr = static_cast<double*>(p_control_points.request().ptr);
     double* weights_ptr = static_cast<double*>(p_weights.request().ptr);
     // Check if size matches
-    assert(p_control_points.request().shape[0]
-           == c_rational_bezier.NumberOfControlPoints);
+    assert(static_cast<std::size_t>(p_control_points.request().shape[0])
+           == c_rational_bezier.GetNumberOfControlPoints());
     for (std::size_t i = 0;
          i < static_cast<std::size_t>(p_control_points.request().shape[0]);
          i++) {
@@ -193,7 +193,7 @@ public:
       for (std::size_t j = 0; j < para_dim; j++) {
         query_ptr[j] = q_ptr[i * para_dim + j];
       }
-      const auto& eqpt = c_rational_bezier.ForwardEvaluate(query_ptr);
+      const auto eqpt = c_rational_bezier.ForwardEvaluate(query_ptr);
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
           r_ptr[i * dim + j] = eqpt[j];
@@ -204,6 +204,54 @@ public:
     }
 
     results.resize({(int) queries.request().shape[0], (int) dim});
+
+    return results;
+  }
+
+  // Derivative.
+  py::array_t<double> derivative(py::array_t<double> queries,
+                                 py::array_t<int> orders) {
+    if (!skip_update) {
+      update_c();
+    }
+
+    // Extract input arrays info.
+    double* query_ptr = static_cast<double*>(queries.request().ptr);
+    int* order_ptr = static_cast<int*>(orders.request().ptr);
+
+    // Init results array.
+    std::size_t num_queries =
+        static_cast<std::size_t>(queries.request().shape[0]);
+    py::array_t<double> results(num_queries * dim);
+    double* result_ptr = static_cast<double*>(results.request().ptr);
+    results.resize({(int) num_queries, (int) dim});
+
+    // transform order format
+    std::array<std::size_t, para_dim> derivative{};
+    assert(para_dim == orders.request().shape[0]);
+    for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
+      derivative[i_para_dim] = order_ptr[i_para_dim];
+    }
+
+    // Loop - Queries.
+    for (std::size_t i_query{}; i_query < num_queries; i_query++) {
+      bezman::Point<para_dim, double> pc{};
+      for (std::size_t i_para_dim = 0; i_para_dim < para_dim; i_para_dim++) {
+        pc[i_para_dim] = query_ptr[i_query * para_dim + i_para_dim];
+      }
+      // Evaluate derivate
+      const auto c_result =
+          c_rational_bezier.EvaluateDerivative(pc, derivative);
+
+      // Write `c_result` to `results`.
+      if constexpr (dim == 1) {
+        result_ptr[i_query] = c_result;
+      } else {
+        for (std::size_t i_dim{}; i_dim < dim; ++i_dim) {
+          result_ptr[i_query * dim + i_dim] = c_result[i_dim];
+        }
+      }
+    }
 
     return results;
   }
@@ -308,6 +356,12 @@ void add_rational_bezier_pyclass(py::module& m, const char* class_name) {
       .def("evaluate",
            &PyRationalBezier<para_dim, dim>::evaluate,
            py::arg("queries"))
+      // Derivative
+      .def("derivative",
+           &PyRationalBezier<para_dim, dim>::derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::return_value_policy::move)
       // Degree elevation
       .def("elevate_degree",
            &PyRationalBezier<para_dim, dim>::elevate_degree,
