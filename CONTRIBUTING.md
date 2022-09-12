@@ -16,10 +16,10 @@ python3 setup.py develop --minimal
 ## Python style / implementation preferences
 splinepy implementations tries to follow [pep8](pep8.org)'s suggestion closely. A formatter setup will be added soon. For now, followings are some preferences:
 - use `if` and `raise` instead of `assert`
-- no complex comphrehensions: preferably fits in a line, 2 lines max if it is totally necessary
+- no complex comprehensions: preferably fits in a line, 2 lines max if it is totally necessary
 - use first letter abbreviations in element loops:  `for kv in knot_vectors`
 - use `i`, `j`, `k`, `l` for pure index: `for i, kv in enumerate(knot_vectors)`
-- vertical alignment only with tabs
+- vertical alignment only with multiples of indent width
 - put closing brackets on a separate line, dedented
 - if a new feature would open doors to more related functionalities, consider a helper class
 - try to avoid looping possibly giant loops
