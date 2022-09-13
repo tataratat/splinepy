@@ -22,7 +22,7 @@ splinepy implementations tries to follow [pep8](pep8.org)'s suggestion closely. 
 - vertical alignment only with multiples of indent width
 - put closing brackets on a separate line, dedented
 - if a new feature would open doors to more related functionalities, consider a helper class
-- try to avoid looping possibly giant loops
+- try to avoid looping possibly giant entries
 
 ## C++ style / implementation preferences
 For c++, we've prepared a `.clang-format`, with that you can just run `clang-format`. We closely follow naming scheme suggested by [google stype guide](https://google.github.io/styleguide/cppguide.html#Naming), with a clear exception of file naming.
