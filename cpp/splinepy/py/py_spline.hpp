@@ -23,6 +23,8 @@ public:
   CoreSpline_ c_spline_;
   int para_dim_;
   int dim_;
+  bool is_rational_;
+  bool is_bspline_;
 
   // ctor
   PySpline() = default;
@@ -40,6 +42,8 @@ public:
     double* control_points_ptr = nullptr;
     double* weights_ptr = nullptr;
     int para_dim, dim;
+    is_rational_ = false;
+    is_bspline_ = false;
 
     // get degrees and set para_dim
     auto d_array = py::cast<py::array_t<double>>(kwargs["degrees"]);
@@ -54,6 +58,7 @@ public:
 
     // maybe, get knot_vectors
     if (kwargs.contains("knot_vectors")) {
+      is_bspline_ = true;
       for (py::handle kv : kwargs["knot_vectors"]) {
         std::vector<double> knot_vector;
         // cast to array_t, as python side will try to use tracked array anyways
@@ -69,6 +74,7 @@ public:
 
     // maybe, get weights
     if (kwargs.contains("weights")) {
+      is_rational_ = true;
       auto w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
       weights_ptr = static_cast<double*>(w_array.request().ptr);
     }
@@ -86,8 +92,63 @@ public:
     dim_ = c_spline_->Dim();
   }
 
+  // Returns currunt properties of core spline
+  // similar to update_p
   py::dict CurrentProperties() {
-    
+    py::dict dict_spline;
+
+    // prepare property arrays
+    // first, degrees and control_points
+    py::array_t<double> degrees(para_dim_);
+    double* degrees_ptr = static_cast<double*>(degrees.request().ptr);
+    const int ncps = c_spline_->NumberOfControlPoints();
+    py::array_t<double> control_points(ncps * dim_);
+    double* control_points_ptr = static_cast<double*>(control_points.request().ptr);
+
+    // and maybes
+    std::vector<std::vector<double>> knot_vectors;
+    std::vector<std::vector<double>>* knot_vectors_ptr = nullptr;
+    py::array_t<double> weights;
+    double* weights_ptr = nullptr;
+
+    if (is_bspline_) {
+      knot_vectors_ptr = &knot_vectors;
+    }
+    if (is_rational_) {
+      weights = py::array_t<double>(ncps);
+      weights_ptr = static_cast<double*>(weights.request().ptr);
+    }
+
+    c_spline_->RawPtrCurrentProperties(
+        degrees_ptr,
+        knot_vectors_ptr,
+        control_points_ptr,
+        weights_ptr
+    );
+
+    // process
+    dict_spline["degrees"] = degrees;
+    control_points.resize({ncps, dim_});
+    dict_spline["control_points"] = control_points;
+
+    // process maybes
+    if (is_bspline_) {
+      py::list kvs;
+      for (const auto& knot_vector : knot_vectors) {
+        const std::size_t kvsize = knot_vector.size();
+        py::array_t<double> kv(kvsize);
+        double* kv_ptr = static_cast<double*>(kv.request().ptr);
+        std::copy_n(knot_vector.begin(), kvsize, kv_ptr);
+        kvs.append(kv);
+      }
+      dict_spline["knot_vectors"] = kvs;    
+    }
+    if (is_rational_) {
+      weights.resize({ncps, 1});
+      dict_spline["weights"] = weights;
+    }
+
+    return dict_spline;
   }
 
   py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) {
@@ -158,6 +219,8 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
+      .def("current_properties",
+           &splinepy::py::PySpline::CurrentProperties)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),

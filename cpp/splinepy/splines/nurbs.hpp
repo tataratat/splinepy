@@ -170,7 +170,7 @@ public:
     // knot_vectors
     const auto& core_kvs = parameter_space.GetKnotVectors();
     knot_vectors->clear();
-    knot_vectors->reserve(kDim);
+    knot_vectors->reserve(kParaDim);
     for (std::size_t i{}; i < kParaDim; ++i) {
       const auto& core_kv = *core_kvs[i];
       const std::size_t kvsize = static_cast<std::size_t>(core_kv.GetSize());
@@ -178,7 +178,7 @@ public:
       kv.reserve(kvsize);
       // Index wants int
       for (int j{}; j < kvsize; ++j) {
-        kv.emplace_back(static_cast<double>(kv[splinelib::Index{j}]));
+        kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
       }
       knot_vectors->push_back(std::move(kv));
     }
