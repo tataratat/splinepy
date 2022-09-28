@@ -73,4 +73,62 @@ private:
   std::array<std::vector<DataT>, dim> entries_;
 };
 
+/// RawPtr based dynamic grid point sampler
+/// Values are kept as int since they come as int from python
+class RawPtrGridPoints {
+public:
+  RawPtrGridPoints() = default;
+  RawPtrGridPoints(const int dim,
+             const double* bounds,
+             const int* resolutions) {
+    SetUp(dim, bounds, resolutions);
+  }
+
+  void SetUp(const int dim,
+             const double* bounds,
+             const int* resolutions) {
+    dim_ = dim;
+    len_ = 1;
+    // linspace and prepare possible entries */
+    entries_.clear();
+    entries_.assign(dim, std::vector<double>{});
+    resolutions_.clear();
+    resolutions_.reserve(dim);
+    for (int i{}; i < dim; ++i) {
+      const int res = resolutions[i];
+      if (res < 0) {
+      }
+      len_ *= res;
+      resolutions_.push_back(res); 
+
+      std::vector<double>& entryvec = entries_[i];
+      entryvec.reserve(res);
+
+      const double step_size = (bounds[dim + i] - bounds[i]) / (res - 1);
+      for (int j{}; j < resolutions[i]; ++j) {
+        entryvec.emplace_back(bounds[i] + step_size * j);
+      }
+    }
+  }
+
+  void IdToGridPoint(const int& id, double* grid_point) const {
+    int tmp{id};
+    for (int i{0}; i < dim_; ++i) {
+      grid_point[i] = entries_[i][tmp % resolutions_[i]];
+      tmp /= resolutions_[i];
+    }
+  }
+
+  int Size() const {
+    return len_;
+  }
+
+protected:
+  std::vector<double> bounds_;
+  std::vector<int> resolutions_;
+  std::vector<std::vector<double>> entries_;
+  int len_;
+  int dim_;
+};
+
 } /* namespace splinepy::utils */
