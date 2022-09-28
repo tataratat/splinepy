@@ -2,6 +2,7 @@
 #include <splinepy/py/py_bspline.hpp>
 #include <splinepy/py/py_nurbs.hpp>
 #include <splinepy/py/py_rational_bezier.hpp>
+#include <splinepy/py/py_spline.hpp>
 
 // only compile a minimal set of splines
 // 3P X 3D
@@ -57,4 +58,7 @@ void init_minimal(py::module_& m) {
   add_nurbs_pyclass<3, 1>(m, "NURBS3P1D");
   add_nurbs_pyclass<3, 2>(m, "NURBS3P2D");
   add_nurbs_pyclass<3, 3>(m, "NURBS3P3D");
+
+  // Spline
+  add_spline_pyclass(m, "CoreSpline");
 }
