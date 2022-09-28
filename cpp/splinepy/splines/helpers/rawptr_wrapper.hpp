@@ -26,4 +26,84 @@ void RawPtrEvaluate(SplineType& spline,
   }
 }
 
+/// SplineLib spline derivatives (single query).
+template<typename SplineType,
+         typename QueryType,
+         typename OrderType,
+         typename OutputType>
+void RawPtrDerivative(SplineType& spline,
+                      QueryType* query,
+                      OrderType* order,
+                      OutputType* output) {
+  using Query = typename SplineType::ParametricCoordinate_;
+  using QueryValueType = typename Query::value_type;
+  using Order = typename SplineType::Derivative_;
+  using OrderValueType = typename Order::value_type;
+  Query core_query;
+  Order core_order;
+
+  for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+    core_query[i] = QueryValueType{query[i]};
+    core_order[i] = OrderValueType{order[i]};
+  }
+
+  // @jzwar maybe somesort of if constexpr or maybe a new one for Bezier
+  const auto core_derived = spline(core_query, core_order);
+
+  for (std::size_t i{}; i < SplineType::kDim; ++i) {
+    output[i] = static_cast<OutputType>(core_evaluated[i]);
+  }
+}
+
+/// single degree elevation.
+template<typename SplineType, typename QueryType>
+void RawPtrElevateDegrees(SplineType& spline,
+                          QueryType query) {
+  typename Dim = typename SplineType::Dimension_;
+  spline.ElevateDegree(Dim{query})
+}
+
+/// single degree reduction
+template<typename SplineType, typename QueryType, typename ToleranceType>
+bool RawPtrReduceDegree(SplineType& spline,
+                        QueryType query,
+                        ToleranceType tolerance) {
+  typename Dim = typename SplineType::Dimension_;
+  typename Tol = typename SplineType::Tolerance_;
+  return spline.ReduceDegree(Dim{query}, Tol{tolerance});
+}
+
+/// single knot insertion
+template<typename SplineType, typename QueryDimType, typename QueryType>
+void RawPtrInsertKnot(SplineType& spline,
+                      QueryDimType query_dim,
+                      QueryType query) {
+  typename Dim = typename SplineType::Dimension_;
+  typename Knot = typename SplineType::Knot_;
+  spline.InsertKnot(Dim{query_dim}, Knot{query})
+}
+
+/// single knot removal
+template<typename SplineType,
+         typename QueryDimType,
+         typename QueryType,
+         typename ToleranceType>
+bool RawPtrRemoveKnot(SplineType& spline,
+                      QueryDimType query_dim,
+                      QueryType query,
+                      ToleranceType tolerancce) {
+  typename Dim = typename SplineType::Dimension_;
+  typename Knot = typename SplineType::Knot_;
+  typename Tol = typename SplineType::Tolerance_;
+
+  const auto multiplicity = spline.RemoveKnot(Dim{query_dim}, Knot{query}, Tol{tol});
+
+  // very confusing syntax, let's see
+  // TODO: is this correct?
+  if (static_cast<int>(multiplicity) == 0) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace splinepy::splines::helpers
