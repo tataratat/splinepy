@@ -21,7 +21,7 @@ class SplinepyBase {
 public:
   SplinepyBase() = default;
 
-  static std::shared_ptr<SplinepyBase> Create(
+  static std::shared_ptr<SplinepyBase> SplinepyCreate(
       const int para_dim = 0,
       const int dim = 0,
       const double* degrees = nullptr,
@@ -40,34 +40,34 @@ public:
 
       if (!weights) {
         //return CreateBezier(degrees, control_points);
-        return CreateBezier();
+        return SplinepyCreateBezier();
       } else {
         //return CreateRationalBezier(degrees, control_points, weights);
-        return CreateRationalBezier();
+        return SplinepyCreateRationalBezier();
       }
     } else {
       if (!weights) {
         //return CreateBSpline(degrees, knot_vectors, control_points);
-        return CreateBSpline();
+        return SplinepyCreateBSpline();
       } else {
-        return CreateNurbs(para_dim,
-                           dim,
-                           degrees,
-                           knot_vectors,
-                           control_points,
-                           weights);
+        return SplinepyCreateNurbs(para_dim,
+                                   dim,
+                                   degrees,
+                                   knot_vectors,
+                                   control_points,
+                                   weights);
       }
     }
   };
 
   // Implemented in splinepy/splines/bezier.hpp
-  static std::shared_ptr<SplinepyBase> CreateBezier() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateBezier() {};
   // Implemented in splinepy/splines/rational_bezier.hpp
-  static std::shared_ptr<SplinepyBase> CreateRationalBezier() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier() {};
   // Implemented in splinepy/splines/b_spline.hpp
-  static std::shared_ptr<SplinepyBase> CreateBSpline() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateBSpline() {};
   /// Implemented in splinepy/splines/nurbs.hpp
-  static std::shared_ptr<SplinepyBase> CreateNurbs(
+  static std::shared_ptr<SplinepyBase> SplinepyCreateNurbs(
       const int para_dim,
       const int dim,
       const double* degrees,
@@ -75,67 +75,72 @@ public:
       const double* control_points,
       const double* weights);
 
-  virtual constexpr int ParaDim() const = 0;
-  virtual constexpr int Dim() const = 0;
-  virtual std::string WhatAmI() const = 0;
-  virtual int NumberOfControlPoints() const = 0;
+  virtual constexpr int SplinepyParaDim() const = 0;
+  virtual constexpr int SplinepyDim() const = 0;
+  virtual std::string SplinepyWhatAmI() const = 0;
+  virtual int SplinepyNumberOfControlPoints() const = 0;
   /// Extract core spline properties. Similar to previous update_p
-  virtual void RawPtrCurrentProperties(
+  virtual void SplinepyCurrentProperties(
       double* degrees,
       std::vector<std::vector<double>>* knot_vectors,
       double* control_points,
       double* weights
   ) const = 0;
 
-  virtual void RawPtrParametricBounds(double* p_bounds) const {
+  virtual void SplinepyParametricBounds(double* p_bounds) const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrParametricBounds not implemented for",
-        WhatAmI()
+        SplinepyWhatAmI()
     );
 
   };
 
-  virtual void RawPtrEvaluate(double* para_coord, double* evaluated) {
+  virtual void SplinepyEvaluate(const double* para_coord, double* evaluated)
+      const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrEvaluate not implemented for",
-        WhatAmI()
+        SplinepyWhatAmI()
     );
   };
 
-  virtual void RawPtrDerivative(double* para_coord,
-                                double* orders,
-                                double* derived) {
+  virtual void SplinepyDerivative(const double* para_coord,
+                                  const int* orders,
+                                  double* derived) const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrDerivative not implemented for",
-        WhatAmI()
+        SplinepyWhatAmI()
     );
   };
 
-  virtual void RawPtrElevateDegrees(int* para_dims) {
+  virtual void SplinepyElevateDegree(const int& para_dims) const {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrElevateDegrees not implemented for",
-        WhatAmI()
+        "RawPtrElevateDegree not implemented for",
+        SplinepyWhatAmI()
     );
   };
 
-  virtual void RawPtrReduceDegrees(int* para_dims, double tolerance) {
+  virtual bool SplinepyReduceDegree(const int& para_dims,
+                                    const double& tolerance) const {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrReduceDegrees not implemented for",
-        WhatAmI()
+        "RawPtrReduceDegree not implemented for",
+        SplinepyWhatAmI()
     );
   };
 
-  virtual void RawPtrInsertKnots(int para_dim, int* knots) {
+  virtual void SplinepyInsertKnot(const int& para_dim,
+                                  const double& knot) const {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrInsertKnots not implemented for",
-        WhatAmI()
+        "RawPtrInsertKnot not implemented for",
+        SplinepyWhatAmI()
     );
   };
 
-  virtual void RawPtrRemoveKnots(int para_dim, int* knots) {
+  virtual bool SplinepyRemoveKnot(const int& para_dim,
+                                  const double& knot,
+                                  const double& tolerance) {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrRemoveKnots not implemented for",
-        WhatAmI()
+        "RawPtrRemoveKnot not implemented for",
+        SplinepyWhatAmI()
     );
   };
 };

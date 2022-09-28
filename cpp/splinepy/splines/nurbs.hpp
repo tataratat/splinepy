@@ -7,7 +7,7 @@
 #include <Sources/Splines/nurbs.hpp>
 
 #include <splinepy/splines/splinepy_base.hpp>
-#include <splinepy/splines/helpers/rawptr_wrapper.hpp>
+#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/proximity/proximity.hpp>
 
@@ -54,7 +54,7 @@ public:
   // Frequently used types
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = typename splinelib::Dimension;
-  using Tolerance_ = typename splinelib::sources::splines::Tolerance_;
+  using Tolerance_ = typename splinelib::sources::splines::Tolerance;
   using OutputInformation_ =
       splinelib::Tuple<typename ParameterSpace_::OutputInformation_,
                        typename WeightedVectorSpace_::OutputInformation_>;
@@ -142,20 +142,20 @@ public:
   using Base_::Base_;
 
   // required implementations
-  virtual constexpr int ParaDim() const {return kParaDim;}
+  virtual constexpr int SplinepyParaDim() const {return kParaDim;}
 
-  virtual constexpr int Dim() const {return kDim;}
+  virtual constexpr int SplinepyDim() const {return kDim;}
 
-  virtual std::string WhatAmI() const {
-    return "NURBS, parametric dimension: " + std::to_string(ParaDim())
-        + ", physical dimension: " + std::to_string(Dim());
+  virtual std::string SplinepyWhatAmI() const {
+    return "NURBS, parametric dimension: " + std::to_string(SplinepyParaDim())
+        + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual int NumberOfControlPoints() const {
+  virtual int SplinepyNumberOfControlPoints() const {
     return GetWeightedVectorSpace().GetNumberOfCoordinates();
   }
 
-  virtual void RawPtrCurrentProperties(
+  virtual void SplinepyCurrentProperties(
       double* degrees,
       std::vector<std::vector<double>>* knot_vectors,
       double* control_points,
@@ -200,7 +200,7 @@ public:
     }
   }
 
-  virtual void RawPtrParametricBounds(double* para_bounds) const {
+  virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);
     for (std::size_t i{}; i < kParaDim; ++i) {
       // lower bounds
@@ -210,24 +210,29 @@ public:
     }
   }
 
-  virtual void RawPtrEvaluate(double* para_coord, double* evaluated) const {
-    splinepy::splines::helpers::RawPtrEvaluate(*this, para_coord, evaluated);
+  virtual void SplinepyEvaluate(const double* para_coord, double* evaluated) const {
+    splinepy::splines::helpers::ScalarTypeEvaluate(*this, para_coord, evaluated);
   } 
-  virtual void RawPtrDerivative(double* para_coord,
-                                double* orders,
-                                double* derived) const {
+  virtual void SplinepyDerivative(const double* para_coord,
+                                  const int* orders,
+                                  double* derived) const {
+    splinepy::splines::helpers::ScalarTypeDerivative(*this, para_coord, orders, derived);
   }
 
-  virtual void RawPtrElevateDegrees(int* para_dims) {
+  virtual void SplinepyElevateDegree(const int& p_dim) {
+    splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
 
-  virtual void RawPtrReduceDegrees(int* para_dims, double tolerance) {
+  virtual bool SplinepyReduceDegree(const int& p_dim, const double& tolerance) {
+    return splinepy::splines::helpers::ScalarTypeReduceDegree(*this, p_dim, tolerance);
   }
 
-  virtual void RawPtrInsertKnots(int p_dim, int* knots) {
+  virtual void SplinepyInsertKnot(const int& p_dim, const double& knot) {
+    splinepy::splines::helpers::ScalarTypeInsertKnot(*this, p_dim, knot);
   }
 
-  virtual void RawPtrRemoveKnots(int p_dim, int* knots) {
+  virtual bool SplinepyRemoveKnot(const int& p_dim, const double& knot, const double& tolerance) {
+    return splinepy::splines::helpers::ScalarTypeRemoveKnot(*this, p_dim, knot, tolerance);
   }
   
   const ParameterSpace_& GetParameterSpace() const {
@@ -412,7 +417,7 @@ protected:
 
 }; /* class Nurbs */
 
-std::shared_ptr<SplinepyBase> SplinepyBase::CreateNurbs(
+std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateNurbs(
       const int para_dim,
       const int dim,
       const double* degrees,

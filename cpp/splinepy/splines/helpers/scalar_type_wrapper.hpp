@@ -7,9 +7,9 @@ namespace splinepy::splines::helpers {
 template<typename SplineType,
          typename QueryType,
          typename OutputType>
-void RawPtrEvaluate(SplineType& spline,
-                    QueryType* query,
-                    OutputType* output) {
+void ScalarTypeEvaluate(const SplineType& spline,
+                        const QueryType* query,
+                        OutputType* output) {
   using Query = typename SplineType::ParametricCoordinate_;
   using QueryValueType = typename Query::value_type;
   Query core_query;
@@ -31,10 +31,10 @@ template<typename SplineType,
          typename QueryType,
          typename OrderType,
          typename OutputType>
-void RawPtrDerivative(SplineType& spline,
-                      QueryType* query,
-                      OrderType* order,
-                      OutputType* output) {
+void ScalarTypeDerivative(const SplineType& spline,
+                          const QueryType* query,
+                          const OrderType* order,
+                          OutputType* output) {
   using Query = typename SplineType::ParametricCoordinate_;
   using QueryValueType = typename Query::value_type;
   using Order = typename SplineType::Derivative_;
@@ -51,36 +51,36 @@ void RawPtrDerivative(SplineType& spline,
   const auto core_derived = spline(core_query, core_order);
 
   for (std::size_t i{}; i < SplineType::kDim; ++i) {
-    output[i] = static_cast<OutputType>(core_evaluated[i]);
+    output[i] = static_cast<OutputType>(core_derived[i]);
   }
 }
 
 /// single degree elevation.
 template<typename SplineType, typename QueryType>
-void RawPtrElevateDegrees(SplineType& spline,
-                          QueryType query) {
-  typename Dim = typename SplineType::Dimension_;
-  spline.ElevateDegree(Dim{query})
+void ScalarTypeElevateDegree(const SplineType& spline,
+                              const QueryType query) {
+  using Dim = typename SplineType::Dimension_;
+  spline.ElevateDegree(Dim{query});
 }
 
 /// single degree reduction
 template<typename SplineType, typename QueryType, typename ToleranceType>
-bool RawPtrReduceDegree(SplineType& spline,
-                        QueryType query,
-                        ToleranceType tolerance) {
-  typename Dim = typename SplineType::Dimension_;
-  typename Tol = typename SplineType::Tolerance_;
+bool ScalarTypeReduceDegree(const SplineType& spline,
+                            const QueryType query,
+                            const ToleranceType tolerance) {
+  using Dim = typename SplineType::Dimension_;
+  using Tol = typename SplineType::Tolerance_;
   return spline.ReduceDegree(Dim{query}, Tol{tolerance});
 }
 
 /// single knot insertion
 template<typename SplineType, typename QueryDimType, typename QueryType>
-void RawPtrInsertKnot(SplineType& spline,
+void ScalarTypeInsertKnot(SplineType& spline,
                       QueryDimType query_dim,
                       QueryType query) {
-  typename Dim = typename SplineType::Dimension_;
-  typename Knot = typename SplineType::Knot_;
-  spline.InsertKnot(Dim{query_dim}, Knot{query})
+  using Dim = typename SplineType::Dimension_;
+  using Knot = typename SplineType::Knot_;
+  spline.InsertKnot(Dim{query_dim}, Knot{query});
 }
 
 /// single knot removal
@@ -88,17 +88,17 @@ template<typename SplineType,
          typename QueryDimType,
          typename QueryType,
          typename ToleranceType>
-bool RawPtrRemoveKnot(SplineType& spline,
+bool ScalarTypeRemoveKnot(SplineType& spline,
                       QueryDimType query_dim,
                       QueryType query,
-                      ToleranceType tolerancce) {
-  typename Dim = typename SplineType::Dimension_;
-  typename Knot = typename SplineType::Knot_;
-  typename Tol = typename SplineType::Tolerance_;
+                      ToleranceType tolerance) {
+  using Dim = typename SplineType::Dimension_;
+  using Knot = typename SplineType::Knot_;
+  using Tol = typename SplineType::Tolerance_;
 
-  const auto multiplicity = spline.RemoveKnot(Dim{query_dim}, Knot{query}, Tol{tol});
+  const auto multiplicity = spline.RemoveKnot(Dim{query_dim}, Knot{query}, Tol{tolerance});
 
-  // very confusing syntax, let's see
+  // very confusing syntax, let's see if this is correct
   // TODO: is this correct?
   if (static_cast<int>(multiplicity) == 0) {
     return false;

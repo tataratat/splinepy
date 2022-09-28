@@ -80,7 +80,7 @@ public:
     }
 
     // new assign
-    c_spline_ = splinepy::splines::SplinepyBase::Create(
+    c_spline_ = splinepy::splines::SplinepyBase::SplinepyCreate(
         para_dim,
         dim,
         degrees_ptr,
@@ -88,8 +88,8 @@ public:
         control_points_ptr,
         weights_ptr
     );
-    para_dim_ = c_spline_->ParaDim();
-    dim_ = c_spline_->Dim();
+    para_dim_ = c_spline_->SplinepyParaDim();
+    dim_ = c_spline_->SplinepyDim();
   }
 
   // Returns currunt properties of core spline
@@ -101,7 +101,7 @@ public:
     // first, degrees and control_points
     py::array_t<double> degrees(para_dim_);
     double* degrees_ptr = static_cast<double*>(degrees.request().ptr);
-    const int ncps = c_spline_->NumberOfControlPoints();
+    const int ncps = c_spline_->SplinepyNumberOfControlPoints();
     py::array_t<double> control_points(ncps * dim_);
     double* control_points_ptr = static_cast<double*>(control_points.request().ptr);
 
@@ -119,7 +119,7 @@ public:
       weights_ptr = static_cast<double*>(weights.request().ptr);
     }
 
-    c_spline_->RawPtrCurrentProperties(
+    c_spline_->SplinepyCurrentProperties(
         degrees_ptr,
         knot_vectors_ptr,
         control_points_ptr,
@@ -161,7 +161,7 @@ public:
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
     auto evaluate = [&](int begin, int end) {
       for (int i{begin}; i < end; ++i) {
-        c_spline_->RawPtrEvaluate(
+        c_spline_->SplinepyEvaluate(
             &queries_ptr[i * para_dim_],
             &evaluated_ptr[i * dim_]
         );
@@ -175,12 +175,12 @@ public:
   }
 
   /// Sample wraps evaluate to allow nthread executions
-  /// Requires RawPtrParametricBounds 
+  /// Requires SplinepyParametricBounds 
   py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) {
     // get sampling bounds
     std::vector<double> bounds(para_dim_ * 2);
     double* bounds_ptr = bounds.data();
-    c_spline_->RawPtrParametricBounds(bounds_ptr);
+    c_spline_->SplinepyParametricBounds(bounds_ptr);
     // prepare sampler
     auto grid = splinepy::utils::RawPtrGridPoints(
         para_dim_,
@@ -197,7 +197,7 @@ public:
       double* query_ptr = query.data();
       for (int i{begin}; i < end; ++i) {
         grid.IdToGridPoint(i, query_ptr);
-        c_spline_->RawPtrEvaluate(
+        c_spline_->SplinepyEvaluate(
             &query[0],
             &sampled_ptr[i * dim_]
         );
