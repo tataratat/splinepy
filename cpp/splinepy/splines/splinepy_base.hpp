@@ -104,21 +104,21 @@ public:
                                         SplinepyWhatAmI());
   };
 
-  virtual void SplinepyElevateDegree(const int& para_dims) const {
+  virtual void SplinepyElevateDegree(const int& para_dims) {
     splinepy::utils::PrintAndThrowError(
         "RawPtrElevateDegree not implemented for",
         SplinepyWhatAmI());
   };
 
   virtual bool SplinepyReduceDegree(const int& para_dims,
-                                    const double& tolerance) const {
+                                    const double& tolerance) {
     splinepy::utils::PrintAndThrowError(
         "RawPtrReduceDegree not implemented for",
         SplinepyWhatAmI());
   };
 
   virtual void SplinepyInsertKnot(const int& para_dim,
-                                  const double& knot) const {
+                                  const double& knot) {
     splinepy::utils::PrintAndThrowError("RawPtrInsertKnot not implemented for",
                                         SplinepyWhatAmI());
   };
