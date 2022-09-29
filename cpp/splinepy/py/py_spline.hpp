@@ -201,12 +201,13 @@ public:
     return sampled;
   }
 
-  py::array_t<double> SplinepyDerivative(py::array_t<double> queries,
-                                         py::array_t<int> orders,
-                                         int nthreads) {
+  /// spline derivatives
+  py::array_t<double> Derivative(py::array_t<double> queries,
+                                 py::array_t<int> orders,
+                                 int nthreads) {
     // process input
-    const int n_queries = queries.shape(0) const int orders_ndim =
-        orders.ndim();
+    const int n_queries = queries.shape(0);
+    const int orders_ndim = orders.ndim();
     const int orders_len = orders.shape(0);
     int constant_orders_factor = 0;
     if (orders_ndim != 1) {
@@ -231,7 +232,7 @@ public:
 
     // prepare lambda for nthread exe
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
-    int* orders_ptr = static_cast<double*>(orders.request().ptr);
+    int* orders_ptr = static_cast<int*>(orders.request().ptr);
     auto derive =
         [&](int begin, int end) {
           for (int i{begin}; i < end; ++i) {
@@ -240,13 +241,62 @@ public:
                 &orders_ptr[constant_orders_factor * i * para_dim_],
                 &derived_ptr[i * dim_]);
           }
-        }
+        };
 
     splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
 
     derived.resize({n_queries, dim_});
     return derived;
   }
+
+  /// (multiple) Degree elevation
+  void ElevateDegrees(py::array_t<int> para_dims) {
+    int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
+    const int n_request = para_dims.size();
+    for (int i{}; i < n_request; ++i) {
+      c_spline_->SplinepyElevateDegree(para_dims_ptr[i]);
+    }
+  }
+
+  /// (multiple) Degree Reduction
+  /// returns a list of reduction result (bool)
+  py::list ReduceDegrees(py::array_t<int> para_dims, double tolerance) {
+    int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
+    const int n_request = para_dims.size();
+
+    py::list successful;
+    for (int i{}; i < n_request; ++i) {
+      successful.append(
+          c_spline_->SplinepyReduceDegree(para_dims_ptr[i], tolerance));
+    }
+
+    return successful;
+  }
+
+  /// (multiple) knot insertion, single dimension
+  void InsertKnots(int para_dim, py::array_t<double> knots) {
+    double* knots_ptr = static_cast<double*>(knots.request().ptr);
+    const int n_request = knots.size();
+
+    for (int i{}; i < n_request; ++i) {
+      c_spline_->SplinepyInsertKnot(para_dim, knots_ptr[i]);
+    }
+  }
+
+  /// (multiple) knot removal, single dimension
+  py::list RemoveKnots(int para_dim, py::array_t<double> knots, double tolerance) {
+    double* knots_ptr = static_cast<double*>(knots.request().ptr);
+    const int n_request = knots.size();
+
+    py::list successful;
+    for (int i{}; i < n_request; ++i) {
+      successful.append(
+        c_spline_->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
+    }
+
+    return successful;
+  }
+
 };
 
 } // namespace splinepy::py
@@ -265,6 +315,26 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::Sample,
            py::arg("resolutions"),
            py::arg("nthreads") = 1)
-
+      .def("derivative",
+           &splinepy::py::PySpline::Derivative,
+           py::arg("queries"),
+           py::arg("orders"),
+           py::arg("nthreads")=1)
+      .def("elevate_degrees",
+           &splinepy::py::PySpline::ElevateDegrees,
+           py::arg("para_dims"))
+      .def("reduce_degrees",
+           &splinepy::py::PySpline::ReduceDegrees,
+           py::arg("para_dims"),
+           py::arg("tolerance"))
+      .def("insert_knots",
+           &splinepy::py::PySpline::InsertKnots,
+           py::arg("para_dim"),
+           py::arg("knots"))
+      .def("remove_knots",
+           &splinepy::py::PySpline::RemoveKnots,
+           py::arg("para_dim"),
+           py::arg("knots"),
+           py::arg("tolernace"))
       ;
 }
