@@ -4,9 +4,7 @@
 
 namespace splinepy::splines::helpers {
 /// SplineLib spline evaluation (single query).
-template<typename SplineType,
-         typename QueryType,
-         typename OutputType>
+template<typename SplineType, typename QueryType, typename OutputType>
 void ScalarTypeEvaluate(const SplineType& spline,
                         const QueryType* query,
                         OutputType* output) {
@@ -57,8 +55,7 @@ void ScalarTypeDerivative(const SplineType& spline,
 
 /// single degree elevation.
 template<typename SplineType, typename QueryType>
-void ScalarTypeElevateDegree(const SplineType& spline,
-                              const QueryType query) {
+void ScalarTypeElevateDegree(const SplineType& spline, const QueryType query) {
   using Dim = typename SplineType::Dimension_;
   spline.ElevateDegree(Dim{query});
 }
@@ -76,8 +73,8 @@ bool ScalarTypeReduceDegree(const SplineType& spline,
 /// single knot insertion
 template<typename SplineType, typename QueryDimType, typename QueryType>
 void ScalarTypeInsertKnot(SplineType& spline,
-                      QueryDimType query_dim,
-                      QueryType query) {
+                          QueryDimType query_dim,
+                          QueryType query) {
   using Dim = typename SplineType::Dimension_;
   using Knot = typename SplineType::Knot_;
   spline.InsertKnot(Dim{query_dim}, Knot{query});
@@ -89,14 +86,15 @@ template<typename SplineType,
          typename QueryType,
          typename ToleranceType>
 bool ScalarTypeRemoveKnot(SplineType& spline,
-                      QueryDimType query_dim,
-                      QueryType query,
-                      ToleranceType tolerance) {
+                          QueryDimType query_dim,
+                          QueryType query,
+                          ToleranceType tolerance) {
   using Dim = typename SplineType::Dimension_;
   using Knot = typename SplineType::Knot_;
   using Tol = typename SplineType::Tolerance_;
 
-  const auto multiplicity = spline.RemoveKnot(Dim{query_dim}, Knot{query}, Tol{tolerance});
+  const auto multiplicity =
+      spline.RemoveKnot(Dim{query_dim}, Knot{query}, Tol{tolerance});
 
   // very confusing syntax, let's see if this is correct
   // TODO: is this correct?

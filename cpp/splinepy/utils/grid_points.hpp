@@ -79,14 +79,12 @@ class RawPtrGridPoints {
 public:
   RawPtrGridPoints() = default;
   RawPtrGridPoints(const int dim,
-             const double* bounds,
-             const int* resolutions) {
+                   const double* bounds,
+                   const int* resolutions) {
     SetUp(dim, bounds, resolutions);
   }
 
-  void SetUp(const int dim,
-             const double* bounds,
-             const int* resolutions) {
+  void SetUp(const int dim, const double* bounds, const int* resolutions) {
     dim_ = dim;
     len_ = 1;
     // linspace and prepare possible entries */
@@ -99,7 +97,7 @@ public:
       if (res < 0) {
       }
       len_ *= res;
-      resolutions_.push_back(res); 
+      resolutions_.push_back(res);
 
       std::vector<double>& entryvec = entries_[i];
       entryvec.reserve(res);
@@ -119,9 +117,7 @@ public:
     }
   }
 
-  int Size() const {
-    return len_;
-  }
+  int Size() const { return len_; }
 
 protected:
   std::vector<double> bounds_;

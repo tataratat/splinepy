@@ -6,8 +6,8 @@
 #include <pybind11/pybind11.h>
 
 #include <splinepy/splines/splinepy_base.hpp>
-#include <splinepy/utils/print.hpp>
 #include <splinepy/utils/grid_points.hpp>
+#include <splinepy/utils/print.hpp>
 
 namespace splinepy::py {
 
@@ -15,7 +15,7 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-/// True interface to python  
+/// True interface to python
 class PySpline {
 public:
   using CoreSpline_ = typename std::shared_ptr<splinepy::splines::SplinepyBase>;
@@ -28,9 +28,7 @@ public:
 
   // ctor
   PySpline() = default;
-  PySpline(const py::kwargs& kwargs) {
-    NewCore(kwargs);
-  }
+  PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
 
   /// Creates a corresponding spline based on kwargs
   /// similar to previous update_c()
@@ -70,7 +68,7 @@ public:
         knot_vectors.push_back(std::move(knot_vector));
       }
       knot_vectors_ptr = &knot_vectors;
-    } 
+    }
 
     // maybe, get weights
     if (kwargs.contains("weights")) {
@@ -80,14 +78,13 @@ public:
     }
 
     // new assign
-    c_spline_ = splinepy::splines::SplinepyBase::SplinepyCreate(
-        para_dim,
-        dim,
-        degrees_ptr,
-        knot_vectors_ptr,
-        control_points_ptr,
-        weights_ptr
-    );
+    c_spline_ =
+        splinepy::splines::SplinepyBase::SplinepyCreate(para_dim,
+                                                        dim,
+                                                        degrees_ptr,
+                                                        knot_vectors_ptr,
+                                                        control_points_ptr,
+                                                        weights_ptr);
     para_dim_ = c_spline_->SplinepyParaDim();
     dim_ = c_spline_->SplinepyDim();
   }
@@ -103,7 +100,8 @@ public:
     double* degrees_ptr = static_cast<double*>(degrees.request().ptr);
     const int ncps = c_spline_->SplinepyNumberOfControlPoints();
     py::array_t<double> control_points(ncps * dim_);
-    double* control_points_ptr = static_cast<double*>(control_points.request().ptr);
+    double* control_points_ptr =
+        static_cast<double*>(control_points.request().ptr);
 
     // and maybes
     std::vector<std::vector<double>> knot_vectors;
@@ -119,12 +117,10 @@ public:
       weights_ptr = static_cast<double*>(weights.request().ptr);
     }
 
-    c_spline_->SplinepyCurrentProperties(
-        degrees_ptr,
-        knot_vectors_ptr,
-        control_points_ptr,
-        weights_ptr
-    );
+    c_spline_->SplinepyCurrentProperties(degrees_ptr,
+                                         knot_vectors_ptr,
+                                         control_points_ptr,
+                                         weights_ptr);
 
     // process
     dict_spline["degrees"] = degrees;
@@ -141,7 +137,7 @@ public:
         std::copy_n(knot_vector.begin(), kvsize, kv_ptr);
         kvs.append(kv);
       }
-      dict_spline["knot_vectors"] = kvs;    
+      dict_spline["knot_vectors"] = kvs;
     }
     if (is_rational_) {
       weights.resize({ncps, 1});
@@ -161,10 +157,8 @@ public:
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
     auto evaluate = [&](int begin, int end) {
       for (int i{begin}; i < end; ++i) {
-        c_spline_->SplinepyEvaluate(
-            &queries_ptr[i * para_dim_],
-            &evaluated_ptr[i * dim_]
-        );
+        c_spline_->SplinepyEvaluate(&queries_ptr[i * para_dim_],
+                                    &evaluated_ptr[i * dim_]);
       }
     };
 
@@ -175,7 +169,7 @@ public:
   }
 
   /// Sample wraps evaluate to allow nthread executions
-  /// Requires SplinepyParametricBounds 
+  /// Requires SplinepyParametricBounds
   py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) {
     // get sampling bounds
     std::vector<double> bounds(para_dim_ * 2);
@@ -197,10 +191,7 @@ public:
       double* query_ptr = query.data();
       for (int i{begin}; i < end; ++i) {
         grid.IdToGridPoint(i, query_ptr);
-        c_spline_->SplinepyEvaluate(
-            &query[0],
-            &sampled_ptr[i * dim_]
-        );
+        c_spline_->SplinepyEvaluate(&query[0], &sampled_ptr[i * dim_]);
       }
     };
 
@@ -214,12 +205,12 @@ public:
                                          py::array_t<int> orders,
                                          int nthreads) {
     // process input
-    const int n_queries = queries.shape(0)
-    const int orders_ndim = orders.ndim();
+    const int n_queries = queries.shape(0) const int orders_ndim =
+        orders.ndim();
     const int orders_len = orders.shape(0);
     int constant_orders_factor = 0;
     if (orders_ndim != 1) {
-      if(orders_len == n_queries) {
+      if (orders_len == n_queries) {
         constant_orders_factor = 1;
       } else if (orders_len == 1) {
         // pass
@@ -227,9 +218,10 @@ public:
         splinepy::utils::PrintAndThrowError(
             "Length of derivative-query-orders (orders) must be either 1",
             "or same as the length of queries.",
-            "Expected:", n_queries,
-            "Given:", orders_len
-        );
+            "Expected:",
+            n_queries,
+            "Given:",
+            orders_len);
       }
     }
 
@@ -240,22 +232,21 @@ public:
     // prepare lambda for nthread exe
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
     int* orders_ptr = static_cast<double*>(orders.request().ptr);
-    auto derive = [&](int begin, int end) {
-      for (int i{begin}; i < end; ++i) {
-        c_spline_->SplinepyDerivative(
-            &queries_ptr[i * para_dim_],
-            &orders_ptr[constant_orders_factor * i * para_dim_],
-            &derived_ptr[i * dim_]
-        );
-      }
-    }
+    auto derive =
+        [&](int begin, int end) {
+          for (int i{begin}; i < end; ++i) {
+            c_spline_->SplinepyDerivative(
+                &queries_ptr[i * para_dim_],
+                &orders_ptr[constant_orders_factor * i * para_dim_],
+                &derived_ptr[i * dim_]);
+          }
+        }
 
     splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
 
     derived.resize({n_queries, dim_});
     return derived;
   }
-
 };
 
 } // namespace splinepy::py
@@ -265,16 +256,15 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
-      .def("current_properties",
-           &splinepy::py::PySpline::CurrentProperties)
+      .def("current_properties", &splinepy::py::PySpline::CurrentProperties)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),
-           py::arg("nthreads")=1)
+           py::arg("nthreads") = 1)
       .def("sample",
            &splinepy::py::PySpline::Sample,
            py::arg("resolutions"),
-           py::arg("nthreads")=1)
+           py::arg("nthreads") = 1)
 
       ;
 }

@@ -21,17 +21,16 @@ class SplinepyBase {
 public:
   SplinepyBase() = default;
 
-  static std::shared_ptr<SplinepyBase> SplinepyCreate(
-      const int para_dim = 0,
-      const int dim = 0,
-      const double* degrees = nullptr,
-      const std::vector<std::vector<double>>* knot_vectors = nullptr,
-      const double* control_points = nullptr,
-      const double* weights = nullptr) {
+  static std::shared_ptr<SplinepyBase>
+  SplinepyCreate(const int para_dim = 0,
+                 const int dim = 0,
+                 const double* degrees = nullptr,
+                 const std::vector<std::vector<double>>* knot_vectors = nullptr,
+                 const double* control_points = nullptr,
+                 const double* weights = nullptr) {
     if (!degrees || !control_points) {
       splinepy::utils::PrintAndThrowError(
-          "Not Enough information to create any spline."
-      );
+          "Not Enough information to create any spline.");
     }
 
     if (!knot_vectors) {
@@ -39,15 +38,15 @@ public:
       // @jzwar this would be a good place to check valid input
 
       if (!weights) {
-        //return CreateBezier(degrees, control_points);
+        // return CreateBezier(degrees, control_points);
         return SplinepyCreateBezier();
       } else {
-        //return CreateRationalBezier(degrees, control_points, weights);
+        // return CreateRationalBezier(degrees, control_points, weights);
         return SplinepyCreateRationalBezier();
       }
     } else {
       if (!weights) {
-        //return CreateBSpline(degrees, knot_vectors, control_points);
+        // return CreateBSpline(degrees, knot_vectors, control_points);
         return SplinepyCreateBSpline();
       } else {
         return SplinepyCreateNurbs(para_dim,
@@ -61,87 +60,74 @@ public:
   };
 
   // Implemented in splinepy/splines/bezier.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateBezier() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateBezier(){};
   // Implemented in splinepy/splines/rational_bezier.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier(){};
   // Implemented in splinepy/splines/b_spline.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateBSpline() {};
+  static std::shared_ptr<SplinepyBase> SplinepyCreateBSpline(){};
   /// Implemented in splinepy/splines/nurbs.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateNurbs(
-      const int para_dim,
-      const int dim,
-      const double* degrees,
-      const std::vector<std::vector<double>>* knot_vectors,
-      const double* control_points,
-      const double* weights);
+  static std::shared_ptr<SplinepyBase>
+  SplinepyCreateNurbs(const int para_dim,
+                      const int dim,
+                      const double* degrees,
+                      const std::vector<std::vector<double>>* knot_vectors,
+                      const double* control_points,
+                      const double* weights);
 
   virtual constexpr int SplinepyParaDim() const = 0;
   virtual constexpr int SplinepyDim() const = 0;
   virtual std::string SplinepyWhatAmI() const = 0;
   virtual int SplinepyNumberOfControlPoints() const = 0;
   /// Extract core spline properties. Similar to previous update_p
-  virtual void SplinepyCurrentProperties(
-      double* degrees,
-      std::vector<std::vector<double>>* knot_vectors,
-      double* control_points,
-      double* weights
-  ) const = 0;
+  virtual void
+  SplinepyCurrentProperties(double* degrees,
+                            std::vector<std::vector<double>>* knot_vectors,
+                            double* control_points,
+                            double* weights) const = 0;
 
   virtual void SplinepyParametricBounds(double* p_bounds) const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrParametricBounds not implemented for",
-        SplinepyWhatAmI()
-    );
-
+        SplinepyWhatAmI());
   };
 
-  virtual void SplinepyEvaluate(const double* para_coord, double* evaluated)
-      const {
-    splinepy::utils::PrintAndThrowError(
-        "RawPtrEvaluate not implemented for",
-        SplinepyWhatAmI()
-    );
+  virtual void SplinepyEvaluate(const double* para_coord,
+                                double* evaluated) const {
+    splinepy::utils::PrintAndThrowError("RawPtrEvaluate not implemented for",
+                                        SplinepyWhatAmI());
   };
 
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const {
-    splinepy::utils::PrintAndThrowError(
-        "RawPtrDerivative not implemented for",
-        SplinepyWhatAmI()
-    );
+    splinepy::utils::PrintAndThrowError("RawPtrDerivative not implemented for",
+                                        SplinepyWhatAmI());
   };
 
   virtual void SplinepyElevateDegree(const int& para_dims) const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrElevateDegree not implemented for",
-        SplinepyWhatAmI()
-    );
+        SplinepyWhatAmI());
   };
 
   virtual bool SplinepyReduceDegree(const int& para_dims,
                                     const double& tolerance) const {
     splinepy::utils::PrintAndThrowError(
         "RawPtrReduceDegree not implemented for",
-        SplinepyWhatAmI()
-    );
+        SplinepyWhatAmI());
   };
 
   virtual void SplinepyInsertKnot(const int& para_dim,
                                   const double& knot) const {
-    splinepy::utils::PrintAndThrowError(
-        "RawPtrInsertKnot not implemented for",
-        SplinepyWhatAmI()
-    );
+    splinepy::utils::PrintAndThrowError("RawPtrInsertKnot not implemented for",
+                                        SplinepyWhatAmI());
   };
 
   virtual bool SplinepyRemoveKnot(const int& para_dim,
                                   const double& knot,
                                   const double& tolerance) {
-    splinepy::utils::PrintAndThrowError(
-        "RawPtrRemoveKnot not implemented for",
-        SplinepyWhatAmI()
-    );
+    splinepy::utils::PrintAndThrowError("RawPtrRemoveKnot not implemented for",
+                                        SplinepyWhatAmI());
   };
 };
 
