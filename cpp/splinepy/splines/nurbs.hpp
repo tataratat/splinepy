@@ -40,6 +40,7 @@ public:
   using Knots_ = typename Base_::Base_::Knots_;
   using Knot_ = typename Base_::Knot_;
   using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
+  using KnotRatio_ = typename KnotRatios_::value_type;
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
   using ScalarParametricCoordinate_ =
       typename ParametricCoordinate_::value_type;
@@ -135,8 +136,7 @@ public:
         const std::vector<std::vector<double>>& knot_vectors,
         const double* control_points,
         const double* weights)
-      : SplinepyBase_(),
-        Base_(
+      : Base_(
             RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
