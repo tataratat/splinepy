@@ -210,6 +210,52 @@ public:
     return sampled;
   }
 
+  py::array_t<double> SplinepyDerivative(py::array_t<double> queries,
+                                         py::array_t<int> orders,
+                                         int nthreads) {
+    // process input
+    const int n_queries = queries.shape(0)
+    const int orders_ndim = orders.ndim();
+    const int orders_len = orders.shape(0);
+    int constant_orders_factor = 0;
+    if (orders_ndim != 1) {
+      if(orders_len == n_queries) {
+        constant_orders_factor = 1;
+      } else if (orders_len == 1) {
+        // pass
+      } else {
+        splinepy::utils::PrintAndThrowError(
+            "Length of derivative-query-orders (orders) must be either 1",
+            "or same as the length of queries.",
+            "Expected:", n_queries,
+            "Given:", orders_len
+        );
+      }
+    }
+
+    // prepare output
+    py::array_t<double> derived(n_queries * dim_);
+    double* derived_ptr = static_cast<double*>(derived.request().ptr);
+
+    // prepare lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    int* orders_ptr = static_cast<double*>(orders.request().ptr);
+    auto derive = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        c_spline_->SplinepyDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[constant_orders_factor * i * para_dim_],
+            &derived_ptr[i * dim_]
+        );
+      }
+    }
+
+    splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
+
+    derived.resize({n_queries, dim_});
+    return derived;
+  }
+
 };
 
 } // namespace splinepy::py
