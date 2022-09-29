@@ -273,31 +273,35 @@ public:
     return successful;
   }
 
-  /// (multiple) knot insertion, single dimension
-  void InsertKnots(int para_dim, py::array_t<double> knots) {
-    double* knots_ptr = static_cast<double*>(knots.request().ptr);
-    const int n_request = knots.size();
-
-    for (int i{}; i < n_request; ++i) {
-      c_spline_->SplinepyInsertKnot(para_dim, knots_ptr[i]);
-    }
-  }
-
-  /// (multiple) knot removal, single dimension
-  py::list RemoveKnots(int para_dim, py::array_t<double> knots, double tolerance) {
-    double* knots_ptr = static_cast<double*>(knots.request().ptr);
-    const int n_request = knots.size();
-
-    py::list successful;
-    for (int i{}; i < n_request; ++i) {
-      successful.append(
-        c_spline_->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
-    }
-
-    return successful;
-  }
 
 };
+
+/* operations for certain splines */
+
+/// (multiple) knot insertion, single dimension
+void InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
+  double* knots_ptr = static_cast<double*>(knots.request().ptr);
+  const int n_request = knots.size();
+
+  for (int i{}; i < n_request; ++i) {
+    spline.c_spline_->SplinepyInsertKnot(para_dim, knots_ptr[i]);
+  }
+}
+
+/// (multiple) knot removal, single dimension
+py::list RemoveKnots(PySpline& spline, int para_dim,
+                    py::array_t<double> knots, double tolerance) {
+  double* knots_ptr = static_cast<double*>(knots.request().ptr);
+  const int n_request = knots.size();
+
+  py::list successful;
+  for (int i{}; i < n_request; ++i) {
+    successful.append(
+      spline.c_spline_->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
+  }
+
+  return successful;
+}
 
 } // namespace splinepy::py
 
@@ -327,14 +331,17 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
            py::arg("tolerance"))
-      .def("insert_knots",
-           &splinepy::py::PySpline::InsertKnots,
+      ;
+      m.def("insert_knots",
+           &splinepy::py::InsertKnots,
+           py::arg("spline"),
            py::arg("para_dim"),
-           py::arg("knots"))
-      .def("remove_knots",
-           &splinepy::py::PySpline::RemoveKnots,
+           py::arg("knots"));
+      m.def("remove_knots",
+           &splinepy::py::RemoveKnots,
+           py::arg("spline"),
            py::arg("para_dim"),
            py::arg("knots"),
-           py::arg("tolernace"))
+           py::arg("tolernace"));
       ;
 }
