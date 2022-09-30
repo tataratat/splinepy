@@ -137,7 +137,7 @@ public:
         const double* control_points,
         const double* weights)
       : Base_(
-            RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
+          RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
 
