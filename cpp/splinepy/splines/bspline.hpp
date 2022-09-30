@@ -7,6 +7,9 @@
 #include <Sources/Splines/b_spline.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/properties.hpp>
+#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
+#include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
 
@@ -26,11 +29,11 @@ public:
   // splinepy
   using SplinepyBase_ = typename splinepy::splines::SplinepyBase;
 
-  //splinelib
+  // splinelib
   using Base_ = splinelib::sources::splines::BSpline<para_dim, dim>;
   // parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
-  using Degrees_ = typename ParameterSpace_::Degrees;
+  using Degrees_ = typename ParameterSpace_::Degrees_;
   using Degree_ = typename Degrees_::value_type;
   using KnotVectors_ = typename ParameterSpace_::KnotVectors_;
   using KnotVector_ = typename KnotVectors_::value_type::element_type;
@@ -39,7 +42,8 @@ public:
   using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
   using KnotRatio_ = typename KnotRatios_::value_type;
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
-  using ScalarParametricCoordinate_ = typename ParametricCoordinate_::value_type;
+  using ScalarParametricCoordinate_ =
+      typename ParametricCoordinate_::value_type;
   // vector space
   using VectorSpace_ = typename Base_::VectorSpace_;
   using Coordinates_ = typename VectorSpace_::Coordinates_;
@@ -48,7 +52,7 @@ public:
   // frequently used types
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = typename splinelib::Dimension;
-  using Tolernace_ = typename splinelib::sources::splines::Tolerance;
+  using Tolerance_ = typename splinelib::sources::splines::Tolerance;
   using OutputInformation_ =
       splinelib::Tuple<typename ParameterSpace_::OutputInformation_,
                        typename VectorSpace_::OutputInformation_>;
@@ -115,19 +119,17 @@ public:
       sl_control_points.push_back(std::move(control_point));
     }
 
-    auto sl_vector_space =
-        std::make_shared<VectorSpace_>(sl_control_points);
+    auto sl_vector_space = std::make_shared<VectorSpace_>(sl_control_points);
 
     // return init
     return Base_(sl_parameter_space, sl_vector_space);
   }
 
   // rawptr based ctor
-  BSplne(const double* degrees,
-         const std::vector<std::vector<double>>& knot_vectors,
-         const double* control_points)
-      : Base_(
-            RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
+  BSpline(const double* degrees,
+          const std::vector<std::vector<double>>& knot_vectors,
+          const double* control_points)
+      : Base_(RawPtrInitHelper(degrees, knot_vectors, control_points)) {}
   // inherited ctor
   using Base_::Base_;
 
@@ -142,7 +144,7 @@ public:
   }
 
   virtual int SplinepyNumberOfControlPoints() const {
-    return GetWeightedVectorSpace().GetNumberOfCoordinates();
+    return GetVectorSpace().GetNumberOfCoordinates();
   }
 
   virtual void
@@ -150,7 +152,7 @@ public:
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights /* untouched */) const {
-    
+
     const auto& parameter_space = GetParameterSpace();
     const auto& vector_space = GetVectorSpace();
 
@@ -340,5 +342,38 @@ protected:
   std::unique_ptr<Proximity_> proximity_;
   bool proximity_initialized_ = false;
 };
+
+/// dynamic creation of templated BSpline
+std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
+    const int para_dim,
+    const int dim,
+    const double* degrees,
+    const std::vector<std::vector<double>>* knot_vectors,
+    const double* control_points) {
+  switch (para_dim) {
+  case 1:
+    switch (dim) {
+    case 1:
+      return std::make_shared<BSpline<1, 1>>(degrees,
+                                             *knot_vectors,
+                                             control_points);
+    case 2:
+      return std::make_shared<BSpline<1, 2>>(degrees,
+                                             *knot_vectors,
+                                             control_points);
+    }
+  case 2:
+    switch (dim) {
+    case 1:
+      return std::make_shared<BSpline<2, 1>>(degrees,
+                                             *knot_vectors,
+                                             control_points);
+    case 2:
+      return std::make_shared<BSpline<2, 2>>(degrees,
+                                             *knot_vectors,
+                                             control_points);
+    }
+  }
+}
 
 } /* namespace splinepy::splines */

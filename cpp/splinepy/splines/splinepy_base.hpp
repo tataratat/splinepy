@@ -46,8 +46,11 @@ public:
       }
     } else {
       if (!weights) {
-        // return CreateBSpline(degrees, knot_vectors, control_points);
-        return SplinepyCreateBSpline();
+        return SplinepyCreateBSpline(para_dim,
+                                     dim,
+                                     degrees,
+                                     knot_vectors,
+                                     control_points);
       } else {
         return SplinepyCreateNurbs(para_dim,
                                    dim,
@@ -64,7 +67,13 @@ public:
   // Implemented in splinepy/splines/rational_bezier.hpp
   static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier(){};
   // Implemented in splinepy/splines/b_spline.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateBSpline(){};
+  static std::shared_ptr<SplinepyBase>
+  SplinepyCreateBSpline(const int para_dim,
+                        const int dim,
+                        const double* degrees,
+                        const std::vector<std::vector<double>>* knot_vectors,
+                        const double* control_points);
+
   /// Implemented in splinepy/splines/nurbs.hpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateNurbs(const int para_dim,
@@ -117,8 +126,7 @@ public:
         SplinepyWhatAmI());
   };
 
-  virtual void SplinepyInsertKnot(const int& para_dim,
-                                  const double& knot) {
+  virtual void SplinepyInsertKnot(const int& para_dim, const double& knot) {
     splinepy::utils::PrintAndThrowError("RawPtrInsertKnot not implemented for",
                                         SplinepyWhatAmI());
   };

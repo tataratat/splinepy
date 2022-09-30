@@ -233,15 +233,14 @@ public:
     // prepare lambda for nthread exe
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
     int* orders_ptr = static_cast<int*>(orders.request().ptr);
-    auto derive =
-        [&](int begin, int end) {
-          for (int i{begin}; i < end; ++i) {
-            c_spline_->SplinepyDerivative(
-                &queries_ptr[i * para_dim_],
-                &orders_ptr[constant_orders_factor * i * para_dim_],
-                &derived_ptr[i * dim_]);
-          }
-        };
+    auto derive = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        c_spline_->SplinepyDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[constant_orders_factor * i * para_dim_],
+            &derived_ptr[i * dim_]);
+      }
+    };
 
     splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
 
@@ -272,8 +271,6 @@ public:
 
     return successful;
   }
-
-
 };
 
 /* operations for certain splines */
@@ -289,15 +286,18 @@ void InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
 }
 
 /// (multiple) knot removal, single dimension
-py::list RemoveKnots(PySpline& spline, int para_dim,
-                    py::array_t<double> knots, double tolerance) {
+py::list RemoveKnots(PySpline& spline,
+                     int para_dim,
+                     py::array_t<double> knots,
+                     double tolerance) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
   py::list successful;
   for (int i{}; i < n_request; ++i) {
-    successful.append(
-      spline.c_spline_->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
+    successful.append(spline.c_spline_->SplinepyRemoveKnot(para_dim,
+                                                           knots_ptr[i],
+                                                           tolerance));
   }
 
   return successful;
@@ -323,25 +323,24 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::Derivative,
            py::arg("queries"),
            py::arg("orders"),
-           py::arg("nthreads")=1)
+           py::arg("nthreads") = 1)
       .def("elevate_degrees",
            &splinepy::py::PySpline::ElevateDegrees,
            py::arg("para_dims"))
       .def("reduce_degrees",
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
-           py::arg("tolerance"))
-      ;
-      m.def("insert_knots",
-           &splinepy::py::InsertKnots,
-           py::arg("spline"),
-           py::arg("para_dim"),
-           py::arg("knots"));
-      m.def("remove_knots",
-           &splinepy::py::RemoveKnots,
-           py::arg("spline"),
-           py::arg("para_dim"),
-           py::arg("knots"),
-           py::arg("tolernace"));
-      ;
+           py::arg("tolerance"));
+  m.def("insert_knots",
+        &splinepy::py::InsertKnots,
+        py::arg("spline"),
+        py::arg("para_dim"),
+        py::arg("knots"));
+  m.def("remove_knots",
+        &splinepy::py::RemoveKnots,
+        py::arg("spline"),
+        py::arg("para_dim"),
+        py::arg("knots"),
+        py::arg("tolernace"));
+  ;
 }
