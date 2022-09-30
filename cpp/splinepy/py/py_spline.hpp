@@ -5,6 +5,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include <splinepy/splines/bezier.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/utils/grid_points.hpp>
 #include <splinepy/utils/print.hpp>
@@ -89,9 +90,11 @@ public:
     dim_ = c_spline_->SplinepyDim();
   }
 
+  std::string WhatAmI() const { return c_spline_->SplinepyWhatAmI(); }
+
   // Returns currunt properties of core spline
   // similar to update_p
-  py::dict CurrentProperties() {
+  py::dict CurrentProperties() const {
     py::dict dict_spline;
 
     // prepare property arrays
@@ -147,7 +150,8 @@ public:
     return dict_spline;
   }
 
-  py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) {
+  py::array_t<double> Evaluate(py::array_t<double> queries,
+                               int nthreads) const {
     // prepare output
     const int n_queries = queries.shape(0);
     py::array_t<double> evaluated(n_queries * dim_);
@@ -170,7 +174,7 @@ public:
 
   /// Sample wraps evaluate to allow nthread executions
   /// Requires SplinepyParametricBounds
-  py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) {
+  py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const {
     // get sampling bounds
     std::vector<double> bounds(para_dim_ * 2);
     double* bounds_ptr = bounds.data();
@@ -204,7 +208,7 @@ public:
   /// spline derivatives
   py::array_t<double> Derivative(py::array_t<double> queries,
                                  py::array_t<int> orders,
-                                 int nthreads) {
+                                 int nthreads) const {
     // process input
     const int n_queries = queries.shape(0);
     const int orders_ndim = orders.ndim();
@@ -310,6 +314,7 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
+      .def_property_readonly("whatami", &splinepy::py::PySpline::WhatAmI)
       .def("current_properties", &splinepy::py::PySpline::CurrentProperties)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
