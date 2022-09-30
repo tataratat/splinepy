@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <type_traits>
 
 namespace splinepy::splines::helpers {
 /// SplineLib spline evaluation (single query).
@@ -12,15 +13,21 @@ void ScalarTypeEvaluate(const SplineType& spline,
   using QueryValueType = typename Query::value_type;
   Query core_query;
 
+  // form query
   for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
     core_query[i] = QueryValueType{query[i]};
   }
 
-  // @jzwar maybe somesort of if constexpr or maybe a new one for Bezier
+  // query
   const auto core_evaluated = spline(core_query);
 
-  for (std::size_t i{}; i < SplineType::kDim; ++i) {
-    output[i] = static_cast<OutputType>(core_evaluated[i]);
+  // fill output
+  if constexpr (std::is_scalar<decltype(core_evaluated)>::value) {
+    output[0] = static_cast<OutputType>(core_evaluated);
+  } else {
+    for (std::size_t i{}; i < SplineType::kDim; ++i) {
+      output[i] = static_cast<OutputType>(core_evaluated[i]);
+    }
   }
 }
 
@@ -40,29 +47,36 @@ void ScalarTypeDerivative(const SplineType& spline,
   Query core_query;
   Order core_order;
 
+  // form query
   for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
     core_query[i] = QueryValueType{query[i]};
-    core_order[i] = OrderValueType{order[i]};
+    // core_order[i] = OrderValueType{static_cast<OrderValueType>(order[i])};
+    core_order[i] = static_cast<OrderValueType>(order[i]);
   }
 
-  // @jzwar maybe somesort of if constexpr or maybe a new one for Bezier
+  // query
   const auto core_derived = spline(core_query, core_order);
 
-  for (std::size_t i{}; i < SplineType::kDim; ++i) {
-    output[i] = static_cast<OutputType>(core_derived[i]);
+  // fill output
+  if constexpr (std::is_scalar<decltype(core_derived)>::value) {
+    output[0] = static_cast<OutputType>(core_derived);
+  } else {
+    for (std::size_t i{}; i < SplineType::kDim; ++i) {
+      output[i] = static_cast<OutputType>(core_derived[i]);
+    }
   }
 }
 
 /// single degree elevation.
 template<typename SplineType, typename QueryType>
-void ScalarTypeElevateDegree(const SplineType& spline, const QueryType query) {
+void ScalarTypeElevateDegree(SplineType& spline, const QueryType query) {
   using Dim = typename SplineType::Dimension_;
-  spline.ElevateDegree(Dim{query});
+  spline.ElevateDegree(static_cast<Dim>(query));
 }
 
 /// single degree reduction
 template<typename SplineType, typename QueryType, typename ToleranceType>
-bool ScalarTypeReduceDegree(const SplineType& spline,
+bool ScalarTypeReduceDegree(SplineType& spline,
                             const QueryType query,
                             const ToleranceType tolerance) {
   using Dim = typename SplineType::Dimension_;

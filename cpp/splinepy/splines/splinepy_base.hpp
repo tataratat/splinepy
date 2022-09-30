@@ -38,8 +38,7 @@ public:
       // @jzwar this would be a good place to check valid input
 
       if (!weights) {
-        // return CreateBezier(degrees, control_points);
-        return SplinepyCreateBezier();
+        return SplinepyCreateBezier(para_dim, dim, degrees, control_points);
       } else {
         // return CreateRationalBezier(degrees, control_points, weights);
         return SplinepyCreateRationalBezier();
@@ -63,7 +62,12 @@ public:
   };
 
   // Implemented in splinepy/splines/bezier.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateBezier(){};
+  static std::shared_ptr<SplinepyBase>
+  SplinepyCreateBezier(const int para_dim,
+                       const int dim,
+                       const double* degrees,
+                       const double* control_points);
+
   // Implemented in splinepy/splines/rational_bezier.hpp
   static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier(){};
   // Implemented in splinepy/splines/b_spline.hpp
@@ -109,8 +113,9 @@ public:
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const {
-    splinepy::utils::PrintAndThrowError("SplinepyDerivative not implemented for",
-                                        SplinepyWhatAmI());
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyDerivative not implemented for",
+        SplinepyWhatAmI());
   };
 
   virtual void SplinepyElevateDegree(const int& para_dims) {
@@ -127,15 +132,17 @@ public:
   };
 
   virtual void SplinepyInsertKnot(const int& para_dim, const double& knot) {
-    splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
-                                        SplinepyWhatAmI());
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyInsertKnot not implemented for",
+        SplinepyWhatAmI());
   };
 
   virtual bool SplinepyRemoveKnot(const int& para_dim,
                                   const double& knot,
                                   const double& tolerance) {
-    splinepy::utils::PrintAndThrowError("SplinepyRemoveKnot not implemented for",
-                                        SplinepyWhatAmI());
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyRemoveKnot not implemented for",
+        SplinepyWhatAmI());
   };
 };
 
