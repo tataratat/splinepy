@@ -16,7 +16,7 @@ namespace py = pybind11;
 using namespace splinelib::sources;
 
 /// Spline base to enable dynamic use of template splines.
-/// Member functions are prepended with "RawPtr".
+/// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
   SplinepyBase() = default;
@@ -96,45 +96,45 @@ public:
 
   virtual void SplinepyParametricBounds(double* p_bounds) const {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrParametricBounds not implemented for",
+        "SplinepyParametricBounds not implemented for",
         SplinepyWhatAmI());
   };
 
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
-    splinepy::utils::PrintAndThrowError("RawPtrEvaluate not implemented for",
+    splinepy::utils::PrintAndThrowError("SplinepyEvaluate not implemented for",
                                         SplinepyWhatAmI());
   };
 
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const {
-    splinepy::utils::PrintAndThrowError("RawPtrDerivative not implemented for",
+    splinepy::utils::PrintAndThrowError("SplinepyDerivative not implemented for",
                                         SplinepyWhatAmI());
   };
 
   virtual void SplinepyElevateDegree(const int& para_dims) {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrElevateDegree not implemented for",
+        "SplinepyElevateDegree not implemented for",
         SplinepyWhatAmI());
   };
 
   virtual bool SplinepyReduceDegree(const int& para_dims,
                                     const double& tolerance) {
     splinepy::utils::PrintAndThrowError(
-        "RawPtrReduceDegree not implemented for",
+        "SplinepyReduceDegree not implemented for",
         SplinepyWhatAmI());
   };
 
   virtual void SplinepyInsertKnot(const int& para_dim, const double& knot) {
-    splinepy::utils::PrintAndThrowError("RawPtrInsertKnot not implemented for",
+    splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
                                         SplinepyWhatAmI());
   };
 
   virtual bool SplinepyRemoveKnot(const int& para_dim,
                                   const double& knot,
                                   const double& tolerance) {
-    splinepy::utils::PrintAndThrowError("RawPtrRemoveKnot not implemented for",
+    splinepy::utils::PrintAndThrowError("SplinepyRemoveKnot not implemented for",
                                         SplinepyWhatAmI());
   };
 };
