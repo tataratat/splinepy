@@ -40,8 +40,11 @@ public:
       if (!weights) {
         return SplinepyCreateBezier(para_dim, dim, degrees, control_points);
       } else {
-        // return CreateRationalBezier(degrees, control_points, weights);
-        return SplinepyCreateRationalBezier();
+        return SplinepyCreateRationalBezier(para_dim,
+                                            dim,
+                                            degrees,
+                                            control_points,
+                                            weights);
       }
     } else {
       if (!weights) {
@@ -69,7 +72,12 @@ public:
                        const double* control_points);
 
   // Implemented in splinepy/splines/rational_bezier.hpp
-  static std::shared_ptr<SplinepyBase> SplinepyCreateRationalBezier(){};
+  static std::shared_ptr<SplinepyBase>
+  SplinepyCreateRationalBezier(const int para_dim,
+                               const int dim,
+                               const double* degrees,
+                               const double* control_points,
+                               const double* weights);
   // Implemented in splinepy/splines/b_spline.hpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBSpline(const int para_dim,

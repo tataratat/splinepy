@@ -4,8 +4,8 @@
 #include <type_traits>
 
 // bezman
-#include <bezman/src/rational_bezier_spline.hpp>
 #include <bezman/src/point.hpp>
+#include <bezman/src/rational_bezier_spline.hpp>
 
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
@@ -26,7 +26,7 @@ public:
   static constexpr int kDim = static_cast<int>(para_dim);
 
   using SplinepyBase_ = typename splinepy::splines::SplinepyBase;
-  using Base_ = RatioanlBezierSpline<para_dim, dim>;
+  using Base_ = RationalBezierSpline<para_dim, dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
   using Coordinate_ = typename Base_::PhysicalPointType_;
@@ -34,7 +34,8 @@ public:
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
 
-  Base_ RawPtrInitHelper(const double* degrees, const double* control_points
+  Base_ RawPtrInitHelper(const double* degrees,
+                         const double* control_points,
                          const double* weights) {
 
     std::array<std::size_t, para_dim> bm_degrees{};
@@ -55,7 +56,8 @@ public:
       // weighted cps
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          bm_weighted_control_points[i][j] = control_points[i * dim + j] * weights[i];
+          bm_weighted_control_points[i][j] =
+              control_points[i * dim + j] * weights[i];
         }
       } else {
         bm_weighted_control_points[i] = control_points[i] * weights[i];
@@ -65,7 +67,9 @@ public:
   }
 
   // rawptr based ctor
-  RationalBezier(const double* degrees, const double* control_points, const double* weights)
+  RationalBezier(const double* degrees,
+                 const double* control_points,
+                 const double* weights)
       : Base_(RawPtrInitHelper(degrees, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
@@ -90,12 +94,13 @@ public:
   virtual constexpr int SplinepyDim() const { return kDim; }
 
   virtual std::string SplinepyWhatAmI() const {
-    return "Bezier, parametric dimension: " + std::to_string(SplinepyParaDim())
+    return "RationalBezier, parametric dimension: "
+           + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
   virtual int SplinepyNumberOfControlPoints() const {
-    return static_cast<int>(Base_::control_points.size());
+    return static_cast<int>(Base_::GetWeightedControlPoints().size());
   }
 
   virtual void SplinepyCurrentProperties(
@@ -110,14 +115,15 @@ public:
     }
 
     // control_points and weights
-    const std::size_t ncps = Base_::control_points.size();
+    const std::size_t ncps = Base_::GetWeightedControlPoints().size();
     for (std::size_t i{}; i < ncps; ++i) {
       const double w = Base_::GetWeights()[i];
       weights[i] = w;
       double inv_weight = static_cast<double>(1.) / w;
       if constexpr (dim > 1) {
         for (std::size_t j{}; j < kDim; ++j) {
-          control_points[i * kDim + j] = Base_::GetWeightedControlPoints()[i][j] * inv_weight;
+          control_points[i * kDim + j] =
+              Base_::GetWeightedControlPoints()[i][j] * inv_weight;
         }
       } else {
         control_points[i] = Base_::GetWeightedControlPoints()[i] * inv_weight;
@@ -157,24 +163,32 @@ public:
 /// dynamic creation of templated BSpline
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
-                                   const int dim,
-                                   const double* degrees,
-                                   const double* control_points,
-                                   const double* weights) {
+                                           const int dim,
+                                           const double* degrees,
+                                           const double* control_points,
+                                           const double* weights) {
   switch (para_dim) {
   case 1:
     switch (dim) {
     case 1:
-      return std::make_shared<RationalBezier<1, 1>>(degrees, control_points, weights);
+      return std::make_shared<RationalBezier<1, 1>>(degrees,
+                                                    control_points,
+                                                    weights);
     case 2:
-      return std::make_shared<RationalBezier<1, 2>>(degrees, control_points, weights);
+      return std::make_shared<RationalBezier<1, 2>>(degrees,
+                                                    control_points,
+                                                    weights);
     }
   case 2:
     switch (dim) {
     case 1:
-      return std::make_shared<RationalBezier<2, 1>>(degrees, control_points, weights);
+      return std::make_shared<RationalBezier<2, 1>>(degrees,
+                                                    control_points,
+                                                    weights);
     case 2:
-      return std::make_shared<RationalBezier<2, 2>>(degrees, control_points, weights);
+      return std::make_shared<RationalBezier<2, 2>>(degrees,
+                                                    control_points,
+                                                    weights);
     }
   }
 }

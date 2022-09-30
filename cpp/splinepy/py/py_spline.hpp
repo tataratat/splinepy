@@ -5,7 +5,11 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+// first four are required for Create* implmentations
 #include <splinepy/splines/bezier.hpp>
+#include <splinepy/splines/bspline.hpp>
+#include <splinepy/splines/nurbs.hpp>
+#include <splinepy/splines/rational_bezier.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/utils/grid_points.hpp>
 #include <splinepy/utils/print.hpp>
