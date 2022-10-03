@@ -29,11 +29,17 @@ public:
   int para_dim_;
   int dim_;
   bool is_rational_;
-  bool is_bspline_;
+  bool has_knot_vectors_;
 
   // ctor
   PySpline() = default;
   PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
+  PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
+    para_dim_ = c_spline_->SplinepyParaDim();
+    dim_ = c_spline_->SplinepyDim();
+    is_rational_ = c_spline_->SplinepyIsRational();
+    has_knot_vectors_ = c_spline_->SplinepyHasKnotVectors();
+  }
 
   /// Creates a corresponding spline based on kwargs
   /// similar to previous update_c()
@@ -46,7 +52,7 @@ public:
     double* weights_ptr = nullptr;
     int para_dim, dim;
     is_rational_ = false;
-    is_bspline_ = false;
+    has_knot_vectors_ = false;
 
     // get degrees and set para_dim
     auto d_array = py::cast<py::array_t<double>>(kwargs["degrees"]);
@@ -61,7 +67,7 @@ public:
 
     // maybe, get knot_vectors
     if (kwargs.contains("knot_vectors")) {
-      is_bspline_ = true;
+      has_knot_vectors_ = true;
       for (py::handle kv : kwargs["knot_vectors"]) {
         std::vector<double> knot_vector;
         // cast to array_t, as python side will try to use tracked array anyways
@@ -116,7 +122,7 @@ public:
     py::array_t<double> weights;
     double* weights_ptr = nullptr;
 
-    if (is_bspline_) {
+    if (has_knot_vectors_) {
       knot_vectors_ptr = &knot_vectors;
     }
     if (is_rational_) {
@@ -135,7 +141,7 @@ public:
     dict_spline["control_points"] = control_points;
 
     // process maybes
-    if (is_bspline_) {
+    if (has_knot_vectors_) {
       py::list kvs;
       for (const auto& knot_vector : knot_vectors) {
         const std::size_t kvsize = knot_vector.size();
@@ -311,6 +317,13 @@ py::list RemoveKnots(PySpline& spline,
   return successful;
 }
 
+/// spline multiplication - currently for bezier
+PySpline Multiply(const PySpline& a,
+                  const PySpline& b) {
+  // will check itself
+  return PySpline(a.c_spline_->SplinepyMultiply(b.c_spline_));
+}
+
 } // namespace splinepy::py
 
 void add_spline_pyclass(py::module& m, const char* class_name) {
@@ -351,5 +364,9 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("para_dim"),
         py::arg("knots"),
         py::arg("tolernace"));
+  m.def("multiply",
+        &splinepy::py::Multiply,
+        py::arg("a"),
+        py::arg("b"));
   ;
 }
