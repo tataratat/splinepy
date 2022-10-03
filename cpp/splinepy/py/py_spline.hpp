@@ -335,6 +335,52 @@ PySpline Compose(const PySpline& inner, const PySpline& outer) {
   return PySpline(inner.c_spline_->SplinepyCompose(outer.c_spline_));
 }
 
+/// spline derivative spline
+PySpline DerivativeSpline(const PySpline& spline,
+                          py::array_t<int> orders) {
+  if (spline.para_dim_ != orders.size()) {
+    splinepy::utils::PrintAndThrowError("Input Dimension mismatch.",
+        "Expected:", spline.para_dim_,
+        "Given:", orders.size());
+  }
+  int* orders_ptr = static_cast<int*>(orders.request().ptr);
+  return PySpline(spline.c_spline_->SplinepyDerivativeSpline(orders_ptr));
+}
+
+/// spline split - returns py::list of PySplines
+py::list Split(const PySpline& spline,
+               int p_dim,
+               py::array_t<double> locations) {
+  // make sure they are sorted
+  std::vector<double> locs(locations.size());
+  std::copy_n(static_cast<double*>(locations.request().ptr),
+              locations.size(),
+              locs.begin());
+  // sort
+  std::sort(locs.begin(), locs.end());
+
+  // split and append
+  py::list splitted;
+  auto tmp_splitted = spline.c_spline_->SplinepySplit(p_dim, locs[0]);
+  splitted.append(PySpline(tmp_splitted[0]));
+  for (std::size_t i{1}; i < locs.size(); ++i) {
+    tmp_splitted = tmp_splitted[1]->SplinepySplit(p_dim, locs[i]);
+    splitted.append(PySpline(tmp_splitted[0]));
+  }
+
+  return splitted;
+}
+
+/// bezier patch extraction.
+py::list ExtractBezierPatches(const PySpline& spline) {
+  const auto sp_patches = spline.c_spline_->SplinepyExtractBezierPatches();
+  py::list patches;
+  for (const auto& p : sp_patches) {
+    patches.append(PySpline(p));
+  }
+  return patches;
+}
+
 } // namespace splinepy::py
 
 void add_spline_pyclass(py::module& m, const char* class_name) {
@@ -378,5 +424,8 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("multiply", &splinepy::py::Multiply, py::arg("a"), py::arg("b"));
   m.def("add", &splinepy::py::Add, py::arg("a"), py::arg("b"));
   m.def("compose", &splinepy::py::Compose, py::arg("outer"), py::arg("inner"));
+  m.def("derivative_spline", &splinepy::py::DerivativeSpline, py::arg("spline"), py::arg("orders"));
+  m.def("split", &splinepy::py::Split, py::arg("spline"), py::arg("para_dim"), py::arg("locations"));
+  m.def("extract_bezier_patches", &splinepy::py::ExtractBezierPatches, py::arg("spline"));
   ;
 }
