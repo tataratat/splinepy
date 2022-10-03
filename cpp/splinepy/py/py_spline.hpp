@@ -317,10 +317,22 @@ py::list RemoveKnots(PySpline& spline,
   return successful;
 }
 
-/// spline multiplication - currently for bezier
+/// spline multiplication - currently only for bezier
 PySpline Multiply(const PySpline& a, const PySpline& b) {
-  // will check itself
+  // performs runtime checks and throws error
   return PySpline(a.c_spline_->SplinepyMultiply(b.c_spline_));
+}
+
+/// spline addition - currently only for bezier
+PySpline Add(const PySpline& a, const PySpline& b) {
+  // performs runtime checks and throws error
+  return PySpline(a.c_spline_->SplinepyAdd(b.c_spline_));
+}
+
+/// spline composition - currently only for bezier
+PySpline Compose(const PySpline& inner, const PySpline& outer) {
+  // performs runtime checks and throws error
+  return PySpline(inner.c_spline_->SplinepyCompose(outer.c_spline_));
 }
 
 } // namespace splinepy::py
@@ -364,5 +376,7 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("knots"),
         py::arg("tolernace"));
   m.def("multiply", &splinepy::py::Multiply, py::arg("a"), py::arg("b"));
+  m.def("add", &splinepy::py::Add, py::arg("a"), py::arg("b"));
+  m.def("compose", &splinepy::py::Compose, py::arg("outer"), py::arg("inner"));
   ;
 }
