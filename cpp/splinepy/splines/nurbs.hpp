@@ -9,6 +9,7 @@
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
@@ -21,6 +22,7 @@ class Nurbs : public splinepy::splines::SplinepyBase,
 public:
   static constexpr int kParaDim = para_dim;
   static constexpr int kDim = dim;
+  static constexpr bool kIsRational = true;
 
   // TODO rm after test
   constexpr static int para_dim_ = para_dim;
@@ -252,6 +254,12 @@ public:
                                                             p_dim,
                                                             knot,
                                                             tolerance);
+  }
+
+  /// Bezier patch extraction
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepyExtractBezierPatches() const {
+    return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
   }
 
   const ParameterSpace_& GetParameterSpace() const {
