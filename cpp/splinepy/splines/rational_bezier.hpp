@@ -33,6 +33,8 @@ public:
   using Weight_ = typename Base_::ScalarType_;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
+  // advanced use
+  using Proximity_ = splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
   Base_ RawPtrInitHelper(const double* degrees,
                          const double* control_points,
@@ -315,6 +317,18 @@ public:
     // should copy
     return {std::make_shared<RationalBezier<para_dim, dim>>(*this)};
   }
+
+  Proximity_& GetProximity() {
+    if(!proximity_initialized_) {
+      proximity_ = std::make_shared<Proximity_>(*this);
+      proximity_initialized_ = true;
+    }
+    return *proximity_;
+  }
+
+protected:
+  std::shared_ptr<Proximity_> proximity_;
+  bool proximity_initialized_ = false;
 
 }; /* class RationalBezier */
 

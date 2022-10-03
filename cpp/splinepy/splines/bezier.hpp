@@ -7,6 +7,7 @@
 #include <bezman/src/bezier_spline.hpp>
 #include <bezman/src/point.hpp>
 
+#include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
@@ -36,6 +37,8 @@ public:
   using Coordinate_ = typename Base_::PhysicalPointType_;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
+  // advanced use
+  using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
 
   Base_ RawPtrInitHelper(const double* degrees, const double* control_points) {
 
@@ -303,6 +306,18 @@ public:
     // should copy
     return {std::make_shared<Bezier<para_dim, dim>>(*this)};
   }
+
+  Proximity_& GetProximity() {
+    if(!proximity_initialized_) {
+      proximity_ = std::make_shared<Proximity_>(*this);
+      proximity_initialized_  = true;
+    }
+    return *proximity_;
+  }
+
+protected:
+  std::shared_ptr<Proximity_> proximity_;
+  bool proximity_initialized_ = false;
 }; /* class Bezier */
 
 /// dynamic creation of templated BSpline
