@@ -172,14 +172,14 @@ public:
 
   /// Spline addition.
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyAdd(std::shared_ptr<SplinepyBase>& a) const {
+  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
     splinepy::utils::PrintAndThrowError("SplinepyAdd not implemented for",
                                         SplinepyWhatAmI());
   }
 
   /// Spline composition.
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyCompose(std::shared_ptr<SplinepyBase>& inner_function) const {
+  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const {
     splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
                                         SplinepyWhatAmI());
   }
@@ -194,6 +194,7 @@ public:
         splinepy::utils::PrintAndThrowError(description,
                                             "Spline name mismatch -"
                                             "Spline0:",
+                                            "/",
                                             a.SplinepySplineName(),
                                             "Spline1:",
                                             b.SplinepySplineName());
@@ -214,6 +215,7 @@ public:
             description,
             "Spline parametric dimension mismatch - "
             "Spline0:",
+            "/",
             a.SplinepyParaDim(),
             "Spline1:",
             b.SplinepyParaDim());
@@ -234,6 +236,7 @@ public:
             description,
             "Spline parametric dimension mismatch - "
             "Spline0:",
+            "/",
             a.SplinepyDim(),
             "Spline1:",
             b.SplinepyDim());
