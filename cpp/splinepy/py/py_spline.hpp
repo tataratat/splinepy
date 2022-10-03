@@ -361,12 +361,17 @@ py::list Split(const PySpline& spline,
 
   // split and append
   py::list splitted;
+  // very first
   auto tmp_splitted = spline.c_spline_->SplinepySplit(p_dim, locs[0]);
   splitted.append(PySpline(tmp_splitted[0]));
   for (std::size_t i{1}; i < locs.size(); ++i) {
-    tmp_splitted = tmp_splitted[1]->SplinepySplit(p_dim, locs[i]);
+    const double locs_with_offset = 
+        (locs[i] - locs[i - 1]) / (1. - locs[i - 1]);
+    tmp_splitted = tmp_splitted[1]->SplinepySplit(p_dim, locs_with_offset);
     splitted.append(PySpline(tmp_splitted[0]));
   }
+  // very last
+  splitted.append(PySpline(tmp_splitted[1]));
 
   return splitted;
 }
