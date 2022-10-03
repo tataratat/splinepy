@@ -201,7 +201,7 @@ public:
 
   /// Bezier patch extraction
   virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepyBezierPatchExtraction() const {
+  SplinepyExtractBezierPatches() const {
     splinepy::utils::PrintAndThrowError(
         "SplinepyBezierPatchExtraction is not implemented for",
         SplinepyWhatAmI());

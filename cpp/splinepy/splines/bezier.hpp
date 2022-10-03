@@ -299,7 +299,7 @@ public:
   }
 
   virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepyBezierPatchExtraction() const {
+  SplinepyExtractBezierPatches() const {
     // should copy
     return {std::make_shared<Bezier<para_dim, dim>>(*this)};
   }
