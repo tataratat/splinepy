@@ -184,6 +184,29 @@ public:
                                         SplinepyWhatAmI());
   }
 
+  /// Spline Split - single split
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepySplit(const int& para_dim, const double& location) const {
+    splinepy::utils::PrintAndThrowError("SplinepySplit not implemented for",
+                                        SplinepyWhatAmI());
+  }
+
+  /// Derivative spline
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyDerivativeSpline(const int* orders) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyDerivativeSpline is not implemented for",
+        SplinepyWhatAmI());
+  };
+
+  /// Bezier patch extraction
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepyBezierPatchExtraction() const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyBezierPatchExtraction is not implemented for",
+        SplinepyWhatAmI());
+  }
+
   /// Check if name matches and throw(=raise) if desired
   virtual bool SplinepySplineNameMatches(const SplinepyBase& a,
                                          const SplinepyBase& b,
