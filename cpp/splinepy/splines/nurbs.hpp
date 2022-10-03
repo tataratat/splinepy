@@ -146,16 +146,16 @@ public:
 
   virtual constexpr int SplinepyDim() const { return kDim; }
 
-  virtual std::string SplinepySplineName() const { return "NURBS";}
+  virtual std::string SplinepySplineName() const { return "NURBS"; }
 
   virtual std::string SplinepyWhatAmI() const {
     return "NURBS, parametric dimension: " + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual bool SplinepyHasKnotVectors() const { return true;}
+  virtual bool SplinepyHasKnotVectors() const { return true; }
 
-  virtual bool SplinepyIsRational() const {return true;}
+  virtual bool SplinepyIsRational() const { return true; }
 
   virtual int SplinepyNumberOfControlPoints() const {
     return GetWeightedVectorSpace().GetNumberOfCoordinates();

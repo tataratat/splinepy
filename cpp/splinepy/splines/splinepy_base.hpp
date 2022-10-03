@@ -132,7 +132,7 @@ public:
         SplinepyWhatAmI());
   };
 
-  /// Spline degree elevation 
+  /// Spline degree elevation
   virtual void SplinepyElevateDegree(const int& para_dims) {
     splinepy::utils::PrintAndThrowError(
         "SplinepyElevateDegree not implemented for",
@@ -164,42 +164,39 @@ public:
   };
 
   /// Spline multiplication.
-  virtual std::shared_ptr<SplinepyBase> SplinepyMultiply(
-        const std::shared_ptr<SplinepyBase>& a) const {
-     splinepy::utils::PrintAndThrowError(
-        "SplinepyMultiply not implemented for",
-        SplinepyWhatAmI());
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
+    splinepy::utils::PrintAndThrowError("SplinepyMultiply not implemented for",
+                                        SplinepyWhatAmI());
   }
 
   /// Spline addition.
-  virtual std::shared_ptr<SplinepyBase> SplinepyAdd(
-    std::shared_ptr<SplinepyBase>& a) const {
-     splinepy::utils::PrintAndThrowError(
-        "SplinepyAdd not implemented for",
-        SplinepyWhatAmI());
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyAdd(std::shared_ptr<SplinepyBase>& a) const {
+    splinepy::utils::PrintAndThrowError("SplinepyAdd not implemented for",
+                                        SplinepyWhatAmI());
   }
 
   /// Spline composition.
-  virtual std::shared_ptr<SplinepyBase> SplinepyCompose(
-    std::shared_ptr<SplinepyBase>& inner_function) const {
-     splinepy::utils::PrintAndThrowError(
-        "SplinepyCompose not implemented for",
-        SplinepyWhatAmI());
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyCompose(std::shared_ptr<SplinepyBase>& inner_function) const {
+    splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
+                                        SplinepyWhatAmI());
   }
 
   /// Check if name matches and throw(=raise) if desired
   virtual bool SplinepySplineNameMatches(const SplinepyBase& a,
                                          const SplinepyBase& b,
-                                         const std::string description="",
-                                         const bool raise=false) const {
+                                         const std::string description = "",
+                                         const bool raise = false) const {
     if (a.SplinepySplineName() != b.SplinepySplineName()) {
       if (raise) {
-        splinepy::utils::PrintAndThrowError(
-          description,
-          "Spline name mismatch -"
-          "Spline0:", a.SplinepySplineName(),
-          "Spline1:", b.SplinepySplineName()
-        );
+        splinepy::utils::PrintAndThrowError(description,
+                                            "Spline name mismatch -"
+                                            "Spline0:",
+                                            a.SplinepySplineName(),
+                                            "Spline1:",
+                                            b.SplinepySplineName());
       }
       return false;
     }
@@ -209,16 +206,17 @@ public:
   /// Check if para_dim matches and throw(=raise) if desired
   virtual bool SplinepyParaDimMatches(const SplinepyBase& a,
                                       const SplinepyBase& b,
-                                      const std::string description="",
-                                      const bool raise=false) const {
+                                      const std::string description = "",
+                                      const bool raise = false) const {
     if (a.SplinepyParaDim() != b.SplinepyParaDim()) {
       if (raise) {
         splinepy::utils::PrintAndThrowError(
-          description,
-          "Spline parametric dimension mismatch - "
-          "Spline0:", a.SplinepyParaDim(),
-          "Spline1:", b.SplinepyParaDim()
-        );
+            description,
+            "Spline parametric dimension mismatch - "
+            "Spline0:",
+            a.SplinepyParaDim(),
+            "Spline1:",
+            b.SplinepyParaDim());
       }
       return false;
     }
@@ -228,22 +226,22 @@ public:
   /// Check if dim matches and throw(=raise) if desired
   virtual bool SplinepyDimMatches(const SplinepyBase& a,
                                   const SplinepyBase& b,
-                                  const std::string description="",
-                                  const bool raise=false) const {
+                                  const std::string description = "",
+                                  const bool raise = false) const {
     if (a.SplinepyDim() != b.SplinepyDim()) {
       if (raise) {
         splinepy::utils::PrintAndThrowError(
-          description,
-          "Spline parametric dimension mismatch - "
-          "Spline0:", a.SplinepyDim(),
-          "Spline1:", b.SplinepyDim()
-        );
+            description,
+            "Spline parametric dimension mismatch - "
+            "Spline0:",
+            a.SplinepyDim(),
+            "Spline1:",
+            b.SplinepyDim());
       }
       return false;
     }
     return true;
   }
-
 };
 
 } // namespace splinepy::splines

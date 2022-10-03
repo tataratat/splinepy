@@ -89,16 +89,16 @@ public:
 
   virtual constexpr int SplinepyDim() const { return kDim; }
 
-  virtual std::string SplinepySplineName() const {return "Bezier";}
+  virtual std::string SplinepySplineName() const { return "Bezier"; }
 
   virtual std::string SplinepyWhatAmI() const {
     return "Bezier, parametric dimension: " + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual bool SplinepyHasKnotVectors() const {return false;}
+  virtual bool SplinepyHasKnotVectors() const { return false; }
 
-  virtual bool SplinepyIsRational() const {return false;}
+  virtual bool SplinepyIsRational() const { return false; }
 
   virtual int SplinepyNumberOfControlPoints() const {
     return static_cast<int>(Base_::control_points.size());
@@ -158,8 +158,8 @@ public:
 
   /// only applicable to the splines of same para_dim and same type
   /// TODO: also dim {1, same}?
-  virtual std::shared_ptr<SplinepyBase> SplinepyMultiply(
-        const std::shared_ptr<SplinepyBase>& a) const {
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
 
     SplinepySplineNameMatches(
         *this,
@@ -174,37 +174,35 @@ public:
     // check dimension if a is not a scalar spline
     if (a->SplinepyDim() != 1) {
       SplinepyDimMatches(
-        *this,
-        *a,
-        (std::string) "Spline multiplication requires splines of either 1 or "
-        + "same physical dimension.",
-        true
-      );
-      
+          *this,
+          *a,
+          (std::string) "Spline multiplication requires splines of either 1 or "
+              + "same physical dimension.",
+          true);
     }
 
     // good to multiply
     if (a->SplinepyDim() == 1) {
       auto true_a = static_cast<Bezier<para_dim, 1>&>(*a);
-      return std::make_shared<Bezier<para_dim, dim>>(this->Base_::operator*(true_a));
+      return std::make_shared<Bezier<para_dim, dim>>(
+          this->Base_::operator*(true_a));
     } else {
       auto true_a = static_cast<Bezier<para_dim, dim>&>(*a);
-      return std::make_shared<Bezier<para_dim, 1>>(this->Base_::operator*(true_a));
+      return std::make_shared<Bezier<para_dim, 1>>(
+          this->Base_::operator*(true_a));
     }
   }
 
   /// Spline addition.
   /// requires same type, para_dim, dim
-  virtual std::shared_ptr<SplinepyBase> SplinepyAdd(
-    std::shared_ptr<SplinepyBase>& a) const {
-  }
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyAdd(std::shared_ptr<SplinepyBase>& a) const {}
 
   /// Spline composition.
-  virtual std::shared_ptr<SplinepyBase> SplinepyCompose(
-    std::shared_ptr<SplinepyBase>& inner_function) const {
-     splinepy::utils::PrintAndThrowError(
-        "SplinepyCompose not implemented for",
-        SplinepyWhatAmI());
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyCompose(std::shared_ptr<SplinepyBase>& inner_function) const {
+    splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
+                                        SplinepyWhatAmI());
   }
 }; /* class Bezier */
 

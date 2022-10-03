@@ -318,8 +318,7 @@ py::list RemoveKnots(PySpline& spline,
 }
 
 /// spline multiplication - currently for bezier
-PySpline Multiply(const PySpline& a,
-                  const PySpline& b) {
+PySpline Multiply(const PySpline& a, const PySpline& b) {
   // will check itself
   return PySpline(a.c_spline_->SplinepyMultiply(b.c_spline_));
 }
@@ -364,9 +363,6 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("para_dim"),
         py::arg("knots"),
         py::arg("tolernace"));
-  m.def("multiply",
-        &splinepy::py::Multiply,
-        py::arg("a"),
-        py::arg("b"));
+  m.def("multiply", &splinepy::py::Multiply, py::arg("a"), py::arg("b"));
   ;
 }
