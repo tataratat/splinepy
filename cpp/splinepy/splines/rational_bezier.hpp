@@ -71,6 +71,8 @@ public:
                  const double* control_points,
                  const double* weights)
       : Base_(RawPtrInitHelper(degrees, control_points, weights)) {}
+  // base (copy) ctor
+  RationalBezier(const Base_& rhs) : Base_(rhs){};
   // inherit ctor
   using Base_::Base_;
 
