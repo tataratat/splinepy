@@ -93,15 +93,22 @@ public:
 
   virtual constexpr int SplinepyDim() const { return kDim; }
 
+  virtual std::string SplinepySplineName() const {return "RationalBezier";}
+
   virtual std::string SplinepyWhatAmI() const {
     return "RationalBezier, parametric dimension: "
            + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
+  virtual bool SplinepyHasKnotVectors() const {return false;}
+
+  virtual bool SplinepyIsRational() const {return true;}
+
   virtual int SplinepyNumberOfControlPoints() const {
     return static_cast<int>(Base_::GetWeightedControlPoints().size());
   }
+
 
   virtual void SplinepyCurrentProperties(
       double* degrees,
