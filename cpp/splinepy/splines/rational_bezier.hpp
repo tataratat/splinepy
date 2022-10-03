@@ -278,6 +278,44 @@ public:
     }
   }
 
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepySplit(const int& p_dim, const double& location) const {
+    // split
+    auto bm_splitted =
+        Base_::SplitAtPosition(location, static_cast<std::size_t>(p_dim));
+
+    // make it splinepybase
+    std::vector<std::shared_ptr<SplinepyBase>> splitted;
+    const std::size_t n_splitted = bm_splitted.size();
+    splitted.reserve(n_splitted); // this should be always 2
+    for (std::size_t i{}; i < n_splitted; ++i) {
+      splitted.emplace_back(
+          std::make_shared<RationalBezier<para_dim, dim>>(bm_splitted[i]));
+    }
+
+    return splitted;
+  }
+
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyDerivativeSpline(const int* orders) const {
+    // copy construct to start
+    Base_ derived_bez{*this};
+    // derive
+    for (std::size_t i{}; i < para_dim; ++i) {
+      for (int j{}; j < orders[i]; ++j) {
+        derived_bez = derived_bez.DerivativeWRTParametricDimension(i);
+      }
+    }
+
+    return std::make_shared<RationalBezier<para_dim, dim>>(derived_bez);
+  }
+
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepyBezierPatchExtraction() const {
+    // should copy
+    return {std::make_shared<RationalBezier<para_dim, dim>>(*this)};
+  }
+
 }; /* class RationalBezier */
 
 /// dynamic creation of templated BSpline
