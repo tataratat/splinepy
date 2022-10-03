@@ -196,13 +196,74 @@ public:
   /// Spline addition.
   /// requires same type, para_dim, dim
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyAdd(std::shared_ptr<SplinepyBase>& a) const {}
+  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
+    SplinepySplineNameMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same time.",
+        true);
+    SplinepyParaDimMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same parametric dimension.",
+        true);
+    SplinepyDimMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same physical dimension",
+        true);
+
+    return std::make_shared<Bezier<para_dim, dim>>(
+        this->Base_::operator+(static_cast<Bezier<para_dim, dim>&>(*a)));
+  }
 
   /// Spline composition.
+  /// inner_function requirements:
+  ///   1. Bezier Types
+  ///   2. dim is same as outer_function's par_dim
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyCompose(std::shared_ptr<SplinepyBase>& inner_function) const {
-    splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
-                                        SplinepyWhatAmI());
+  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const {
+    // type check
+    if (inner_function->SplinepySplineName().find("Bezier")
+        == std::string::npos) {
+      splinepy::utils::PrintAndThrowError(
+          "Bezier composition requires inner function to be a bezier type.",
+          "Given inner function -",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // composable?
+    if (inner_function->SplinepyDim() != this->SplinepyParaDim()) {
+      splinepy::utils::PrintAndThrowError(
+          "Spline composition requires inner function to have same physical",
+          "dimension as outer function's parametric dimension.",
+          "Outer Function:",
+          this->SplinepyWhatAmI(),
+          "/",
+          "Inner Function:",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // compose - return correct type.
+    if (inner_function->SplinepyIsRational()) {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return std::make_shared<RationalBezier<1, dim>>(this->Compose(
+            static_cast<RationalBezier<1, para_dim>&>(*inner_function)));
+      case 2:
+        return std::make_shared<RationalBezier<2, dim>>(this->Compose(
+            static_cast<RationalBezier<2, para_dim>&>(*inner_function)));
+      }
+    } else {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return std::make_shared<Bezier<1, dim>>(
+            this->Compose(static_cast<Bezier<1, para_dim>&>(*inner_function)));
+      case 2:
+        return std::make_shared<Bezier<2, dim>>(
+            this->Compose(static_cast<Bezier<2, para_dim>&>(*inner_function)));
+      }
+    }
   }
 }; /* class Bezier */
 
