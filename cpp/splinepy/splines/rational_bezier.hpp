@@ -166,7 +166,119 @@ public:
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
-}; /* class Bezier */
+
+  /// only applicable to the splines of same para_dim, same type, and
+  /// {1 or same} dim.
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
+
+    SplinepySplineNameMatches(
+        *this,
+        *a,
+        "Spline multiplication requires splines of same type.",
+        true);
+    SplinepyParaDimMatches(
+        *this,
+        *a,
+        "Spline multiplication requires splines of same parametric dimension.",
+        true);
+    // check dimension if a is not a scalar spline
+    if (a->SplinepyDim() != 1) {
+      SplinepyDimMatches(
+          *this,
+          *a,
+          (std::string) "Spline multiplication requires splines of either 1 or "
+              + "same physical dimension.",
+          true);
+    }
+
+    // good to multiply
+    if (a->SplinepyDim() == 1) {
+      auto true_a = static_cast<RationalBezier<para_dim, 1>&>(*a);
+      return std::make_shared<RationalBezier<para_dim, dim>>(
+          this->Base_::operator*(true_a));
+    } else {
+      auto true_a = static_cast<RationalBezier<para_dim, dim>&>(*a);
+      return std::make_shared<RationalBezier<para_dim, 1>>(
+          this->Base_::operator*(true_a));
+    }
+  }
+
+  /// Spline addition.
+  /// requires same type, para_dim, dim
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
+    SplinepySplineNameMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same time.",
+        true);
+    SplinepyParaDimMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same parametric dimension.",
+        true);
+    SplinepyDimMatches(
+        *this,
+        *a,
+        "Spline addition requires splines of the same physical dimension",
+        true);
+
+    return std::make_shared<RationalBezier<para_dim, dim>>(
+        this->Base_::operator+(
+            static_cast<RationalBezier<para_dim, dim>&>(*a)));
+  }
+
+  /// Spline composition.
+  /// inner_function requirements:
+  ///   1. Bezier Types
+  ///   2. dim is same as outer_function's par_dim
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const {
+    // type check
+    if (inner_function->SplinepySplineName().find("Bezier")
+        == std::string::npos) {
+      splinepy::utils::PrintAndThrowError(
+          "Bezier composition requires inner function to be a bezier type.",
+          "Given inner function -",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // composable?
+    if (inner_function->SplinepyDim() != this->SplinepyParaDim()) {
+      splinepy::utils::PrintAndThrowError(
+          "Spline composition requires inner function to have same physical",
+          "dimension as outer function's parametric dimension.",
+          "Outer Function:",
+          this->SplinepyWhatAmI(),
+          "/",
+          "Inner Function:",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // compose - this time, it is always rational.
+    if (inner_function->SplinepyIsRational()) {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return std::make_shared<RationalBezier<1, dim>>(this->Compose(
+            static_cast<RationalBezier<1, para_dim>&>(*inner_function)));
+      case 2:
+        return std::make_shared<RationalBezier<2, dim>>(this->Compose(
+            static_cast<RationalBezier<2, para_dim>&>(*inner_function)));
+      }
+    } else {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return std::make_shared<RationalBezier<1, dim>>(
+            this->Compose(static_cast<Bezier<1, para_dim>&>(*inner_function)));
+      case 2:
+        return std::make_shared<RationalBezier<2, dim>>(
+            this->Compose(static_cast<Bezier<2, para_dim>&>(*inner_function)));
+      }
+    }
+  }
+
+}; /* class RationalBezier */
 
 /// dynamic creation of templated BSpline
 std::shared_ptr<SplinepyBase>
