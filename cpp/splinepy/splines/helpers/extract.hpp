@@ -1,8 +1,8 @@
 #pragma once
 
-#include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/splines/bezier.hpp>
 #include <splinepy/splines/rational_bezier.hpp>
+#include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines::helpers {
 
@@ -14,15 +14,12 @@ auto ExtractBezierPatches(SplineType& input) {
   constexpr int dim = SplineType::kDim;
   constexpr bool is_rational = SplineType::kIsRational;
 
-  using ReturnType = std::conditional_t<
-      is_rational,
-      splinepy::splines::RationalBezier<para_dim, dim>,
-      splinepy::splines::Bezier<para_dim, dim>>;
-  using ReturnVectorValueType = std::conditional_t<
-    as_base,
-    splinepy::splines::SplinepyBase,
-    ReturnType
-  >;
+  using ReturnType =
+      std::conditional_t<is_rational,
+                         splinepy::splines::RationalBezier<para_dim, dim>,
+                         splinepy::splines::Bezier<para_dim, dim>>;
+  using ReturnVectorValueType =
+      std::conditional_t<as_base, splinepy::splines::SplinepyBase, ReturnType>;
   using PointType = typename ReturnType::Coordinate_;
 
   // Predetermine some auxiliary values
