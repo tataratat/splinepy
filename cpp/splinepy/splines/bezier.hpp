@@ -8,6 +8,7 @@
 #include <bezman/src/point.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
@@ -164,7 +165,7 @@ public:
   }
 
   /// only applicable to the splines of same para_dim, same type
-  /// and {1, same} physical dim. 
+  /// and {1, same} physical dim.
   virtual std::shared_ptr<SplinepyBase>
   SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
 
@@ -312,9 +313,9 @@ public:
   }
 
   Proximity_& GetProximity() {
-    if(!proximity_initialized_) {
+    if (!proximity_initialized_) {
       proximity_ = std::make_shared<Proximity_>(*this);
-      proximity_initialized_  = true;
+      proximity_initialized_ = true;
     }
     return *proximity_;
   }
