@@ -7,9 +7,9 @@
 #include <Sources/Splines/b_spline.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
-#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
@@ -135,6 +135,10 @@ public:
   // inherited ctor
   using Base_::Base_;
 
+  const Degrees_& GetDegrees() const {
+    return GetParameterSpace().GetDegrees();
+  };
+
   // required implementations
   virtual constexpr int SplinepyParaDim() const { return kParaDim; }
 
@@ -153,6 +157,10 @@ public:
 
   virtual int SplinepyNumberOfControlPoints() const {
     return GetVectorSpace().GetNumberOfCoordinates();
+  }
+
+  virtual int SplinepyNumberOfSupports() const {
+    return splinepy::splines::helpers::GetNumberOfSupports(*this);
   }
 
   virtual void
@@ -220,6 +228,41 @@ public:
                                                      para_coord,
                                                      orders,
                                                      derived);
+  }
+
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
+
+    typename ParameterSpace_::UniqueEvaluations_ unique_evaluations;
+    parameter_space.template InitializeUniqueEvaluations<false>(
+        unique_evaluations);
+
+    ParametricCoordinate_ sl_para_coord;
+    for (std::size_t i{}; i < kParaDim; ++i) {
+      sl_para_coord[i] = ScalarParametricCoordinate_{para_coord[i]};
+    }
+
+    int i{0};
+    for (Index_ non_zero_basis_function{parameter_space.First()};
+         non_zero_basis_function != parameter_space.Behind();
+         ++non_zero_basis_function) {
+
+      Index_ const& basis_function =
+          (parameter_space.FindFirstNonZeroBasisFunction(sl_para_coord)
+           + non_zero_basis_function.GetIndex());
+
+      const auto evaluated =
+          parameter_space.EvaluateBasisFunction(basis_function,
+                                                non_zero_basis_function,
+                                                sl_para_coord,
+                                                unique_evaluations);
+
+      basis[i] = evaluated;
+      support[i] = basis_function.GetIndex1d().Get();
+      ++i;
+    }
   }
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
