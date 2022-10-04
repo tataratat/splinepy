@@ -7,9 +7,9 @@
 #include <Sources/Splines/nurbs.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
-#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
@@ -143,6 +143,10 @@ public:
   // inherit ctor
   using Base_::Base_;
 
+  const Degrees_& GetDegrees() const {
+    return GetParameterSpace().GetDegrees();
+  };
+
   // required implementations
   virtual constexpr int SplinepyParaDim() const { return kParaDim; }
 
@@ -161,6 +165,10 @@ public:
 
   virtual int SplinepyNumberOfControlPoints() const {
     return GetWeightedVectorSpace().GetNumberOfCoordinates();
+  }
+
+  virtual int SplinepyNumberOfSupports() const {
+    return splinepy::splines::helpers::GetNumberOfSupports(*this);
   }
 
   virtual void
@@ -224,6 +232,7 @@ public:
                                                    para_coord,
                                                    evaluated);
   }
+
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const {
@@ -231,6 +240,59 @@ public:
                                                      para_coord,
                                                      orders,
                                                      derived);
+  }
+
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
+
+    typename ParameterSpace_::UniqueEvaluations_ unique_evaluations;
+    parameter_space.template InitializeUniqueEvaluations<false>(
+        unique_evaluations);
+
+    ParametricCoordinate_ sl_para_coord;
+    for (std::size_t i{}; i < kParaDim; ++i) {
+      sl_para_coord[i] = ScalarParametricCoordinate_{para_coord[i]};
+    }
+
+    int i{0};
+    double W{0.};
+    for (Index_ non_zero_basis_function{parameter_space.First()};
+         non_zero_basis_function != parameter_space.Behind();
+         ++non_zero_basis_function) {
+
+      Index_ const& basis_function =
+          (parameter_space.FindFirstNonZeroBasisFunction(sl_para_coord)
+           + non_zero_basis_function.GetIndex());
+
+      // general basis fn
+      const auto evaluated =
+          parameter_space.EvaluateBasisFunction(basis_function,
+                                                non_zero_basis_function,
+                                                sl_para_coord,
+                                                unique_evaluations);
+
+      // get `w` and add to `W`
+      const auto& support_id = basis_function.GetIndex1d(); // not int yet
+
+      VectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
+      const auto& w = vector_space[support_id][dim].Get(); // dim: last elem
+
+      const double N_times_w = evaluated * w;
+
+      W += N_times_w;
+      basis[i] = N_times_w; // not yet final
+      support[i] = support_id.Get();
+      ++i;
+    }
+
+    // Loop and divide entries by W
+    int end = i;
+    double W_inv = 1 / W;
+    for (i = 0; i < end; ++i) {
+      basis[i] *= W_inv;
+    }
   }
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
