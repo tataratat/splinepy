@@ -28,6 +28,7 @@ inline int GetNumberOfSupports(const SplineType& spline) {
   for (int i{}; i < SplineType::kParaDim; ++i) {
     n_supports *= static_cast<int>(degrees[i]) + 1;
   }
+  return n_supports;
 }
 
 } // namespace splinepy::splines::helpers
