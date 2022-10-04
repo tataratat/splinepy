@@ -21,4 +21,13 @@ GetParametricBounds(const SplineType& spline) {
   return parametric_bounds;
 }
 
+template<typename SplineType>
+inline int GetNumberOfSupports(const SplineType& spline) {
+  const auto& degrees = spline.GetDegrees();
+  int n_supports{1};
+  for (int i{}; i < SplineType::kParaDim; ++i) {
+    n_supports *= static_cast<int>(degrees[i]) + 1;
+  }
+}
+
 } // namespace splinepy::splines::helpers
