@@ -7,6 +7,7 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 
+#include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
@@ -34,7 +35,8 @@ public:
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
   // advanced use
-  using Proximity_ = splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
+  using Proximity_ =
+      splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
   Base_ RawPtrInitHelper(const double* degrees,
                          const double* control_points,
@@ -323,7 +325,7 @@ public:
   }
 
   Proximity_& GetProximity() {
-    if(!proximity_initialized_) {
+    if (!proximity_initialized_) {
       proximity_ = std::make_shared<Proximity_>(*this);
       proximity_initialized_ = true;
     }
