@@ -107,6 +107,10 @@ public:
     return static_cast<int>(Base_::control_points.size());
   }
 
+  virtual int SplinepyNumberOfSupports() const {
+    return splinepy::splines::helpers::GetNumberOfSupports(*this);
+  }
+
   virtual void SplinepyCurrentProperties(
       double* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
@@ -159,8 +163,8 @@ public:
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
 
-  /// only applicable to the splines of same para_dim and same type
-  /// TODO: also dim {1, same}?
+  /// only applicable to the splines of same para_dim, same type
+  /// and {1, same} physical dim. 
   virtual std::shared_ptr<SplinepyBase>
   SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
 

@@ -102,6 +102,7 @@ public:
   virtual bool SplinepyHasKnotVectors() const = 0;
   virtual bool SplinepyIsRational() const = 0;
   virtual int SplinepyNumberOfControlPoints() const = 0;
+  virtual int SplinepyNumberOfSupports() const = 0;
   /// Extract core spline properties. Similar to previous update_p
   virtual void
   SplinepyCurrentProperties(double* degrees,
@@ -131,6 +132,15 @@ public:
         "SplinepyDerivative not implemented for",
         SplinepyWhatAmI());
   };
+
+  /// Basis Function values and their support IDs
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyBasisAndSupport not implemented for",
+        SplinepyWhatAmI());
+  }
 
   /// Spline degree elevation
   virtual void SplinepyElevateDegree(const int& para_dims) {

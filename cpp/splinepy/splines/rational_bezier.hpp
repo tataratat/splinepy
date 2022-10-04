@@ -113,6 +113,10 @@ public:
     return static_cast<int>(Base_::GetWeightedControlPoints().size());
   }
 
+  virtual int SplinepyNumberOfSupports() const {
+    return splinepy::splines::helpers::GetNumberOfSupports(*this);
+  }
+
   virtual void SplinepyCurrentProperties(
       double* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
