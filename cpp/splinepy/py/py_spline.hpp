@@ -262,6 +262,35 @@ public:
     return derived;
   }
 
+  /// Basis function values and support id
+  py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) {
+    const int n_queries = queries.shape(0);
+
+    // prepare results
+    const int n_support = c_spline_->SplinepyNumberOfSupports();
+    py::array_t<double> basis(n_queries * n_support);
+    py::array_t<int> support(n_queries * n_support);
+
+    // prepare_lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    double* basis_ptr = static_cast<double*>(basis.request().ptr);
+    int* support_ptr = static_cast<int*>(support.request().ptr);
+    auto basis_support = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        c_spline_->SplinepyBasisAndSupport(&queries_ptr[i * para_dim_],
+                                           &basis_ptr[i * n_support],
+                                           &support_ptr[i * n_support]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(basis_support, n_queries, nthreads);
+
+    basis.resize({n_queries, n_support});
+    support.resize({n_queries, n_support});
+
+    return py::make_tuple(basis, support);
+  }
+
   /// (multiple) Degree elevation
   void ElevateDegrees(py::array_t<int> para_dims) {
     int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
@@ -407,6 +436,10 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::Derivative,
            py::arg("queries"),
            py::arg("orders"),
+           py::arg("nthreads") = 1)
+      .def("basis_and_support",
+           &splinepy::py::PySpline::BasisAndSupport,
+           py::arg("queries"),
            py::arg("nthreads") = 1)
       .def("elevate_degrees",
            &splinepy::py::PySpline::ElevateDegrees,
