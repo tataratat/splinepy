@@ -142,6 +142,30 @@ public:
         SplinepyWhatAmI());
   }
 
+  virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
+                                                  const int& nthreads) {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyPlantNewKdTreeForProximity not implemented for",
+        SplinepyWhatAmI());
+  }
+
+  /// Verbose proximity query - make sure to plant a kdtree first.
+  virtual void SplinepyVerboseProximity(const double* query,
+                                        const double& tolerance,
+                                        const int& max_iterations,
+                                        const bool aggressive_bounds,
+                                        double* para_coord,
+                                        double* phys_coord,
+                                        double* phys_diff,
+                                        double& distance,
+                                        double& convergence_norm,
+                                        double* first_derivatives,
+                                        double* second_derivatives) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyVerboseProximity not implemented for",
+        SplinepyWhatAmI());
+  }
+
   /// Spline degree elevation
   virtual void SplinepyElevateDegree(const int& para_dims) {
     splinepy::utils::PrintAndThrowError(
