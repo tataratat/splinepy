@@ -25,6 +25,8 @@ class RationalBezier : public splinepy::splines::SplinepyBase,
 public:
   static constexpr int kParaDim = static_cast<int>(para_dim);
   static constexpr int kDim = static_cast<int>(dim);
+  static constexpr bool kIsRational = true;
+  static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = typename splinepy::splines::SplinepyBase;
   using Base_ = RationalBezierSpline<para_dim, dim>;
@@ -107,9 +109,9 @@ public:
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual bool SplinepyHasKnotVectors() const { return false; }
+  virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
-  virtual bool SplinepyIsRational() const { return true; }
+  virtual bool SplinepyIsRational() const { return kIsRational; }
 
   virtual int SplinepyNumberOfControlPoints() const {
     return static_cast<int>(Base_::GetWeightedControlPoints().size());
