@@ -291,6 +291,108 @@ public:
     return py::make_tuple(basis, support);
   }
 
+  /// Proximity query (verbose)
+  py::tuple Proximities(py::array_t<double> queries,
+                        py::array_t<int> initial_guess_sample_resolutions,
+                        double tolerance,
+                        int max_iterations,
+                        bool aggresive_search_bounds,
+                        int nthreads) {
+    const int n_queries = queries.shape(0);
+    const int pd = para_dim_ * dim_;
+    const int ppd = para_dim_ * pd;
+
+    // prepare results
+    py::array_t<double> para_coord(n_queries * para_dim_);
+    py::array_t<double> phys_coord(n_queries * dim_);
+    py::array_t<double> phys_diff(n_queries * dim_);
+    py::array_t<double> distance(n_queries);
+    py::array_t<double> convergence_norm(n_queries);
+    py::array_t<double> first_derivatives(n_queries * pd);
+    py::array_t<double> second_derivatives(n_queries * ppd);
+
+    // prepare lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    double* para_coord_ptr = static_cast<double*>(para_coord.request().ptr);
+    double* phys_coord_ptr = static_cast<double*>(phys_coord.request().ptr);
+    double* phys_diff_ptr = static_cast<double*>(phys_diff.request().ptr);
+    double* distance_ptr = static_cast<double*>(distance.request().ptr);
+    double* convergence_norm_ptr =
+        static_cast<double*>(convergence_norm.request().ptr);
+    double* first_derivatives_ptr =
+        static_cast<double*>(first_derivatives.request().ptr);
+    double* second_derivatives_ptr =
+        static_cast<double*>(second_derivatives.request().ptr);
+    auto proximities = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        c_spline_->SplinepyVerboseProximity(&queries_ptr[i * dim_],
+                                            tolerance,
+                                            max_iterations,
+                                            aggresive_search_bounds,
+                                            &para_coord_ptr[i * para_dim_],
+                                            &phys_coord_ptr[i * dim_],
+                                            &phys_diff_ptr[i * dim_],
+                                            distance_ptr[i],
+                                            convergence_norm_ptr[i],
+                                            &first_derivatives_ptr[i * pd],
+                                            &second_derivatives_ptr[i * ppd]);
+      }
+    };
+
+    // make sure kdtree is planted before query.
+    //
+    // there are two cases, where tree will not be built:
+    // 1. same resolution as last proximity call - core spline will check
+    // 2. any negative entry in resolutions - checked here
+    //
+    // there is one cases, where runtime_error will be thrown:
+    // 1. entry smaller than 2 - checked here
+    //
+    // allow us to use abbreviation here.
+    int* igsr_ptr =
+        static_cast<int*>(initial_guess_sample_resolutions.request().ptr);
+    bool plant_kdtree = true;
+    for (int i{}; i < para_dim_; ++i) {
+      const int& res = igsr_ptr[i];
+      if (res < 0) {
+        plant_kdtree = false;
+        break;
+      }
+      if (res < 2) {
+        splinepy::utils::PrintAndThrowError(
+            "positive entries for initial_guess_sample_resolutions",
+            "shouldn't be smaller than 2.",
+            "Entry number: [",
+            i,
+            "] is",
+            res);
+      }
+    }
+    // yes, we could've built an input and called the function directly,
+    // but, we will stick with calling interface functions
+    if (plant_kdtree) {
+      c_spline_->SplinepyPlantNewKdTreeForProximity(igsr_ptr, nthreads);
+    }
+
+    splinepy::utils::NThreadExecution(proximities, n_queries, nthreads);
+
+    para_coord.resize({n_queries, para_dim_});
+    phys_coord.resize({n_queries, para_dim_});
+    phys_diff.resize({n_queries, para_dim_});
+    distance.resize({n_queries, 1});
+    convergence_norm.resize({n_queries, 1});
+    first_derivatives.resize({n_queries, para_dim_, dim_});
+    second_derivatives.resize({n_queries, para_dim_, para_dim_, dim_});
+
+    return py::make_tuple(para_coord,
+                          phys_coord,
+                          phys_diff,
+                          distance,
+                          convergence_norm,
+                          first_derivatives,
+                          second_derivatives);
+  }
+
   /// (multiple) Degree elevation
   void ElevateDegrees(py::array_t<int> para_dims) {
     int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
@@ -441,6 +543,14 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::BasisAndSupport,
            py::arg("queries"),
            py::arg("nthreads") = 1)
+      .def("proximities",
+           &splinepy::py::PySpline::Proximities,
+           py::arg("queries"),
+           py::arg("initial_guess_sample_resolutions"),
+           py::arg("tolerance"),
+           py::arg("max_iterations") = -1,
+           py::arg("aggressive_search_bounds") = false,
+           py::arg("nthreads") = 1)
       .def("elevate_degrees",
            &splinepy::py::PySpline::ElevateDegrees,
            py::arg("para_dims"))
@@ -458,7 +568,7 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("spline"),
         py::arg("para_dim"),
         py::arg("knots"),
-        py::arg("tolernace"));
+        py::arg("tolerance"));
   m.def("multiply", &splinepy::py::Multiply, py::arg("a"), py::arg("b"));
   m.def("add", &splinepy::py::Add, py::arg("a"), py::arg("b"));
   m.def("compose", &splinepy::py::Compose, py::arg("outer"), py::arg("inner"));
