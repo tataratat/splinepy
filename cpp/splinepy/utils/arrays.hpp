@@ -4,35 +4,31 @@
 #include <array>
 #include <cmath>
 #include <numeric>
+#include <type_traits>
 
 namespace splinepy::utils {
 
 using namespace splinelib::sources;
 
 /// Elementwise subtraction
-template<typename T, typename NamedType, std::size_t dim>
-inline void FirstMinusSecondEqualsThird(const std::array<NamedType, dim>& first,
+template<typename T, typename InputArrayType, std::size_t dim>
+inline void FirstMinusSecondEqualsThird(const InputArrayType& first,
                                         const T* second, /* c array */
                                         std::array<T, dim>& third) {
-  for (size_t i{}; i < dim; ++i) {
-    // following line should raise error during compile time
-    // if T != NameType::Type_
-    third[i] = static_cast<T>(first[i]) - second[i];
+  // one exception for bezman's scalar splines
+  if constexpr (std::is_scalar<InputArrayType>::value) {
+    static_assert(dim == 1, "Minus with scalar is only for std::array<T, 1>");
+    third[0] = first - second[0];
+  } else {
+    for (size_t i{}; i < dim; ++i) {
+      // following line should raise error during compile time
+      // if T != NameType::Type_
+      third[i] = static_cast<T>(first[i]) - second[i];
+    }
   }
 }
 
-/// Elementwise mean
-template<typename T, std::size_t dim>
-inline std::array<T, dim> Mean(const std::array<T, dim>& arr1,
-                               const std::array<T, dim>& arr2) {
-  std::array<T, dim> out;
-  for (int i{0}; i < dim; ++i) {
-    out[i] = (arr1[i] + arr2[i]) * .5;
-  }
-  return out;
-}
-
-/// Elementwise mean overload, you can specified return value_type.
+/// Elementwise mean, you can specified return value_type.
 /// Useful for returning NamedType.
 template<typename ReturnT, typename T, std::size_t dim>
 inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
@@ -44,14 +40,33 @@ inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
   return out;
 }
 
-/// Dot product
-template<typename T1, typename T2, std::size_t dim>
-inline T1 Dot(const std::array<T1, dim>& arr1,
-              const std::array<T2, dim>& arr2) {
-  T1 dotted{}; /* default value should be 0. */
-  for (std::size_t i{0}; i < dim; ++i) {
-    dotted += arr1[i] * static_cast<T1>(arr2[i]);
+/// Inplace version of Mean
+/// Mainly to support bezman::Point types
+template<typename ReturnArrayT, typename InputArrayT>
+inline void Mean(const InputArrayT& arr1,
+                 const InputArrayT& arr2,
+                 ReturnArrayT& out) {
+  using ReturnValueType = typename ReturnArrayT::value_type;
+  for (std::size_t i{}; i < out.size(); ++i) {
+    out[i] = ReturnValueType{(arr1[i] + arr2[i]) * .5};
   }
+}
+
+/// Dot product - use SecondArrayType to support bezman's scalar splines
+template<typename T1, typename SecondArrayT, std::size_t dim>
+inline T1 Dot(const std::array<T1, dim>& arr1,
+              const SecondArrayT& arr2) {
+  T1 dotted{}; /* default value should be 0. */
+
+  if constexpr (std::is_scalar<SecondArrayT>::value) {
+    static_assert(dim == 1, "Dot with scalar is only for std::array<T, 1>");
+    dotted = arr1[0] - arr2;
+  } else {
+    for (std::size_t i{0}; i < dim; ++i) {
+      dotted += arr1[i] * static_cast<T1>(arr2[i]);
+    }
+  }
+
   return dotted;
 }
 
