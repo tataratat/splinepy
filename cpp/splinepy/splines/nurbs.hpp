@@ -23,6 +23,7 @@ public:
   static constexpr int kParaDim = para_dim;
   static constexpr int kDim = dim;
   static constexpr bool kIsRational = true;
+  static constexpr bool kHasKnotVectors = true;
 
   // TODO rm after test
   constexpr static int para_dim_ = para_dim;
@@ -143,7 +144,7 @@ public:
   // inherit ctor
   using Base_::Base_;
 
-  const Degrees_& GetDegrees() const {
+  constexpr const Degrees_& GetDegrees() const {
     return GetParameterSpace().GetDegrees();
   };
 
@@ -159,9 +160,9 @@ public:
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual bool SplinepyHasKnotVectors() const { return true; }
+  virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
-  virtual bool SplinepyIsRational() const { return true; }
+  virtual bool SplinepyIsRational() const { return kIsRational; }
 
   virtual int SplinepyNumberOfControlPoints() const {
     return GetWeightedVectorSpace().GetNumberOfCoordinates();
@@ -276,7 +277,7 @@ public:
       // get `w` and add to `W`
       const auto& support_id = basis_function.GetIndex1d(); // not int yet
 
-      VectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
+      WeightedVectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
       const auto& w = vector_space[support_id][dim].Get(); // dim: last elem
 
       const double N_times_w = evaluated * w;
@@ -324,11 +325,11 @@ public:
     return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
   }
 
-  const ParameterSpace_& GetParameterSpace() const {
+  constexpr const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }
 
-  const WeightedVectorSpace_& GetWeightedVectorSpace() const {
+  constexpr const WeightedVectorSpace_& GetWeightedVectorSpace() const {
     return *Base_::weighted_vector_space_;
   }
 

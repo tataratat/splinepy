@@ -23,6 +23,7 @@ public:
   static constexpr int kParaDim = para_dim;
   static constexpr int kDim = dim;
   static constexpr bool kIsRational = false;
+  static constexpr bool kHasKnotVectors = true;
 
   // TODO remve afterwards
   constexpr static int para_dim_ = para_dim;
@@ -135,7 +136,7 @@ public:
   // inherited ctor
   using Base_::Base_;
 
-  const Degrees_& GetDegrees() const {
+  constexpr const Degrees_& GetDegrees() const {
     return GetParameterSpace().GetDegrees();
   };
 
@@ -151,9 +152,9 @@ public:
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
-  virtual bool SplinepyHasKnotVectors() const { return true; }
+  virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
-  virtual bool SplinepyIsRational() const { return false; }
+  virtual bool SplinepyIsRational() const { return kIsRational; }
 
   virtual int SplinepyNumberOfControlPoints() const {
     return GetVectorSpace().GetNumberOfCoordinates();
@@ -294,11 +295,11 @@ public:
     return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
   }
 
-  const ParameterSpace_& GetParameterSpace() const {
+  constexpr const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }
 
-  const VectorSpace_& GetVectorSpace() const { return *Base_::vector_space_; }
+  constexpr const VectorSpace_& GetVectorSpace() const { return *Base_::vector_space_; }
 
   // update degrees since its size never changes
   void UpdateDegrees(int* p_degree_ptr) {
