@@ -126,14 +126,13 @@ public:
   MakeInitialGuess(const int& initial_guess, const double* goal) const {
 
     if (initial_guess == static_cast<int>(InitialGuess::MidPoint)) {
-      using ReturnValueType =
-          typename SplineType::ParametricCoordinate_::value_type;
       const auto parametric_bounds =
           splinepy::splines::helpers::GetParametricBounds(spline_);
 
-      // mid point is mean of parametric bounds. doesn't consider the goal.
-      return splinepy::utils::Mean<ReturnValueType>(parametric_bounds[0],
-                                                    parametric_bounds[1]);
+      typename SplineType::ParametricCoordinate_ mean;
+      splinepy::utils::Mean(parametric_bounds[0], parametric_bounds[1], mean);
+
+      return mean;
 
     } else if (initial_guess == static_cast<int>(InitialGuess::KdTree)) {
       if (!kdtree_planted_) {
@@ -194,12 +193,17 @@ public:
       derivative_query.fill(splinelib::Derivative{0});
       ++derivative_query[i];
       // derivative evaluation
-      auto const& derivative = spline_(guess, derivative_query);
+      auto const derivative = spline_(guess, derivative_query);
 
       df_dxi_i = 0.;
       for (int j{}; j < SplineType::kDim; ++j) {
         // cast, since d may be a NamedType.
-        const double d_value = static_cast<double>(derivative[j]);
+        double d_value;
+        if constexpr (std::is_scalar<decltype(derivative)>::value) {
+          d_value = derivative;
+        } else {
+          d_value = static_cast<double>(derivative[j]);
+        }
         df_dxi_i += difference[j] * d_value;
         spline_gradient[i][j] = d_value;
       }
@@ -230,7 +234,7 @@ public:
         ++derivative_query[i];
         ++derivative_query[j];
 
-        auto const& derivative = spline_(guess, derivative_query);
+        auto const derivative = spline_(guess, derivative_query);
 
         lhs[i][j] = 2
                     * (splinepy::utils::Dot(difference, derivative)
@@ -468,6 +472,7 @@ public:
     distance = current_distance;     /* 1 */
     convergence_norm = current_norm; /* 2 */
     typename SplineType::Derivative_ derivative_query;
+    double der; /* to accomodate different kind of derivative types */
     using DerivativeValueType = typename SplineType::Derivative_::value_type;
     for (int i{}; i < SplineType::kParaDim; ++i) {
       final_guess[i] = static_cast<double>(current_guess[i]); /* 3 */
@@ -475,9 +480,13 @@ public:
         derivative_query.fill(DerivativeValueType{0});
         ++derivative_query[i];
         ++derivative_query[j];
-        auto const derivative = spline_(current_guess, derivative_query);
+        const auto derivative = spline_(current_guess, derivative_query);
         for (int k{}; k < SplineType::kDim; ++k) {
-          const auto der = static_cast<double>(derivative[k]);
+          if constexpr (std::is_scalar<decltype(derivative)>::value) {
+            der = derivative;
+          } else {
+            der = static_cast<double>(derivative[k]);
+          }
           // spline hessian
           second_derivatives[(i * SplineType::kParaDim * SplineType::kDim)
                              + (j * SplineType::kDim) + k] = der; /* 4 */
@@ -494,7 +503,12 @@ public:
             // ones that don't need extra extra para_dim loop
             // => pure dim loop
             if (j == 0) {
-              nearest[k] = current_phys[k];           /* 6 */
+              double cur_phys;
+              if constexpr (std::is_scalar<decltype(current_phys)>::value) {
+                nearest[k] = current_phys;
+              } else {
+                nearest[k] = static_cast<double>(current_phys[k]); /* 6 */
+              }
               nearest_minus_query[k] = difference[k]; /* 7 */
             }
           }
