@@ -266,6 +266,37 @@ public:
     }
   }
 
+  virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
+                                                  const int& nthreads) {
+    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(*this,
+                                                                     nthreads);
+  }
+  /// Verbose proximity query - make sure to plant a kdtree first.
+  virtual void SplinepyVerboseProximity(const double* query,
+                                        const double& tolerance,
+                                        const int& max_iterations,
+                                        const bool aggressive_bounds,
+                                        double* para_coord,
+                                        double* phys_coord,
+                                        double* phys_diff,
+                                        double& distance,
+                                        double& convergence_norm,
+                                        double* first_derivatives,
+                                        double* second_derivatives) const {
+    splinepy::splines::helpers::ScalarTypeVerboseProximity(*this,
+                                                           query,
+                                                           tolerance,
+                                                           max_iterations,
+                                                           aggressive_bounds,
+                                                           para_coord,
+                                                           phys_coord,
+                                                           phys_diff,
+                                                           distance,
+                                                           convergence_norm,
+                                                           first_derivatives,
+                                                           second_derivatives);
+  }
+
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
@@ -299,7 +330,11 @@ public:
     return *Base_::Base_::parameter_space_;
   }
 
-  constexpr const VectorSpace_& GetVectorSpace() const { return *Base_::vector_space_; }
+  constexpr const VectorSpace_& GetVectorSpace() const {
+    return *Base_::vector_space_;
+  }
+
+  constexpr Proximity_& GetProximity() { return *proximity_; }
 
   // update degrees since its size never changes
   void UpdateDegrees(int* p_degree_ptr) {
@@ -388,17 +423,8 @@ public:
     }
   }
 
-  Proximity_& GetProximity() {
-    if (!proximity_initialized_) {
-      proximity_ = std::make_unique<Proximity_>(*this);
-      proximity_initialized_ = true;
-    }
-    return *proximity_;
-  }
-
 protected:
-  std::unique_ptr<Proximity_> proximity_;
-  bool proximity_initialized_ = false;
+  std::unique_ptr<Proximity_> proximity_{*this};
 };
 
 /// dynamic creation of templated BSpline
