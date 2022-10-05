@@ -2,7 +2,7 @@
 
 #include <napf.hpp>
 
-#include <splinepy/splines/helpers.hpp>
+#include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/utils/arrays.hpp>
 #include <splinepy/utils/grid_points.hpp>
 #include <splinepy/utils/nthreads.hpp>
@@ -96,7 +96,7 @@ public:
 
     // create fresh grid_points_ and coordinates_
     const auto parametric_bounds =
-        splinepy::splines::GetParametricBounds(spline_);
+        splinepy::splines::helpers::GetParametricBounds(spline_);
     grid_points_ = GridPoints_(parametric_bounds, resolutions);
     coordinates_ = std::make_unique<Coordinates_>(grid_points_.Size());
 
@@ -130,7 +130,7 @@ public:
       using ReturnValueType =
           typename SplineType::ParametricCoordinate_::value_type;
       const auto parametric_bounds =
-          splinepy::splines::GetParametricBounds(spline_);
+          splinepy::splines::helpers::GetParametricBounds(spline_);
 
       // mid point is mean of parametric bounds. doesn't consider the goal.
       return splinepy::utils::Mean<ReturnValueType>(parametric_bounds[0],
@@ -253,7 +253,8 @@ public:
     bool solver_skip_mask_activated = false;
 
     // search_bounds is parametric bounds.
-    auto search_bounds = splinepy::splines::GetParametricBounds(spline_);
+    auto search_bounds =
+        splinepy::splines::helpers::GetParametricBounds(spline_);
 
     typename SplineType::ParametricCoordinate_ current_guess =
         MakeInitialGuess(initial_guess, query);
@@ -325,6 +326,162 @@ public:
   }
 
   void FirstOrderFallBack() {}
+
+  /*!
+   * Given physical coordinate, finds closest parametric coordinate.
+   *
+   * @params[in] query
+   * @params[in] initial_guess
+   * @params[in] tolerance
+   * @params[in] aggresive_bounds
+   * @params[out] final_guess (dim)
+   * @params[out] nearest (dim)
+   * @params[out] nearest_minus_query (dim)
+   * @params[out] distance
+   * @params[out] convergence_norm
+   * @params[out] first_derivatives (para_dim x dim)
+   * @params[out] second_derivatives (para_dim x para_dim x dim)
+   */
+  void VerboseQuery(const double* query,
+                    const InitialGuess initial_guess,
+                    const double tolerance,
+                    const bool aggressive_bounds,
+                    double* final_guess,
+                    double* nearest /* spline(final_guess) */,
+                    double* nearest_minus_query /* difference */,
+                    double& distance,
+                    double& convergence_norm,
+                    double* first_derivatives /* spline jacobian */,
+                    double* second_derivatives /* spline hessian */) const {
+
+    PxPMatrixD_ lhs;
+    // need to initialize rhs with some value other than 0, so that it won't
+    // exit search right away.
+    PArrayD_ rhs{};
+    rhs[0] = 112358.;
+    PArrayD_ delta_guess;
+    DArrayD_ difference;
+    PxDMatrixD_ spline_gradient;
+    PArrayI_ clipped{}; /* clip status after most recent update */
+    PArrayI_ previous_clipped{};
+    PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
+    typename SplineType::Coordinate_ current_phys;
+    double current_distance;
+
+    // search_bounds is parametric bounds.
+    auto search_bounds =
+        splinepy::splines::helpers::GetParametricBounds(spline_);
+
+    // for verbose, we don't return right away even this is the best guess
+    // already, so that we can fill out all the other infos.
+    typename SplineType::ParametricCoordinate_ current_guess =
+        MakeInitialGuess(initial_guess, query);
+
+    // Let's try aggresive search bounds
+    if (initial_guess == InitialGuess::KdTree && aggressive_bounds) {
+      // you need to be sure that you have sampled your spline fine enough
+      for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+        // adjust lower (0) and upper (1) bounds aggressively
+        // but of course, not so aggresive that it is out of bound.
+        search_bounds[0][i] =
+            std::max(search_bounds[0][i],
+                     current_guess[i] - grid_points_.step_size_[i]);
+        search_bounds[1][i] =
+            std::min(search_bounds[1][i],
+                     current_guess[i] + grid_points_.step_size_[i]);
+      }
+    }
+    const int max_iteration = SplineType::kParaDim * 20;
+    double previous_norm{}, current_norm{};
+
+    // build systems to solve at first
+    GuessMinusQuery(current_guess, query, difference);
+    FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
+    FillLhs(current_guess, difference, spline_gradient, lhs);
+    // newton iterations
+    for (int i{}; i < max_iteration; ++i) {
+
+      // GaussWithPivot may swap and modify enties of all the input
+      // -> can't use lhs and rhs afterwards, and we don't need them.
+      // -> solver_skip_mask and delta_guess is reordered to rewind swaps
+      splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
+      // Update
+      splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
+      // Clip
+      splinepy::utils::Clip(search_bounds, current_guess, clipped);
+      // check distance
+      current_phys = spline_(current_guess);
+      splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
+                                                   query,
+                                                   difference);
+      current_distance = splinepy::utils::NormL2(difference);
+      // assemble rhs, check norm
+      FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
+      current_norm = std::abs(splinepy::utils::NormL2(rhs));
+
+      // convergence check
+      if (std::abs(previous_norm - current_norm) < tolerance
+          || current_distance < tolerance) {
+        break;
+      }
+      // set solver skip mask if clipping happened twice at the same place.
+      if (previous_clipped == clipped) {
+        solver_skip_mask = clipped;
+        // if skip mask is on for all entries, return now.
+        if (splinepy::utils::NonZeros(solver_skip_mask)
+            == SplineType::kParaDim) {
+          // current_guess should be clipped at this point.
+          break;
+        }
+      }
+
+      // not converged, assemble lhs
+      FillLhs(current_guess, difference, spline_gradient, lhs);
+
+      // prepare next round
+      previous_norm = current_norm;
+      std::swap(previous_clipped, clipped);
+    }
+    // write return values - 7 args
+    distance = current_distance;     /* 1 */
+    convergence_norm = current_norm; /* 2 */
+    typename SplineType::Derivative_ derivative_query;
+    using DerivativeValueType = typename SplineType::Derivative_::value_type;
+    for (int i{}; i < SplineType::kParaDim; ++i) {
+      final_guess[i] = static_cast<double>(current_guess[i]); /* 3 */
+      for (int j{i}; j < SplineType::kParaDim; ++j) {
+        derivative_query.fill(DerivativeValueType{0});
+        ++derivative_query[i];
+        ++derivative_query[j];
+        auto const derivative = spline_(current_guess, derivative_query);
+        for (int k{}; k < SplineType::kDim; ++k) {
+          const auto der = static_cast<double>(derivative[k]);
+          // spline hessian
+          second_derivatives[(i * SplineType::kParaDim * SplineType::kDim)
+                                 * (j * SplineType::kDim)
+                             + k] = der; /* 4 */
+          // symmetric part
+          if (i != j) {
+            second_derivatives[(j * SplineType::kParaDim * SplineType::kDim)
+                                   * (i * SplineType::kDim)
+                               + k] = der;
+          }
+
+          // ones that don't need extra para_dim loop
+          if (i == 0 /* j starts with 0 */) {
+            first_derivatives[j * SplineType::kDim + k] =
+                spline_gradient[j][k]; /* 5 */
+            // ones that don't need extra extra para_dim loop
+            // => pure dim loop
+            if (j == 0) {
+              nearest[k] = current_phys[k];           /* 6 */
+              nearest_minus_query[k] = difference[k]; /* 7 */
+            }
+          }
+        }
+      }
+    }
+  }
 
 protected:
   SplineType const& spline_;
