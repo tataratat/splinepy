@@ -268,8 +268,10 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(*this,
-                                                                     nthreads);
+    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
+        *this,
+        resolutions,
+        nthreads);
   }
   /// Verbose proximity query - make sure to plant a kdtree first.
   virtual void SplinepyVerboseProximity(const double* query,
@@ -283,18 +285,17 @@ public:
                                         double& convergence_norm,
                                         double* first_derivatives,
                                         double* second_derivatives) const {
-    splinepy::splines::helpers::ScalarTypeVerboseProximity(*this,
-                                                           query,
-                                                           tolerance,
-                                                           max_iterations,
-                                                           aggressive_bounds,
-                                                           para_coord,
-                                                           phys_coord,
-                                                           phys_diff,
-                                                           distance,
-                                                           convergence_norm,
-                                                           first_derivatives,
-                                                           second_derivatives);
+    GetProximity().VerboseQuery(query,
+                                tolerance,
+                                max_iterations,
+                                aggressive_bounds,
+                                para_coord,
+                                phys_coord,
+                                phys_diff,
+                                distance,
+                                convergence_norm,
+                                first_derivatives,
+                                second_derivatives);
   }
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
@@ -335,6 +336,7 @@ public:
   }
 
   constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
   // update degrees since its size never changes
   void UpdateDegrees(int* p_degree_ptr) {
@@ -424,7 +426,7 @@ public:
   }
 
 protected:
-  std::unique_ptr<Proximity_> proximity_{*this};
+  std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
 };
 
 /// dynamic creation of templated BSpline
