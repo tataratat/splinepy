@@ -50,7 +50,6 @@ void ScalarTypeDerivative(const SplineType& spline,
   // form query
   for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
     core_query[i] = QueryValueType{query[i]};
-    // core_order[i] = OrderValueType{static_cast<OrderValueType>(order[i])};
     core_order[i] = static_cast<OrderValueType>(order[i]);
   }
 
@@ -65,6 +64,15 @@ void ScalarTypeDerivative(const SplineType& spline,
       output[i] = static_cast<OutputType>(core_derived[i]);
     }
   }
+}
+
+template<typename SplineType, typename ResolutionType, typename NThreadsType>
+void ScalarTypePlantNewKdTreeForProximity(SplineType& spline,
+                                          const ResolutionType* resolutions,
+                                          const NThreadsType& nthreads) {
+  std::array<int, SplineType::kParaDim> core_res;
+  std::copy_n(resolutions, SplineType::kParaDim, core_res.begin());
+  spline.GetProximity().PlantNewKdTree(core_res, nthreads);
 }
 
 /// single degree elevation.
