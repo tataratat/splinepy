@@ -333,6 +333,9 @@ public:
     return *Base_::weighted_vector_space_;
   }
 
+  constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr const Proximity_& GetProximity() const { return *proximity_; }
+
   /*
    * Update degrees since its size never changes
    *
@@ -493,17 +496,8 @@ public:
                          support_control_point_ids);
   }
 
-  Proximity_& GetProximity() {
-    if (!proximity_initialized_) {
-      proximity_ = std::make_unique<Proximity_>(*this);
-      proximity_initialized_ = true;
-    }
-    return *proximity_;
-  }
-
 protected:
-  std::unique_ptr<Proximity_> proximity_;
-  bool proximity_initialized_ = false;
+  std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
 
 }; /* class Nurbs */
 
