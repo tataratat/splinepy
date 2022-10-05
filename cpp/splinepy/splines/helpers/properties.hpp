@@ -10,12 +10,17 @@ inline std::array<std::array<double, SplineType::kParaDim>, 2>
 GetParametricBounds(const SplineType& spline) {
   std::array<std::array<double, SplineType::kParaDim>, 2> parametric_bounds{};
 
-  const auto& parameter_space = spline.GetParameterSpace();
-  size_t i{};
-  for (const auto& knotvector : parameter_space.GetKnotVectors()) {
-    parametric_bounds[0][i] = knotvector->GetFront().Get();
-    parametric_bounds[1][i] = knotvector->GetBack().Get();
-    ++i;
+  if constexpr (!SplineType::kHasKnotVectors) {
+    parametric_bounds[0].fill(0.);
+    parametric_bounds[1].fill(1.);
+  } else {
+    const auto& parameter_space = spline.GetParameterSpace();
+    size_t i{};
+    for (const auto& knotvector : parameter_space.GetKnotVectors()) {
+      parametric_bounds[0][i] = knotvector->GetFront().Get();
+      parametric_bounds[1][i] = knotvector->GetBack().Get();
+      ++i;
+    }
   }
 
   return parametric_bounds;
