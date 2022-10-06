@@ -179,6 +179,7 @@ public:
     splinepy::utils::PrintAndThrowError(
         "SplinepyReduceDegree not implemented for",
         SplinepyWhatAmI());
+    return false;
   };
 
   /// Spline knot insertion.
@@ -195,6 +196,7 @@ public:
     splinepy::utils::PrintAndThrowError(
         "SplinepyRemoveKnot not implemented for",
         SplinepyWhatAmI());
+    return false;
   };
 
   /// Spline multiplication.
@@ -202,6 +204,7 @@ public:
   SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
     splinepy::utils::PrintAndThrowError("SplinepyMultiply not implemented for",
                                         SplinepyWhatAmI());
+    return std::shared_ptr<SplinepyBase>{};
   }
 
   /// Spline addition.
@@ -209,6 +212,7 @@ public:
   SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
     splinepy::utils::PrintAndThrowError("SplinepyAdd not implemented for",
                                         SplinepyWhatAmI());
+    return std::shared_ptr<SplinepyBase>{};
   }
 
   /// Spline composition.
@@ -216,6 +220,7 @@ public:
   SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const {
     splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
                                         SplinepyWhatAmI());
+    return std::shared_ptr<SplinepyBase>{};
   }
 
   /// Spline Split - single split
@@ -223,6 +228,7 @@ public:
   SplinepySplit(const int& para_dim, const double& location) const {
     splinepy::utils::PrintAndThrowError("SplinepySplit not implemented for",
                                         SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
   }
 
   /// Derivative spline
@@ -231,6 +237,7 @@ public:
     splinepy::utils::PrintAndThrowError(
         "SplinepyDerivativeSpline is not implemented for",
         SplinepyWhatAmI());
+    return std::shared_ptr<SplinepyBase>{};
   };
 
   /// Bezier patch extraction
@@ -239,13 +246,14 @@ public:
     splinepy::utils::PrintAndThrowError(
         "SplinepyBezierPatchExtraction is not implemented for",
         SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
   }
 
   /// Check if name matches and throw(=raise) if desired
-  virtual bool SplinepySplineNameMatches(const SplinepyBase& a,
-                                         const SplinepyBase& b,
-                                         const std::string description = "",
-                                         const bool raise = false) const {
+  static bool SplinepySplineNameMatches(const SplinepyBase& a,
+                                        const SplinepyBase& b,
+                                        const std::string description = "",
+                                        const bool raise = false) {
     if (a.SplinepySplineName() != b.SplinepySplineName()) {
       if (raise) {
         splinepy::utils::PrintAndThrowError(description,
@@ -262,10 +270,10 @@ public:
   }
 
   /// Check if para_dim matches and throw(=raise) if desired
-  virtual bool SplinepyParaDimMatches(const SplinepyBase& a,
-                                      const SplinepyBase& b,
-                                      const std::string description = "",
-                                      const bool raise = false) const {
+  static bool SplinepyParaDimMatches(const SplinepyBase& a,
+                                     const SplinepyBase& b,
+                                     const std::string description = "",
+                                     const bool raise = false) {
     if (a.SplinepyParaDim() != b.SplinepyParaDim()) {
       if (raise) {
         splinepy::utils::PrintAndThrowError(
@@ -283,10 +291,10 @@ public:
   }
 
   /// Check if dim matches and throw(=raise) if desired
-  virtual bool SplinepyDimMatches(const SplinepyBase& a,
-                                  const SplinepyBase& b,
-                                  const std::string description = "",
-                                  const bool raise = false) const {
+  static bool SplinepyDimMatches(const SplinepyBase& a,
+                                 const SplinepyBase& b,
+                                 const std::string description = "",
+                                 const bool raise = false) {
     if (a.SplinepyDim() != b.SplinepyDim()) {
       if (raise) {
         splinepy::utils::PrintAndThrowError(
