@@ -419,7 +419,7 @@ protected:
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
 }; /* class Bezier */
 
-/// dynamic creation of templated BSpline
+/// dynamic creation of templated Bezier
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyCreateBezier(const int para_dim,
                                    const int dim,
