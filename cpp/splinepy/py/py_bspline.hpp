@@ -59,7 +59,7 @@ public:
   int dim_ = dim;
 
   // Hr. BSpline himself
-  BSpline c_bspline;
+  std::unique_ptr<BSpline> c_bspline;
   std::shared_ptr<ParameterSpace> c_parameter_space;
   std::shared_ptr<VectorSpace> c_vector_space;
 
@@ -143,27 +143,27 @@ public:
     c_vector_space = std::make_shared<VectorSpace>(c_control_points);
 
     // Now, (re)initialize BSpline
-    c_bspline = BSpline{c_parameter_space, c_vector_space};
+    c_bspline = std::make_unique<BSpline>(c_parameter_space, c_vector_space);
   }
 
   // Pass cpp object values to python.
   void update_p() {
     // Unpack - knot vectors
-    c_bspline.UpdateKnotVectors(p_knot_vectors);
+    (*c_bspline).UpdateKnotVectors(p_knot_vectors);
 
     // Unpack - degrees
     // Edit existing array, since it never changes in size.
     p_degrees.resize({para_dim}); // inplace "flatten"
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
-    c_bspline.UpdateDegrees(ds_buf_ptr);
+    (*c_bspline).UpdateDegrees(ds_buf_ptr);
 
     // Unpack - Coordinates (control points)
-    int numcps = c_bspline.GetNCps();
+    int numcps = (*c_bspline).GetNCps();
     p_control_points = py::array_t<double>(numcps * dim);
     py::buffer_info cps_buf = p_control_points.request();
     double* cps_buf_ptr = static_cast<double*>(cps_buf.ptr);
-    c_bspline.UpdateControlPoints(cps_buf_ptr);
+    (*c_bspline).UpdateControlPoints(cps_buf_ptr);
     p_control_points.resize({numcps, dim});
   }
 
@@ -190,7 +190,7 @@ public:
         pc[j_para_dim] = ScalarParametricCoordinate{
             (q_buf_ptr[i_query * para_dim + j_para_dim])};
       }
-      Coordinate const& c_result = c_bspline(pc);
+      Coordinate const& c_result = (*c_bspline)(pc);
 
       int j_dim = 0;
       for (auto& sc : c_result) { // `sc` : ScarlarCoordinate
@@ -223,7 +223,7 @@ public:
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
         }
-        Coordinate const& c_result = c_bspline(pc);
+        Coordinate const& c_result = (*c_bspline)(pc);
         int d = 0;
         for (const auto& sc : c_result) {
           r_buf_ptr[id * dim + d] = sc.Get();
@@ -285,7 +285,7 @@ public:
         pc[j_para_dim] = ScalarParametricCoordinate{
             q_buf_ptr[i_query * para_dim + j_para_dim]};
       }
-      Coordinate const& c_result = c_bspline(pc, derivative);
+      Coordinate const& c_result = (*c_bspline)(pc, derivative);
 
       // Write `c_result` to `results`.
       int j_dim = 0;
@@ -328,7 +328,7 @@ public:
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
         }
-        Coordinate const& c_result = c_bspline(pc, derivative);
+        Coordinate const& c_result = (*c_bspline)(pc, derivative);
         int d = 0;
         for (const auto& sc : c_result) {
           r_buf_ptr[id * dim + d] = sc.Get();
@@ -361,7 +361,7 @@ public:
 
   /// Extract Elements to polynomial Bezier patches
   py::list ExtractBezierPatches() {
-    const auto c_patches = splinepy::splines::ExtractBezierPatches(c_bspline);
+    const auto c_patches = splinepy::splines::ExtractBezierPatches((*c_bspline));
     py::list bezier_list{};
     for (std::size_t i_patch{}; i_patch < c_patches.size(); i_patch++) {
       bezier_list.append(PyBezier<para_dim, dim>{c_patches[i_patch]});
@@ -406,7 +406,7 @@ public:
       }
       double* bf_current_ptr = &bf_buf_ptr[i_query * n_supports];
       int* sci_current_ptr = &sci_buf_ptr[i_query * n_supports];
-      c_bspline.BasisFunctionsAndIDs(pc, bf_current_ptr, sci_current_ptr);
+      (*c_bspline).BasisFunctionsAndIDs(pc, bf_current_ptr, sci_current_ptr);
     }
 
     basis_fn.resize({n_queries, n_supports});
@@ -422,7 +422,7 @@ public:
 
     splinelib::Dimension inserting_p_dim{p_dim};
     for (py::handle k : knots) {
-      c_bspline.InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
+      (*c_bspline).InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
     }
     update_p();
   }
@@ -447,7 +447,7 @@ public:
     splines::Tolerance tolerance{tol};
 
     for (py::handle k : knots) {
-      c_bspline.RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
+      (*c_bspline).RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
     }
 
     update_p();
@@ -459,7 +459,7 @@ public:
     }
 
     splinelib::Dimension elevating_p_dim{p_dim};
-    c_bspline.ElevateDegree(elevating_p_dim);
+    (*c_bspline).ElevateDegree(elevating_p_dim);
 
     update_p();
   }
@@ -473,7 +473,7 @@ public:
 
     splinelib::Dimension reducing_p_dim{p_dim};
     splines::Tolerance tolerance{tol};
-    reduced = c_bspline.ReduceDegree(reducing_p_dim, tolerance);
+    reduced = (*c_bspline).ReduceDegree(reducing_p_dim, tolerance);
 
     update_p();
 
@@ -507,7 +507,7 @@ public:
     }
 
     // Sample and write to `results`
-    Coordinates sampled_coordinates = c_bspline.Sample(npc);
+    Coordinates sampled_coordinates = (*c_bspline).Sample(npc);
     for (std::size_t i_sample = 0; i_sample < sampled_coordinates.size();
          i_sample++) {
       Coordinate c = sampled_coordinates[i_sample];
@@ -709,7 +709,7 @@ public:
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     // get proximity helper
-    auto& proximity = c_bspline.GetProximity();
+    auto& proximity = (*c_bspline).GetProximity();
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
@@ -749,7 +749,7 @@ public:
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     // prepare proximity
-    auto& proximity = c_bspline.GetProximity();
+    auto& proximity = (*c_bspline).GetProximity();
     bool plant_newtree_please = true;
     // if resolutions of any entry is negative, we don't build a new tree
     std::array<int, para_dim> qres;

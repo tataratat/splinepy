@@ -59,7 +59,7 @@ public:
   int dim_ = dim;
 
   // Fr. Nurbs herself
-  Nurbs c_nurbs;
+  std::unique_ptr<Nurbs> c_nurbs;
   std::shared_ptr<ParameterSpace> c_parameter_space;
   std::shared_ptr<WeightedVectorSpace> c_weighted_vector_space;
 
@@ -161,7 +161,7 @@ public:
         std::make_shared<WeightedVectorSpace>(c_control_points, c_weights);
 
     // Now, (re)assign Fr. Nurbs
-    c_nurbs = Nurbs{c_parameter_space, c_weighted_vector_space};
+    c_nurbs = std::make_unique<Nurbs>(c_parameter_space, c_weighted_vector_space);
   }
 
   // Pass cpp object values to python.
@@ -170,13 +170,13 @@ public:
     p_degrees.resize({para_dim});
     py::buffer_info ds_buf = p_degrees.request();
     int* ds_buf_ptr = static_cast<int*>(ds_buf.ptr);
-    c_nurbs.UpdateDegrees(ds_buf_ptr);
+    (*c_nurbs).UpdateDegrees(ds_buf_ptr);
 
     // kvs
-    c_nurbs.UpdateKnotVectors(p_knot_vectors);
+    (*c_nurbs).UpdateKnotVectors(p_knot_vectors);
 
     // cps & ws
-    int numcps = c_nurbs.GetNCps();
+    int numcps = (*c_nurbs).GetNCps();
 
     p_control_points = py::array_t<double>(numcps * dim);
     py::buffer_info cps_buf = p_control_points.request();
@@ -186,7 +186,7 @@ public:
     py::buffer_info ws_buf = p_weights.request();
     double* ws_buf_ptr = static_cast<double*>(ws_buf.ptr);
 
-    c_nurbs.UpdateControlPointsAndWeights(cps_buf_ptr, ws_buf_ptr);
+    (*c_nurbs).UpdateControlPointsAndWeights(cps_buf_ptr, ws_buf_ptr);
 
     p_control_points.resize({numcps, dim});
     p_weights.resize({numcps, 1});
@@ -215,7 +215,7 @@ public:
         pc[j_para_dim] = ScalarParametricCoordinate{
             (q_buf_ptr[i_query * para_dim + j_para_dim])};
       }
-      Coordinate const& c_result = c_nurbs(pc);
+      Coordinate const& c_result = (*c_nurbs)(pc);
       int j = 0;
       for (auto& sc : c_result) { // `sc` : ScarlarCoordinate
         r_buf_ptr[i_query * dim + j] = sc.Get();
@@ -251,7 +251,7 @@ public:
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
         }
-        Coordinate const& c_result = c_nurbs(pc);
+        Coordinate const& c_result = (*c_nurbs)(pc);
         int d = 0;
         for (const auto& sc : c_result) {
           r_buf_ptr[id * dim + d] = sc.Get();
@@ -313,7 +313,7 @@ public:
         pc[i_para_dim] = ScalarParametricCoordinate{
             q_buf_ptr[i_query * para_dim + i_para_dim]};
       }
-      Coordinate const c_result = c_nurbs(pc, derivative);
+      Coordinate const c_result = (*c_nurbs)(pc, derivative);
 
       // Write `c_result` to `results`.
       int j_dim = 0;
@@ -360,7 +360,7 @@ public:
         for (int pd = 0; pd < para_dim; pd++) {
           pc[pd] = ScalarParametricCoordinate{q_buf_ptr[id * para_dim + pd]};
         }
-        Coordinate const& c_result = c_nurbs(pc, derivative);
+        Coordinate const& c_result = (*c_nurbs)(pc, derivative);
         int d = 0;
         for (const auto& sc : c_result) {
           r_buf_ptr[id * dim + d] = sc.Get();
@@ -394,7 +394,7 @@ public:
 
   /// Extract Elements to Rational Bezier Patches
   py::list ExtractBezierPatches() {
-    const auto c_patches = splinepy::splines::ExtractBezierPatches(c_nurbs);
+    const auto c_patches = splinepy::splines::ExtractBezierPatches((*c_nurbs));
     py::list bezier_list{};
     for (std::size_t i{}; i < c_patches.size(); i++) {
       bezier_list.append(PyRationalBezier<para_dim, dim>{c_patches[i]});
@@ -439,7 +439,7 @@ public:
       }
       double* bf_current_ptr = &bf_buf_ptr[i_query * n_supports];
       int* sci_current_ptr = &sci_buf_ptr[i_query * n_supports];
-      c_nurbs.BasisFunctionsAndIDs(pc, bf_current_ptr, sci_current_ptr);
+      (*c_nurbs).BasisFunctionsAndIDs(pc, bf_current_ptr, sci_current_ptr);
     }
 
     basis_fn.resize({n_queries, n_supports});
@@ -455,7 +455,7 @@ public:
 
     splinelib::Dimension inserting_p_dim{p_dim};
     for (py::handle k : knots) {
-      c_nurbs.InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
+      (*c_nurbs).InsertKnot(inserting_p_dim, Knot{k.cast<double>()});
     }
 
     update_p();
@@ -480,7 +480,7 @@ public:
     splines::Tolerance tolerance{tol};
 
     for (py::handle k : knots) {
-      c_nurbs.RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
+      (*c_nurbs).RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
     }
 
     update_p();
@@ -492,7 +492,7 @@ public:
     }
 
     splinelib::Dimension elevating_p_dim{p_dim};
-    c_nurbs.ElevateDegree(elevating_p_dim);
+    (*c_nurbs).ElevateDegree(elevating_p_dim);
 
     update_p();
   }
@@ -506,7 +506,7 @@ public:
 
     splinelib::Dimension reducing_p_dim{p_dim};
     splines::Tolerance tolerance{tol};
-    reduced = c_nurbs.ReduceDegree(reducing_p_dim, tolerance);
+    reduced = (*c_nurbs).ReduceDegree(reducing_p_dim, tolerance);
 
     update_p();
 
@@ -541,7 +541,7 @@ public:
     }
 
     // Sample and write to `results`
-    Coordinates sampled_coordinates = c_nurbs.Sample(npc);
+    Coordinates sampled_coordinates = (*c_nurbs).Sample(npc);
     for (std::size_t i_coord = 0; i_coord < sampled_coordinates.size();
          i_coord++) {
       Coordinate c = sampled_coordinates[i_coord];
@@ -571,7 +571,7 @@ public:
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     // get proximity helper
-    auto& proximity = c_nurbs.GetProximity();
+    auto& proximity = (*c_nurbs).GetProximity();
 
     // lambda for nearest search
     auto nearest = [&](int begin, int end) {
@@ -611,7 +611,7 @@ public:
     double* r_buf_ptr = static_cast<double*>(r_buf.ptr);
 
     // prepare proximity
-    auto& proximity = c_nurbs.GetProximity();
+    auto& proximity = (*c_nurbs).GetProximity();
     bool plant_newtree_please = true;
     // if resolutions of any entry is negative, we don't build a new tree
     std::array<int, para_dim> qres;
