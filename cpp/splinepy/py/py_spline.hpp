@@ -20,6 +20,59 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
+template<typename ValueType>
+static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
+                              const std::vector<int>& shape,
+                              const bool throw_ = true) {
+  const std::size_t expected_dim = shape.size();
+  if (expected_dim != arr.ndim()) {
+    if (!throw_)
+      return false;
+    splinepy::utils::PrintAndThrowError("Array dim mismatch.",
+                                        "Expected -",
+                                        expected_dim,
+                                        "Given -",
+                                        arr.ndim());
+  }
+  const py::ssize_t* arrshape = arr.shape();
+  for (std::size_t i{}; i < expected_dim; ++i) {
+    const int& shape_i = shape[i];
+    if (shape_i < 0) {
+      continue;
+    } else {
+      if (shape_i != arrshape[i]) {
+        if (!throw_)
+          return false;
+        splinepy::utils::PrintAndThrowError("Array shape mismatch",
+                                            "in dimension [",
+                                            i,
+                                            "].",
+                                            "Expected -",
+                                            shape_i,
+                                            "Given -",
+                                            arrshape[i]);
+      }
+    }
+  }
+  return true;
+}
+
+template<typename ValueType>
+static bool CheckPyArraySize(const py::array_t<ValueType> arr,
+                             const int size,
+                             const bool throw_ = true) {
+  if (size != arr.size()) {
+    if (!throw_)
+      return false;
+    splinepy::utils::PrintAndThrowError("array size mismatch",
+                                        "expected -",
+                                        size,
+                                        "given -",
+                                        arr.size());
+  }
+  return true;
+}
+
 /// True interface to python
 class PySpline {
 public:
@@ -162,6 +215,8 @@ public:
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+
     // prepare output
     const int n_queries = queries.shape(0);
     py::array_t<double> evaluated(n_queries * dim_);
@@ -185,6 +240,8 @@ public:
   /// Sample wraps evaluate to allow nthread executions
   /// Requires SplinepyParametricBounds
   py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const {
+    CheckPyArraySize(resolutions, para_dim_, true);
+
     // get sampling bounds
     std::vector<double> bounds(para_dim_ * 2);
     double* bounds_ptr = bounds.data();
@@ -220,23 +277,29 @@ public:
                                  py::array_t<int> orders,
                                  int nthreads) const {
     // process input
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
     const int n_queries = queries.shape(0);
-    const int orders_ndim = orders.ndim();
-    const int orders_len = orders.shape(0);
     int constant_orders_factor = 0;
-    if (orders_ndim != 1) {
-      if (orders_len == n_queries) {
+    if (!CheckPyArraySize(orders, para_dim_, false)) {
+      if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
         constant_orders_factor = 1;
-      } else if (orders_len == 1) {
-        // pass
-      } else {
         splinepy::utils::PrintAndThrowError(
-            "Length of derivative-query-orders (orders) must be either 1",
-            "or same as the length of queries.",
-            "Expected:",
+            "Derivative-query-orders (orders) must either have same size as",
+            "spline's parametric dimension or same shape as queries.",
+            "Expected: size{",
+            para_dim_,
+            "} or shape{",
             n_queries,
-            "Given:",
-            orders_len);
+            ",",
+            para_dim_,
+            "}",
+            "Given: size{",
+            orders.size(),
+            "}, approx. shape {(size / para_dim), para_dim} = {",
+            orders.size() / para_dim_,
+            ",",
+            para_dim_,
+            "}");
       }
     }
 
@@ -264,6 +327,7 @@ public:
 
   /// Basis function values and support id
   py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
     const int n_queries = queries.shape(0);
 
     // prepare results
@@ -298,6 +362,9 @@ public:
                         int max_iterations,
                         bool aggresive_search_bounds,
                         int nthreads) {
+    CheckPyArrayShape(queries, {-1, dim_}, true);
+    CheckPyArraySize(initial_guess_sample_resolutions, para_dim_);
+
     const int n_queries = queries.shape(0);
     const int pd = para_dim_ * dim_;
     const int ppd = para_dim_ * pd;
@@ -468,13 +535,8 @@ PySpline Compose(const PySpline& inner, const PySpline& outer) {
 
 /// spline derivative spline
 PySpline DerivativeSpline(const PySpline& spline, py::array_t<int> orders) {
-  if (spline.para_dim_ != orders.size()) {
-    splinepy::utils::PrintAndThrowError("Input Dimension mismatch.",
-                                        "Expected:",
-                                        spline.para_dim_,
-                                        "Given:",
-                                        orders.size());
-  }
+  CheckPyArraySize(orders, spline.para_dim_);
+
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
   return PySpline(spline.c_spline_->SplinepyDerivativeSpline(orders_ptr));
 }
