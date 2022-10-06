@@ -295,6 +295,36 @@ public:
       case 2:
         return std::make_shared<RationalBezier<2, dim>>(this->Compose(
             static_cast<RationalBezier<2, para_dim>&>(*inner_function)));
+      case 3:
+        return std::make_shared<RationalBezier<3, dim>>(this->Compose(
+            static_cast<RationalBezier<3, para_dim>&>(*inner_function)));
+#ifdef SPLINEPY_MINIMAL
+      case 4:
+        return std::make_shared<RationalBezier<4, dim>>(this->Compose(
+            static_cast<RationalBezier<4, para_dim>&>(*inner_function)));
+      case 5:
+        return std::make_shared<RationalBezier<5, dim>>(this->Compose(
+            static_cast<RationalBezier<5, para_dim>&>(*inner_function)));
+      case 6:
+        return std::make_shared<RationalBezier<6, dim>>(this->Compose(
+            static_cast<RationalBezier<6, para_dim>&>(*inner_function)));
+      case 7:
+        return std::make_shared<RationalBezier<7, dim>>(this->Compose(
+            static_cast<RationalBezier<7, para_dim>&>(*inner_function)));
+      case 8:
+        return std::make_shared<RationalBezier<8, dim>>(this->Compose(
+            static_cast<RationalBezier<8, para_dim>&>(*inner_function)));
+      case 9:
+        return std::make_shared<RationalBezier<9, dim>>(this->Compose(
+            static_cast<RationalBezier<9, para_dim>&>(*inner_function)));
+      case 10:
+        return std::make_shared<RationalBezier<10, dim>>(this->Compose(
+            static_cast<RationalBezier<10, para_dim>&>(*inner_function)));
+#endif
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "Something went wrong during Compose. Please help us by writing an "
+            "issue about this case at [ github.com/tataratat/splinepy ]");
       }
     } else {
       switch (inner_function->SplinepyParaDim()) {
