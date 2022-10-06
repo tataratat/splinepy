@@ -249,6 +249,25 @@ public:
     return {std::shared_ptr<SplinepyBase>{}};
   }
 
+  /// Scalar Spline extraction from dim
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractDim(const int& phys_dim) {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyExtractDim is not implemented for",
+        SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
+  }
+
+  /// Derivative of composition
+  virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(
+      const std::shared_ptr<SplinepyBase>& inner,
+      const std::shared_ptr<SplinepyBase>& inner_derivative) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyCompositionDerivative is not implemented for",
+        SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
+  }
+
   /// Check if name matches and throw(=raise) if desired
   static bool SplinepySplineNameMatches(const SplinepyBase& a,
                                         const SplinepyBase& b,

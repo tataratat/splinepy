@@ -424,6 +424,54 @@ public:
     return {std::make_shared<RationalBezier<para_dim, dim>>(*this)};
   }
 
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractDim(const int& phys_dim) const {
+    return std::make_shared<Bezier<para_dim, 1>>(
+        Base_::ExtractDimension(static_cast<std::size_t>(phys_dim)));
+  }
+
+  /// Derivative of composition
+  virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(
+      const std::shared_ptr<SplinepyBase>& inner,
+      const std::shared_ptr<SplinepyBase>& inner_derivative) const {
+    // type check
+    if (inner->SplinepySplineName().find("Bezier") == std::string::npos) {
+      splinepy::utils::PrintAndThrowError(
+          "Bezier composition derivative requires inner function to be",
+          "a bezier type. Given inner function -",
+          inner->SplinepyWhatAmI());
+    }
+
+    // composable?
+    if (inner->SplinepyDim() != this->SplinepyParaDim()) {
+      splinepy::utils::PrintAndThrowError(
+          "Spline composition requires inner function to have same physical",
+          "dimension as outer function's parametric dimension.",
+          "Outer Function:",
+          this->SplinepyWhatAmI(),
+          "/",
+          "Inner Function:",
+          inner->SplinepyWhatAmI());
+    }
+    std::array<int, para_dim> order_query;
+    order_query.fill(0);
+    order_query[0] = 1;
+    std::shared_ptr<SplinepyBase> composition_derivative =
+        this->SplinepyDerivativeSpline(order_query.data())
+            ->SplinepyCompose(inner)
+            ->SplinepyMultiply(inner_derivative->SplinepyExtractDim(0));
+
+    for (std::size_t i{1}; i < para_dim; ++i) {
+      order_query.fill(0);
+      order_query[i] = 1;
+      composition_derivative = composition_derivative->SplinepyAdd(
+          this->SplinepyDerivativeSpline(order_query.data())
+              ->SplinepyCompose(inner)
+              ->SplinepyMultiply(inner_derivative->SplinepyExtractDim(i)));
+    }
+    return composition_derivative;
+  }
+
   constexpr Proximity_& GetProximity() { return *proximity_; }
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
