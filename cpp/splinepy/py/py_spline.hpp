@@ -579,6 +579,20 @@ py::list ExtractBezierPatches(const PySpline& spline) {
   return patches;
 }
 
+/// extract a single physical dimension from a spline
+PySpline ExtractDim(const PySpline& spline, int phys_dim) {
+  return PySpline(spline.c_spline_->SplinepyExtractDim(phys_dim));
+}
+
+/// composition derivative
+PySpline CompositionDerivative(const PySpline& outer,
+                               const PySpline& inner,
+                               const PySpline& inner_derivative) {
+  return PySpline(outer.c_spline_->SplinepyCompositionDerivative(
+      inner.c_spline_,
+      inner_derivative.c_spline_));
+}
+
 } // namespace splinepy::py
 
 void add_spline_pyclass(py::module& m, const char* class_name) {
@@ -646,5 +660,14 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("extract_bezier_patches",
         &splinepy::py::ExtractBezierPatches,
         py::arg("spline"));
+  m.def("extract_dim",
+        &splinepy::py::ExtractDim,
+        py::arg("spline"),
+        py::arg("phys_dim"));
+  m.def("composition_derivative",
+        &splinepy::py::CompositionDerivative,
+        py::arg("outer"),
+        py::arg("inner"),
+        py::arg("inner_derivative"));
   ;
 }
