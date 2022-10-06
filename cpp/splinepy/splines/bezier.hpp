@@ -33,7 +33,7 @@ public:
   static constexpr bool kIsRational = false;
   static constexpr bool kHasKnotVectors = false;
 
-  using SplinepyBase_ = typename splinepy::splines::SplinepyBase;
+  using SplinepyBase_ = splinepy::splines::SplinepyBase;
   using Base_ = BezierSpline<para_dim, dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;

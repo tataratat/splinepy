@@ -30,7 +30,7 @@ public:
   constexpr static int dim_ = dim;
 
   // splinepy
-  using SplinepyBase_ = typename splinepy::splines::SplinepyBase;
+  using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
   // splinelib
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
@@ -57,8 +57,8 @@ public:
   using VectorSpace_ = typename WeightedVectorSpace_::Base_; // <dim + 1>
   // Frequently used types
   using Derivative_ = typename Base_::Derivative_;
-  using Dimension_ = typename splinelib::Dimension;
-  using Tolerance_ = typename splinelib::sources::splines::Tolerance;
+  using Dimension_ = splinelib::Dimension;
+  using Tolerance_ = splinelib::sources::splines::Tolerance;
   using OutputInformation_ =
       splinelib::Tuple<typename ParameterSpace_::OutputInformation_,
                        typename WeightedVectorSpace_::OutputInformation_>;
