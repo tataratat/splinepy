@@ -161,7 +161,8 @@ public:
         std::make_shared<WeightedVectorSpace>(c_control_points, c_weights);
 
     // Now, (re)assign Fr. Nurbs
-    c_nurbs = std::make_unique<Nurbs>(c_parameter_space, c_weighted_vector_space);
+    c_nurbs =
+        std::make_unique<Nurbs>(c_parameter_space, c_weighted_vector_space);
   }
 
   // Pass cpp object values to python.

@@ -43,9 +43,8 @@ inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
 /// Inplace version of Mean
 /// Mainly to support bezman::Point types
 template<typename ReturnArrayT, typename InputArrayT>
-inline void Mean(const InputArrayT& arr1,
-                 const InputArrayT& arr2,
-                 ReturnArrayT& out) {
+inline void
+Mean(const InputArrayT& arr1, const InputArrayT& arr2, ReturnArrayT& out) {
   using ReturnValueType = typename ReturnArrayT::value_type;
   for (std::size_t i{}; i < out.size(); ++i) {
     out[i] = ReturnValueType{(arr1[i] + arr2[i]) * .5};
@@ -54,8 +53,7 @@ inline void Mean(const InputArrayT& arr1,
 
 /// Dot product - use SecondArrayType to support bezman's scalar splines
 template<typename T1, typename SecondArrayT, std::size_t dim>
-inline T1 Dot(const std::array<T1, dim>& arr1,
-              const SecondArrayT& arr2) {
+inline T1 Dot(const std::array<T1, dim>& arr1, const SecondArrayT& arr2) {
   T1 dotted{}; /* default value should be 0. */
 
   if constexpr (std::is_scalar<SecondArrayT>::value) {

@@ -361,7 +361,8 @@ public:
 
   /// Extract Elements to polynomial Bezier patches
   py::list ExtractBezierPatches() {
-    const auto c_patches = splinepy::splines::ExtractBezierPatches((*c_bspline));
+    const auto c_patches =
+        splinepy::splines::ExtractBezierPatches((*c_bspline));
     py::list bezier_list{};
     for (std::size_t i_patch{}; i_patch < c_patches.size(); i_patch++) {
       bezier_list.append(PyBezier<para_dim, dim>{c_patches[i_patch]});
@@ -447,7 +448,8 @@ public:
     splines::Tolerance tolerance{tol};
 
     for (py::handle k : knots) {
-      (*c_bspline).RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
+      (*c_bspline)
+          .RemoveKnot(removing_p_dim, Knot{k.cast<double>()}, tolerance);
     }
 
     update_p();
