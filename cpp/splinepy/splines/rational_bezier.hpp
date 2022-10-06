@@ -432,7 +432,7 @@ protected:
 
 }; /* class RationalBezier */
 
-/// dynamic creation of templated BSpline
+/// dynamic creation of templated RationalBezier
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
                                            const int dim,
