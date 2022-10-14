@@ -1,4 +1,4 @@
-from splinepy.io import (mfem, json, npz, xml, iges, irit, vtk)
+from splinepy.io import (mfem, json, npz, xml, iges, irit, vtk, gismo)
 
 __all__ = [
         "mfem",
@@ -8,4 +8,5 @@ __all__ = [
         "iges",
         "irit",
         "vtk",
+	"gismo",
 ]

@@ -268,8 +268,12 @@ def mfem_index_mapping(
 
 
 def export_cartesian(
-        fname, spline_list, tolerance=None, boundary_functions=None
-):
+        fname,
+        spline_list,
+        tolerance=None,
+        boundary_functions=None,
+        connectivity_only=False
+        ):
     """
     Export list of bezier splines in mfem export.
 
@@ -283,6 +287,8 @@ def export_cartesian(
       tolerance to collapse two neighboring points
     boundary_functions : list(Callable)
       Functions that define boundaries
+    connectivity_only : bool
+      For use in other function, only retrieve connectivity
 
     Returns
     -------
@@ -373,6 +379,9 @@ def export_cartesian(
     # Retrieve information using bezman
     (connectivity, vertex_ids, edges, boundaries,
      success) = retrieve_mfem_information(corner_vertices, tolerance)
+
+    if connectivity_only:
+        return connectivity
 
     boundary_ids = np.ones(boundaries.shape[0], dtype=int)
     if not len(boundary_functions) == 0:
