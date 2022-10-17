@@ -1,3 +1,5 @@
+#pragma once
+
 #include "lu_solve.hpp"
 #include "utils.hpp"
 

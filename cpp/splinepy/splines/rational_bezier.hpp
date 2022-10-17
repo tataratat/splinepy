@@ -6,6 +6,7 @@
 // bezman
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
+#include <bezman/src/bezier_group.hpp>
 
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
@@ -538,6 +539,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 2:
     switch (dim) {
     case 1:
@@ -588,6 +590,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 3:
     switch (dim) {
     case 1:
@@ -638,6 +641,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #ifdef SPLINEPY_MORE
   case 4:
     switch (dim) {
@@ -687,6 +691,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 5:
     switch (dim) {
     case 1:
@@ -735,6 +740,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 6:
     switch (dim) {
     case 1:
@@ -783,6 +789,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 7:
     switch (dim) {
     case 1:
@@ -831,6 +838,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 8:
     switch (dim) {
     case 1:
@@ -879,6 +887,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 9:
     switch (dim) {
     case 1:
@@ -927,6 +936,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 10:
     switch (dim) {
     case 1:
@@ -975,6 +985,7 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #endif
   default:
     splinepy::utils::PrintAndThrowError(

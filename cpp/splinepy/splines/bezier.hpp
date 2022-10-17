@@ -5,6 +5,7 @@
 
 // bezman
 #include <bezman/src/bezier_spline.hpp>
+#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
@@ -503,6 +504,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 2:
     switch (dim) {
     case 1:
@@ -532,6 +534,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 3:
     switch (dim) {
     case 1:
@@ -561,6 +564,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #ifdef SPLINEPY_MORE
   case 4:
     switch (dim) {
@@ -589,6 +593,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 5:
     switch (dim) {
     case 1:
@@ -616,6 +621,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 6:
     switch (dim) {
     case 1:
@@ -643,6 +649,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 7:
     switch (dim) {
     case 1:
@@ -670,6 +677,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 8:
     switch (dim) {
     case 1:
@@ -697,6 +705,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 9:
     switch (dim) {
     case 1:
@@ -724,6 +733,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 10:
     switch (dim) {
     case 1:
@@ -751,6 +761,7 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
           "Something went wrong during CreateBezier. Please help us by writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #endif
   default:
     splinepy::utils::PrintAndThrowError(

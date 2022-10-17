@@ -46,6 +46,7 @@ else()
             init/py_nurbs9.cpp
             init/py_nurbs10.cpp
     )
+    set(DEFS SPLINEPY_MORE)
 
 endif(MINIMAL)
 
