@@ -115,7 +115,7 @@ def load(fname):
     spline_dic_list : list<dict>
       list of dictionary types, to be put into the spline constructors
     """
-    # Aux function
+    # Auxiliary function to unravel
     def retrieve_from_basis_(ETelement, SPdict):
         if "nurbs" in ETelement.attrib["type"].lower():
             # Recursive call for knot_vector
@@ -140,12 +140,18 @@ def load(fname):
                     degrees[id] = int(child[0].attrib["degree"])
             SPdict["knot_vectors"] = knotvector
             SPdict["degrees"] = degrees
-
-
-
-
+    # Parse XML file
+    debug(f"Parsing xml-file '{fname}' ...")
     root = ET.parse(fname).getroot()
-    return_list = []
+    debug(f"XML-file parsed start conversion")
+
+    # Init return value
+    return_dict = {
+        "BSpline" : [],
+        "NURBS" : []
+        }
+
+    # Splines start with the keyword Geometry
     for child in root:
         if not child.tag.startswith("Geometry"):
             debug(
@@ -163,6 +169,14 @@ def load(fname):
                 dim = int(info.attrib.get("geoDim"))
                 spline_dict["control_points"]=np.fromstring(
                     info.text.replace("\n", " "), sep=' ').reshape(-1,dim)
-        return_list.append(spline_dict)
+        if spline_dict.get("weights") is None:
+            return_dict["BSpline"].append(spline_dict)
+        else:
+            return_dict["NURBS"].append(spline_dict)
 
-    return return_list
+    debug(
+        f"Found a total of {len(return_dict['BSpline'])} "
+        f"BSplines and {len(return_dict['NURBS'])} NURBS"
+    )
+
+    return return_dict
