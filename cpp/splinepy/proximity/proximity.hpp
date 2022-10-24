@@ -185,12 +185,13 @@ public:
       PArrayD_& rhs) const {
     // btw, RHS is what's internally called as "df_dxi"
     double df_dxi_i; // temporary variable to hold sum
-    int j;
+
     typename SplineType::Derivative_ derivative_query;
+    using DerivativeValueType = typename SplineType::Derivative_::value_type;
 
     for (int i{}; i < SplineType::kParaDim; ++i) {
       // spline derivative query formulation
-      derivative_query.fill(splinelib::Derivative{0});
+      derivative_query.fill(DerivativeValueType{0});
       ++derivative_query[i];
       // derivative evaluation
       auto const derivative = spline_(guess, derivative_query);
@@ -228,9 +229,10 @@ public:
         splinepy::utils::AAt(spline_gradient);
 
     typename SplineType::Derivative_ derivative_query;
+    using DerivativeValueType = typename SplineType::Derivative_::value_type;
     for (int i{}; i < SplineType::kParaDim; ++i) {
       for (int j{i}; j < SplineType::kParaDim; ++j) {
-        derivative_query.fill(splinelib::Derivative{0});
+        derivative_query.fill(DerivativeValueType{0});
         ++derivative_query[i];
         ++derivative_query[j];
 
