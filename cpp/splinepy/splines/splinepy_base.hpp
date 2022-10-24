@@ -3,17 +3,9 @@
 #include <memory>
 #include <vector>
 
-// pybind11
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-
 #include <splinepy/utils/print.hpp>
 
 namespace splinepy::splines {
-
-namespace py = pybind11;
-
-using namespace splinelib::sources;
 
 /// Spline base to enable dynamic use of template splines.
 /// Member functions are prepended with "Splinepy".
@@ -64,21 +56,21 @@ public:
     }
   };
 
-  // Implemented in splinepy/splines/bezier.hpp
+  // Implemented in splinepy/splines/create_bezier.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBezier(const int para_dim,
                        const int dim,
                        const double* degrees,
                        const double* control_points);
 
-  // Implemented in splinepy/splines/rational_bezier.hpp
+  // Implemented in splinepy/splines/create_rational_bezier.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateRationalBezier(const int para_dim,
                                const int dim,
                                const double* degrees,
                                const double* control_points,
                                const double* weights);
-  // Implemented in splinepy/splines/b_spline.hpp
+  // Implemented in splinepy/splines/create_bspline.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBSpline(const int para_dim,
                         const int dim,
@@ -86,7 +78,7 @@ public:
                         const std::vector<std::vector<double>>* knot_vectors,
                         const double* control_points);
 
-  /// Implemented in splinepy/splines/nurbs.hpp
+  /// Implemented in splinepy/splines/create_nurbs.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateNurbs(const int para_dim,
                       const int dim,
