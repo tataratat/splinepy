@@ -4,9 +4,9 @@
 #include <type_traits>
 
 // bezman
+#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
-#include <bezman/src/bezier_group.hpp>
 
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
@@ -15,14 +15,14 @@
 namespace splinepy::splines {
 
 template<std::size_t para_dim, std::size_t dim>
-using RationalBezierSpline = bezman::RationalBezierSpline<
+using RationalBezierSplineType = bezman::RationalBezierSpline<
     static_cast<std::size_t>(para_dim),
     std::conditional_t<(dim > 1), bezman::Point<dim>, double>,
     double>;
 
 template<std::size_t para_dim, std::size_t dim>
 class RationalBezier : public splinepy::splines::SplinepyBase,
-                       public RationalBezierSpline<para_dim, dim> {
+                       public RationalBezierSplineType<para_dim, dim> {
 public:
   static constexpr int kParaDim = static_cast<int>(para_dim);
   static constexpr int kDim = static_cast<int>(dim);
@@ -30,7 +30,7 @@ public:
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
-  using Base_ = RationalBezierSpline<para_dim, dim>;
+  using Base_ = RationalBezierSplineType<para_dim, dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
   using Coordinate_ = typename Base_::PhysicalPointType_;
