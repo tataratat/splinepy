@@ -3,10 +3,10 @@ set(PYSPLINEPY_SRCS
         init/reader.cpp
         init/exporter.cpp
         init/core_spline.cpp
-        splinepy.cpp)
+        splinepy_core.cpp)
 
 # add target
-pybind11_add_module(splinepy_core ${SRCS})
+pybind11_add_module(splinepy_core ${PYSPLINEPY_SRCS})
 target_include_directories(splinepy_core PRIVATE "${PROJECT_SOURCE_DIR}/cpp")
 target_compile_definitions(splinepy_core PRIVATE ${DEFS})
 target_compile_options(splinepy_core
