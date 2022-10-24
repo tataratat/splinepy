@@ -48,6 +48,14 @@ else()
     )
 endif(MINIMAL)
 
+set(SRCS
+        ${SRCS}
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_bezier.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_rational_bezier.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_bspline.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_nurbs.cpp
+)
+
 # reader and pyhton module
 list(APPEND SRCS init/reader.cpp init/exporter.cpp splinepy.cpp)
 
