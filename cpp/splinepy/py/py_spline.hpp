@@ -1,7 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -252,7 +252,7 @@ public:
     double* bounds_ptr = bounds.data();
     c_spline_->SplinepyParametricBounds(bounds_ptr);
     // prepare sampler
-    auto grid = splinepy::utils::RawPtrGridPoints(
+    auto grid = splinepy::utils::CStyleArrayPointerGridPoints(
         para_dim_,
         bounds_ptr,
         static_cast<int*>(resolutions.request().ptr));

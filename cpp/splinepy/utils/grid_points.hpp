@@ -75,14 +75,14 @@ private:
   std::array<std::vector<DataT>, dim> entries_;
 };
 
-/// RawPtr based dynamic grid point sampler
+/// CStyleArrayPointer based dynamic grid point sampler
 /// Values are kept as int since they come as int from python
-class RawPtrGridPoints {
+class CStyleArrayPointerGridPoints {
 public:
-  RawPtrGridPoints() = default;
-  RawPtrGridPoints(const int dim,
-                   const double* bounds,
-                   const int* resolutions) {
+  CStyleArrayPointerGridPoints() = default;
+  CStyleArrayPointerGridPoints(const int dim,
+                               const double* bounds,
+                               const int* resolutions) {
     SetUp(dim, bounds, resolutions);
   }
 
@@ -98,7 +98,8 @@ public:
       const int& res = resolutions[i];
       if (res < 2) {
         splinepy::utils::PrintAndThrowError(
-            "Resolutions for RawPtrGridPoints can't be less than 2.");
+            "Resolutions for CStyleArrayPointerGridPoints can't be less than "
+            "2.");
       }
       len_ *= res;
       resolutions_.push_back(res);
