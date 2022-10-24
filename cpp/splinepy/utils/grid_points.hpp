@@ -3,6 +3,8 @@
 #include <cmath>
 #include <utility>
 
+#include <splinepy/utils/print.hpp>
+
 namespace splinepy::utils {
 
 template<typename DataT, typename IndexT, int dim>
@@ -93,8 +95,10 @@ public:
     resolutions_.clear();
     resolutions_.reserve(dim);
     for (int i{}; i < dim; ++i) {
-      const int res = resolutions[i];
-      if (res < 0) {
+      const int& res = resolutions[i];
+      if (res < 2) {
+        splinepy::utils::PrintAndThrowError(
+            "Resolutions for RawPtrGridPoints can't be less than 2.");
       }
       len_ *= res;
       resolutions_.push_back(res);
