@@ -23,7 +23,7 @@ auto ExtractBezierPatches(SplineType& input) {
   using PointType = typename ReturnType::Coordinate_;
 
   // Predetermine some auxiliary values
-  // Access Spline Degres and determine offsets
+  // Access spline degrees and determine offsets
   std::array<std::size_t, para_dim> degrees{};
   for (int i_p{}; i_p < para_dim; i_p++) {
     degrees[i_p] = static_cast<std::size_t>(

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <algorithm>
+#include <string>
+#include <utility>
 #include <vector>
 
 // pybind11

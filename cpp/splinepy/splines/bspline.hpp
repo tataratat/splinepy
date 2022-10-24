@@ -70,10 +70,11 @@ public:
   // Advanced use
   using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim, dim>>;
 
-  // raw ptr based inithelper.
-  // degrees should have same size as parametric dimension
-  // having knot_vectors vector of vector, we can keep track of their length,
-  // as well as the legnth of control_points/weights.
+  /** raw ptr based inithelper.
+  *  degrees should have same size as parametric dimension
+  *  having knot_vectors vector of vector, we can keep track of their length,
+  * as well as the legnth of control_points/weights.
+  */
   Base_ RawPtrInitHelper(const double* degrees,
                          const std::vector<std::vector<double>> knot_vectors,
                          const double* control_points) {
@@ -273,6 +274,7 @@ public:
         resolutions,
         nthreads);
   }
+  
   /// Verbose proximity query - make sure to plant a kdtree first.
   virtual void SplinepyVerboseProximity(const double* query,
                                         const double& tolerance,
@@ -940,10 +942,6 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
         "Something went wrong during CreateBSpline. Please help us by writing "
         "an issue about this case at [ github.com/tataratat/splinepy ]");
   }
-  splinepy::utils::PrintAndThrowError(
-      "Something went very wrong during CreateBSpline. Please help us by "
-      "writing "
-      "an issue about this case at [ github.com/tataratat/splinepy ]");
   // make compiler happy
   return std::shared_ptr<SplinepyBase>{};
 }
