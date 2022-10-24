@@ -28,7 +28,8 @@ set(namespace "${PROJECT_NAME}::")
 # global flags
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(SPLINEPY_FLAGS -fPIC)
-set(SPLINEPY_OPTIMIZATION_FLAGS -O3)
+set(SPLINEPY_OPTIMIZATION_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3>)
+set(SPLINEPY_DEFS)
 
 # compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -53,6 +54,10 @@ endif()
 if(SPLINEPY_VERBOSE_MAKE)
     set(CMAKE_VERBOSE_MAKEFILE ON)
 endif()
+
+if(SPLINEPY_MORE)
+    set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
+endif(SPLINEPY_MORE)
 
 add_subdirectory(third_party)
 add_subdirectory(cpp/splinepy)
