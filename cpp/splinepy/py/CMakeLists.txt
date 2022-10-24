@@ -14,6 +14,9 @@ target_compile_options(splinepy_core
         ${SPLINEPY_FLAGS}
         ${SPLINEPY_OPTIMIZATION_FLAGS})
 
+# link splinepy
+target_link_libraries(splinepy_core PRIVATE splinepy)
+
 # link splinelib
 if(SPLINEPY_COMPILE_SPLINELIB)
     target_link_libraries(splinepy_core PRIVATE splines input_output)
