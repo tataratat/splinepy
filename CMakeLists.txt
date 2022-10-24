@@ -2,15 +2,35 @@ cmake_minimum_required(VERSION 3.12.0)
 
 project(splinepy VERSION 0.0.2 LANGUAGES CXX)
 
+# build options
 option(SPLINEPY_COMPILE_SPLINELIB "Compile splinelib together." ON)
-option(VERBOSE_MAKE "Verbose `make` output." OFF)
-option(MINIMAL "Compile a minimal set of splines." OFF)
+option(SPLINEPY_VERBOSE_MAKE
+        "Verbose `make` output. Alias to CMAKE_VERBOSE_MAKEFILE" OFF)
+option(SPLINEPY_MORE "Compile a full set of splines." OFF)
+option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
 
+
+# config
+set(exe_dest "bin")
+set(incl_dest "include")
+set(lib_dest "lib")
+set(cfg_dest "${lib_dest}/cmake/${PROJECT_NAME}")
+set(gen_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(version_config "${gen_dir}/${PROJECT_NAME}ConfigVersion.cmake")
+set(project_config "${gen_dir}/${PROJECT_NAME}Config.cmake")
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+set(namespace "${PROJECT_NAME}::")
+
+
+# global flags
+set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(SPLINEPY_FLAGS -fPIC)
 set(SPLINEPY_OPTIMIZATION_FLAGS -O3)
 
+# compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND SPLINEPY_OPTIMIZATION_FLAGS -ffast-math)
   set(SPLINEPY_WARNING_FLAGS
@@ -20,16 +40,17 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         -Wall -Wextra -Wmost -Wextra -Wpedantic -Wunreachable-code
         -Wshadow -Wfloat-equal -Weffc++ -Wno-unused-parameter
         -Wno-unused-variable)
+else()
+  message(WARNING
+            "Unsupported compiler."
+            "splinepy is tested with GNU and Clang.")
 endif()
 
 if(SPLINEPY_ENABLE_WARNINGS)
   set(SPLINEPY_FLAGS ${SPLINEPY_FLAGS} ${SPLINEPY_WARNING_FLAGS})
 endif()
 
-set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
-set(CMAKE_CXX_STANDARD 20)
-
-if(VERBOSE_MAKE)
+if(SPLINEPY_VERBOSE_MAKE)
     set(CMAKE_VERBOSE_MAKEFILE ON)
 endif()
 
