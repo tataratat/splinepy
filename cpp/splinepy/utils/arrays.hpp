@@ -8,8 +8,6 @@
 
 namespace splinepy::utils {
 
-using namespace splinelib::sources;
-
 /// Elementwise subtraction
 template<typename T, typename InputArrayType, std::size_t dim>
 inline void FirstMinusSecondEqualsThird(const InputArrayType& first,
