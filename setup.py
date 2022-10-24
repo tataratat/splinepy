@@ -139,7 +139,7 @@ setup(
         'Natural Language :: English',
         'Topic :: Scientific/Engineering',
     ],
-    ext_modules=[CMakeExtension('splinepy._splinepy', cmake_args=cma)],
+    ext_modules=[CMakeExtension('splinepy.splinepy_core', cmake_args=cma)],
     cmdclass=dict(build_ext=CMakeBuild),
     extras_require={"test": ["pytest>=6.0"]},
     zip_safe=False,

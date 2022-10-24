@@ -1,6 +1,6 @@
 # build fitting first - currently very independent
-# also only used py python side
 add_subdirectory(fitting)
+
 
 ## create splinepy target - enables cpp standalone use
 # define srcs
@@ -11,6 +11,7 @@ set(SPLINEPY_SRCS
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_nurbs.cpp
 )
 
+
 # target
 if(SPLINEPY_BUILD_SHARED)
     add_library(splinepy SHARED ${SPLINEPY_SRCS})
@@ -20,26 +21,42 @@ endif(SPLINEPY_BUILD_SHARED)
 # alias for convenience
 add_library(splinepy::splinepy ALIAS splinepy)
 
+
 # include
 target_include_directories(splinepy
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/cpp>
         $<INSTALL_INTERFACE:${incl_dest}>)
 
+
 # link
 target_link_libraries(splinepy
     PUBLIC
-        #pybind11::headers  # TODO is this necessary?
         fitting
         bezman
         napf
         SplineLib::splines
         SplineLib::input_output)
 
+
+# flags
+target_compile_options(splinepy
+    PRIVATE
+        ${SPLINEPY_FLAGS}
+        ${SPLINEPY_OPTIMIZATION_FLAGS})
+
+
+# defs
+target_compile_definitions(splinepy
+    PRIVATE
+        ${SPLINEPY_DEFS})
+
+
 # python?
 if(SPLINEPY_COMPILE_PYTHON)
     add_subdirectory(py)
 endif()
+
 
 # cmake config files
 include(CMakePackageConfigHelpers)
@@ -51,6 +68,7 @@ configure_package_config_file(
     "${project_config}"
     INSTALL_DESTINATION "${cfg_dest}"
 )
+
 
 # install
 install(
