@@ -46,7 +46,6 @@ else()
             init/py_nurbs9.cpp
             init/py_nurbs10.cpp
     )
-
 endif(MINIMAL)
 
 # reader and pyhton module

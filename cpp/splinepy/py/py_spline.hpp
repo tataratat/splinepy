@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 #include <vector>
 
@@ -25,7 +27,7 @@ static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
                               const std::vector<int>& shape,
                               const bool throw_ = true) {
   const std::size_t expected_dim = shape.size();
-  if (expected_dim != arr.ndim()) {
+  if (expected_dim != static_cast<std::size_t>(arr.ndim())) {
     if (!throw_)
       return false;
     splinepy::utils::PrintAndThrowError("Array dim mismatch.",

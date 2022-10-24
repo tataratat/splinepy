@@ -188,7 +188,7 @@ public:
       std::vector<double> kv;
       kv.reserve(kvsize);
       // Index wants int
-      for (int j{}; j < kvsize; ++j) {
+      for (int j{}; j < static_cast<int>(kvsize); ++j) {
         kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
       }
       knot_vectors->push_back(std::move(kv));
@@ -487,6 +487,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 2:
     switch (dim) {
     case 1:
@@ -537,6 +538,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 3:
     switch (dim) {
     case 1:
@@ -587,6 +589,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #ifdef SPLINEPY_MORE
   case 4:
     switch (dim) {
@@ -636,6 +639,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 5:
     switch (dim) {
     case 1:
@@ -684,6 +688,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 6:
     switch (dim) {
     case 1:
@@ -732,6 +737,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 7:
     switch (dim) {
     case 1:
@@ -780,6 +786,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 8:
     switch (dim) {
     case 1:
@@ -828,6 +835,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 9:
     switch (dim) {
     case 1:
@@ -876,6 +884,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
   case 10:
     switch (dim) {
     case 1:
@@ -924,6 +933,7 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(
           "writing "
           "an issue about this case at [ github.com/tataratat/splinepy ]");
     }
+    break;
 #endif
   default:
     splinepy::utils::PrintAndThrowError(

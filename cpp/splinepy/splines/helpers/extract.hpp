@@ -160,4 +160,4 @@ auto ExtractBezierPatches(SplineType& input) {
   return bezier_list;
 }
 
-}; /* namespace splinepy::splines::helpers */
+} /* namespace splinepy::splines::helpers */
