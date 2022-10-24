@@ -1,4 +1,4 @@
-#include <splinepy/py/spline_reader.hpp>
+#include <splinepy/py/py_spline_reader.hpp>
 
 namespace splinepy::py::init {
 

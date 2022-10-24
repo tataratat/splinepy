@@ -1,4 +1,4 @@
-#include <splinepy/py/spline_exporter.hpp>
+#include <splinepy/py/py_spline_exporter.hpp>
 
 namespace splinepy::py::init {
 
