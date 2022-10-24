@@ -12,6 +12,8 @@
 // Bezman
 #include <bezman/src/utils/algorithms/point_uniquifier.hpp>
 
+namespace splinepy::py {
+
 namespace py = pybind11;
 
 /**
@@ -270,3 +272,5 @@ retrieve_MFEM_information(const py::array_t<double>& py_corner_vertices,
     throw std::runtime_error("Dimension mismatch");
   }
 }
+
+} // namespace splinepy::py

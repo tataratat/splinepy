@@ -16,6 +16,8 @@
 #include <Sources/Splines/b_spline.hpp>
 #include <Sources/Utilities/named_type.hpp>
 
+namespace splinepy::py {
+
 namespace py = pybind11;
 
 using namespace splinelib::sources;
@@ -430,3 +432,5 @@ py::list read_irit(std::string fname) {
   auto sr = SplineReader();
   return sr.read_irit(fname);
 }
+
+} // namespace splinepy::py 
