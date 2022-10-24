@@ -28,18 +28,6 @@ inline void FirstMinusSecondEqualsThird(const InputArrayType& first,
   }
 }
 
-/// Elementwise mean, you can specified return value_type.
-/// Useful for returning NamedType.
-template<typename ReturnT, typename T, std::size_t dim>
-inline std::array<ReturnT, dim> Mean(const std::array<T, dim>& arr1,
-                                     const std::array<T, dim>& arr2) {
-  std::array<ReturnT, dim> out;
-  for (std::size_t i{0}; i < dim; ++i) {
-    out[i] = ReturnT{(arr1[i] + arr2[i]) * .5};
-  }
-  return out;
-}
-
 /// Inplace version of Mean
 /// Mainly to support bezman::Point types
 template<typename ReturnArrayT, typename InputArrayT>
