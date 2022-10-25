@@ -598,7 +598,6 @@ PySpline CompositionDerivative(const PySpline& outer,
       inner_derivative.c_spline_));
 }
 
-
 void add_spline_pyclass(py::module& m, const char* class_name) {
   py::class_<splinepy::py::PySpline> klasse(m, class_name);
 

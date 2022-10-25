@@ -11,8 +11,6 @@
 
 namespace splinepy::splines {
 
-//namespace py = pybind11;
-
 template<int para_dim, int dim>
 class Nurbs : public splinepy::splines::SplinepyBase,
               public splinelib::sources::splines::Nurbs<para_dim, dim> {

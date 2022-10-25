@@ -10,4 +10,4 @@ void init_reader(py::module_& m) {
       .def("read_irit", &read_irit, py::arg("fname"));
 }
 
-} // namespace splinepy::py::init 
+} // namespace splinepy::py::init

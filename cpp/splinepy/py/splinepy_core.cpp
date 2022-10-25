@@ -1,20 +1,20 @@
 #include <pybind11/pybind11.h>
 
-
 // core_spline
 namespace splinepy::py::init {
 
-  namespace py = pybind11;
-  // CORE
-  void init_core_spline(py::module_&);
+namespace py = pybind11;
 
-  // Reader
-  void init_reader(py::module_&);
+// CORE
+void init_core_spline(py::module_&);
 
-  // Exporter
-  void init_exporter(py::module_&);
-}
+// Reader
+void init_reader(py::module_&);
 
+// Exporter
+void init_exporter(py::module_&);
+
+} // namespace splinepy::py::init
 
 namespace py = pybind11;
 

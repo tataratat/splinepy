@@ -433,4 +433,4 @@ py::list read_irit(std::string fname) {
   return sr.read_irit(fname);
 }
 
-} // namespace splinepy::py 
+} // namespace splinepy::py
