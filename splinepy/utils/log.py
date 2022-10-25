@@ -8,59 +8,86 @@ import logging
 def configure(debug=False, logfile=None):
     """
     Logging configurator.
+
     Parameters
     -----------
     debug: bool
     logfile: str
+
     Returns
     --------
     None
     """
-    logger = logging.getLogger()
+    # logger
+    logger = logging.getLogger("splinepy")
+
     if debug:
         logger.setLevel(logging.DEBUG)
 
     else:
         logger.setLevel(logging.INFO)
 
+    # format
+    formatter = logging.Formatter(
+        fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
+    )
+
+    # apply format using stream handler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    # output logs
     if logfile is not None:
         file_logger_handler = logging.FileHandler(logfile)
+        logger.addHandler(file_logger_handler)
 
 
 def debug(*log):
     """
     Debug logger.
+
     Parameters
     -----------
     *log: *str
+
     Returns
     --------
     None
     """
-    logging.debug(" ".join(map(str, log)))
+    logger = logging.getLogger("splinepy")
+    logger.debug(" ".join(map(str, log)))
 
 
 def info(*log):
     """
     Info logger.
+
     Parameters
     -----------
     *log: *str
+
     Returns
     --------
     None
     """
-    logging.info(" ".join(map(str, log)))
+    logger = logging.getLogger("splinepy")
+    logger.info(" ".join(map(str, log)))
 
 
 def warning(*log):
     """
     warning logger.
+
     Parameters
     -----------
     *log: *str
+
     Returns
     --------
     None
     """
-    logging.warning(" ".join(map(str, log)))
+    logger = logging.getLogger("splinepy")
+    logger.warning(" ".join(map(str, log)))
