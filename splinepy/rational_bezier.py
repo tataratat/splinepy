@@ -1,8 +1,7 @@
 import numpy as np
 
 from splinepy import utils
-from splinepy._splinepy import *
-from splinepy._spline import Spline
+from splinepy.spline import Spline
 
 
 class RationalBezier(Spline):

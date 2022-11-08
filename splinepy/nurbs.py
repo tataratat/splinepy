@@ -1,5 +1,4 @@
-from splinepy._splinepy import *
-from splinepy._spline import Spline
+from splinepy.spline import Spline
 from splinepy.rational_bezier import RationalBezier
 
 
