@@ -7,11 +7,10 @@ Currently hardcoded for 2D-single-patch-splines.
 import numpy as np
 
 # single function imports
-from splinepy.utils import make_c_contiguous
 from splinepy.io.utils import (form_lines,
                                next_line,
                                make_meaningful)
-from splinepy._splinepy import retrieve_mfem_information
+from splinepy.splinepy_core import retrieve_mfem_information
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -131,8 +130,8 @@ def load(fname,):
     return dict(
         degrees=degrees,
         knot_vectors=knot_vectors,
-        control_points=make_c_contiguous(control_points)[reorder],
-        weights=make_c_contiguous(weights)[reorder],
+        control_points=np.ascontiguousarray(control_points)[reorder],
+        weights=np.ascontiguousarray(weights)[reorder],
     )
 
 
@@ -177,7 +176,7 @@ def read_solution(fname, reference_nurbs,):
     return dict(
         degrees=deepcopy(reference_nurbs.degrees),
         knot_vectors=deepcopy(reference_nurbs.knot_vectors),
-        control_points=make_c_contiguous(solution)[reorder],
+        control_points=np.ascontiguousarray(solution)[reorder],
         weights=deepcopy(reference_nurbs.weights),
     )
 

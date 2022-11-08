@@ -6,7 +6,7 @@ import base64
 import json
 import numpy as np
 
-from splinepy.log import debug
+from splinepy.utils.log import debug
 
 
 def load(fname):
