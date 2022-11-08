@@ -7,9 +7,9 @@ Currently hardcoded for 2D-single-patch-splines.
 import numpy as np
 
 # single function imports
-from splinepy.io.utils import (form_lines,
-                               next_line,
-                               make_meaningful)
+from splinepy.io.ioutils import (form_lines,
+                                 next_line,
+                                 make_meaningful)
 from splinepy.splinepy_core import retrieve_mfem_information
 
 # keywords : possible assert value
