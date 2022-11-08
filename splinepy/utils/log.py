@@ -91,3 +91,20 @@ def warning(*log):
     """
     logger = logging.getLogger("splinepy")
     logger.warning(" ".join(map(str, log)))
+
+
+def prepend_log(message, log_func):
+    """
+    Prepend message before a logging function.
+
+    Parameters
+    ----------
+    messgae: str
+    log_func: function
+      one of the followings - {info, debug, warning}
+
+    Returns
+    -------
+    prepended: function
+    """
+    return functools.partial(log_func, message)
