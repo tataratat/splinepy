@@ -5,11 +5,11 @@ Single function file containing `load_splines`.
 
 import os
 
-from splinepy._splinepy import read_iges, read_xml, read_irit
+from splinepy.splinepy_core import read_iges, read_xml, read_irit
 from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
-from splinepy.utils import abs_fname
+from splinepy.io.ioutils import abs_fname
 from splinepy import io
 
 

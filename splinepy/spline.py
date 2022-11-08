@@ -10,7 +10,6 @@ import numpy as np
 from splinepy import utils
 from splinepy import io
 from splinepy import splinepy_core as core
-from splinepy._base import SplinepyBase
 
 
 class RequiredProperties:
@@ -139,7 +138,7 @@ class RequiredProperties:
         if len(splines) == 0:
             splines = list(cls.__required_spline_properties.keys())
 
-        rp_intersection = set(cls.of(splines[-1])
+        rp_intersection = set(cls.of(splines[-1]))
         for s in splines[:-1]:
             rp_intersection.intersection_update(cls.of(s))
 
@@ -260,7 +259,16 @@ def _set_modified_false(spl):
 def identities(spl):
     """
     Returns identity of given spline
+
+    Parameters
+    ----------
+    spl: Spline
+
+    Returns
+    -------
+    identities: dict
     """
+    return spl._c_spline.identities
 
 def properties(spl):
     """
@@ -273,9 +281,9 @@ class Spline:
     """
 
     __slots__ = (
-        "_logi",`
-        "_logd",`
-        "_logw",`
+        "_logi",
+        "_logd",
+        "_logw",
         "_core_spline",
         "_data",
     )
@@ -491,7 +499,7 @@ class Spline:
         else:
             return None
 
-    @propertyr
+    @property
     def degrees(self):
         """
         Returns Degrees.
