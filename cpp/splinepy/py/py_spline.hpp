@@ -169,6 +169,16 @@ public:
     return c_spline_;
   }
 
+  const CoreSpline_& Core() const {
+    if (!c_spline_) {
+      splinepy::utils::PrintAndThrowError("Core spline does not exist.",
+        "Please first intialize core spline.");
+    }
+
+    return c_spline_;
+  }
+
+
   std::string WhatAmI() const { return Core()->SplinepyWhatAmI(); }
 
   // Returns currunt properties of core spline
