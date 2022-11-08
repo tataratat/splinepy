@@ -20,7 +20,7 @@ from splinepy.load import (load_splines,
 
 
 # configure logging
-utils.log.cofigure()
+utils.log.configure()
 
 
 __all__ = [
