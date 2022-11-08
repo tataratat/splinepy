@@ -1,5 +1,5 @@
-from splinepy import data
-from splinepy import log
+from splinepy.utils import data
+from splinepy.utils import log
 
 
 __all__ = [
