@@ -27,7 +27,7 @@ class RequiredProperties:
 
     # union of all req props. nice for check support
     __union_all = set([
-        rp for rps in __requred_spline_properties.values() for rp in rps
+        rp for rps in __required_spline_properties.values() for rp in rps
     ])
 
     # intersection of all req props. nice for checking minimal support
@@ -216,7 +216,7 @@ def _set_properties_as_trackable(spl):
         if key.startswith("knot_vectors"):
             kvs = list()
             for kv in values:
-                kvs.append(utils.data.make_tracked_array(kv, copy=False)
+                kvs.append(utils.data.make_tracked_array(kv, copy=False))
             spl._data["properties"][key] = kvs
 
         else:
