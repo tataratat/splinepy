@@ -25,6 +25,16 @@ class RequiredProperties:
         "NURBS": ["degrees", "knot_vectors", "control_points", "weights"],
     }
 
+    # union of all req props. nice for check support
+    __union_all = set([
+        rp for rps in __requred_spline_properties.values() for rp in rps
+    ])
+
+    # intersection of all req props. nice for checking minimal support
+    __intersection_all = __union_all.intersection(
+            *[set(rps) for rps in __required_spline_properties.values()]
+    )
+
     @classmethod
     def __call__(cls, spline):
         """
@@ -113,7 +123,7 @@ class RequiredProperties:
         rp_union: list
         """
         if len(splines) == 0:
-            splines = list(cls.__required_spline_properties.keys())
+            return cls.__union_all
 
         rp_union = set()
         for s in splines:
@@ -136,17 +146,13 @@ class RequiredProperties:
         rp_intersection: list
         """
         if len(splines) == 0:
-            splines = list(cls.__required_spline_properties.keys())
+            return cls.__intersection_all
 
         rp_intersection = set(cls.of(splines[-1]))
         for s in splines[:-1]:
             rp_intersection.intersection_update(cls.of(s))
 
         return list(rp_intersection)
-
-
-# initialize one for direct use
-required_properties = RequiredProperties()
 
 
 def sync(spl, c2p=False):
@@ -255,10 +261,9 @@ def _set_modified_false(spl):
 
             prop._modified = False
 
-
-def identities(spl):
+def _set_properties_as_trackable(spl):
     """
-    Returns identity of given spline
+    Get current properties and save them as TrackedArray. Internal use only.
 
     Parameters
     ----------
@@ -266,45 +271,53 @@ def identities(spl):
 
     Returns
     -------
-    identities: dict
+    None
     """
-    return spl._c_spline.identities
+    current_p = spl.current_properties()
+    for key, values in current_p.items():
+        if key.startswith("knot_vectors"):
+            kvs = list()
+            for kv in values:
+                kvs.append(utils.data.make_tracked_array(kv, copy=False)
+            spl._data["properties"][key] = kvs
 
-def properties(spl):
-    """
-    """
+        else:
+            spl._data["properties"][key] = utils.data.make_tracked_array(
+                    values, copy=False
+            )
 
 
-class Spline:
+class Spline(core.CoreSpline):
     """
-    Spline base class. Wraps CoreSpline.
+    Spline base class. Extends CoreSpline with documentation.
     """
 
     __slots__ = (
         "_logi",
         "_logd",
         "_logw",
-        "_core_spline",
-        "_data",
     )
 
     def __init__(
             self,
-            degrees=None,
-            knot_vectors=None,
-            control_points=None,
-            weights=None,
-            c_spline=None,
+            spline=None,
+            **kwargs
     ):
         """
-        Spline.
+        Base Spline. 
 
         Parameters
         -----------
-        degrees: (para_dim,) list-like
-        knot_vectors: (para_dim, n) list
-        control_points: (m, dim) list-like
-        weights: (m,) list-like
+        spline: Spline
+          Initialize using another spline. Will SHARE core spline.
+        degrees: (para_dim,) array-like
+          Keyword only parameter.
+        knot_vectors: (para_dim, n) list of array-like
+          Keyword only parameter.
+        control_points: (m, dim) array-like
+          Keyword only parameter.
+        weights: (m,) array-like
+          Keyword only parameter.
 
         Attributes
         -----------
@@ -322,113 +335,35 @@ class Spline:
         None
         """
         # logger shortcut
-        self._logi = log.prepend_log(type(self).__qualname__, utils.log.info)
-        self._logd = log.prepend_log(type(self).__qualname__, utils.log.debug)
-        self._logw = log.prepend_log(
-            type(self).__qualname__, utils.log.warning
+        self._logi = utils.log.prepend_log(
+                type(self).__qualname__, utils.log.info
+        )
+        self._logd = utils.log.prepend_log(
+                type(self).__qualname__, utils.log.debug
+        )
+        self._logw = utils.log.prepend_log(
+                type(self).__qualname__, utils.log.warning
         )
 
-        # initialize rest of the slots
-        self._data = dict()
-        self._core_spline = None
-
-        self.degrees = degrees
-        self.control_points = control_points
-
-        # Bezier has no kvs
-        if knot_vectors is not None:
-            self.knot_vectors = knot_vectors
-
-        # rational splines has weights
-        if weights is not None:
-            self.weights = weights
-
-        # if there's c_spline, we will share the c_spline.
-        if c_spline is not None:
-            self._core_spline = c_spline
-
-    def clear(self):
-        """
-        Clear all properties.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        None
-        """
-        self._core_spline = None
+        # initialize _data <- defined in cpp side as `data_`
         self._data = dict()
 
-        self._logd("All attributes are cleared!")
-
-    @property
-    def _c_spline(self):
-        """
-        Returns core spline. Updates core spline before returning if
-        any property is modified.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        core_spline: CoreSpline
-        """
-        if self._core_spline is not None:
-            return self._core_spline
-
+        if spline is not None and isinstance(spline, Spline):
+            # will share core, even nullptr
+            super().__init__(spline)
         else:
-            props_set = dict()
-            # prepare error message to hint missing attr
-            for rp in self.required_properties:
-                props_set[rp] = "set"  if getattr(self, rp) else "missing"
+            # warn if there are too many keywords
+            kset = set(kwargs.keys())
+            # do they at least contain minimal set of keywards?
+            if not RequiredProperties.intersection().issubset(kset):
+                raise RuntimeError(
+                           f"Given keyword arguments ({kwargs}) don't contain"
+                           "minimal set of keywords, "
+                           f"{RequiredProperties.intersection()}."
+                )
+            super().__init__(**kwargs)
 
-            raise ValueError(
-                    "Spline is not initialized yet."
-                    f"Property status: {props_set}"
-            ) 
-
-    @_c_spline.setter
-    def _c_spline(self, spline):
-        """
-        Sets spline using the core spline.
-
-        Parameters
-        ----------
-        spline: dict or CoreSpline
-          dict describing spline or CoreSpline. In case of CoreSpline, this
-          object will share core spline.
-
-        Returns
-        -------
-        None
-        """
-        spline_t = type(spline)
-        # maybe this can be a helper
-        #if isinstance(spline_t, dict):
-        #    # let's at least check if those are what we support
-        #    req_prop_all = RequiredProperties.union()
-        #    for k in spline.keys():
-        #        if k not in req_prop_all:
-        #            raise KeyError(
-        #                    f"{k} is not supported property of any spline"
-        #            )
-        #    self._core_spline = core.CoreSpline(**spline)
-
-        #elif isinstance(spline_t, core.CoreSpline):
-        if isinstance(spline_t, core.CoreSpline):
-            self._core_spline = spline # take given ref
-            sync(self, c2p=True)
-
-        elif spline is None:
-            self.clear()
-
-        else:
-            raise TypeError(f"{spline_t} is not supported _c_spline.")
+        self._data["identities"] = self.current_identities()
 
     @property
     def required_properties(self):
@@ -446,21 +381,6 @@ class Spline:
         return RequiredProperties.of(self)
 
     @property
-    def whatami(self):
-        """
-        Answers a deep philosophical question of "what am i?"
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        whatami: str
-        """
-        return self._data.get("identities", dict()).get("whatami", "Nothing")
-
-    @property
     def para_dim(self):
         """
         Returns parametric dimension.
@@ -473,12 +393,7 @@ class Spline:
         --------
         para_dim: int
         """
-        return self._data.get()
-        if hasattr(self, "_c_spline"):
-            return self._para_diml
-
-        else:
-            return None
+        return super().para_dim
 
     @property
     def dim(self):
@@ -493,11 +408,69 @@ class Spline:
         --------
         dim: int
         """
-        if hasattr(self, "_dim"):
-            return self._dim 
+        return super().dim
 
-        else:
-            return None
+    @property
+    def whatami(self):
+        """
+        Answers a deep philosophical question of "what am i?"
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        whatami: str
+        """
+        return super().whatami
+
+    @property
+    def name(self):
+        """
+        Name of the spline provided by cpp side as a str.
+        Should be same as type(spline).__qualname__ if you are using
+        a specified spline, i.e., not `Spline`.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        -------
+        name: str
+        """
+        return super().name
+
+    @property
+    def has_knot_vector(self):
+        """
+        Returns True iff spline has knot vectors. Bezier splines don't.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        has_knot_vector: bool
+        """
+        return super().has_knot_vector
+
+    @property
+    def is_rational(self):
+        """
+        Returns True iff spline is rational. NURBS is rational, for example.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        is_rational: bool
+        """
+        return super().is_rational
 
     @property
     def degrees(self):
@@ -512,6 +485,15 @@ class Spline:
         --------
         degrees: (para_dim,) np.ndarray
         """
+        ds = self._data.get("degrees", None)
+
+        # nothing? return
+        if ds is None:
+            return ds
+
+        # pure 
+
+        return self._data
         if hasattr(self, "_degrees"):
             return self._degrees
 
