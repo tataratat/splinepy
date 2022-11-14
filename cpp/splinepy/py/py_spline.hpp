@@ -84,10 +84,13 @@ public:
   using CoreSpline_ = typename std::shared_ptr<splinepy::splines::SplinepyBase>;
 
   CoreSpline_ c_spline_ = nullptr;
-  int para_dim_;
-  int dim_;
-  bool is_rational_;
-  bool has_knot_vectors_;
+
+  // store very frequently used values - from python this will be readonly 
+  int para_dim_ = -1;
+  int dim_ = -1;
+
+  // place to store and access from both python and cpp side.
+  py::dict data_;
 
   // ctor
   PySpline() = default;
@@ -95,9 +98,14 @@ public:
   PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
     para_dim_ = c_spline_->SplinepyParaDim();
     dim_ = c_spline_->SplinepyDim();
-    is_rational_ = c_spline_->SplinepyIsRational();
-    has_knot_vectors_ = c_spline_->SplinepyHasKnotVectors();
   }
+  PySpline(PySpline& another_py_spline) :
+      c_spline_(another_py_spline.Core()),
+      para_dim_(another_py_spline.para_dim_),
+      dim_(another_py_spline.dim_) {
+    // nichts
+  }
+
 
   /// Creates a corresponding spline based on kwargs
   /// similar to previous update_c()
@@ -109,8 +117,6 @@ public:
     double* control_points_ptr = nullptr;
     double* weights_ptr = nullptr;
     int para_dim, dim;
-    is_rational_ = false;
-    has_knot_vectors_ = false;
 
     // get degrees and set para_dim
     auto d_array = py::cast<py::array_t<double>>(kwargs["degrees"]);
@@ -125,7 +131,6 @@ public:
 
     // maybe, get knot_vectors
     if (kwargs.contains("knot_vectors")) {
-      has_knot_vectors_ = true;
       for (py::handle kv : kwargs["knot_vectors"]) {
         std::vector<double> knot_vector;
         // cast to array_t, as python side will try to use tracked array anyways
@@ -141,7 +146,6 @@ public:
 
     // maybe, get weights
     if (kwargs.contains("weights")) {
-      is_rational_ = true;
       auto w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
       weights_ptr = static_cast<double*>(w_array.request().ptr);
     }
@@ -178,11 +182,13 @@ public:
     return c_spline_;
   }
 
-
   std::string WhatAmI() const { return Core()->SplinepyWhatAmI(); }
+  std::string Name() const {return Core()->SplinepySplineName(); }
+  bool HasKnotVectors() const {return Core()->SplinepyHasKnotVectors(); }
+  bool IsRational() const {return Core()->SplinepyIsRational(); }
 
-  // Returns currunt properties of core spline
-  // similar to update_p
+  /// Returns currunt properties of core spline
+  /// similar to update_p
   py::dict CurrentProperties() const {
     py::dict dict_spline;
 
@@ -201,10 +207,10 @@ public:
     py::array_t<double> weights;
     double* weights_ptr = nullptr;
 
-    if (has_knot_vectors_) {
+    if (Core()->SplinepyHasKnotVectors()) {
       knot_vectors_ptr = &knot_vectors;
     }
-    if (is_rational_) {
+    if (Core()->SplinepyIsRational()) {
       weights = py::array_t<double>(ncps);
       weights_ptr = static_cast<double*>(weights.request().ptr);
     }
@@ -220,7 +226,7 @@ public:
     dict_spline["control_points"] = control_points;
 
     // process maybes
-    if (has_knot_vectors_) {
+    if (Core()->SplinepyHasKnotVectors()) {
       py::list kvs;
       for (const auto& knot_vector : knot_vectors) {
         const std::size_t kvsize = knot_vector.size();
@@ -231,7 +237,7 @@ public:
       }
       dict_spline["knot_vectors"] = kvs;
     }
-    if (is_rational_) {
+    if (Core()->SplinepyIsRational()) {
       weights.resize({ncps, 1});
       dict_spline["weights"] = weights;
     }
@@ -635,12 +641,35 @@ PySpline CompositionDerivative(const PySpline& outer,
       inner_derivative.Core()));
 }
 
+/// returns core spline's ptr address
+intptr_t CoreId(const PySpline& spline) {
+  return reinterpret_cast<intptr_t>(spline.Core().get());
+}
+
+/// reference count of core spline
+int CoreRefCount(const PySpline& spline) {
+  return spline.Core().use_count();
+}
+
+/// have core? A non error raising checker
+bool HaveCore(const PySpline& spline) {
+  return (spline.c_spline_) ? true : false; 
+}
+
 void add_spline_pyclass(py::module& m, const char* class_name) {
   py::class_<splinepy::py::PySpline> klasse(m, class_name);
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
+      .def(py::init<splinepy::py::PySpline&>())
+      .def("new_core", &splinepy::py::PySpline::NewCore)
+      .def_readwrite("_data", &splinepy::py::PySpline::data_)
+      .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
+      .def_readonly("dim", &splinepy::py::PySpline::dim_)
       .def_property_readonly("whatami", &splinepy::py::PySpline::WhatAmI)
+      .def_property_readonly("name", &splinepy::py::PySpline::Name)
+      .def_property_readonly("has_knot_vectors", &splinepy::py::PySpline::HasKnotVectors)
+      .def_property_readonly("is_rational", &splinepy::py::PySpline::IsRational)
       .def("current_properties", &splinepy::py::PySpline::CurrentProperties)
       .def("current_identities", &splinepy::py::PySpline::CurrentIdentities)
       .def("evaluate",
@@ -675,6 +704,7 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
            py::arg("tolerance"));
+
   m.def("insert_knots",
         &splinepy::py::InsertKnots,
         py::arg("spline"),
@@ -710,6 +740,15 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("outer"),
         py::arg("inner"),
         py::arg("inner_derivative"));
+  m.def("core_id",
+        &splinepy::py::CoreId,
+        py::arg("spline"));
+  m.def("core_ref_count",
+        &splinepy::py::CoreRefCount,
+        py::arg("spline"));
+  m.def("have_core",
+        &splinepy::py::HaveCore,
+        py::arg("spline"));
   ;
 }
 
