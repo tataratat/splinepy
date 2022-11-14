@@ -154,68 +154,6 @@ class RequiredProperties:
 
         return list(rp_intersection)
 
-
-def sync(spl, c2p=False):
-    """
-    Helper function to sync python spline with cpp core spline.
-    Data syncing direction is python to cpp, unless c2p is set to True.
-
-    Parameters
-    -----------
-    spl: Spline
-    c2p: bool
-      Default is False. Transfers core spline properties to this spline.
-
-    Returns
-    --------
-    None
-    """
-    if c2p:
-        # properly sync current properties as tracked array
-        for key, prop in spl._core_spline.current_properties().items():
-            # use setters
-            setattr(spl, key, prop)
-
-        spl._data["identities"] = spl._core_spline.current_identities()
-
-        # at this point, c and p are synced. 
-        return None
-
-    # p2c
-    required_props = spl.required_properties
-
-    # gather properties into dict while we loop through each props.
-    # will be used  to init core class later.
-    dict_spline = dict()
-    modified = False
-
-    # Check if all data is available for spline type
-    for i, rp in enumerate(required_props):
-        tmp_rp = getattr(self, rp)
-        if tmp_rp is None:
-            spl._logd(
-                f"Missing {rp} to initialize core spline.",
-                "Skipping or removing existing core spline."
-            )
-            if hasattr(spl, "_core_spline"):
-                spl._core_spline = None
-                delattr(spl, "_core_spline")
-
-            return None
-
-        else:
-            dict_spline[rp] = tmp_rp
-            modified = utils.data.is_modified(tmp_rp)
-
-    # update core spline
-    if modified:
-        spl._core_spline = core.CoreSpline(**dict_spline)
-
-    else:
-        # we are here because everthing is synced
-        return None
-
-
 def is_modified(spl):
     """
     Checks if there are inplace changes in spline properties.
