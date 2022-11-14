@@ -168,6 +168,8 @@ def make_tracked_array(array, dtype=None, copy=True):
     tracked = np.ascontiguousarray(array, dtype=dtype)
     if copy:
         tracked = tracked.copy().view(TrackedArray)
+    else:
+        tracked = tracked.view(TrackedArray)
 
     # should always be contiguous here
     assert tracked.flags['C_CONTIGUOUS']
