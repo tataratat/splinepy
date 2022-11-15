@@ -19,10 +19,10 @@ class RequiredProperties:
 
     # name mangling to make direct access very annoying
     __required_spline_properties = {
-        "Bezier": ["degrees", "control_points"],
-        "RationalBezier": ["degrees", "control_points", "weights"],
-        "BSpline": ["degrees", "knot_vectors", "control_points"],
-        "NURBS": ["degrees", "knot_vectors", "control_points", "weights"],
+        "Bezier": ("degrees", "control_points"),
+        "RationalBezier": ("degrees", "control_points", "weights"),
+        "BSpline": ("degrees", "knot_vectors", "control_points"),
+        "NURBS": ("degrees", "knot_vectors", "control_points", "weights"),
     }
 
     # union of all req props. nice for check support
@@ -80,8 +80,7 @@ class RequiredProperties:
                 f"{list(cls.__required_spline_properties.keys())}"
             )
 
-        # copy to avoid inplace manipulation
-        return cls.__required_spline_properties[spline_type].copy()
+        return cls.__required_spline_properties[spline_type]
 
     @classmethod
     def of(cls, spline):
@@ -129,7 +128,7 @@ class RequiredProperties:
         for s in splines:
             rp_union.update(cls.of(s))
 
-        return list(rp_union)
+        return rp_union
 
     @classmethod
     def intersection(cls, *splines):
@@ -152,7 +151,8 @@ class RequiredProperties:
         for s in splines[:-1]:
             rp_intersection.intersection_update(cls.of(s))
 
-        return list(rp_intersection)
+        return rp_intersection
+
 
 def is_modified(spl):
     """
@@ -197,11 +197,16 @@ def _set_modified_false(spl):
                 for p in prop:
                     p._modified = False
 
-            prop._modified = False
+            else:
+                prop._modified = False
 
-def _set_properties_as_trackable(spl):
+def _make_core_properties_trackable(spl):
     """
-    Get current properties and save them as TrackedArray. Internal use only.
+    Internal use only.
+    Get current properties and save them as TrackedArray.
+    This marks all properties as modified. You could change this using
+    `_set_modified_false(spl)`,
+    perhaps a combination with `spl._data = dict()`.
 
     Parameters
     ----------
@@ -211,7 +216,8 @@ def _set_properties_as_trackable(spl):
     -------
     None
     """
-    current_p = spl.current_properties()
+    current_p = spl.current_core_properties()
+
     for key, values in current_p.items():
         if key.startswith("knot_vectors"):
             kvs = list()
@@ -267,10 +273,6 @@ class Spline(core.CoreSpline):
         control_points: np.ndarray
         parametric_bounds: np.ndarray
         control_point_bounds: np.ndarray
-
-        Returns
-        --------
-        None
         """
         # logger shortcut
         self._logi = utils.log.prepend_log(
@@ -286,9 +288,15 @@ class Spline(core.CoreSpline):
         # initialize _data <- defined in cpp side as `data_`
         self._data = dict()
 
+        # return if this is an empty init
+        if spline is None and len(kwargs) == 0:
+            return None
+
         if spline is not None and isinstance(spline, Spline):
             # will share core, even nullptr
             super().__init__(spline)
+            # depends on the use case, here could be a place to copy _data
+ 
         else:
             # warn if there are too many keywords
             kset = set(kwargs.keys())
@@ -301,7 +309,11 @@ class Spline(core.CoreSpline):
                 )
             super().__init__(**kwargs)
 
-        self._data["identities"] = self.current_identities()
+        # we are here because this spline is successfully initialized
+        # get properties
+        _make_core_properties_trackable(self)
+        # avoid re-init before queries.
+        _set_modified_false(self)
 
     @property
     def required_properties(self):
@@ -316,7 +328,14 @@ class Spline(core.CoreSpline):
         --------
         requied_properties: dict
         """
-        return RequiredProperties.of(self)
+        try:
+            return RequiredProperties.of(self)
+        except ValueError:
+            # Spline
+            self._logd(
+                    f"`required_properties` of {type(self)} is undefined."
+            )
+            return None
 
     @property
     def para_dim(self):
@@ -410,6 +429,63 @@ class Spline(core.CoreSpline):
         """
         return super().is_rational
 
+    def clear(self):
+        """
+        Clears core spline and saved data
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        # annulment of core
+        core.annul_core(self)
+        self._data = dict()
+
+    def new_core(self, *, raise_=True, **kwargs):
+        """
+        Creates a new core spline based on given kwargs.
+
+        Parameters
+        -----------
+        kwargs: **kwargs
+          Keyword only argument. Takes properties.
+
+        Returns
+        -------
+        None
+        """
+        # let's remove None valued items
+        kwargs = utils.data.without_none_values(kwargs)
+
+        # Spline, you do whatever
+        if type(self).__qualname__ == "Spline":
+            # maybe minimal set check?
+            return super().new_core(**kwargs)
+
+        # specified ones needs specific sets of kwargs
+        # in case of an incomplete set of kwargs, nothing will happen
+        elif set(kwargs.keys()) == set(self.required_properties(self.name)):
+            return super().new_core(**kwargs)
+
+        elif raise_:
+            raise RuntimeError(
+                    f"{kwargs.keys()} is not valid set of keywords to create"
+                    f"a new core for {type(self).__qualname__}."
+                    f"Valid ones are: {self.required_properties}."
+            )
+
+        else:
+            self._logd(
+                    "Couldn't initialize a new_core with given keywords."
+                    f"Keywords without None values are {kwargs.keys()}."
+            )
+            # old behavior was to remove core here. maybe do so?
+            return None
+
     @property
     def degrees(self):
         """
@@ -423,20 +499,7 @@ class Spline(core.CoreSpline):
         --------
         degrees: (para_dim,) np.ndarray
         """
-        ds = self._data.get("degrees", None)
-
-        # nothing? return
-        if ds is None:
-            return ds
-
-        # pure 
-
-        return self._data
-        if hasattr(self, "_degrees"):
-            return self._degrees
-
-        else:
-            return None
+        return self._data.get("properties", dict()).get("degrees", None)
 
     @degrees.setter
     def degrees(self, degrees):
@@ -451,30 +514,31 @@ class Spline(core.CoreSpline):
         --------
         None
         """
+        # clear core and return
         if degrees is None:
-            if hasattr(self, "_degrees"):
-                delattr(self, "_degrees")
-                if hasattr(self, "_para_dim") and self.knot_vectors is None:
-                    delattr(self, "_para_dim")
+            core.annul_core(self)
+            self._data["properties"]["degrees"] = None
             return None
 
-        # flatten copies
-        degrees = utils.make_c_contiguous(degrees, "int32").flatten()
-
-        if self.para_dim is None:
-            self._para_dim = degrees.size
-
-        else:
-            if self.para_dim != degrees.size:
-                raise InputDimensionError(
-                    "Input dimension does not match spline's para_dim "
+        # len should match knot_vector's len
+        if self.knot_vectors is not None:
+            if len(self.knot_vectors) != len(degrees):
+                raise ValueError(
+                        f"len(degrees) ({len(degrees)}) should match "
+                        f"len(knot_vectors) ({len(knot_vectors)})."
                 )
 
-        self._degrees = degrees
-
+        # set - copies
+        self._data["properties"]["degrees"] = utils.data.make_tracked_array(
+                degrees, "int32"
+        )
         self._logd(f"Degrees set: {self.degrees}")
 
-        self._check_and_update_c()
+        # try to sync core with current status
+        self.new_core(raise_=False, **self._data["properties"])
+
+    # short cut
+    ds = degrees
 
     @property
     def knot_vectors(self):
@@ -489,11 +553,7 @@ class Spline(core.CoreSpline):
         --------
         knot_vectors: list
         """
-        if hasattr(self, "_knot_vectors"):
-            return self._knot_vectors
-
-        else:
-            return None
+        return self._data.get("properties", dict()).get("knot_vectors", None)
 
     @knot_vectors.setter
     def knot_vectors(self, knot_vectors):
@@ -508,36 +568,36 @@ class Spline(core.CoreSpline):
         --------
         None
         """
+        # clear core and return
         if knot_vectors is None:
-            if hasattr(self, "_knot_vectors"):
-                delattr(self, "_knot_vectors")
-                if hasattr(self, "_para_dim") and self.degrees is None:
-                    delattr(self, "_para_dim")
+            core.annul_core(self)
+            self._data["properties"]["knot_vectors"] = None
             return None
 
-        if not isinstance(knot_vectors, list):
-            raise TypeError("knot_vectors should be a `list`!")
-
-        if self.para_dim is None:
-            self._para_dim = len(knot_vectors)
-
-        else:
-            if self.para_dim != len(knot_vectors):
-                raise InputDimensionError(
-                    "Input dimension does not match spline's para_dim "
+        # len should match degrees's len
+        if self.degrees is not None:
+            if len(knot_vectors) != len(self.degrees):
+                raise ValueError(
+                        f"len(knot_vectors) ({len(knot_vectors)}) should "
+                        f"match len(degrees) ({len(degrees)})."
                 )
 
-        self._knot_vectors = copy.deepcopy(knot_vectors)
+        # set - copies
+        self._data["properties"]["knot_vectors"] = [
+                utils.data.make_tracked_array(kv, "float64")
+                for kv in knot_vectors
+        ]
 
         self._logd("Knot vectors set:")
         for i, kv in enumerate(self.knot_vectors):
             self._logd(
-                f"  {i}"
-                ". knot vector length: "
-                f"{len(kv)}"
+                    f"  {i}"
+                    ". knot vector length: "
+                    f"{len(kv)}"
             )
 
-        self._check_and_update_c()
+        # try to sync core with current status
+        self.new_core(raise_=False, **self._data["properties"])
 
     @property
     def unique_knots(self,):
@@ -554,11 +614,15 @@ class Spline(core.CoreSpline):
         --------
         unique_knots: list
         """
-        self._logd("Computing unique knots using `np.unique`.")
-        unique_knots = []
-        if "Bezier" in self.whatami:
-            unique_knots = [[0, 1]] * self.para_dim
+        if "Bezier" in self.name:
+            self._logd(
+                    "Bezier splines don't have knots, but if they were to,"
+                    "it corresponds to parametric bounds."
+                    "Returning parametric_bounds"
+            )
+            return self.parametric_bounds
         else:
+            self._logd("Computing unique knots using `np.unique`.")
             for k in self.knot_vectors:
                 unique_knots.append(np.unique(k).tolist())
 
@@ -1533,10 +1597,3 @@ class Spline(core.CoreSpline):
         """
         # all the properties are deepcopyable
         return copy.deepcopy(self)
-
-    # member function aliases for urgent situations
-    # `weights` is defined in `NURBS`
-    ds = degrees
-    kvs = knot_vectors
-    cps = control_points
-    ws = weights

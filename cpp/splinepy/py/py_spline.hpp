@@ -189,7 +189,7 @@ public:
 
   /// Returns currunt properties of core spline
   /// similar to update_p
-  py::dict CurrentProperties() const {
+  py::dict CurrentCoreProperties() const {
     py::dict dict_spline;
 
     // prepare property arrays
@@ -245,21 +245,18 @@ public:
     return dict_spline;
   }
 
-  /// Returns current identity of core spline
-  /// Generic charactor of spline that cannot be modified.
-  py::dict CurrentIdentities() const {
-    py::dict identities;
+  /// AABB of spline parametric space
+  py::array_t<double> ParametricBounds() const {
+    // prepare output - [[lower_bound], [upper_bound]]
+    py::array_t<double> pbounds(2 * para_dim_);
+    double* pbounds_ptr = static_cast<double*>(pbounds.request().ptr);
 
-    // followings does not change during the lifetime of the CoreSpline_ obj.
-    identities["para_dim"] = Core()->SplinepyParaDim();
-    identities["dim"] = Core()->SplinepyDim();
-    identities["name"] = Core()->SplinepySplineName();
-    identities["whatami"] = Core()->SplinepyWhatAmI();
-    identities["has_knot_vectors"] = Core()->SplinepyHasKnotVectors();
-    identities["is_rational"] = Core()->SplinepyIsRational();
+    Core()->SplinepyParametricBounds(pbounds_ptr);
 
-    return identities;
+    pbounds.resize({2, para_dim_});
+    return pbounds;
   }
+
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
@@ -656,6 +653,13 @@ bool HaveCore(const PySpline& spline) {
   return (spline.c_spline_) ? true : false; 
 }
 
+/// Overwrite core with a nullptr and assign neg values to dims
+void AnnulCore(PySpline& spline) {
+  spline.c_spline_ = nullptr;
+  spline.para_dim_ = -1;
+  spline.dim_ = -1;
+}
+
 void add_spline_pyclass(py::module& m, const char* class_name) {
   py::class_<splinepy::py::PySpline> klasse(m, class_name);
 
@@ -670,8 +674,8 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
       .def_property_readonly("name", &splinepy::py::PySpline::Name)
       .def_property_readonly("has_knot_vectors", &splinepy::py::PySpline::HasKnotVectors)
       .def_property_readonly("is_rational", &splinepy::py::PySpline::IsRational)
-      .def("current_properties", &splinepy::py::PySpline::CurrentProperties)
-      .def("current_identities", &splinepy::py::PySpline::CurrentIdentities)
+      .def_property_readonly("parametric_bounds", &splinepy::py::PySpline::ParametricBounds)
+      .def("current_core_properties", &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),
@@ -748,6 +752,9 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("spline"));
   m.def("have_core",
         &splinepy::py::HaveCore,
+        py::arg("spline"));
+  m.def("annul_core",
+        &splinepy::py::AnnulCore,
         py::arg("spline"));
   ;
 }
