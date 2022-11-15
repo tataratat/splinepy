@@ -204,3 +204,23 @@ def is_modified(array):
 
     else:
         raise TypeError(f"{array} is not trackable.")
+
+
+def without_none_values(dict_):
+    """
+    Returns a new dict without None value items.
+
+    Parameters
+    ----------
+    dict_: dict
+
+    Returns
+    -------
+    dict_without_none: dict
+    """
+    dict_without_none = dict()
+    for key, value in dict_.items():
+        if value is not None:
+            dict_without_none[key] = value
+
+    return dict_without_none
