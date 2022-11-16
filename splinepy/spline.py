@@ -205,7 +205,9 @@ def _set_modified_false(spl):
     -------
     None
     """
-    for rp in spl.required_properties:
+    rprops = spl.required_properties
+    if rprops is None: rprops = RequiredProperties.union()
+    for rp in rprops:
         prop = getattr(spl, rp, None)
 
         if prop is not None:
@@ -667,6 +669,8 @@ class Spline(core.CoreSpline):
         # try to sync core with current status
         self.new_core(raise_=False, **self._data["properties"])
 
+    kvs = knot_vectors
+
     @property
     def unique_knots(self):
         """
@@ -731,7 +735,7 @@ class Spline(core.CoreSpline):
         --------
         control_points_: (n, dim) np.ndarray
         """
-        return self._data.get("properties", dict()).get("knot_vectors", None)
+        return self._data.get("properties", dict()).get("control_points", None)
 
     @control_points.setter
     def control_points(self, control_points):
@@ -834,7 +838,7 @@ class Spline(core.CoreSpline):
         --------
         self._weights: (n, 1) array-like
         """
-        return self._data.get("properties", dict()).get("knot_vectors", None)
+        return self._data.get("properties", dict()).get("weights", None)
 
     @weights.setter
     def weights(self, weights):
