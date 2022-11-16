@@ -9,6 +9,7 @@ from splinepy import nurbs
 from splinepy import load
 from splinepy import utils
 from splinepy import io
+from splinepy import settings
 
 from splinepy.spline import Spline
 from splinepy.bezier import Bezier
@@ -33,7 +34,8 @@ __all__ = [
     "nurbs",
     "load",
     "utils",
-    "io"
+    "io",
+    "settings",
     "Spline",
     "Bezier",
     "RationalBezier",
