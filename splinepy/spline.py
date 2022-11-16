@@ -600,7 +600,7 @@ class Spline(core.CoreSpline):
         self.new_core(raise_=False, **self._data["properties"])
 
     @property
-    def unique_knots(self,):
+    def unique_knots(self):
         """
         Returns unique knots.
         Does not store results.
@@ -633,7 +633,7 @@ class Spline(core.CoreSpline):
             return unique_knots
 
     @property
-    def parametric_bounds(self,):
+    def parametric_bounds(self):
         """
         Returns bounds of parametric_space.
 
@@ -651,7 +651,7 @@ class Spline(core.CoreSpline):
     knot_vector_bounds = parametric_bounds
 
     @property
-    def control_points(self,):
+    def control_points(self):
         """
         Returns control points.
 
@@ -703,23 +703,8 @@ class Spline(core.CoreSpline):
         # try to sync core with current status
         self.new_core(raise_=False, **self._data["properties"])
 
-    def _lexsort_control_points(self, order):
-        """
-        Lexsorts control points.
-        Not always the solution.
-        Leading underscore to mark development/internal use.
-
-        Parameters
-        -----------
-        order: list
-
-        Returns
-        --------
-        None
-        """
-        ind = np.lexsort([self.control_points[:, i] for i in order])
-        self._logd(f"`lexsort` control points ({order})")
-        self.control_points = self.control_points[ind]
+    # shortcut
+    cps = control_points
 
     @property
     def control_point_bounds(self,):
@@ -737,12 +722,7 @@ class Spline(core.CoreSpline):
         self._logd("Computing control_point_bounds")
         cps = self.control_points
 
-        return np.vstack(
-            (
-                cps.min(axis=0),
-                cps.max(axis=0),
-            )
-        )
+        return np.vstack((cps.min(axis=0), cps.max(axis=0)))
 
     @property
     def weights(self,):
@@ -757,11 +737,7 @@ class Spline(core.CoreSpline):
         --------
         self._weights: (n, 1) list-like
         """
-        if hasattr(self, "_weights"):
-            return self._weights
-
-        else:
-            return None
+        return self._data.get("properties", dict()).get("knot_vectors", None)
 
     @weights.setter
     def weights(self, weights):
@@ -776,28 +752,31 @@ class Spline(core.CoreSpline):
         --------
         None
         """
+        # clear core and return
         if weights is None:
-            if hasattr(self, "_weights"):
-                delattr(self, "_weights")
+            core.annul_core(self)
+            self._data["properties"]["weights"] = None
             return None
 
-        weights = utils.make_c_contiguous(
-            weights,
-            dtype=np.float64
-        ).reshape(-1, 1)
-
+        # len should match control_points' len
         if self.control_points is not None:
-            if self.control_points.shape[0] != weights.shape[0]:
+            if len(self.control_points) != len(weights):
                 raise ValueError(
-                    "Number of control points and number of weights does not "
-                    "match."
+                        f"len(weights) ({len(weights)}) should match "
+                        "len(control_points) ({len(control_points)})."
                 )
 
-        self._weights = weights
-
+        # set - copies
+        self._data["properties"]["weights"] = utils.data.make_tracked_array(
+                weights, "float64"
+        )
+ 
         self._logd(f"{self.weights.shape[0]} Weights set.")
 
-        self._check_and_update_c()
+        # try to sync core with current status
+        self.new_core(raise_=False, **self._data["properties"])
+
+    ws = weights
 
     @property
     def control_mesh_resolutions(self,):
@@ -827,93 +806,6 @@ class Spline(core.CoreSpline):
                 cmr.append(len(kv) - d - 1)
 
         return cmr
-
-    def _check_and_update_c(self,):
-        """
-        Check all available information before updating the backend
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        required_props = self.required_properties
-
-
-
-        # Check if enough knot vectors were given
-        if "knot_vectors" in required_props:
-            if len(self.degrees) != len(self.knot_vectors):
-                raise InputDimensionError(
-                    "Dimension mis-match between `degrees` and `knot_vectors`"
-                )
-
-            # Check if knot vectors are large enough
-            for i, (d, kv) in enumerate(zip(self.degrees, self.knot_vectors)):
-                if len(kv) < int(2 * (d+1)):
-                    raise InputDimensionError(
-                        "Not enough knots in knot vector along parametric"
-                        f" dimension {i}"
-                    )
-
-                # check if knots are in increasing order
-                if (np.diff(kv) < 0).any():
-                    raise ValueError(
-                        f"Knots of {i}. "
-                        "knot vector are not in increasing order."
-                    )
-                # we know that knot vector is sorted by now.
-                # check if knots are >= 0.
-                if kv[0] < 0:
-                    raise ValueError(
-                        f"{i}. knot vector includes negative knots."
-                    )
-            
-        # Check if required number of control points is present
-        n_required_cps = np.prod(self.control_mesh_resolutions)
-        n_defined_cps = self.control_points.shape[0]
-        if n_required_cps != n_defined_cps:
-            raise InputDimensionError(
-                "Number of control points invalid: "
-                f"expected {n_required_cps}, but given {n_defined_cps}"
-            )
-
-        # template splines are instantiated with following naming rules.
-        c_spline_cls = (
-            f"core.{type(self).__qualname__}{self.para_dim}P{self.dim}D"
-        )
-        self._c_spline = eval(c_spline_cls)(**dict_spline)
-
-    def _update_p(self,):
-        """
-        Reads cpp spline and writes it here.
-        Probably get an error if cpp isn't ready for this.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        None
-        """
-        required_props = self.required_properties
-
-        # don't use setters here, as it will call `check_and_update_c` each
-        # time and it causes us to lose array ref.
-        for rp in required_props:
-            setattr(self, f"_{rp}", getattr(self._c_spline, rp))
-
-        # but, we still need to do setter's job.
-        self._para_dim = self._c_spline.para_dim
-        self._dim = self._c_spline.dim
-        self._logd(
-            "Updated python spline. CPP spline and python spline are"
-            "now identical."
-        )
 
     def evaluate(self, queries, n_threads=1):
         """
