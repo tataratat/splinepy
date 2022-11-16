@@ -177,6 +177,21 @@ def is_modified(spl):
     return modified
 
 
+def _default_data():
+    """
+    Returns default dict used for splines
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    data_holder: dict()
+    """
+    return dict(properties=dict())
+
+
 def _set_modified_false(spl):
     """
     Sets all modified flags to False. Internal use only.
@@ -206,7 +221,7 @@ def _make_core_properties_trackable(spl):
     Get current properties and save them as TrackedArray.
     This marks all properties as modified. You could change this using
     `_set_modified_false(spl)`,
-    perhaps a combination with `spl._data = dict()`.
+    perhaps a combination with `spl._data = _default_data()`.
 
     Parameters
     ----------
@@ -286,7 +301,7 @@ class Spline(core.CoreSpline):
         )
 
         # initialize _data <- defined in cpp side as `data_`
-        self._data = dict()
+        self._data = _default_data()
 
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
@@ -443,11 +458,12 @@ class Spline(core.CoreSpline):
         """
         # annulment of core
         core.annul_core(self)
-        self._data = dict()
+        self._data = _default_data()
 
     def new_core(self, *, raise_=True, **kwargs):
         """
         Creates a new core spline based on given kwargs.
+        Clears any saved data afterwards.
 
         Parameters
         -----------
@@ -464,12 +480,12 @@ class Spline(core.CoreSpline):
         # Spline, you do whatever
         if type(self).__qualname__ == "Spline":
             # maybe minimal set check?
-            return super().new_core(**kwargs)
+            super().new_core(**kwargs)
 
         # specified ones needs specific sets of kwargs
         # in case of an incomplete set of kwargs, nothing will happen
         elif set(kwargs.keys()) == set(self.required_properties(self.name)):
-            return super().new_core(**kwargs)
+            super().new_core(**kwargs)
 
         elif raise_:
             raise RuntimeError(
@@ -484,7 +500,10 @@ class Spline(core.CoreSpline):
                     f"Keywords without None values are {kwargs.keys()}."
             )
             # old behavior was to remove core here. maybe do so?
-            return None
+
+        # synced, refresh 
+        self._data = _default_data()
+        _set_modified_false(self)
 
     @property
     def degrees(self):
@@ -725,6 +744,35 @@ class Spline(core.CoreSpline):
         return np.vstack((cps.min(axis=0), cps.max(axis=0)))
 
     @property
+    def control_mesh_resolutions(self,):
+        """
+        Returns control mesh resolutions.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        control_mesh_resolutions: list
+
+        Raises
+        -------
+        TypeError: if one of the required properties to compute
+          control_mesh_resolutions is missing.
+        """
+        cmr = []
+
+        # Special case Bezier
+        if "Bezier" in type(self).__qualname__:
+            cmr = [d + 1 for d in self.degrees]
+        else:
+            for kv, d in zip(self.knot_vectors, self.degrees):
+                cmr.append(len(kv) - d - 1)
+
+        return cmr
+
+    @property
     def weights(self,):
         """
         Returns weights.
@@ -777,35 +825,6 @@ class Spline(core.CoreSpline):
         self.new_core(raise_=False, **self._data["properties"])
 
     ws = weights
-
-    @property
-    def control_mesh_resolutions(self,):
-        """
-        Returns control mesh resolutions.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        control_mesh_resolutions: list
-
-        Raises
-        -------
-        TypeError: if one of the required properties to compute
-          control_mesh_resolutions is missing.
-        """
-        cmr = []
-
-        # Special case Bezier
-        if "Bezier" in type(self).__qualname__:
-            cmr = [d + 1 for d in self.degrees]
-        else:
-            for kv, d in zip(self.knot_vectors, self.degrees):
-                cmr.append(len(kv) - d - 1)
-
-        return cmr
 
     def evaluate(self, queries, n_threads=1):
         """
