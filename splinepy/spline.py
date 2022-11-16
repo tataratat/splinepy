@@ -4,6 +4,7 @@ Abstract Spline
 
 import copy
 import os
+from functools import wraps
 
 import numpy as np
 
@@ -215,6 +216,7 @@ def _set_modified_false(spl):
             else:
                 prop._modified = False
 
+
 def _make_core_properties_trackable(spl):
     """
     Internal use only.
@@ -231,8 +233,12 @@ def _make_core_properties_trackable(spl):
     -------
     None
     """
+    # copy truely current properties
     current_p = spl.current_core_properties()
+    # reset properties
+    spl._data["properties"] = dict()
 
+    # loop and make them trackable
     for key, values in current_p.items():
         if key.startswith("knot_vectors"):
             kvs = list()
@@ -244,6 +250,49 @@ def _make_core_properties_trackable(spl):
             spl._data["properties"][key] = utils.data.make_tracked_array(
                     values, copy=False
             )
+
+
+def _default_if_none(arg, default):
+    """
+    Returns default if arg is None
+
+    Parameters
+    ----------
+    arg: object
+    default: object
+
+    Returns
+    -------
+    default_if_none: object
+    """
+    return default if arg is None else arg
+    
+
+def _new_core_if_modified(func):
+    """
+    Decorator to sync splines before a function call.
+
+    Parameters
+    ----------
+    func: callable
+
+    Returns
+    -------
+    inner: callable 
+    """
+    @wraps(func)
+    def inner(*args, **kwargs):
+        self = args[0]
+        # sync if modified
+        # removes saved data
+        if is_modified(self):
+            self.new_core(raise_=False, **self._data["properties"])
+
+        # now call
+        return func(*args, **kwargs)
+
+    return inner
+
 
 
 class Spline(core.CoreSpline):
@@ -691,7 +740,7 @@ class Spline(core.CoreSpline):
 
         Parameters
         -----------
-        control_points: (n, dim) list-like
+        control_points: (n, dim) array-like
 
         Returns
         --------
@@ -783,7 +832,7 @@ class Spline(core.CoreSpline):
 
         Returns
         --------
-        self._weights: (n, 1) list-like
+        self._weights: (n, 1) array-like
         """
         return self._data.get("properties", dict()).get("knot_vectors", None)
 
@@ -794,7 +843,7 @@ class Spline(core.CoreSpline):
 
         Parameters
         -----------
-        weights: (n,) list-like
+        weights: (n,) array-like
 
         Returns
         --------
@@ -817,7 +866,7 @@ class Spline(core.CoreSpline):
         # set - copies
         self._data["properties"]["weights"] = utils.data.make_tracked_array(
                 weights, "float64"
-        )
+        ).reshape(-1, 1)
  
         self._logd(f"{self.weights.shape[0]} Weights set.")
 
@@ -826,89 +875,81 @@ class Spline(core.CoreSpline):
 
     ws = weights
 
-    def evaluate(self, queries, n_threads=1):
+    @_new_core_if_modified
+    def evaluate(self, queries, nthreads=None):
         """
         Evaluates spline.
 
         Parameters
         -----------
-        queries: (n, para_dim) list-like
+        queries: (n, para_dim) array-like
         n_threads: int
-          Default is 1. If n_thread > 1, it calls multithreading version of
-          `evaluate`. Parallel loop implemented in cpp.
 
         Returns
         --------
         results: (n, dim) np.ndarray
         """
-        if self.whatami == "Nothing":
-            return None
+        self._logd("Evaluating spline")
 
-        queries = utils.make_c_contiguous(queries, dtype="float64")
+        queries = np.ascontiguousarray(queries, dtype="float64")
 
-        if queries.shape[1] != self.para_dim:
-            raise InputDimensionError(
-                "`queries` does not match current pametric dimension."
-            )
+        return super().evaluate(
+                queries,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
 
-        self._logd("Evaluating spline...")
+    @_new_core_if_modified
+    def sample(self, resolutions, nthreads=None):
+        """
+        Uniformly sample along each parametric dimensions from spline.
 
-        if int(n_threads) > 1:
-            return self._c_spline.p_evaluate(
-                queries=queries,
-                n_threads=n_threads
-            )
+        Parameters
+        -----------
+        resolutions: (n,) array-like
+        nthreads: int
 
-        else:
-            return self._c_spline.evaluate(queries=queries)
+        Returns
+        --------
+        results: (math.product(resolutions), dim) np.ndarray
+        """
+        self._logd(
+            f"Sampling {np.product(query_resolutions)} "
+            "points from spline."
+        )
 
-    def derivative(self, queries, orders, n_threads=1):
+        return super().sample(
+                queries,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS)
+        )
+
+    @_new_core_if_modified
+    def derivative(self, queries, orders, nthreads=None):
         """
         Evaluates derivatives of spline.
 
         Parameters
         -----------
-        queries: (n, para_dim) list-like
-        orders: (para_dim,) list-like
-        n_threads: int
-          Default is 1. If n_thread > 1, it calls multithreading version of
-          `derivate`. Parallel loop implemented in cpp.
+        queries: (n, para_dim) array-like
+        orders: (para_dim,) or (n, para_dim) array-like
+        nthreads: int
 
         Returns
         --------
         results: (n, dim) np.ndarray
         """
-        if self.whatami == "Nothing":
-            return None
+        self._logd("Evaluating derivatives of the spline")
 
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-        orders = utils.make_c_contiguous(orders, dtype="float64")
+        queries = np.ascontiguousarray(queries, dtype="float64")
+        orders = np.ascontiguousarray(orders, dtype="int32")
 
-        if queries.shape[1] != self.para_dim:
-            raise InputDimensionError(
-                "`queries` does not match current pametric dimension."
-            )
-        if orders.size != self.para_dim:
-            raise InputDimensionError(
-                "`orders` does not match current pametric dimension."
-            )
-
-        self._logd("Evaluating derivatives of the spline...")
-
-        if int(n_threads) > 1:
-            return self._c_spline.p_derivative(
+        return super().derivative(
                 queries=queries,
                 orders=orders,
-                n_threads=n_threads
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
             )
 
-        else:
-            return self._c_spline.derivative(
-                queries=queries,
-                orders=orders
-            )
-
-    def basis_functions(self, queries, n_threads=1):
+    @_new_core_if_modified
+    def basis_and_support(self, queries, nthreads=None):
         """
         Returns basis function values and their support ids of given queries.
 
@@ -925,19 +966,148 @@ class Spline(core.CoreSpline):
           first: (prod(degrees .+ 1)) array of basis function values.
           second: support ids.
         """
-        if self.whatami == "Nothing":
-            return None
-
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-
-        if queries.shape[1] != self.para_dim:
-            raise InputDimensionError(
-                "`queries` does not match current pametric dimension."
-            )
-
         self._logd("Evaluating basis functions")
+        queries = np.ascontiguousarray(queries, dtype="float64")
 
-        return self._c_spline.basis_functions(queries)
+        return super().basis_and_support(
+                queries=queries,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
+    def proximities(
+            self,
+            queries,
+            initial_guess_sample_resolutions,
+            tolerance=None,
+            max_iterations=-1,
+            aggressive_search_bounds=False,
+            nthreads=None,
+    ):
+        """
+        Given physical coordinate, finds a parametric coordinate that maps to
+        the nearest physical coordinate. Also known as "point inversion".
+
+        Makes initial guess by searching for the nearest points with kd-tree.
+        With `initial_guess_sample_resolutions` value,
+        physical points will be sampled to plant a kd-tree.
+
+        Probably useful if you have a lot of queries. The planted
+        kd-tree is saved in c_spline internally and will re-plant only if
+        `initial_guess_sample_resolutions` differ from previous function call.
+
+        Setting any entry in `initial_guess_sample_resolutions` will make sure
+        no trees are planted.
+
+        If there's no tree, this will raise runtime error from c++ side.
+
+        Parameters
+        -----------
+        queries: (n, dim) array-like
+        initial_guess_sample_resolutions: (para_dim) array-like
+        tolerance: float
+          Convergence criteria. Currently for both distance and residual
+        max_iterations: int
+          Default is (para_dim * 20)
+        aggressive_search_bounds: bool
+          Default is False.
+          Set search bound to aabb of direct neighbors from the sample grid.
+        nthreads: int
+
+        Returns
+        --------
+        nearest_pcoord: (n, para_dim) np.ndarray
+        """
+        self._logd("Searching for nearest parametric coord")
+
+        queries = np.ascontiguousarray(queries, dtype="float64")
+
+        # so long, so-long-varname
+        igsr = initial_guess_sample_resolutions
+
+        return super().proximities(
+                queries=queries,
+                initial_guess_sample_resolutions=igsr,
+                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+                max_iterations=max_iterations,
+                aggressive_search_bounds=aggressive_search_bounds,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
+    def elevate_degrees(self, parametric_dimensions):
+        """
+        Elevate degree.
+
+        Parameters
+        -----------
+        parametric_dimensions: list
+
+        Returns
+        --------
+        None
+        """
+        super().elevate_degrees(para_dims=parametric_dimensions)
+        self._logd(
+            f"Elevated {parametric_dimension}.-dim. "
+            "degree of the spline."
+        )
+        # sync from cpp to python - for now, we will delete all the data too
+        self._data = _default_data()
+        _make_core_properties_trackable(self)
+        _set_modified_false(self)
+
+    # single query version alias for backward compatibility
+    elevate_degree = elevate_degrees
+
+    @_new_core_if_modified
+    def reduce_degrees(self, parametric_dimensions, tolerance=None):
+        """
+        Tries to reduce degree.
+
+        Parameters
+        -----------
+        parametric_dimensions: list
+        tolerance: float
+
+        Returns
+        --------
+        reduced: list
+        """
+        reduced = super().reduce_degree(
+            para_dims=parametric_dimensions,
+            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+        )
+        def meaningful(r):
+            """True/False to reduced/failed"""
+            return "reduced" if r else "failed"
+
+        self._logd(
+            f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
+            "Results: ",
+            f"{[meaningful(r) for r in reduced]}."
+        )
+
+        # sync from cpp to python - for now, we will delete all the data too
+        self._data = _default_data()
+        _make_core_properties_trackable(self)
+        _set_modified_false(self)
+
+        return reduced
+
+    # single query version alias for backward compatibility
+    reduce_degree = reduce_degrees
+
+
+
+
+
+
+
+
+
+
+
 
     def insert_knots(self, parametric_dimension, knots):
         """
@@ -1157,224 +1327,7 @@ class Spline(core.CoreSpline):
             self._logd("  returning permuted spline")
             return type(self)(**spline_data_dict)
 
-    def elevate_degree(self, parametric_dimension):
-        """
-        Elevate degree.
 
-        Parameters
-        -----------
-        parametric_dimension: int
-
-        Returns
-        --------
-        None
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        if parametric_dimension >= self.para_dim:
-            raise ValueError(
-                "Invalid parametric dimension to elevate_degree."
-            )
-
-        self._c_spline.elevate_degree(parametric_dimension)
-        self._logd(
-            f"Elevated {parametric_dimension}.-dim. "
-            "degree of the spline."
-        )
-
-        self._update_p()
-
-    def reduce_degree(self, parametric_dimension, tolerance=1e-8):
-        """
-        Tries to reduce degree.
-
-        Parameters
-        -----------
-        parametric_dimension: int
-        tolerance: float
-
-        Returns
-        --------
-        reduced: bool
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        if parametric_dimension >= self.para_dim:
-            raise ValueError(
-                "Invalid parametric dimension to reduce degree."
-            )
-
-        reduced = self._c_spline.reduce_degree(
-            parametric_dimension,
-            tolerance
-        )
-
-        self._logd(
-            f"Tried to reduce {parametric_dimension}.-dim. "
-            "degree of the spline."
-        )
-
-        if reduced:
-            self._logd(
-                f"Successfully reduced {parametric_dimension}.-dim. "
-                "degree"
-            )
-            self._update_p()
-        else:
-            self._logd(
-                f"Could not reduce {parametric_dimension}.-dim. "
-                "degree"
-            )
-
-        return reduced
-
-    def sample(self, query_resolutions):
-        """
-        Uniformly sample along each parametric dimensions from spline.
-
-        Parameters
-        -----------
-        query_resolutions: (n,) list-like
-
-        Returns
-        --------
-        results: (math.product(query_resolutions), dim) np.ndarray
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        query_resolutions = utils.make_c_contiguous(
-            query_resolutions,
-            dtype="int32",
-        ).flatten()
-
-        if query_resolutions.size != self.para_dim:
-            raise InputDimensionError(
-                "Query resolutions don't match current parametric dimension."
-            )
-
-        is_one_or_less = [int(qr) <= 1 for qr in query_resolutions]
-        if any(is_one_or_less):
-            self._logd(
-                "You cannot sample less than 2 points per each "
-                "parametric dimension."
-            )
-            self._logd("Applying minimum sampling resolution 2.")
-
-            query_resolutions[is_one_or_less] = int(2)
-
-        self._logd(
-            f"Sampling {np.product(query_resolutions)} "
-            "points from spline."
-        )
-
-        return self._c_spline.sample(query_resolutions)
-
-    def nearest_pcoord(
-            self,
-            queries,
-            kdt_resolutions=None,
-            n_threads=1
-    ):
-        """
-        Given physical coordinate, finds a parametric coordinate that maps to
-        the nearest physical coordinate. Also known as "point inversion".
-        Makes initial guess by searching for the nearest points with kd-tree.
-        With `kdt_resolutions` value, physical points will be sampled to plant
-        a kd-tree. Probably useful if you have a lot of queries. The planted
-        kd-tree is saved in c_spline internally and will re-plant only if
-        `kdt_resolutions` differ from previous function call. Setting any
-        entry in `kdt_resolutions` will make sure no tree is planted. Be aware,
-        if there's no tree, this will raise runtime error from c++ side.
-        Turns out, it is very important to have a good initial guess for
-        newton method. Hence, this method is default.
-
-        Parameters
-        -----------
-        queries: (n, dim) list-like
-        kdt_resolutions: (para_dim) list-like
-          Default is None and will build [10] * para_dim tree.
-          If any entry is negative, it won't plant a tree.
-        nthreads: int
-          number of threads for parallel execution.
-
-        Returns
-        --------
-        nearest_pcoord: (n, para_dim) np.ndarray
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-
-        if kdt_resolutions is None:
-            self._logd(
-                "`kdt_resolutions` is None, "
-                "setting default resolution ([10] * para_dim)."
-            )
-            kdt_resolutions = [10] * self.para_dim
-
-        elif isinstance(kdt_resolutions, (list, np.ndarray)):
-            if len(kdt_resolutions) != self.para_dim:
-                raise InputDimensionError(
-                    "`kdt_resolutions` does not match current para_dim"
-                )
-
-        else:
-            raise TypeError("`kdt_resolutions` should be list or np.ndarray.")
-
-        if (
-            queries.shape[1] != self.dim
-            and len(kdt_resolutions) != self.para_dim
-        ):
-            raise InputDimensionError(
-                "`queries` does not match current dimension."
-            )
-
-        self._logd("Searching for nearest parametric coord...")
-
-        return self._c_spline.nearest_pcoord_kdt(
-            queries=queries,
-            resolutions=kdt_resolutions,
-            nthreads=n_threads
-        )
-
-    def nearest_pcoord_midpoint(self, queries, n_threads=1):
-        """
-        Given physical coordinate, finds a parametric coordinate that maps to
-        the nearest physical coordinate. Also known as "point inversion".
-        Initial guess is mid point of parametric space. This tends to fail.
-        `nearest_pcoord` is recommended.
-
-
-        Parameters
-        -----------
-        queries: (n, dim) list-like
-        nthreads: int
-          number of threads for parallel execution.
-
-        Returns
-        --------
-        nearest_pcoord: (n, para_dim) np.ndarray
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-
-        if queries.shape[1] != self.dim:
-            raise InputDimensionError(
-                "`queries` does not match current dimension."
-            )
-
-        self._logd("Searching for nearest parametric coord...")
-
-        return self._c_spline.nearest_pcoord_midpoint(
-            queries=queries,
-            nthreads=n_threads
-        )
 
     def export(self, fname):
         """
