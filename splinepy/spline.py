@@ -603,7 +603,6 @@ class Spline(core.CoreSpline):
     def unique_knots(self,):
         """
         Returns unique knots.
-        Computed using `np.unique`.
         Does not store results.
 
         Parameters
@@ -616,17 +615,22 @@ class Spline(core.CoreSpline):
         """
         if "Bezier" in self.name:
             self._logd(
-                    "Bezier splines don't have knots, but if they were to,"
-                    "it corresponds to parametric bounds."
-                    "Returning parametric_bounds"
+                    "Returning parametric_bounds as "
+                    "Bezier spline's unique knots."
             )
             return self.parametric_bounds
-        else:
-            self._logd("Computing unique knots using `np.unique`.")
-            for k in self.knot_vectors:
-                unique_knots.append(np.unique(k).tolist())
 
-        return unique_knots
+        else:
+            self._logd("Computing unique knots")
+            unique_knots = list()
+            for kv in self.knot_vectors:
+                unique_knots_per_dim = [kv[0]]
+                for k, d in zip(kv[1:], np.diff(kv)):
+                    if d > settings.TOLERANCE:
+                        unique_knots_per_dim.append(k)
+                unique_knots.append(unique_knots_per_dim)
+
+            return unique_knots
 
     @property
     def parametric_bounds(self,):
@@ -641,33 +645,7 @@ class Spline(core.CoreSpline):
         --------
         parametric_bounds: (2, para_dim) np.ndarray
         """
-        self._logd("Computing parametric_bounds")
-        # beziers
-        if "knot_vectors" not in self.required_properties:
-            return [[0, 1] * self.para_dim]
-
-        # bsplines
-        kvs = self.knot_vectors
-        if kvs is None:
-            return None
-
-        lower_bounds = []
-        upper_bounds = []
-
-        use_minmax = False
-        if not hasattr(self, "_c_spline"):
-            # in this case, `_check_and_update_c()` wasn't called.
-            self._logd(
-                "Entries of `knot_vectors` has not been checked. "
-                "Values of `parametric_bounds` will be min and max."
-            )
-            use_minmax = True
-
-        for kv in kvs:
-            lower_bounds.append(min(kv) if use_minmax else kv[0])
-            upper_bounds.append(max(kv) if use_minmax else kv[-1])
-
-        return np.vstack((lower_bounds, upper_bounds))
+        return super().parametric_bounds
 
     # keep this until gustaf stops using knot_vector_bounds
     knot_vector_bounds = parametric_bounds
@@ -685,11 +663,7 @@ class Spline(core.CoreSpline):
         --------
         control_points_: (n, dim) np.ndarray
         """
-        if hasattr(self, "_control_points"):
-            return self._control_points
-
-        else:
-            return None
+        return self._data.get("properties", dict()).get("knot_vectors", None)
 
     @control_points.setter
     def control_points(self, control_points):
@@ -704,32 +678,30 @@ class Spline(core.CoreSpline):
         --------
         None
         """
+        # clear core and return
         if control_points is None:
-            if hasattr(self, "_control_points"):
-                delattr(self, "_control_points")
-                delattr(self, "_dim")
+            core.annul_core(self)
+            self._data["properties"]["control_points"] = None
             return None
 
-        control_points = utils.make_c_contiguous(
-            control_points,
-            "float64"
-        ).copy()
-
-        if self.dim is None:
-            self._dim = control_points.shape[1]
-
-        else:
-            if self.dim != control_points.shape[1]:
-                raise InputDimensionError(
-                    "Input dimension does not match spline's dim "
+        # len should match weights' len
+        if self.weights is not None:
+            if len(self.weights) != len(control_points):
+                raise ValueError(
+                        f"len(control_points) ({len(control_points)}) "
+                        "should match len(weights) ({len(weights)})."
                 )
 
-        self._control_points = control_points
+        # set - copies
+        self._data["properties"]["control_points"] = (
+                utils.data.make_tracked_array(control_points, "float64")
+        )
         self._logd(
             f"{self.control_points.shape[0]} Control points set."
         )
-
-        self._check_and_update_c()
+ 
+        # try to sync core with current status
+        self.new_core(raise_=False, **self._data["properties"])
 
     def _lexsort_control_points(self, order):
         """
