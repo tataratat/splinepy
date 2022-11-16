@@ -448,7 +448,7 @@ public:
       current_distance = splinepy::utils::NormL2(difference);
       // assemble rhs, check norm
       FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
-      current_norm = std::abs(splinepy::utils::NormL2(rhs));
+      current_norm = splinepy::utils::NormL2(rhs);
 
       // convergence check
       if (std::abs(previous_norm - current_norm) < tolerance
