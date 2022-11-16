@@ -95,6 +95,7 @@ public:
 
   // ctor
   PySpline() = default;
+  PySpline(PySpline&&) = default;
   PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
   PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
     para_dim_ = c_spline_->SplinepyParaDim();
@@ -135,7 +136,7 @@ public:
     if (kwargs.contains("knot_vectors")) {
       // check list
       int kv_dim{0};
-      double prev_knot{-1.}, this_knot;
+      double prev_knot, this_knot;
 
       // loop over list of list/arrays
       for (py::handle kv : kwargs["knot_vectors"]) {
@@ -145,6 +146,7 @@ public:
         knot_vector.reserve(kv_array.size());
 
         int nknots{0};
+        prev_knot = -1.;
         for (py::handle k : kv) {
           this_knot = k.cast<double>();
 
@@ -158,6 +160,8 @@ public:
           // must be increasing
           if (prev_knot - this_knot > 0) {
             splinepy::utils::PrintAndThrowError(
+                prev_knot,
+                this_knot,
                 "Knots of parametric dimension (",
                 kv_dim,
                 ")",
@@ -611,7 +615,13 @@ public:
     int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
     const int n_request = para_dims.size();
     for (int i{}; i < n_request; ++i) {
-      Core()->SplinepyElevateDegree(para_dims_ptr[i]);
+      const int&  p_dim = para_dims_ptr[i];
+      if (!(p_dim < para_dim_) || p_dim < 0) {
+        splinepy::utils::PrintAndThrowError(
+            p_dim, "is invalid parametric dimension for degree elevation."
+        );
+      }
+      Core()->SplinepyElevateDegree(p_dim);
     }
   }
 
@@ -623,8 +633,14 @@ public:
 
     py::list successful;
     for (int i{}; i < n_request; ++i) {
+      const int&  p_dim = para_dims_ptr[i];
+      if (!(p_dim < para_dim_) || p_dim < 0) {
+        splinepy::utils::PrintAndThrowError(
+            p_dim, "is invalid parametric dimension for degree reduction."
+        );
+      }
       successful.append(
-          Core()->SplinepyReduceDegree(para_dims_ptr[i], tolerance));
+          Core()->SplinepyReduceDegree(p_dim, tolerance));
     }
 
     return successful;
@@ -808,7 +824,23 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
       .def("reduce_degrees",
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
-           py::arg("tolerance"));
+           py::arg("tolerance"))
+      .def(py::pickle(
+             [](splinepy::py::PySpline& spl) {
+                return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);
+             },
+             [](py::tuple t) {
+               if (t.size() != 2) {
+                 splinepy::utils::PrintAndThrowError("Invalid PySpline state.");
+               }
+
+               py::kwargs properties = t[0].cast<py::kwargs>(); // init
+               PySpline spl(properties);
+               spl.data_ = t[1].cast<py::dict>(); // saved data
+
+               return spl;
+             }
+           ));
 
   m.def("insert_knots",
         &splinepy::py::InsertKnots,
