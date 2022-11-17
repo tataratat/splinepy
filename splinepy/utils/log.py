@@ -3,6 +3,7 @@ Thin logging wrapper.
 """
 
 import logging
+import functools
 
 
 def configure(debug=False, logfile=None):
