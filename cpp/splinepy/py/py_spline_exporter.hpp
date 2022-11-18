@@ -161,9 +161,8 @@ void ExportVtk(std::string fname,
  *    py::array_t<int> : boundaries
  *    bool             : is structured mesh
  */
-py::tuple
-RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
-                          const double& tolerance) {
+py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
+                                  const double& tolerance) {
   // Unfortunatly bezman requires point-types to perform routines and does not
   // work on py arrays All of the arguments serve as outputs except for
   // corner_vertices
