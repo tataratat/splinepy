@@ -400,8 +400,9 @@ class Spline(core.CoreSpline):
             # Spline
             self._logd(
                     f"`required_properties` of {type(self)} is undefined."
+                    "Returning maximal set of properties."
             )
-            return None
+            return RequiredProperties.union()
 
     @property
     def para_dim(self):
@@ -1102,6 +1103,105 @@ class Spline(core.CoreSpline):
     # single query version alias for backward compatibility
     reduce_degree = reduce_degrees
 
+    @_new_core_if_modified
+    def export(self, fname):
+        """
+        Export spline. Please be aware of the limits of `.iges`.
+        vtk exports are excluded here because it is not a true spline export.
+
+        Parameters
+        -----------
+        fname: str
+
+        Returns
+        --------
+        None
+        """
+        # prepare export destination 
+        fname = str(fname)
+        dirname = os.path.dirname(fname)
+        if not os.path.isdir(dirname) and dirname != "":
+            os.makedirs(dirname)
+
+        # ext tells you what you 
+        ext = os.path.splitext(fname)[1]
+
+        if ext == ".iges":
+            io.iges.export(fname, [self])
+
+        elif ext == ".xml":
+            io.xml.export(fname, [self])
+
+        elif ext == ".itd":
+            io.irit.export(fname, [self])
+
+        elif ext == ".npz":
+            io.npz.export(fname, self)
+
+        elif ext == ".json":
+            io.json.export(fname, self)
+
+        elif ext == ".mesh":
+            # mfem nurbs mesh.
+            io.mfem.export(fname, self, precision=12)
+
+        else:
+            raise ValueError(
+                "We can only export "
+                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
+            )
+
+        self._logi(f"Exported current spline as {fname}.")
+
+    def todict(self, tolist=False):
+        """
+        Return current spline as dict. Copies all the dict values.
+        Does not check current status.
+
+        Parameters
+        -----------
+        tolist: bool
+          Default is False. Converts `np.ndarray` into lists.
+
+        Returns
+        --------
+        dict_spline: dict
+        """
+        self._logd("Preparing dict_spline")
+        dict_spline = dict()
+        # loop and copy entries.
+        for p in self.required_properties:
+            # no prop? no prob. default is None
+            tmp_prop = getattr(self, p, None)
+            should_copy = True
+            # attr are either list or np.ndarray
+            # prepare list if needed.
+            if isinstance(tmp_prop, np.ndarray) and tolist:
+                tmp_prop = tmp_prop.tolist()  # copies
+                should_copy = False
+
+            if should_copy:
+                tmp_prop = copy.deepcopy(tmp_prop)
+
+            # update
+            dict_spline[p] = tmp_prop
+
+        return dict_spline
+
+    def copy(self,):
+        """
+        Returns deepcopy of self.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        new_spline: type(self)
+        """
+        # all the properties are deepcopyable
+        return copy.deepcopy(self)
 
 
 
@@ -1333,107 +1433,4 @@ class Spline(core.CoreSpline):
 
 
 
-    def export(self, fname):
-        """
-        Export spline. Please be aware of the limits of `.iges`
 
-        Parameters
-        -----------
-        fname: str
-
-        Returns
-        --------
-        None
-        """
-        self._check_and_update_c()
-
-        if self.whatami == "Nothing":
-            return None
-
-        fname = str(fname)
-
-        dirname = os.path.dirname(fname)
-        if not os.path.isdir(dirname) and dirname != "":
-            os.makedirs(dirname)
-
-        ext = os.path.splitext(fname)[1]
-
-        if ext == ".iges":
-            self._c_spline.write_iges(fname)
-
-        elif ext == ".xml":
-            self._c_spline.write_xml(fname)
-
-        elif ext == ".itd":
-            self._c_spline.write_irit(fname)
-
-        elif ext == ".npz":
-            io.npz.export(fname, self)
-
-        elif ext == ".json":
-            io.json.export(fname, self)
-
-        elif ext == ".mesh":
-            # mfem nurbs mesh.
-            io.mfem.export(fname, self, precision=12)
-
-        else:
-            raise ValueError(
-                "We can only export "
-                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
-            )
-
-        self._logi(f"Exported current spline as {fname}.")
-
-    def todict(self, tolist=False):
-        """
-        Return current spline as dict. Copies all the dict values.
-        Does not check current status
-
-        Parameters
-        -----------
-        tolist: bool
-          Default is False. Converts `np.ndarray` into lists.
-
-        Returns
-        --------
-        dict_spline: dict
-        """
-        self._logd("Preparing dict_spline...")
-        dict_spline = dict()
-        # loop and copy entries.
-        for p in self.required_properties:
-            # no prop? no prob. default is None
-            tmp_prop = None
-
-            # prepare copy if there's prop
-            if hasattr(self, p):
-                tmp_prop = getattr(self, p)
-                should_copy = True
-                # attr are either list or np.ndarray
-                # prepare list if needed.
-                if isinstance(tmp_prop, np.ndarray) and tolist:
-                    tmp_prop = tmp_prop.tolist()  # copies
-                    should_copy = False
-
-                if should_copy:
-                    tmp_prop = copy.deepcopy(tmp_prop)
-            # update
-            dict_spline[p] = tmp_prop
-
-        return dict_spline
-
-    def copy(self,):
-        """
-        Returns deepcopy of self.
-
-        Parameters
-        -----------
-        None
-
-        Returns
-        --------
-        new_spline: type(self)
-        """
-        # all the properties are deepcopyable
-        return copy.deepcopy(self)
