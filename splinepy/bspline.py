@@ -2,12 +2,13 @@ import numpy as np
 
 from splinepy import spline
 from splinepy import splinepy_core
-from splinepy import Spline, NURBS, Bezier
 from splinepy import settings
 from splinepy import utils
+from splinepy.nurbs import NURBS
+from splinepy.bezier import Bezier
 
 
-class BSplineBase(Spline):
+class BSplineBase(spline.Spline):
     """BSpline base. Contains extra operations that's only available for
     bspline families.
     """
@@ -160,7 +161,7 @@ class BSplineBase(Spline):
 
         # use core spline based init and name to type conversion to find
         # correct types 
-        return [settings.NAME_TO_TYPE[p.name](p) for p in patches]
+        return [settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
 
 
 class BSpline(BSplineBase):
@@ -226,40 +227,35 @@ class BSpline(BSplineBase):
 
         Returns
         --------
-        None
+        fitted: BSpline
         """
         query_points = np.ascontiguousarray(query_points, dtype="float64")
 
-        dim = query_points.shape[1]
-        c_spline_class = f"BSpline1P{dim}D()"
-        c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = [knot_vector]
-        c_spline.interpolate_curve(
+        fitted = cls(**splinepy_core.interpolate_curve(
             points=query_points,
             degree=degree,
-            centripetal=centripetal
-        )
-        self._c_spline = c_spline
+            centripetal=centripetal,
+            knot_vector=knot_vector,
+        ))
 
-        self._logd(
+        utils.log.debug(
             "BSpline curve interpolation complete. "
-            f"Your spline is {self.whatami}."
         )
 
         if save_query:
-            self._fitting_queries = query_points
+            fitted._fitting_queries = query_points
 
-        self._update_p()
+        return fitted
 
+    @classmethod
     def approximate_curve(
-            self,
+            cls,
             query_points,
             degree,
             num_control_points,
             centripetal=True,
             knot_vector=[],
             save_query=True,
-            return_residual=False,
     ):
         """
         Approximates BSpline Curve based on query points.
@@ -279,44 +275,36 @@ class BSpline(BSplineBase):
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or 
           whatever.
-        return_residual: bool
-          (Optional) Default is False. Returns Approximation residual.
 
         Returns
         --------
-        res: float
-          (Optional) Only returned, if `return_residual` is True.
+        fitted: BSpline
         """
-        query_points = utils.make_c_contiguous(query_points, dtype="float64")
+        query_points = np.ascontiguousarray(query_points, dtype="float64")
 
-        dim = query_points.shape[1]
-        c_spline_class = f"BSpline1P{dim}D()"
-        c_spline = eval(c_spline_class)
-        c_spline.knot_vectors = [knot_vector]
-        res = c_spline.approximate_curve(
+        results = splinepy_core.approximate_curve(
             points=query_points,
             degree=degree,
-            num_control_points=num_control_points,
-            centripetal=centripetal
+            n_control_points=num_control_points,
+            centripetal=centripetal,
+            knot_vector=knot_vector,
         )
-        self._c_spline = c_spline
+        fitted = cls(**results)
+        res = results["residual"]
 
-        self._logd(
+        utils.log.debug(
             "BSpline curve approximation complete. "
-            f"Your spline is {self.whatami}."
         )
-        self._logd(f"  Approximation residual: {res}")
+        utils.log.debug(f"  Approximation residual: {res}")
 
         if save_query:
-            self._fitting_queries = query_points
+            fitted._fitting_queries = query_points
 
-        self._update_p()
+        return fitted
 
-        if return_residual:
-            return res
-
+    @classmethod
     def interpolate_surface(
-            self,
+            cls,
             query_points,
             size_u,
             size_v,
@@ -347,40 +335,35 @@ class BSpline(BSplineBase):
 
         Returns
         --------
-        None
+        fitted: BSpline
         """
-        query_points = utils.make_c_contiguous(query_points, dtype="float64")
+        query_points = np.ascontiguousarray(query_points, dtype="float64")
 
-        dim = query_points.shape[1]
-        c_spline_class = f"BSpline2P{dim}D()"
-        c_spline = eval(c_spline_class)
-        c_spline.interpolate_surface(
+        fitted = cls(**splinepy_core.interpolate_surface(
             points=query_points,
             size_u=size_u,
             size_v=size_v,
             degree_u=degree_u,
             degree_v=degree_v,
             centripetal=centripetal,
-        )
-        self._c_spline = c_spline
+        ))
 
-        self._logd(
+        utils.log._logd(
             "BSpline surface interpolation complete. "
-            f"Your spline is {self.whatami}."
         )
 
         if save_query:
-            self._fitting_queries = query_points
-
-        self._update_p()
+            fitted._fitting_queries = query_points
 
         # Reorganize control points.
         if reorganize:
             ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
-            self.control_points = self._control_points[ri]
+            fitted.control_points = fitted.control_points[ri]
 
         if save_query:
-            self._fitting_queries = query_points
+            fitted._fitting_queries = query_points
+
+        return fitted
 
     @property
     def nurbs(self,):
@@ -396,7 +379,7 @@ class BSpline(BSplineBase):
         --------
         same_nurbs: NURBS
         """
-        same_nurbs = NURBS(
+        same_nurbs = settings.NAME_TO_TYPE["NURBS"](
             **self.todict(),
             weights=np.ones(self.control_points.shape[0], dtype=np.float64),
         )
