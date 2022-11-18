@@ -5,10 +5,10 @@
 
 inline double square(double x) { return x * x; }
 
-inline std::vector<double> ParametrizeCurve(double* points,
-                                            int& num_points,
-                                            int& dim,
-                                            bool centripetal = true) {
+inline std::vector<double> ParametrizeCurve(const double* points,
+                                            const int& num_points,
+                                            const int& dim,
+                                            const bool centripetal = true) {
   // Computes u_k
   int i, j;
 
@@ -42,12 +42,12 @@ inline std::vector<double> ParametrizeCurve(double* points,
   return u_k;
 }
 
-inline void ParametrizeSurface(double* points,
-                               int& num_points,
-                               int& dim,
-                               int& size_u,
-                               int& size_v,
-                               bool centripetal,
+inline void ParametrizeSurface(const double* points,
+                               const int& num_points,
+                               const int& dim,
+                               const int& size_u,
+                               const int& size_v,
+                               const bool centripetal,
                                std::vector<double>& u_k,
                                std::vector<double>& v_l) {
 
@@ -145,8 +145,8 @@ inline std::vector<double> ComputeKnotVector(const int& degree,
   return knot_vector;
 }
 
-inline int FindSingleKnotSpan(int& degree,
-                              std::vector<double>& knot_vector,
+inline int FindSingleKnotSpan(const int& degree,
+                              const std::vector<double>& knot_vector,
                               const int& num_control_points,
                               const double& knot) {
 
@@ -158,10 +158,10 @@ inline int FindSingleKnotSpan(int& degree,
   return span - 1;
 }
 
-inline std::vector<double> BasisFunction(int& degree,
-                                         std::vector<double>& knot_vector,
-                                         int& span,
-                                         double& knot) {
+inline std::vector<double> BasisFunction(const int& degree,
+                                         const std::vector<double>& knot_vector,
+                                         const int& span,
+                                         const double& knot) {
 
   std::vector<double> left, right, N;
   int i, j;
@@ -188,9 +188,9 @@ inline std::vector<double> BasisFunction(int& degree,
 }
 
 inline std::vector<double>
-BuildCoefficientMatrix(int& degree,
-                       std::vector<double>& knot_vector,
-                       std::vector<double>& u_k,
+BuildCoefficientMatrix(const int& degree,
+                       const std::vector<double>& knot_vector,
+                       const std::vector<double>& u_k,
                        const int& num_points,
                        const int& num_control_points) {
 
