@@ -178,6 +178,33 @@ def is_modified(spl):
     return modified
 
 
+def sync_from_core(spl):
+    """
+    Clears saved data and syncs given spline with its core spline values.
+    Similiar to previously called `_update_p`, but does a bit more.
+    Meant for internal use for syncing python exposed splines with cpp splines. 
+    However, could be also useful for debugging or ensuring purpose.
+    Syncing is done inplace.
+
+    Parameters
+    ----------
+    spl: Spline
+
+    Returns
+    -------
+    synced: Spline
+      Synced input spline.
+    """
+    # assign default data
+    spl._data = _default_data()
+    # get current core properies and make them trackable
+    _make_core_properties_trackable(spl)
+    # set modified flags to false to all (inplace change) trackable properties
+    _set_modified_false(spl)
+
+    return spl
+
+
 def permute_parametric_axes(spline, permutation_list, inplace=True):
     """
     Permutates the parametric dimensions
@@ -284,9 +311,7 @@ def _set_modified_false(spl):
     -------
     None
     """
-    rprops = spl.required_properties
-    if rprops is None: rprops = RequiredProperties.union()
-    for rp in rprops:
+    for rp in self.required_properties:
         prop = getattr(spl, rp, None)
 
         if prop is not None:
@@ -430,9 +455,6 @@ class Spline(core.CoreSpline):
                 type(self).__qualname__, utils.log.warning
         )
 
-        # initialize _data <- defined in cpp side as `data_`
-        self._data = _default_data()
-
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
             return None
@@ -456,9 +478,8 @@ class Spline(core.CoreSpline):
 
         # we are here because this spline is successfully initialized
         # get properties
-        _make_core_properties_trackable(self)
-        # avoid re-init before queries.
-        _set_modified_false(self)
+        # will initialize self._data as well.
+        sync_from_core(self)
 
     @property
     def required_properties(self):
@@ -605,6 +626,9 @@ class Spline(core.CoreSpline):
         -------
         None
         """
+        # hidden keyword to hint if we need to sync spline after new_core call
+        properties_round_trip = kwargs.get("properties_round_trip", True)
+
         # let's remove None valued items
         kwargs = utils.data.without_none_values(kwargs)
 
@@ -630,11 +654,19 @@ class Spline(core.CoreSpline):
                     "Couldn't initialize a new_core with given keywords."
                     f"Keywords without None values are {kwargs.keys()}."
             )
+            # exit, nothing happened
+            return None
             # old behavior was to remove core here. maybe do so?
 
-        # synced, refresh 
-        self._data = _default_data()
-        _set_modified_false(self)
+        # in case no roundtrip is desired, keep properties alive
+        if not properties_round_trip:
+            props = self._data["properties"]
+            self._data = _default_properties()
+            self._data["properties"] = props
+            _set_modified_false(self)
+            
+        else:
+            sync_from_core(self)
 
     @property
     def degrees(self):
@@ -685,7 +717,7 @@ class Spline(core.CoreSpline):
         self._logd(f"Degrees set: {self.degrees}")
 
         # try to sync core with current status
-        self.new_core(raise_=False, **self._data["properties"])
+        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
     # short cut
     ds = degrees
@@ -747,7 +779,7 @@ class Spline(core.CoreSpline):
             )
 
         # try to sync core with current status
-        self.new_core(raise_=False, **self._data["properties"])
+        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
     kvs = knot_vectors
 
@@ -853,7 +885,7 @@ class Spline(core.CoreSpline):
         )
  
         # try to sync core with current status
-        self.new_core(raise_=False, **self._data["properties"])
+        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
     # shortcut
     cps = control_points
@@ -955,7 +987,7 @@ class Spline(core.CoreSpline):
         self._logd(f"{self.weights.shape[0]} Weights set.")
 
         # try to sync core with current status
-        self.new_core(raise_=False, **self._data["properties"])
+        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
     ws = weights
 
@@ -1136,10 +1168,7 @@ class Spline(core.CoreSpline):
             f"Elevated {parametric_dimension}.-dim. "
             "degree of the spline."
         )
-        # sync from cpp to python - for now, we will delete all the data too
-        self._data = _default_data()
-        _make_core_properties_trackable(self)
-        _set_modified_false(self)
+        sync_from_core(self)
 
     # single query version alias for backward compatibility
     elevate_degree = elevate_degrees
@@ -1172,10 +1201,8 @@ class Spline(core.CoreSpline):
             f"{[meaningful(r) for r in reduced]}."
         )
 
-        # sync from cpp to python - for now, we will delete all the data too
-        self._data = _default_data()
-        _make_core_properties_trackable(self)
-        _set_modified_false(self)
+        if any(reduced):
+            sync_from_core(self)
 
         return reduced
 
