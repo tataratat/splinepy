@@ -178,6 +178,85 @@ def is_modified(spl):
     return modified
 
 
+def permute_parametric_axes(spline, permutation_list, inplace=True):
+    """
+    Permutates the parametric dimensions
+
+    This function can be used, e.g., to  interchange the parametric
+    dimensions xi and eta in order to have them in the right orientation
+    (applications in boundary condition definition or mfem export)
+
+    Parameters
+    ----------
+    spline: Spline
+    permutation_list : list
+        New order of parametric dimensions
+    inplace: bool
+        Default is True. If True, modifies spline inplace, else, returns
+        a modified_spline.
+
+    Returns
+    -------
+    modified_spline : type(spline)
+        spline with reordered parametric dimensions. iff `inplace=True`.
+    """
+    # Data collector for new spline object
+    dict_spline = {}
+
+    # Sanity checks
+    if not isinstance(permutation_list, list):
+        raise ValueError("Permutation list incomprehensive")
+    if not set(range(spline.para_dim)) == set(permutation_list):
+        raise ValueError("Permutation list invalid")
+
+    utils.log.debug("Permuting parametric axes...")
+
+    # Update knot_vectors where applicable
+    if "knot_vectors" in spline.required_properties:
+        dict_spline["knot_vectors"] = [spline.knot_vectors[permutation_list[i]]
+                                            for i in range(spline.para_dim)]
+    # Update degrees
+    dict_spline["degrees"] = [spline.degrees[permutation_list[i]]
+                                   for i in range(spline.para_dim)]
+
+    # Retrieve control mesh resolutions
+    ctps_dims = spline.control_mesh_resolutions
+    new_ctps_dims = [ctps_dims[permutation_list[i]]
+                     for i in range(spline.para_dim)]
+    n_ctps = spline.control_points.shape[0]
+
+    # Map global to local index
+    # i_glob = i + n_i * j  + n_i * n_j * k ...
+    local_indices = np.empty([n_ctps, spline.para_dim], dtype=int)
+    global_indices = np.arange(n_ctps, dtype=int)
+    for i_p in range(spline.para_dim):
+        local_indices[:, i_p] = global_indices % ctps_dims[i_p]
+        global_indices -= local_indices[:, i_p]
+        global_indices = np.floor_divide(global_indices, ctps_dims[i_p])
+
+    # Reorder indices
+    local_indices[:] = local_indices[:, permutation_list]
+
+    # Rearange global to local
+    global_indices = np.matmul(
+        local_indices, np.cumprod([1] + new_ctps_dims)[0:-1])
+    # Get inverse mapping
+    global_indices = np.argsort(global_indices)
+    if "weights" in spline.required_properties:
+        dict_spline["weights"] = spline.weights[global_indices]
+    dict_spline["control_points"] = spline.control_points[global_indices, :]
+
+    if inplace:
+        utils.log.debug("  applying permutation inplace")
+        spline.new_core(**dict_spline)
+
+        return None
+
+    else:
+        utils.log.debug("  returning permuted spline")
+        return type(spline)(**dict_spline)
+
+
 def _default_data():
     """
     Returns default dict used for splines
@@ -1202,235 +1281,3 @@ class Spline(core.CoreSpline):
         """
         # all the properties are deepcopyable
         return copy.deepcopy(self)
-
-
-
-
-
-
-
-
-
-
-
-    def insert_knots(self, parametric_dimension, knots):
-        """
-        Inserts knots.
-
-        Parameters
-        -----------
-        parametric_dimension: int
-        knots: list or float
-
-        Returns
-        --------
-        None
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        if parametric_dimension >= self.para_dim:
-            raise ValueError(
-                "Invalid parametric dimension to insert knots."
-            )
-
-        if isinstance(knots, float):
-            knots = [knots]
-
-        elif isinstance(knots, np.ndarray):
-            knots = knots.tolist()
-
-        if not isinstance(knots, list):
-            raise TypeError(
-                "We couldn't convert input to `list`. Please give us `list`."
-            )
-
-        if max(knots) > max(self.knot_vectors[parametric_dimension]):
-            raise ValueError(
-                "One of the query knots not in valid knot range. (Too big)"
-            )
-
-        if min(knots) < min(self.knot_vectors[parametric_dimension]):
-            raise ValueError(
-                "One of the query knots not in valid knot range. (Too small)"
-            )
-
-        self._c_spline.insert_knots(
-            int(parametric_dimension),
-            knots
-        )
-
-        self._logd(f"Inserted {len(knots)} knot(s).")
-
-        self._update_p()
-
-    def remove_knots(self, parametric_dimension, knots, tolerance=1e-8):
-        """
-        Tries to removes knots. If you've compiled `splinepy` in `Debug`
-        and your removal request is not "accepted", you will get an error.
-        See the comments for `Nurbs::remove_knots` @
-        `splinepy/src/nurbs.hpp` for more info.
-
-        Parameters
-        -----------
-        parametric_dimension: int
-        knots: list or float
-        tolerance: float
-
-        Returns
-        --------
-        None
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        if parametric_dimension >= self.para_dim:
-            raise ValueError(
-                "Invalid parametric dimension to remove knots."
-            )
-
-        if isinstance(knots, float):
-            knots = [knots]
-
-        elif isinstance(knots, np.ndarray):
-            knots = knots.tolist()
-
-        if not isinstance(knots, list):
-            raise TypeError(
-                "We couldn't convert input to `list`. Please give us `list`."
-            )
-
-        if max(knots) > max(self.knot_vectors[parametric_dimension]):
-            raise ValueError(
-                "One of the query knots not in valid knot range. (Too big)"
-            )
-
-        if min(knots) < min(self.knot_vectors[parametric_dimension]):
-            raise ValueError(
-                "One of the query knots not in valid knot range. (Too small)"
-            )
-
-        total_knots_before = len(self.knot_vectors[int(parametric_dimension)])
-        self._c_spline.remove_knots(
-            int(parametric_dimension),
-            knots,
-            tolerance,
-        )
-
-        self._update_p()
-
-        self._logd(
-            f"Tried to remove {len(knots)} knot(s)."
-        )
-        self._logd(
-            "Actually removed {nk} knot(s).".format(
-                nk=(
-                    total_knots_before
-                    - len(self.knot_vectors[int(parametric_dimension)])
-                )
-            )
-        )
-
-    def normalize_knot_vectors(self,):
-        """
-        Sets all knot vectors into a range of [0,1], if applicable
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        if "knot_vectors" in self.required_properties:
-            for i, kv in enumerate(self.knot_vectors):
-                offset = kv[0]
-                scale = 1 / (kv[-1] - offset)
-                n_kv = [(k - offset) * scale for k in kv]
-                self._knot_vectors[i] = n_kv
-
-            self._check_and_update_c()
-
-    def permute_parametric_axes(self, permutation_list, inplace=True):
-        """
-        Permutates the parametric dimensions
-
-        This function can be used, e.g., to  interchange the parametric
-        dimensions xi and eta in order to have them in the right orientation
-        (applications in boundary condition definition or mfem export)
-
-        Parameters
-        ----------
-        permutation_list : list
-            New order of parametric dimensions
-        inplace: bool
-            Default is True. If True, modifies spline inplace, else, returns
-            a modified_spline.
-
-        Returns
-        -------
-        modified_spline : type(self)
-            spline with reordered parametric dimensions. iff `inplace=True`.
-        """
-        # Data collector for new spline object
-        spline_data_dict = {}
-
-        # Sanity checks
-        if not isinstance(permutation_list, list):
-            raise ValueError("Permutation list incomprehensive")
-        if not set(range(self.para_dim)) == set(permutation_list):
-            raise ValueError("Permutation list invalid")
-
-        self._logd("Permuting parametric axes...")
-
-        # Update knot_vectors where applicable
-        if "knot_vectors" in self.required_properties:
-            spline_data_dict["knot_vectors"] = [self.knot_vectors[permutation_list[i]]
-                                                for i in range(self.para_dim)]
-        # Update degrees
-        spline_data_dict["degrees"] = [self.degrees[permutation_list[i]]
-                                       for i in range(self.para_dim)]
-
-        # Retrieve control mesh resolutions
-        ctps_dims = self.control_mesh_resolutions
-        new_ctps_dims = [ctps_dims[permutation_list[i]]
-                         for i in range(self.para_dim)]
-        n_ctps = self.control_points.shape[0]
-
-        # Map global to local index
-        # i_glob = i + n_i * j  + n_i * n_j * k ...
-        local_indices = np.empty([n_ctps, self.para_dim], dtype=int)
-        global_indices = np.arange(n_ctps, dtype=int)
-        for i_p in range(self.para_dim):
-            local_indices[:, i_p] = global_indices % ctps_dims[i_p]
-            global_indices -= local_indices[:, i_p]
-            global_indices = np.floor_divide(global_indices, ctps_dims[i_p])
-
-        # Reorder indices
-        local_indices[:] = local_indices[:, permutation_list]
-
-        # Rearange global to local
-        global_indices = np.matmul(
-            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1])
-        # Get inverse mapping
-        global_indices = np.argsort(global_indices)
-        if "weights" in self.required_properties:
-            spline_data_dict["weights"] = self.weights[global_indices]
-        spline_data_dict["control_points"] = self.control_points[global_indices, :]
-
-        if inplace:
-            self._logd("  applying permutation inplace")
-            self.clear()
-            for rp in self.required_properties:
-                setattr(self, rp, spline_data_dict[rp])
-
-            return None
-
-        else:
-            self._logd("  returning permuted spline")
-            return type(self)(**spline_data_dict)
-
-
-
-
