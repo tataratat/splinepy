@@ -2,6 +2,8 @@ import unittest
 
 import numpy as np
 
+import splinepy
+
 ## abbreviation
 # z: bezier
 # r: rational bezier
