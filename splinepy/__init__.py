@@ -20,6 +20,9 @@ from splinepy.load import (load_splines,
                            load_solution)
 
 
+# set NAME_TO_TYPE
+settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
+
 # configure logging
 utils.log.configure()
 
