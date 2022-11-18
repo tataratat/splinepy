@@ -6,7 +6,9 @@ else()
     add_library(fitting STATIC ${SRCS_FITTING})
 endif()
 target_include_directories(fitting PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_features(fitting PUBLIC cxx_std_11) 
+
+# 11 is enough, but 17 allows nested namespace.. 
+target_compile_features(fitting PUBLIC cxx_std_17) 
 
 target_compile_options(fitting PRIVATE ${SPLINEPY_FLAGS})
 if(CMAKE_BUILD_TYPE MATCHES Release)
