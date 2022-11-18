@@ -10,6 +10,7 @@ import numpy as np
 
 from splinepy import utils
 from splinepy import io
+from splinepy import settings
 from splinepy import splinepy_core as core
 
 
@@ -311,7 +312,7 @@ def _set_modified_false(spl):
     -------
     None
     """
-    for rp in self.required_properties:
+    for rp in spl.required_properties:
         prop = getattr(spl, rp, None)
 
         if prop is not None:
@@ -459,7 +460,7 @@ class Spline(core.CoreSpline):
         if spline is None and len(kwargs) == 0:
             return None
 
-        if spline is not None and isinstance(spline, Spline):
+        if spline is not None and isinstance(spline, core.CoreSpline):
             # will share core, even nullptr
             super().__init__(spline)
             # depends on the use case, here could be a place to copy _data
@@ -1029,12 +1030,12 @@ class Spline(core.CoreSpline):
         results: (math.product(resolutions), dim) np.ndarray
         """
         self._logd(
-            f"Sampling {np.product(query_resolutions)} "
+            f"Sampling {np.product(resolutions)} "
             "points from spline."
         )
 
         return super().sample(
-                queries,
+                resolutions,
                 nthreads=_default_if_none(nthreads, settings.NTHREADS)
         )
 
