@@ -221,13 +221,12 @@ public:
       knot_vectors_ptr = &knot_vectors;
     } else {
       // Bezier here. get required ncps
-      required_ncps =
-          std::accumulate(degrees_ptr,
-                          degrees_ptr + para_dim,
-                          1,
-                          [](const int& cummulated, const int& d) {
-                            return cummulated * (d + 1);
-                          });
+      required_ncps = std::accumulate(degrees_ptr,
+                                      degrees_ptr + para_dim,
+                                      1,
+                                      [](const int& cummulated, const int& d) {
+                                        return cummulated * (d + 1);
+                                      });
     }
 
     // check number of control points
@@ -250,7 +249,8 @@ public:
             "Number of weights (",
             w_array.size(),
             ") does not match number of control points (",
-            ncps, ").");
+            ncps,
+            ").");
       }
     }
 
@@ -615,11 +615,11 @@ public:
     int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
     const int n_request = para_dims.size();
     for (int i{}; i < n_request; ++i) {
-      const int&  p_dim = para_dims_ptr[i];
+      const int& p_dim = para_dims_ptr[i];
       if (!(p_dim < para_dim_) || p_dim < 0) {
         splinepy::utils::PrintAndThrowError(
-            p_dim, "is invalid parametric dimension for degree elevation."
-        );
+            p_dim,
+            "is invalid parametric dimension for degree elevation.");
       }
       Core()->SplinepyElevateDegree(p_dim);
     }
@@ -633,14 +633,13 @@ public:
 
     py::list successful;
     for (int i{}; i < n_request; ++i) {
-      const int&  p_dim = para_dims_ptr[i];
+      const int& p_dim = para_dims_ptr[i];
       if (!(p_dim < para_dim_) || p_dim < 0) {
         splinepy::utils::PrintAndThrowError(
-            p_dim, "is invalid parametric dimension for degree reduction."
-        );
+            p_dim,
+            "is invalid parametric dimension for degree reduction.");
       }
-      successful.append(
-          Core()->SplinepyReduceDegree(p_dim, tolerance));
+      successful.append(Core()->SplinepyReduceDegree(p_dim, tolerance));
     }
 
     return successful;
@@ -650,7 +649,8 @@ public:
 /* operations for certain splines */
 
 /// (multiple) knot insertion, single dimension
-void InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
+inline void
+InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
@@ -660,10 +660,10 @@ void InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
 }
 
 /// (multiple) knot removal, single dimension
-py::list RemoveKnots(PySpline& spline,
-                     int para_dim,
-                     py::array_t<double> knots,
-                     double tolerance) {
+inline py::list RemoveKnots(PySpline& spline,
+                            int para_dim,
+                            py::array_t<double> knots,
+                            double tolerance) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
@@ -677,25 +677,26 @@ py::list RemoveKnots(PySpline& spline,
 }
 
 /// spline multiplication - currently only for bezier
-PySpline Multiply(const PySpline& a, const PySpline& b) {
+inline PySpline Multiply(const PySpline& a, const PySpline& b) {
   // performs runtime checks and throws error
   return PySpline(a.Core()->SplinepyMultiply(b.Core()));
 }
 
 /// spline addition - currently only for bezier
-PySpline Add(const PySpline& a, const PySpline& b) {
+inline PySpline Add(const PySpline& a, const PySpline& b) {
   // performs runtime checks and throws error
   return PySpline(a.Core()->SplinepyAdd(b.Core()));
 }
 
 /// spline composition - currently only for bezier
-PySpline Compose(const PySpline& inner, const PySpline& outer) {
+inline PySpline Compose(const PySpline& inner, const PySpline& outer) {
   // performs runtime checks and throws error
   return PySpline(inner.Core()->SplinepyCompose(outer.Core()));
 }
 
 /// spline derivative spline
-PySpline DerivativeSpline(const PySpline& spline, py::array_t<int> orders) {
+inline PySpline DerivativeSpline(const PySpline& spline,
+                                 py::array_t<int> orders) {
   CheckPyArraySize(orders, spline.para_dim_);
 
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
@@ -703,7 +704,7 @@ PySpline DerivativeSpline(const PySpline& spline, py::array_t<int> orders) {
 }
 
 /// spline split - returns py::list of PySplines
-py::list
+inline py::list
 Split(const PySpline& spline, int p_dim, py::array_t<double> locations) {
   // make sure they are sorted
   std::vector<double> locs(locations.size());
@@ -731,7 +732,7 @@ Split(const PySpline& spline, int p_dim, py::array_t<double> locations) {
 }
 
 /// bezier patch extraction.
-py::list ExtractBezierPatches(const PySpline& spline) {
+inline py::list ExtractBezierPatches(const PySpline& spline) {
   const auto sp_patches = spline.Core()->SplinepyExtractBezierPatches();
   py::list patches;
   for (const auto& p : sp_patches) {
@@ -741,14 +742,14 @@ py::list ExtractBezierPatches(const PySpline& spline) {
 }
 
 /// extract a single physical dimension from a spline
-PySpline ExtractDim(const PySpline& spline, int phys_dim) {
+inline PySpline ExtractDim(const PySpline& spline, int phys_dim) {
   return PySpline(spline.Core()->SplinepyExtractDim(phys_dim));
 }
 
 /// composition derivative
-PySpline CompositionDerivative(const PySpline& outer,
-                               const PySpline& inner,
-                               const PySpline& inner_derivative) {
+inline PySpline CompositionDerivative(const PySpline& outer,
+                                      const PySpline& inner,
+                                      const PySpline& inner_derivative) {
   return PySpline(
       outer.Core()->SplinepyCompositionDerivative(inner.Core(),
                                                   inner_derivative.Core()));
@@ -757,7 +758,7 @@ PySpline CompositionDerivative(const PySpline& outer,
 /// returns a spline with knot vectors.
 /// if the spline already has knots, it returns the same spline
 /// else, returns a same spline with knots
-PySpline SameSplineWithKnotVectors(PySpline& spline) {
+inline PySpline SameSplineWithKnotVectors(PySpline& spline) {
   // early exit if the spline has knot vectors already
   if (spline.HasKnotVectors()) {
     return spline;
@@ -776,42 +777,59 @@ PySpline SameSplineWithKnotVectors(PySpline& spline) {
     double* kv_ptr = static_cast<double*>(kv.request().ptr);
 
     // defined knots with 0 and 1
-      for (int j{}; j < n_knot_repeat; ++j) {
-        kv_ptr[j] = 0.;
-        kv_ptr[n_knot_repeat + j] = 1.;
-      }
-
-      kvs.append(kv);
+    for (int j{}; j < n_knot_repeat; ++j) {
+      kv_ptr[j] = 0.;
+      kv_ptr[n_knot_repeat + j] = 1.;
     }
 
-    // update knot vectors to dict spline
-    props["knot_vectors"] = kvs;
+    kvs.append(kv);
+  }
+
+  // update knot vectors to dict spline
+  props["knot_vectors"] = kvs;
 
   return PySpline(props);
 }
 
-
 /// returns core spline's ptr address
-intptr_t CoreId(const PySpline& spline) {
+inline intptr_t CoreId(const PySpline& spline) {
   return reinterpret_cast<intptr_t>(spline.Core().get());
 }
 
 /// reference count of core spline
-int CoreRefCount(const PySpline& spline) { return spline.Core().use_count(); }
+inline int CoreRefCount(const PySpline& spline) {
+  return spline.Core().use_count();
+}
 
 /// have core? A non error raising checker
-bool HaveCore(const PySpline& spline) {
+inline bool HaveCore(const PySpline& spline) {
   return (spline.c_spline_) ? true : false;
 }
 
 /// Overwrite core with a nullptr and assign neg values to dims
-void AnnulCore(PySpline& spline) {
+inline void AnnulCore(PySpline& spline) {
   spline.c_spline_ = nullptr;
   spline.para_dim_ = -1;
   spline.dim_ = -1;
 }
 
-void add_spline_pyclass(py::module& m, const char* class_name) {
+/// Internal use only
+/// Extract CoreSpline_s from list of PySplines
+inline std::vector<PySpline::CoreSpline_>
+ListOfPySplinesToVectorOfCoreSplines(py::list pysplines) {
+  // prepare return obj
+  std::vector<PySpline::CoreSpline_> core_splines;
+  core_splines.reserve(pysplines.size());
+
+  // loop and append
+  for (py::handle pys : pysplines) {
+    core_splines.emplace_back(py::cast<PySpline>(pys).Core());
+  }
+
+  return core_splines;
+}
+
+inline void add_spline_pyclass(py::module& m, const char* class_name) {
   py::class_<splinepy::py::PySpline> klasse(m, class_name);
 
   klasse.def(py::init<>())
@@ -863,21 +881,20 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
            py::arg("para_dims"),
            py::arg("tolerance"))
       .def(py::pickle(
-             [](splinepy::py::PySpline& spl) {
-                return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);
-             },
-             [](py::tuple t) {
-               if (t.size() != 2) {
-                 splinepy::utils::PrintAndThrowError("Invalid PySpline state.");
-               }
+          [](splinepy::py::PySpline& spl) {
+            return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);
+          },
+          [](py::tuple t) {
+            if (t.size() != 2) {
+              splinepy::utils::PrintAndThrowError("Invalid PySpline state.");
+            }
 
-               py::kwargs properties = t[0].cast<py::kwargs>(); // init
-               PySpline spl(properties);
-               spl.data_ = t[1].cast<py::dict>(); // saved data
+            py::kwargs properties = t[0].cast<py::kwargs>(); // init
+            PySpline spl(properties);
+            spl.data_ = t[1].cast<py::dict>(); // saved data
 
-               return spl;
-             }
-           ));
+            return spl;
+          }));
 
   m.def("insert_knots",
         &splinepy::py::InsertKnots,
