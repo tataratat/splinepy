@@ -754,6 +754,43 @@ PySpline CompositionDerivative(const PySpline& outer,
                                                   inner_derivative.Core()));
 }
 
+/// returns a spline with knot vectors.
+/// if the spline already has knots, it returns the same spline
+/// else, returns a same spline with knots
+PySpline SameSplineWithKnotVectors(PySpline& spline) {
+  // early exit if the spline has knot vectors already
+  if (spline.HasKnotVectors()) {
+    return spline;
+  }
+
+  py::dict props = spline.CurrentCoreProperties();
+
+  // based on degrees, generate knot vectors
+  py::array_t<int> degrees = py::cast<py::array_t<int>>(props["degrees"]);
+  int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
+  py::list kvs;
+  for (int i{}; i < degrees.size(); ++i) {
+    // prepare kv and get required number of repeating knots
+    const int n_knot_repeat = degrees_ptr[i] + 1;
+    py::array_t<double> kv(n_knot_repeat * 2);
+    double* kv_ptr = static_cast<double*>(kv.request().ptr);
+
+    // defined knots with 0 and 1
+      for (int j{}; j < n_knot_repeat; ++j) {
+        kv_ptr[j] = 0.;
+        kv_ptr[n_knot_repeat + j] = 1.;
+      }
+
+      kvs.append(kv);
+    }
+
+    // update knot vectors to dict spline
+    props["knot_vectors"] = kvs;
+
+  return PySpline(props);
+}
+
+
 /// returns core spline's ptr address
 intptr_t CoreId(const PySpline& spline) {
   return reinterpret_cast<intptr_t>(spline.Core().get());
@@ -877,6 +914,9 @@ void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("outer"),
         py::arg("inner"),
         py::arg("inner_derivative"));
+  m.def("same_spline_with_knot_vectors",
+        &splinepy::py::SameSplineWithKnotVectors,
+        py::arg("spline"));
   m.def("core_id", &splinepy::py::CoreId, py::arg("spline"));
   m.def("core_ref_count", &splinepy::py::CoreRefCount, py::arg("spline"));
   m.def("have_core", &splinepy::py::HaveCore, py::arg("spline"));
