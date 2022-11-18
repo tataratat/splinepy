@@ -3,6 +3,8 @@
 #include "lu_solve.hpp"
 #include "utils.hpp"
 
+namespace splinepy::fitting {
+
 double FitCurve(double* points,
                 int& num_points,
                 int& dim,
@@ -33,3 +35,5 @@ double ApproximateCurve(double* points,
                         std::vector<double>& knot_vector,
                         std::vector<double>& coefficient_matrix,
                         std::vector<double>& control_points);
+
+} // namespace splinepy::fitting

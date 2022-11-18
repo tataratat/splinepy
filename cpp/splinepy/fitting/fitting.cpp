@@ -1,5 +1,7 @@
 #include "fitting.hpp"
 
+namespace splinepy::fitting {
+
 double FitCurve(double* points,
                 int& num_points,
                 int& dim,
@@ -202,3 +204,5 @@ double ApproximateCurve(double* points,
 
   return residual;
 }
+
+} // namespace splinepy::fitting
