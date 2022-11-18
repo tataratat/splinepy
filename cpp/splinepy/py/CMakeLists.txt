@@ -3,6 +3,7 @@ set(PYSPLINEPY_SRCS
         init/reader.cpp
         init/exporter.cpp
         init/core_spline.cpp
+        init/fitting.cpp
         splinepy_core.cpp)
 
 # add target
