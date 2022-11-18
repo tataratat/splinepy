@@ -9,14 +9,14 @@ void init_fitting(py::module_& m) {
         py::arg("points"),
         py::arg("degree"),
         py::arg("centripetal"),
-        py::arg("knot_vectors"));
+        py::arg("knot_vector"));
   m.def("approximate_curve",
         &splinepy::py::ApproximateCurve,
         py::arg("points"),
         py::arg("degree"),
         py::arg("n_control_points"),
         py::arg("centripetal"),
-        py::arg("knot_vectors"));
+        py::arg("knot_vector"));
   m.def("interpolate_surface",
         &splinepy::py::InterpolateSurface,
         py::arg("points"),
