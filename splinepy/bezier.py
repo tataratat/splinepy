@@ -5,7 +5,7 @@ from splinepy.spline import Spline
 
 class Bezier(Spline):
 
-    def __init__(self, degrees=None, control_points=None):
+    def __init__(self, degrees=None, control_points=None, spline=None):
         """
         Bezier (Spline).
 
@@ -19,6 +19,7 @@ class Bezier(Spline):
         None
         """
         super().__init__(
+            spline=spline,
             degrees=degrees,
             control_points=control_points,
         )
@@ -48,39 +49,6 @@ class Bezier(Spline):
         self._logd("Evaluating spline...")
 
         return self._c_spline.recursive_evaluate(queries=queries)
-
-    def sample(self, resolution):
-        """
-        Overwrites basic sample routine by explicitly giving sampling location.
-
-        Parameters
-        -----------
-        resolution: int or list
-
-        Returns
-        --------
-        sampled: (prod(resolution), dim) np.ndarray
-        """
-        if isinstance(resolution, int):
-            resolution = [resolution for _ in range(self.para_dim)]
-
-        elif isinstance(resolution, (list or np.ndarray)):
-            if len(resolution) != self.para_dim:
-                raise ValueError(
-                    "Invalid resolution length. Should match para_dim"
-                )
-
-        else:
-            raise TypeError("resolution only accept list, np.ndarray or int.")
-
-        q = utils.raster_points(
-            [
-                [0. for _ in range(self.para_dim)],
-                [1. for _ in range(self.para_dim)],
-            ],
-            resolution
-        )
-        return self.evaluate(q)
 
     def __mul__(self, factor):
         """
