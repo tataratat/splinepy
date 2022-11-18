@@ -1,37 +1,146 @@
 import numpy as np
 
+from splinepy import spline
+from splinepy import splinepy_core
+from splinepy import Spline, NURBS, Bezier
+from splinepy import settings
 from splinepy import utils
-from splinepy.spline import Spline
-from splinepy.nurbs import NURBS
-from splinepy.bezier import Bezier
 
 
-class BSpline(Spline):
+class BSplineBase(Spline):
+    """BSpline base. Contains extra operations that's only available for
+    bspline families.
+    """
 
     def __init__(
-            self,
-            degrees=None,
-            knot_vectors=None,
-            control_points=None,
+            self, *args, **kwargs
     ):
         """
-        BSpline.
+        BSplineBase. Serves as a base for bspline families.
 
         Parameters
         -----------
-        degrees: (para_dim,) list-like
-        knot_vectors: (para_dim, n) list
-        control_points: (m, dim) list-like
+        args: *args
+        kwargs: **kwargs
 
         Returns
         --------
         None
         """
-        super().__init__(
-            degrees=degrees,
-            knot_vectors=knot_vectors,
-            control_points=control_points,
+        super().__init__(*args, **kwargs)
+
+    @spline._new_core_if_modified
+    def insert_knots(self, parametric_dimension, knots):
+        """
+        Inserts knots.
+
+        Parameters
+        -----------
+        parametric_dimension: int
+        knots: list or float
+
+        Returns
+        --------
+        None
+        """
+        if parametric_dimension >= self.para_dim:
+            raise ValueError(
+                "Invalid parametric dimension to remove knots."
+            )
+
+        if isinstance(knots, float):
+            knots = [knots]
+
+        if max(knots) > max(self.knot_vectors[parametric_dimension]):
+            raise ValueError(
+                "One of the query knots not in valid knot range. (Too big)"
+            )
+
+        if min(knots) < min(self.knot_vectors[parametric_dimension]):
+            raise ValueError(
+                "One of the query knots not in valid knot range. (Too small)"
+            )
+
+        splinepy_core.insert_knots(self, parametric_dimension, knots)        
+
+        self._logd(f"Inserted {len(knots)} knot(s).")
+
+        spline.sync_from_core(self)
+
+    def remove_knots(self, parametric_dimension, knots, tolerance=None):
+        """
+        Tries to removes knots. If you've compiled `splinepy` in `Debug`
+        and your removal request is not "accepted", you will get an error.
+        See the comments for `Nurbs::remove_knots` @
+        `splinepy/src/nurbs.hpp` for more info.
+
+        Parameters
+        -----------
+        parametric_dimension: int
+        knots: list or float
+        tolerance: float
+
+        Returns
+        --------
+        None
+        """
+        if parametric_dimension >= self.para_dim:
+            raise ValueError(
+                "Invalid parametric dimension to remove knots."
+            )
+
+        if isinstance(knots, float):
+            knots = [knots]
+
+        if max(knots) > max(self.knot_vectors[parametric_dimension]):
+            raise ValueError(
+                "One of the query knots not in valid knot range. (Too big)"
+            )
+
+        if min(knots) < min(self.knot_vectors[parametric_dimension]):
+            raise ValueError(
+                "One of the query knots not in valid knot range. (Too small)"
+            )
+
+        total_knots_before = len(self.knot_vectors[int(parametric_dimension)])
+      
+        removed = splinepy_core.remove_knots(
+                self,
+                parametric_dimension,
+                knots,
+                tolerance=spline._default_if_none(
+                        tolerance, settings.TOLERANCE
+                )
         )
+
+        if any(removed):
+            spline.sync_from_core(self)
+
+        self._logd(
+            f"Tried to remove {len(knots)} knot(s)."
+        )
+        self._logd(f"Actually removed {sum(removed)} knot(s).")
+
+    def normalize_knot_vectors(self,):
+        """
+        Sets all knot vectors into a range of [0,1], if applicable
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        new_kvs = []
+        for i, kv in enumerate(self.knot_vectors):
+            offset = kv[0]
+            scale = 1 / (kv[-1] - offset)
+            new_kvs.append((kv - offset) * scale)
+
+        # use setter to update
+        self.knot_vectors = new_kvs
 
     def extract_bezier_patches(self):
         """
@@ -47,20 +156,51 @@ class BSpline(Spline):
         extracted Beziers : list
         """
         # Extract bezier patches and create PyRationalBezier objects
-        list_of_c_object_beziers = self._c_spline.extract_bezier_patches()
+        patches = splinepy_core.extract_bezier_patches(self)
 
-        # Transform into Rational Bezier Splinepy objects
-        extracted_bezier_patches = []
-        for c_object_spline in list_of_c_object_beziers:
-            i_bezier = Bezier()
-            i_bezier._c_spline = c_object_spline
-            i_bezier._update_p()
-            extracted_bezier_patches.append(i_bezier)
+        # use core spline based init and name to type conversion to find
+        # correct types 
+        return [settings.NAME_TO_TYPE[p.name](p) for p in patches]
 
-        return extracted_bezier_patches
 
+class BSpline(BSplineBase):
+    """
+    BSpline.
+    """
+    __slots__ = ("_fitting_queries")
+
+    def __init__(
+        self,
+        degrees=None,
+        knot_vectors=None,
+        control_points=None,
+        spline=None,
+    ):
+        """
+        BSpline. Uses Spline.__init__()
+
+        Parameters
+        ----------
+        degrees: (para_dim) array-like
+        knot_vectors: (para_dim) list
+          list of array-like
+        control_points: (n, dim) array-like
+        spline: Spline
+
+        Returns
+        -------
+        None
+        """
+        super().__init__(
+                spline=spline,
+                degrees=degrees,
+                knot_vectors=knot_vectors,
+                control_points=control_points,
+        )
+
+    @classmethod
     def interpolate_curve(
-            self,
+            cls,
             query_points,
             degree,
             centripetal=True,
@@ -88,7 +228,7 @@ class BSpline(Spline):
         --------
         None
         """
-        query_points = utils.make_c_contiguous(query_points, dtype="float64")
+        query_points = np.ascontiguousarray(query_points, dtype="float64")
 
         dim = query_points.shape[1]
         c_spline_class = f"BSpline1P{dim}D()"
