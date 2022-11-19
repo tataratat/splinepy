@@ -29,5 +29,5 @@ NAME_TO_TYPE = None
 """
 String to Type conversion. Any function that may return different types should
 use this. If you have derived classes, replace this with your own conversion
-dict.
+dict. In splinepy, this is set in __init__.
 """
