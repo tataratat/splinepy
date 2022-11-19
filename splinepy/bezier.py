@@ -2,10 +2,10 @@ import numpy as np
 
 from splinepy import utils
 from splinepy import settings
-from splinepy.spline import Spline
+from splinepy import spline 
 from splinepy import splinepy_core
 
-class BezierBase(Spline):
+class BezierBase(spline.Spline):
     """Bezier Base. Contain extra operations that's only
     available for bezier families.
     """
@@ -16,6 +16,7 @@ class BezierBase(Spline):
         """
         super().__init__(*args, **kwargs)
 
+    @spline._new_core_if_modified
     def __mul__(self, factor):
         """
         Overloads multiplication between splines with different types of
@@ -51,8 +52,9 @@ class BezierBase(Spline):
         multiplied = splinepy_core.multiply(self, factor)
 
         # return corresponding type 
-        return settings.NAME_TO_TYPE[multiplied.name](multiplied)
+        return settings.NAME_TO_TYPE[multiplied.name](spline=multiplied)
 
+    @spline._new_core_if_modified
     def __add__(self, summand):
         """
         Calculates the spline that formes the sum of the summand and the
@@ -74,8 +76,9 @@ class BezierBase(Spline):
         # same type check, same para dim check, same dim check done in cpp
         added = splinepy_core.add(self, summand)
 
-        return type(self)(added)
+        return type(self)(spline=added)
 
+    @spline._new_core_if_modified
     def compose(self, inner_function):
         """
         Calculates the spline that formes the composition of the inner function
@@ -96,8 +99,53 @@ class BezierBase(Spline):
         # dimension compatibility checked in cpp
         composed = splinepy_core.compose(self, inner_function)
 
-        return settings.NAME_TO_TYPE[composed.name](composed)
+        return settings.NAME_TO_TYPE[composed.name](spline=composed)
 
+    @spline._new_core_if_modified
+    def split(self, para_dim, locations):
+        """
+        Splits spline at given locations along the given para_dim.
+
+        Parameters
+        ----------
+        para_dim: int
+        locations: array-like
+          Should be in range of (0, 1)
+
+        Returns
+        -------
+        splitted: list
+          list of splitted splines. Self stays intact.
+        """
+        if max(locations) > 1 or min(locations) < 0:
+            raise ValueError("Invalid split location. Should be in (0, 1).")
+        splitted = splinepy_core.split(self, para_dim, locations)
+
+        return [type(self)(spline=s) for s in splitted]
+
+    @spline._new_core_if_modified
+    def extract_dim(self, dim):
+        """
+        Extracts a single physical dimension of a spline.
+
+        Parameters
+        ----------
+        dim: int
+
+        Returns
+        -------
+        extracted: type(self)
+        """
+        if dim >= self.dim:
+            raise ValueError(f"Can't extract ({dim}) dim from {self.whatami}.")
+
+        return type(self)(spline=splinepy_core.extract_dim(self, dim))
+
+    @spline._new_core_if_modified
+    def composition_derivative(self, inner, inner_derivative):
+        """
+        """
+        pass
 
 class Bezier(BezierBase):
 
