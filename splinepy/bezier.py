@@ -144,8 +144,23 @@ class BezierBase(spline.Spline):
     @spline._new_core_if_modified
     def composition_derivative(self, inner, inner_derivative):
         """
+        Derivative of composition.
+
+        Parameters
+        ----------
+        inner: BezierBase
+        inner_derivative: BezierBase
+
+        Returns
+        -------
+        composition_der: BezierBase
         """
-        pass
+        # compatibility check is done in cpp
+        composition_der = splinepy_core.composition_derivative(
+                self, inner, inner_derivative
+        )
+
+        return settings.NAME_TO_TYPE[composition_der](spline=composition_der)
 
 class Bezier(BezierBase):
 
