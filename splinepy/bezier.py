@@ -1,9 +1,105 @@
 import numpy as np
 
 from splinepy import utils
+from splinepy import settings
 from splinepy.spline import Spline
+from splinepy import splinepy_core
 
-class Bezier(Spline):
+class BezierBase(Spline):
+    """Bezier Base. Contain extra operations that's only
+    available for bezier families.
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        BezierBase. Serves as a base for bezier families.
+        Passes all the args to super.__init__
+        """
+        super().__init__(*args, **kwargs)
+
+    def __mul__(self, factor):
+        """
+        Overloads multiplication between splines with different types of
+        degrees
+
+        The resulting spline fulfills the equation
+          factora(t) * factorb(t) = result(t)
+
+        Parameters
+        ----------
+        factor :  float or BezierBase
+          Spline with compatible dimensionality
+
+        Returns
+        -------
+        multiplied : Bezier or RationalBezier
+          New spline with updated types
+        """
+        # scalar
+        if isinstance(factor, float):
+          return type(self)(
+              control_points=self.control_points * factor,
+              degrees=self.degrees
+          )
+
+        # Supports only Bezier families
+        if not isinstance(factor, BezierBase):
+            raise TypeError(
+                    f"Multiplication with {type(factor)}-type is not suppoted."
+            )
+
+        # multiply - dimension compatibility is checked in cpp side
+        multiplied = splinepy_core.multiply(self, factor)
+
+        # return corresponding type 
+        return settings.NAME_TO_TYPE[multiplied.name](multiplied)
+
+    def __add__(self, summand):
+        """
+        Calculates the spline that formes the sum of the summand and the
+        current spline (function argument)
+
+        The resulting spline fulfils the equation
+          self(t) + summand(t) = result(t)
+
+        Parameters
+        ----------
+        summand: type(self) 
+          spline with same parametric and physical dimension
+
+        Returns
+        -------
+        added: type(self)
+          New spline that describes sum
+        """
+        # same type check, same para dim check, same dim check done in cpp
+        added = splinepy_core.add(self, summand)
+
+        return type(self)(added)
+
+    def compose(self, inner_function):
+        """
+        Calculates the spline that formes the composition of the inner function
+        spline (function argument), using the caller spline as the outer (or
+        deformation function).
+
+        The resulting spline fulfils the equation
+          spline_self(inner_function(t)) = result(t)
+
+        Parameters
+        ----------
+        inner_function : BezierBase
+
+        Returns
+        -------
+        composed : BezierBase
+        """
+        # dimension compatibility checked in cpp
+        composed = splinepy_core.compose(self, inner_function)
+
+        return settings.NAME_TO_TYPE[composed.name](composed)
+
+
+class Bezier(BezierBase):
 
     def __init__(self, degrees=None, control_points=None, spline=None):
         """
@@ -24,195 +120,4 @@ class Bezier(Spline):
             control_points=control_points,
         )
 
-    def recursive_evaluate(self, queries, n_threads=1):
-        """
-        Evaluates spline, classique (de Casteljau) way.
 
-        Parameters
-        -----------
-        queries: (n, para_dim) list-like
-
-        Returns
-        --------
-        results: (n, dim) np.ndarray
-        """
-        if self.whatami == "Nothing":
-            return None
-
-        queries = utils.make_c_contiguous(queries, dtype="float64")
-
-        if queries.shape[1] != self.para_dim:
-            raise InputDimensionError(
-                "`queries` does not match current pametric dimension."
-            )
-
-        self._logd("Evaluating spline...")
-
-        return self._c_spline.recursive_evaluate(queries=queries)
-
-    def __mul__(self, factor):
-        """
-        Overloads multiplication between splines with different types of
-        degrees
-
-        The resulting spline fulfills the equation
-          factora(t) * factorb(t) = result(t)
-
-        Parameters
-        ----------
-        factor :  float or spline with compatible dimensionality
-        Returns
-        -------
-        spline : New spline with updated types
-        """
-        if isinstance(factor, float):
-          return Bezier(
-              control_points=self._control_points * factor,
-              degrees=self._degrees
-          )
-
-        elif isinstance(factor, type(self)):
-            if len(factor.degrees) == len(self._degrees):
-                if factor.dim == self.dim:
-                    res_c_spl = self._c_spline.multiply_with_spline(
-                      factor._c_spline
-                    )
-                elif factor.dim == 1:
-                    res_c_spl = self._c_spline.multiply_with_scalar_spline(
-                        factor._c_spline
-                    )
-                elif self.dim == 1:
-                    res_c_spl = factor._c_spline.multiply_with_scalar_spline(
-                        self._c_spline
-                    )
-                else:
-                  raise NotImplementedError()
-
-                # Copy the c spline to the python object
-                result = type(self)()
-                result._c_spline = res_c_spl
-                result._update_p()
-                return result
-            else:
-                raise TypeError(
-                    "Multiplication with inequal parametric dimensions"
-                )
-        else:
-            raise TypeError("Multiplication with unknown type requested.")
-
-    def __add__(self, summand):
-        """
-        Calculates the spline that formes the sum of the summand and the
-        current spline (function argument)
-
-        The resulting spline fulfils the equation
-          self(t) + summand(t) = result(t)
-
-        Parameters
-        ----------
-        summand : Bezier
-          spline with same parametric and physical dimension
-
-        Returns
-        -------
-        spline : Bezier
-          New spline that describes sum
-        """
-        if isinstance(summand, type(self)):
-          if (
-              summand.para_dim == self.para_dim
-              and summand.dim == self.dim
-          ):
-              # Calculate Spline sum
-              resulting_c_spline = self._c_spline.add_spline(
-                  summand._c_spline
-              )
-
-              # Copy the c spline to the python object
-              result = type(self)()
-              result._c_spline = resulting_c_spline
-              result._update_p()
-              return result
-
-          else :
-              raise TypeError("Dimension Mismatch.")
-
-        else :
-            raise TypeError("Sum must be formed between Bezier Splines")
-
-    def compose(self, inner_function):
-        """
-        Calculates the spline that formes the composition of the inner function
-        spline (function argument), using the caller spline as the outer (or
-        deformation function).
-
-        The resulting spline fulfils the equation
-          spline_self(inner_function(t)) = result(t)
-
-        Parameters
-        ----------
-        inner_function :  spline with parametric dimension <= 3
-
-        Returns
-        -------
-        spline : New spline that describes composition
-        """
-        if isinstance(inner_function, type(self)):
-            if inner_function.para_dim == 1:
-                res_c_spl = self._c_spline.compose_line_pp(
-                    inner_function._c_spline
-                )
-
-            elif inner_function.para_dim == 2:
-                res_c_spl = self._c_spline.compose_surface_pp(
-                    inner_function._c_spline
-                )
-
-            elif inner_function.para_dim == 3:
-                res_c_spl = self._c_spline.compose_volume_pp(
-                    inner_function._c_spline
-                )
-
-            else :
-                raise TypeError(
-                    "Compositions with high"
-                    " parametric dimensions not supported."
-                )
-
-            # Copy the c spline to the python object
-            result = type(inner_function)()
-            result._c_spline = res_c_spl
-            result._update_p()
-            return result
-
-        if "RationalBezier" in inner_function.whatami:
-            if inner_function.para_dim == 1:
-                res_c_spl = self._c_spline.compose_line_pr(
-                    inner_function._c_spline
-                )
-
-            elif inner_function.para_dim == 2:
-                res_c_spl = self._c_spline.compose_surface_pr(
-                    inner_function._c_spline
-                )
-
-            elif inner_function.para_dim == 3:
-                res_c_spl = self._c_spline.compose_volume_pr(
-                    inner_function._c_spline
-                )
-
-            else :
-                raise TypeError(
-                    "Compositions with high"
-                    " parametric dimensions not supported."
-                )
-
-            # Copy the c spline to the python object
-            result = type(inner_function)()
-            result._c_spline = res_c_spl
-            result._update_p()
-            return result
-            
-
-        else :
-            raise TypeError("Composisiton must be formed with Bezier Splines")
