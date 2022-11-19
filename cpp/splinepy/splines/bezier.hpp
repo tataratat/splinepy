@@ -244,7 +244,7 @@ public:
     SplinepySplineNameMatches(
         *this,
         *a,
-        "Spline addition requires splines of the same time.",
+        "Spline addition requires splines of the same type.",
         true);
     SplinepyParaDimMatches(
         *this,
