@@ -48,10 +48,10 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
 
         # test knot_vectors
         self.assertTrue(
-                c.are_items_same(self.bspline.knot_vectors, bspline_ref_kv)
+                c.are_items_close(self.bspline.knot_vectors, bspline_ref_kv)
         )
         self.assertTrue(
-                c.are_items_same(self.nurbs.knot_vectors, nurbs_ref_kv)
+                c.are_items_close(self.nurbs.knot_vectors, nurbs_ref_kv)
         )
 
         # use random query points
@@ -114,13 +114,13 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
 
         # test knot_vectors
         self.assertTrue(
-                c.are_items_same(
+                c.are_items_close(
                         self.bspline.knot_vectors,
                         self.ref_bspline.knot_vectors
                 )
         )
         self.assertTrue(
-                c.are_items_same(
+                c.are_items_close(
                         self.nurbs.knot_vectors, self.ref_nurbs.knot_vectors
                 )
         )
