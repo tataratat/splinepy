@@ -1307,7 +1307,14 @@ class Spline(core.CoreSpline):
         new_spline: type(self)
         """
         # all the properties are deepcopyable
-        return copy.deepcopy(self)
+        new_spline = copy.deepcopy(self)
+
+        # those are not copied automatically
+        new_spline._logi = self._logi
+        new_spline._logd = self._logd
+        new_spline._logw = self._logw
+
+        return new_spline
 
     # short cuts / alias
     ds = degrees
