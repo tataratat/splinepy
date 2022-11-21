@@ -2,7 +2,6 @@ import splinepy
 import numpy as np
 
 if __name__ == "__main__":
-
     kv = [[0, 0, 0, 0.5, 1, 1, 1], [0, 0, 0, 1, 1, 1], [0, 0, 1, 1]]
     cp1 = np.array(
             [
@@ -47,7 +46,7 @@ if __name__ == "__main__":
     ]
 
     print("BSpline basis functions and support ids:")
-    print(b.basis_functions(q))
+    print(b.basis_and_support(q))
 
     print("NURBS basis functions and support ids:")
-    print(n.basis_functions(q))
+    print(n.basis_and_support(q))
