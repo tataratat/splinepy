@@ -1,8 +1,5 @@
 #pragma once
 
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-
 // SplineLib
 #include <Sources/Splines/b_spline.hpp>
 
@@ -13,8 +10,6 @@
 #include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
-
-namespace py = pybind11;
 
 template<int para_dim, int dim>
 class BSpline : public splinepy::splines::SplinepyBase,
@@ -75,9 +70,9 @@ public:
    *  having knot_vectors vector of vector, we can keep track of their length,
    * as well as the legnth of control_points/weights.
    */
-  Base_ RawPtrInitHelper(const double* degrees,
-                         const std::vector<std::vector<double>> knot_vectors,
-                         const double* control_points) {
+  static Base_ CreateBase(const int* degrees,
+                          const std::vector<std::vector<double>> knot_vectors,
+                          const double* control_points) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -130,10 +125,10 @@ public:
   }
 
   // rawptr based ctor
-  BSpline(const double* degrees,
+  BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
           const double* control_points)
-      : Base_(RawPtrInitHelper(degrees, knot_vectors, control_points)) {}
+      : Base_(CreateBase(degrees, knot_vectors, control_points)) {}
   // inherited ctor
   using Base_::Base_;
 
@@ -166,7 +161,7 @@ public:
   }
 
   virtual void
-  SplinepyCurrentProperties(double* degrees,
+  SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights /* untouched */) const {
@@ -176,7 +171,7 @@ public:
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(parameter_space.GetDegrees()[i]);
+      degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
     }
 
     // knot_vectors
@@ -339,93 +334,6 @@ public:
 
   constexpr Proximity_& GetProximity() { return *proximity_; }
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
-
-  // update degrees since its size never changes
-  void UpdateDegrees(int* p_degree_ptr) {
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-    for (int i = 0; i < para_dim; i++) {
-      p_degree_ptr[i] = parameter_space.GetDegrees()[i].Get();
-    }
-  }
-
-  // update current knot vectors to python
-  // since list is mutable, update works
-  void UpdateKnotVectors(py::list& p_knot_vectors) {
-
-    // start clean
-    p_knot_vectors.attr("clear")();
-
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-    for (auto& knotvector : parameter_space.GetKnotVectors()) {
-      auto const& kv = *knotvector; // in
-      py::list p_kv;                // out
-      for (int i = 0; i < kv.GetSize(); i++) {
-        auto const& knot = kv[splinelib::Index{i}];
-        p_kv.append(knot.Get());
-      }
-      p_knot_vectors.append(p_kv);
-    }
-  }
-
-  int GetNCps() {
-    VectorSpace_ const& vector_space = *Base_::vector_space_;
-    return vector_space.GetNumberOfCoordinates();
-  }
-
-  // control point changes in size, but you can figure it out with GetNCps()
-  void UpdateControlPoints(double* cps_buf_ptr) {
-    VectorSpace_ const& vector_space = *Base_::vector_space_;
-    int numcps = vector_space.GetNumberOfCoordinates();
-
-    // fill it up, phil!
-    for (int i = 0; i < numcps; i++) {
-      auto const& coord_named_phil = vector_space[splinelib::Index{i}];
-      for (int j = 0; j < dim; j++) {
-        cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
-      }
-    }
-  }
-
-  // control point changes in size, but you can figure it out with GetNCps()
-  void FillControlPoints(double* cps_buf_ptr) const {
-    VectorSpace_ const& vector_space = *Base_::vector_space_;
-    int numcps = vector_space.GetNumberOfCoordinates();
-
-    // fill it up, phil!
-    for (int i = 0; i < numcps; i++) {
-      auto const& coord_named_phil = vector_space[splinelib::Index{i}];
-      for (int j = 0; j < dim; j++) {
-        cps_buf_ptr[i * dim + j] = coord_named_phil[j].Get();
-      }
-    }
-  }
-
-  // Computes (degree + 1) X ...
-  // adapted from `SplineLib/Sources/Splines/b_spline.inc`
-  void BasisFunctionsAndIDs(ParametricCoordinate_ const& parametric_coordinate,
-                            double* basis_function_values,
-                            int* support_control_point_ids) const {
-
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-
-    int i = 0;
-    for (Index_ non_zero_basis_function{parameter_space.First()};
-         non_zero_basis_function != parameter_space.Behind();
-         ++non_zero_basis_function) {
-
-      Index_ const& basis_function =
-          (parameter_space.FindFirstNonZeroBasisFunction(parametric_coordinate)
-           + non_zero_basis_function.GetIndex());
-
-      const auto evaluated =
-          parameter_space.EvaluateBasisFunction(basis_function,
-                                                parametric_coordinate);
-
-      basis_function_values[i] = evaluated;
-      support_control_point_ids[i] = basis_function.GetIndex1d().Get();
-      i++;
-    }
-  }
 
 protected:
   std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);

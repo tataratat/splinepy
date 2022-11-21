@@ -1,8 +1,5 @@
 #pragma once
 
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-
 // SplineLib
 #include <Sources/Splines/nurbs.hpp>
 
@@ -13,8 +10,6 @@
 #include <splinepy/splines/splinepy_base.hpp>
 
 namespace splinepy::splines {
-
-namespace py = pybind11;
 
 template<int para_dim, int dim>
 class Nurbs : public splinepy::splines::SplinepyBase,
@@ -73,10 +68,10 @@ public:
   // degrees should have same size as parametric dimension
   // having knot_vectors vector of vector, we can keep track of their length,
   // as well as the legnth of control_points/weights.
-  Base_ RawPtrInitHelper(const double* degrees,
-                         const std::vector<std::vector<double>> knot_vectors,
-                         const double* control_points,
-                         const double* weights) {
+  static Base_ CreateBase(const int* degrees,
+                          const std::vector<std::vector<double>> knot_vectors,
+                          const double* control_points,
+                          const double* weights) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -135,12 +130,11 @@ public:
   }
 
   // rawptr based ctor
-  Nurbs(const double* degrees,
+  Nurbs(const int* degrees,
         const std::vector<std::vector<double>>& knot_vectors,
         const double* control_points,
         const double* weights)
-      : Base_(
-          RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
+      : Base_(CreateBase(degrees, knot_vectors, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
 
@@ -173,7 +167,7 @@ public:
   }
 
   virtual void
-  SplinepyCurrentProperties(double* degrees,
+  SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const {
@@ -182,7 +176,7 @@ public:
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(parameter_space.GetDegrees()[i]);
+      degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
     }
 
     // knot_vectors
@@ -296,6 +290,39 @@ public:
     }
   }
 
+  virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
+                                                  const int& nthreads) {
+    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
+        *this,
+        resolutions,
+        nthreads);
+  }
+
+  /// Verbose proximity query - make sure to plant a kdtree first.
+  virtual void SplinepyVerboseProximity(const double* query,
+                                        const double& tolerance,
+                                        const int& max_iterations,
+                                        const bool aggressive_bounds,
+                                        double* para_coord,
+                                        double* phys_coord,
+                                        double* phys_diff,
+                                        double& distance,
+                                        double& convergence_norm,
+                                        double* first_derivatives,
+                                        double* second_derivatives) const {
+    GetProximity().VerboseQuery(query,
+                                tolerance,
+                                max_iterations,
+                                aggressive_bounds,
+                                para_coord,
+                                phys_coord,
+                                phys_diff,
+                                distance,
+                                convergence_norm,
+                                first_derivatives,
+                                second_derivatives);
+  }
+
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
@@ -335,166 +362,6 @@ public:
 
   constexpr Proximity_& GetProximity() { return *proximity_; }
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
-
-  /*
-   * Update degrees since its size never changes
-   *
-   * Parameters
-   * -----------
-   * ds_buf_ptr: out
-   */
-  void UpdateDegrees(int* ds_buf_ptr) {
-
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-    for (int i = 0; i < para_dim; i++) {
-      ds_buf_ptr[i] = parameter_space.GetDegrees()[i].Get();
-    }
-  }
-
-  /*
-   * Update current knot vectors to python
-   * since list is mutable, update works
-   *
-   * Parameters
-   * -----------
-   * p_knot_vectors: inout
-   *  will be `clear`ed before writing.
-   */
-  void UpdateKnotVectors(py::list& p_knot_vectors) {
-
-    // start clean
-    p_knot_vectors.attr("clear")();
-
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-    for (auto& knotvector : parameter_space.GetKnotVectors()) {
-      auto const& kv = *knotvector; // in
-      py::list p_kv;                // out
-      for (int i = 0; i < kv.GetSize(); i++) {
-        auto const& knot = kv[splinelib::Index{i}];
-        p_kv.append(knot.Get());
-      }
-      p_knot_vectors.append(p_kv);
-    }
-  }
-
-  /* Returns n_cpts
-   * used to allocate numpy array
-   *
-   * Parameters
-   * -----------
-   * None
-   *
-   * Returns
-   * -------
-   * N_CPS
-   */
-  int GetNCps() {
-    WeightedVectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
-    return vector_space.GetNumberOfCoordinates();
-  }
-
-  /* Update cps and weights at the same time since they belong together in
-   * weightedvectorspace
-   *
-   * Parameters
-   * -----------
-   * cps_buf_ptr: out
-   *   size -> (n_cps * dim)
-   * ws_buf_ptr: out
-   *   size -> (n_ws) (=n_cps)
-   */
-  void UpdateControlPointsAndWeights(double* cps_buf_ptr, double* ws_buf_ptr) {
-    WeightedVectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
-    int numcps = vector_space.GetNumberOfCoordinates();
-
-    // fill it up, phil!
-    for (int i = 0; i < numcps; i++) {
-      auto const& coord_named_phil = vector_space[splinelib::Index{i}];
-      // phil needs to first project before filling.
-      auto const& projected_phil =
-          WeightedVectorSpace_::Project(coord_named_phil);
-
-      for (int j = 0; j < dim; j++) {
-        cps_buf_ptr[i * dim + j] = projected_phil[j].Get();
-      }
-      ws_buf_ptr[i] = coord_named_phil[dim].Get();
-    }
-  }
-
-  /* Given parametric coordinate, returns basis functions and support control
-   * point ids.
-   * pointer should have size of (degree + 1)^(para_dim)
-   *
-   * Parameters
-   * -----------
-   * parametric_coordinate: in
-   * basis_function_values: out
-   * support_control_point_ids: out
-   */
-  void BasisFunctionsAndIDs(ParametricCoordinate_ const& parametric_coordinate,
-                            double* basis_function_values,
-                            int* support_control_point_ids) const {
-
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
-
-    int i = 0;
-    double W = 0.0;
-    for (Index_ non_zero_basis_function{parameter_space.First()};
-         non_zero_basis_function != parameter_space.Behind();
-         ++non_zero_basis_function) {
-
-      Index_ const& basis_function =
-          (parameter_space.FindFirstNonZeroBasisFunction(parametric_coordinate)
-           + non_zero_basis_function.GetIndex());
-
-      // general basis fn
-      const auto evaluated =
-          parameter_space.EvaluateBasisFunction(basis_function,
-                                                parametric_coordinate);
-
-      // get `w` and add to `W`
-      const auto& support_id = basis_function.GetIndex1d(); // not int yet
-
-      VectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
-      const auto& w = vector_space[support_id][dim].Get(); // dim: last elem
-
-      const double N_times_w = evaluated * w;
-
-      W += N_times_w;
-      basis_function_values[i] = N_times_w; // not yet final
-      support_control_point_ids[i] = support_id.Get();
-      i++;
-    }
-
-    // Loop and divide entries by W
-    int end = i;
-    double W_inv = 1 / W;
-    for (i = 0; i < end; i++) {
-      basis_function_values[i] *= W_inv;
-    }
-  }
-
-  /* Fn overload with pure array in,outs.
-   *
-   * Parameters
-   * -----------
-   * parametric_coordinate: in
-   * basis_function_values: out
-   * support_control_point_ids: out
-   */
-  void BasisFunctionsAndIDs(const double* parametric_coordinate,
-                            double* basis_function_values,
-                            int* support_control_point_ids) const {
-    // prepare parametric coordinate
-    ParametricCoordinate_ pc{};
-    for (int i{0}; i < para_dim; i++) {
-      pc[i] = ScalarParametricCoordinate_{parametric_coordinate[i]};
-    }
-
-    BasisFunctionsAndIDs(parametric_coordinate,
-                         basis_function_values,
-                         support_control_point_ids);
-  }
 
 protected:
   std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);

@@ -1,42 +1,46 @@
-from splinepy import _splinepy as _s
 from splinepy._version import __version__
+from splinepy import splinepy_core
+
+from splinepy import spline
+from splinepy import bezier
+from splinepy import rational_bezier
+from splinepy import bspline
+from splinepy import nurbs
+from splinepy import utils
+from splinepy import load
+from splinepy import io
+from splinepy import settings
+
+from splinepy.spline import Spline
 from splinepy.bezier import Bezier
 from splinepy.rational_bezier import RationalBezier
 from splinepy.bspline import BSpline
 from splinepy.nurbs import NURBS
-from splinepy._spline import Spline
-from splinepy.load import (load_splines,
-                              load_solution)
+from splinepy.load import (load_splines, load_solution)
 
-# Alias for "Legacy" classes
-BSplineCurve2D = _s.BSpline1P2D
-BSplineCurve3D = _s.BSpline1P3D
-BSplineSurface2D = _s.BSpline2P2D
-BSplineSurface3D = _s.BSpline2P3D
-BSplineSolid = _s.BSpline3P3D
+# set NAME_TO_TYPE
+settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
 
-NurbsCurve2D = _s.NURBS1P2D
-NurbsCurve3D = _s.NURBS1P3D
-NurbsSurface2D = _s.NURBS2P2D
-NurbsSurface3D = _s.NURBS2P3D
-NurbsSolid = _s.NURBS3P3D
+# configure logging
+utils.log.configure()
 
 __all__ = [
-    "Spline",
-    "Bezier",
-    "RationalBezier",
-    "BSpline",
-    "NURBS",
-    "BSplineCurve2D",
-    "BSplineCurve3D",
-    "BSplineSurface2D",
-    "BSplineSurface3D",
-    "BSplineSolid",
-    "NurbsCurve2D",
-    "NurbsCurve3D",
-    "NurbsSurface2D",
-    "NurbsSurface3D",
-    "NurbsSolid",
-    "load_splines",
-    "load_solution",
+        "__version__",
+        "splinepy_core",
+        "spline",
+        "bezier",
+        "rational_bezier",
+        "bspline",
+        "nurbs",
+        "load",
+        "utils",
+        "io",
+        "settings",
+        "Spline",
+        "Bezier",
+        "RationalBezier",
+        "BSpline",
+        "NURBS",
+        "load_splines",
+        "load_solution",
 ]

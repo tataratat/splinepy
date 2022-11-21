@@ -43,9 +43,9 @@ public:
   using Proximity_ =
       splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
-  Base_ RawPtrInitHelper(const double* degrees,
-                         const double* control_points,
-                         const double* weights) {
+  static Base_ CreateBase(const int* degrees,
+                          const double* control_points,
+                          const double* weights) {
 
     std::array<std::size_t, para_dim> bm_degrees{};
     std::size_t ncps{1};
@@ -56,8 +56,8 @@ public:
       ncps *= degrees[i] + 1;
     }
 
-    // formulate weighted control_points and weights.
-    std::vector<Coordinate_> bm_weighted_control_points(ncps);
+    // formulate control_points and weights. bezman will apply weights
+    std::vector<Coordinate_> bm_control_points(ncps);
     std::vector<Weight_> bm_weights(ncps);
     for (std::size_t i{}; i < ncps; ++i) {
       // weights
@@ -65,21 +65,20 @@ public:
       // weighted cps
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          bm_weighted_control_points[i][j] =
-              control_points[i * dim + j] * weights[i];
+          bm_control_points[i][j] = control_points[i * dim + j];
         }
       } else {
-        bm_weighted_control_points[i] = control_points[i] * weights[i];
+        bm_control_points[i] = control_points[i];
       }
     }
-    return Base_(bm_degrees, bm_weighted_control_points, bm_weights);
+    return Base_(bm_degrees, bm_control_points, bm_weights);
   }
 
   // rawptr based ctor
-  RationalBezier(const double* degrees,
+  RationalBezier(const int* degrees,
                  const double* control_points,
                  const double* weights)
-      : Base_(RawPtrInitHelper(degrees, control_points, weights)) {}
+      : Base_(CreateBase(degrees, control_points, weights)) {}
   // base (copy) ctor
   RationalBezier(const Base_& rhs) : Base_(rhs){};
   // inherit ctor
@@ -125,14 +124,14 @@ public:
   }
 
   virtual void SplinepyCurrentProperties(
-      double* degrees,
+      int* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
       double* control_points,
       double* weights) const {
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(Base_::GetDegrees()[i]);
+      degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
     }
 
     // control_points and weights

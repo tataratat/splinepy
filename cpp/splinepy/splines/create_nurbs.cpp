@@ -8,7 +8,7 @@ std::shared_ptr<SplinepyBase>
 splinepy::splines::SplinepyBase::SplinepyCreateNurbs(
     const int para_dim,
     const int dim,
-    const double* degrees,
+    const int* degrees,
     const std::vector<std::vector<double>>* knot_vectors,
     const double* control_points,
     const double* weights) {

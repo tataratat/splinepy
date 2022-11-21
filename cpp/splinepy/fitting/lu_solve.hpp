@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 
-inline void Doolittle(std::vector<double>& matrix,
+inline void Doolittle(const std::vector<double>& matrix,
                       std::vector<double>& l,
                       std::vector<double>& u) {
 
@@ -33,10 +33,10 @@ inline void Doolittle(std::vector<double>& matrix,
   }
 }
 
-inline void ForwardSubstitution(std::vector<double>& l,
-                                std::vector<double>& b,
+inline void ForwardSubstitution(const std::vector<double>& l,
+                                const std::vector<double>& b,
                                 std::vector<double>& y,
-                                int& num_b) {
+                                const int& num_b) {
 
   int i, j;
   y[0] = b[0] / l[0];
@@ -49,10 +49,10 @@ inline void ForwardSubstitution(std::vector<double>& l,
   }
 }
 
-inline void BackwardSubstitution(std::vector<double>& u,
-                                 std::vector<double>& y,
+inline void BackwardSubstitution(const std::vector<double>& u,
+                                 const std::vector<double>& y,
                                  std::vector<double>& x,
-                                 int& num_b) {
+                                 const int& num_b) {
 
   int i, j;
   x[num_b - 1] = y[num_b - 1]
@@ -66,8 +66,10 @@ inline void BackwardSubstitution(std::vector<double>& u,
   }
 }
 
-inline std::vector<double>
-LUSolve(std::vector<double>& matrix, double* b, int& num_b, int& b_dim) {
+inline std::vector<double> LUSolve(const std::vector<double>& matrix,
+                                   const double* b,
+                                   const int& num_b,
+                                   const int& b_dim) {
 
   std::vector<double> x, l, u, tmp_b, y, tmp_x;
   int i, j;
