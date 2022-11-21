@@ -5,6 +5,7 @@ class NURBS(BSplineBase):
     """
     Non-Uniform Rational B-Spline.
     """
+    __slots__ = ()
 
     def __init__(
             self,

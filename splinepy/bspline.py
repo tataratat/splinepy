@@ -10,6 +10,7 @@ class BSplineBase(spline.Spline):
     """BSpline base. Contains extra operations that's only available for
     bspline families.
     """
+    __slots__ = ()
 
     def __init__(self, *args, **kwargs):
         """

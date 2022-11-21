@@ -3,6 +3,8 @@ from splinepy.bezier import BezierBase
 
 class RationalBezier(BezierBase):
 
+    __slots__ = ()
+
     def __init__(
             self,
             degrees=None,

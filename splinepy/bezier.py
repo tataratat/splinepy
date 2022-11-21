@@ -7,6 +7,7 @@ class BezierBase(spline.Spline):
     """Bezier Base. Contain extra operations that's only
     available for bezier families.
     """
+    __slots__ = ()
 
     def __init__(self, *args, **kwargs):
         """
@@ -163,6 +164,8 @@ class BezierBase(spline.Spline):
 
 
 class Bezier(BezierBase):
+
+    __slots__ = ()
 
     def __init__(self, degrees=None, control_points=None, spline=None):
         """
