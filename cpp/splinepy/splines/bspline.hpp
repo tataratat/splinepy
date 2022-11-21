@@ -70,7 +70,7 @@ public:
    *  having knot_vectors vector of vector, we can keep track of their length,
    * as well as the legnth of control_points/weights.
    */
-  Base_ RawPtrInitHelper(const double* degrees,
+  static Base_ CreateBase(const int* degrees,
                          const std::vector<std::vector<double>> knot_vectors,
                          const double* control_points) {
     // process all the info and turn them into SplineLib types to initialize
@@ -125,10 +125,10 @@ public:
   }
 
   // rawptr based ctor
-  BSpline(const double* degrees,
+  BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
           const double* control_points)
-      : Base_(RawPtrInitHelper(degrees, knot_vectors, control_points)) {}
+      : Base_(CreateBase(degrees, knot_vectors, control_points)) {}
   // inherited ctor
   using Base_::Base_;
 
@@ -161,7 +161,7 @@ public:
   }
 
   virtual void
-  SplinepyCurrentProperties(double* degrees,
+  SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights /* untouched */) const {
@@ -171,7 +171,7 @@ public:
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(parameter_space.GetDegrees()[i]);
+      degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
     }
 
     // knot_vectors
