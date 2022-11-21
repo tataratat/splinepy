@@ -28,7 +28,9 @@ class ProximityTest(c.unittest.TestCase):
                 nthreads=1,
         )
 
-        assert c.np.allclose(para_q, prox_r[0]), "WRONG `Spline.nearest_pcoord`"
+        assert c.np.allclose(
+                para_q, prox_r[0]
+        ), "WRONG `Spline.nearest_pcoord`"
 
     def test_queries_inside_nurbs_initial_guess_with_kdt(self):
         # make half-half circle. also known as quarter circle
@@ -48,7 +50,9 @@ class ProximityTest(c.unittest.TestCase):
                 nthreads=1,
         )
 
-        assert c.np.allclose(para_q, prox_r[0]), "WRONG `Spline.nearest_pcoord`"
+        assert c.np.allclose(
+                para_q, prox_r[0]
+        ), "WRONG `Spline.nearest_pcoord`"
 
 
 if __name__ == "__main__":
