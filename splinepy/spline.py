@@ -1190,7 +1190,7 @@ class Spline(core.CoreSpline):
         --------
         reduced: list
         """
-        reduced = super().reduce_degree(
+        reduced = super().reduce_degrees(
                 para_dims=parametric_dimensions,
                 tolerance=_default_if_none(tolerance, settings.TOLERANCE),
         )
