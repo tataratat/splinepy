@@ -595,7 +595,7 @@ public:
 
     para_coord.resize({n_queries, para_dim_});
     phys_coord.resize({n_queries, para_dim_});
-    phys_diff.resize({n_queries, para_dim_});
+    phys_diff.resize({n_queries, dim_});
     distance.resize({n_queries, 1});
     convergence_norm.resize({n_queries, 1});
     first_derivatives.resize({n_queries, para_dim_, dim_});
