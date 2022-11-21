@@ -1,7 +1,5 @@
 import tempfile
 
-import splinepy
-import numpy as np
 try:
     from . import common as c
 except BaseException:
@@ -98,21 +96,21 @@ class MFEMExportTest(c.unittest.TestCase):
         Test MFEM export routine
         """
         # Define some splines
-        bez_el0 = splinepy.Bezier(
+        bez_el0 = c.splinepy.Bezier(
                 degrees=[1, 1],
                 control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
         )
-        rbz_el1 = splinepy.RationalBezier(
+        rbz_el1 = c.splinepy.RationalBezier(
                 degrees=[1, 1],
                 control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
                 weights=[1, 1, 1, 1]
         )
-        bsp_el2 = splinepy.BSpline(
+        bsp_el2 = c.splinepy.BSpline(
                 degrees=[1, 1],
                 control_points=[[0, 1], [1, 1], [0, 2], [1, 2]],
                 knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
         )
-        nur_el3 = splinepy.NURBS(
+        nur_el3 = c.splinepy.NURBS(
                 degrees=[1, 1],
                 control_points=[[1, 1], [2, 1], [1, 2], [2, 2]],
                 weights=[1, 1, 1, 1],
@@ -129,7 +127,7 @@ class MFEMExportTest(c.unittest.TestCase):
         # Test Output
         # @todo
         with tempfile.NamedTemporaryFile() as tmpf:
-            splinepy.io.mfem.export_cartesian(
+            c.splinepy.io.mfem.export_cartesian(
                     tmpf.name, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
@@ -137,14 +135,14 @@ class MFEMExportTest(c.unittest.TestCase):
                 self.assertTrue(_mfem_export_ref_2d == tmp_read.readlines())
 
         # Test Also 3D Meshes
-        bez_el0 = splinepy.Bezier(
+        bez_el0 = c.splinepy.Bezier(
                 degrees=[1, 1, 1],
                 control_points=[
                         [0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 0, 1],
                         [1, 0, 1], [0, 1, 1], [1, 1, 1]
                 ]
         )
-        rbz_el1 = splinepy.RationalBezier(
+        rbz_el1 = c.splinepy.RationalBezier(
                 degrees=[1, 1, 1],
                 control_points=[
                         [1, 0, 0], [2, 0, 0], [1, 1, 0], [2, 1, 0], [1, 0, 1],
@@ -152,7 +150,7 @@ class MFEMExportTest(c.unittest.TestCase):
                 ],
                 weights=[1] * 8
         )
-        bsp_el2 = splinepy.BSpline(
+        bsp_el2 = c.splinepy.BSpline(
                 degrees=[1, 1, 1],
                 control_points=[
                         [0, 1, 0], [1, 1, 0], [0, 2, 0], [1, 2, 0], [0, 1, 1],
@@ -160,7 +158,7 @@ class MFEMExportTest(c.unittest.TestCase):
                 ],
                 knot_vectors=[[0, 0, 1, 1]] * 3
         )
-        nur_el3 = splinepy.NURBS(
+        nur_el3 = c.splinepy.NURBS(
                 degrees=[1, 1, 1],
                 control_points=[
                         [1, 1, 0], [2, 1, 0], [1, 2, 0], [2, 2, 0], [1, 1, 1],
@@ -180,7 +178,7 @@ class MFEMExportTest(c.unittest.TestCase):
 
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
-            splinepy.io.mfem.export_cartesian(
+            c.splinepy.io.mfem.export_cartesian(
                     tmpf.name, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
