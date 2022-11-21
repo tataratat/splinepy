@@ -640,7 +640,7 @@ class Spline(core.CoreSpline):
 
         # specified ones needs specific sets of kwargs
         # in case of an incomplete set of kwargs, nothing will happen
-        elif set(kwargs.keys()) == set(self.required_properties(self.name)):
+        elif set(kwargs.keys()) == set(self.required_properties):
             super().new_core(**kwargs)
 
         elif raise_:
