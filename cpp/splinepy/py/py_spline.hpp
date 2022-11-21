@@ -113,7 +113,7 @@ public:
   /// Runs sanity checks on inputs
   void NewCore(const py::kwargs& kwargs) {
     // parse kwargs
-    double* degrees_ptr = nullptr;
+    int* degrees_ptr = nullptr;
     std::vector<std::vector<double>> knot_vectors;
     std::vector<std::vector<double>>* knot_vectors_ptr = nullptr;
     double* control_points_ptr = nullptr;
@@ -121,8 +121,8 @@ public:
     int para_dim, dim, /* for checks -> */ ncps, required_ncps{1};
 
     // get degrees and set para_dim
-    auto d_array = py::cast<py::array_t<double>>(kwargs["degrees"]);
-    degrees_ptr = static_cast<double*>(d_array.request().ptr);
+    auto d_array = py::cast<py::array_t<int>>(kwargs["degrees"]);
+    degrees_ptr = static_cast<int*>(d_array.request().ptr);
     para_dim = d_array.size();
     knot_vectors.reserve(para_dim);
 
@@ -300,8 +300,8 @@ public:
 
     // prepare property arrays
     // first, degrees and control_points
-    py::array_t<double> degrees(para_dim_);
-    double* degrees_ptr = static_cast<double*>(degrees.request().ptr);
+    py::array_t<int> degrees(para_dim_);
+    int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
     const int ncps = Core()->SplinepyNumberOfControlPoints();
     py::array_t<double> control_points(ncps * dim_);
     double* control_points_ptr =
