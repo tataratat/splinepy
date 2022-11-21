@@ -16,7 +16,7 @@ public:
   static std::shared_ptr<SplinepyBase>
   SplinepyCreate(const int para_dim = 0,
                  const int dim = 0,
-                 const double* degrees = nullptr,
+                 const int* degrees = nullptr,
                  const std::vector<std::vector<double>>* knot_vectors = nullptr,
                  const double* control_points = nullptr,
                  const double* weights = nullptr) {
@@ -60,21 +60,21 @@ public:
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBezier(const int para_dim,
                        const int dim,
-                       const double* degrees,
+                       const int* degrees,
                        const double* control_points);
 
   // Implemented in splinepy/splines/create_rational_bezier.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateRationalBezier(const int para_dim,
                                const int dim,
-                               const double* degrees,
+                               const int* degrees,
                                const double* control_points,
                                const double* weights);
   // Implemented in splinepy/splines/create_bspline.cpp
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBSpline(const int para_dim,
                         const int dim,
-                        const double* degrees,
+                        const int* degrees,
                         const std::vector<std::vector<double>>* knot_vectors,
                         const double* control_points);
 
@@ -82,7 +82,7 @@ public:
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateNurbs(const int para_dim,
                       const int dim,
-                      const double* degrees,
+                      const int* degrees,
                       const std::vector<std::vector<double>>* knot_vectors,
                       const double* control_points,
                       const double* weights);
@@ -97,7 +97,7 @@ public:
   virtual int SplinepyNumberOfSupports() const = 0;
   /// Extract core spline properties. Similar to previous update_p
   virtual void
-  SplinepyCurrentProperties(double* degrees,
+  SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
