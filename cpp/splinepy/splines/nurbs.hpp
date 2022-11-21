@@ -291,6 +291,39 @@ public:
     }
   }
 
+  virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
+                                                  const int& nthreads) {
+    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
+        *this,
+        resolutions,
+        nthreads);
+  }
+
+  /// Verbose proximity query - make sure to plant a kdtree first.
+  virtual void SplinepyVerboseProximity(const double* query,
+                                        const double& tolerance,
+                                        const int& max_iterations,
+                                        const bool aggressive_bounds,
+                                        double* para_coord,
+                                        double* phys_coord,
+                                        double* phys_diff,
+                                        double& distance,
+                                        double& convergence_norm,
+                                        double* first_derivatives,
+                                        double* second_derivatives) const {
+    GetProximity().VerboseQuery(query,
+                                tolerance,
+                                max_iterations,
+                                aggressive_bounds,
+                                para_coord,
+                                phys_coord,
+                                phys_diff,
+                                distance,
+                                convergence_norm,
+                                first_derivatives,
+                                second_derivatives);
+  }
+
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
