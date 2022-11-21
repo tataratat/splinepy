@@ -30,7 +30,7 @@ def configure(debug=False, logfile=None):
 
     # format
     formatter = logging.Formatter(
-        fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
+            fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
     )
 
     # apply format using stream handler

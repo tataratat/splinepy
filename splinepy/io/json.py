@@ -32,27 +32,23 @@ def load(fname):
 
     # Init return type
     return_dict = {
-        "Bezier": [],
-        "NURBS": [],
-        "BSpline": [],
-        "RationalBezier": []
+            "Bezier": [],
+            "NURBS": [],
+            "BSpline": [],
+            "RationalBezier": []
     }
 
     for jbz in jsonbz["SplineList"]:
         # Convert Base64 str into np array
         if base64encoding:
             jbz["control_points"] = np.frombuffer(
-                base64.b64decode(
-                    jbz["control_points"].encode('ascii')
-                ),
-                dtype=np.float64
+                    base64.b64decode(jbz["control_points"].encode('ascii')),
+                    dtype=np.float64
             ).reshape((-1, jbz["dim"]))
             if jbz["weights"] is not None:
                 jbz["weights"] = np.frombuffer(
-                    base64.b64decode(
-                        jbz["weights"].encode('ascii')
-                    ),
-                    dtype=np.float64
+                        base64.b64decode(jbz["weights"].encode('ascii')),
+                        dtype=np.float64
                 ).reshape((-1, 1))
 
         # Declare Type and get required properties
@@ -90,7 +86,7 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
 
     """
     # Determine Spline Group
-    if list_name == None:
+    if list_name is None:
         list_name = "SplineGroup"
 
     # Ensure spline_list is actually a list
@@ -101,9 +97,9 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
     n_splines = len(spline_list)
 
     output_dict = {
-        "Name": list_name,
-        "NumberOfSplines": n_splines,
-        "Base64Encoding": base64encoding
+            "Name": list_name,
+            "NumberOfSplines": n_splines,
+            "Base64Encoding": base64encoding
     }
 
     # Append all splines to a dictionary
@@ -123,11 +119,11 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
 
         if base64encoding:
             i_spline_dict["control_points"] = base64.b64encode(
-                np.array(i_spline_dict["control_points"])
+                    np.array(i_spline_dict["control_points"])
             ).decode('utf-8')
             if "weights" in i_spline.required_properties:
                 i_spline_dict["weights"] = base64.b64encode(
-                    np.array(i_spline_dict["weights"])
+                        np.array(i_spline_dict["weights"])
                 ).decode('utf-8')
 
     output_dict["SplineList"] = spline_dictonary_list

@@ -1,12 +1,15 @@
-import numpy as np
-
-from splinepy import utils
 from splinepy.bezier import BezierBase
 
 
 class RationalBezier(BezierBase):
 
-    def __init__(self, degrees=None, control_points=None, weights=None, spline=None):
+    def __init__(
+            self,
+            degrees=None,
+            control_points=None,
+            weights=None,
+            spline=None
+    ):
         """
         RationalBezier (Spline).
 
@@ -22,8 +25,8 @@ class RationalBezier(BezierBase):
         None
         """
         super().__init__(
-            spline=spline,
-            degrees=degrees,
-            control_points=control_points,
-            weights=weights,
+                spline=spline,
+                degrees=degrees,
+                control_points=control_points,
+                weights=weights,
         )

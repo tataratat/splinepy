@@ -2,6 +2,9 @@
 io utils.
 """
 
+import os
+
+
 def make_meaningful(line, comment="#"):
     """
     Trys to turn a str input a meaningful line. Returns False if it is not
@@ -15,7 +18,7 @@ def make_meaningful(line, comment="#"):
 
     Returns
     --------
-    
+
     """
     line = line.strip()
     if len(line) == 0 or line.startswith(comment):
@@ -45,7 +48,7 @@ def next_line(f, comment="#"):
     counter = 0
     while line.startswith(comment) or len(line) == 0:
         counter += 1
-        if counter >= 513: 
+        if counter >= 513:
             return None
         line = f.readline().strip()
 

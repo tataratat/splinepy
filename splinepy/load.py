@@ -15,7 +15,7 @@ from splinepy import io
 
 def load_splines(fname, as_dict=False):
     """
-    Loads spline files of extension 
+    Loads spline files of extension
       - `.iges`
       - `.xml`
       - `.itd`
@@ -65,9 +65,9 @@ def load_splines(fname, as_dict=False):
 
     else:
         raise NotImplementedError(
-            "We can only import "
-            "< .iges | .xml | .itd | .npz | .mesh | .json > "
-            "spline files."
+                "We can only import "
+                "< .iges | .xml | .itd | .npz | .mesh | .json > "
+                "spline files."
         )
 
     # exit early for as_dict
@@ -114,6 +114,4 @@ def load_solution(fname, reference_spline):
         return NURBS(**io.mfem.read_solution(fname, reference_spline))
 
     else:
-        raise NotImplementedError(
-            "We can only import < .gf >  solution files"
-        )
+        raise NotImplementedError("We can only import < .gf >  solution files")

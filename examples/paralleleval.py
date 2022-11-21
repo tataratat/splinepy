@@ -8,34 +8,33 @@ from multiprocessing import Pool
 import splinepy
 import numpy as np
 
-
 if __name__ == "__main__":
 
     # define a bspline
     ds = [2, 2]
     kvs = [
-        [0,0,0,0.5,1,1,1],
-        [0,0,0,1,1,1],
+            [0, 0, 0, 0.5, 1, 1, 1],
+            [0, 0, 0, 1, 1, 1],
     ]
     cps = [
-       [0,0,0],
-       [0,1,0],
-       [1,1.5,0],
-       [3,1.5,0],
-       [-1,0,0],
-       [-1,2,0],
-       [1,4,0],
-       [3,4,0],
-       [-2,0,0],
-       [-2,2,0],
-       [1,5,0],
-       [3,5,2],
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 1.5, 0],
+            [3, 1.5, 0],
+            [-1, 0, 0],
+            [-1, 2, 0],
+            [1, 4, 0],
+            [3, 4, 0],
+            [-2, 0, 0],
+            [-2, 2, 0],
+            [1, 5, 0],
+            [3, 5, 2],
     ]
 
     b = splinepy.BSpline(
-        degrees=ds,
-        knot_vectors=kvs,
-        control_points=cps,
+            degrees=ds,
+            knot_vectors=kvs,
+            control_points=cps,
     )
 
     # elevate degree to make evaluation take a bit longer
@@ -81,14 +80,12 @@ if __name__ == "__main__":
     res_t = b.evaluate(q, n_threads=4)
     ttime = tic() - now
     print(f"multithread evaluation took {ttime} seconds.")
-    
 
     # serial eval
     now = tic()
     res_s = b.evaluate(q)
     stime = tic() - now
     print(f"serial evaluation took {stime} seconds.")
-
 
     print(f"serial / multiprocess (with setup) = {stime / mptime0}")
     print(f"serial / multiprocess (without setup) = {stime / mptime1}")

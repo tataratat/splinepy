@@ -21,16 +21,19 @@ class RequiredProperties:
 
     # name mangling to make direct access very annoying
     __required_spline_properties = {
-        "Bezier": ("degrees", "control_points"),
-        "RationalBezier": ("degrees", "control_points", "weights"),
-        "BSpline": ("degrees", "knot_vectors", "control_points"),
-        "NURBS": ("degrees", "knot_vectors", "control_points", "weights"),
+            "Bezier": ("degrees", "control_points"),
+            "RationalBezier": ("degrees", "control_points", "weights"),
+            "BSpline": ("degrees", "knot_vectors", "control_points"),
+            "NURBS": ("degrees", "knot_vectors", "control_points", "weights"),
     }
 
     # union of all req props. nice for check support
-    __union_all = set([
-        rp for rps in __required_spline_properties.values() for rp in rps
-    ])
+    __union_all = set(
+            [
+                    rp for rps in __required_spline_properties.values()
+                    for rp in rps
+            ]
+    )
 
     # intersection of all req props. nice for checking minimal support
     __intersection_all = __union_all.intersection(
@@ -77,9 +80,9 @@ class RequiredProperties:
         # do we support this spline type?
         if spline_type not in cls.__required_spline_properties:
             raise ValueError(
-                f"Sorry, we don't have support for ({spline_type})-types."
-                "Supported spline types are:"
-                f"{list(cls.__required_spline_properties.keys())}"
+                    f"Sorry, we don't have support for ({spline_type})-types."
+                    "Supported spline types are:"
+                    f"{list(cls.__required_spline_properties.keys())}"
             )
 
         return cls.__required_spline_properties[spline_type]
@@ -183,7 +186,7 @@ def sync_from_core(spl):
     """
     Clears saved data and syncs given spline with its core spline values.
     Similiar to previously called `_update_p`, but does a bit more.
-    Meant for internal use for syncing python exposed splines with cpp splines. 
+    Meant for internal use for syncing python exposed splines with cpp splines.
     However, could be also useful for debugging or ensuring purpose.
     Syncing is done inplace.
 
@@ -241,16 +244,21 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Update knot_vectors where applicable
     if "knot_vectors" in spline.required_properties:
-        dict_spline["knot_vectors"] = [spline.knot_vectors[permutation_list[i]]
-                                            for i in range(spline.para_dim)]
+        dict_spline["knot_vectors"] = [
+                spline.knot_vectors[permutation_list[i]]
+                for i in range(spline.para_dim)
+        ]
     # Update degrees
-    dict_spline["degrees"] = [spline.degrees[permutation_list[i]]
-                                   for i in range(spline.para_dim)]
+    dict_spline["degrees"] = [
+            spline.degrees[permutation_list[i]]
+            for i in range(spline.para_dim)
+    ]
 
     # Retrieve control mesh resolutions
     ctps_dims = spline.control_mesh_resolutions
-    new_ctps_dims = [ctps_dims[permutation_list[i]]
-                     for i in range(spline.para_dim)]
+    new_ctps_dims = [
+            ctps_dims[permutation_list[i]] for i in range(spline.para_dim)
+    ]
     n_ctps = spline.control_points.shape[0]
 
     # Map global to local index
@@ -267,7 +275,9 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-        local_indices, np.cumprod([1] + new_ctps_dims)[0:-1])
+            local_indices,
+            np.cumprod([1] + new_ctps_dims)[0:-1]
+    )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
     if "weights" in spline.required_properties:
@@ -373,7 +383,7 @@ def _default_if_none(arg, default):
     default_if_none: object
     """
     return default if arg is None else arg
-    
+
 
 def _new_core_if_modified(func):
     """
@@ -385,8 +395,9 @@ def _new_core_if_modified(func):
 
     Returns
     -------
-    inner: callable 
+    inner: callable
     """
+
     @wraps(func)
     def inner(*args, **kwargs):
         self = args[0]
@@ -401,25 +412,20 @@ def _new_core_if_modified(func):
     return inner
 
 
-
 class Spline(core.CoreSpline):
     """
     Spline base class. Extends CoreSpline with documentation.
     """
 
     __slots__ = (
-        "_logi",
-        "_logd",
-        "_logw",
+            "_logi",
+            "_logd",
+            "_logw",
     )
 
-    def __init__(
-            self,
-            spline=None,
-            **kwargs
-    ):
+    def __init__(self, spline=None, **kwargs):
         """
-        Base Spline. 
+        Base Spline.
 
         Parameters
         -----------
@@ -464,16 +470,16 @@ class Spline(core.CoreSpline):
             # will share core, even nullptr
             super().__init__(spline)
             # depends on the use case, here could be a place to copy _data
- 
+
         else:
             # warn if there are too many keywords
             kset = set(kwargs.keys())
             # do they at least contain minimal set of keywards?
             if not RequiredProperties.intersection().issubset(kset):
                 raise RuntimeError(
-                           f"Given keyword arguments ({kwargs}) don't contain"
-                           "minimal set of keywords, "
-                           f"{RequiredProperties.intersection()}."
+                        f"Given keyword arguments ({kwargs}) don't contain"
+                        "minimal set of keywords, "
+                        f"{RequiredProperties.intersection()}."
                 )
             super().__init__(**kwargs)
 
@@ -662,10 +668,10 @@ class Spline(core.CoreSpline):
         # in case no roundtrip is desired, keep properties alive
         if not properties_round_trip:
             props = self._data["properties"]
-            self._data = _default_properties()
+            self._data = _default_data()
             self._data["properties"] = props
             _set_modified_false(self)
-            
+
         else:
             sync_from_core(self)
 
@@ -708,7 +714,7 @@ class Spline(core.CoreSpline):
             if len(self.knot_vectors) != len(degrees):
                 raise ValueError(
                         f"len(degrees) ({len(degrees)}) should match "
-                        f"len(knot_vectors) ({len(knot_vectors)})."
+                        f"len(self.knot_vectors) ({len(self.knot_vectors)})."
                 )
 
         # set - copies
@@ -718,7 +724,11 @@ class Spline(core.CoreSpline):
         self._logd(f"Degrees set: {self.degrees}")
 
         # try to sync core with current status
-        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
+        self.new_core(
+                raise_=False,
+                properties_round_trip=False,
+                **self._data["properties"]
+        )
 
     @property
     def knot_vectors(self):
@@ -759,7 +769,7 @@ class Spline(core.CoreSpline):
             if len(knot_vectors) != len(self.degrees):
                 raise ValueError(
                         f"len(knot_vectors) ({len(knot_vectors)}) should "
-                        f"match len(degrees) ({len(degrees)})."
+                        f"match len(self.degrees) ({len(self.degrees)})."
                 )
 
         # set - copies
@@ -770,14 +780,16 @@ class Spline(core.CoreSpline):
 
         self._logd("Knot vectors set:")
         for i, kv in enumerate(self.knot_vectors):
-            self._logd(
-                    f"  {i}"
-                    ". knot vector length: "
-                    f"{len(kv)}"
-            )
+            self._logd(f"  {i}"
+                       ". knot vector length: "
+                       f"{len(kv)}")
 
         # try to sync core with current status
-        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
+        self.new_core(
+                raise_=False,
+                properties_round_trip=False,
+                **self._data["properties"]
+        )
 
     @property
     def unique_knots(self):
@@ -873,15 +885,17 @@ class Spline(core.CoreSpline):
         self._data["properties"]["control_points"] = (
                 utils.data.make_tracked_array(control_points, "float64")
         )
-        self._logd(
-            f"{self.control_points.shape[0]} Control points set."
-        )
- 
+        self._logd(f"{self.control_points.shape[0]} Control points set.")
+
         # try to sync core with current status
-        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
+        self.new_core(
+                raise_=False,
+                properties_round_trip=False,
+                **self._data["properties"]
+        )
 
     @property
-    def control_point_bounds(self,):
+    def control_point_bounds(self, ):
         """
         Returns bounds of control points.
 
@@ -899,7 +913,7 @@ class Spline(core.CoreSpline):
         return np.vstack((cps.min(axis=0), cps.max(axis=0)))
 
     @property
-    def control_mesh_resolutions(self,):
+    def control_mesh_resolutions(self, ):
         """
         Returns control mesh resolutions.
 
@@ -928,7 +942,7 @@ class Spline(core.CoreSpline):
         return cmr
 
     @property
-    def weights(self,):
+    def weights(self, ):
         """
         Returns weights.
 
@@ -973,11 +987,15 @@ class Spline(core.CoreSpline):
         self._data["properties"]["weights"] = utils.data.make_tracked_array(
                 weights, "float64"
         ).reshape(-1, 1)
- 
+
         self._logd(f"{self.weights.shape[0]} Weights set.")
 
         # try to sync core with current status
-        self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
+        self.new_core(
+                raise_=False,
+                properties_round_trip=False,
+                **self._data["properties"]
+        )
 
     @_new_core_if_modified
     def evaluate(self, queries, nthreads=None):
@@ -1017,8 +1035,8 @@ class Spline(core.CoreSpline):
         results: (math.product(resolutions), dim) np.ndarray
         """
         self._logd(
-            f"Sampling {np.product(resolutions)} "
-            "points from spline."
+                f"Sampling {np.product(resolutions)} "
+                "points from spline."
         )
 
         return super().sample(
@@ -1050,7 +1068,7 @@ class Spline(core.CoreSpline):
                 queries=queries,
                 orders=orders,
                 nthreads=_default_if_none(nthreads, settings.NTHREADS),
-            )
+        )
 
     @_new_core_if_modified
     def basis_and_support(self, queries, nthreads=None):
@@ -1153,8 +1171,8 @@ class Spline(core.CoreSpline):
         """
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
-            f"Elevated {parametric_dimension}.-dim. "
-            "degree of the spline."
+                f"Elevated {parametric_dimensions}.-dim. "
+                "degree of the spline."
         )
         sync_from_core(self)
 
@@ -1173,17 +1191,17 @@ class Spline(core.CoreSpline):
         reduced: list
         """
         reduced = super().reduce_degree(
-            para_dims=parametric_dimensions,
-            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+                para_dims=parametric_dimensions,
+                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
         )
+
         def meaningful(r):
             """True/False to reduced/failed"""
             return "reduced" if r else "failed"
 
         self._logd(
-            f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-            "Results: ",
-            f"{[meaningful(r) for r in reduced]}."
+                f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
+                "Results: ", f"{[meaningful(r) for r in reduced]}."
         )
 
         if any(reduced):
@@ -1205,13 +1223,13 @@ class Spline(core.CoreSpline):
         --------
         None
         """
-        # prepare export destination 
+        # prepare export destination
         fname = str(fname)
         dirname = os.path.dirname(fname)
         if not os.path.isdir(dirname) and dirname != "":
             os.makedirs(dirname)
 
-        # ext tells you what you 
+        # ext tells you what you
         ext = os.path.splitext(fname)[1]
 
         if ext == ".iges":
@@ -1235,8 +1253,8 @@ class Spline(core.CoreSpline):
 
         else:
             raise ValueError(
-                "We can only export "
-                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
+                    "We can only export "
+                    "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
             )
 
         self._logi(f"Exported current spline as {fname}.")
@@ -1276,7 +1294,7 @@ class Spline(core.CoreSpline):
 
         return dict_spline
 
-    def copy(self,):
+    def copy(self, ):
         """
         Returns deepcopy of self.
 
