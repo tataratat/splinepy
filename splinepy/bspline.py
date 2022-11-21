@@ -4,8 +4,6 @@ from splinepy import spline
 from splinepy import splinepy_core
 from splinepy import settings
 from splinepy import utils
-from splinepy.nurbs import NURBS
-from splinepy.bezier import Bezier
 
 
 class BSplineBase(spline.Spline):
