@@ -4,7 +4,6 @@ import numpy as np
 
 import splinepy
 
-
 __all__ = [
         "unittest",
         "np",
@@ -126,3 +125,12 @@ q3D = [
         [.5623, .0089, .99],
         [.0431, .2, .523],
 ]
+
+
+def are_items_same(a, b):
+    """returns True if items in a and b are same (close)"""
+    same = True
+    for aa, bb in zip(a, b):
+        same &= all(np.isclose(aa, bb))
+
+    return same
