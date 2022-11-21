@@ -1,12 +1,12 @@
 from splinepy._version import __version__
 from splinepy import splinepy_core
 
-from splinepy import utils
 from splinepy import spline
 from splinepy import bezier
 from splinepy import rational_bezier
 from splinepy import bspline
 from splinepy import nurbs
+from splinepy import utils
 from splinepy import load
 from splinepy import io
 from splinepy import settings
