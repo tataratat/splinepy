@@ -288,7 +288,7 @@ def export_cartesian(
     -------
     None
     """
-    from splinepy._spline import Spline
+    from splinepy import Spline
 
     # Check first spline
     if not type(spline_list) == list:
@@ -328,7 +328,15 @@ def export_cartesian(
 
         def _corner_vertex_ids(spline):
             cmr = spline.control_mesh_resolutions
-            return [0, cmr[0] - 1, cmr[0] * cmr[1] - 1, cmr[0] * (cmr[1] - 1)]
+            return np.array(
+                    [
+                            0,
+                            cmr[0] - 1,
+                            cmr[0] * cmr[1] - 1,
+                            cmr[0] * (cmr[1] - 1),
+                    ],
+                    dtype="int32"
+            )
     elif para_dim == 3:
         geometry_type = 5
         boundary_type = 3
@@ -337,16 +345,21 @@ def export_cartesian(
 
         def _corner_vertex_ids(spline):
             cmr = spline.control_mesh_resolutions
-            return [
-                    0,
-                    cmr[0] - 1,
-                    cmr[0] * cmr[1] - 1,
-                    cmr[0] * (cmr[1] - 1),
-                    (cmr[2] - 1) * cmr[1] * cmr[0],
-                    (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] - 1,
-                    (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * cmr[1] - 1,
-                    (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * (cmr[1] - 1),
-            ]
+            return np.array(
+                    [
+                            0,
+                            cmr[0] - 1,
+                            cmr[0] * cmr[1] - 1,
+                            cmr[0] * (cmr[1] - 1),
+                            (cmr[2] - 1) * cmr[1] * cmr[0],
+                            (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] - 1,
+                            (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0] * cmr[1]
+                            - 1,
+                            (cmr[2] - 1) * cmr[1] * cmr[0] + cmr[0]
+                            * (cmr[1] - 1),
+                    ],
+                    dtype="int32"
+            )
 
     # Create a list of all corner vertices ordered by spline patch number
     corner_vertices = np.empty((0, dim))
@@ -445,8 +458,10 @@ def export_cartesian(
                 f.write(f"{spline.degrees[i_para_dim]} ")
                 f.write(f"{cmr[i_para_dim]} ")
                 if "knot_vectors" not in spline.required_properties:
-                    f.write("0.0 " * (spline.degrees[i_para_dim] + 1))
-                    f.write("1.0 " * (spline.degrees[i_para_dim] + 1) + "\n")
+                    f.write("0.0 " * int(spline.degrees[i_para_dim] + 1))
+                    f.write(
+                            "1.0 " * int(spline.degrees[i_para_dim] + 1) + "\n"
+                    )
                 else:
                     f.write(
                             ' '.
