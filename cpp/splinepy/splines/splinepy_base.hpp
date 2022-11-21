@@ -87,8 +87,8 @@ public:
                       const double* control_points,
                       const double* weights);
 
-  virtual constexpr int SplinepyParaDim() const = 0;
-  virtual constexpr int SplinepyDim() const = 0;
+  virtual int SplinepyParaDim() const = 0;
+  virtual int SplinepyDim() const = 0;
   virtual std::string SplinepySplineName() const = 0;
   virtual std::string SplinepyWhatAmI() const = 0;
   virtual bool SplinepyHasKnotVectors() const = 0;
