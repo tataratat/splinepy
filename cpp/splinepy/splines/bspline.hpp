@@ -71,8 +71,8 @@ public:
    * as well as the legnth of control_points/weights.
    */
   static Base_ CreateBase(const int* degrees,
-                         const std::vector<std::vector<double>> knot_vectors,
-                         const double* control_points) {
+                          const std::vector<std::vector<double>> knot_vectors,
+                          const double* control_points) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 

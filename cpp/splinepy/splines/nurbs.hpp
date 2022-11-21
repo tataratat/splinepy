@@ -134,8 +134,7 @@ public:
         const std::vector<std::vector<double>>& knot_vectors,
         const double* control_points,
         const double* weights)
-      : Base_(
-          CreateBase(degrees, knot_vectors, control_points, weights)) {}
+      : Base_(CreateBase(degrees, knot_vectors, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
 

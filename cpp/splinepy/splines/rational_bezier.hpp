@@ -44,8 +44,8 @@ public:
       splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
   static Base_ CreateBase(const int* degrees,
-                         const double* control_points,
-                         const double* weights) {
+                          const double* control_points,
+                          const double* weights) {
 
     std::array<std::size_t, para_dim> bm_degrees{};
     std::size_t ncps{1};
