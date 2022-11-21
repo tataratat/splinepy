@@ -417,11 +417,23 @@ class Spline(core.CoreSpline):
     Spline base class. Extends CoreSpline with documentation.
     """
 
-    __slots__ = (
-            "_logi",
-            "_logd",
-            "_logw",
-    )
+    __slots__ = ()
+
+    def __new__(cls, *args, **kwargs):
+        """
+        Add logger shortcut during creation
+        """
+        cls._logi = utils.log.prepend_log(
+                cls.__qualname__, utils.log.info
+        )
+        cls._logd = utils.log.prepend_log(
+                cls.__qualname__, utils.log.debug
+        )
+        cls._logw = utils.log.prepend_log(
+                cls.__qualname__, utils.log.warning
+        )
+        return super().__new__(cls, *args, **kwargs)
+
 
     def __init__(self, spline=None, **kwargs):
         """
@@ -451,17 +463,6 @@ class Spline(core.CoreSpline):
         parametric_bounds: np.ndarray
         control_point_bounds: np.ndarray
         """
-        # logger shortcut
-        self._logi = utils.log.prepend_log(
-                type(self).__qualname__, utils.log.info
-        )
-        self._logd = utils.log.prepend_log(
-                type(self).__qualname__, utils.log.debug
-        )
-        self._logw = utils.log.prepend_log(
-                type(self).__qualname__, utils.log.warning
-        )
-
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
             return None
@@ -1312,15 +1313,7 @@ class Spline(core.CoreSpline):
         --------
         new_spline: type(self)
         """
-        # all the properties are deepcopyable
-        new_spline = copy.deepcopy(self)
-
-        # those are not copied automatically
-        new_spline._logi = self._logi
-        new_spline._logd = self._logd
-        new_spline._logw = self._logw
-
-        return new_spline
+        return copy.deepcopy(self)
 
     # short cuts / alias
     ds = degrees
