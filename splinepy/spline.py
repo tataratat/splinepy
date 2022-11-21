@@ -668,7 +668,7 @@ class Spline(core.CoreSpline):
         # in case no roundtrip is desired, keep properties alive
         if not properties_round_trip:
             props = self._data["properties"]
-            self._data = _default_properties()
+            self._data = _default_data()
             self._data["properties"] = props
             _set_modified_false(self)
 
@@ -714,7 +714,7 @@ class Spline(core.CoreSpline):
             if len(self.knot_vectors) != len(degrees):
                 raise ValueError(
                         f"len(degrees) ({len(degrees)}) should match "
-                        f"len(knot_vectors) ({len(knot_vectors)})."
+                        f"len(self.knot_vectors) ({len(self.knot_vectors)})."
                 )
 
         # set - copies
@@ -769,7 +769,7 @@ class Spline(core.CoreSpline):
             if len(knot_vectors) != len(self.degrees):
                 raise ValueError(
                         f"len(knot_vectors) ({len(knot_vectors)}) should "
-                        f"match len(degrees) ({len(degrees)})."
+                        f"match len(self.degrees) ({len(self.degrees)})."
                 )
 
         # set - copies
@@ -1171,7 +1171,7 @@ class Spline(core.CoreSpline):
         """
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
-                f"Elevated {parametric_dimension}.-dim. "
+                f"Elevated {parametric_dimensions}.-dim. "
                 "degree of the spline."
         )
         sync_from_core(self)

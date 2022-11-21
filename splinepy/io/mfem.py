@@ -27,7 +27,7 @@ _mfem_meaningful_keywords = {
 }
 
 
-def load(fname, ):
+def load(fname):
     """
     Reads mfem spline and returns a spline.
     Again, only supports 2D single patch.
@@ -54,8 +54,8 @@ def load(fname, ):
     nurbs_dict = dict(knotvectors=[], weights=[], Ordering=[])
     collect = False
     with open(fname, "r") as f:
-        for l in f:
-            line = make_meaningful(l)
+        for single_line in f:
+            line = make_meaningful(single_line)
             if not line:
                 continue
 
@@ -214,13 +214,13 @@ def mfem_index_mapping(
     inverse: (n,) np.ndarray
     """
 
-    def flatten(l):
+    def flatten(list_):
         """unrolls any nested list"""
-        if len(l) == 0:
-            return l
-        if isinstance(l[0], list):
-            return flatten(l[0]) + flatten(l[1:])
-        return l[:1] + flatten(l[1:])
+        if len(list_) == 0:
+            return list_
+        if isinstance(list_[0], list):
+            return flatten(list_[0]) + flatten(list_[1:])
+        return list_[:1] + flatten(list_[1:])
 
     if int(para_dim) == 2:
         cps_per_dim = [
@@ -444,7 +444,7 @@ def export_cartesian(
             for i_para_dim in range(para_dim):
                 f.write(f"{spline.degrees[i_para_dim]} ")
                 f.write(f"{cmr[i_para_dim]} ")
-                if not "knot_vectors" in spline.required_properties:
+                if "knot_vectors" not in spline.required_properties:
                     f.write("0.0 " * (spline.degrees[i_para_dim] + 1))
                     f.write("1.0 " * (spline.degrees[i_para_dim] + 1) + "\n")
                 else:
@@ -454,8 +454,8 @@ def export_cartesian(
                                  for kvi in spline.kvs[i_para_dim]) + "\n"
                     )
             f.write(f"dimension\n{dim}\n")
-            f.write(f"controlpoints_cartesian\n")
-            if not "weights" in spline.required_properties:
+            f.write("controlpoints_cartesian\n")
+            if "weights" not in spline.required_properties:
                 f.write(
                         '\n'.join(
                                 (' '.join(str(x_i)

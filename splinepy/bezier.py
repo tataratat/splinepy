@@ -1,6 +1,3 @@
-import numpy as np
-
-from splinepy import utils
 from splinepy import settings
 from splinepy import spline
 from splinepy import splinepy_core

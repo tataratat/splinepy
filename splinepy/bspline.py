@@ -53,7 +53,8 @@ class BSplineBase(spline.Spline):
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. (Too small)"
+                    "One of the query knots not in valid knot range. "
+                    "(Too small)"
             )
 
         splinepy_core.insert_knots(self, parametric_dimension, knots)
@@ -92,10 +93,9 @@ class BSplineBase(spline.Spline):
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. (Too small)"
+                    "One of the query knots not in valid knot range. "
+                    "(Too small)"
             )
-
-        total_knots_before = len(self.knot_vectors[int(parametric_dimension)])
 
         removed = splinepy_core.remove_knots(
                 self,

@@ -1,6 +1,3 @@
-import numpy as np
-
-from splinepy import utils
 from splinepy.bezier import BezierBase
 
 

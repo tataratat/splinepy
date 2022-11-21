@@ -2,6 +2,8 @@
 io utils.
 """
 
+import os
+
 
 def make_meaningful(line, comment="#"):
     """

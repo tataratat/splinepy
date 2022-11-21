@@ -5,8 +5,6 @@ Helps helpee to manage data. Some useful data structures.
 
 import numpy as np
 
-from splinepy.utils import log
-
 
 class TrackedArray(np.ndarray):
     """Taken from nice implementations of `trimesh` (see LICENSE).
