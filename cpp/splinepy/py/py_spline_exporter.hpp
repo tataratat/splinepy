@@ -29,15 +29,15 @@ namespace py = pybind11;
 
 /// this is a shared pointer of splinelib's SplineItem
 using SplineLibIoSpline =
-    typename splinelib::sources::input_output::operations::SplineEntry;
+    splinelib::sources::input_output::operations::SplineEntry;
 // same as std::vector<SplineLibIoSpline>
 using SplineLibIoSplines =
-    typename splinelib::sources::input_output::operations::Splines;
+    splinelib::sources::input_output::operations::Splines;
 
 /// convert CoreSpline (shared_ptr of splinepybase) to splinelib io splines
 /// PySpline has the same namespace
 SplineLibIoSpline PySplineToSplineLibIoSpline(PySpline& pyspline) {
-  return dynamic_pointer_cast<SplineLibIoSpline::element_type>(
+  return std::dynamic_pointer_cast<typename SplineLibIoSpline::element_type>(
       splinepy::py::SameSplineWithKnotVectors(pyspline).Core());
 }
 
