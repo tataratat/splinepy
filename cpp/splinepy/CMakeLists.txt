@@ -54,7 +54,7 @@ target_compile_definitions(splinepy
 # features
 target_compile_features(splinepy
     PUBLIC
-        cxx_std_20) 
+        cxx_std_17) 
 
 # python?
 if(SPLINEPY_COMPILE_PYTHON)

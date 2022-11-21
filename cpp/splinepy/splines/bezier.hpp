@@ -93,9 +93,9 @@ public:
   }
 
   // required implementations
-  virtual constexpr int SplinepyParaDim() const { return kParaDim; }
+  virtual int SplinepyParaDim() const { return kParaDim; }
 
-  virtual constexpr int SplinepyDim() const { return kDim; }
+  virtual int SplinepyDim() const { return kDim; }
 
   virtual std::string SplinepySplineName() const { return "Bezier"; }
 
