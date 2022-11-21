@@ -68,10 +68,10 @@ public:
   // degrees should have same size as parametric dimension
   // having knot_vectors vector of vector, we can keep track of their length,
   // as well as the legnth of control_points/weights.
-  Base_ RawPtrInitHelper(const double* degrees,
-                         const std::vector<std::vector<double>> knot_vectors,
-                         const double* control_points,
-                         const double* weights) {
+  static Base_ CreateBase(const int* degrees,
+                          const std::vector<std::vector<double>> knot_vectors,
+                          const double* control_points,
+                          const double* weights) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -130,12 +130,12 @@ public:
   }
 
   // rawptr based ctor
-  Nurbs(const double* degrees,
+  Nurbs(const int* degrees,
         const std::vector<std::vector<double>>& knot_vectors,
         const double* control_points,
         const double* weights)
       : Base_(
-          RawPtrInitHelper(degrees, knot_vectors, control_points, weights)) {}
+          CreateBase(degrees, knot_vectors, control_points, weights)) {}
   // inherit ctor
   using Base_::Base_;
 
@@ -168,7 +168,7 @@ public:
   }
 
   virtual void
-  SplinepyCurrentProperties(double* degrees,
+  SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const {
@@ -177,7 +177,7 @@ public:
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(parameter_space.GetDegrees()[i]);
+      degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
     }
 
     // knot_vectors
