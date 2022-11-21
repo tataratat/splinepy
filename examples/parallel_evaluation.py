@@ -9,7 +9,6 @@ import splinepy
 import numpy as np
 
 if __name__ == "__main__":
-
     # define a bspline
     ds = [2, 2]
     kvs = [
@@ -77,7 +76,7 @@ if __name__ == "__main__":
 
     # multithread eval
     now = tic()
-    res_t = b.evaluate(q, n_threads=4)
+    res_t = b.evaluate(q, nthreads=4)
     ttime = tic() - now
     print(f"multithread evaluation took {ttime} seconds.")
 

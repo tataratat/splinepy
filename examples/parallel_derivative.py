@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     # multithread eval
     now = tic()
-    res_t = n.derivative(q, der, n_threads=4)
+    res_t = n.derivative(q, der, nthreads=4)
     ttime = tic() - now
     print(f"multithread evaluation took {ttime} seconds.")
 
