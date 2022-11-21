@@ -9,7 +9,7 @@ std::shared_ptr<SplinepyBase>
 splinepy::splines::SplinepyBase::SplinepyCreateBezier(
     const int para_dim,
     const int dim,
-    const double* degrees,
+    const int* degrees,
     const double* control_points) {
   switch (para_dim) {
   case 1:

@@ -8,7 +8,7 @@ std::shared_ptr<SplinepyBase>
 splinepy::splines::SplinepyBase::SplinepyCreateRationalBezier(
     const int para_dim,
     const int dim,
-    const double* degrees,
+    const int* degrees,
     const double* control_points,
     const double* weights) {
   switch (para_dim) {
