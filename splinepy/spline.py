@@ -720,9 +720,6 @@ class Spline(core.CoreSpline):
         # try to sync core with current status
         self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
-    # short cut
-    ds = degrees
-
     @property
     def knot_vectors(self):
         """
@@ -782,8 +779,6 @@ class Spline(core.CoreSpline):
         # try to sync core with current status
         self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
 
-    kvs = knot_vectors
-
     @property
     def unique_knots(self):
         """
@@ -831,9 +826,6 @@ class Spline(core.CoreSpline):
         parametric_bounds: (2, para_dim) np.ndarray
         """
         return super().parametric_bounds
-
-    # keep this until gustaf stops using knot_vector_bounds
-    knot_vector_bounds = parametric_bounds
 
     @property
     def control_points(self):
@@ -887,9 +879,6 @@ class Spline(core.CoreSpline):
  
         # try to sync core with current status
         self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
-
-    # shortcut
-    cps = control_points
 
     @property
     def control_point_bounds(self,):
@@ -989,8 +978,6 @@ class Spline(core.CoreSpline):
 
         # try to sync core with current status
         self.new_core(raise_=False, properties_round_trip=False, **self._data["properties"])
-
-    ws = weights
 
     @_new_core_if_modified
     def evaluate(self, queries, nthreads=None):
@@ -1171,9 +1158,6 @@ class Spline(core.CoreSpline):
         )
         sync_from_core(self)
 
-    # single query version alias for backward compatibility
-    elevate_degree = elevate_degrees
-
     @_new_core_if_modified
     def reduce_degrees(self, parametric_dimensions, tolerance=None):
         """
@@ -1206,9 +1190,6 @@ class Spline(core.CoreSpline):
             sync_from_core(self)
 
         return reduced
-
-    # single query version alias for backward compatibility
-    reduce_degree = reduce_degrees
 
     @_new_core_if_modified
     def export(self, fname):
@@ -1309,3 +1290,14 @@ class Spline(core.CoreSpline):
         """
         # all the properties are deepcopyable
         return copy.deepcopy(self)
+
+    # short cuts / alias
+    ds = degrees
+    kvs = knot_vectors
+    cps = control_points
+    ws = weights
+
+    # Deprecated - TODO: inform
+    knot_vector_bounds = parametric_bounds
+    elevate_degree = elevate_degrees
+    reduce_degree = reduce_degrees
