@@ -19,9 +19,9 @@ class TestSplinepyEvaluation(unittest.TestCase):
         self.bezier = splinepy.Bezier(**self.z2P2D)
         self.rational = splinepy.RationalBezier(**self.r2P2D)
 
-    def test_basis_functions(self):
+    def test_basis_and_support(self):
         """ Test the correct calculation of the basis functions. 
-        (.basis_functions()) """
+        (.basis_and_support()) """
 
         # reference solutions
         bspline_ref_basis_functions = np.array(
@@ -56,12 +56,12 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test basis functions
         self.assertTrue(np.allclose(
-            self.bspline.basis_functions(c.q2D)[0],
+            self.bspline.basis_and_support(c.q2D)[0],
             bspline_ref_basis_functions
         )
         )
         self.assertTrue(np.allclose(
-            self.nurbs.basis_functions(c.q2D)[0],
+            self.nurbs.basis_and_support(c.q2D)[0],
             nurbs_ref_basis_functions
         )
         )
@@ -75,13 +75,13 @@ class TestSplinepyEvaluation(unittest.TestCase):
         # use random query points
         q2D = np.random.rand(10, 2)
 
-        u_bspline = basis_functions_sum(self.bspline.basis_functions(q2D)[0])
+        u_bspline = basis_functions_sum(self.bspline.basis_and_support(q2D)[0])
         self.assertTrue(np.allclose(
             u_bspline,
             np.ones(np.shape(u_bspline))
         )
         )
-        u_nurbs = basis_functions_sum(self.nurbs.basis_functions(q2D)[0])
+        u_nurbs = basis_functions_sum(self.nurbs.basis_and_support(q2D)[0])
         self.assertTrue(np.allclose(
             u_nurbs,
             np.ones(np.shape(u_nurbs))
@@ -150,22 +150,22 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # reference solutions
         bspline_ref_derivative = np.array(
-            [[0.0408,   4.019206],
-             [0.08,     6.935],
-             [6.88,     0.318],
-             [6.72,     1.884],
-             [4.768,    6.36784]]
+                [[0.08,   7.8812],
+                 [0.08,   4.02  ],
+                 [0.8,   1.16  ],
+                 [1.6,    1.84  ],
+                 [3.2,    3.232 ],]
         )
         nurbs_ref_derivative = np.array(
-            [[0.02037649, 1.43654295],
-             [0.03026211, 2.13347963],
-             [1.62487759, 0.23798877],
-             [2.5357129,  0.77942396],
-             [1.90293663, 2.66500861]]
+            [[0.02017474, 1.42231975],
+             [0.02017474, 1.42231975],
+             [1.47716145, 0.21635343],
+             [1.49159582, 0.45848468],
+             [0.95624956, 1.33920031],]
         )
 
         # order
-        o1 = [[1, 1]]
+        o1 = [1, 1]
 
         # test derivative evaluation
         self.assertTrue(np.allclose(
