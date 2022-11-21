@@ -56,8 +56,8 @@ public:
       ncps *= degrees[i] + 1;
     }
 
-    // formulate weighted control_points and weights.
-    std::vector<Coordinate_> bm_weighted_control_points(ncps);
+    // formulate control_points and weights. bezman will apply weights
+    std::vector<Coordinate_> bm_control_points(ncps);
     std::vector<Weight_> bm_weights(ncps);
     for (std::size_t i{}; i < ncps; ++i) {
       // weights
@@ -65,14 +65,13 @@ public:
       // weighted cps
       if constexpr (dim > 1) {
         for (std::size_t j = 0; j < dim; j++) {
-          bm_weighted_control_points[i][j] =
-              control_points[i * dim + j] * weights[i];
+          bm_control_points[i][j] = control_points[i * dim + j];
         }
       } else {
-        bm_weighted_control_points[i] = control_points[i] * weights[i];
+        bm_control_points[i] = control_points[i];
       }
     }
-    return Base_(bm_degrees, bm_weighted_control_points, bm_weights);
+    return Base_(bm_degrees, bm_control_points, bm_weights);
   }
 
   // rawptr based ctor
