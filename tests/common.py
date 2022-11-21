@@ -127,10 +127,35 @@ q3D = [
 ]
 
 
-def are_items_same(a, b):
-    """returns True if items in a and b are same (close)"""
-    same = True
-    for aa, bb in zip(a, b):
-        same &= all(np.isclose(aa, bb))
+def are_items_close(a, b):
+    """returns True if items in a and b are close"""
+    all_close = True
 
-    return same
+    for i, (aa, bb) in enumerate(zip(a, b)):
+        this_is_close = all(np.isclose(aa, bb))
+        if not this_is_close:
+            # print to inform
+            print(f"elements in index-{i} are not close")
+            print(f"  from first: {aa}")
+            print(f"  from second: {bb}")
+
+            all_close = False
+
+    return all_close
+
+
+def are_items_same(a, b):
+    """returns True if items in a and b are same"""
+    all_same = True
+
+    for i, (aa, bb) in enumerate(zip(a, b)):
+        this_is_same = (aa == bb)
+        if not this_is_same:
+            # print to inform
+            print(f"element in index-{i} are not same")
+            print(f"  from first: {aa}")
+            print(f"  from second: {bb}")
+
+            all_same = False
+
+    return all_same
