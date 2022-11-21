@@ -1,30 +1,27 @@
-import splinepy
-import numpy as np
-import unittest
 try:
     from . import common as c
 except BaseException:
     import common as c
 
 
-class TestSplinepyEvaluation(unittest.TestCase):
+class TestSplinepyEvaluation(c.unittest.TestCase):
 
     def setUp(self):
         self.b2P2D = c.b2P2D.copy()
         self.n2P2D = c.n2P2D.copy()
         self.z2P2D = c.z2P2D.copy()
         self.r2P2D = c.r2P2D.copy()
-        self.bspline = splinepy.BSpline(**self.b2P2D)
-        self.nurbs = splinepy.NURBS(**self.n2P2D)
-        self.bezier = splinepy.Bezier(**self.z2P2D)
-        self.rational = splinepy.RationalBezier(**self.r2P2D)
+        self.bspline = c.splinepy.BSpline(**self.b2P2D)
+        self.nurbs = c.splinepy.NURBS(**self.n2P2D)
+        self.bezier = c.splinepy.Bezier(**self.z2P2D)
+        self.rational = c.splinepy.RationalBezier(**self.r2P2D)
 
     def test_basis_and_support(self):
         """ Test the correct calculation of the basis functions.
         (.basis_and_support()) """
 
         # reference solutions
-        bspline_ref_basis_functions = np.array(
+        bspline_ref_basis_functions = c.np.array(
                 [
                         [
                                 9.4128804e-01, 3.8615940e-02, 1.9602000e-04,
@@ -53,7 +50,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
                         ]
                 ]
         )
-        nurbs_ref_basis_functions = np.array(
+        nurbs_ref_basis_functions = c.np.array(
                 [
                         [
                                 9.75958864e-01, 1.39415582e-02, 9.95774782e-05,
@@ -80,13 +77,13 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test basis functions
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.bspline.basis_and_support(c.q2D)[0],
                         bspline_ref_basis_functions
                 )
         )
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.nurbs.basis_and_support(c.q2D)[0],
                         nurbs_ref_basis_functions
                 )
@@ -99,38 +96,40 @@ class TestSplinepyEvaluation(unittest.TestCase):
             return basis_functions.sum(axis=1)
 
         # use random query points
-        q2D = np.random.rand(10, 2)
+        q2D = c.np.random.rand(10, 2)
 
         u_bspline = basis_functions_sum(self.bspline.basis_and_support(q2D)[0])
-        self.assertTrue(np.allclose(u_bspline, np.ones(np.shape(u_bspline))))
+        self.assertTrue(
+                c.np.allclose(u_bspline, c.np.ones(c.np.shape(u_bspline)))
+        )
         u_nurbs = basis_functions_sum(self.nurbs.basis_and_support(q2D)[0])
-        self.assertTrue(np.allclose(u_nurbs, np.ones(np.shape(u_nurbs))))
+        self.assertTrue(c.np.allclose(u_nurbs, c.np.ones(c.np.shape(u_nurbs))))
 
     def test_evaluate(self):
         """ Test the correct spline evaluation in the physical space.
         (.evaluate()) """
 
         # reference solutions
-        bspline_ref_evaluate = np.array(
+        bspline_ref_evaluate = c.np.array(
                 [
                         [-0.019796, 0.04049403], [-0.9996, 0.069675],
                         [2.256, 1.9691], [1.528, 4.0766], [-1.0264, 2.873488]
                 ]
         )
-        nurbs_ref_evaluate = np.array(
+        nurbs_ref_evaluate = c.np.array(
                 [
                         [-1.00989841, 0.01432479], [-1.49984913, 0.02127445],
                         [-0.15941144, 1.0883878], [-0.49948029, 1.62496752],
                         [-1.61951381, 1.15640608]
                 ]
         )
-        bezier_ref_evaluate = np.array(
+        bezier_ref_evaluate = c.np.array(
                 [
                         [-1.009899, 0.020099], [-1.49985, 0.02985],
                         [-0.209, 1.089], [-0.612, 1.632], [-1.6716, 1.2736]
                 ]
         )
-        rational_ref_evaluate = np.array(
+        rational_ref_evaluate = c.np.array(
                 [
                         [-1.00989841, 0.01432479], [-1.49984913, 0.02127445],
                         [-0.15941144, 1.0883878], [-0.49948029, 1.62496752],
@@ -140,18 +139,20 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test evaluation
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.bspline.evaluate(c.q2D), bspline_ref_evaluate
                 )
         )
         self.assertTrue(
-                np.allclose(self.nurbs.evaluate(c.q2D), nurbs_ref_evaluate)
+                c.np.allclose(self.nurbs.evaluate(c.q2D), nurbs_ref_evaluate)
         )
         self.assertTrue(
-                np.allclose(self.bezier.evaluate(c.q2D), bezier_ref_evaluate)
+                c.np.allclose(
+                        self.bezier.evaluate(c.q2D), bezier_ref_evaluate
+                )
         )
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.rational.evaluate(c.q2D), rational_ref_evaluate
                 )
         )
@@ -161,7 +162,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
         (.derivative()) """
 
         # reference solutions
-        bspline_ref_derivative = np.array(
+        bspline_ref_derivative = c.np.array(
                 [
                         [0.08, 7.8812],
                         [0.08, 4.02],
@@ -170,7 +171,7 @@ class TestSplinepyEvaluation(unittest.TestCase):
                         [3.2, 3.232],
                 ]
         )
-        nurbs_ref_derivative = np.array(
+        nurbs_ref_derivative = c.np.array(
                 [
                         [0.02017474, 1.42231975],
                         [0.02017474, 1.42231975],
@@ -185,13 +186,13 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
         # test derivative evaluation
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.bspline.derivative(c.q2D, o1),
                         bspline_ref_derivative
                 )
         )
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         self.nurbs.derivative(c.q2D, o1), nurbs_ref_derivative
                 )
         )
@@ -200,43 +201,44 @@ class TestSplinepyEvaluation(unittest.TestCase):
         max_deg = 5
         dim = 3
         n_test_points = 10
-        derivatives = np.random.randint(0, max_deg, size=(dim))
-        queries = np.random.random((n_test_points, dim))
+        derivatives = c.np.random.randint(0, max_deg, size=(dim))
+        queries = c.np.random.random((n_test_points, dim))
         randomized = {
                 "degrees": [5] * dim,
-                "control_points": np.random.random(((max_deg + 1)**dim, dim)),
-                "weights": np.random.random(((max_deg + 1)**dim)),
+                "control_points":
+                c.np.random.random(((max_deg + 1)**dim, dim)),
+                "weights": c.np.random.random(((max_deg + 1)**dim)),
                 "knot_vectors": [[0] * (max_deg + 1) + [1]
                                  * (max_deg + 1)] * dim
         }
-        random_bezier = splinepy.Bezier(
+        random_bezier = c.splinepy.Bezier(
                 degrees=randomized["degrees"],
                 control_points=randomized["control_points"]
         )
-        random_rational = splinepy.RationalBezier(
+        random_rational = c.splinepy.RationalBezier(
                 degrees=randomized["degrees"],
                 control_points=randomized["control_points"],
                 weights=randomized["weights"]
         )
-        random_bspline = splinepy.BSpline(
+        random_bspline = c.splinepy.BSpline(
                 degrees=randomized["degrees"],
                 control_points=randomized["control_points"],
                 knot_vectors=randomized["knot_vectors"]
         )
-        random_nurbs = splinepy.NURBS(
+        random_nurbs = c.splinepy.NURBS(
                 degrees=randomized["degrees"],
                 control_points=randomized["control_points"],
                 knot_vectors=randomized["knot_vectors"],
                 weights=randomized["weights"]
         )
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         random_bezier.derivative(queries, derivatives),
                         random_bspline.derivative(queries, derivatives)
                 )
         )
         self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                         random_rational.derivative(queries, derivatives),
                         random_nurbs.derivative(queries, derivatives)
                 )
@@ -244,4 +246,4 @@ class TestSplinepyEvaluation(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    c.unittest.main()
