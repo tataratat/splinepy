@@ -1138,7 +1138,13 @@ class Spline(core.CoreSpline):
 
         Returns
         --------
-        nearest_pcoord: (n, para_dim) np.ndarray
+        para_coord: (n, para_dim) np.ndarray
+        phys_coord: (n, dim) np.ndarray
+        phys_diff: (n, dim) np.ndarray
+        distance: (n, 1) np.ndarray
+        convergence_norm: (n, 1) np.ndarrray
+        first_derivatives: (n, para_dim, dim) np.ndarray
+        second_derivatives: (n, para_dim, para_dim, dim) np.ndarray
         """
         self._logd("Searching for nearest parametric coord")
 
