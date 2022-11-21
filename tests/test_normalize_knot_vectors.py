@@ -1,7 +1,5 @@
 import copy
 
-import splinepy
-import numpy as np
 try:
     from . import common as c
 except BaseException:
@@ -14,7 +12,7 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         """
         """
         # make "iga book" bspline
-        bspline = splinepy.BSpline(**c.b2P2D)
+        bspline = c.splinepy.BSpline(**c.b2P2D)
 
         ref = copy.deepcopy(bspline.knot_vectors)
 
@@ -28,13 +26,13 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         bspline.normalize_knot_vectors()
 
         for i, (ref_kv, kv) in enumerate(zip(ref, bspline.knot_vectors)):
-            assert np.allclose(ref_kv, kv),\
+            assert c.np.allclose(ref_kv, kv),\
                 f"{i}. para dim failed to normalize"
 
     def test_nurbs_normalize_knot_vectors(self):
         """
         """
-        nurbs = splinepy.NURBS(**c.n2P2D)
+        nurbs = c.splinepy.NURBS(**c.n2P2D)
 
         ref = copy.deepcopy(nurbs.knot_vectors)
 
@@ -48,7 +46,7 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         nurbs.normalize_knot_vectors()
 
         for i, (ref_kv, kv) in enumerate(zip(ref, nurbs.knot_vectors)):
-            assert np.allclose(ref_kv, kv),\
+            assert c.np.allclose(ref_kv, kv),\
                 f"{i}. para dim failed to normalize"
 
 
