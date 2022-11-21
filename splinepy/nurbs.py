@@ -1,17 +1,19 @@
 from splinepy.bspline import BSplineBase
 
+
 class NURBS(BSplineBase):
     """
     Non-Uniform Rational B-Spline.
     """
 
-    def __init__(self,
-                 degrees=None,
-                 knot_vectors=None,
-                 control_points=None,
-                 weights=None,
-                 spline=None,
-                 ):
+    def __init__(
+            self,
+            degrees=None,
+            knot_vectors=None,
+            control_points=None,
+            weights=None,
+            spline=None,
+    ):
         """
         NURBS.
 
@@ -27,9 +29,9 @@ class NURBS(BSplineBase):
         None
         """
         super().__init__(
-            spline=spline,
-            degrees=degrees,
-            knot_vectors=knot_vectors,
-            control_points=control_points,
-            weights=weights,
+                spline=spline,
+                degrees=degrees,
+                knot_vectors=knot_vectors,
+                control_points=control_points,
+                weights=weights,
         )

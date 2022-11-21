@@ -4,7 +4,7 @@ import splinepy
 import numpy as np
 try:
     from . import common as c
-except:
+except BaseException:
     import common as c
 
 
@@ -21,8 +21,8 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         # manipulate - this does not update cpp spline, but it doesn't matter
         for kv in bspline.knot_vectors:
             for i in range(len(kv)):
-                kv[i] += 37 # apply some offset
-                kv[i] *= 1.7956 # apply some scaling
+                kv[i] += 37  # apply some offset
+                kv[i] *= 1.7956  # apply some scaling
 
         # normalize
         bspline.normalize_knot_vectors()
@@ -41,8 +41,8 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         # manipulate - this does not update cpp spline, but it doesn't matter
         for kv in nurbs.knot_vectors:
             for i in range(len(kv)):
-                kv[i] += 37 # apply some offset
-                kv[i] *= 1.7956 # apply some scaling
+                kv[i] += 37  # apply some offset
+                kv[i] *= 1.7956  # apply some scaling
 
         # normalize
         nurbs.normalize_knot_vectors()

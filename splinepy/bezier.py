@@ -2,13 +2,15 @@ import numpy as np
 
 from splinepy import utils
 from splinepy import settings
-from splinepy import spline 
+from splinepy import spline
 from splinepy import splinepy_core
+
 
 class BezierBase(spline.Spline):
     """Bezier Base. Contain extra operations that's only
     available for bezier families.
     """
+
     def __init__(self, *args, **kwargs):
         """
         BezierBase. Serves as a base for bezier families.
@@ -37,10 +39,10 @@ class BezierBase(spline.Spline):
         """
         # scalar
         if isinstance(factor, float):
-          return type(self)(
-              control_points=self.control_points * factor,
-              degrees=self.degrees
-          )
+            return type(self)(
+                    control_points=self.control_points * factor,
+                    degrees=self.degrees
+            )
 
         # Supports only Bezier families
         if not isinstance(factor, BezierBase):
@@ -51,7 +53,7 @@ class BezierBase(spline.Spline):
         # multiply - dimension compatibility is checked in cpp side
         multiplied = splinepy_core.multiply(self, factor)
 
-        # return corresponding type 
+        # return corresponding type
         return settings.NAME_TO_TYPE[multiplied.name](spline=multiplied)
 
     @spline._new_core_if_modified
@@ -65,7 +67,7 @@ class BezierBase(spline.Spline):
 
         Parameters
         ----------
-        summand: type(self) 
+        summand: type(self)
           spline with same parametric and physical dimension
 
         Returns
@@ -162,6 +164,7 @@ class BezierBase(spline.Spline):
 
         return settings.NAME_TO_TYPE[composition_der](spline=composition_der)
 
+
 class Bezier(BezierBase):
 
     def __init__(self, degrees=None, control_points=None, spline=None):
@@ -178,9 +181,7 @@ class Bezier(BezierBase):
         None
         """
         super().__init__(
-            spline=spline,
-            degrees=degrees,
-            control_points=control_points,
+                spline=spline,
+                degrees=degrees,
+                control_points=control_points,
         )
-
-

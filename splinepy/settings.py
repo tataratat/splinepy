@@ -2,16 +2,17 @@
 Convenient global variables.
 """
 
+
 def __splinepy_name_to_type__():
     """Workaround to provide flexible string to type conversion without
     causing circular import
     """
     from splinepy import Bezier, RationalBezier, BSpline, NURBS
     return dict(
-        Bezier=Bezier,
-        RationalBezier=RationalBezier,
-        BSpline=BSpline,
-        NURBS=NURBS,
+            Bezier=Bezier,
+            RationalBezier=RationalBezier,
+            BSpline=BSpline,
+            NURBS=NURBS,
     )
 
 

@@ -4,7 +4,7 @@ import splinepy
 import numpy as np
 try:
     from . import common as c
-except:
+except BaseException:
     import common as c
 
 
@@ -40,8 +40,8 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
 
             self.assertTrue(
                     np.allclose(
-                        orig.evaluate(queries),
-                        perm.evaluate(queries[:, permutation]),
+                            orig.evaluate(queries),
+                            perm.evaluate(queries[:, permutation]),
                     ),
                     f"{perm.whatami} failed to permute.",
             )
@@ -54,12 +54,12 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
 
             self.assertTrue(
                     np.allclose(
-                        orig.evaluate(queries),
-                        perm.evaluate(queries[:, permutation])
+                            orig.evaluate(queries),
+                            perm.evaluate(queries[:, permutation])
                     ),
                     f"{perm.whatami} failed to permute inplace.",
             )
-        
+
 
 if __name__ == "__main__":
     c.unittest.main()

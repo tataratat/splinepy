@@ -181,7 +181,7 @@ def is_modified(array):
     """
     Returns true if:
       1. array is list of tracked arrays and any of them is modified.
-      2. array is modified. 
+      2. array is modified.
 
     Parameters
     ----------
@@ -189,16 +189,16 @@ def is_modified(array):
 
     Returns
     --------
-    modified: bool 
+    modified: bool
     """
     if isinstance(array, list):
         modified = False
         for a in array:
-            # recusively check 
+            # recusively check
             modified |= is_modified(a)
 
         return modified
-        
+
     elif isinstance(array, TrackedArray):
         return array._modified
 

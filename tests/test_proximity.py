@@ -2,7 +2,7 @@ import splinepy
 import numpy as np
 try:
     from . import common as c
-except:
+except BaseException:
     import common as c
 
 
@@ -25,9 +25,9 @@ class ProximityTest(c.unittest.TestCase):
 
         # proximity - single thread exe
         prox_r = bspline.nearest_pcoord(
-            queries=phys_q,
-            kdt_resolutions=[10] * bspline.para_dim,
-            n_threads=1,
+                queries=phys_q,
+                kdt_resolutions=[10] * bspline.para_dim,
+                n_threads=1,
         )
 
         assert np.allclose(para_q, prox_r), "WRONG `Spline.nearest_pcoord`"
@@ -45,9 +45,9 @@ class ProximityTest(c.unittest.TestCase):
 
         # proximity - single thread exe
         prox_r = nurbs.nearest_pcoord(
-            queries=phys_q,
-            kdt_resolutions=[10] * nurbs.para_dim,
-            n_threads=1,
+                queries=phys_q,
+                kdt_resolutions=[10] * nurbs.para_dim,
+                n_threads=1,
         )
 
         assert np.allclose(para_q, prox_r), "WRONG `Spline.nearest_pcoord`"

@@ -7,7 +7,7 @@ import os
 
 import numpy as np
 
-from splinepy.log import debug 
+from splinepy.log import debug
 
 
 def is_property(property_dict, key, class_name):
@@ -28,12 +28,7 @@ def is_property(property_dict, key, class_name):
         return True
 
     else:
-        debug(
-            class_name
-            + " - `"
-            + key
-            + "` does not exist yet."
-        )
+        debug(class_name + " - `" + key + "` does not exist yet.")
         return False
 
 
