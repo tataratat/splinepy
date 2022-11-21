@@ -45,7 +45,7 @@ public:
   // advanced use
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
 
-  Base_ RawPtrInitHelper(const double* degrees, const double* control_points) {
+  static Base_ CreateBase(const int* degrees, const double* control_points) {
 
     std::array<std::size_t, para_dim> bm_degrees{};
     std::size_t ncps{1};
@@ -71,8 +71,8 @@ public:
   }
 
   // rawptr based ctor
-  Bezier(const double* degrees, const double* control_points)
-      : Base_(RawPtrInitHelper(degrees, control_points)) {}
+  Bezier(const int* degrees, const double* control_points)
+      : Base_(CreateBase(degrees, control_points)) {}
   // base (copy) ctor
   Bezier(const Base_& rhs) : Base_(rhs) {}
   // inherit ctor
@@ -117,14 +117,14 @@ public:
   }
 
   virtual void SplinepyCurrentProperties(
-      double* degrees,
+      int* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
       double* control_points,
       double* weights /* untouched */) const {
 
     // degrees
     for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<double>(Base_::GetDegrees()[i]);
+      degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
     }
 
     // control_points
