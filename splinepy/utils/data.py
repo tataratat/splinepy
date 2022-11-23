@@ -125,10 +125,10 @@ class TrackedArray(np.ndarray):
         super(self.__class__, self).__setslice__(*args, **kwargs)
 
     def __getslice__(self, *args, **kwargs):
-        self._set_modified()
         """
         return slices I am pretty sure np.ndarray does not have __*slice__
         """
+        self._set_modified()
         slices = super(self.__class__, self).__getitem__(*args, **kwargs)
         if isinstance(slices, np.ndarray):
             slices.flags.writeable = False
