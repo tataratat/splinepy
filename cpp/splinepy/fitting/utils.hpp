@@ -132,7 +132,7 @@ inline std::vector<double> ComputeKnotVector(const int& degree,
     const double d =
         ((double) num_points) / ((double) (num_control_points - degree));
     for (j = 1; j < num_control_points - degree; j++) {
-      const unsigned int i = (int) (j * d);
+      i = (int) (j * d);
       const double alpha = (j * d) - i;
       knot_vector[j + degree] = (1 - alpha) * u_k[i - 1] + alpha * u_k[i];
     }
