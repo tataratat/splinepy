@@ -24,6 +24,7 @@ def export(
     None
     """
     from splinepy._spline import Spline
+    from splinepy import NURBS, BSpline
 
     if issubclass(type(spline_list), Spline):
         # Transform to list
@@ -47,10 +48,22 @@ def export(
         # Transform bezier types, as they are not supported in gismo
         if spline.whatami.startswith("Bezier"):
             type_name = 'BSpline'
-            spline = spline.bspline
+            spline = BSpline(
+                    **spline.todict(),
+                    knot_vectors=[
+                            [0] * (a + 1) + [1] * (a + 1)
+                            for a in spline.degrees
+                    ]
+            )
         elif spline.whatami.startswith("RationalBezier"):
             type_name = 'Nurbs'
-            spline = spline.nurbs
+            spline = NURBS(
+                    **spline.todict(),
+                    knot_vectors=[
+                            [0] * (a + 1) + [1] * (a + 1)
+                            for a in spline.degrees
+                    ]
+            )
         elif spline.whatami.startswith("BSpline"):
             type_name = 'BSpline'
         elif spline.whatami.startswith("NURBS"):
@@ -86,7 +99,8 @@ def export(
                 spline_basis,
                 'weights',
             )
-            weights.text = '\n'.join([str(w) for w in spline.weights])
+            weights.text = '\n'.join([str(w)
+                                     for w in spline.weights.flatten()])
 
         coords = ET.SubElement(
             spline_element,
