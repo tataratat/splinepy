@@ -71,7 +71,6 @@ class CMakeBuild(build_ext):
         ]
         # extra cmake args
         cmake_args.extend(ext.extra_args["cmake_args"])
-        print(cmake_args)
 
         build_args = []
         # Adding CMake arguments set as environment variable
@@ -152,7 +151,6 @@ class CMakeBuild(build_ext):
 
             if len(ext.extra_args["build_args"]) != 0:
                 build_args.extend(ext.extra_args["build_args"])
-                print(build_args)
 
         build_temp = Path(self.build_temp) / ext.name
         if not build_temp.exists():
