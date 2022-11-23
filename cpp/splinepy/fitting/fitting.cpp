@@ -1,11 +1,13 @@
 #include "fitting.hpp"
 
-double FitCurve(double* points,
-                int& num_points,
-                int& dim,
-                int& degree,
-                int& num_control_points,
-                bool centripetal,
+namespace splinepy::fitting {
+
+double FitCurve(const double* points,
+                const int& num_points,
+                const int& dim,
+                const int& degree,
+                const int& num_control_points,
+                const bool centripetal,
                 std::vector<double>& knot_vector,
                 std::vector<double>& control_points) {
 
@@ -44,14 +46,14 @@ double FitCurve(double* points,
   }
 }
 
-void FitSurface(double* points,
-                int& num_points,
-                int& dim,
-                int& degree_u,
-                int& degree_v,
-                int& size_u,
-                int& size_v,
-                bool centripetal,
+void FitSurface(const double* points,
+                const int& num_points,
+                const int& dim,
+                const int& degree_u,
+                const int& degree_v,
+                const int& size_u,
+                const int& size_v,
+                const bool centripetal,
                 std::vector<double>& knot_vector_u,
                 std::vector<double>& knot_vector_v,
                 std::vector<double>& control_points) {
@@ -111,11 +113,11 @@ void FitSurface(double* points,
   delete[] pts_v;
 }
 
-double ApproximateCurve(double* points,
-                        int& num_points,
-                        int& dim,
-                        int& degree,
-                        int& num_control_points,
+double ApproximateCurve(const double* points,
+                        const int& num_points,
+                        const int& dim,
+                        const int& degree,
+                        const int& num_control_points,
                         std::vector<double>& u_k,
                         std::vector<double>& knot_vector,
                         std::vector<double>& coefficient_matrix,
@@ -202,3 +204,5 @@ double ApproximateCurve(double* points,
 
   return residual;
 }
+
+} // namespace splinepy::fitting

@@ -12,3 +12,12 @@ test-extras = ["test"]
 #test-skip = ["*universal2:arm64"]
 # Setuptools bug causes collision between pypy and cpython artifacts
 before-build = "rm -rf {project}/build"
+
+[tool.yapf]
+based_on_style = "pep8"
+coalesce_brackets = false
+continuation_align_style = "space"
+split_before_arithmetic_operator = true
+continuation_indent_width = 8
+dedent_closing_brackets = true
+split_complex_comprehension = true

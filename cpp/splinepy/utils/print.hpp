@@ -7,7 +7,7 @@ namespace splinepy::utils {
 
 template<typename... Args>
 void PrintInfo(Args&&... args) {
-  std::cout << "INFO - ";
+  std::cout << "SPLINEPY INFO - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);
   std::cout << "\n";
 }
@@ -16,7 +16,7 @@ void PrintInfo(Args&&... args) {
 template<typename... Args>
 void PrintDebug(bool on, Args&&... args) {
   if (on) {
-    std::cout << "DEBUG - ";
+    std::cout << "SPLINEPY DEBUG - ";
     ((std::cout << std::forward<Args>(args) << " "), ...);
     std::cout << "\n";
   }
@@ -24,14 +24,14 @@ void PrintDebug(bool on, Args&&... args) {
 
 template<typename... Args>
 void PrintWarning(Args&&... args) {
-  std::cout << "WARNING - ";
+  std::cout << "SPLINEPY WARNING - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);
   std::cout << "\n";
 }
 
 template<typename... Args>
 void PrintAndThrowError(Args&&... args) {
-  std::cout << "ERROR - ";
+  std::cout << "SPLINEPY ERROR - ";
   ((std::cout << std::forward<Args>(args) << " "), ...);
   std::cout << "\n";
   throw std::runtime_error("Error Occured! Abort the mission!");
