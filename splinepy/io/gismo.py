@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import numpy as np
 
-from splinepy.log import debug
+from splinepy.utils.log import debug
 
 
 def export(
@@ -23,7 +23,7 @@ def export(
     -------
     None
     """
-    from splinepy._spline import Spline
+    from splinepy.spline import Spline
     from splinepy import NURBS, BSpline
 
     if issubclass(type(spline_list), Spline):
