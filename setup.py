@@ -37,7 +37,7 @@ class CMakeExtension(Extension):
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
         if extra_args is not None:
             self.extra_args = extra_args
-            self.debug = extra_args["cmake_args"].get("debug", False)
+            self.debug = extra_args.get("debug", False)
 
 
 class CMakeBuild(build_ext):
@@ -56,6 +56,8 @@ class CMakeBuild(build_ext):
         debug = int(
                 os.environ.get("DEBUG", 0)
         ) if self.debug is None else self.debug
+        # overwrite if ext.debug exists
+        debug = ext.debug if hasattr(ext, "debug") else debug
         cfg = "Debug" if debug else "Release"
 
         # CMake lets you override the generator - we need to check this.
