@@ -27,7 +27,7 @@ jobs:
             
     - name: build splinepy linux
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version != '3.9' }}
-      run: CC=gcc-10 CXX=g++-10 python3 setup.py install
+      run: CC=clang-12 CXX=clang++-12 python3 setup.py install
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
@@ -38,7 +38,7 @@ jobs:
       # build and deploy docs with ubuntu + python3.9
       # TODO: is there a way to keep previous job's env?
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
-      run: CC=gcc-10 CXX=g++-10 python3 setup.py develop
+      run: CC=clang-12 CXX=clang++-12 python3 setup.py develop
       
     - name: test
       run: pytest tests
