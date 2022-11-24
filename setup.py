@@ -37,6 +37,7 @@ class CMakeExtension(Extension):
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
         if extra_args is not None:
             self.extra_args = extra_args
+            self.debug = extra_args["cmake_args"].get("debug", False)
 
 
 class CMakeBuild(build_ext):
@@ -80,12 +81,6 @@ class CMakeBuild(build_ext):
                     item for item in os.environ["CMAKE_ARGS"].split(" ")
                     if item
             ]
-
-        # We pass in the version to C++.
-        # You might not need to.
-        cmake_args += [
-                f"-DEXAMPLE_VERSION_INFO={self.distribution.get_version()}"
-        ]  # type: ignore[attr-defined]
 
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
@@ -171,12 +166,14 @@ class CMakeBuild(build_ext):
 with open("README.md", "r") as readme:
     long_description = readme.read()
 
-# cmake args
+
+# cmdline options for dev
 flags = dict(
         verbose_make="--verbose_make",
         minimal="--minimal",
         enable_warning="--enable_warning",
-        serial_build="--serial_build"
+        serial_build="--serial_build",
+        debug="--debug",
 )
 cma = dict(
         cmake_args=[],
@@ -206,6 +203,11 @@ if flags["serial_build"] in sys.argv:
 else:
     print(f"*** parallel build using {os.cpu_count()} processes ***")
     cma["build_args"].append(f"-j {os.cpu_count()}")
+
+if flags["debug"] in sys.argv:
+    print("*** building debug ***")
+    sys.argv.remove(flags["debug"])
+    cma["debug"] = True
 
 setup(
         name='splinepy',
