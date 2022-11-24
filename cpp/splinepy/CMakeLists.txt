@@ -42,9 +42,7 @@ target_link_libraries(splinepy
 # flags
 target_compile_options(splinepy
     PRIVATE
-        ${SPLINEPY_FLAGS}
-        ${SPLINEPY_OPTIMIZATION_FLAGS})
-
+        ${SPLINEPY_FLAGS})
 
 # defs
 target_compile_definitions(splinepy
