@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION
+#ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class splinelib::sources::splines::Nurbs<1, 1>;
 extern template class splinelib::sources::splines::Nurbs<1, 2>;
 extern template class splinelib::sources::splines::Nurbs<1, 3>;

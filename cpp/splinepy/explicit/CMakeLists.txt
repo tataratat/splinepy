@@ -10,45 +10,45 @@ set(BEZMAN_SOURCES
 
 set(EXPLICIT_SOURCES
         ${SPLINELIB_SOURCES}
-#        ${BEZMAN_SOURCES}
+        ${BEZMAN_SOURCES}
 )
 
 if(SPLINEPY_BUILD_SHARED)
-    add_library(third_party_explicit SHARED ${EXPLICIT_SOURCES})
+    add_library(explicit SHARED ${EXPLICIT_SOURCES})
 else()
-    add_library(third_party_explicit STATIC ${EXPLICIT_SOURCES})
+    add_library(explicit STATIC ${EXPLICIT_SOURCES})
 endif(SPLINEPY_BUILD_SHARED)
 
 # include
-target_include_directories(third_party_explicit
+target_include_directories(explicit
     PRIVATE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/cpp>
         $<INSTALL_INTERFACE:${incl_dest}>)
 
 # link
-target_link_libraries(third_party_explicit
+target_link_libraries(explicit
     PRIVATE
         bezman
         SplineLib::splines)
 
 # flags
-target_compile_options(third_party_explicit
+target_compile_options(explicit
     PRIVATE
         ${SPLINEPY_FLAGS})
 
 # defs
-target_compile_definitions(splinepy
+target_compile_definitions(explicit
     PRIVATE
         ${SPLINEPY_DEFS})
 
 # features
-target_compile_features(splinepy
+target_compile_features(explicit
     PUBLIC
         cxx_std_17)
 
 # install
 install(
-    TARGETS third_party_explicit
+    TARGETS explicit
     EXPORT "${TARGETS_EXPORT_NAME}"
     LIBRARY DESTINATION ${lib_dest}
     ARCHIVE DESTINATION ${lib_dest}

@@ -39,11 +39,11 @@ target_link_libraries(splinepy
         SplineLib::input_output)
 
 # explicit?
-if (SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION)
-add_subdirectory(third_party_explicit)
+if (SPLINEPY_BUILD_EXPLICIT)
+add_subdirectory(explicit)
 target_link_libraries(splinepy
     PUBLIC
-        third_party_explicit)
+        explicit)
 endif()
 
 

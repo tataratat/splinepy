@@ -13,7 +13,7 @@
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/utils/print.hpp>
-//#include <splinepy/third_party_explicit/bezman/bezier_extern.hpp>
+#include <splinepy/third_party_explicit/bezman/bezier_extern.hpp>
 
 namespace splinepy::splines {
 

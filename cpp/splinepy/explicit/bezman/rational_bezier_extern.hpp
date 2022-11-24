@@ -4,7 +4,7 @@
 //#include <bezman/src/bezier_rational_spline.hpp>
 //#include <bezman/src/point.hpp>
 
-#ifdef SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION
+#ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class bezman::RationalBezierSpline<1, double, double>;
 extern template class bezman::RationalBezierSpline<1, bezman::Point<2>, double>;
 extern template class bezman::RationalBezierSpline<1, bezman::Point<3>, double>;
