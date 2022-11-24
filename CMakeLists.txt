@@ -34,7 +34,6 @@ set(SPLINEPY_DEFS)
 
 # compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  list(APPEND SPLINEPY_OPTIMIZATION_FLAGS -ffast-math)
   set(SPLINEPY_WARNING_FLAGS
         -Wall -Wextra -Wpedantic -Wzero-as-null-pointer-constant -Wno-unused)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
