@@ -77,11 +77,24 @@ def export(
                                        id=str(id))
 
         # Define Basis functions
-        spline_basis = ET.SubElement(
-            spline_element,
-            'Basis',
-            type='Tensor' + type_name + 'Basis' + str(spline.para_dim),
-        )
+        if "weights" in spline.required_properties:
+            spline_basis_base = ET.SubElement(
+                spline_element,
+                'Basis',
+                type='Tensor' + type_name + 'Basis' + str(spline.para_dim),
+            )
+            spline_basis = ET.SubElement(
+                spline_basis_base,
+                'Basis',
+                type='TensorBSplineBasis' + str(spline.para_dim),
+            )
+        else:
+            spline_basis = ET.SubElement(
+                spline_element,
+                'Basis',
+                type='Tensor' + type_name + 'Basis' + str(spline.para_dim),
+            )
+
 
         for i_para in range(spline.para_dim):
             basis_fun = ET.SubElement(spline_basis,
@@ -96,7 +109,7 @@ def export(
         if "weights" in spline.required_properties:
             # Add weights
             weights = ET.SubElement(
-                spline_basis,
+                spline_basis_base,
                 'weights',
             )
             weights.text = '\n'.join([str(w)
