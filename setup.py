@@ -215,7 +215,7 @@ if flags["debug"] in sys.argv:
 if flags["explicit"] in sys.argv:
     print("*** explicit instantiation of third party template classes ***")
     sys.argv.remove(flags["explicit"])
-    cma["cmake_args"].append("-DSPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION=ON")
+    cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=ON")
 
 setup(
         name='splinepy',
