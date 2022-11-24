@@ -6,11 +6,12 @@ on:
 
 jobs:
   full_build_plus_tests_plus_update_docs:
+    name: build, test and update docs
 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.8, 3.9, '3.10']
         os: [macos-latest, ubuntu-latest]
 
     steps:
@@ -34,9 +35,6 @@ jobs:
       run: python3 setup.py install
 
     - name: build splinepy linux
-      # doc-build works very well with develop install.
-      # build and deploy docs with ubuntu + python3.9
-      # TODO: is there a way to keep previous job's env?
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
       run: CC=gcc-10 CXX=g++-10 python3 setup.py develop
       
@@ -54,9 +52,84 @@ jobs:
     - name: deploy docs
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
       uses: peaceiris/actions-gh-pages@v3
-      #if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       with:
-        #publish_branch: gh-pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/build
         force_orphan: true
+
+    cd_wheels_mac_arm:
+      needs: full_build_plus_tests_plus_update_docs
+      name: build wheels and upload to PyPi for macosx arm
+      runs-on: macos-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            submodules: recursive
+
+        - name: install twine
+          run: python3 -m pip install twine
+
+        - name: Build wheels
+          uses: pypa/cibuildwheel@v2.11.1
+          env:
+            CIBW_BUILD: cp38-macosx_arm64 cp39-macosx_arm64 cp310-macosx_arm64
+
+        - name: Publish package to TestPyPI
+          run: |
+            python3 -m pip install twine
+            python3 -m twine upload --repository testpypi wheelhouse/* --skip-existing
+          env:
+            TWINE_USERNAME: __token__
+            TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
+
+    cd_wheels_mac_x86_64:
+      needs: full_build_plus_tests_plus_update_docs
+      name: build wheels and upload to PyPi for macosx x86_64
+      runs-on: macos-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            submodules: recursive
+
+        - name: install twine
+          run: python3 -m pip install twine
+
+        - name: Build wheels
+          uses: pypa/cibuildwheel@v2.11.1
+          env:
+            CIBW_ARCHS_MACOS: "x86_64"
+            CIBW_BUILD: cp38-macosx_x86_64 cp39-macosx_x86_64 cp310-macosx_x86_64
+
+        - name: Publish package to TestPyPI
+          run: |
+            python3 -m pip install twine
+            python3 -m twine upload --repository testpypi wheelhouse/* --skip-existing
+          env:
+            TWINE_USERNAME: __token__
+            TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
+
+    cd_wheels_linux:
+      needs: full_build_plus_tests_plus_update_docs
+      name: build wheels and upload to PyPi for linux
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            submodules: recursive
+
+        - name: install twine
+          run: python3 -m pip install twine
+
+        - name: Build wheels
+          uses: pypa/cibuildwheel@v2.11.1
+          env:
+            CIBW_ARCHS_MACOS: "arm64"
+            CIBW_BUILD: cp38-manylinux_x86_64 cp39-manylinux_x86_64 cp310-manylinux_x86_64
+
+        - name: Publish package to TestPyPI
+          run: |
+            python3 -m pip install twine
+            python3 -m twine upload --repository testpypi wheelhouse/* --skip-existing
+          env:
+            TWINE_USERNAME: __token__
+            TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
