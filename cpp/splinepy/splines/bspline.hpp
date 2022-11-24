@@ -8,6 +8,7 @@
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
+#include <splinepy/third_party_explicit/splinelib/b_spline_extern.hpp>
 
 namespace splinepy::splines {
 

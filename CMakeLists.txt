@@ -10,6 +10,7 @@ option(SPLINEPY_MORE "Compile a full set of splines." OFF)
 option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
+option(SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION "Explicit instantiation of third part template classes" OFF)
 
 
 # config
@@ -62,6 +63,11 @@ endif()
 if(SPLINEPY_MORE)
     set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
 endif(SPLINEPY_MORE)
+
+if(SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION)
+    set(SPLINEPY_DEFS ${SPLINEPY_DEFS}
+            SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION)
+endif(SPLINEPY_THIRD_PARTY_EXPLICIT_INSTANTIATION)
 
 add_subdirectory(third_party)
 add_subdirectory(cpp/splinepy)
