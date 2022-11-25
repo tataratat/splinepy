@@ -137,6 +137,10 @@ public:
     return GetParameterSpace().GetDegrees();
   };
 
+  constexpr const KnotVectors_& GetKnotVectors() const {
+    return GetParameterSpace().GetKnotVectors();
+  }
+
   // required implementations
   virtual int SplinepyParaDim() const { return kParaDim; }
 
