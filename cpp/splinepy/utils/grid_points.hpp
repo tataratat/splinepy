@@ -32,34 +32,34 @@ public:
   }
 
   const std::array<DataT, dim> operator[](const IndexT id) {
-    return IndexToParametricCoordinate<std::array<DataT, dim>>(id);
+    return IndexToGridPoint<std::array<DataT, dim>>(id);
   }
 
-  template<typename ParaCoord>
-  ParaCoord IndexToParametricCoordinate(const IndexT& id) const {
+  template<typename GridPointType>
+  GridPointType IndexToGridPoint(const IndexT& id) const {
 
-    using ValueType = typename ParaCoord::value_type;
+    using ValueType = typename GridPointType::value_type;
 
-    ParaCoord pcoord{};
+    GridPointType gpoint{};
 
     IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
+      gpoint[i] = ValueType{entries_[i][quot % res_[i]]};
       quot /= res_[i];
     }
 
-    return pcoord;
+    return gpoint;
   }
 
   /// subroutine variation
-  template<typename ParaCoord>
-  void IndexToParametricCoordinate(const IndexT& id, ParaCoord& pcoord) const {
+  template<typename GridPointType>
+  void IndexToGridPoint(const IndexT& id, GridPointType& gpoint) const {
 
-    using ValueType = typename ParaCoord::value_type;
+    using ValueType = typename GridPointType::value_type;
 
     IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
+      gpoint[i] = ValueType{entries_[i][quot % res_[i]]};
       quot /= res_[i];
     }
   }
