@@ -3,12 +3,12 @@
 // SplineLib
 #include <Sources/Splines/b_spline.hpp>
 
+#include <splinepy/explicit/splinelib/b_spline_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
-#include <splinepy/explicit/splinelib/b_spline_extern.hpp>
 
 namespace splinepy::splines {
 
