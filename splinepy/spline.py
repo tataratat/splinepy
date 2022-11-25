@@ -811,7 +811,7 @@ class Spline(core.CoreSpline):
                     "Returning parametric_bounds as "
                     "Bezier spline's unique knots."
             )
-            return self.parametric_bounds
+            return self.parametric_bounds.T
 
         else:
             self._logd("Computing unique knots")
