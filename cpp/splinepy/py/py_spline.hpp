@@ -363,6 +363,16 @@ public:
     return pbounds;
   }
 
+  py::array_t<int> ControlMeshResolutions() const {
+    // prepare output
+    py::array_t<int> cmr(para_dim_);
+    int* cmr_ptr = static_cast<int*>(cmr.request().ptr);
+
+    Core()->SplinepyControlMeshResolutions(cmr_ptr);
+
+    return cmr;
+  }
+
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -846,6 +856,9 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
       .def_property_readonly("is_rational", &splinepy::py::PySpline::IsRational)
       .def_property_readonly("parametric_bounds",
                              &splinepy::py::PySpline::ParametricBounds)
+      .def_property_readonly("control_mesh_resolutions",
+                             &splinepy::py::PySpline::ControlMeshResolutions)
+
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",

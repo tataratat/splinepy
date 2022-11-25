@@ -914,7 +914,7 @@ class Spline(core.CoreSpline):
         return np.vstack((cps.min(axis=0), cps.max(axis=0)))
 
     @property
-    def control_mesh_resolutions(self, ):
+    def control_mesh_resolutions(self):
         """
         Returns control mesh resolutions.
 
@@ -924,23 +924,9 @@ class Spline(core.CoreSpline):
 
         Returns
         --------
-        control_mesh_resolutions: list
-
-        Raises
-        -------
-        TypeError: if one of the required properties to compute
-          control_mesh_resolutions is missing.
+        control_mesh_resolutions: (para_dim) np.ndarray
         """
-        cmr = []
-
-        # Special case Bezier
-        if "Bezier" in type(self).__qualname__:
-            cmr = [d + 1 for d in self.degrees]
-        else:
-            for kv, d in zip(self.knot_vectors, self.degrees):
-                cmr.append(len(kv) - d - 1)
-
-        return cmr
+        return super().control_mesh_resolutions
 
     @property
     def weights(self, ):

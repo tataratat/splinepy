@@ -150,6 +150,12 @@ public:
     }
   }
 
+  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const {
+    const auto cm_res =
+        splinepy::splines::helpers::GetControlMeshResolutions(*this);
+    std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
+  }
+
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
     splinepy::splines::helpers::ScalarTypeEvaluate(*this,

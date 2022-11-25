@@ -109,6 +109,13 @@ public:
         SplinepyWhatAmI());
   };
 
+  /// Control mesh resoltuons - number of control points per para dim
+  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyControlMeshResolutions not implemented for",
+        SplinepyWhatAmI());
+  }
+
   /// Spline evaluation
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
