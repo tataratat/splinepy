@@ -8,12 +8,12 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 
+#include <splinepy/explicit/bezman/rational_bezier_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/bezier.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
-#include <splinepy/explicit/bezman/rational_bezier_extern.hpp>
 
 namespace splinepy::splines {
 
@@ -174,6 +174,24 @@ public:
                                                      para_coord,
                                                      orders,
                                                      derived);
+  }
+
+  /// Basis Function values and their support IDs
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+    // prepare query
+    ParametricCoordinate_ bz_query;
+    std::copy_n(para_coord, para_dim, bz_query.begin());
+
+    // query
+    const auto bez_basis = Base_::BasisFunctions(bz_query);
+
+    // fill output
+    for (int i{}; i < static_cast<int>(bez_basis.size()); ++i) {
+      basis[i] = bez_basis[i];
+      support[i] = i;
+    }
   }
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,

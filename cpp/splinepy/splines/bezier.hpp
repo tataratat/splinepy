@@ -8,12 +8,12 @@
 #include <bezman/src/bezier_spline.hpp>
 #include <bezman/src/point.hpp>
 
+#include <splinepy/explicit/bezman/bezier_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/utils/print.hpp>
-#include <splinepy/explicit/bezman/bezier_extern.hpp>
 
 namespace splinepy::splines {
 
@@ -199,6 +199,24 @@ public:
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
+  }
+
+  /// Basis Function values and their support IDs
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+    // prepare query
+    ParametricCoordinate_ bz_query;
+    std::copy_n(para_coord, para_dim, bz_query.begin());
+
+    // query
+    const auto bez_basis = Base_::BasisFunctions(bz_query);
+
+    // fill output
+    for (int i{}; i < static_cast<int>(bez_basis.size()); ++i) {
+      basis[i] = bez_basis[i];
+      support[i] = i;
+    }
   }
 
   /// only applicable to the splines of same para_dim, same type
