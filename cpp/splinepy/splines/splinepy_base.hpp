@@ -134,6 +134,15 @@ public:
         SplinepyWhatAmI());
   }
 
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyDerivativeAndSupport(const double* para_coord,
+                                            double* basis,
+                                            int* support) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyDerivativeAndSupport not implemented for",
+        SplinepyWhatAmI());
+  }
+
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
     splinepy::utils::PrintAndThrowError(
