@@ -5,7 +5,7 @@
 
 #include <splinepy/explicit/splinelib/nurbs_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
-#include <splinepy/splines/helpers/extract.hpp>
+#include <splinepy/splines/helpers/extract_bezier_patches.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
