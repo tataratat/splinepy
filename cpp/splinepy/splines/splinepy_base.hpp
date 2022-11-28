@@ -257,6 +257,15 @@ public:
     return {std::shared_ptr<SplinepyBase>{}};
   }
 
+  /// Boundary spline extraction
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& para_dim, const int& extrema) {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyExtractBoundary is not implemented for",
+        SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
+  }
+
   /// Scalar Spline extraction from dim
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractDim(const int& phys_dim) {
