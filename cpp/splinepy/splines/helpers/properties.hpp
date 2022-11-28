@@ -36,21 +36,21 @@ inline int GetNumberOfSupports(const SplineType& spline) {
   return n_supports;
 }
 
-template<typename SplineType>
-inline std::array<int, SplineType::kParaDim>
+template<typename ResolutionType = int, typename SplineType>
+inline std::array<ResolutionType, SplineType::kParaDim>
 GetControlMeshResolutions(const SplineType& spline) {
-  std::array<int, SplineType::kParaDim> control_mesh_res;
+  std::array<ResolutionType, SplineType::kParaDim> control_mesh_res;
   const auto& degrees = spline.GetDegrees();
 
   if constexpr (SplineType::kHasKnotVectors) {
     const auto& knot_vectors = spline.GetKnotVectors();
     for (int i{}; i < SplineType::kParaDim; ++i) {
-      control_mesh_res[i] = static_cast<int>(knot_vectors[i]->GetSize())
-                            - static_cast<int>(degrees[i]) - 1;
+      control_mesh_res[i] = static_cast<ResolutionType>(knot_vectors[i]->GetSize())
+                            - static_cast<ResolutionType>(degrees[i]) - 1;
     }
   } else {
     for (int i{}; i < SplineType::kParaDim; ++i) {
-      control_mesh_res[i] = static_cast<int>(degrees[i]) + 1;
+      control_mesh_res[i] = static_cast<ResolutionType>(degrees[i]) + 1;
     }
   }
 
