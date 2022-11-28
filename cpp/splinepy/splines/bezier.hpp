@@ -10,6 +10,7 @@
 
 #include <splinepy/explicit/bezman/bezier_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
@@ -37,14 +38,21 @@ public:
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  template<std::size_t s_para_dim, std::size_t s_dim>
+  using SelfTemplate_ = Bezier<s_para_dim, s_dim>;
   using Base_ = BezierSplineType<para_dim, dim>;
+  template<std::size_t b_para_dim, std::size_t b_dim>
+  using BaseTemplate_ = BezierSplineType<b_para_dim, b_dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
+  using Degrees_ = typename std::array<std::size_t, para_dim>;
   using Coordinate_ = typename Base_::PhysicalPointType_;
+  using Coordinates_ = typename std::vector<Coordinate_>;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
-  // advanced use
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
+  using ControlMeshSampler_ =
+      splinepy::utils::GridPoints<std::size_t, std::size_t, kParaDim>;
 
   static Base_ CreateBase(const int* degrees, const double* control_points) {
 
@@ -438,6 +446,11 @@ public:
   }
 
   virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
+    return splinepy::splines::helpers::ExtractBoundarySpline(*this, p_dim, extrema);
+  }
+
+  virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractDim(const int& phys_dim) const {
     return std::make_shared<Bezier<para_dim, 1>>(
         Base_::ExtractDimension(static_cast<std::size_t>(phys_dim)));
@@ -488,8 +501,27 @@ public:
   constexpr Proximity_& GetProximity() { return *proximity_; }
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
+  constexpr ControlMeshSampler_& GetControlMeshSampler() {
+    if (!control_mesh_sampler_) {
+      const auto cmr = splinepy::splines::helpers::template GetControlMeshResolutions<std::size_t>(*this);
+      auto res = cmr;
+      for (auto& r : res) { ++r; }
+      std::array<std::array<std::size_t, para_dim>, 2> bounds{};
+      bounds[1] = cmr;
+
+      control_mesh_sampler_ = std::make_shared<ControlMeshSampler_>(
+        bounds, cmr
+      );
+    }
+    return *control_mesh_sampler_;
+  }
+  constexpr const ControlMeshSampler_& GetControlMeshSampler() const {
+    return GetControlMeshSampler();
+  }
+
 protected:
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
+  std::shared_ptr<ControlMeshSampler_> control_mesh_sampler_ = nullptr;
 }; /* class Bezier */
 
 } // namespace splinepy::splines
