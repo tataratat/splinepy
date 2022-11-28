@@ -5,7 +5,7 @@
 
 #include <splinepy/explicit/splinelib/b_spline_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
-#include <splinepy/splines/helpers/extract.hpp>
+#include <splinepy/splines/helpers/extract_bezier_patches.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
@@ -30,6 +30,8 @@ public:
 
   // splinelib
   using Base_ = splinelib::sources::splines::BSpline<para_dim, dim>;
+  template<int b_para_dim, int b_dim>
+  using BaseTemplate_ = splinelib::sources::splines::BSpline<b_para_dim, b_dim>;
   // parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using Degrees_ = typename ParameterSpace_::Degrees_;
