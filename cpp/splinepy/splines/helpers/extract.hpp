@@ -10,7 +10,7 @@ namespace splinepy::splines::helpers {
 /// returns boundary spline, which has one less para_dim.
 template<typename SplineType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
-ExtractBoundarySpline(SplineType& spline,
+ExtractBoundarySpline(const SplineType& spline,
                       const int& plane_normal_axis,
                       const int& extrema) {
   if constexpr (SplineType::kParaDim == 1) {
@@ -46,9 +46,7 @@ ExtractBoundarySpline(SplineType& spline,
       using Degrees = typename PSpace::Degrees_;
       using KnotVectors = typename PSpace::KnotVectors_;
       using KnotVector = typename KnotVectors::value_type::element_type;
-      using VSpace = typename SelfBoundary::VectorSpace_;
-      using Coords = typename VSpace::Coordinates_;
-        splinepy::utils::PrintInfo("in bs");
+      using VSpace = typename SelfBoundary::PhysicalSpace_;
       // PSpace - let it create a new basis. Otherwise, it will make
       // pure copies of all basis function, which is not high degree friendly.
       Degrees b_degrees;
@@ -64,16 +62,12 @@ ExtractBoundarySpline(SplineType& spline,
       }
       // create parametric space
       auto pspace = std::make_shared<PSpace>(b_knot_vectors, b_degrees);
-        splinepy::utils::PrintInfo("end ps");
 
       // VSpace - maybe it is also
       // create (weighted) vector space
       auto vspace = std::make_shared<VSpace>();
-        splinepy::utils::PrintInfo("vs init");
       auto& coords = vspace->GetCoordinates();
-        splinepy::utils::PrintInfo("get coord");
       coords.reserve(ids_on_boundary.size());
-        splinepy::utils::PrintInfo("reserve");
       const auto& rhs_coordinates = spline.GetCoordinates();
       for (const auto& id : ids_on_boundary) {
           coords.push_back(rhs_coordinates[id]);

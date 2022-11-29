@@ -51,6 +51,7 @@ public:
       typename ParametricCoordinate_::value_type;
   // vector space
   using VectorSpace_ = typename Base_::VectorSpace_;
+  using PhysicalSpace_ = VectorSpace_;
   using Coordinates_ = typename VectorSpace_::Coordinates_;
   using Coordinate_ = typename Base_::Coordinate_;
   using ScalarCoordinate_ = typename Coordinate_::value_type;
