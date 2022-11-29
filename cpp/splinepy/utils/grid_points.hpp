@@ -89,43 +89,43 @@ public:
     return saved_grid_points_;
   }
 
-  std::vector<IndexT> GridPointIdsOnHyperPlane(
-      const std::array<IndexT, dim>& control_point_resolutions,
-      const IndexT& plane_normal_axis,
-      const IndexT& plane_id) const {
+  static std::vector<IndexT>
+  GridPointIdsOnHyperPlane(const std::array<IndexT, dim>& grid_resolutions,
+                           const IndexT& plane_normal_axis,
+                           const IndexT& plane_id) {
     // Determine size of return vector
-    const std::size_t n_ctps_on_boundary = [&]() {
-      IndexT n_ctps{1};
-      for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
-        if (i_pd == plane_normal_axis)
-          continue;
-        n_ctps *= control_point_resolutions[i_pd];
-      }
-    };
+    IndexT n_points_on_boundary{1};
+    for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
+      if (i_pd == plane_normal_axis)
+        continue;
+      n_points_on_boundary *= grid_resolutions[i_pd];
+    }
 
     auto local_to_global_bd_id = [&](const IndexT& local_id) {
       IndexT offset{1}, id{local_id}, global_id{};
-      for (std::size_t i_pdc{}; i_pdc < dim; i_pdc++) {
+      for (std::size_t i_pdc{}; i_pdc < dim; ++i_pdc) {
+        const auto& res = grid_resolutions[i_pdc];
         if (i_pdc == plane_normal_axis) {
           global_id += offset * plane_id;
         } else {
-          const IndexT i = id % control_mesh_resolutions[i_pdc];
+          const IndexT i = id % res;
           global_id += id * offset;
           id -= i;
-          id /= control_mesh_resolutions[i_pdc];
-          i_pd++
+          id /= res;
+          ++i_pdc;
         }
-        offset *= control_mesh_resolutions[i_pdc];
+        offset *= res;
       }
       return global_id;
     };
 
     // Fill return list
     std::vector<IndexT> return_list{};
-    return_list.reserve(n_ctps_on_boundary);
-    for (std::size_t i{}; i < n_ctps_on_boundary; i++) {
+    return_list.reserve(n_points_on_boundary);
+    for (std::size_t i{}; i < n_points_on_boundary; ++i) {
       return_list.push_back(local_to_global_bd_id(i));
     }
+    return return_list;
   }
 
   /// Extract grid point ids that lies on specified hyper plane
