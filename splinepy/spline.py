@@ -275,8 +275,7 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-            local_indices,
-            np.cumprod([1] + new_ctps_dims)[0:-1]
+            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
@@ -423,17 +422,10 @@ class Spline(core.CoreSpline):
         """
         Add logger shortcut during creation
         """
-        cls._logi = utils.log.prepend_log(
-                cls.__qualname__, utils.log.info
-        )
-        cls._logd = utils.log.prepend_log(
-                cls.__qualname__, utils.log.debug
-        )
-        cls._logw = utils.log.prepend_log(
-                cls.__qualname__, utils.log.warning
-        )
+        cls._logi = utils.log.prepend_log(cls.__qualname__, utils.log.info)
+        cls._logd = utils.log.prepend_log(cls.__qualname__, utils.log.debug)
+        cls._logw = utils.log.prepend_log(cls.__qualname__, utils.log.warning)
         return super().__new__(cls, *args, **kwargs)
-
 
     def __init__(self, spline=None, **kwargs):
         """
@@ -1194,13 +1186,38 @@ class Spline(core.CoreSpline):
 
         self._logd(
                 f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-                "Results: ", f"{[meaningful(r) for r in reduced]}."
+                "Results: ",
+                f"{[meaningful(r) for r in reduced]}."
         )
 
         if any(reduced):
             sync_from_core(self)
 
         return reduced
+
+    @_new_core_if_modified
+    def extract_boundary(self, plane_normal_axis, extrema):
+        """
+        Extracts boundary spline.
+
+
+        Parameters
+        -----------
+        plane_normal_axis: int
+          Axis normal to boundary spline
+        extrema: int
+          If extrema is bigger than zero, extracts boundary at the greater end
+          of the axis, else first control mesh hyperplane.
+
+
+        Returns
+        -------
+        boundary_spline: type(self)
+          boundary spline, which has one less para_dim
+        """
+        return type(self)(
+                spline=core.extract_boundary(self, plane_normal_axis, extrema)
+        )
 
     @_new_core_if_modified
     def export(self, fname):
