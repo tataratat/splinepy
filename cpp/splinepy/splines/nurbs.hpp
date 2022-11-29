@@ -31,7 +31,7 @@ public:
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
-    
+
   // splinelib
   using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
   // Parameter space
@@ -51,13 +51,13 @@ public:
   using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
   using PhysicalSpace_ = WeightedVectorSpace_;
   using Coordinates_ = typename WeightedVectorSpace_::Coordinates_;
-  using HomogeneousCoordinates_ = typename WeightedVectorSpace_::Base_::Coordinates_;
+  using HomogeneousCoordinates_ =
+      typename WeightedVectorSpace_::Base_::Coordinates_;
   using Coordinate_ = typename Base_::Coordinate_;
   using ScalarCoordinate_ = typename Coordinate_::value_type;
   using Weights_ = typename WeightedVectorSpace_::Weights_;
   using Weight_ = typename Weights_::value_type;
-  //using VectorSpace_ = typename WeightedVectorSpace_::Base_; // <dim + 1>
-  // Frequently used types
+  //  Frequently used types
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = splinelib::Dimension;
   using Tolerance_ = splinelib::sources::splines::Tolerance;

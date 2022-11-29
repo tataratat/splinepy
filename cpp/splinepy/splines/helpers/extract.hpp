@@ -70,10 +70,9 @@ ExtractBoundarySpline(const SplineType& spline,
       coords.reserve(ids_on_boundary.size());
       const auto& rhs_coordinates = spline.GetCoordinates();
       for (const auto& id : ids_on_boundary) {
-          coords.push_back(rhs_coordinates[id]);
+        coords.push_back(rhs_coordinates[id]);
       }
 
-        splinepy::utils::PrintInfo("end vs");
       // assign boundary spline - uses base' ctor
       boundary_spline = std::make_shared<SelfBoundary>(pspace, vspace);
     } else {

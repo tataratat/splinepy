@@ -6,7 +6,6 @@
 
 namespace splinepy::splines::helpers {
 
-
 /// extract patches and returns SplinepyBase.
 /// located in a separate file to avoid cirular dependency
 template<bool as_base = false, typename SplineType>
