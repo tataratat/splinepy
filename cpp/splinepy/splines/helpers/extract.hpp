@@ -59,12 +59,13 @@ ExtractBoundarySpline(SplineType& spline,
     std::shared_ptr<VSpace> vspace{};
     auto& coords = vspace->GetCoordinates();
     coords.reserve(ids_on_boundary.size());
+    const auto& rhs_coordinates = spline.GetCoordinates();
     for (const auto& id : ids_on_boundary) {
       if constexpr (SplineType::kIsRational) {
-        coords.push_back(spline.GetVectorSpace()[id]);
-      } else {
         // these are homogeneous coords
-        coords.push_back(spline.GetWeightedVectorSpace()[id]);
+        coords.push_back(rhs_coordinates[id]);
+      } else {
+        coords.push_back(rhs_coordinates[id]);
       }
     }
     // assign boundary spline - uses base' ctor
