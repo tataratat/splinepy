@@ -25,6 +25,10 @@ public:
   constexpr static int para_dim_ = para_dim;
   constexpr static int dim_ = dim;
 
+  // self
+  template<int s_para_dim, int s_dim>
+  using SelfTemplate_ = BSpline<s_para_dim, s_dim>;
+
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
@@ -141,6 +145,10 @@ public:
 
   constexpr const KnotVectors_& GetKnotVectors() const {
     return GetParameterSpace().GetKnotVectors();
+  }
+
+  constexpr const Coordinates_& GetCoordinates() const {
+    return GetVectorSpace().GetCoordinates();
   }
 
   // required implementations
@@ -329,6 +337,13 @@ public:
                                                             p_dim,
                                                             knot,
                                                             tolerance);
+  }
+
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
+    return splinepy::splines::helpers::ExtractBoundarySpline(*this,
+                                                             p_dim,
+                                                             extrema);
   }
 
   /// Bezier patch extraction
