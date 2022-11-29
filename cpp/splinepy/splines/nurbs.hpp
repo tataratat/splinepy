@@ -46,6 +46,7 @@ public:
   // Weighted Vector Space
   using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
   using Coordinates_ = typename WeightedVectorSpace_::Coordinates_;
+  using HomogeneousCoordinates_ = typename WeightedVectorSpace_::Base_::Coordinates_;
   using Coordinate_ = typename Base_::Coordinate_;
   using ScalarCoordinate_ = typename Coordinate_::value_type;
   using Weights_ = typename WeightedVectorSpace_::Weights_;
@@ -145,6 +146,11 @@ public:
 
   constexpr const KnotVectors_& GetKnotVectors() const {
     return GetParameterSpace().GetKnotVectors();
+  }
+
+  // nurbs' coordinates are homogeneous
+  constexpr const HomogeneousCoordinates_& GetCoordinates() const {
+    return GetWeightedVectorSpace().GetCoordinates();
   }
 
   // required implementations
