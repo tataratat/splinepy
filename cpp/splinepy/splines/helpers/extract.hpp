@@ -8,11 +8,11 @@
 namespace splinepy::splines::helpers {
 
 /// returns boundary spline, which has one less para_dim.
-template<typename SplineType>
+template<bool switch_plane_id_to_extrema = false, typename SplineType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
-ExtractBoundarySpline(const SplineType& spline,
-                      const int& plane_normal_axis,
-                      const int& extrema) {
+ExtractControlMeshSlice(const SplineType& spline,
+                        const int& plane_normal_axis,
+                        const int& plane_id) {
   if constexpr (SplineType::kParaDim == 1) {
     splinepy::utils::PrintWarning(
         "Sorry, we don't support boundary spline"
@@ -26,12 +26,25 @@ ExtractBoundarySpline(const SplineType& spline,
     const auto cmr =
         splinepy::splines::helpers::template GetControlMeshResolutions<
             std::size_t>(spline);
-    const auto ids_on_boundary = splinepy::utils::GridPoints<
-        std::size_t,
-        std::size_t,
-        SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
-                                                        plane_normal_axis,
-                                                        extrema);
+    const auto ids_on_boundary = [&]() {
+      if constexpr (switch_plane_id_to_extrema) {
+        return splinepy::utils::GridPoints<
+            std::size_t,
+            std::size_t,
+            SplineType::kParaDim>::GridPointIdsOnBoundary(cmr,
+                                                          plane_normal_axis,
+                                                          plane_id);
+
+      } else {
+        return splinepy::utils::GridPoints<
+            std::size_t,
+            std::size_t,
+            SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
+                                                            plane_normal_axis,
+                                                            plane_id);
+
+      }
+    }();
     // boundary spline type
     using SelfBoundary =
         typename SplineType::template SelfTemplate_<SplineType::kParaDim - 1,
@@ -120,6 +133,14 @@ ExtractBoundarySpline(const SplineType& spline,
     // return here, this way compiler is happy
     return boundary_spline;
   }
+}
+
+template<typename SplineType>
+std::shared_ptr<splinepy::splines::SplinepyBase>
+ExtractBoundarySpline(const SplineType& spline,
+                      const int& plane_normal_axis,
+                      const int& extrema) {
+  return ExtractControlMeshSlice<true>(spline, plane_normal_axis, extrema);
 }
 
 } /* namespace splinepy::splines::helpers */
