@@ -142,11 +142,12 @@ public:
   }
 
   /// Basis Function Derivative and their support IDs
-  virtual void SplinepyDerivativeAndSupport(const double* para_coord,
-                                            double* basis,
-                                            int* support) const {
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis,
+                                                 int* support) const {
     splinepy::utils::PrintAndThrowError(
-        "SplinepyDerivativeAndSupport not implemented for",
+        "SplinepyBasisDerivativeAndSupport not implemented for",
         SplinepyWhatAmI());
   }
 
