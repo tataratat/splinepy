@@ -45,8 +45,9 @@ GetControlMeshResolutions(const SplineType& spline) {
   if constexpr (SplineType::kHasKnotVectors) {
     const auto& knot_vectors = spline.GetKnotVectors();
     for (int i{}; i < SplineType::kParaDim; ++i) {
-      control_mesh_res[i] = static_cast<ResolutionType>(knot_vectors[i]->GetSize())
-                            - static_cast<ResolutionType>(degrees[i]) - 1;
+      control_mesh_res[i] =
+          static_cast<ResolutionType>(knot_vectors[i]->GetSize())
+          - static_cast<ResolutionType>(degrees[i]) - 1;
     }
   } else {
     for (int i{}; i < SplineType::kParaDim; ++i) {
