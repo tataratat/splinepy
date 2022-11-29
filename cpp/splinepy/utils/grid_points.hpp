@@ -112,7 +112,6 @@ public:
           global_id += id * offset;
           id -= i;
           id /= res;
-          ++i_pdc;
         }
         offset *= res;
       }
