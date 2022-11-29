@@ -51,8 +51,6 @@ public:
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
-  using ControlMeshSampler_ =
-      splinepy::utils::GridPoints<std::size_t, std::size_t, kParaDim>;
 
   static Base_ CreateBase(const int* degrees, const double* control_points) {
 
@@ -231,6 +229,14 @@ public:
       basis[i] = bez_basis[i];
       support[i] = i;
     }
+  }
+
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis,
+                                                 int* support) const {
+    // prepare
   }
 
   /// only applicable to the splines of same para_dim, same type
@@ -447,7 +453,9 @@ public:
 
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
-    return splinepy::splines::helpers::ExtractBoundarySpline(*this, p_dim, extrema);
+    return splinepy::splines::helpers::ExtractBoundarySpline(*this,
+                                                             p_dim,
+                                                             extrema);
   }
 
   virtual std::shared_ptr<SplinepyBase>
@@ -501,27 +509,8 @@ public:
   constexpr Proximity_& GetProximity() { return *proximity_; }
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
-  constexpr ControlMeshSampler_& GetControlMeshSampler() {
-    if (!control_mesh_sampler_) {
-      const auto cmr = splinepy::splines::helpers::template GetControlMeshResolutions<std::size_t>(*this);
-      auto res = cmr;
-      for (auto& r : res) { ++r; }
-      std::array<std::array<std::size_t, para_dim>, 2> bounds{};
-      bounds[1] = cmr;
-
-      control_mesh_sampler_ = std::make_shared<ControlMeshSampler_>(
-        bounds, cmr
-      );
-    }
-    return *control_mesh_sampler_;
-  }
-  constexpr const ControlMeshSampler_& GetControlMeshSampler() const {
-    return GetControlMeshSampler();
-  }
-
 protected:
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
-  std::shared_ptr<ControlMeshSampler_> control_mesh_sampler_ = nullptr;
 }; /* class Bezier */
 
 } // namespace splinepy::splines
