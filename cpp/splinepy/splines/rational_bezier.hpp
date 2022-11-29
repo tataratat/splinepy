@@ -33,10 +33,18 @@ public:
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+
+  // self
+  template<std::size_t s_para_dim, std::size_t s_dim>
+  using SelfTemplate_ = RationalBezier<s_para_dim, s_dim>;
+
+  // bezman
   using Base_ = RationalBezierSplineType<para_dim, dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
+  using Degrees_ = typename std::array<std::size_t, para_dim>;
   using Coordinate_ = typename Base_::PhysicalPointType_;
+  using Coordinates_ = typename std::vector<Coordinate_>;
   using Weight_ = typename Base_::ScalarType_;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
@@ -443,6 +451,13 @@ public:
     }
 
     return std::make_shared<RationalBezier<para_dim, dim>>(derived_bez);
+  }
+
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
+    return splinepy::splines::helpers::ExtractBoundarySpline(*this,
+                                                             p_dim,
+                                                             extrema);
   }
 
   virtual std::vector<std::shared_ptr<SplinepyBase>>
