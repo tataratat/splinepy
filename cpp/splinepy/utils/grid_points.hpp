@@ -127,65 +127,16 @@ public:
     return return_list;
   }
 
-  /// Extract grid point ids that lies on specified hyper plane
-  std::vector<IndexT> GridPointIdsOnHyperPlane(const IndexT& plane_normal_axis,
-                                               const IndexT& plane_id) {
-    IndexT n_plane_points{1};
-    for (IndexT i{}; i < dim; ++i) {
-      if (plane_normal_axis == i) {
-        continue;
-      }
-      n_plane_points *= res_[i];
-    }
-
-    // prepare return
-    std::vector<IndexT> hits;
-    hits.reserve(n_plane_points);
-
-    // get search value
-    const DataT& search_value = entries_[plane_normal_axis][plane_id];
-
-    const auto& all_grid_points = GetAllGridPoints();
-
-    // loop and see if value matches, if so, append.
-    for (IndexT i{}; i < len_; ++i) {
-      if constexpr (std::numeric_limits<DataT>::is_integer) {
-        if (all_grid_points[i * dim + plane_normal_axis] == search_value) {
-          hits.emplace_back(i);
-        }
-      } else {
-        if (std::abs(all_grid_points[i * dim + plane_normal_axis]
-                     - search_value)
-            < 1e-12) {
-          hits.emplace_back(i);
-        }
-      }
-    }
-
-    // size check
-    if (hits.size() != n_plane_points) {
-      splinepy::utils::PrintAndThrowError(
-          "Sorry, something went wrong during hyper plane id extraction. "
-          "Expecting",
-          n_plane_points,
-          "but only found",
-          hits.size());
-    }
-
-    // all good
-    return hits;
-  }
-
-  /// Extract boundary Ids
-  std::vector<IndexT> GridPointIdsOnBoundary(const IndexT& plane_normal_axis,
-                                             const IndexT& extrema) {
-    // findout which bounds - this matches proximity clip description.
-    // in case IndexT is unsigned, we check if extrema is greater than zero.
-    // if yes, upper, else, lower
+  static std::vector<IndexT>
+  GridPointIdsOnBoundary(const std::array<IndexT, dim>& grid_resolutions,
+                         const IndexT& plane_normal_axis,
+                         const IndexT& extrema) {
     const IndexT plane_id =
-        (extrema > 0) ? entries_[plane_normal_axis].size() - 1 : 0;
-    return GridPointIdsOnHyperPlane(plane_normal_axis, plane_id);
+        (extrema > 0) ? grid_resolutions[plane_normal_axis] - 1 : 0;
+    return GridPointIdsOnHyperPlane(grid_resolutions, plane_normal_axis, plane_id);
   }
+
+
 
   IndexT Size() const { return len_; }
 
