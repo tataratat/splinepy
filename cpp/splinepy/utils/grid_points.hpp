@@ -83,11 +83,49 @@ public:
         const auto& r = res_[j];
         saved_grid_points_.emplace_back(entries_[j][quot % r]);
         quot /= r;
-        
       }
     }
 
     return saved_grid_points_;
+  }
+
+  std::vector<IndexT> GridPointIdsOnHyperPlane(
+      const std::array<IndexT, dim>& control_point_resolutions,
+      const IndexT& plane_normal_axis,
+      const IndexT& plane_id) const {
+    // Determine size of return vector
+    const std::size_t n_ctps_on_boundary = [&]() {
+      IndexT n_ctps{1};
+      for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
+        if (i_pd == plane_normal_axis)
+          continue;
+        n_ctps *= control_point_resolutions[i_pd];
+      }
+    };
+
+    auto local_to_global_bd_id = [&](const IndexT& local_id) {
+      IndexT offset{1}, id{local_id}, global_id{};
+      for (std::size_t i_pdc{}; i_pdc < dim; i_pdc++) {
+        if (i_pdc == plane_normal_axis) {
+          global_id += offset * plane_id;
+        } else {
+          const IndexT i = id % control_mesh_resolutions[i_pdc];
+          global_id += id * offset;
+          id -= i;
+          id /= control_mesh_resolutions[i_pdc];
+          i_pd++
+        }
+        offset *= control_mesh_resolutions[i_pdc];
+      }
+      return global_id;
+    };
+
+    // Fill return list
+    std::vector<IndexT> return_list{};
+    return_list.reserve(n_ctps_on_boundary);
+    for (std::size_t i{}; i < n_ctps_on_boundary; i++) {
+      return_list.push_back(local_to_global_bd_id(i));
+    }
   }
 
   /// Extract grid point ids that lies on specified hyper plane
@@ -145,8 +183,8 @@ public:
     // findout which bounds - this matches proximity clip description.
     // in case IndexT is unsigned, we check if extrema is greater than zero.
     // if yes, upper, else, lower
-    const IndexT plane_id = (extrema > 0) ? entries_[plane_normal_axis].size() - 1
-                                          : 0;
+    const IndexT plane_id =
+        (extrema > 0) ? entries_[plane_normal_axis].size() - 1 : 0;
     return GridPointIdsOnHyperPlane(plane_normal_axis, plane_id);
   }
 
