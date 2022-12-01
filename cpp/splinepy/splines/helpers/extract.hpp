@@ -15,8 +15,8 @@ ExtractControlMeshSlice(const SplineType& spline,
                         const int& plane_id) {
   if constexpr (SplineType::kParaDim == 1) {
     splinepy::utils::PrintWarning(
-        "Sorry, we don't support boundary spline"
-        "extraction of 1-Parametric Dim splines. Returning empty spline.");
+        "Sorry, we don't support control mesh slicing"
+        "of 1-Parametric Dim splines. Returning empty spline.");
     return std::shared_ptr<
         typename SplineType::template SelfTemplate_<SplineType::kParaDim,
                                                     SplineType::kDim>>{};
