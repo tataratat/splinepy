@@ -42,7 +42,6 @@ ExtractControlMeshSlice(const SplineType& spline,
             SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
                                                             plane_normal_axis,
                                                             plane_id);
-
       }
     }();
     // boundary spline type
