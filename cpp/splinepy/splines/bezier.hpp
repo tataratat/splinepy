@@ -10,6 +10,7 @@
 
 #include <splinepy/explicit/bezman/bezier_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/basis_functions.hpp>
 #include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
@@ -211,21 +212,6 @@ public:
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
-  }
-
-  virtual void SplinepyEvaluate(const double* para_coord,
-                                double* evaluated) const {
-    splinepy::splines::helpers::ScalarTypeEvaluate(*this,
-                                                   para_coord,
-                                                   evaluated);
-  }
-  virtual void SplinepyDerivative(const double* para_coord,
-                                  const int* orders,
-                                  double* derived) const {
-    splinepy::splines::helpers::ScalarTypeDerivative(*this,
-                                                     para_coord,
-                                                     orders,
-                                                     derived);
   }
 
   virtual void SplinepyBasis(const double* para_coord, double* basis) const {
