@@ -5,6 +5,8 @@
 
 #include <splinepy/explicit/splinelib/b_spline_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/basis_functions.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/extract_bezier_patches.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
@@ -249,39 +251,39 @@ public:
                                                      derived);
   }
 
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::splines::helpers::BSplineBasis(*this, para_coord, basis);
+  }
+
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis_der) const {
+    splinepy::splines::helpers::BSplineBasisDerivative(*this,
+                                                       para_coord,
+                                                       order,
+                                                       basis_der);
+  }
+
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::splines::helpers::BSplineSupport(*this, para_coord, support);
+  }
+
+  /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
                                        int* support) const {
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
 
-    typename ParameterSpace_::UniqueEvaluations_ unique_evaluations;
-    parameter_space.template InitializeUniqueEvaluations<false>(
-        unique_evaluations);
+    SplinepyBasis(para_coord, basis);
+    SplinepySupport(para_coord, support);
+  }
 
-    ParametricCoordinate_ sl_para_coord;
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      sl_para_coord[i] = ScalarParametricCoordinate_{para_coord[i]};
-    }
-
-    int i{0};
-    for (Index_ non_zero_basis_function{parameter_space.First()};
-         non_zero_basis_function != parameter_space.Behind();
-         ++non_zero_basis_function) {
-
-      Index_ const& basis_function =
-          (parameter_space.FindFirstNonZeroBasisFunction(sl_para_coord)
-           + non_zero_basis_function.GetIndex());
-
-      const auto evaluated =
-          parameter_space.EvaluateBasisFunction(basis_function,
-                                                non_zero_basis_function,
-                                                sl_para_coord,
-                                                unique_evaluations);
-
-      basis[i] = evaluated;
-      support[i] = basis_function.GetIndex1d().Get();
-      ++i;
-    }
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis_der,
+                                                 int* support) const {
+    SplinepyBasisDerivative(para_coord, orders, basis_der);
+    SplinepySupport(para_coord, support);
   }
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,

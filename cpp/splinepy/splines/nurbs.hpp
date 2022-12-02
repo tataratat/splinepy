@@ -259,57 +259,39 @@ public:
                                                      derived);
   }
 
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::splines::helpers::BSplineBasis(*this, para_coord, basis);
+  }
+
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis_der) const {
+    splinepy::splines::helpers::BSplineBasisDerivative(*this,
+                                                       para_coord,
+                                                       order,
+                                                       basis_der);
+  }
+
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::splines::helpers::BSplineSupport(*this, para_coord, support);
+  }
+
+  /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
                                        int* support) const {
-    ParameterSpace_ const& parameter_space = *Base_::Base_::parameter_space_;
 
-    typename ParameterSpace_::UniqueEvaluations_ unique_evaluations;
-    parameter_space.template InitializeUniqueEvaluations<false>(
-        unique_evaluations);
+    SplinepyBasis(para_coord, basis);
+    SplinepySupport(para_coord, support);
+  }
 
-    ParametricCoordinate_ sl_para_coord;
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      sl_para_coord[i] = ScalarParametricCoordinate_{para_coord[i]};
-    }
-
-    int i{0};
-    double W{0.};
-    for (Index_ non_zero_basis_function{parameter_space.First()};
-         non_zero_basis_function != parameter_space.Behind();
-         ++non_zero_basis_function) {
-
-      Index_ const& basis_function =
-          (parameter_space.FindFirstNonZeroBasisFunction(sl_para_coord)
-           + non_zero_basis_function.GetIndex());
-
-      // general basis fn
-      const auto evaluated =
-          parameter_space.EvaluateBasisFunction(basis_function,
-                                                non_zero_basis_function,
-                                                sl_para_coord,
-                                                unique_evaluations);
-
-      // get `w` and add to `W`
-      const auto& support_id = basis_function.GetIndex1d(); // not int yet
-
-      WeightedVectorSpace_ const& vector_space = *Base_::weighted_vector_space_;
-      const auto& w = vector_space[support_id][dim].Get(); // dim: last elem
-
-      const double N_times_w = evaluated * w;
-
-      W += N_times_w;
-      basis[i] = N_times_w; // not yet final
-      support[i] = support_id.Get();
-      ++i;
-    }
-
-    // Loop and divide entries by W
-    int end = i;
-    double W_inv = 1 / W;
-    for (i = 0; i < end; ++i) {
-      basis[i] *= W_inv;
-    }
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis_der,
+                                                 int* support) const {
+    SplinepyBasisDerivative(para_coord, orders, basis_der);
+    SplinepySupport(para_coord, support);
   }
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
