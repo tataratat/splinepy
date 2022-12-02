@@ -133,10 +133,10 @@ public:
                          const IndexT& extrema) {
     const IndexT plane_id =
         (extrema > 0) ? grid_resolutions[plane_normal_axis] - 1 : 0;
-    return GridPointIdsOnHyperPlane(grid_resolutions, plane_normal_axis, plane_id);
+    return GridPointIdsOnHyperPlane(grid_resolutions,
+                                    plane_normal_axis,
+                                    plane_id);
   }
-
-
 
   IndexT Size() const { return len_; }
 
