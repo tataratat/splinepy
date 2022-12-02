@@ -213,30 +213,54 @@ public:
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }
 
+  virtual void SplinepyEvaluate(const double* para_coord,
+                                double* evaluated) const {
+    splinepy::splines::helpers::ScalarTypeEvaluate(*this,
+                                                   para_coord,
+                                                   evaluated);
+  }
+  virtual void SplinepyDerivative(const double* para_coord,
+                                  const int* orders,
+                                  double* derived) const {
+    splinepy::splines::helpers::ScalarTypeDerivative(*this,
+                                                     para_coord,
+                                                     orders,
+                                                     derived);
+  }
+
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::splines::helpers::BezierBasis(*this, para_coord, basis);
+  }
+
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis_der) const {
+    splinepy::splines::helpers::BezierBasisDerivative(*this,
+                                                      para_coord,
+                                                      order,
+                                                      basis_der);
+  }
+
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::splines::helpers::BezierSupport(*this, para_coord, support);
+  }
+
   /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
                                        int* support) const {
-    // prepare query
-    ParametricCoordinate_ bz_query;
-    std::copy_n(para_coord, para_dim, bz_query.begin());
 
-    // query
-    const auto bez_basis = Base_::BasisFunctions(bz_query);
-
-    // fill output
-    for (int i{}; i < static_cast<int>(bez_basis.size()); ++i) {
-      basis[i] = bez_basis[i];
-      support[i] = i;
-    }
+    SplinepyBasis(para_coord, basis);
+    SplinepySupport(para_coord, support);
   }
 
   /// Basis Function Derivative and their support IDs
   virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
                                                  const int* orders,
-                                                 double* basis,
+                                                 double* basis_der,
                                                  int* support) const {
-    // prepare
+    SplinepyBasisDerivative(para_coord, orders, basis_der);
+    SplinepySupport(para_coord, support);
   }
 
   /// only applicable to the splines of same para_dim, same type

@@ -132,6 +132,27 @@ public:
         SplinepyWhatAmI());
   };
 
+  /// Basis Function values
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::utils::PrintAndThrowError("SplinepyBasis not implemented for",
+                                        SplinepyWhatAmI());
+  }
+
+  /// Basis Function derivative values
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyBasisDerivative not implemented for",
+        SplinepyWhatAmI());
+  }
+
+  /// Spline Support IDs
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::utils::PrintAndThrowError("SplinepySupport not implemented for",
+                                        SplinepyWhatAmI());
+  }
+
   /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
