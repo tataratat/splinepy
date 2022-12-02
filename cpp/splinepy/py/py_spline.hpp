@@ -442,7 +442,6 @@ public:
     int constant_orders_factor = 0;
     if (!CheckPyArraySize(orders, para_dim_, false)) {
       if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
-        constant_orders_factor = 1;
         splinepy::utils::PrintAndThrowError(
             "Derivative-query-orders (orders) must either have same size as",
             "spline's parametric dimension or same shape as queries.",
@@ -460,6 +459,9 @@ public:
             ",",
             para_dim_,
             "}");
+      } else {
+        // orders shape matches query shape.
+        constant_orders_factor = 1;
       }
     }
 
@@ -513,6 +515,66 @@ public:
     support.resize({n_queries, n_support});
 
     return py::make_tuple(basis, support);
+  }
+
+  /// Basis function values and support id
+  py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
+                                      py::array_t<int> orders,
+                                      int nthreads) {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+    const int n_queries = queries.shape(0);
+
+    int constant_orders_factor = 0;
+    if (!CheckPyArraySize(orders, para_dim_, false)) {
+      if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
+        splinepy::utils::PrintAndThrowError(
+            "Derivative-query-orders (orders) must either have same size as",
+            "spline's parametric dimension or same shape as queries.",
+            "Expected: size{",
+            para_dim_,
+            "} or shape{",
+            n_queries,
+            ",",
+            para_dim_,
+            "}",
+            "Given: size{",
+            orders.size(),
+            "}, approx. shape {(size / para_dim), para_dim} = {",
+            orders.size() / para_dim_,
+            ",",
+            para_dim_,
+            "}");
+      } else {
+        constant_orders_factor = 1;
+      }
+    }
+
+    // prepare results
+    const int n_support = Core()->SplinepyNumberOfSupports();
+    py::array_t<double> basis_der(n_queries * n_support);
+    py::array_t<int> support(n_queries * n_support);
+
+    // prepare_lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    int* orders_ptr = static_cast<int*>(orders.request().ptr);
+    double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
+    int* support_ptr = static_cast<int*>(support.request().ptr);
+    auto basis_der_support = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        Core()->SplinepyBasisDerivativeAndSupport(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[constant_orders_factor * i * para_dim_],
+            &basis_der_ptr[i * n_support],
+            &support_ptr[i * n_support]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(basis_der_support, n_queries, nthreads);
+
+    basis_der.resize({n_queries, n_support});
+    support.resize({n_queries, n_support});
+
+    return py::make_tuple(basis_der, support);
   }
 
   /// Proximity query (verbose)
@@ -885,6 +947,11 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
       .def("basis_and_support",
            &splinepy::py::PySpline::BasisAndSupport,
            py::arg("queries"),
+           py::arg("nthreads") = 1)
+      .def("basis_derivative_and_support",
+           &splinepy::py::PySpline::BasisDerivativeAndSupport,
+           py::arg("queries"),
+           py::arg("orders"),
            py::arg("nthreads") = 1)
       .def("proximities",
            &splinepy::py::PySpline::Proximities,
