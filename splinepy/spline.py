@@ -1056,22 +1056,46 @@ class Spline(core.CoreSpline):
 
         Parameters
         -----------
-        queries: (n, para_dim) list-like
+        queries: (n, para_dim) array-like
         n_threads: int
-          Default is 1. Higher number is currently not supported. #TODO: DOIT
 
         Returns
         --------
-        results: tuple
-          tuple of two elements.
-          first: (prod(degrees .+ 1)) array of basis function values.
-          second: support ids.
+        basis: (n, prod(degrees + 1)) np.ndarray
+        support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions")
         queries = np.ascontiguousarray(queries, dtype="float64")
 
         return super().basis_and_support(
                 queries=queries,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
+    def basis_derivative_and_support(self, queries, orders, nthreads=None):
+        """
+        Returns derivative of basis functions and their support ids of given
+        queries.
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+        orders: (para_dim,) or (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        basis_derivatives: (n, prod(degrees + 1)) np.ndarray
+        supports: (n, prod(degrees + 1)) np.ndarray
+        """
+        self._logd("Evaluating basis function derivatives")
+        queries = np.ascontiguousarray(queries, dtype="float64")
+        orders = np.ascontiguousarray(orders, dtype="int32")
+
+        return super().basis_deriative_and_support(
+                queries=queries,
+                orders=orders,
                 nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
