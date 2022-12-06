@@ -1,4 +1,4 @@
-name: Builds and runs tests
+name: Builds minimal and runs tests
 
 on:
   push
@@ -27,13 +27,20 @@ jobs:
     - name: install dependencies
       run: pip install numpy pytest
             
-    - name: build splinepy linux
+    - name: build splinepy linux - clang12, test
       if: matrix.os == 'ubuntu-latest'
-      run: CC=clang-12 CXX=clang++-12 python3 setup.py install --minimal
+      run: |
+        CC=clang-12 CXX=clang++-12 python3 setup.py install --minimal
+        pytest tests
 
-    - name: build splinepy macos
+    - name: build splinepy linux - gcc10, test
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal
+        pytest tests
+
+    - name: build splinepy macos, test
       if: matrix.os == 'macos-latest'
-      run: python3 setup.py install --minimal
-      
-    - name: test
-      run: pytest tests
+      run: |
+        python3 setup.py install --minimal
+        pytest tests
