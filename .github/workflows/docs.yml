@@ -21,7 +21,7 @@ jobs:
       run: pip install numpy pytest
             
     - name: build splinepy linux
-      run: CC=clang-12 CXX=clang++-12 python3 setup.py --minimal --explicit install
+      run: CC=clang-12 CXX=clang++-12 python3 setup.py --minimal --explicit develop
 
     - name: test
       run: pytest tests
