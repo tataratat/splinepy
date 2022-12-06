@@ -78,7 +78,7 @@ void ExportXml(std::string fname, py::list splines) {
 void ExportVtk(std::string fname,
                py::list splines,
                py::list resolutions_per_spline) {
-  using ResolutionsPerSpline = typename splinelib::sources::input_output::vtk::
+  using ResolutionsPerSpline = splinelib::sources::input_output::vtk::
       NumbersOfParametricCoordinates;
   using ResolutionsType = typename ResolutionsPerSpline::value_type;
   using ResolutionValueType =
