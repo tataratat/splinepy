@@ -24,7 +24,7 @@ Library
 ============
 .. toctree::
 
-   API references <modulesandabstract>
+   API references <modules>
 
 .. Indices and tables
 .. ==================
