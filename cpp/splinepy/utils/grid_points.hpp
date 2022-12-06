@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <numeric>
 #include <utility>
 
 #include <splinepy/utils/print.hpp>
@@ -16,7 +17,8 @@ public:
   GridPoints() = default;
   GridPoints(const std::array<std::array<DataT, dim>, 2>& bounds,
              const std::array<IndexT, dim>& resolutions)
-      : res_(resolutions) {
+      : res_(resolutions),
+        bounds_(bounds) {
     // linspace and prepare possible entries */
     len_ = 1;
     for (int i{0}; i < dim; i++) {
@@ -29,39 +31,111 @@ public:
         entryvec.emplace_back(bounds[0][i] + step_size_[i] * j);
       }
     }
+    len_times_dim_ = len_ * dim;
   }
 
   const std::array<DataT, dim> operator[](const IndexT id) {
-    return IndexToParametricCoordinate<std::array<DataT, dim>>(id);
+    return IndexToGridPoint<std::array<DataT, dim>>(id);
   }
 
-  template<typename ParaCoord>
-  ParaCoord IndexToParametricCoordinate(const IndexT& id) const {
+  template<typename GridPointType>
+  GridPointType IndexToGridPoint(const IndexT& id) const {
 
-    using ValueType = typename ParaCoord::value_type;
+    using ValueType = typename GridPointType::value_type;
 
-    ParaCoord pcoord{};
+    GridPointType gpoint{};
 
     IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
+      gpoint[i] = ValueType{entries_[i][quot % res_[i]]};
       quot /= res_[i];
     }
 
-    return pcoord;
+    return gpoint;
   }
 
   /// subroutine variation
-  template<typename ParaCoord>
-  void IndexToParametricCoordinate(const IndexT& id, ParaCoord& pcoord) const {
+  template<typename GridPointType>
+  void IndexToGridPoint(const IndexT& id, GridPointType& gpoint) const {
 
-    using ValueType = typename ParaCoord::value_type;
+    using ValueType = typename GridPointType::value_type;
 
     IndexT quot{id};
     for (int i{0}; i < dim; i++) {
-      pcoord[i] = ValueType{entries_[i][quot % res_[i]]};
+      gpoint[i] = ValueType{entries_[i][quot % res_[i]]};
       quot /= res_[i];
     }
+  }
+
+  /// Saved at the first call then returns
+  const std::vector<DataT>& GetAllGridPoints() {
+    // early exit if we have them
+    if (saved_grid_points_.size() == len_times_dim_) {
+      return saved_grid_points_;
+    }
+    // get all.
+    saved_grid_points_.clear();
+    saved_grid_points_.reserve(len_times_dim_);
+    for (IndexT i{}; i < len_; ++i) {
+      // third time is the charm
+      IndexT quot{i};
+      for (IndexT j{}; j < dim; ++j) {
+        const auto& r = res_[j];
+        saved_grid_points_.emplace_back(entries_[j][quot % r]);
+        quot /= r;
+      }
+    }
+
+    return saved_grid_points_;
+  }
+
+  static std::vector<IndexT>
+  GridPointIdsOnHyperPlane(const std::array<IndexT, dim>& grid_resolutions,
+                           const IndexT& plane_normal_axis,
+                           const IndexT& plane_id) {
+    // Determine size of return vector
+    IndexT n_points_on_boundary{1};
+    for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
+      if (i_pd == plane_normal_axis)
+        continue;
+      n_points_on_boundary *= grid_resolutions[i_pd];
+    }
+
+    auto local_to_global_bd_id = [&](const IndexT& local_id) {
+      IndexT offset{1}, id{local_id}, global_id{};
+      for (std::size_t i_pdc{}; i_pdc < dim; ++i_pdc) {
+        const auto& res = grid_resolutions[i_pdc];
+        if (i_pdc == plane_normal_axis) {
+          global_id += offset * plane_id;
+        } else {
+          const IndexT i = id % res;
+          global_id += id * offset;
+          id -= i;
+          id /= res;
+        }
+        offset *= res;
+      }
+      return global_id;
+    };
+
+    // Fill return list
+    std::vector<IndexT> return_list{};
+    return_list.reserve(n_points_on_boundary);
+    for (std::size_t i{}; i < n_points_on_boundary; ++i) {
+      return_list.push_back(local_to_global_bd_id(i));
+    }
+    return return_list;
+  }
+
+  static std::vector<IndexT>
+  GridPointIdsOnBoundary(const std::array<IndexT, dim>& grid_resolutions,
+                         const IndexT& plane_normal_axis,
+                         const IndexT& extrema) {
+    const IndexT plane_id =
+        (extrema > 0) ? grid_resolutions[plane_normal_axis] - 1 : 0;
+    return GridPointIdsOnHyperPlane(grid_resolutions,
+                                    plane_normal_axis,
+                                    plane_id);
   }
 
   IndexT Size() const { return len_; }
@@ -70,9 +144,11 @@ public:
 
 private:
   std::array<IndexT, dim> res_;
-  IndexT count_;
+  std::array<std::array<DataT, dim>, 2> bounds_;
   IndexT len_;
+  IndexT len_times_dim_;
   std::array<std::vector<DataT>, dim> entries_;
+  std::vector<DataT> saved_grid_points_;
 };
 
 /// CStyleArrayPointer based dynamic grid point sampler

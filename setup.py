@@ -176,6 +176,7 @@ flags = dict(
         enable_warning="--enable_warning",
         serial_build="--serial_build",
         debug="--debug",
+        explicit="--explicit"
 )
 cma = dict(
         cmake_args=[],
@@ -210,6 +211,11 @@ if flags["debug"] in sys.argv:
     print("*** building debug ***")
     sys.argv.remove(flags["debug"])
     cma["debug"] = True
+
+if flags["explicit"] in sys.argv:
+    print("*** explicit instantiation of third party template classes ***")
+    sys.argv.remove(flags["explicit"])
+    cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=ON")
 
 setup(
         name='splinepy',

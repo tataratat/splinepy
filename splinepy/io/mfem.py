@@ -425,11 +425,11 @@ def export_cartesian(
         f.write(
                 '\n'.join(
                         f"{boundary_id} {boundary_type} "
-                        + ' '.join(str(id)
-                                   for id in row)
-                        for row, boundary_id in zip(
-                                boundaries.reshape(-1, n_vertex_per_boundary).
-                                tolist(), boundary_ids.tolist()
+                        + ' '.join(str(id) for id in row) for row,
+                        boundary_id in zip(
+                                boundaries.reshape(-1, n_vertex_per_boundary
+                                                   ).tolist(),
+                                boundary_ids.tolist()
                         )
                 )
         )
@@ -440,8 +440,7 @@ def export_cartesian(
         # Here currently all boudaries are set to 1
         f.write(
                 '\n'.join(
-                        ' '.join(str(id)
-                                 for id in row)
+                        ' '.join(str(id) for id in row)
                         for row in edges.reshape(-1, 3).tolist()
                 )
         )
@@ -473,8 +472,7 @@ def export_cartesian(
             if "weights" not in spline.required_properties:
                 f.write(
                         '\n'.join(
-                                (' '.join(str(x_i)
-                                          for x_i in row) + " 1.0")
+                                (' '.join(str(x_i) for x_i in row) + " 1.0")
                                 for row in spline.control_points.tolist()
                         ) + "\n\n"
                 )

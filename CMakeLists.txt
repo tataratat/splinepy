@@ -10,6 +10,7 @@ option(SPLINEPY_MORE "Compile a full set of splines." OFF)
 option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
+option(SPLINEPY_BUILD_EXPLICIT "Explicit instantiation of (mainly third party) template classes" OFF)
 
 
 # config
@@ -33,7 +34,6 @@ set(SPLINEPY_DEFS)
 
 # compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  list(APPEND SPLINEPY_OPTIMIZATION_FLAGS -ffast-math)
   set(SPLINEPY_WARNING_FLAGS
         -Wall -Wextra -Wpedantic -Wzero-as-null-pointer-constant -Wno-unused)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -62,6 +62,11 @@ endif()
 if(SPLINEPY_MORE)
     set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
 endif(SPLINEPY_MORE)
+
+if(SPLINEPY_BUILD_EXPLICIT)
+    set(SPLINEPY_DEFS ${SPLINEPY_DEFS}
+            SPLINEPY_BUILD_EXPLICIT)
+endif(SPLINEPY_BUILD_EXPLICIT)
 
 add_subdirectory(third_party)
 add_subdirectory(cpp/splinepy)

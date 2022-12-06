@@ -1,163 +1,145 @@
 #pragma once
 
-#include <splinepy/splines/bezier.hpp>
-#include <splinepy/splines/rational_bezier.hpp>
+#include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
+#include <splinepy/utils/grid_points.hpp>
+#include <splinepy/utils/print.hpp>
 
 namespace splinepy::splines::helpers {
 
-/// extract patches and returns SplinepyBase.
-template<bool as_base = false, typename SplineType>
-auto ExtractBezierPatches(SplineType& input) {
-  // Start by identifying types
-  constexpr int para_dim = SplineType::kParaDim;
-  constexpr int dim = SplineType::kDim;
-  constexpr bool is_rational = SplineType::kIsRational;
+/// returns boundary spline, which has one less para_dim.
+template<bool switch_plane_id_to_extrema = false, typename SplineType>
+std::shared_ptr<splinepy::splines::SplinepyBase>
+ExtractControlMeshSlice(const SplineType& spline,
+                        const int& plane_normal_axis,
+                        const int& plane_id) {
+  if constexpr (SplineType::kParaDim == 1) {
+    splinepy::utils::PrintWarning(
+        "Sorry, we don't support control mesh slicing"
+        "of 1-Parametric Dim splines. Returning empty spline.");
+    return std::shared_ptr<
+        typename SplineType::template SelfTemplate_<SplineType::kParaDim,
+                                                    SplineType::kDim>>{};
 
-  using ReturnType =
-      std::conditional_t<is_rational,
-                         splinepy::splines::RationalBezier<para_dim, dim>,
-                         splinepy::splines::Bezier<para_dim, dim>>;
-  using ReturnVectorValueType =
-      std::conditional_t<as_base, splinepy::splines::SplinepyBase, ReturnType>;
-  using PointType = typename ReturnType::Coordinate_;
+  } else {
+    // get ids on boundary
+    const auto cmr =
+        splinepy::splines::helpers::template GetControlMeshResolutions<
+            std::size_t>(spline);
+    const auto ids_on_boundary = [&]() {
+      if constexpr (switch_plane_id_to_extrema) {
+        return splinepy::utils::GridPoints<
+            std::size_t,
+            std::size_t,
+            SplineType::kParaDim>::GridPointIdsOnBoundary(cmr,
+                                                          plane_normal_axis,
+                                                          plane_id);
 
-  // Predetermine some auxiliary values
-  // Access spline degrees and determine offsets
-  std::array<std::size_t, para_dim> degrees{};
-  for (int i_p{}; i_p < para_dim; i_p++) {
-    degrees[i_p] = static_cast<std::size_t>(
-        input.GetParameterSpace().GetDegrees()[i_p].Get());
-  }
-  std::array<std::size_t, para_dim> bezier_index_offsets{};
-  bezier_index_offsets[0] = 1;
-  std::size_t n_ctps_per_patch = degrees[0] + 1;
-  for (std::size_t i{1}; i < para_dim; i++) {
-    bezier_index_offsets[i] =
-        bezier_index_offsets[i - 1] * (degrees[i - 1] + 1);
-    n_ctps_per_patch *= degrees[i] + 1;
-  }
-  std::array<int, para_dim> n_patches_per_para_dim{};
-  std::array<int, para_dim> n_ctps_per_para_dim{};
-
-  // Identify all internal knots and the number of required Bezier patches
-  const auto parameter_space = input.GetParameterSpace();
-  for (int i_p_dim{}; i_p_dim < para_dim; i_p_dim++) {
-    // Extract internal knots
-    const auto bezier_information =
-        parameter_space.DetermineBezierExtractionKnots(
-            // Use SplineLib Type
-            splinelib::Dimension{i_p_dim});
-    n_patches_per_para_dim[i_p_dim] = std::get<0>(bezier_information);
-    n_ctps_per_para_dim[i_p_dim] =
-        n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
-    const auto& knot_vector_ref = std::get<1>(bezier_information);
-
-    // Insert knot into the copy of the spline before extraction
-    // this is the most costly part of the calculation
-    for (std::size_t i_knot{}; i_knot < knot_vector_ref.size(); i_knot++) {
-      input.InsertKnot(splinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
-    }
-  }
-
-  // Number of total patches
-  int n_total_patches = n_patches_per_para_dim[0];
-  for (std::size_t i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
-    n_total_patches *= n_patches_per_para_dim[i_para_dim];
-  }
-
-  // Init return value
-  std::vector<std::shared_ptr<ReturnVectorValueType>> bezier_list{};
-  bezier_list.reserve(n_total_patches);
-
-  // Loop over the individual patches
-  for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
-    // Determine internal postitions in local coord system
-    std::array<std::size_t, para_dim> patch_ctp_id_offsets{};
-    int ii{i_patch};
-    // Determine the parameter wise ids of the patch (i.e. the
-    // patch-coordinates) and calculate the required index offsets
-    for (int i{}; i < para_dim; i++) {
-      // ID in spline coordinate system of current patch
-      const int patch_coord = static_cast<int>(ii % n_patches_per_para_dim[i]);
-      ii -= patch_coord;
-      ii /= n_patches_per_para_dim[i];
-      // Coordinate offset of the control points indices
-      patch_ctp_id_offsets[i] = patch_coord * degrees[i];
-    }
-
-    // Init vectors required for initialization
-    std::vector<PointType> ctps;
-    ctps.reserve(n_ctps_per_patch);
-    std::vector<double> weights;
-    if constexpr (is_rational) {
-      weights.reserve(n_ctps_per_patch);
-    }
-
-    // Extract relevant coordinates
-    for (std::size_t i_local_id{}; i_local_id < n_ctps_per_patch;
-         i_local_id++) {
-      int global_id{};
-      int n_ctps_in_previous_layers{1};
-      // Determine index of local point in global spline
-      for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
-        // First id in local system
-        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim])
-                             % (degrees[i_para_dim] + 1);
-        // Add patch offsets
-        global_id += (local_id + patch_ctp_id_offsets[i_para_dim])
-                     * n_ctps_in_previous_layers;
-        // Multiply to index offset
-        n_ctps_in_previous_layers *= n_ctps_per_para_dim[i_para_dim];
-      }
-
-      // Alias to facilitate access to control points
-      const auto& ControlPointVector = [&](const int& id) {
-        if constexpr (is_rational) {
-          return input.GetWeightedVectorSpace()[splinelib::Index{id}];
-        } else {
-          return input.GetVectorSpace()[splinelib::Index{id}];
-        }
-      };
-
-      // Retrieve Control Point
-      PointType point{};
-      // Check if scalar (double instead of array)
-      if constexpr (dim == 1) {
-        point = ControlPointVector(global_id)[0];
       } else {
-        for (int i_dim{}; i_dim < dim; i_dim++) {
-          point[i_dim] = ControlPointVector(global_id)[i_dim];
+        return splinepy::utils::GridPoints<
+            std::size_t,
+            std::size_t,
+            SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
+                                                            plane_normal_axis,
+                                                            plane_id);
+      }
+    }();
+    // boundary spline type
+    using SelfBoundary =
+        typename SplineType::template SelfTemplate_<SplineType::kParaDim - 1,
+                                                    SplineType::kDim>;
+    // prepare return
+    std::shared_ptr<SelfBoundary> boundary_spline;
+
+    // create new one
+    if constexpr (SplineType::kHasKnotVectors) {
+      // hola BSpline families
+      using PSpace = typename SelfBoundary::ParameterSpace_;
+      using Degrees = typename PSpace::Degrees_;
+      using KnotVectors = typename PSpace::KnotVectors_;
+      using KnotVector = typename KnotVectors::value_type::element_type;
+      using VSpace = typename SelfBoundary::PhysicalSpace_;
+      // PSpace - let it create a new basis. Otherwise, it will make
+      // pure copies of all basis function, which is not high degree friendly.
+      Degrees b_degrees;
+      KnotVectors b_knot_vectors;
+      for (int i{}; i < SplineType::kParaDim; ++i) {
+        if (i == plane_normal_axis) {
+          continue;
         }
+        b_degrees[i] = spline.GetDegrees()[i];
+        // knotvectors are shared_ptrs. make sure this copies
+        b_knot_vectors[i] =
+            std::make_shared<KnotVector>(*spline.GetKnotVectors()[i]);
       }
-      if constexpr (is_rational) {
-        const double weight = ControlPointVector(global_id)[dim];
-        weights.push_back(weight);
-        // control points are weighted in non-rational splines to facilitate
-        // calculations. They therefore need to be divided by the weight to get
-        // the true control point positions
-        point /= weight;
+      // create parametric space
+      auto pspace = std::make_shared<PSpace>(b_knot_vectors, b_degrees);
+
+      // VSpace - maybe it is also
+      // create (weighted) vector space
+      auto vspace = std::make_shared<VSpace>();
+      auto& coords = vspace->GetCoordinates();
+      coords.reserve(ids_on_boundary.size());
+      const auto& rhs_coordinates = spline.GetCoordinates();
+      for (const auto& id : ids_on_boundary) {
+        coords.push_back(rhs_coordinates[id]);
       }
-      ctps.push_back(point);
-    }
-    // Create Spline and add it to list
-    if constexpr (is_rational) {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // CTPS non-weighted
-          ctps,
-          // weights
-          weights));
+
+      // assign boundary spline - uses base' ctor
+      boundary_spline = std::make_shared<SelfBoundary>(pspace, vspace);
     } else {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // ctps
-          ctps));
+      // hola bezier families
+      // form degrees
+      using Degrees = typename SelfBoundary::Degrees_;
+      Degrees b_degrees;
+      std::size_t ncps{1};
+      for (int i{}; i < SplineType::kParaDim; ++i) {
+        if (i == plane_normal_axis) {
+          continue;
+        }
+        const auto& ds = spline.GetDegrees();
+        const auto& d = ds[i];
+        b_degrees[i] = d;
+        ncps *= static_cast<std::size_t>(d + 1);
+      }
+
+      if constexpr (SplineType::kIsRational) {
+        // only way to avoid unweight -> reweight is to init first with degrees
+        // assign boundary spline
+        boundary_spline = std::make_shared<SelfBoundary>(b_degrees);
+        auto& b_cps = boundary_spline->GetWeightedControlPoints();
+        auto& b_ws = boundary_spline->GetWeights();
+
+        // copy
+        for (std::size_t i{}; i < ncps; ++i) {
+          const auto& id = ids_on_boundary[i];
+          b_cps[i] = spline.GetWeightedControlPoints()[id];
+          b_ws[i] = spline.GetWeights()[id];
+        }
+      } else {
+        // non-rational bezier
+        using Coordinates = typename SelfBoundary::Coordinates_;
+        Coordinates b_coords;
+        b_coords.reserve(ncps);
+        for (const auto& id : ids_on_boundary) {
+          // copy control points
+          b_coords.push_back(spline.GetControlPoints()[id]);
+        }
+        // assign boundary spline
+        boundary_spline = std::make_shared<SelfBoundary>(b_degrees, b_coords);
+      }
     }
+    // return here, this way compiler is happy
+    return boundary_spline;
   }
-  return bezier_list;
+}
+
+template<typename SplineType>
+std::shared_ptr<splinepy::splines::SplinepyBase>
+ExtractBoundarySpline(const SplineType& spline,
+                      const int& plane_normal_axis,
+                      const int& extrema) {
+  return ExtractControlMeshSlice<true>(spline, plane_normal_axis, extrema);
 }
 
 } /* namespace splinepy::splines::helpers */

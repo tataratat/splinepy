@@ -8,7 +8,10 @@
 #include <bezman/src/bezier_spline.hpp>
 #include <bezman/src/point.hpp>
 
+#include <splinepy/explicit/bezman/bezier_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
+#include <splinepy/splines/helpers/basis_functions.hpp>
+#include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
@@ -36,13 +39,18 @@ public:
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  template<std::size_t s_para_dim, std::size_t s_dim>
+  using SelfTemplate_ = Bezier<s_para_dim, s_dim>;
   using Base_ = BezierSplineType<para_dim, dim>;
+  template<std::size_t b_para_dim, std::size_t b_dim>
+  using BaseTemplate_ = BezierSplineType<b_para_dim, b_dim>;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
+  using Degrees_ = typename std::array<std::size_t, para_dim>;
   using Coordinate_ = typename Base_::PhysicalPointType_;
+  using Coordinates_ = typename std::vector<Coordinate_>;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
-  // advanced use
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
 
   static Base_ CreateBase(const int* degrees, const double* control_points) {
@@ -149,6 +157,12 @@ public:
     }
   }
 
+  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const {
+    const auto cm_res =
+        splinepy::splines::helpers::GetControlMeshResolutions(*this);
+    std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
+  }
+
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
     splinepy::splines::helpers::ScalarTypeEvaluate(*this,
@@ -198,6 +212,41 @@ public:
 
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
+  }
+
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::splines::helpers::BezierBasis(*this, para_coord, basis);
+  }
+
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis_der) const {
+    splinepy::splines::helpers::BezierBasisDerivative(*this,
+                                                      para_coord,
+                                                      order,
+                                                      basis_der);
+  }
+
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::splines::helpers::BezierSupport(*this, para_coord, support);
+  }
+
+  /// Basis Function values and their support IDs
+  virtual void SplinepyBasisAndSupport(const double* para_coord,
+                                       double* basis,
+                                       int* support) const {
+
+    SplinepyBasis(para_coord, basis);
+    SplinepySupport(para_coord, support);
+  }
+
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis_der,
+                                                 int* support) const {
+    SplinepyBasisDerivative(para_coord, orders, basis_der);
+    SplinepySupport(para_coord, support);
   }
 
   /// only applicable to the splines of same para_dim, same type
@@ -410,6 +459,13 @@ public:
   SplinepyExtractBezierPatches() const {
     // should copy
     return {std::make_shared<Bezier<para_dim, dim>>(*this)};
+  }
+
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
+    return splinepy::splines::helpers::ExtractBoundarySpline(*this,
+                                                             p_dim,
+                                                             extrema);
   }
 
   virtual std::shared_ptr<SplinepyBase>

@@ -104,7 +104,7 @@ public:
     auto sample_coordinates = [&](int begin, int end) {
       typename SplineType::ParametricCoordinate_ parametric_coordinate;
       for (int i{begin}; i < end; ++i) {
-        grid_points_.IndexToParametricCoordinate(i, parametric_coordinate);
+        grid_points_.IndexToGridPoint(i, parametric_coordinate);
         coordinates_[i] = spline_(parametric_coordinate);
       }
     };
@@ -162,7 +162,7 @@ public:
 
       using ReturnType = typename SplineType::ParametricCoordinate_;
 
-      return grid_points_.template IndexToParametricCoordinate<ReturnType>(id);
+      return grid_points_.template IndexToGridPoint<ReturnType>(id);
     } else {
       // well, shouldn't reach here, but to fight a warning, here it is
       splinepy::utils::PrintAndThrowError("Invalid option for initial guess!");

@@ -109,6 +109,13 @@ public:
         SplinepyWhatAmI());
   };
 
+  /// Control mesh resoltuons - number of control points per para dim
+  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyControlMeshResolutions not implemented for",
+        SplinepyWhatAmI());
+  }
+
   /// Spline evaluation
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
@@ -125,12 +132,43 @@ public:
         SplinepyWhatAmI());
   };
 
+  /// Basis Function values
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
+    splinepy::utils::PrintAndThrowError("SplinepyBasis not implemented for",
+                                        SplinepyWhatAmI());
+  }
+
+  /// Basis Function derivative values
+  virtual void SplinepyBasisDerivative(const double* para_coord,
+                                       const int* order,
+                                       double* basis) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyBasisDerivative not implemented for",
+        SplinepyWhatAmI());
+  }
+
+  /// Spline Support IDs
+  virtual void SplinepySupport(const double* para_coord, int* support) const {
+    splinepy::utils::PrintAndThrowError("SplinepySupport not implemented for",
+                                        SplinepyWhatAmI());
+  }
+
   /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
                                        int* support) const {
     splinepy::utils::PrintAndThrowError(
         "SplinepyBasisAndSupport not implemented for",
+        SplinepyWhatAmI());
+  }
+
+  /// Basis Function Derivative and their support IDs
+  virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
+                                                 const int* orders,
+                                                 double* basis,
+                                                 int* support) const {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyBasisDerivativeAndSupport not implemented for",
         SplinepyWhatAmI());
   }
 
@@ -237,6 +275,15 @@ public:
   SplinepyExtractBezierPatches() const {
     splinepy::utils::PrintAndThrowError(
         "SplinepyBezierPatchExtraction is not implemented for",
+        SplinepyWhatAmI());
+    return {std::shared_ptr<SplinepyBase>{}};
+  }
+
+  /// Boundary spline extraction
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& para_dim, const int& extrema) {
+    splinepy::utils::PrintAndThrowError(
+        "SplinepyExtractBoundary is not implemented for",
         SplinepyWhatAmI());
     return {std::shared_ptr<SplinepyBase>{}};
   }

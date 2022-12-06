@@ -275,8 +275,7 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-            local_indices,
-            np.cumprod([1] + new_ctps_dims)[0:-1]
+            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
@@ -423,17 +422,10 @@ class Spline(core.CoreSpline):
         """
         Add logger shortcut during creation
         """
-        cls._logi = utils.log.prepend_log(
-                cls.__qualname__, utils.log.info
-        )
-        cls._logd = utils.log.prepend_log(
-                cls.__qualname__, utils.log.debug
-        )
-        cls._logw = utils.log.prepend_log(
-                cls.__qualname__, utils.log.warning
-        )
+        cls._logi = utils.log.prepend_log(cls.__qualname__, utils.log.info)
+        cls._logd = utils.log.prepend_log(cls.__qualname__, utils.log.debug)
+        cls._logw = utils.log.prepend_log(cls.__qualname__, utils.log.warning)
         return super().__new__(cls, *args, **kwargs)
-
 
     def __init__(self, spline=None, **kwargs):
         """
@@ -811,7 +803,7 @@ class Spline(core.CoreSpline):
                     "Returning parametric_bounds as "
                     "Bezier spline's unique knots."
             )
-            return self.parametric_bounds
+            return self.parametric_bounds.T
 
         else:
             self._logd("Computing unique knots")
@@ -914,7 +906,7 @@ class Spline(core.CoreSpline):
         return np.vstack((cps.min(axis=0), cps.max(axis=0)))
 
     @property
-    def control_mesh_resolutions(self, ):
+    def control_mesh_resolutions(self):
         """
         Returns control mesh resolutions.
 
@@ -924,23 +916,9 @@ class Spline(core.CoreSpline):
 
         Returns
         --------
-        control_mesh_resolutions: list
-
-        Raises
-        -------
-        TypeError: if one of the required properties to compute
-          control_mesh_resolutions is missing.
+        control_mesh_resolutions: (para_dim) np.ndarray
         """
-        cmr = []
-
-        # Special case Bezier
-        if "Bezier" in type(self).__qualname__:
-            cmr = [d + 1 for d in self.degrees]
-        else:
-            for kv, d in zip(self.knot_vectors, self.degrees):
-                cmr.append(len(kv) - d - 1)
-
-        return cmr
+        return super().control_mesh_resolutions
 
     @property
     def weights(self, ):
@@ -1078,22 +1056,46 @@ class Spline(core.CoreSpline):
 
         Parameters
         -----------
-        queries: (n, para_dim) list-like
+        queries: (n, para_dim) array-like
         n_threads: int
-          Default is 1. Higher number is currently not supported. #TODO: DOIT
 
         Returns
         --------
-        results: tuple
-          tuple of two elements.
-          first: (prod(degrees .+ 1)) array of basis function values.
-          second: support ids.
+        basis: (n, prod(degrees + 1)) np.ndarray
+        support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions")
         queries = np.ascontiguousarray(queries, dtype="float64")
 
         return super().basis_and_support(
                 queries=queries,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
+    def basis_derivative_and_support(self, queries, orders, nthreads=None):
+        """
+        Returns derivative of basis functions and their support ids of given
+        queries.
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+        orders: (para_dim,) or (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        basis_derivatives: (n, prod(degrees + 1)) np.ndarray
+        supports: (n, prod(degrees + 1)) np.ndarray
+        """
+        self._logd("Evaluating basis function derivatives")
+        queries = np.ascontiguousarray(queries, dtype="float64")
+        orders = np.ascontiguousarray(orders, dtype="int32")
+
+        return super().basis_deriative_and_support(
+                queries=queries,
+                orders=orders,
                 nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
@@ -1208,13 +1210,38 @@ class Spline(core.CoreSpline):
 
         self._logd(
                 f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-                "Results: ", f"{[meaningful(r) for r in reduced]}."
+                "Results: ",
+                f"{[meaningful(r) for r in reduced]}."
         )
 
         if any(reduced):
             sync_from_core(self)
 
         return reduced
+
+    @_new_core_if_modified
+    def extract_boundary(self, plane_normal_axis, extrema):
+        """
+        Extracts boundary spline.
+
+
+        Parameters
+        -----------
+        plane_normal_axis: int
+          Axis normal to boundary spline
+        extrema: int
+          If extrema is bigger than zero, extracts boundary at the greater end
+          of the axis, else first control mesh hyperplane.
+
+
+        Returns
+        -------
+        boundary_spline: type(self)
+          boundary spline, which has one less para_dim
+        """
+        return type(self)(
+                spline=core.extract_boundary(self, plane_normal_axis, extrema)
+        )
 
     @_new_core_if_modified
     def export(self, fname):
