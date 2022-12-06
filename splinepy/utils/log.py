@@ -52,7 +52,7 @@ def debug(*log):
 
     Parameters
     -----------
-    *log: *str
+    *log: str
 
     Returns
     --------
@@ -68,7 +68,7 @@ def info(*log):
 
     Parameters
     -----------
-    *log: *str
+    *log: str
 
     Returns
     --------
@@ -84,7 +84,7 @@ def warning(*log):
 
     Parameters
     -----------
-    *log: *str
+    *log: str
 
     Returns
     --------
