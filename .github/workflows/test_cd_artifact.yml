@@ -32,9 +32,9 @@ jobs:
           path: dist
 
       - name: Publish package to TestPyPI
-           run: |
-             python3 -m pip install twine
-             python3 -m twine upload --repository testpypi dist/* --skip-existing
-           env:
-             TWINE_USERNAME: __token__
-             TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
+          run: |
+            python3 -m pip install twine
+            python3 -m twine upload --repository testpypi dist/* --skip-existing
+          env:
+            TWINE_USERNAME: __token__
+            TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
