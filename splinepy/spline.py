@@ -443,17 +443,6 @@ class Spline(core.CoreSpline):
           Keyword only parameter.
         weights: (m,) array-like
           Keyword only parameter.
-
-        Attributes
-        -----------
-        whatami: str
-        para_dim: int
-        dim: int
-        degrees: np.ndarray
-        knot_vectors: list
-        control_points: np.ndarray
-        parametric_bounds: np.ndarray
-        control_point_bounds: np.ndarray
         """
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
@@ -619,7 +608,7 @@ class Spline(core.CoreSpline):
 
         Parameters
         -----------
-        kwargs: **kwargs
+        **kwargs: kwargs
           Keyword only argument. Takes properties.
 
         Returns
