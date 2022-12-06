@@ -193,7 +193,8 @@ if flags["minimal"] in sys.argv:
     print("*** compiling only a minimal set of splines")
     sys.argv.remove(flags["minimal"])
 else:
-    cma["cmake_args"].append("-DSPLINEPY_MORE=ON")
+    pass
+#    cma["cmake_args"].append("-DSPLINEPY_MORE=ON")
 
 if flags["enable_warning"] in sys.argv:
     print("*** adding warning flags ***")
