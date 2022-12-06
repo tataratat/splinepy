@@ -1,0 +1,40 @@
+name: build full and pypi upload
+
+on:
+  push:
+    branches: ["cd"]
+
+jobs:
+  wheel_build_full:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name:  build wheels
+      uses: pypa/cibuildwheel@v2.11.1
+
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./wheelhouse/*.whl
+  
+  upload_test_pypi:
+    needs: [wheel_build_full]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Publish package to TestPyPI
+           run: |
+             python3 -m pip install twine
+             python3 -m twine upload --repository testpypi dist/* --skip-existing
+           env:
+             TWINE_USERNAME: __token__
+             TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
