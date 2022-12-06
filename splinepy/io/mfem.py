@@ -1,5 +1,4 @@
-"""
-Supports single nurbs export for mfem.
+"""Supports single nurbs export for mfem.
 
 Currently hardcoded for 2D-single-patch-splines.
 """
@@ -28,8 +27,8 @@ _mfem_meaningful_keywords = {
 
 
 def load(fname):
-    """
-    Reads mfem spline and returns a spline.
+    """Reads mfem spline and returns a spline.
+
     Again, only supports 2D single patch.
 
     Parameters
@@ -39,7 +38,7 @@ def load(fname):
     Returns
     --------
     nurbs: dict
-      dict ready to be used for init. ex) NURBS(**nurbs)
+      dict ready to be used for init.
     """
     from copy import deepcopy
 
@@ -182,23 +181,24 @@ def mfem_index_mapping(
     """
     Returns index to properly reorganize control points/weights.
 
+    .. code-block::
 
-    2D:
-            <---------------------- 1.2
-    0.3 *-------------------------------* 0.2
-        |                               |
-    2.1 |   --------------------> 3.... | 2.2
-     ^  |   --------------------> 3.8   |  ^
-     |  |   --------------------> 3.7   |  |
-     |  |   --------------------> 3.6   |  |
-     |  |   --------------------> 3.5   |  |
-     |  |   --------------------> 3.4   |  |
-     |  |   --------------------> 3.3   |  |
-     |  |   --------------------> 3.2   |  |
-     |  |   --------------------> 3.1   |  |
-        |                               |
-    0.0 *-------------------------------* 0.1
-           -----------------------> 1.1
+        2D:
+                <---------------------- 1.2
+        0.3 *-------------------------------* 0.2
+            |                               |
+        2.1 |   --------------------> 3.... | 2.2
+         ^  |   --------------------> 3.8   |  ^
+         |  |   --------------------> 3.7   |  |
+         |  |   --------------------> 3.6   |  |
+         |  |   --------------------> 3.5   |  |
+         |  |   --------------------> 3.4   |  |
+         |  |   --------------------> 3.3   |  |
+         |  |   --------------------> 3.2   |  |
+         |  |   --------------------> 3.1   |  |
+            |                               |
+        0.0 *-------------------------------* 0.1
+               -----------------------> 1.1
 
     Parameters
     -----------
@@ -271,7 +271,7 @@ def export_cartesian(
         fname, spline_list, tolerance=None, boundary_functions=None
 ):
     """
-    Export list of bezier splines in mfem export
+    Export list of bezier splines in mfem export.
 
     Parameters
     ----------
@@ -493,15 +493,16 @@ def export_cartesian(
 
 
 def export(fname, nurbs, precision=10):
-    """
-    Exports current nurbs in `mfem` format.
+    """Exports current nurbs in `mfem` format.
 
     IDs of MFEM Geometry types are:
+
     - Segment = 1
     - Square = 3
     - CUBS = 5
 
     Sections required are:
+
     - dimension  (space dim)
     - elements
     - boundary
