@@ -2,7 +2,7 @@ name: build full and pypi upload
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "cd"]
 
 jobs:
   wheel_build_full:
