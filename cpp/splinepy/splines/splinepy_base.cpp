@@ -1,12 +1,12 @@
 #include <memory>
 #include <vector>
 
-#include <splinepy/utils/print.hpp>
-#include <splinepy/splines/splinepy_base.hpp>
 #include <splinepy/splines/create/create_bezier.hpp>
-#include <splinepy/splines/create/create_rational_bezier.hpp>
 #include <splinepy/splines/create/create_bspline.hpp>
 #include <splinepy/splines/create/create_nurbs.hpp>
+#include <splinepy/splines/create/create_rational_bezier.hpp>
+#include <splinepy/splines/splinepy_base.hpp>
+#include <splinepy/utils/print.hpp>
 
 namespace splinepy::splines {
 

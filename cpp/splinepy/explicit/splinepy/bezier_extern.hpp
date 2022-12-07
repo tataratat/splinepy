@@ -1,7 +1,6 @@
 #pragma once
 #include <splinepy/splines/bezier.hpp>
 
-
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class splinepy::splines::Bezier<1, 1>;
 extern template class splinepy::splines::Bezier<1, 2>;

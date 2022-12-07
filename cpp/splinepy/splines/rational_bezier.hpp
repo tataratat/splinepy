@@ -543,6 +543,4 @@ protected:
 
 } // namespace splinepy::splines
 
-
-
 #include <splinepy/explicit/splinepy/rational_bezier_extern.hpp>

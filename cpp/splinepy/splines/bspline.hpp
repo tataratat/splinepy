@@ -372,5 +372,4 @@ protected:
 
 } /* namespace splinepy::splines */
 
-
 #include <splinepy/explicit/splinepy/bspline_extern.hpp>
