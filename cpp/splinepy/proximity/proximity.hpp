@@ -382,8 +382,8 @@ public:
     PArrayI_ clipped{}; /* clip status after most recent update */
     PArrayI_ previous_clipped{};
     PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
-    typename SplineType::Coordinate_ current_phys;
-    double current_distance;
+    typename SplineType::Coordinate_ current_phys{};
+    double current_distance{};
     double previous_norm{}, current_norm{};
 
     // search_bounds is parametric bounds here
@@ -506,7 +506,7 @@ public:
             // => pure dim loop
             if (j == 0) {
               double cur_phys;
-              if constexpr (std::is_scalar<decltype(current_phys)>::value) {
+              if constexpr (std::is_scalar_v<decltype(current_phys)>) {
                 nearest[k] = current_phys;
               } else {
                 nearest[k] = static_cast<double>(current_phys[k]); /* 6 */

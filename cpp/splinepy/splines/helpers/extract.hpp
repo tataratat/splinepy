@@ -91,7 +91,7 @@ ExtractControlMeshSlice(const SplineType& spline,
       // hola bezier families
       // form degrees
       using Degrees = typename SelfBoundary::Degrees_;
-      Degrees b_degrees;
+      Degrees b_degrees{};
       std::size_t ncps{1};
       for (int i{}; i < SplineType::kParaDim; ++i) {
         if (i == plane_normal_axis) {
