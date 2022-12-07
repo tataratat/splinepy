@@ -524,3 +524,6 @@ protected:
 }; /* class Bezier */
 
 } // namespace splinepy::splines
+
+
+#include <splinepy/explicit/splinepy/bezier_extern.hpp>

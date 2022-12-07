@@ -5,11 +5,62 @@ add_subdirectory(fitting)
 ## create splinepy target - enables cpp standalone use
 # define srcs
 set(SPLINEPY_SRCS
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_bezier.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_rational_bezier.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_bspline.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create_nurbs.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier1.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier2.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier3.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier1.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier2.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier3.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline1.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline2.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline3.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs1.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs2.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs3.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/splinepy_base.cpp
 )
+
+set(SPLINEPY_MORE_SRCS
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier4.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier5.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier6.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier7.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier8.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier9.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier10.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier4.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier5.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier6.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier7.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier8.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier9.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier10.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline4.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline5.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline6.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline7.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline8.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline9.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bspline10.cpp
+
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs4.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs5.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs6.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs7.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs8.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs9.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/nurbs10.cpp
+)
+
+if(SPLINEPY_MORE)
+  set(SPLINEPY_SRCS ${SPLINEPY_SRCS} ${SPLINEPY_MORE_SRCS})
+endif(SPLINEPY_MORE)
 
 
 # target

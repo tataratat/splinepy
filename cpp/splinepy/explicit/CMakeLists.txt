@@ -8,9 +8,17 @@ set(BEZMAN_SOURCES
         bezman/rational_bezier_explicit.cpp
 )
 
+set(SPLINEPY_SOURCES
+        splinepy/bezier_explicit.cpp
+        splinepy/rational_bezier_explicit.cpp
+        splinepy/bspline_explicit.cpp
+        splinepy/nurbs_explicit.cpp
+)
+
 set(EXPLICIT_SOURCES
         ${SPLINELIB_SOURCES}
         ${BEZMAN_SOURCES}
+        ${SPLINEPY_SOURCES}
 )
 
 if(SPLINEPY_BUILD_SHARED)
@@ -29,7 +37,8 @@ target_include_directories(explicit
 target_link_libraries(explicit
     PRIVATE
         bezman
-        SplineLib::splines)
+        SplineLib::splines
+        napf)
 
 # flags
 target_compile_options(explicit
