@@ -76,7 +76,7 @@ public:
   // having knot_vectors vector of vector, we can keep track of their length,
   // as well as the legnth of control_points/weights.
   static Base_ CreateBase(const int* degrees,
-                          const std::vector<std::vector<double>> knot_vectors,
+                          const std::vector<std::vector<double>>& knot_vectors,
                           const double* control_points,
                           const double* weights) {
     // process all the info and turn them into SplineLib types to initialize
@@ -380,3 +380,5 @@ protected:
 }; /* class Nurbs */
 
 } /* namespace splinepy::splines */
+
+#include <splinepy/explicit/splinepy/nurbs_extern.hpp>

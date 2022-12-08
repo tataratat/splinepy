@@ -176,7 +176,7 @@ flags = dict(
         enable_warning="--enable_warning",
         serial_build="--serial_build",
         debug="--debug",
-        explicit="--explicit"
+        no_explicit="--no-explicit"
 )
 cma = dict(
         cmake_args=[],
@@ -212,9 +212,12 @@ if flags["debug"] in sys.argv:
     sys.argv.remove(flags["debug"])
     cma["debug"] = True
 
-if flags["explicit"] in sys.argv:
-    print("*** explicit instantiation of third party template classes ***")
-    sys.argv.remove(flags["explicit"])
+if flags["no_explicit"] in sys.argv:
+    print("*** NO explicit instantiation of template classes ***")
+    sys.argv.remove(flags["no_explicit"])
+    cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=OFF")
+else:
+    print("*** explicit instantiation of template classes ***")
     cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=ON")
 
 setup(

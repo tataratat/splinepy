@@ -18,8 +18,8 @@ class BSplineBase(spline.Spline):
 
         Parameters
         -----------
-        args: *args
-        kwargs: **kwargs
+        *args: args
+        **kwargs: kwargs
 
         Returns
         --------
@@ -210,7 +210,7 @@ class BSpline(BSplineBase):
         centripetal: bool
           (Optional) Default is True.
         knot_vector: list
-          (Optional) Default is an empty list `[]`. List of `float`s.
+          (Optional) Default is an empty list. List of floats.
            If defined, tries to fit curve with given knot vector.
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or
@@ -261,7 +261,7 @@ class BSpline(BSplineBase):
         centripetal: bool
           (Optional) Default is True.
         knot_vector: list
-          (Optional) Default is an empty list `[]`. List of `float`s. If
+          (Optional) Default is an empty list.  List of floats. If
           defined, tries to fit curve with given knot vector.
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or

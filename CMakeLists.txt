@@ -10,7 +10,7 @@ option(SPLINEPY_MORE "Compile a full set of splines." OFF)
 option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
-option(SPLINEPY_BUILD_EXPLICIT "Explicit instantiation of (mainly third party) template classes" OFF)
+option(SPLINEPY_BUILD_EXPLICIT "Explicit instantiation of (mainly third party) template classes" ON)
 
 
 # config

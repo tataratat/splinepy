@@ -3,74 +3,41 @@
 #include <memory>
 #include <vector>
 
-#include <splinepy/utils/print.hpp>
-
 namespace splinepy::splines {
 
 /// Spline base to enable dynamic use of template splines.
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
+  /// default ctor
   SplinepyBase() = default;
 
+  /// Dynamically create correct type of spline based on input.
+  /// Returned as shared pointer of SplinepyBase
   static std::shared_ptr<SplinepyBase>
   SplinepyCreate(const int para_dim = 0,
                  const int dim = 0,
                  const int* degrees = nullptr,
                  const std::vector<std::vector<double>>* knot_vectors = nullptr,
                  const double* control_points = nullptr,
-                 const double* weights = nullptr) {
-    if (!degrees || !control_points) {
-      splinepy::utils::PrintAndThrowError(
-          "Not Enough information to create any spline.");
-    }
+                 const double* weights = nullptr);
 
-    if (!knot_vectors) {
-      // at least we need degrees and cps.
-      // @jzwar this would be a good place to check valid input
-
-      if (!weights) {
-        return SplinepyCreateBezier(para_dim, dim, degrees, control_points);
-      } else {
-        return SplinepyCreateRationalBezier(para_dim,
-                                            dim,
-                                            degrees,
-                                            control_points,
-                                            weights);
-      }
-    } else {
-      if (!weights) {
-        return SplinepyCreateBSpline(para_dim,
-                                     dim,
-                                     degrees,
-                                     knot_vectors,
-                                     control_points);
-      } else {
-        return SplinepyCreateNurbs(para_dim,
-                                   dim,
-                                   degrees,
-                                   knot_vectors,
-                                   control_points,
-                                   weights);
-      }
-    }
-  };
-
-  // Implemented in splinepy/splines/create_bezier.cpp
+  /// Dynamic creation of templated bezier
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBezier(const int para_dim,
                        const int dim,
                        const int* degrees,
                        const double* control_points);
 
-  // Implemented in splinepy/splines/create_rational_bezier.cpp
+  /// Dynamic creation of templated rational bezier
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateRationalBezier(const int para_dim,
                                const int dim,
                                const int* degrees,
                                const double* control_points,
                                const double* weights);
-  // Implemented in splinepy/splines/create_bspline.cpp
+
+  /// Dynamic creation of templated bspline
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateBSpline(const int para_dim,
                         const int dim,
@@ -78,7 +45,7 @@ public:
                         const std::vector<std::vector<double>>* knot_vectors,
                         const double* control_points);
 
-  /// Implemented in splinepy/splines/create_nurbs.cpp
+  /// Dynamic creation of templated nurbs
   static std::shared_ptr<SplinepyBase>
   SplinepyCreateNurbs(const int para_dim,
                       const int dim,
@@ -86,6 +53,24 @@ public:
                       const std::vector<std::vector<double>>* knot_vectors,
                       const double* control_points,
                       const double* weights);
+
+  /// Check if name matches and throw(=raise) if desired
+  static bool SplinepySplineNameMatches(const SplinepyBase& a,
+                                        const SplinepyBase& b,
+                                        const std::string description = "",
+                                        const bool raise = false);
+
+  /// Check if para_dim matches and throw(=raise) if desired
+  static bool SplinepyParaDimMatches(const SplinepyBase& a,
+                                     const SplinepyBase& b,
+                                     const std::string description = "",
+                                     const bool raise = false);
+
+  /// Check if dim matches and throw(=raise) if desired
+  static bool SplinepyDimMatches(const SplinepyBase& a,
+                                 const SplinepyBase& b,
+                                 const std::string description = "",
+                                 const bool raise = false);
 
   virtual int SplinepyParaDim() const = 0;
   virtual int SplinepyDim() const = 0;
@@ -103,81 +88,46 @@ public:
                             double* weights) const = 0;
 
   /// Parameter space AABB
-  virtual void SplinepyParametricBounds(double* p_bounds) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyParametricBounds not implemented for",
-        SplinepyWhatAmI());
-  };
+  virtual void SplinepyParametricBounds(double* p_bounds) const;
 
   /// Control mesh resoltuons - number of control points per para dim
-  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyControlMeshResolutions not implemented for",
-        SplinepyWhatAmI());
-  }
+  virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const;
 
   /// Spline evaluation
   virtual void SplinepyEvaluate(const double* para_coord,
-                                double* evaluated) const {
-    splinepy::utils::PrintAndThrowError("SplinepyEvaluate not implemented for",
-                                        SplinepyWhatAmI());
-  };
+                                double* evaluated) const;
 
   /// Spline derivatives
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
-                                  double* derived) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyDerivative not implemented for",
-        SplinepyWhatAmI());
-  };
+                                  double* derived) const;
 
   /// Basis Function values
-  virtual void SplinepyBasis(const double* para_coord, double* basis) const {
-    splinepy::utils::PrintAndThrowError("SplinepyBasis not implemented for",
-                                        SplinepyWhatAmI());
-  }
+  virtual void SplinepyBasis(const double* para_coord, double* basis) const;
 
   /// Basis Function derivative values
   virtual void SplinepyBasisDerivative(const double* para_coord,
                                        const int* order,
-                                       double* basis) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyBasisDerivative not implemented for",
-        SplinepyWhatAmI());
-  }
+                                       double* basis) const;
 
   /// Spline Support IDs
-  virtual void SplinepySupport(const double* para_coord, int* support) const {
-    splinepy::utils::PrintAndThrowError("SplinepySupport not implemented for",
-                                        SplinepyWhatAmI());
-  }
+  virtual void SplinepySupport(const double* para_coord, int* support) const;
 
   /// Basis Function values and their support IDs
   virtual void SplinepyBasisAndSupport(const double* para_coord,
                                        double* basis,
-                                       int* support) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyBasisAndSupport not implemented for",
-        SplinepyWhatAmI());
-  }
+                                       int* support) const;
 
   /// Basis Function Derivative and their support IDs
   virtual void SplinepyBasisDerivativeAndSupport(const double* para_coord,
                                                  const int* orders,
                                                  double* basis,
-                                                 int* support) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyBasisDerivativeAndSupport not implemented for",
-        SplinepyWhatAmI());
-  }
+                                                 int* support) const;
 
+  /// Plants KdTree of sampled spline with given resolution.
+  /// KdTree is required for proximity queries.
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
-                                                  const int& nthreads) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyPlantNewKdTreeForProximity not implemented for",
-        SplinepyWhatAmI());
-  }
+                                                  const int& nthreads);
 
   /// Verbose proximity query - make sure to plant a kdtree first.
   virtual void SplinepyVerboseProximity(const double* query,
@@ -190,184 +140,58 @@ public:
                                         double& distance,
                                         double& convergence_norm,
                                         double* first_derivatives,
-                                        double* second_derivatives) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyVerboseProximity not implemented for",
-        SplinepyWhatAmI());
-  }
+                                        double* second_derivatives) const;
 
   /// Spline degree elevation
-  virtual void SplinepyElevateDegree(const int& para_dims) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyElevateDegree not implemented for",
-        SplinepyWhatAmI());
-  };
+  virtual void SplinepyElevateDegree(const int& para_dims);
 
   /// Spline degree reduction
   virtual bool SplinepyReduceDegree(const int& para_dims,
-                                    const double& tolerance) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyReduceDegree not implemented for",
-        SplinepyWhatAmI());
-    return false;
-  };
+                                    const double& tolerance);
 
   /// Spline knot insertion.
-  virtual void SplinepyInsertKnot(const int& para_dim, const double& knot) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyInsertKnot not implemented for",
-        SplinepyWhatAmI());
-  };
+  virtual void SplinepyInsertKnot(const int& para_dim, const double& knot);
 
   /// Spline knot removal.
   virtual bool SplinepyRemoveKnot(const int& para_dim,
                                   const double& knot,
-                                  const double& tolerance) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyRemoveKnot not implemented for",
-        SplinepyWhatAmI());
-    return false;
-  };
+                                  const double& tolerance);
 
   /// Spline multiplication.
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
-    splinepy::utils::PrintAndThrowError("SplinepyMultiply not implemented for",
-                                        SplinepyWhatAmI());
-    return std::shared_ptr<SplinepyBase>{};
-  }
+  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const;
 
   /// Spline addition.
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
-    splinepy::utils::PrintAndThrowError("SplinepyAdd not implemented for",
-                                        SplinepyWhatAmI());
-    return std::shared_ptr<SplinepyBase>{};
-  }
+  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const;
 
   /// Spline composition.
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const {
-    splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
-                                        SplinepyWhatAmI());
-    return std::shared_ptr<SplinepyBase>{};
-  }
+  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const;
 
   /// Spline Split - single split
   virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepySplit(const int& para_dim, const double& location) const {
-    splinepy::utils::PrintAndThrowError("SplinepySplit not implemented for",
-                                        SplinepyWhatAmI());
-    return {std::shared_ptr<SplinepyBase>{}};
-  }
+  SplinepySplit(const int& para_dim, const double& location) const;
 
   /// Derivative spline
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyDerivativeSpline(const int* orders) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyDerivativeSpline is not implemented for",
-        SplinepyWhatAmI());
-    return std::shared_ptr<SplinepyBase>{};
-  };
+  SplinepyDerivativeSpline(const int* orders) const;
 
   /// Bezier patch extraction
   virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepyExtractBezierPatches() const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyBezierPatchExtraction is not implemented for",
-        SplinepyWhatAmI());
-    return {std::shared_ptr<SplinepyBase>{}};
-  }
+  SplinepyExtractBezierPatches() const;
 
-  /// Boundary spline extraction
+  /// Boundary spline extraction - TODO: const
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyExtractBoundary(const int& para_dim, const int& extrema) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyExtractBoundary is not implemented for",
-        SplinepyWhatAmI());
-    return {std::shared_ptr<SplinepyBase>{}};
-  }
+  SplinepyExtractBoundary(const int& para_dim, const int& extrema);
 
-  /// Scalar Spline extraction from dim
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyExtractDim(const int& phys_dim) {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyExtractDim is not implemented for",
-        SplinepyWhatAmI());
-    return {std::shared_ptr<SplinepyBase>{}};
-  }
+  /// Scalar Spline extraction from dim - TODO: const
+  virtual std::shared_ptr<SplinepyBase> SplinepyExtractDim(const int& phys_dim);
 
   /// Derivative of composition
   virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(
       const std::shared_ptr<SplinepyBase>& inner,
-      const std::shared_ptr<SplinepyBase>& inner_derivative) const {
-    splinepy::utils::PrintAndThrowError(
-        "SplinepyCompositionDerivative is not implemented for",
-        SplinepyWhatAmI());
-    return {std::shared_ptr<SplinepyBase>{}};
-  }
-
-  /// Check if name matches and throw(=raise) if desired
-  static bool SplinepySplineNameMatches(const SplinepyBase& a,
-                                        const SplinepyBase& b,
-                                        const std::string description = "",
-                                        const bool raise = false) {
-    if (a.SplinepySplineName() != b.SplinepySplineName()) {
-      if (raise) {
-        splinepy::utils::PrintAndThrowError(description,
-                                            "Spline name mismatch -"
-                                            "Spline0:",
-                                            "/",
-                                            a.SplinepySplineName(),
-                                            "Spline1:",
-                                            b.SplinepySplineName());
-      }
-      return false;
-    }
-    return true;
-  }
-
-  /// Check if para_dim matches and throw(=raise) if desired
-  static bool SplinepyParaDimMatches(const SplinepyBase& a,
-                                     const SplinepyBase& b,
-                                     const std::string description = "",
-                                     const bool raise = false) {
-    if (a.SplinepyParaDim() != b.SplinepyParaDim()) {
-      if (raise) {
-        splinepy::utils::PrintAndThrowError(
-            description,
-            "Spline parametric dimension mismatch - "
-            "Spline0:",
-            "/",
-            a.SplinepyParaDim(),
-            "Spline1:",
-            b.SplinepyParaDim());
-      }
-      return false;
-    }
-    return true;
-  }
-
-  /// Check if dim matches and throw(=raise) if desired
-  static bool SplinepyDimMatches(const SplinepyBase& a,
-                                 const SplinepyBase& b,
-                                 const std::string description = "",
-                                 const bool raise = false) {
-    if (a.SplinepyDim() != b.SplinepyDim()) {
-      if (raise) {
-        splinepy::utils::PrintAndThrowError(
-            description,
-            "Spline parametric dimension mismatch - "
-            "Spline0:",
-            "/",
-            a.SplinepyDim(),
-            "Spline1:",
-            b.SplinepyDim());
-      }
-      return false;
-    }
-    return true;
-  }
+      const std::shared_ptr<SplinepyBase>& inner_derivative) const;
 };
 
 } // namespace splinepy::splines

@@ -57,11 +57,11 @@ def next_line(f, comment="#"):
 
 def form_lines(*args):
     """
-    Formulate a string, taking each *args as a line.
+    Formulate a string, taking each args as a line.
 
     Parameters
     -----------
-    *args: *str
+    *args: str
 
     Returns
     --------
