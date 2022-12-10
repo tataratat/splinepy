@@ -373,6 +373,36 @@ public:
     return cmr;
   }
 
+  /// @brief Evaluate Splines at boundary face centers
+  /// @return numpy array with results
+  py::array_t<double> EvaluateFaceCenters() const {
+    // prepare output
+    const int n_faces = 2 * para_dim_;
+    py::array_t<double> queries(n_faces * para_dim_);
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    py::array_t<double> face_centers(n_faces * dim_);
+    double* face_centers_ptr = static_cast<double*>(face_centers.request().ptr);
+
+    for (int i{}; i < para_dim_; i++) {
+      for (int j{}; j < para_dim_; j++) {
+        if (i == j) {
+          queries_ptr[2 * i * para_dim_ + j] = 0.;
+          queries_ptr[(2 * i + 1) * para_dim_ + j] = 1.;
+        } else {
+          queries_ptr[2 * i * para_dim_ + j] = .5;
+          queries_ptr[(2 * i + 1) * para_dim_ + j] = .5;
+        }
+      }
+    }
+    for (int i{}; i < n_faces; ++i) {
+      Core()->SplinepyEvaluate(&queries_ptr[i * para_dim_],
+                               &face_centers_ptr[i * dim_]);
+    }
+
+    face_centers.resize({n_faces, dim_});
+    return face_centers;
+  }
+
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -928,7 +958,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-
+      .def_property_readonly("evaluate_face_centers",
+                             &splinepy::py::PySpline::EvaluateFaceCenters)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
