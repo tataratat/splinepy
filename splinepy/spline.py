@@ -275,7 +275,8 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
+            local_indices,
+            np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
@@ -1199,8 +1200,7 @@ class Spline(core.CoreSpline):
 
         self._logd(
                 f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-                "Results: ",
-                f"{[meaningful(r) for r in reduced]}."
+                "Results: ", f"{[meaningful(r) for r in reduced]}."
         )
 
         if any(reduced):
