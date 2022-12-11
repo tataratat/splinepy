@@ -32,7 +32,10 @@ def load(fname):
 
     # Init return type
     return_dict = {
-            "Bezier": [], "NURBS": [], "BSpline": [], "RationalBezier": []
+            "Bezier": [],
+            "NURBS": [],
+            "BSpline": [],
+            "RationalBezier": [],
     }
 
     for jbz in jsonbz["SplineList"]:
