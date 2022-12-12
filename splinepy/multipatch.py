@@ -13,7 +13,11 @@ class Multipatch():
     connectivities
     """
 
-    def __init__(self, splines=None, connectivity=None,):
+    def __init__(
+            self,
+            splines=None,
+            connectivity=None,
+    ):
         """
         Multipatch
 
@@ -43,10 +47,10 @@ class Multipatch():
     @property
     def splines(self):
         """
-      List of splines in splinepy format
+        List of splines in splinepy format
 
-      Returns a list of splines that are stored in the multipatch system
-      """
+        Returns a list of splines that are stored in the multipatch system
+        """
         return self._spline_list
 
     @splines.setter
@@ -110,6 +114,7 @@ class Multipatch():
             raise ValueError(
                     "Connectivity must be stored in a numpy 2D array."
             )
+
         # One boundary for min and max for each parametric dimension
         n_boundaries_per_spline = self.splines[0].para_dim * 2
         if not (
@@ -127,13 +132,76 @@ class Multipatch():
     @property
     def boundaries(self):
         """
-        IMO, boundaries should be stored as negative values in the connectivity
-        """
-        pass
+        Boundaries are stored within the connectivity array as negativ entries
 
-    @boundaries.setter
-    def boundaries(self, bids):
-        pass
+        Negativ entries mean, that there is a boundary, the absolute value
+        holds the boundary ID
+        """
+        # Get minimum boundary id
+        max_BID = self.connectivity.min()
+
+        boundary_list = []
+        for i_bid in range(-1, max_BID, -1):
+            logging.debug(f"Extracting boundary with ID {abs(i_bid)}")
+            boundary_list.append(self.connectivity)
+            logging.debug(
+                    f"Found {boundary_list[-1][1].size} boundary "
+                    f"elements on boundary {abs(i_bid)}"
+            )
+
+        return boundary_list
+
+    def set_boundary(self, spline_ids, boundary_faces, boundary_id=None):
+        """
+        Adds a boundary to a specific set of spline and spline-
+
+        Parameters
+        ----------
+        spline_ids : np.ndarray
+          array of spline-ids that are assigned a boundary
+        boundary_faces : np.ndarray
+          array of corresponding faces to be assigned a boundary
+        boundary_id : int
+          boundary_id to be assigned. If not chosen set to new lowest value
+
+        Returns
+        -------
+        None
+        """
+        # Get minimum boundary id
+        max_BID = self.connectivity.min()
+
+        if boundary_id is None:
+            new_BID = max_BID - 1
+            logging.debug(f"Creating new boundary with ID {abs(new_BID)}")
+        else:
+            # Make sure its negative
+            new_BID = -abs(int(boundary_id))
+            if new_BID < max_BID:
+                logging.debug(f"Creating new boundary with ID {abs(new_BID)}")
+            else:
+                logging.debug(
+                        "Adding new boundary elements to existing "
+                        f"boundary new boundary with ID {abs(new_BID)}"
+                )
+
+        try:
+            old_indices = self.connectivity[spline_ids, boundary_faces]
+
+            # Check if all old indices are negativ
+            if (old_indices < 0).all():
+                self.connectivity[spline_ids, boundary_faces] = new_BID
+            else:
+                raise ValueError(
+                        "One or more of the assigned boundary elements do not"
+                        " ly on the patch surface, please check topology"
+                )
+        except BaseException:
+            raise ValueError(
+                    "spline_ids and boundary_faces need to be one-dimensional."
+                    "\nIf this error proceeds please check if connectivity "
+                    "exists by calling, \nprint(<>.connectivity)"
+            )
 
     @property
     def para_dim(self):
