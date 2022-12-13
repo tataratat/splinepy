@@ -1201,19 +1201,20 @@ class Spline(SplinepyBase, core.CoreSpline):
         return reduced
 
     @_new_core_if_modified
-    def extract_boundary(self, plane_normal_axis, extrema):
+    def extract_boundary(self, boundary_id):
         """
         Extracts boundary spline.
+
+        The boundary deducted from the parametric axis which is normal to the
+        boundary (j), if the boundary is at parametric axis position x_j=x_jmin
+        the corresponding boundary is 2*j, else at parametric axis position
+        x_j=x_jmin the boundary is 2*j+1
 
 
         Parameters
         -----------
         plane_normal_axis: int
-          Axis normal to boundary spline
-        extrema: int
-          If extrema is bigger than zero, extracts boundary at the greater end
-          of the axis, else first control mesh hyperplane.
-
+          Boundary ID with the enumeration described above
 
         Returns
         -------
@@ -1221,7 +1222,7 @@ class Spline(SplinepyBase, core.CoreSpline):
           boundary spline, which has one less para_dim
         """
         return type(self)(
-                spline=core.extract_boundary(self, plane_normal_axis, extrema)
+                spline=core.extract_boundary(self, boundary_id)
         )
 
     @_new_core_if_modified
