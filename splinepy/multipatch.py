@@ -250,12 +250,12 @@ class Multipatch():
         -------
         None
         """
-        from splinepy.splinepy_core import get_interfaces_from_face_centers
+        from splinepy.splinepy_core import interfaces_from_face_centers
         from splinepy import settings
 
         # Using the property instead of the the member, all necessery
         # checks will be performed
-        self.interfaces = get_interfaces_from_face_centers(
+        self.interfaces = interfaces_from_face_centers(
                 self.spline_face_centers, settings.TOLERANCE, self.para_dim
         )
 

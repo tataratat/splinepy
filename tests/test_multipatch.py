@@ -39,7 +39,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         return
 
-    def test_connectivity(self):
+    def test_interfaces(self):
         """
         """
         # init multipatch with multiple splines
@@ -51,20 +51,60 @@ class MultipatchTest(c.unittest.TestCase):
         single_p_multipatch.splines = [self._self_referencing_spline]
 
         # Determine connectivities
-        single_p_multipatch.determine_connectivity()
-        multipatch.determine_connectivity()
+        single_p_multipatch.determine_interfaces()
+        multipatch.determine_interfaces()
         self.assertTrue(
                 (
-                        single_p_multipatch.connectivity
+                        single_p_multipatch.interfaces
                         == c.np.array([[0, 0, -1, -1]], dtype=int)
                 ).all()
         )
         self.assertTrue(
                 (
-                        multipatch.connectivity == c.np.array(
+                        multipatch.interfaces == c.np.array(
                                 [
                                         [-1, 1, 2, -1], [0, -1, -1, -1],
                                         [-1, -1, -1, 0]
+                                ],
+                                dtype=int
+                        )
+                ).all()
+        )
+
+
+    def test_boundaries(self):
+        """
+        """
+        # init multipatch with multiple splines
+        multipatch = c.splinepy.Multipatch()
+        multipatch.splines = self._list_of_splines
+        multipatch.determine_interfaces()
+
+        # Using a function
+        def west_side(points):
+            return points[:, 0] < 0.1
+
+        multipatch.add_boundary_with_function(west_side)
+        self.assertTrue(
+                (
+                        multipatch.interfaces == c.np.array(
+                                [
+                                        [-2, 1, 2, -1], [0, -1, -1, -1],
+                                        [-2, -1, -1, 0]
+                                ],
+                                dtype=int
+                        )
+                ).all()
+        )
+
+        multipatch.set_boundary([0, 1], [3, 3], 3)
+        multipatch.set_boundary([1], [1])
+        self.assertTrue(
+                (
+                        multipatch.interfaces == c.np.array(
+                                [
+                                        [-2, 1, 2, -3], [0, -4, -1, -3],
+                                        [-2, -1, -1, 0]
                                 ],
                                 dtype=int
                         )
