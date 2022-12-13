@@ -111,6 +111,14 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
   }
 }
 
+int BoundaryIDToAxisAndExtrema(const int& axis, const int& extreme) {
+  if (extreme > 0) {
+    return 2 * axis + 1;
+  } else {
+    return 2 * axis;
+  }
+}
+
 template<bool switch_plane_id_to_extrema = false, typename SplineType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
 ExtractBoundaryMeshSlice(const SplineType& spline, const int& boundary_id) {
