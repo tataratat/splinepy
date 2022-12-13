@@ -225,9 +225,9 @@ FindConnectivity_(const py::array_t<double>& py_center_vertices,
  * @return py::array_t<int> connectivity
  */
 py::array_t<int>
-ConnectivityFromFaceCenters(const py::array_t<double>& py_center_vertices,
-                            const double& tolerance,
-                            const int& parametric_dimension) {
+InterfacesFromFaceCenters(const py::array_t<double>& py_center_vertices,
+                          const double& tolerance,
+                          const int& parametric_dimension) {
   // Transform points from pyarray into bezman point vector
   double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
   const std::size_t problem_dimension = py_center_vertices.request().shape[1];
@@ -250,10 +250,29 @@ ConnectivityFromFaceCenters(const py::array_t<double>& py_center_vertices,
     case 3:
       return FindConnectivity_<3uL, 1uL>(py_center_vertices, tolerance);
       break;
+#ifdef SPLINEPY_MORE
     case 4:
       return FindConnectivity_<4uL, 1uL>(py_center_vertices, tolerance);
       break;
-
+    case 5:
+      return FindConnectivity_<5uL, 1uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 1uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 1uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 1uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 1uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 1uL>(py_center_vertices, tolerance);
+      break;
+#endif
     default:
       break;
     }
@@ -269,9 +288,29 @@ ConnectivityFromFaceCenters(const py::array_t<double>& py_center_vertices,
     case 3:
       return FindConnectivity_<3uL, 2uL>(py_center_vertices, tolerance);
       break;
+#ifdef SPLINEPY_MORE
     case 4:
       return FindConnectivity_<4uL, 2uL>(py_center_vertices, tolerance);
       break;
+    case 5:
+      return FindConnectivity_<5uL, 2uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 2uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 2uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 2uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 2uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 2uL>(py_center_vertices, tolerance);
+      break;
+#endif
 
     default:
       break;
@@ -288,14 +327,35 @@ ConnectivityFromFaceCenters(const py::array_t<double>& py_center_vertices,
     case 3:
       return FindConnectivity_<3uL, 3uL>(py_center_vertices, tolerance);
       break;
+#ifdef SPLINEPY_MORE
     case 4:
       return FindConnectivity_<4uL, 3uL>(py_center_vertices, tolerance);
       break;
+    case 5:
+      return FindConnectivity_<5uL, 3uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 3uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 3uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 3uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 3uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 3uL>(py_center_vertices, tolerance);
+      break;
+#endif
 
     default:
       break;
     }
     break;
+#ifdef SPLINEPY_MORE
   case 4:
     switch (problem_dimension) {
     case 1:
@@ -310,11 +370,238 @@ ConnectivityFromFaceCenters(const py::array_t<double>& py_center_vertices,
     case 4:
       return FindConnectivity_<4uL, 4uL>(py_center_vertices, tolerance);
       break;
-
+    case 5:
+      return FindConnectivity_<5uL, 4uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 4uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 4uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 4uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 4uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 4uL>(py_center_vertices, tolerance);
+      break;
     default:
       break;
     }
-    break;
+  case 5:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 5uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+  case 6:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 6uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+  case 7:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 7uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+  case 8:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 8uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+  case 9:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 9uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+  case 10:
+    switch (problem_dimension) {
+    case 1:
+      return FindConnectivity_<1uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 2:
+      return FindConnectivity_<2uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 3:
+      return FindConnectivity_<3uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 4:
+      return FindConnectivity_<4uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 5:
+      return FindConnectivity_<5uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 6:
+      return FindConnectivity_<6uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 7:
+      return FindConnectivity_<7uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 8:
+      return FindConnectivity_<8uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 9:
+      return FindConnectivity_<9uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    case 10:
+      return FindConnectivity_<10uL, 10uL>(py_center_vertices, tolerance);
+      break;
+    default:
+      break;
+    }
+#endif
   default:
     break;
   }
