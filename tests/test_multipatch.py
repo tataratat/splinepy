@@ -7,6 +7,8 @@ except BaseException:
 class MultipatchTest(c.unittest.TestCase):
 
     def setUp(self) -> None:
+        """
+        """
         # Spline that points to itself
         self._self_referencing_spline = c.splinepy.Bezier(
                 degrees=[3, 1],
