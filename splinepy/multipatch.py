@@ -4,19 +4,19 @@ Multipatch Spline Configuration
 
 import numpy as np
 
-from splinepy.utils.log import logging
+from splinepy.utils import log
 
 
 class Multipatch():
     """
     System of patches to store information such as boundaries and
-    connectivities
+    interfaces
     """
 
     def __init__(
             self,
             splines=None,
-            connectivity=None,
+            interfaces=None,
     ):
         """
         Multipatch
@@ -31,18 +31,18 @@ class Multipatch():
         None
         """
         # Init values
-        self._connectivity = None
+        self._interfaces = None
         self._splines = None
         self._boundaries = None
 
-        logging.debug("Instantiated Multipatch object")
+        log.debug("Instantiated Multipatch object")
 
         # Set properties
         if splines is not None:
             self.splines = splines
 
-        if connectivity is not None:
-            self.connectivity = connectivity
+        if interfaces is not None:
+            self.interfaces = interfaces
 
     @property
     def splines(self):
@@ -85,22 +85,20 @@ class Multipatch():
         self._spline_list = list_of_splines
 
     @property
-    def connectivity(self):
+    def interfaces(self):
         """
-        Determine the connectivity of a given multipatch system
+        Determine the interfaces of a given multipatch system
 
-        Returns its connectivity in the form as an array of size
+        Returns its interfaces in the form as an array of size
         n_patches x n_sides_per_patch
         """
-        if self._connectivity is None:
-            raise ValueError(
-                    "No connectivity available, "
-                    "try calling determine_connectivity"
-            )
-        return self._connectivity
+        if self._interfaces is None:
+            log.debug("No interfaces available, calculating on the fly")
+            self.determine_interfaces()
+        return self._interfaces
 
-    @connectivity.setter
-    def connectivity(self, con):
+    @interfaces.setter
+    def interfaces(self, con):
         """
         No Actual implementation only some checks
 
@@ -127,31 +125,36 @@ class Multipatch():
             )
 
         # Assignment
-        self._connectivity = con
+        self._interfaces = con
 
     @property
     def boundaries(self):
         """
-        Boundaries are stored within the connectivity array as negativ entries
+        Boundaries are stored within the interfaces array as negativ entries
 
         Negativ entries mean, that there is a boundary, the absolute value
         holds the boundary ID
         """
         # Get minimum boundary id
-        max_BID = self.connectivity.min()
+        max_BID = self.interfaces.min()
 
         boundary_list = []
         for i_bid in range(-1, max_BID, -1):
-            logging.debug(f"Extracting boundary with ID {abs(i_bid)}")
-            boundary_list.append(self.connectivity)
-            logging.debug(
+            log.debug(f"Extracting boundary with ID {abs(i_bid)}")
+            boundary_list.append(self.interfaces)
+            log.debug(
                     f"Found {boundary_list[-1][1].size} boundary "
                     f"elements on boundary {abs(i_bid)}"
             )
 
         return boundary_list
 
-    def set_boundary(self, spline_ids, boundary_faces, boundary_id=None):
+    def set_boundary(
+            self,
+            spline_ids,
+            boundary_faces,
+            boundary_id=None,
+    ):
         """
         Adds a boundary to a specific set of spline and spline-
 
@@ -169,28 +172,28 @@ class Multipatch():
         None
         """
         # Get minimum boundary id
-        max_BID = self.connectivity.min()
+        max_BID = self.interfaces.min()
 
         if boundary_id is None:
             new_BID = max_BID - 1
-            logging.debug(f"Creating new boundary with ID {abs(new_BID)}")
+            log.debug(f"Creating new boundary with ID {abs(new_BID)}")
         else:
             # Make sure its negative
             new_BID = -abs(int(boundary_id))
             if new_BID < max_BID:
-                logging.debug(f"Creating new boundary with ID {abs(new_BID)}")
+                log.debug(f"Creating new boundary with ID {abs(new_BID)}")
             else:
-                logging.debug(
+                log.debug(
                         "Adding new boundary elements to existing "
                         f"boundary new boundary with ID {abs(new_BID)}"
                 )
 
         try:
-            old_indices = self.connectivity[spline_ids, boundary_faces]
+            old_indices = self.interfaces[spline_ids, boundary_faces]
 
             # Check if all old indices are negativ
             if (old_indices < 0).all():
-                self.connectivity[spline_ids, boundary_faces] = new_BID
+                self.interfaces[spline_ids, boundary_faces] = new_BID
             else:
                 raise ValueError(
                         "One or more of the assigned boundary elements do not"
@@ -199,8 +202,8 @@ class Multipatch():
         except BaseException:
             raise ValueError(
                     "spline_ids and boundary_faces need to be one-dimensional."
-                    "\nIf this error proceeds please check if connectivity "
-                    "exists by calling, \nprint(<>.connectivity)"
+                    "\nIf this error proceeds please check if interfaces "
+                    "exists by calling, \nprint(<>.interfaces)"
             )
 
     @property
@@ -233,11 +236,11 @@ class Multipatch():
         # If spline list is empty will throw excetion
         return np.vstack([s.evaluate_face_centers for s in self.splines])
 
-    def determine_connectivity(self):
+    def determine_interfaces(self):
         """
-        Uses MFEM export routine to retrieve connectivity info
+        Retrieve interfaces info
 
-        Stores new informaton as connectivity
+        Stores new informaton as interfaces
 
         Parameters
         ----------
@@ -247,34 +250,64 @@ class Multipatch():
         -------
         None
         """
-        from splinepy.splinepy_core import get_connectivity_from_face_centers
+        from splinepy.splinepy_core import get_interfaces_from_face_centers
         from splinepy import settings
 
         # Using the property instead of the the member, all necessery
         # checks will be performed
-        self.connectivity = get_connectivity_from_face_centers(
+        self.interfaces = get_interfaces_from_face_centers(
                 self.spline_face_centers, settings.TOLERANCE, self.para_dim
         )
 
-        logging.debug(
-                "Successfully provided new connectivity using uff algorithm"
-        )
+        log.debug("Successfully provided new interfaces using uff algorithm")
 
-    def add_boundary_with_function(self, function, only_unassigned=False):
+    def add_boundary_with_function(
+            self,
+            function,
+            only_unassigned=False,
+            boundary_id=None,
+    ):
         """
         Uses all faces, that were identified as boundaries in the
-        connectivity array and checks if they fit a boundary function
+        interfaces array and checks if they fit a boundary function
 
-        See boundary
+        Parameters
+        ----------
+        function : Callable
+          Function called on every face center point to check if it is on the
+          boundary, returns bool-type
+        only_unassigned : bool
+          Uses only previously unassigned boundaries
+          (i.e. on boundary 1)
+        boundary_id : int
+          boundary_id to be assigned. If not chosen set to new lowest value
+
+        Returns
+        -------
+        None
         """
         # Get minimum boundary id
-        max_BID = self.connectivity.min()
+        max_BID = self.interfaces.min()
+
+        if boundary_id is None:
+            new_BID = max_BID - 1
+            log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+        else:
+            # Make sure its negative
+            new_BID = -abs(int(boundary_id))
+            if new_BID < max_BID:
+                log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+            else:
+                log.debug(
+                        "Adding new boundary elements to existing "
+                        f"boundary new boundary with ID {abs(new_BID)}"
+                )
 
         # retrieve all boundary elements
         if only_unassigned:
-            boundary_ids = (self.connectivity < 0)
+            boundary_ids = (self.interfaces < 0)
         else:
-            boundary_ids = self.connectivity == -1
+            boundary_ids = self.interfaces == -1
 
         # Check if there is a boundary
         if not boundary_ids.any():
@@ -296,6 +329,6 @@ class Multipatch():
                     " f(array<n_face_points,dim>) -> bools<n_face_points>"
             )
 
-        # Assign new boundary ID to connectivity array
-        self.connectivity[row_ids[new_boundary_bools],
-                          col_ids[new_boundary_bools]] = max_BID - 1
+        # Assign new boundary ID to interfaces array
+        self.interfaces[row_ids[new_boundary_bools],
+                          col_ids[new_boundary_bools]] = new_BID
