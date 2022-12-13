@@ -473,10 +473,9 @@ public:
   }
 
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyExtractBoundary(const int& p_dim, const int& extrema) {
-    return splinepy::splines::helpers::ExtractBoundarySpline(*this,
-                                                             p_dim,
-                                                             extrema);
+  SplinepyExtractBoundary(const int& boundary_id) {
+    return splinepy::splines::helpers::ExtractBoundaryMeshSlice(*this,
+                                                                boundary_id);
   }
 
   virtual std::vector<std::shared_ptr<SplinepyBase>>

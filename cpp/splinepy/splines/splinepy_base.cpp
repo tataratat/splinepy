@@ -571,7 +571,7 @@ SplinepyBase::SplinepyExtractBezierPatches() const {
 }
 
 std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyExtractBoundary(const int& para_dim, const int& extrema) {
+SplinepyBase::SplinepyExtractBoundary(const int& boundary_id) {
   splinepy::utils::PrintAndThrowError(
       "SplinepyExtractBoundary is not implemented for",
       SplinepyWhatAmI());

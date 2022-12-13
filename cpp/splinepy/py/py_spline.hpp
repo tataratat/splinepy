@@ -845,10 +845,8 @@ inline py::list ExtractBezierPatches(const PySpline& spline) {
 
 /// boundary spline extraction
 inline PySpline ExtractBoundary(const PySpline& spline,
-                                const int& boundary_normal_axis,
-                                const int& extrema) {
-  return PySpline(
-      spline.Core()->SplinepyExtractBoundary(boundary_normal_axis, extrema));
+                                const int& boundary_id) {
+  return PySpline(spline.Core()->SplinepyExtractBoundary(boundary_id));
 }
 
 /// extract a single physical dimension from a spline
@@ -1044,8 +1042,7 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("extract_boundary",
         &splinepy::py::ExtractBoundary,
         py::arg("spline"),
-        py::arg("boundary_normal_axis"),
-        py::arg("extrema"));
+        py::arg("boundary_id"));
   m.def("extract_dim",
         &splinepy::py::ExtractDim,
         py::arg("spline"),

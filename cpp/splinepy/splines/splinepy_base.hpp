@@ -183,7 +183,7 @@ public:
 
   /// Boundary spline extraction - TODO: const
   virtual std::shared_ptr<SplinepyBase>
-  SplinepyExtractBoundary(const int& para_dim, const int& extrema);
+  SplinepyExtractBoundary(const int& boundary_id);
 
   /// Scalar Spline extraction from dim - TODO: const
   virtual std::shared_ptr<SplinepyBase> SplinepyExtractDim(const int& phys_dim);
