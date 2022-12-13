@@ -226,7 +226,7 @@ class Multipatch():
         return self.splines[0].dim
 
     @property
-    def spline_face_centers(self):
+    def spline_boundary_centers(self):
         """
         This property function is a placeholder for once i figure out how to
         use tracked-arrays
@@ -234,7 +234,7 @@ class Multipatch():
         talk to at @j042
         """
         # If spline list is empty will throw excetion
-        return np.vstack([s.evaluate_face_centers for s in self.splines])
+        return np.vstack([s.evaluate_boundary_centers for s in self.splines])
 
     def determine_interfaces(self):
         """
@@ -250,13 +250,13 @@ class Multipatch():
         -------
         None
         """
-        from splinepy.splinepy_core import interfaces_from_face_centers
+        from splinepy.splinepy_core import interfaces_from_boundary_centers
         from splinepy import settings
 
         # Using the property instead of the the member, all necessery
         # checks will be performed
-        self.interfaces = interfaces_from_face_centers(
-                self.spline_face_centers, settings.TOLERANCE, self.para_dim
+        self.interfaces = interfaces_from_boundary_centers(
+                self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
         )
 
         log.debug("Successfully provided new interfaces using uff algorithm")
@@ -274,7 +274,7 @@ class Multipatch():
         Parameters
         ----------
         function : Callable
-          Function called on every face center point to check if it is on the
+          Function called on every boundary center point to check if it is on the
           boundary, returns bool-type
         only_unassigned : bool
           Uses only previously unassigned boundaries
@@ -314,7 +314,7 @@ class Multipatch():
             raise ValueError("No boundary elements could be identified")
 
         # Check all face centers
-        relevant_face_centers = self.spline_face_centers[
+        relevant_boundary_centers = self.spline_boundary_centers[
                 boundary_ids.flatten(), :]
 
         # Cols and Rows
@@ -322,7 +322,7 @@ class Multipatch():
 
         # Function is applied to all face centers
         try:
-            new_boundary_bools = function(relevant_face_centers)
+            new_boundary_bools = function(relevant_boundary_centers)
         except BaseException:
             ValueError(
                     "Function is not applicable to array. Function layout must"

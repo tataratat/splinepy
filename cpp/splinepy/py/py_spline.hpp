@@ -375,7 +375,7 @@ public:
 
   /// @brief Evaluate Splines at boundary face centers
   /// @return numpy array with results
-  py::array_t<double> EvaluateFaceCenters() const {
+  py::array_t<double> EvaluateBoundaryCenters() const {
     // prepare output
     const int n_faces = 2 * para_dim_;
     py::array_t<double> queries(n_faces * para_dim_);
@@ -958,8 +958,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-      .def_property_readonly("evaluate_face_centers",
-                             &splinepy::py::PySpline::EvaluateFaceCenters)
+      .def_property_readonly("evaluate_boundary_centers",
+                             &splinepy::py::PySpline::EvaluateBoundaryCenters)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
