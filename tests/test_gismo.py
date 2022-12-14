@@ -7,11 +7,9 @@ try:
 except BaseException:
     import common as c
 
-_gismo_export_ref_2d = [
-]
+_gismo_export_ref_2d = []
 
-_gismo_export_ref_3d = [
-]
+_gismo_export_ref_3d = []
 
 
 class gismoExportTest(c.unittest.TestCase):
@@ -22,23 +20,24 @@ class gismoExportTest(c.unittest.TestCase):
         """
         # Define some splines
         bez_el0 = splinepy.Bezier(
-            degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
+                degrees=[1, 1],
+                control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
         )
         rbz_el1 = splinepy.RationalBezier(
-            degrees=[1, 1],
-            control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
-            weights=[1, 1, 1, 1]
+                degrees=[1, 1],
+                control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
+                weights=[1, 1, 1, 1]
         )
         bsp_el2 = splinepy.BSpline(
-            degrees=[1, 1],
-            control_points=[[0, 1], [1, 1], [0, 2], [1, 2]],
-            knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
+                degrees=[1, 1],
+                control_points=[[0, 1], [1, 1], [0, 2], [1, 2]],
+                knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
         )
         nur_el3 = splinepy.NURBS(
-            degrees=[1, 1],
-            control_points=[[1, 1], [2, 1], [1, 2], [2, 2]],
-            weights=[1, 1, 1, 1],
-            knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
+                degrees=[1, 1],
+                control_points=[[1, 1], [2, 1], [1, 2], [2, 2]],
+                weights=[1, 1, 1, 1],
+                knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
         )
 
         # Make it more tricky
@@ -52,7 +51,7 @@ class gismoExportTest(c.unittest.TestCase):
         # @todo
         with tempfile.NamedTemporaryFile() as tmpf:
             splinepy.io.gismo.export(
-                "test2D.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
+                    "test2D.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
             with open(tmpf.name, "r") as tmp_read:
@@ -60,36 +59,36 @@ class gismoExportTest(c.unittest.TestCase):
 
         # Test Also 3D Meshes
         bez_el0 = splinepy.Bezier(
-            degrees=[1, 1, 1],
-            control_points=[
-                [0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 0, 1],
-                [1, 0, 1], [0, 1, 1], [1, 1, 1]
-            ]
+                degrees=[1, 1, 1],
+                control_points=[
+                        [0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 0, 1],
+                        [1, 0, 1], [0, 1, 1], [1, 1, 1]
+                ]
         )
         rbz_el1 = splinepy.RationalBezier(
-            degrees=[1, 1, 1],
-            control_points=[
-                [1, 0, 0], [2, 0, 0], [1, 1, 0], [2, 1, 0], [1, 0, 1],
-                [2, 0, 1], [1, 1, 1], [2, 1, 1]
-            ],
-            weights=[1] * 8
+                degrees=[1, 1, 1],
+                control_points=[
+                        [1, 0, 0], [2, 0, 0], [1, 1, 0], [2, 1, 0], [1, 0, 1],
+                        [2, 0, 1], [1, 1, 1], [2, 1, 1]
+                ],
+                weights=[1] * 8
         )
         bsp_el2 = splinepy.BSpline(
-            degrees=[1, 1, 1],
-            control_points=[
-                [0, 1, 0], [1, 1, 0], [0, 2, 0], [1, 2, 0], [0, 1, 1],
-                [1, 1, 1], [0, 2, 1], [1, 2, 1]
-            ],
-            knot_vectors=[[0, 0, 1, 1]] * 3
+                degrees=[1, 1, 1],
+                control_points=[
+                        [0, 1, 0], [1, 1, 0], [0, 2, 0], [1, 2, 0], [0, 1, 1],
+                        [1, 1, 1], [0, 2, 1], [1, 2, 1]
+                ],
+                knot_vectors=[[0, 0, 1, 1]] * 3
         )
         nur_el3 = splinepy.NURBS(
-            degrees=[1, 1, 1],
-            control_points=[
-                [1, 1, 0], [2, 1, 0], [1, 2, 0], [2, 2, 0], [1, 1, 1],
-                [2, 1, 1], [1, 2, 1], [2, 2, 1]
-            ],
-            weights=[1] * 8,
-            knot_vectors=[[0, 0, 1, 1]] * 3
+                degrees=[1, 1, 1],
+                control_points=[
+                        [1, 1, 0], [2, 1, 0], [1, 2, 0], [2, 2, 0], [1, 1, 1],
+                        [2, 1, 1], [1, 2, 1], [2, 2, 1]
+                ],
+                weights=[1] * 8,
+                knot_vectors=[[0, 0, 1, 1]] * 3
         )
 
         # Make it more tricky
@@ -103,7 +102,7 @@ class gismoExportTest(c.unittest.TestCase):
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
             splinepy.io.gismo.export(
-                "test.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
+                    "test.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
             with open(tmpf.name, "r") as tmp_read:

@@ -274,8 +274,8 @@ class Multipatch():
         Parameters
         ----------
         function : Callable
-          Function called on every boundary center point to check if it is on the
-          boundary, returns bool-type
+          Function called on every boundary center point to check if it is on
+          the boundary, returns bool-type
         only_unassigned : bool
           Uses only previously unassigned boundaries
           (i.e. on boundary 1)
@@ -331,4 +331,4 @@ class Multipatch():
 
         # Assign new boundary ID to interfaces array
         self.interfaces[row_ids[new_boundary_bools],
-                          col_ids[new_boundary_bools]] = new_BID
+                        col_ids[new_boundary_bools]] = new_BID

@@ -73,7 +73,6 @@ class MultipatchTest(c.unittest.TestCase):
                 ).all()
         )
 
-
     def test_boundaries(self):
         """
         """
