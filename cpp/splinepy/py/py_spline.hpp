@@ -849,6 +849,17 @@ inline PySpline ExtractBoundary(const PySpline& spline,
   return PySpline(spline.Core()->SplinepyExtractBoundary(boundary_id));
 }
 
+/// boundary spline extraction from axis and extreme
+inline PySpline ExtractBoundaryFromAxisAndExtrema(const PySpline& spline,
+                                                  const int& axis,
+                                                  const int& extreme) {
+  // Determine corresponding ID
+  int boundary_id = (extreme > 0) ? 2 * axis + 1 : 2 * axis;
+
+  // Extract boundary
+  return PySpline(spline.Core()->SplinepyExtractBoundary(boundary_id));
+}
+
 /// extract a single physical dimension from a spline
 inline PySpline ExtractDim(const PySpline& spline, int phys_dim) {
   return PySpline(spline.Core()->SplinepyExtractDim(phys_dim));
