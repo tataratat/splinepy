@@ -111,7 +111,7 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
   }
 }
 
-int BoundaryIDToAxisAndExtrema(const int& axis, const int& extreme) {
+inline int BoundaryIDToAxisAndExtrema(const int& axis, const int& extreme) {
   if (extreme > 0) {
     return 2 * axis + 1;
   } else {
