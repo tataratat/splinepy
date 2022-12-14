@@ -844,9 +844,32 @@ inline py::list ExtractBezierPatches(const PySpline& spline) {
 }
 
 /// boundary spline extraction
-inline PySpline ExtractBoundary(const PySpline& spline,
-                                const int& boundary_id) {
-  return PySpline(spline.Core()->SplinepyExtractBoundary(boundary_id));
+inline PySpline ExtractBoundaries(const PySpline& spline,
+                                  const py::array_t<int>& boundary_ids) {
+  // Init return value
+  py::list boundary_splines{};
+  const int n_boundaries = boundary_ids.size();
+  int* bid_ptr = static_cast<int*>(boundary_ids.request().ptr);
+  if (boundary_ids.size() == 0) {
+    for (int i{}; i < para_dim_ * 2; ++i) {
+      boudnary_splines.append(
+          PySpline(spline.Core()->SplinepyExtractBoundary(i)));
+    }
+  } else {
+    const int max_bid = para_dim_ * 2 - 1;
+    for (int i{}; i < n_boundaries; ++i) {
+      const int& bid = bid_ptr[i];
+      if (bid < 0 || bid > max_bid) {
+        splinepy::utils::PrintAndThrowError("Requested Boundary ID :",
+                                            bid,
+                                            "exceeds admissible range.");
+      }
+      boudnary_splines.append(
+          PySpline(spline.Core()->SplinepyExtractBoundary(bid_ptr[i])));
+    }
+  }
+
+  return boundary_splines;
 }
 
 /// boundary spline extraction from axis and extreme
@@ -854,7 +877,7 @@ inline PySpline ExtractBoundaryFromAxisAndExtrema(const PySpline& spline,
                                                   const int& axis,
                                                   const int& extreme) {
   // Determine corresponding ID
-  int boundary_id = (extreme > 0) ? 2 * axis + 1 : 2 * axis;
+  const int boundary_id = (extreme > 0) ? 2 * axis + 1 : 2 * axis;
 
   // Extract boundary
   return PySpline(spline.Core()->SplinepyExtractBoundary(boundary_id));
