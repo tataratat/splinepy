@@ -1230,10 +1230,11 @@ class Spline(core.CoreSpline):
           boundary spline, which has one less para_dim
         """
         if boundary_ids is None:
-            boundary_ids = np.array([],dtype=np.int32)
+            boundary_ids = np.array([], dtype=np.int32)
 
-        return [type(self)(spline=c) for c in
-                core.extract_boundaries(self, boundary_ids)
+        return [
+                type(self)(spline=c)
+                for c in core.extract_boundaries(self, boundary_ids)
         ]
 
     @_new_core_if_modified
