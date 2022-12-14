@@ -1076,7 +1076,7 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("extract_boundaries",
         &splinepy::py::ExtractBoundaries,
         py::arg("spline"),
-        py::arg("boundary_ids") = py::array_t<int>{});
+        py::arg("boundary_ids"));
   m.def("extract_dim",
         &splinepy::py::ExtractDim,
         py::arg("spline"),
