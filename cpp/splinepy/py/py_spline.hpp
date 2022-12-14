@@ -844,19 +844,19 @@ inline py::list ExtractBezierPatches(const PySpline& spline) {
 }
 
 /// boundary spline extraction
-inline PySpline ExtractBoundaries(const PySpline& spline,
+inline py::list ExtractBoundaries(const PySpline& spline,
                                   const py::array_t<int>& boundary_ids) {
   // Init return value
   py::list boundary_splines{};
   const int n_boundaries = boundary_ids.size();
   int* bid_ptr = static_cast<int*>(boundary_ids.request().ptr);
   if (boundary_ids.size() == 0) {
-    for (int i{}; i < para_dim_ * 2; ++i) {
-      boudnary_splines.append(
+    for (int i{}; i < spline.para_dim_ * 2; ++i) {
+      boundary_splines.append(
           PySpline(spline.Core()->SplinepyExtractBoundary(i)));
     }
   } else {
-    const int max_bid = para_dim_ * 2 - 1;
+    const int max_bid = spline.para_dim_ * 2 - 1;
     for (int i{}; i < n_boundaries; ++i) {
       const int& bid = bid_ptr[i];
       if (bid < 0 || bid > max_bid) {
@@ -864,7 +864,7 @@ inline PySpline ExtractBoundaries(const PySpline& spline,
                                             bid,
                                             "exceeds admissible range.");
       }
-      boudnary_splines.append(
+      boundary_splines.append(
           PySpline(spline.Core()->SplinepyExtractBoundary(bid_ptr[i])));
     }
   }
@@ -1073,10 +1073,10 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("extract_bezier_patches",
         &splinepy::py::ExtractBezierPatches,
         py::arg("spline"));
-  m.def("extract_boundary",
-        &splinepy::py::ExtractBoundary,
+  m.def("extract_boundaries",
+        &splinepy::py::ExtractBoundaries,
         py::arg("spline"),
-        py::arg("boundary_id"));
+        py::arg("boundary_ids") = py::array_t<int>{});
   m.def("extract_dim",
         &splinepy::py::ExtractDim,
         py::arg("spline"),
