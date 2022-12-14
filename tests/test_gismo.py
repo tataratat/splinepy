@@ -1,7 +1,7 @@
 import tempfile
 
 import splinepy
-import numpy as np
+
 try:
     from . import common as c
 except BaseException:

@@ -92,6 +92,9 @@ class Multipatch():
         Returns its interfaces in the form as an array of size
         n_patches x n_sides_per_patch
         """
+        if self.splines is None:
+            raise ValueError("Connectivity set for unknown list of splines.")
+
         if self._interfaces is None:
             log.debug("No interfaces available, calculating on the fly")
             self.determine_interfaces()
@@ -141,7 +144,7 @@ class Multipatch():
         boundary_list = []
         for i_bid in range(-1, max_BID, -1):
             log.debug(f"Extracting boundary with ID {abs(i_bid)}")
-            boundary_list.append(self.interfaces)
+            boundary_list.append(np.where(self.interfaces == i_bid))
             log.debug(
                     f"Found {boundary_list[-1][1].size} boundary "
                     f"elements on boundary {abs(i_bid)}"
@@ -274,8 +277,8 @@ class Multipatch():
         Parameters
         ----------
         function : Callable
-          Function called on every boundary center point to check if it is on the
-          boundary, returns bool-type
+          Function called on every boundary center point to check if it is on
+          the boundary, returns bool-type
         only_unassigned : bool
           Uses only previously unassigned boundaries
           (i.e. on boundary 1)
