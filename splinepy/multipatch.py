@@ -274,8 +274,8 @@ class Multipatch():
         Parameters
         ----------
         function : Callable
-          Function called on every boundary center point to check if it is on
-          the boundary, returns bool-type
+          Function called on every boundary center point to check if it is on the
+          boundary, returns bool-type
         only_unassigned : bool
           Uses only previously unassigned boundaries
           (i.e. on boundary 1)
@@ -332,3 +332,24 @@ class Multipatch():
         # Assign new boundary ID to interfaces array
         self.interfaces[row_ids[new_boundary_bools],
                         col_ids[new_boundary_bools]] = new_BID
+
+    def add_boundary_from_seed(self, seed_position, tolerance=None):
+        """WIP
+        Starting from a seed position, the splines are propagated until they
+        reach a kink (no g1 continuity). This uses the spline boundary
+        information and determines the interface information.
+
+        Parameters
+        ----------
+        seed_position : array-like (n_dim)
+          Seed position from where the propagation starts
+        tolerance : double
+          Maximum angle (rad) between two normal vectors on boundary which is
+          accepted as g1
+        """
+        from splinepy.settings import TOLERANCE
+
+        if tolerance is None:
+            tolerance = TOLERANCE
+
+        pass
