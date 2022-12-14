@@ -1201,11 +1201,11 @@ class Spline(SplinepyBase, core.CoreSpline):
         return reduced
 
     @_new_core_if_modified
-    def extract_boundary(self, boundary_id):
+    def extract_boundaries(self, boundary_ids=None):
         """
         Extracts boundary spline.
 
-        The boundary deducted from the parametric axis which is normal to the
+        The boundaries deducted from the parametric axis which is normal to the
         boundary (j), if the boundary is at parametric axis position x_j=x_jmin
         the corresponding boundary is 2*j, else at parametric axis position
         x_j=x_jmin the boundary is 2*j+1
@@ -1213,17 +1213,20 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         Parameters
         -----------
-        plane_normal_axis: int
-          Boundary ID with the enumeration described above
+        boundary_ids: array-like
+          Boundary IDs with the enumeration described above
 
         Returns
         -------
         boundary_spline: type(self)
           boundary spline, which has one less para_dim
         """
-        return type(self)(
-                spline=core.extract_boundary(self, boundary_id)
-        )
+        if boundary_ids is None:
+            boundary_ids = np.array([],dtype=np.int32)
+
+        return [type(self)(spline=c) for c in
+                core.extract_boundaries(self, boundary_ids)
+        ]
 
     @_new_core_if_modified
     def export(self, fname):
