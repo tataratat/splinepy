@@ -52,7 +52,7 @@ def export(fname, multipatch=None):
 
     # First export Multipatch information
     multipatch_element = ET.SubElement(
-            xml_data, 'Multipatch', parDim=str(multipatch.para_dim), id=str(0)
+            xml_data, 'MultiPatch', parDim=str(multipatch.para_dim), id=str(0)
     )
     patch_range = ET.SubElement(multipatch_element, 'patches', type="id_range")
     patch_range.text = (
@@ -100,12 +100,14 @@ def export(fname, multipatch=None):
         ).reshape(-1, 1)
         # HERE WE SHOULD IDENTIFY THE ORIENTATION
         # write to file
+        # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
+        # offset of 1)
         interface_array = np.hstack(
                 (
-                        con_spline_id_start[start_order],
-                        con_face_id_start[start_order],
-                        con_spline_id_end[end_order],
-                        con_face_id_end[end_order],
+                        con_spline_id_start[start_order] + index_offset,
+                        con_face_id_start[start_order] + 1,
+                        con_spline_id_end[end_order] + index_offset,
+                        con_face_id_end[end_order] +1 ,
                         # This is the orientation:
                         np.repeat(
                                 np.arange(multipatch.para_dim,
@@ -124,12 +126,13 @@ def export(fname, multipatch=None):
         )
 
     # Start extracting all boundaries
-    boundary_spline, boundary_face = np.where(multipatch.interfaces)
+    # Boundaries are stored as patch-id (global) face-id (local)
+    boundary_spline, boundary_face = np.where(multipatch.interfaces < 0)
     if boundary_spline.size > 0:
         boundary_data = ET.SubElement(multipatch_element, 'boundary')
         boundary_data.text = '\n'.join(
                 [
-                        str(sid) + ' ' + str(bid)
+                        str(sid + index_offset) + ' ' + str(bid+1)
                         for (sid, bid) in zip(boundary_spline, boundary_face)
                 ]
         )
@@ -138,6 +141,8 @@ def export(fname, multipatch=None):
     ###
     # If there are multiple boundary IDs write them into boundary conditions
     # and fill with dummy values
+    # Note here, that the boundary conditions are always stored in the local
+    # enumeration system of them multipatch
     boundary_condition_list = multipatch.boundaries
     if len(boundary_condition_list) > 1:
         bcs_data = ET.SubElement(
@@ -150,7 +155,7 @@ def export(fname, multipatch=None):
             bc = ET.SubElement(bcs_data, 'bc', type="Dirichlet", unknown="0")
             bc.text = '\n'.join(
                     [
-                            str(sid) + ' ' + str(bid)
+                            str(sid) + ' ' + str(bid+1)
                             for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
                     ]
             )
