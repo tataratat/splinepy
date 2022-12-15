@@ -372,11 +372,11 @@ class gismoExportTest(c.unittest.TestCase):
         # Test Output
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.gismo.export(
-                    "test2D.xml",multipatch
+                    tmpf.name, multipatch
             )
 
             with open(tmpf.name, "r") as tmp_read:
-                self.assertTrue(_gismo_export_ref_2d == tmp_read.readlines())
+                self.assertTrue(c.are_items_same(_gismo_export_ref_2d, tmp_read.readlines()))
 
         # Test Also 3D Meshes
         bez_el0 = c.splinepy.Bezier(
@@ -423,11 +423,11 @@ class gismoExportTest(c.unittest.TestCase):
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.gismo.export(
-                    "test.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
+                    tmpf.name, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
             with open(tmpf.name, "r") as tmp_read:
-                self.assertTrue(_gismo_export_ref_3d == tmp_read.readlines())
+                self.assertTrue(c.are_items_same(_gismo_export_ref_3d, tmp_read.readlines()))
 
 
 if __name__ == "__main__":
