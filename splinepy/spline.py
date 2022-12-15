@@ -12,6 +12,7 @@ from splinepy import utils
 from splinepy import io
 from splinepy import settings
 from splinepy import splinepy_core as core
+from splinepy._base import SplinepyBase
 
 
 class RequiredProperties:
@@ -411,21 +412,12 @@ def _new_core_if_modified(func):
     return inner
 
 
-class Spline(core.CoreSpline):
+class Spline(SplinepyBase, core.CoreSpline):
     """
     Spline base class. Extends CoreSpline with documentation.
     """
 
     __slots__ = ()
-
-    def __new__(cls, *args, **kwargs):
-        """
-        Add logger shortcut during creation
-        """
-        cls._logi = utils.log.prepend_log(cls.__qualname__, utils.log.info)
-        cls._logd = utils.log.prepend_log(cls.__qualname__, utils.log.debug)
-        cls._logw = utils.log.prepend_log(cls.__qualname__, utils.log.warning)
-        return super().__new__(cls, *args, **kwargs)
 
     def __init__(self, spline=None, **kwargs):
         """
