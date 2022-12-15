@@ -4,6 +4,7 @@ Base type of splinepy
 """
 from splinepy.utils import log
 
+
 class SplinepyBase:
     __slots__ = ()
 

@@ -107,7 +107,7 @@ def export(fname, multipatch=None):
                         con_spline_id_start[start_order] + index_offset,
                         con_face_id_start[start_order] + 1,
                         con_spline_id_end[end_order] + index_offset,
-                        con_face_id_end[end_order] + 1 ,
+                        con_face_id_end[end_order] + 1,
                         # This is the orientation:
                         np.repeat(
                                 np.arange(multipatch.para_dim,
@@ -132,7 +132,7 @@ def export(fname, multipatch=None):
         boundary_data = ET.SubElement(multipatch_element, 'boundary')
         boundary_data.text = '\n'.join(
                 [
-                        str(sid + index_offset) + ' ' + str(bid+1)
+                        str(sid + index_offset) + ' ' + str(bid + 1)
                         for (sid, bid) in zip(boundary_spline, boundary_face)
                 ]
         )
@@ -155,7 +155,7 @@ def export(fname, multipatch=None):
             bc = ET.SubElement(bcs_data, 'bc', type="Dirichlet", unknown="0")
             bc.text = '\n'.join(
                     [
-                            str(sid) + ' ' + str(bid+1)
+                            str(sid) + ' ' + str(bid + 1)
                             for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
                     ]
             )

@@ -353,8 +353,6 @@ class Multipatch(SplinepyBase):
           Maximum angle (rad) between two normal vectors on boundary which is
           accepted as g1
         """
-        from splinepy.settings import TOLERANCE
-
         if tolerance is None:
             tolerance = TOLERANCE
 
