@@ -33,7 +33,7 @@ class Multipatch(SplinepyBase):
         """
         # Init values
         self._interfaces = None
-        self._splines = None
+        self._spline_list = None
         self._boundaries = None
 
         self._logd("Instantiated Multipatch object")
