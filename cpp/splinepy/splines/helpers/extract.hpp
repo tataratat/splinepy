@@ -7,6 +7,13 @@
 
 namespace splinepy::splines::helpers {
 
+/// Determine boundary ID from axis and extrem-value
+inline int ExtractBoundaryFromAxisAndExtrema(const int& axis,
+                                             const int& extreme) {
+  // Determine corresponding ID
+  return (extreme > 0) ? 2 * axis + 1 : 2 * axis;
+}
+
 template<typename SplineType, typename IndexT>
 std::shared_ptr<splinepy::splines::SplinepyBase>
 ExtractControlMeshSliceFromIDs(const SplineType& spline,

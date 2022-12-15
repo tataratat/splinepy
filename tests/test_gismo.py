@@ -1,6 +1,6 @@
 import tempfile
 
-import splinepy
+import c.splinepy
 
 try:
     from . import common as c
@@ -19,21 +19,21 @@ class gismoExportTest(c.unittest.TestCase):
         Test gismo export routine
         """
         # Define some splines
-        bez_el0 = splinepy.Bezier(
+        bez_el0 = c.splinepy.Bezier(
                 degrees=[1, 1],
                 control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
         )
-        rbz_el1 = splinepy.RationalBezier(
+        rbz_el1 = c.splinepy.RationalBezier(
                 degrees=[1, 1],
                 control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
                 weights=[1, 1, 1, 1]
         )
-        bsp_el2 = splinepy.BSpline(
+        bsp_el2 = c.splinepy.BSpline(
                 degrees=[1, 1],
                 control_points=[[0, 1], [1, 1], [0, 2], [1, 2]],
                 knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]]
         )
-        nur_el3 = splinepy.NURBS(
+        nur_el3 = c.splinepy.NURBS(
                 degrees=[1, 1],
                 control_points=[[1, 1], [2, 1], [1, 2], [2, 2]],
                 weights=[1, 1, 1, 1],
@@ -47,10 +47,23 @@ class gismoExportTest(c.unittest.TestCase):
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
 
+        # Init multipatch
+        multipatch = c.splinepy.multipatch
+
+        # Define some functions for boundary identification
+        def is_bottom(x):
+                return x[:, 0] < 0.01
+
+        def is_top(x):
+                return x[:, 0] > 1.99
+
+        # Add boundary
+        multipatch.add_boundary_with_function(is_bottom)
+        multipatch.add_boundary_with_function(is_top)
+
         # Test Output
-        # @todo
         with tempfile.NamedTemporaryFile() as tmpf:
-            splinepy.io.gismo.export(
+            c.splinepy.io.gismo.export(
                     "test2D.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
@@ -58,14 +71,14 @@ class gismoExportTest(c.unittest.TestCase):
                 self.assertTrue(_gismo_export_ref_2d == tmp_read.readlines())
 
         # Test Also 3D Meshes
-        bez_el0 = splinepy.Bezier(
+        bez_el0 = c.splinepy.Bezier(
                 degrees=[1, 1, 1],
                 control_points=[
                         [0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 0, 1],
                         [1, 0, 1], [0, 1, 1], [1, 1, 1]
                 ]
         )
-        rbz_el1 = splinepy.RationalBezier(
+        rbz_el1 = c.splinepy.RationalBezier(
                 degrees=[1, 1, 1],
                 control_points=[
                         [1, 0, 0], [2, 0, 0], [1, 1, 0], [2, 1, 0], [1, 0, 1],
@@ -73,7 +86,7 @@ class gismoExportTest(c.unittest.TestCase):
                 ],
                 weights=[1] * 8
         )
-        bsp_el2 = splinepy.BSpline(
+        bsp_el2 = c.splinepy.BSpline(
                 degrees=[1, 1, 1],
                 control_points=[
                         [0, 1, 0], [1, 1, 0], [0, 2, 0], [1, 2, 0], [0, 1, 1],
@@ -81,7 +94,7 @@ class gismoExportTest(c.unittest.TestCase):
                 ],
                 knot_vectors=[[0, 0, 1, 1]] * 3
         )
-        nur_el3 = splinepy.NURBS(
+        nur_el3 = c.splinepy.NURBS(
                 degrees=[1, 1, 1],
                 control_points=[
                         [1, 1, 0], [2, 1, 0], [1, 2, 0], [2, 2, 0], [1, 1, 1],
@@ -101,7 +114,7 @@ class gismoExportTest(c.unittest.TestCase):
 
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
-            splinepy.io.gismo.export(
+            c.splinepy.io.gismo.export(
                     "test.xml", [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 

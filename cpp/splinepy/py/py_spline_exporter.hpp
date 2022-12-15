@@ -706,9 +706,14 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
     break;
   }
 
+#ifdef SPLINEPY_MORE
   splinepy::utils::PrintAndThrowError(
-      "Only implemented for <1-4> : <1-4> dimensions");
-  // dummy statement for compile
+      "Only implemented for <2-10> : <2-10> dimensions");
+#else
+  splinepy::utils::PrintAndThrowError(
+      "Only implemented for <1-3> : <1-3> dimensions");
+#endif
+  // dummy statement for compiler
   return py::array_t<int>();
 }
 

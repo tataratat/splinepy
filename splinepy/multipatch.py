@@ -4,10 +4,11 @@ Multipatch Spline Configuration
 
 import numpy as np
 
-from splinepy.utils import log
+from splinepy._base import SplinepyBase
+from splinepy.settings import TOLERANCE
 
 
-class Multipatch():
+class Multipatch(SplinepyBase):
     """
     System of patches to store information such as boundaries and
     interfaces
@@ -35,7 +36,7 @@ class Multipatch():
         self._splines = None
         self._boundaries = None
 
-        log.debug("Instantiated Multipatch object")
+        self._logd("Instantiated Multipatch object")
 
         # Set properties
         if splines is not None:
@@ -96,7 +97,7 @@ class Multipatch():
             raise ValueError("Connectivity set for unknown list of splines.")
 
         if self._interfaces is None:
-            log.debug("No interfaces available, calculating on the fly")
+            self._logd("No interfaces available, calculating on the fly")
             self.determine_interfaces()
         return self._interfaces
 
@@ -143,9 +144,9 @@ class Multipatch():
 
         boundary_list = []
         for i_bid in range(-1, max_BID, -1):
-            log.debug(f"Extracting boundary with ID {abs(i_bid)}")
+            self._logd(f"Extracting boundary with ID {abs(i_bid)}")
             boundary_list.append(np.where(self.interfaces == i_bid))
-            log.debug(
+            self._logd(
                     f"Found {boundary_list[-1][1].size} boundary "
                     f"elements on boundary {abs(i_bid)}"
             )
@@ -179,14 +180,14 @@ class Multipatch():
 
         if boundary_id is None:
             new_BID = max_BID - 1
-            log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+            self._logd(f"Creating new boundary with ID {abs(new_BID)}")
         else:
             # Make sure its negative
             new_BID = -abs(int(boundary_id))
             if new_BID < max_BID:
-                log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+                self._logd(f"Creating new boundary with ID {abs(new_BID)}")
             else:
-                log.debug(
+                self._logd(
                         "Adding new boundary elements to existing "
                         f"boundary new boundary with ID {abs(new_BID)}"
                 )
@@ -237,7 +238,7 @@ class Multipatch():
         talk to at @j042
         """
         # If spline list is empty will throw excetion
-        return np.vstack([s.evaluate_boundary_centers for s in self.splines])
+        return np.vstack([s.boundary_centers for s in self.splines])
 
     def determine_interfaces(self):
         """
@@ -251,18 +252,20 @@ class Multipatch():
 
         Returns
         -------
-        None
+        interfaces : array-like (n_patch x n_boundaries)
         """
         from splinepy.splinepy_core import interfaces_from_boundary_centers
         from splinepy import settings
 
-        # Using the property instead of the the member, all necessery
+        # Using the setter instead of the the member, all necessery
         # checks will be performed
         self.interfaces = interfaces_from_boundary_centers(
                 self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
         )
 
-        log.debug("Successfully provided new interfaces using uff algorithm")
+        self._logd("Successfully provided new interfaces using uff algorithm")
+
+        return self.interfaces
 
     def add_boundary_with_function(
             self,
@@ -294,14 +297,14 @@ class Multipatch():
 
         if boundary_id is None:
             new_BID = max_BID - 1
-            log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+            self._logd(f"Creating new boundary with ID {abs(new_BID)}")
         else:
             # Make sure its negative
             new_BID = -abs(int(boundary_id))
             if new_BID < max_BID:
-                log.debug(f"Creating new boundary with ID {abs(new_BID)}")
+                self._logd(f"Creating new boundary with ID {abs(new_BID)}")
             else:
-                log.debug(
+                self._logd(
                         "Adding new boundary elements to existing "
                         f"boundary new boundary with ID {abs(new_BID)}"
                 )

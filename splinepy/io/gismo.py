@@ -107,7 +107,7 @@ def export(fname, multipatch=None):
                         con_spline_id_start[start_order] + index_offset,
                         con_face_id_start[start_order] + 1,
                         con_spline_id_end[end_order] + index_offset,
-                        con_face_id_end[end_order] +1 ,
+                        con_face_id_end[end_order] + 1 ,
                         # This is the orientation:
                         np.repeat(
                                 np.arange(multipatch.para_dim,
@@ -171,7 +171,7 @@ def export(fname, multipatch=None):
             )
 
         # Transform bezier types, as they are not supported in gismo
-        if spline.whatami.startswith("Bezier"):
+        if spline.name.startswith("Bezier"):
             type_name = 'BSpline'
             spline = BSpline(
                     **spline.todict(),
@@ -180,7 +180,7 @@ def export(fname, multipatch=None):
                             for a in spline.degrees
                     ]
             )
-        elif spline.whatami.startswith("RationalBezier"):
+        elif spline.name.startswith("RationalBezier"):
             type_name = 'Nurbs'
             spline = NURBS(
                     **spline.todict(),
@@ -189,9 +189,9 @@ def export(fname, multipatch=None):
                             for a in spline.degrees
                     ]
             )
-        elif spline.whatami.startswith("BSpline"):
+        elif spline.name.startswith("BSpline"):
             type_name = 'BSpline'
-        elif spline.whatami.startswith("NURBS"):
+        elif spline.name.startswith("NURBS"):
             type_name = 'Nurbs'
 
         # Start element definition
