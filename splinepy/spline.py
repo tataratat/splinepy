@@ -276,7 +276,8 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-            local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
+            local_indices,
+            np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
@@ -1191,8 +1192,7 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         self._logd(
                 f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-                "Results: ",
-                f"{[meaningful(r) for r in reduced]}."
+                "Results: ", f"{[meaningful(r) for r in reduced]}."
         )
 
         if any(reduced):
@@ -1201,28 +1201,33 @@ class Spline(SplinepyBase, core.CoreSpline):
         return reduced
 
     @_new_core_if_modified
-    def extract_boundary(self, plane_normal_axis, extrema):
+    def extract_boundaries(self, boundary_ids=None):
         """
         Extracts boundary spline.
+
+        The boundaries deducted from the parametric axis which is normal to the
+        boundary (j), if the boundary is at parametric axis position x_j=x_jmin
+        the corresponding boundary is 2*j, else at parametric axis position
+        x_j=x_jmin the boundary is 2*j+1
 
 
         Parameters
         -----------
-        plane_normal_axis: int
-          Axis normal to boundary spline
-        extrema: int
-          If extrema is bigger than zero, extracts boundary at the greater end
-          of the axis, else first control mesh hyperplane.
-
+        boundary_ids: array-like
+          Boundary IDs with the enumeration described above
 
         Returns
         -------
         boundary_spline: type(self)
           boundary spline, which has one less para_dim
         """
-        return type(self)(
-                spline=core.extract_boundary(self, plane_normal_axis, extrema)
-        )
+        if boundary_ids is None:
+            boundary_ids = np.array([], dtype=np.int32)
+
+        return [
+                type(self)(spline=c)
+                for c in core.extract_boundaries(self, boundary_ids)
+        ]
 
     @_new_core_if_modified
     def export(self, fname):

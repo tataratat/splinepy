@@ -149,6 +149,574 @@ void ExportVtk(std::string fname,
   splinelib::sources::input_output::vtk::Sample(sl_io_splines, fname, sl_rps);
 }
 
+template<std::size_t parametric_dimension, std::size_t physical_dimension>
+py::array_t<int>
+InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
+                               const double& tolerance) {
+  // Auxiliary Function to reduce total number of declarations
+  using PhysicalPointType = bezman::Point<physical_dimension, double>;
+
+  // Determine data
+  double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
+  const std::size_t number_of_center_points =
+      py_center_vertices.request().shape[0];
+  const std::size_t problem_dimension = py_center_vertices.request().shape[1];
+  constexpr std::size_t n_faces_per_patch = parametric_dimension * 2;
+
+  // Assertions
+  assert(number_of_center_points > 0);
+  assert(problem_dimension > 0);
+  assert(number_of_center_points % n_faces_per_patch == 0);
+
+  // Convert points into bezman points
+  std::vector<PhysicalPointType> center_points;
+
+  PhysicalPointType minimumVertex{}, maximumVertex{};
+  // Assign first vertex to both min and max
+  for (std::size_t i_dim{}; i_dim < physical_dimension; i_dim++) {
+    minimumVertex[i_dim] = centers_ptr[i_dim];
+    maximumVertex[i_dim] = centers_ptr[i_dim];
+  }
+
+  center_points.reserve(number_of_center_points);
+  for (std::size_t i_point{}; i_point < number_of_center_points; i_point++) {
+    PhysicalPointType point{};
+    for (std::size_t i_dim{}; i_dim < physical_dimension; i_dim++) {
+      point[i_dim] = centers_ptr[i_point * problem_dimension + i_dim];
+      minimumVertex[i_dim] =
+          std::min(minimumVertex[i_dim],
+                   centers_ptr[i_point * problem_dimension + i_dim]);
+      maximumVertex[i_dim] =
+          std::max(maximumVertex[i_dim],
+                   centers_ptr[i_point * problem_dimension + i_dim]);
+    }
+    center_points.push_back(point);
+  }
+
+  // Hand to bezman for connectivity
+  const auto connectivity =
+      bezman::utils::algorithms::FindConnectivityFromCenters<
+          parametric_dimension,
+          false>(center_points, maximumVertex - minimumVertex, tolerance);
+
+  // Transform points into an array
+  const int number_of_patches = connectivity.size();
+  py::array_t<int> py_connectivity =
+      py::array_t<int>(number_of_patches * n_faces_per_patch);
+  py_connectivity.resize({(int) number_of_patches, (int) n_faces_per_patch});
+  int* py_connectivity_ptr = static_cast<int*>(py_connectivity.request().ptr);
+  for (std::size_t i_patch{}; i_patch < connectivity.size(); i_patch++) {
+    for (std::size_t i_face{}; i_face < n_faces_per_patch; i_face++) {
+      py_connectivity_ptr[i_patch * n_faces_per_patch + i_face] =
+          static_cast<int>(connectivity[i_patch][i_face]);
+    }
+  }
+
+  return py_connectivity;
+}
+
+/**
+ * @brief  Determines the Connectivity of spline patches
+ *
+ * @param py_center_vertices  Vertices in the center of the boundaries
+ * @param tolerance tolerance between two neighboring face centers for them
+ * to be fused
+ * @param parametric_dimension Parametric dimension of the spline grid
+ * @return py::array_t<int> connectivity
+ */
+py::array_t<int>
+InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
+                              const double& tolerance,
+                              const int& parametric_dimension) {
+  // Transform points from pyarray into bezman point vector
+  double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
+  const std::size_t problem_dimension = py_center_vertices.request().shape[1];
+  const std::size_t number_of_center_points =
+      py_center_vertices.request().shape[0];
+
+  // Check input data
+  assert(0 == (number_of_center_points % (2 * parametric_dimension)));
+
+  // Convert points into bezman type points
+  switch (parametric_dimension) {
+  case 1:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+#ifdef SPLINEPY_MORE
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 1uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 1uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+#endif
+    default:
+      break;
+    }
+    break;
+  case 2:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+#ifdef SPLINEPY_MORE
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 2uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 2uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+#endif
+
+    default:
+      break;
+    }
+    break;
+  case 3:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+#ifdef SPLINEPY_MORE
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 3uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 3uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+#endif
+
+    default:
+      break;
+    }
+    break;
+#ifdef SPLINEPY_MORE
+  case 4:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 4uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 4uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 5:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 5uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 5uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 6:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 6uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 6uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 7:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 7uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 7uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 8:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 8uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 8uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 9:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 9uL>(py_center_vertices,
+                                                      tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 9uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    default:
+      break;
+    }
+  case 10:
+    switch (problem_dimension) {
+    case 1:
+      return InterfacesFromBoundaryCenters_<1uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 2:
+      return InterfacesFromBoundaryCenters_<2uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 3:
+      return InterfacesFromBoundaryCenters_<3uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 4:
+      return InterfacesFromBoundaryCenters_<4uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 5:
+      return InterfacesFromBoundaryCenters_<5uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 6:
+      return InterfacesFromBoundaryCenters_<6uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 7:
+      return InterfacesFromBoundaryCenters_<7uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 8:
+      return InterfacesFromBoundaryCenters_<8uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 9:
+      return InterfacesFromBoundaryCenters_<9uL, 10uL>(py_center_vertices,
+                                                       tolerance);
+      break;
+    case 10:
+      return InterfacesFromBoundaryCenters_<10uL, 10uL>(py_center_vertices,
+                                                        tolerance);
+      break;
+    default:
+      break;
+    }
+#endif
+  default:
+    break;
+  }
+
+#ifdef SPLINEPY_MORE
+  splinepy::utils::PrintAndThrowError(
+      "Only implemented for <2-10> : <2-10> dimensions");
+#else
+  splinepy::utils::PrintAndThrowError(
+      "Only implemented for <1-3> : <1-3> dimensions");
+#endif
+  // dummy statement for compiler
+  return py::array_t<int>();
+}
+
 /**
  * @brief Retrieve information related to mfem export
  *
@@ -199,29 +767,28 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
     // Vertex_ids :       std::vector<std::size_t>
     // edge_information : std::vector<std::array<std::size_t,3>>
     // boundaries :       std::vector<std::array<std::size_t,2>>
-    const auto [connectivity,
-                vertex_ids,
-                edge_information,
-                boundaries] = [&]() {
-      try {
-        return bezman::utils::algorithms::ExtractMFEMInformation(
-            corner_vertices,
-            maxvertex - minvertex,
-            tolerance);
-      } catch (...) {
-        is_structured = false;
-        return std::make_tuple(
-            // Connectivity
-            bezman::utils::algorithms::FindConnectivity(corner_vertices,
-                                                        maxvertex - minvertex,
-                                                        tolerance,
-                                                        false),
-            // All others initialized empty
-            std::vector<std::size_t>{},
-            std::vector<std::array<std::size_t, 3>>{},
-            std::vector<std::array<std::size_t, 2>>{});
-      }
-    }();
+    const auto [connectivity, vertex_ids, edge_information, boundaries] =
+        [&]() {
+          try {
+            return bezman::utils::algorithms::ExtractMFEMInformation(
+                corner_vertices,
+                maxvertex - minvertex,
+                tolerance);
+          } catch (...) {
+            is_structured = false;
+            return std::make_tuple(
+                // Connectivity
+                bezman::utils::algorithms::FindConnectivityFromCorners<2>(
+                    corner_vertices,
+                    maxvertex - minvertex,
+                    tolerance,
+                    false),
+                // All others initialized empty
+                std::vector<std::size_t>{},
+                std::vector<std::array<std::size_t, 3>>{},
+                std::vector<std::array<std::size_t, 2>>{});
+          }
+        }();
 
     // -- Transform data to python format --
     // Connectivity
@@ -313,29 +880,28 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
     // Vertex_ids : std::vector<std::std::size_t>
     // edge_information : std::vector<std::array<std::size_t,3>
     // boundaries : std::vector<std::array<std::size_t,4>
-    const auto [connectivity,
-                vertex_ids,
-                edge_information,
-                boundaries] = [&]() {
-      try {
-        return bezman::utils::algorithms::ExtractMFEMInformation(
-            corner_vertices,
-            maxvertex - minvertex,
-            tolerance);
-      } catch (...) {
-        is_structured = false;
-        return std::make_tuple(
-            // Connectivity
-            bezman::utils::algorithms::FindConnectivity(corner_vertices,
-                                                        maxvertex - minvertex,
-                                                        tolerance,
-                                                        false),
-            // All others initialized empty
-            std::vector<std::size_t>{},
-            std::vector<std::array<std::size_t, 3>>{},
-            std::vector<std::array<std::size_t, 4>>{});
-      }
-    }();
+    const auto [connectivity, vertex_ids, edge_information, boundaries] =
+        [&]() {
+          try {
+            return bezman::utils::algorithms::ExtractMFEMInformation(
+                corner_vertices,
+                maxvertex - minvertex,
+                tolerance);
+          } catch (...) {
+            is_structured = false;
+            return std::make_tuple(
+                // Connectivity
+                bezman::utils::algorithms::FindConnectivityFromCorners<3>(
+                    corner_vertices,
+                    maxvertex - minvertex,
+                    tolerance,
+                    false),
+                // All others initialized empty
+                std::vector<std::size_t>{},
+                std::vector<std::array<std::size_t, 3>>{},
+                std::vector<std::array<std::size_t, 4>>{});
+          }
+        }();
 
     // -- Transform data to python format --
     // Connectivity

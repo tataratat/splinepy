@@ -373,6 +373,42 @@ public:
     return cmr;
   }
 
+  /// @brief Evaluate Splines at boundary face centers
+  /// @return numpy array with results
+  py::array_t<double> EvaluateBoundaryCenters() const {
+    // prepare output
+    const int n_faces = 2 * para_dim_;
+    std::vector<double> queries(n_faces * para_dim_);
+    py::array_t<double> face_centers(n_faces * dim_);
+    double* face_centers_ptr = static_cast<double*>(face_centers.request().ptr);
+
+    // Get parametric bounds
+    // They are given back in the order [min_0, min_1,...,max_0, max_1...]
+    std::vector<double> bounds(para_dim_ * 2);
+    Core()->SplinepyParametricBounds(bounds.data());
+
+    // Set parametric coordinates
+    for (int i{}; i < para_dim_; i++) {
+      for (int j{}; j < para_dim_; j++) {
+        if (i == j) {
+          queries[2 * i * para_dim_ + j] = bounds[j];
+          queries[(2 * i + 1) * para_dim_ + j] = bounds[j + para_dim_];
+        } else {
+          queries[2 * i * para_dim_ + j] =
+              .5 * (bounds[j] + bounds[j + para_dim_]);
+          queries[(2 * i + 1) * para_dim_ + j] = queries[2 * i * para_dim_ + j];
+        }
+      }
+    }
+    for (int i{}; i < n_faces; ++i) {
+      Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
+                               &face_centers_ptr[i * dim_]);
+    }
+
+    face_centers.resize({n_faces, dim_});
+    return face_centers;
+  }
+
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -814,11 +850,32 @@ inline py::list ExtractBezierPatches(const PySpline& spline) {
 }
 
 /// boundary spline extraction
-inline PySpline ExtractBoundary(const PySpline& spline,
-                                const int& boundary_normal_axis,
-                                const int& extrema) {
-  return PySpline(
-      spline.Core()->SplinepyExtractBoundary(boundary_normal_axis, extrema));
+inline py::list ExtractBoundaries(const PySpline& spline,
+                                  const py::array_t<int>& boundary_ids) {
+  // Init return value
+  py::list boundary_splines{};
+  const int n_boundaries = boundary_ids.size();
+  int* bid_ptr = static_cast<int*>(boundary_ids.request().ptr);
+  if (boundary_ids.size() == 0) {
+    for (int i{}; i < spline.para_dim_ * 2; ++i) {
+      boundary_splines.append(
+          PySpline(spline.Core()->SplinepyExtractBoundary(i)));
+    }
+  } else {
+    const int max_bid = spline.para_dim_ * 2 - 1;
+    for (int i{}; i < n_boundaries; ++i) {
+      const int& bid = bid_ptr[i];
+      if (bid < 0 || bid > max_bid) {
+        splinepy::utils::PrintAndThrowError("Requested Boundary ID :",
+                                            bid,
+                                            "exceeds admissible range.");
+      }
+      boundary_splines.append(
+          PySpline(spline.Core()->SplinepyExtractBoundary(bid_ptr[i])));
+    }
+  }
+
+  return boundary_splines;
 }
 
 /// extract a single physical dimension from a spline
@@ -928,7 +985,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-
+      .def_property_readonly("boundary_centers",
+                             &splinepy::py::PySpline::EvaluateBoundaryCenters)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
@@ -1010,11 +1068,10 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
   m.def("extract_bezier_patches",
         &splinepy::py::ExtractBezierPatches,
         py::arg("spline"));
-  m.def("extract_boundary",
-        &splinepy::py::ExtractBoundary,
+  m.def("extract_boundaries",
+        &splinepy::py::ExtractBoundaries,
         py::arg("spline"),
-        py::arg("boundary_normal_axis"),
-        py::arg("extrema"));
+        py::arg("boundary_ids"));
   m.def("extract_dim",
         &splinepy::py::ExtractDim,
         py::arg("spline"),

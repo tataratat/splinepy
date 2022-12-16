@@ -9,6 +9,11 @@ void init_exporter(py::module_& m) {
         &splinepy::py::RetrieveMfemInformation,
         py::arg("corner_vertices"),
         py::arg("tolerance"));
+  m.def("interfaces_from_boundary_centers",
+        &splinepy::py::InterfacesFromBoundaryCenters,
+        py::arg("face_center_vertices"),
+        py::arg("tolerance"),
+        py::arg("para_dim"));
   m.def("export_iges",
         &splinepy::py::ExportIges,
         py::arg("fname"),

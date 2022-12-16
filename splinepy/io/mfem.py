@@ -268,7 +268,11 @@ def mfem_index_mapping(
 
 
 def export_cartesian(
-        fname, spline_list, tolerance=None, boundary_functions=None
+        fname,
+        spline_list,
+        tolerance=None,
+        boundary_functions=None,
+        connectivity_only=False
 ):
     """
     Export list of bezier splines in mfem export.
@@ -283,6 +287,8 @@ def export_cartesian(
       tolerance to collapse two neighboring points
     boundary_functions : list(Callable)
       Functions that define boundaries
+    connectivity_only : bool
+      For use in other function, only retrieve connectivity
 
     Returns
     -------
@@ -374,6 +380,9 @@ def export_cartesian(
     (connectivity, vertex_ids, edges, boundaries,
      success) = retrieve_mfem_information(corner_vertices, tolerance)
 
+    if connectivity_only:
+        return connectivity
+
     boundary_ids = np.ones(boundaries.shape[0], dtype=int)
     if not len(boundary_functions) == 0:
         # Retrieve all boundary points (to minimize computations)
@@ -425,11 +434,11 @@ def export_cartesian(
         f.write(
                 '\n'.join(
                         f"{boundary_id} {boundary_type} "
-                        + ' '.join(str(id) for id in row) for row,
-                        boundary_id in zip(
-                                boundaries.reshape(-1, n_vertex_per_boundary
-                                                   ).tolist(),
-                                boundary_ids.tolist()
+                        + ' '.join(str(id)
+                                   for id in row)
+                        for row, boundary_id in zip(
+                                boundaries.reshape(-1, n_vertex_per_boundary).
+                                tolist(), boundary_ids.tolist()
                         )
                 )
         )
@@ -440,7 +449,8 @@ def export_cartesian(
         # Here currently all boudaries are set to 1
         f.write(
                 '\n'.join(
-                        ' '.join(str(id) for id in row)
+                        ' '.join(str(id)
+                                 for id in row)
                         for row in edges.reshape(-1, 3).tolist()
                 )
         )
@@ -472,7 +482,8 @@ def export_cartesian(
             if "weights" not in spline.required_properties:
                 f.write(
                         '\n'.join(
-                                (' '.join(str(x_i) for x_i in row) + " 1.0")
+                                (' '.join(str(x_i)
+                                          for x_i in row) + " 1.0")
                                 for row in spline.control_points.tolist()
                         ) + "\n\n"
                 )
