@@ -579,7 +579,7 @@ SplinepyBase::SplinepyExtractBoundary(const int& para_dim, const int& extrema) {
 }
 
 std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyExtractDim(const int& phys_dim) {
+SplinepyBase::SplinepyExtractDim(const int& phys_dim) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyExtractDim is not implemented for",
       SplinepyWhatAmI());
