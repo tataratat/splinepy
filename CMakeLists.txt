@@ -40,7 +40,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(SPLINEPY_WARNING_FLAGS
         -Wall -Wextra -Wmost -Wextra -Wpedantic -Wunreachable-code
         -Wshadow -Wfloat-equal -Weffc++ -Wno-unused-parameter
-        -Wno-unused-variable)
+        -Wno-unused-variable -Wzero-as-null-pointer-constant)
 else()
   message(WARNING
             "Unsupported compiler."
