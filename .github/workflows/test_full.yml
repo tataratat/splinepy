@@ -28,7 +28,7 @@ jobs:
       run: pip install numpy pytest
             
     - name: build splinepy linux
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-20.04'
       run: CC=clang-12 CXX=clang++-12 python3 setup.py install
 
     - name: build splinepy macos

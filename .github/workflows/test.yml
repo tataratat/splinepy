@@ -28,13 +28,13 @@ jobs:
       run: pip install numpy pytest
             
     - name: build splinepy linux - clang12, test
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-20.04'
       run: |
         CC=clang-12 CXX=clang++-12 python3 setup.py install --minimal
         pytest tests
 
     - name: build splinepy linux - gcc10, test
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-20.04'
       run: |
         CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal
         pytest tests
