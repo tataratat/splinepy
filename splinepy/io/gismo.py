@@ -23,6 +23,7 @@ def export(fname, multipatch=None):
     from splinepy.spline import Spline
     from splinepy import NURBS, BSpline
     from splinepy import Multipatch
+    from sys import version as python_version
 
     # First transform spline-data into a multipatch-data if required
     if issubclass(type(multipatch), Spline):
@@ -259,7 +260,10 @@ def export(fname, multipatch=None):
                 ]
         )
 
-    ET.indent(xml_data)
+    if int(python_version.split('.')[1]) >= 9:
+        # Pretty printing xml with indent only exists in version > 3.9
+        ET.indent(xml_data)
+
     file_content = ET.tostring(xml_data)
     with open(fname, "wb") as f:
         f.write(file_content)
