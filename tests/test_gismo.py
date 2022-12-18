@@ -173,6 +173,8 @@ class gismoExportTest(c.unittest.TestCase):
         """
         Test gismo export routine
         """
+        from sys import version as python_version
+
         # Define some splines
         bez_el0 = c.splinepy.Bezier(
                 degrees=[1, 1],
@@ -223,11 +225,18 @@ class gismoExportTest(c.unittest.TestCase):
             c.splinepy.io.gismo.export(tmpf.name, multipatch)
 
             with open(tmpf.name, "r") as tmp_read:
-                self.assertTrue(
-                        c.are_items_same(
-                                _gismo_export_ref_2d, tmp_read.readlines()
-                        )
-                )
+                if int(python_version.split('.')[1]) >= 9:
+                    self.assertTrue(
+                            c.are_items_same(
+                                    _gismo_export_ref_2d, tmp_read.readlines()
+                            )
+                    )
+                else:
+                    self.assertTrue(
+                            c.are_string_items_same(
+                                    _gismo_export_ref_2d, tmp_read.readlines()
+                            )
+                    )
 
         # Test Also 3D Meshes
         bez_el0 = c.splinepy.Bezier(
@@ -288,13 +297,19 @@ class gismoExportTest(c.unittest.TestCase):
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.gismo.export(tmpf.name, multipatch)
-
             with open(tmpf.name, "r") as tmp_read:
-                self.assertTrue(
-                        c.are_items_same(
-                                _gismo_export_ref_3d, tmp_read.readlines()
-                        )
-                )
+                if int(python_version.split('.')[1]) >= 9:
+                    self.assertTrue(
+                            c.are_items_same(
+                                    _gismo_export_ref_3d, tmp_read.readlines()
+                            )
+                    )
+                else:
+                    self.assertTrue(
+                            c.are_string_items_same(
+                                    _gismo_export_ref_3d, tmp_read.readlines()
+                            )
+                    )
 
 
 if __name__ == "__main__":

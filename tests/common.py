@@ -159,3 +159,12 @@ def are_items_same(a, b):
             all_same = False
 
     return all_same
+
+
+def are_string_items_same(a, b):
+    """returns True if items in a and b same, preceding and tailing whitespaces
+     are ignored and strings are joined"""
+
+    concat_a = ''.join(aa.strip() for aa in a)
+    concat_b = ''.join(bb.strip() for bb in b)
+    return (concat_a == concat_b)
