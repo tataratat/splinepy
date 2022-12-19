@@ -33,7 +33,7 @@ jobs:
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
-      run: python3 setup.py install
+      run: python3 setup.py develop
       
     - name: test
       run: pytest tests
