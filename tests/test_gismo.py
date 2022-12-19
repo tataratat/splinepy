@@ -409,8 +409,10 @@ class gismoExportTest(c.unittest.TestCase):
                     )
                 else:
                     self.assertTrue(
-                            c.are_string_items_same(
-                                    _gismo_export_ref_2d, tmp_read.readlines()
+                            c.are_stripped_lines_same(
+                                    _gismo_export_ref_2d,
+                                    tmp_read.readlines(),
+                                    True
                             )
                     )
 
@@ -482,8 +484,10 @@ class gismoExportTest(c.unittest.TestCase):
                     )
                 else:
                     self.assertTrue(
-                            c.are_string_items_same(
-                                    _gismo_export_ref_3d, tmp_read.readlines()
+                            c.are_stripped_lines_same(
+                                    _gismo_export_ref_3d,
+                                    tmp_read.readlines(),
+                                    True
                             )
                     )
 
