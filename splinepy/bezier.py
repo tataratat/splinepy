@@ -161,7 +161,8 @@ class BezierBase(spline.Spline):
         )
 
         return settings.NAME_TO_TYPE[composition_der.name](
-            spline=composition_der)
+                spline=composition_der
+        )
 
 
 class Bezier(BezierBase):

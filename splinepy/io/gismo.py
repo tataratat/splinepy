@@ -254,8 +254,7 @@ def export(fname, multipatch=None):
         )
         coords.text = '\n'.join(
                 [
-                        ' '.join([str(xx)
-                                  for xx in x])
+                        ' '.join([str(xx) for xx in x])
                         for x in spline.control_points
                 ]
         )
