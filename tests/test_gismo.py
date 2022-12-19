@@ -1,4 +1,5 @@
 import tempfile
+from sys import version as python_version
 try:
     from . import common as c
 except BaseException:
@@ -529,7 +530,12 @@ class gismoExportTest(c.unittest.TestCase):
         """
         Test gismo export routine
         """
-        from sys import version as python_version
+        if int(python_version.split('.')[1]) < 8:
+            c.splinepy.utils.log.info(
+                "gismo export is only tested here from python3.8+. "
+                f"Skipping test, because current version is: {python_version}"
+            )
+            return True
 
         # Define some splines
         bez_el0 = c.splinepy.Bezier(
