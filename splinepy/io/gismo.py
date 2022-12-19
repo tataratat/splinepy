@@ -1,10 +1,11 @@
 import xml.etree.ElementTree as ET
+
 import numpy as np
 
 from splinepy.utils.log import debug, warning
 
 
-def export(fname, multipatch=None):
+def export(fname, multipatch=None, indent=True):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
     patches are excluded as their respective non uniform counterpart
@@ -15,6 +16,8 @@ def export(fname, multipatch=None):
       name of the output file
     spline_list : multipatch (preferred)
       (list of) Spline-Types in splinepy format
+    indent: bool
+      Appends white spaces using xml.etree.ElementTree.indent, if possible.
 
     Returns
     -------
@@ -259,9 +262,16 @@ def export(fname, multipatch=None):
                 ]
         )
 
-    if int(python_version.split('.')[1]) >= 9:
+    if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
         ET.indent(xml_data)
+
+    elif int(python_version.split(".")[1]) < 9 and indent:
+        debug(
+                "Indented xml ouput is only supported from > python3.9.",
+                "Output will not be indented.",
+                f"Current python version: {python_version}"
+        )
 
     file_content = ET.tostring(xml_data)
     with open(fname, "wb") as f:
