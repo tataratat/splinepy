@@ -220,7 +220,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         fitted = cls(
                 **splinepy_core.interpolate_curve(
@@ -231,7 +233,7 @@ class BSpline(BSplineBase):
                 )
         )
 
-        utils.log.debug("BSpline curve interpolation complete. ")
+        cls._logd("BSpline curve interpolation complete. ")
 
         if save_query:
             fitted._fitting_queries = query_points
@@ -271,7 +273,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         results = splinepy_core.approximate_curve(
                 points=query_points,
@@ -280,11 +284,13 @@ class BSpline(BSplineBase):
                 centripetal=centripetal,
                 knot_vector=knot_vector,
         )
-        fitted = cls(**results)
-        res = results["residual"]
 
-        utils.log.debug("BSpline curve approximation complete. ")
-        utils.log.debug(f"  Approximation residual: {res}")
+        res = results.pop("residual")
+
+        fitted = cls(**results)
+
+        cls._logd("BSpline curve approximation complete. ")
+        cls._logd(f"  Approximation residual: {res}")
 
         if save_query:
             fitted._fitting_queries = query_points
@@ -300,7 +306,7 @@ class BSpline(BSplineBase):
             degree_u,
             degree_v,
             centripetal=True,
-            reorganize=True,
+            reorganize=False,
             save_query=True,
     ):
         """
@@ -326,7 +332,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         fitted = cls(
                 **splinepy_core.interpolate_surface(
@@ -339,7 +347,7 @@ class BSpline(BSplineBase):
                 )
         )
 
-        utils.log._logd("BSpline surface interpolation complete. ")
+        cls._logd("BSpline surface interpolation complete. ")
 
         if save_query:
             fitted._fitting_queries = query_points

@@ -15,7 +15,7 @@ from splinepy import splinepy_core as core
 from splinepy._base import SplinepyBase
 
 
-class RequiredProperties:
+class RequiredProperties(SplinepyBase):
     """
     Helper class to hold required properties of each spline.
     """
@@ -446,16 +446,18 @@ class Spline(SplinepyBase, core.CoreSpline):
             # depends on the use case, here could be a place to copy _data
 
         else:
-            # warn if there are too many keywords
-            kset = set(kwargs.keys())
             # do they at least contain minimal set of keywards?
+            kset = set(kwargs.keys())
             if not RequiredProperties.intersection().issubset(kset):
                 raise RuntimeError(
                         f"Given keyword arguments ({kwargs}) don't contain"
                         "minimal set of keywords, "
                         f"{RequiredProperties.intersection()}."
                 )
-            super().__init__(**kwargs)
+            # we will call new_core to make sure all the array values are
+            # contiguous
+            super().__init__()  # alloc
+            self.new_core(**kwargs)
 
         # we are here because this spline is successfully initialized
         # get properties
@@ -610,8 +612,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         # hidden keyword to hint if we need to sync spline after new_core call
         properties_round_trip = kwargs.get("properties_round_trip", True)
 
-        # let's remove None valued items
-        kwargs = utils.data.without_none_values(kwargs)
+        # let's remove None valued items and make values contiguous array
+        kwargs = utils.data.enforce_contiguous_values(kwargs)
 
         # Spline, you do whatever
         if type(self).__qualname__ == "Spline":
@@ -973,7 +975,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Evaluating spline")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().evaluate(
                 queries,
@@ -1021,8 +1023,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Evaluating derivatives of the spline")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
-        orders = np.ascontiguousarray(orders, dtype="int32")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().derivative(
                 queries=queries,
@@ -1046,7 +1048,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions")
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().basis_and_support(
                 queries=queries,
@@ -1071,8 +1073,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         supports: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis function derivatives")
-        queries = np.ascontiguousarray(queries, dtype="float64")
-        orders = np.ascontiguousarray(orders, dtype="int32")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().basis_deriative_and_support(
                 queries=queries,
@@ -1132,7 +1134,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Searching for nearest parametric coord")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         # so long, so-long-varname
         igsr = initial_guess_sample_resolutions

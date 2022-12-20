@@ -179,7 +179,7 @@ def are_stripped_lines_same(a, b, ignore_order=False):
 
         # give one more chance if ignore_order
         if not this_is_same and ignore_order:
-            print(f"  checking again, while ignoring word order:")
+            print("  checking again, while ignoring word order:")
 
             splitted_a, splitted_b = stripped_a.split(), stripped_b.split()
 
