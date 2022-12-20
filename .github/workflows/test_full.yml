@@ -12,8 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.9]
-        os: [ubuntu-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
+        os: [ubuntu-20.04, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -28,12 +28,12 @@ jobs:
       run: pip install numpy pytest
             
     - name: build splinepy linux
-      if: matrix.os == 'ubuntu-latest'
-      run: CC=clang-12 CXX=clang++-12 python3 setup.py install
+      if: matrix.os == 'ubuntu-20.04'
+      run: CC=gcc-10 CXX=g++-10 python3 setup.py install
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
-      run: python3 setup.py install
+      run: python3 setup.py develop
       
     - name: test
       run: pytest tests

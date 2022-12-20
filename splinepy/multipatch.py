@@ -260,7 +260,9 @@ class Multipatch(SplinepyBase):
         # Using the setter instead of the the member, all necessery
         # checks will be performed
         self.interfaces = interfaces_from_boundary_centers(
-                self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
+                self.spline_boundary_centers,
+                settings.TOLERANCE,
+                self.para_dim
         )
 
         self._logd("Successfully provided new interfaces using uff algorithm")
