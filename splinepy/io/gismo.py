@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from sys import version as python_version
 
 import numpy as np
 
@@ -26,7 +27,6 @@ def export(fname, multipatch=None, indent=True):
     from splinepy.spline import Spline
     from splinepy import NURBS, BSpline
     from splinepy import Multipatch
-    from sys import version as python_version
 
     # First transform spline-data into a multipatch-data if required
     if issubclass(type(multipatch), Spline):
