@@ -204,7 +204,7 @@ def is_modified(array):
         raise TypeError(f"{array} is not trackable.")
 
 
-def enforce_contiguous(array):
+def enforce_contiguous(array, dtype=None):
     """
     If input is an instance / subclass of np.ndarray, this will check
     if they are configuous. If so, returns same object, else turns makes it
@@ -222,7 +222,7 @@ def enforce_contiguous(array):
         if array.flags["C_CONTIGUOUS"]:
             return array
         else:
-            return np.ascontiguous(array)
+            return np.ascontiguous(array, dtype=dtype)
 
     else:
         return array
