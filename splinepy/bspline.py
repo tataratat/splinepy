@@ -220,7 +220,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         fitted = cls(
                 **splinepy_core.interpolate_curve(
@@ -271,7 +273,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         results = splinepy_core.approximate_curve(
                 points=query_points,
@@ -302,7 +306,7 @@ class BSpline(BSplineBase):
             degree_u,
             degree_v,
             centripetal=True,
-            reorganize=True,
+            reorganize=False,
             save_query=True,
     ):
         """
@@ -328,7 +332,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = np.ascontiguousarray(query_points, dtype="float64")
+        query_points = utils.data.enforce_contiguous(
+                query_points, dtype="float64"
+        )
 
         fitted = cls(
                 **splinepy_core.interpolate_surface(

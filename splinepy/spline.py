@@ -975,7 +975,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Evaluating spline")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().evaluate(
                 queries,
@@ -1023,8 +1023,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Evaluating derivatives of the spline")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
-        orders = np.ascontiguousarray(orders, dtype="int32")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().derivative(
                 queries=queries,
@@ -1048,7 +1048,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions")
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().basis_and_support(
                 queries=queries,
@@ -1073,8 +1073,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         supports: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis function derivatives")
-        queries = np.ascontiguousarray(queries, dtype="float64")
-        orders = np.ascontiguousarray(orders, dtype="int32")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().basis_deriative_and_support(
                 queries=queries,
@@ -1134,7 +1134,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         self._logd("Searching for nearest parametric coord")
 
-        queries = np.ascontiguousarray(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         # so long, so-long-varname
         igsr = initial_guess_sample_resolutions
