@@ -280,8 +280,10 @@ class BSpline(BSplineBase):
                 centripetal=centripetal,
                 knot_vector=knot_vector,
         )
+
+        res = results.pop("residual")
+
         fitted = cls(**results)
-        res = results["residual"]
 
         utils.log.debug("BSpline curve approximation complete. ")
         utils.log.debug(f"  Approximation residual: {res}")
@@ -339,7 +341,7 @@ class BSpline(BSplineBase):
                 )
         )
 
-        utils.log._logd("BSpline surface interpolation complete. ")
+        utils.log.debug("BSpline surface interpolation complete. ")
 
         if save_query:
             fitted._fitting_queries = query_points
