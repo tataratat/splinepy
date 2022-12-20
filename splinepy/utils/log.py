@@ -8,7 +8,8 @@ import functools
 
 def configure(debug=False, logfile=None):
     """
-    Logging configurator.
+    Logging configurator. Can help you to set debug or info.
+    Calling this will keep only one logging.StreamHandler.
 
     Parameters
     -----------
@@ -22,11 +23,9 @@ def configure(debug=False, logfile=None):
     # logger
     logger = logging.getLogger("splinepy")
 
-    if debug:
-        logger.setLevel(logging.DEBUG)
-
-    else:
-        logger.setLevel(logging.INFO)
+    # level
+    level = logging.DEBUG if debug else logging.INFO
+    logger.setLevel(level)
 
     # format
     formatter = logging.Formatter(
@@ -34,11 +33,25 @@ def configure(debug=False, logfile=None):
     )
 
     # apply format using stream handler
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
+    # let's use only one stream handler so that calling configure multiple
+    # times won't duplicate printing.
+    new_handlers = list()
+    for i, h in enumerate(logger.handlers):
+        # we skip all the stream handler.
+        if isinstance(h, logging.StreamHandler):
+            continue
 
-    logger.addHandler(stream_handler)
+        # blindly keep other ones
+        else:
+            new_handlers.append(h)
+
+    # add new stream handler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(level)
+    stream_handler.setFormatter(formatter)
+    new_handlers.append(stream_handler)
+
+    logger.handlers = new_handlers
 
     # output logs
     if logfile is not None:
