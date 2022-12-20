@@ -15,7 +15,7 @@ from splinepy import splinepy_core as core
 from splinepy._base import SplinepyBase
 
 
-class RequiredProperties:
+class RequiredProperties(SplinepyBase):
     """
     Helper class to hold required properties of each spline.
     """
