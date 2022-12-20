@@ -446,16 +446,18 @@ class Spline(SplinepyBase, core.CoreSpline):
             # depends on the use case, here could be a place to copy _data
 
         else:
-            # warn if there are too many keywords
-            kset = set(kwargs.keys())
             # do they at least contain minimal set of keywards?
+            kset = set(kwargs.keys())
             if not RequiredProperties.intersection().issubset(kset):
                 raise RuntimeError(
                         f"Given keyword arguments ({kwargs}) don't contain"
                         "minimal set of keywords, "
                         f"{RequiredProperties.intersection()}."
                 )
-            super().__init__(**kwargs)
+            # we will call new_core to make sure all the array values are
+            # contiguous
+            super().__init__() # alloc
+            self.new_core(**kwargs)
 
         # we are here because this spline is successfully initialized
         # get properties
@@ -610,8 +612,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         # hidden keyword to hint if we need to sync spline after new_core call
         properties_round_trip = kwargs.get("properties_round_trip", True)
 
-        # let's remove None valued items
-        kwargs = utils.data.without_none_values(kwargs)
+        # let's remove None valued items and make values contiguous array
+        kwargs = utils.data.enforce_contiguous_values(kwargs)
 
         # Spline, you do whatever
         if type(self).__qualname__ == "Spline":

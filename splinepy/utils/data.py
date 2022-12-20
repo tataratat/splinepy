@@ -204,9 +204,35 @@ def is_modified(array):
         raise TypeError(f"{array} is not trackable.")
 
 
-def without_none_values(dict_):
+def enforce_contiguous(array):
     """
-    Returns a new dict without None value items.
+    If input is an instance / subclass of np.ndarray, this will check
+    if they are configuous. If so, returns same object, else turns makes it
+    contiguous and returns.
+
+    Parameters
+    ----------
+    array: array-like
+
+    Returns
+    -------
+    contiguous_array: array-like
+    """
+    if isinstance(array, np.ndarray):
+        if array.flags["C_CONTIGUOUS"]:
+            return array
+        else:
+            return np.ascontiguous(array)
+
+    else:
+        return array
+
+
+def enforce_contiguous_values(dict_):
+    """
+    Returns a new dict where values are contiguous. If the value is
+    an array, enforces contiguous elements for one recursive level.
+    This also removes None values.
 
     Parameters
     ----------
@@ -214,11 +240,24 @@ def without_none_values(dict_):
 
     Returns
     -------
-    dict_without_none: dict
+    dict_with_contiguous_values: dict
     """
-    dict_without_none = dict()
+    dict_with_contiguous = dict()
     for key, value in dict_.items():
-        if value is not None:
-            dict_without_none[key] = value
+        # most likely will be asking about np.ndarray
+        if isinstance(value,  np.ndarray):
+            value = enforce_contiguous(value)
 
-    return dict_without_none
+        # or, list. only check if the first element is np.ndarray
+        elif isinstance(value, list):
+            if isinstance(value[0], np.ndarray):
+                value = [enforce_contiguous(v) for v in value]
+
+        # abandon Nones
+        elif value is None:
+            continue
+
+        # set item
+        dict_with_contiguous[key] = value
+
+    return dict_with_contiguous
