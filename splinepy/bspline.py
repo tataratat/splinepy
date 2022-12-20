@@ -233,7 +233,7 @@ class BSpline(BSplineBase):
                 )
         )
 
-        utils.log.debug("BSpline curve interpolation complete. ")
+        cls._logd("BSpline curve interpolation complete. ")
 
         if save_query:
             fitted._fitting_queries = query_points
@@ -289,8 +289,8 @@ class BSpline(BSplineBase):
 
         fitted = cls(**results)
 
-        utils.log.debug("BSpline curve approximation complete. ")
-        utils.log.debug(f"  Approximation residual: {res}")
+        cls._logd("BSpline curve approximation complete. ")
+        cls._logd(f"  Approximation residual: {res}")
 
         if save_query:
             fitted._fitting_queries = query_points
@@ -347,7 +347,7 @@ class BSpline(BSplineBase):
                 )
         )
 
-        utils.log.debug("BSpline surface interpolation complete. ")
+        cls._logd("BSpline surface interpolation complete. ")
 
         if save_query:
             fitted._fitting_queries = query_points
