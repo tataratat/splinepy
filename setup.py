@@ -224,7 +224,7 @@ setup(
         name='splinepy',
         version=version,
         author='Jaewook Lee',
-        author_email='jlee@ilsb.tuwien.ac.at',
+        author_email='jaewooklee042@gmail.com',
         description="Python N-Dimensional Bezier, RationalBezier, "
                 "BSpline and NURBS library with C++ Backend.",
         long_description=long_description,
@@ -246,6 +246,8 @@ setup(
                 'Programming Language :: Python :: 3.7',
                 'Programming Language :: Python :: 3.8',
                 'Programming Language :: Python :: 3.9',
+                'Programming Language :: Python :: 3.10',
+                'Programming Language :: Python :: 3.11',
                 'Natural Language :: English',
                 'Topic :: Scientific/Engineering',
         ],
