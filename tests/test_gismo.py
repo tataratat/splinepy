@@ -532,8 +532,9 @@ class gismoExportTest(c.unittest.TestCase):
         """
         if int(python_version.split('.')[1]) < 8:
             c.splinepy.utils.log.info(
-                "gismo export is only tested here from python3.8+. "
-                f"Skipping test, because current version is: {python_version}"
+                    "gismo export is only tested here from python3.8+. "
+                    "Skipping test, because current version is: "
+                    f"{python_version}"
             )
             return True
 

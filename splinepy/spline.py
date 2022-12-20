@@ -456,7 +456,7 @@ class Spline(SplinepyBase, core.CoreSpline):
                 )
             # we will call new_core to make sure all the array values are
             # contiguous
-            super().__init__() # alloc
+            super().__init__()  # alloc
             self.new_core(**kwargs)
 
         # we are here because this spline is successfully initialized

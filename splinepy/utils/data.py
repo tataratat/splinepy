@@ -245,7 +245,7 @@ def enforce_contiguous_values(dict_):
     dict_with_contiguous = dict()
     for key, value in dict_.items():
         # most likely will be asking about np.ndarray
-        if isinstance(value,  np.ndarray):
+        if isinstance(value, np.ndarray):
             value = enforce_contiguous(value)
 
         # or, list. only check if the first element is np.ndarray
