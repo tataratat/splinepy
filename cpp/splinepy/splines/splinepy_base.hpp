@@ -11,6 +11,9 @@ class SplinepyBase {
 public:
   /// default ctor
   SplinepyBase() = default;
+  /// 
+  virtual ~SplinepyBase() {};
+
 
   /// Dynamically create correct type of spline based on input.
   /// Returned as shared pointer of SplinepyBase
