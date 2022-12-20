@@ -240,7 +240,7 @@ def enforce_contiguous_values(dict_):
 
     Returns
     -------
-    dict_with_contiguous_values: dict
+    dict_with_contiguous: dict
     """
     dict_with_contiguous = dict()
     for key, value in dict_.items():
