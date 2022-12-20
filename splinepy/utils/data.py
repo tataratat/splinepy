@@ -222,7 +222,7 @@ def enforce_contiguous(array, dtype=None):
         if array.flags["C_CONTIGUOUS"]:
             return array
         else:
-            return np.ascontiguous(array, dtype=dtype)
+            return np.ascontiguousarray(array, dtype=dtype)
 
     else:
         return array
