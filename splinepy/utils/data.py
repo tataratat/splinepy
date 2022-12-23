@@ -218,14 +218,12 @@ def enforce_contiguous(array, dtype=None):
     -------
     contiguous_array: array-like
     """
-    if isinstance(array, np.ndarray):
+    if issubclass(type(array), np.ndarray):
         if array.flags["C_CONTIGUOUS"]:
-            return array
-        else:
-            return np.ascontiguousarray(array, dtype=dtype)
+            if array.dtype is dtype:
+                return array
 
-    else:
-        return array
+    return np.ascontiguousarray(array, dtype=dtype)
 
 
 def enforce_contiguous_values(dict_):
