@@ -12,8 +12,7 @@ class ProximityTest(c.unittest.TestCase):
         so excluded from test.
         """
         for spline in (
-                c.splinepy.BSpline(**c.b2P2D),
-                c.splinepy.NURBS(**c.n2P2D),
+                c.splinepy.BSpline(**c.b2P2D), c.splinepy.NURBS(**c.n2P2D),
                 c.splinepy.Bezier(**c.z2P2D),
                 c.splinepy.RationalBezier(**c.r2P2D)
         ):
