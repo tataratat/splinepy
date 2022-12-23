@@ -116,8 +116,7 @@ class Multipatch(SplinepyBase):
             raise ValueError(
                     "Connectivity must be stored in a numpy 2D array."
             )
-        if con.dtype is not np.int32:
-            con = con.astype(np.int32)
+        con = utils.data.enforce_contiguous(con, np.int32)
 
         # One boundary for min and max for each parametric dimension
         n_boundaries_per_spline = self.splines[0].para_dim * 2
