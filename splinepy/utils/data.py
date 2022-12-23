@@ -219,13 +219,14 @@ def enforce_contiguous(array, dtype=None):
     contiguous_array: array-like
     """
     if isinstance(array, np.ndarray):
-        if array.flags["C_CONTIGUOUS"]:
+        if (
+                array.flags["C_CONTIGUOUS"]
+                and (dtype is None or dtype is array.dtype)
+        ):
             return array
-        else:
-            return np.ascontiguousarray(array, dtype=dtype)
+        return np.ascontiguousarray(array, dtype=dtype)
 
-    else:
-        return array
+    return array
 
 
 def enforce_contiguous_values(dict_):

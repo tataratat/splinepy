@@ -6,6 +6,7 @@ import numpy as np
 
 from splinepy._base import SplinepyBase
 from splinepy.settings import TOLERANCE
+from splinepy.utils.data import enforce_contiguous
 
 
 class Multipatch(SplinepyBase):
@@ -116,6 +117,7 @@ class Multipatch(SplinepyBase):
             raise ValueError(
                     "Connectivity must be stored in a numpy 2D array."
             )
+        con = enforce_contiguous(con, np.int32)
 
         # One boundary for min and max for each parametric dimension
         n_boundaries_per_spline = self.splines[0].para_dim * 2
@@ -260,9 +262,7 @@ class Multipatch(SplinepyBase):
         # Using the setter instead of the the member, all necessery
         # checks will be performed
         self.interfaces = interfaces_from_boundary_centers(
-                self.spline_boundary_centers,
-                settings.TOLERANCE,
-                self.para_dim
+                self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
         )
 
         self._logd("Successfully provided new interfaces using uff algorithm")

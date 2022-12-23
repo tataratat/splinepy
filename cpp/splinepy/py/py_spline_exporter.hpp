@@ -160,12 +160,12 @@ InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
   double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
   const std::size_t number_of_center_points =
       py_center_vertices.request().shape[0];
-  const std::size_t problem_dimension = py_center_vertices.request().shape[1];
+  const std::size_t physical_dimension_ = py_center_vertices.request().shape[1];
   constexpr std::size_t n_faces_per_patch = parametric_dimension * 2;
 
   // Assertions
   assert(number_of_center_points > 0);
-  assert(problem_dimension > 0);
+  assert(physical_dimension_ > 0);
   assert(number_of_center_points % n_faces_per_patch == 0);
 
   // Convert points into bezman points
@@ -182,13 +182,13 @@ InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
   for (std::size_t i_point{}; i_point < number_of_center_points; i_point++) {
     PhysicalPointType point{};
     for (std::size_t i_dim{}; i_dim < physical_dimension; i_dim++) {
-      point[i_dim] = centers_ptr[i_point * problem_dimension + i_dim];
+      point[i_dim] = centers_ptr[i_point * physical_dimension_ + i_dim];
       minimumVertex[i_dim] =
           std::min(minimumVertex[i_dim],
-                   centers_ptr[i_point * problem_dimension + i_dim]);
+                   centers_ptr[i_point * physical_dimension_ + i_dim]);
       maximumVertex[i_dim] =
           std::max(maximumVertex[i_dim],
-                   centers_ptr[i_point * problem_dimension + i_dim]);
+                   centers_ptr[i_point * physical_dimension_ + i_dim]);
     }
     center_points.push_back(point);
   }
@@ -230,7 +230,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
                               const int& parametric_dimension) {
   // Transform points from pyarray into bezman point vector
   double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
-  const std::size_t problem_dimension = py_center_vertices.request().shape[1];
+  const std::size_t physical_dimension_ = py_center_vertices.request().shape[1];
   const std::size_t number_of_center_points =
       py_center_vertices.request().shape[0];
 
@@ -238,9 +238,9 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
   assert(0 == (number_of_center_points % (2 * parametric_dimension)));
 
   // Convert points into bezman type points
-  switch (parametric_dimension) {
+  switch (physical_dimension_) {
   case 1:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 1uL>(py_center_vertices,
                                                       tolerance);
@@ -288,7 +288,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
     }
     break;
   case 2:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 2uL>(py_center_vertices,
                                                       tolerance);
@@ -337,7 +337,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
     }
     break;
   case 3:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 3uL>(py_center_vertices,
                                                       tolerance);
@@ -387,7 +387,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
     break;
 #ifdef SPLINEPY_MORE
   case 4:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 4uL>(py_center_vertices,
                                                       tolerance);
@@ -432,7 +432,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 5:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 5uL>(py_center_vertices,
                                                       tolerance);
@@ -477,7 +477,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 6:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 6uL>(py_center_vertices,
                                                       tolerance);
@@ -522,7 +522,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 7:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 7uL>(py_center_vertices,
                                                       tolerance);
@@ -567,7 +567,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 8:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 8uL>(py_center_vertices,
                                                       tolerance);
@@ -612,7 +612,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 9:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 9uL>(py_center_vertices,
                                                       tolerance);
@@ -657,7 +657,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
       break;
     }
   case 10:
-    switch (problem_dimension) {
+    switch (parametric_dimension) {
     case 1:
       return InterfacesFromBoundaryCenters_<1uL, 10uL>(py_center_vertices,
                                                        tolerance);
@@ -736,11 +736,11 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
   // corner_vertices
   py::buffer_info corner_vertex_buffer = py_corner_vertices.request();
   double* corner_ptr = static_cast<double*>(corner_vertex_buffer.ptr);
-  const std::size_t problem_dimension = corner_vertex_buffer.shape[1];
+  const std::size_t physical_dimension_ = corner_vertex_buffer.shape[1];
   const std::size_t number_of_corner_points = corner_vertex_buffer.shape[0];
   // Check if mesh can be used for mfem mesh
   bool is_structured{true};
-  if (problem_dimension == 2) {
+  if (physical_dimension_ == 2) {
     // Check if vertex size checks out
     assert(number_of_corner_points % 4 == 0);
     const std::size_t number_of_patches = number_of_corner_points / 4;
@@ -754,8 +754,8 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
         minvertex{corner_ptr[0], corner_ptr[1]};
     for (std::size_t i_c{}; i_c < number_of_corner_points; i_c++) {
       PointType vertex{};
-      for (std::size_t i_dim{}; i_dim < problem_dimension; i_dim++) {
-        vertex[i_dim] = corner_ptr[i_c * problem_dimension + i_dim];
+      for (std::size_t i_dim{}; i_dim < physical_dimension_; i_dim++) {
+        vertex[i_dim] = corner_ptr[i_c * physical_dimension_ + i_dim];
         maxvertex[i_dim] = std::max(vertex[i_dim], maxvertex[i_dim]);
         minvertex[i_dim] = std::min(vertex[i_dim], minvertex[i_dim]);
       }
@@ -854,7 +854,7 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
                           py_boundaries,
                           is_structured);
 
-  } else if (problem_dimension == 3) {
+  } else if (physical_dimension_ == 3) {
     // Check if vertex size checks out
     assert(number_of_corner_points % 8 == 0);
     const std::size_t number_of_patches = number_of_corner_points / 8;
@@ -868,8 +868,8 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
         minvertex{corner_ptr[0], corner_ptr[1], corner_ptr[2]};
     for (std::size_t i_c{}; i_c < number_of_corner_points; i_c++) {
       PointType vertex{};
-      for (std::size_t i_dim{}; i_dim < problem_dimension; i_dim++) {
-        vertex[i_dim] = corner_ptr[i_c * problem_dimension + i_dim];
+      for (std::size_t i_dim{}; i_dim < physical_dimension_; i_dim++) {
+        vertex[i_dim] = corner_ptr[i_c * physical_dimension_ + i_dim];
         maxvertex[i_dim] = std::max(vertex[i_dim], maxvertex[i_dim]);
         minvertex[i_dim] = std::min(vertex[i_dim], minvertex[i_dim]);
       }
