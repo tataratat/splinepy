@@ -468,6 +468,46 @@ public:
     return sampled;
   }
 
+  /**
+   * @brief Evaluate the Jacobian at certain positions
+   *
+   * @param queries position in the parametric space
+   * @param nthreads number of threads for evaluation
+   * @return py::array_t<double>
+   */
+  py::array_t<double> Jacobian(const py::array_t<double> queries,
+                               const int nthreads) const {
+    // INFO : array entries are stored
+    // [i_query * pdim * dim + i_paradim * dim + i_dim]
+    // Check input
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+    const int n_queries = queries.shape(0);
+
+    // prepare output
+    py::array_t<double> jacobians(n_queries * dim_ * para_dim_);
+    double* jacobians_ptr = static_cast<double*>(jacobians.request().ptr);
+
+    // prepare lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    auto derive = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        for (int j{0}; j < para_dim_; j++) {
+          std::vector<int> orders(para_dim_); // zero init
+          orders[j] = 1;
+          Core()->SplinepyDerivative(
+              &queries_ptr[i * para_dim_],
+              orders.data(),
+              &jacobians_ptr[i * para_dim_ * dim_ + j * dim_]);
+        }
+      }
+    };
+
+    splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
+
+    jacobians.resize({n_queries, para_dim_, dim_});
+    return jacobians;
+  }
+
   /// spline derivatives
   py::array_t<double> Derivative(py::array_t<double> queries,
                                  py::array_t<int> orders,
@@ -1001,6 +1041,10 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::Derivative,
            py::arg("queries"),
            py::arg("orders"),
+           py::arg("nthreads") = 1)
+      .def("jacobian",
+           &splinepy::py::PySpline::Jacobian,
+           py::arg("queries"),
            py::arg("nthreads") = 1)
       .def("basis_and_support",
            &splinepy::py::PySpline::BasisAndSupport,
