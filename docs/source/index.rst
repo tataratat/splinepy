@@ -1,7 +1,7 @@
 splinepy
 ==================================
 
-TEST version of docs. 
+TEST version of docs.
 
 .. toctree::
    :maxdepth: 2

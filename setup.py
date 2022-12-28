@@ -15,10 +15,10 @@ with open("splinepy/_version.py") as f:
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
-        "win32": "Win32",
-        "win-amd64": "x64",
-        "win-arm32": "ARM",
-        "win-arm64": "ARM64",
+    "win32": "Win32",
+    "win-amd64": "x64",
+    "win-arm32": "ARM",
+    "win-arm64": "ARM64",
 }
 
 
@@ -26,12 +26,8 @@ PLAT_TO_CMAKE = {
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
 class CMakeExtension(Extension):
-
     def __init__(
-            self,
-            name: str,
-            sourcedir: str = "",
-            extra_args: dict = None
+        self, name: str, sourcedir: str = "", extra_args: dict = None
     ) -> None:
         super().__init__(name, sources=[])
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
@@ -41,21 +37,22 @@ class CMakeExtension(Extension):
 
 
 class CMakeBuild(build_ext):
-
     def build_extension(self, ext: CMakeExtension) -> None:
         # Must be in this form due to bug in .resolve()
         # only fixed in Python 3.10+
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(
-                ext.name
+            ext.name
         )  # type: ignore[no-untyped-call]
         extdir = ext_fullpath.parent.resolve()
 
         # Using this requires trailing slash for auto-detection & inclusion of
         # auxiliary "native" libs
 
-        debug = int(
-                os.environ.get("DEBUG", 0)
-        ) if self.debug is None else self.debug
+        debug = (
+            int(os.environ.get("DEBUG", 0))
+            if self.debug is None
+            else self.debug
+        )
         # overwrite if ext.debug exists
         debug = ext.debug if hasattr(ext, "debug") else debug
         cfg = "Debug" if debug else "Release"
@@ -68,9 +65,9 @@ class CMakeBuild(build_ext):
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
-                f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
-                f"-DPYTHON_EXECUTABLE={sys.executable}",
-                f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
         ]
         # extra cmake args
         cmake_args.extend(ext.extra_args["cmake_args"])
@@ -80,8 +77,7 @@ class CMakeBuild(build_ext):
         # (needed e.g. to build for ARM OSx on conda-forge)
         if "CMAKE_ARGS" in os.environ:
             cmake_args += [
-                    item for item in os.environ["CMAKE_ARGS"].split(" ")
-                    if item
+                item for item in os.environ["CMAKE_ARGS"].split(" ") if item
             ]
 
         if self.compiler.compiler_type != "msvc":
@@ -96,9 +92,9 @@ class CMakeBuild(build_ext):
 
                     ninja_executable_path = Path(ninja.BIN_DIR) / "ninja"
                     cmake_args += [
-                            "-GNinja",
-                            "-DCMAKE_MAKE_PROGRAM"
-                            f":FILEPATH={ninja_executable_path}",
+                        "-GNinja",
+                        "-DCMAKE_MAKE_PROGRAM"
+                        f":FILEPATH={ninja_executable_path}",
                     ]
                 except ImportError:
                     pass
@@ -107,7 +103,7 @@ class CMakeBuild(build_ext):
 
             # Single config generators are handled "normally"
             single_config = any(
-                    x in cmake_generator for x in {"NMake", "Ninja"}
+                x in cmake_generator for x in {"NMake", "Ninja"}
             )
 
             # CMake allows an arch-in-generator style
@@ -123,8 +119,8 @@ class CMakeBuild(build_ext):
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
-                        "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_"
-                        f"{cfg.upper()}={extdir}"
+                    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_"
+                    f"{cfg.upper()}={extdir}"
                 ]
                 build_args += ["--config", cfg]
 
@@ -133,7 +129,7 @@ class CMakeBuild(build_ext):
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
             if archs:
                 cmake_args += [
-                        "-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))
+                    "-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))
                 ]
 
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
@@ -154,33 +150,29 @@ class CMakeBuild(build_ext):
             build_temp.mkdir(parents=True)
 
         subprocess.run(
-                ["cmake", ext.sourcedir] + cmake_args,
-                cwd=build_temp,
-                check=True
+            ["cmake", ext.sourcedir] + cmake_args, cwd=build_temp, check=True
         )
         subprocess.run(
-                ["cmake", "--build", "."] + build_args,
-                cwd=build_temp,
-                check=True
+            ["cmake", "--build", "."] + build_args, cwd=build_temp, check=True
         )
 
 
-with open("README.md", "r") as readme:
+with open("README.md") as readme:
     long_description = readme.read()
 
 
 # cmdline options for dev
 flags = dict(
-        verbose_make="--verbose_make",
-        minimal="--minimal",
-        enable_warning="--enable_warning",
-        serial_build="--serial_build",
-        debug="--debug",
-        no_explicit="--no-explicit"
+    verbose_make="--verbose_make",
+    minimal="--minimal",
+    enable_warning="--enable_warning",
+    serial_build="--serial_build",
+    debug="--debug",
+    no_explicit="--no-explicit",
 )
 cma = dict(
-        cmake_args=[],
-        build_args=[],
+    cmake_args=[],
+    build_args=[],
 )
 
 if flags["verbose_make"] in sys.argv:
@@ -221,39 +213,39 @@ else:
     cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=ON")
 
 setup(
-        name='splinepy',
-        version=version,
-        author='Jaewook Lee',
-        author_email='jaewooklee042@gmail.com',
-        description="Python N-Dimensional Bezier, RationalBezier, "
-                "BSpline and NURBS library with C++ Backend.",
-        long_description=long_description,
-        long_description_content_type="text/markdown",
-        url="https://github.com/tataratat/splinepy",
-        packages=[
-                "splinepy",
-                "splinepy.io",
-                "splinepy.utils",
-        ],
-        install_requires=[
-                "numpy",
-        ],
-        classifiers=[
-                'Development Status :: 2 - Pre-Alpha',
-                'License :: OSI Approved :: MIT License',
-                'Programming Language :: Python',
-                'Programming Language :: Python :: 3.6',
-                'Programming Language :: Python :: 3.7',
-                'Programming Language :: Python :: 3.8',
-                'Programming Language :: Python :: 3.9',
-                'Programming Language :: Python :: 3.10',
-                'Programming Language :: Python :: 3.11',
-                'Natural Language :: English',
-                'Topic :: Scientific/Engineering',
-        ],
-        ext_modules=[CMakeExtension('splinepy.splinepy_core', extra_args=cma)],
-        cmdclass=dict(build_ext=CMakeBuild),
-        extras_require={"test": ["pytest>=6.0"]},
-        zip_safe=False,
-        license="MIT",
+    name="splinepy",
+    version=version,
+    author="Jaewook Lee",
+    author_email="jaewooklee042@gmail.com",
+    description="Python N-Dimensional Bezier, RationalBezier, "
+    "BSpline and NURBS library with C++ Backend.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/tataratat/splinepy",
+    packages=[
+        "splinepy",
+        "splinepy.io",
+        "splinepy.utils",
+    ],
+    install_requires=[
+        "numpy",
+    ],
+    classifiers=[
+        "Development Status :: 2 - Pre-Alpha",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Natural Language :: English",
+        "Topic :: Scientific/Engineering",
+    ],
+    ext_modules=[CMakeExtension("splinepy.splinepy_core", extra_args=cma)],
+    cmdclass=dict(build_ext=CMakeBuild),
+    extras_require={"test": ["pytest>=6.0"]},
+    zip_safe=False,
+    license="MIT",
 )

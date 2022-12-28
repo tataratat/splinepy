@@ -8,10 +8,9 @@ from functools import wraps
 
 import numpy as np
 
-from splinepy import utils
-from splinepy import io
-from splinepy import settings
+from splinepy import io, settings
 from splinepy import splinepy_core as core
+from splinepy import utils
 from splinepy._base import SplinepyBase
 
 
@@ -22,23 +21,20 @@ class RequiredProperties(SplinepyBase):
 
     # name mangling to make direct access very annoying
     __required_spline_properties = {
-            "Bezier": ("degrees", "control_points"),
-            "RationalBezier": ("degrees", "control_points", "weights"),
-            "BSpline": ("degrees", "knot_vectors", "control_points"),
-            "NURBS": ("degrees", "knot_vectors", "control_points", "weights"),
+        "Bezier": ("degrees", "control_points"),
+        "RationalBezier": ("degrees", "control_points", "weights"),
+        "BSpline": ("degrees", "knot_vectors", "control_points"),
+        "NURBS": ("degrees", "knot_vectors", "control_points", "weights"),
     }
 
     # union of all req props. nice for check support
-    __union_all = set(
-            [
-                    rp for rps in __required_spline_properties.values()
-                    for rp in rps
-            ]
-    )
+    __union_all = {
+        rp for rps in __required_spline_properties.values() for rp in rps
+    }
 
     # intersection of all req props. nice for checking minimal support
     __intersection_all = __union_all.intersection(
-            *[set(rps) for rps in __required_spline_properties.values()]
+        *[set(rps) for rps in __required_spline_properties.values()]
     )
 
     @classmethod
@@ -81,9 +77,9 @@ class RequiredProperties(SplinepyBase):
         # do we support this spline type?
         if spline_type not in cls.__required_spline_properties:
             raise ValueError(
-                    f"Sorry, we don't have support for ({spline_type})-types."
-                    "Supported spline types are:"
-                    f"{list(cls.__required_spline_properties.keys())}"
+                f"Sorry, we don't have support for ({spline_type})-types."
+                "Supported spline types are:"
+                f"{list(cls.__required_spline_properties.keys())}"
             )
 
         return cls.__required_spline_properties[spline_type]
@@ -246,19 +242,18 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
     # Update knot_vectors where applicable
     if "knot_vectors" in spline.required_properties:
         dict_spline["knot_vectors"] = [
-                spline.knot_vectors[permutation_list[i]]
-                for i in range(spline.para_dim)
+            spline.knot_vectors[permutation_list[i]]
+            for i in range(spline.para_dim)
         ]
     # Update degrees
     dict_spline["degrees"] = [
-            spline.degrees[permutation_list[i]]
-            for i in range(spline.para_dim)
+        spline.degrees[permutation_list[i]] for i in range(spline.para_dim)
     ]
 
     # Retrieve control mesh resolutions
     ctps_dims = spline.control_mesh_resolutions
     new_ctps_dims = [
-            ctps_dims[permutation_list[i]] for i in range(spline.para_dim)
+        ctps_dims[permutation_list[i]] for i in range(spline.para_dim)
     ]
     n_ctps = spline.control_points.shape[0]
 
@@ -276,8 +271,7 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
 
     # Rearange global to local
     global_indices = np.matmul(
-            local_indices,
-            np.cumprod([1] + new_ctps_dims)[0:-1]
+        local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
     global_indices = np.argsort(global_indices)
@@ -366,7 +360,7 @@ def _make_core_properties_trackable(spl):
 
         else:
             spl._data["properties"][key] = utils.data.make_tracked_array(
-                    values, copy=False
+                values, copy=False
             )
 
 
@@ -451,9 +445,9 @@ class Spline(SplinepyBase, core.CoreSpline):
             kset = set(kwargs.keys())
             if not RequiredProperties.intersection().issubset(kset):
                 raise RuntimeError(
-                        f"Given keyword arguments ({kwargs}) don't contain"
-                        "minimal set of keywords, "
-                        f"{RequiredProperties.intersection()}."
+                    f"Given keyword arguments ({kwargs}) don't contain"
+                    "minimal set of keywords, "
+                    f"{RequiredProperties.intersection()}."
                 )
             # we will call new_core to make sure all the array values are
             # contiguous
@@ -483,8 +477,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         except ValueError:
             # Spline
             self._logd(
-                    f"`required_properties` of {type(self)} is undefined."
-                    "Returning maximal set of properties."
+                f"`required_properties` of {type(self)} is undefined."
+                "Returning maximal set of properties."
             )
             return RequiredProperties.union()
 
@@ -628,15 +622,15 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         elif raise_:
             raise RuntimeError(
-                    f"{kwargs.keys()} is not valid set of keywords to create"
-                    f"a new core for {type(self).__qualname__}."
-                    f"Valid ones are: {self.required_properties}."
+                f"{kwargs.keys()} is not valid set of keywords to create"
+                f"a new core for {type(self).__qualname__}."
+                f"Valid ones are: {self.required_properties}."
             )
 
         else:
             self._logd(
-                    "Couldn't initialize a new_core with given keywords."
-                    f"Keywords without None values are {kwargs.keys()}."
+                "Couldn't initialize a new_core with given keywords."
+                f"Keywords without None values are {kwargs.keys()}."
             )
             # exit, nothing happened
             return None
@@ -690,21 +684,21 @@ class Spline(SplinepyBase, core.CoreSpline):
         if self.knot_vectors is not None:
             if len(self.knot_vectors) != len(degrees):
                 raise ValueError(
-                        f"len(degrees) ({len(degrees)}) should match "
-                        f"len(self.knot_vectors) ({len(self.knot_vectors)})."
+                    f"len(degrees) ({len(degrees)}) should match "
+                    f"len(self.knot_vectors) ({len(self.knot_vectors)})."
                 )
 
         # set - copies
         self._data["properties"]["degrees"] = utils.data.make_tracked_array(
-                degrees, "int32"
+            degrees, "int32"
         )
         self._logd(f"Degrees set: {self.degrees}")
 
         # try to sync core with current status
         self.new_core(
-                raise_=False,
-                properties_round_trip=False,
-                **self._data["properties"]
+            raise_=False,
+            properties_round_trip=False,
+            **self._data["properties"],
         )
 
     @property
@@ -745,27 +739,24 @@ class Spline(SplinepyBase, core.CoreSpline):
         if self.degrees is not None:
             if len(knot_vectors) != len(self.degrees):
                 raise ValueError(
-                        f"len(knot_vectors) ({len(knot_vectors)}) should "
-                        f"match len(self.degrees) ({len(self.degrees)})."
+                    f"len(knot_vectors) ({len(knot_vectors)}) should "
+                    f"match len(self.degrees) ({len(self.degrees)})."
                 )
 
         # set - copies
         self._data["properties"]["knot_vectors"] = [
-                utils.data.make_tracked_array(kv, "float64")
-                for kv in knot_vectors
+            utils.data.make_tracked_array(kv, "float64") for kv in knot_vectors
         ]
 
         self._logd("Knot vectors set:")
         for i, kv in enumerate(self.knot_vectors):
-            self._logd(f"  {i}"
-                       ". knot vector length: "
-                       f"{len(kv)}")
+            self._logd(f"  {i}" ". knot vector length: " f"{len(kv)}")
 
         # try to sync core with current status
         self.new_core(
-                raise_=False,
-                properties_round_trip=False,
-                **self._data["properties"]
+            raise_=False,
+            properties_round_trip=False,
+            **self._data["properties"],
         )
 
     @property
@@ -784,8 +775,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         if "Bezier" in self.name:
             self._logd(
-                    "Returning parametric_bounds as "
-                    "Bezier spline's unique knots."
+                "Returning parametric_bounds as "
+                "Bezier spline's unique knots."
             )
             return self.parametric_bounds.T
 
@@ -854,25 +845,27 @@ class Spline(SplinepyBase, core.CoreSpline):
         if self.weights is not None:
             if len(self.weights) != len(control_points):
                 raise ValueError(
-                        f"len(control_points) ({len(control_points)}) "
-                        "should match len(weights) ({len(weights)})."
+                    f"len(control_points) ({len(control_points)}) "
+                    "should match len(weights) ({len(weights)})."
                 )
 
         # set - copies
-        self._data["properties"]["control_points"] = (
-                utils.data.make_tracked_array(control_points, "float64")
-        )
+        self._data["properties"][
+            "control_points"
+        ] = utils.data.make_tracked_array(control_points, "float64")
         self._logd(f"{self.control_points.shape[0]} Control points set.")
 
         # try to sync core with current status
         self.new_core(
-                raise_=False,
-                properties_round_trip=False,
-                **self._data["properties"]
+            raise_=False,
+            properties_round_trip=False,
+            **self._data["properties"],
         )
 
     @property
-    def control_point_bounds(self, ):
+    def control_point_bounds(
+        self,
+    ):
         """
         Returns bounds of control points.
 
@@ -905,7 +898,9 @@ class Spline(SplinepyBase, core.CoreSpline):
         return super().control_mesh_resolutions
 
     @property
-    def weights(self, ):
+    def weights(
+        self,
+    ):
         """
         Returns weights.
 
@@ -942,22 +937,22 @@ class Spline(SplinepyBase, core.CoreSpline):
         if self.control_points is not None:
             if len(self.control_points) != len(weights):
                 raise ValueError(
-                        f"len(weights) ({len(weights)}) should match "
-                        "len(control_points) ({len(control_points)})."
+                    f"len(weights) ({len(weights)}) should match "
+                    "len(control_points) ({len(control_points)})."
                 )
 
         # set - copies
         self._data["properties"]["weights"] = utils.data.make_tracked_array(
-                weights, "float64"
+            weights, "float64"
         ).reshape(-1, 1)
 
         self._logd(f"{self.weights.shape[0]} Weights set.")
 
         # try to sync core with current status
         self.new_core(
-                raise_=False,
-                properties_round_trip=False,
-                **self._data["properties"]
+            raise_=False,
+            properties_round_trip=False,
+            **self._data["properties"],
         )
 
     @_new_core_if_modified
@@ -979,8 +974,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().evaluate(
-                queries,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
     @_new_core_if_modified
@@ -998,13 +993,11 @@ class Spline(SplinepyBase, core.CoreSpline):
         results: (math.product(resolutions), dim) np.ndarray
         """
         self._logd(
-                f"Sampling {np.product(resolutions)} "
-                "points from spline."
+            f"Sampling {np.product(resolutions)} " "points from spline."
         )
 
         return super().sample(
-                resolutions,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS)
+            resolutions, nthreads=_default_if_none(nthreads, settings.NTHREADS)
         )
 
     @_new_core_if_modified
@@ -1028,9 +1021,9 @@ class Spline(SplinepyBase, core.CoreSpline):
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().derivative(
-                queries=queries,
-                orders=orders,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            queries=queries,
+            orders=orders,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
     @_new_core_if_modified
@@ -1052,8 +1045,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().basis_and_support(
-                queries=queries,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            queries=queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
     @_new_core_if_modified
@@ -1078,20 +1071,20 @@ class Spline(SplinepyBase, core.CoreSpline):
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().basis_deriative_and_support(
-                queries=queries,
-                orders=orders,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            queries=queries,
+            orders=orders,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
     @_new_core_if_modified
     def proximities(
-            self,
-            queries,
-            initial_guess_sample_resolutions,
-            tolerance=None,
-            max_iterations=-1,
-            aggressive_search_bounds=False,
-            nthreads=None,
+        self,
+        queries,
+        initial_guess_sample_resolutions,
+        tolerance=None,
+        max_iterations=-1,
+        aggressive_search_bounds=False,
+        nthreads=None,
     ):
         """
         Given physical coordinate, finds a parametric coordinate that maps to
@@ -1141,12 +1134,12 @@ class Spline(SplinepyBase, core.CoreSpline):
         igsr = initial_guess_sample_resolutions
 
         return super().proximities(
-                queries=queries,
-                initial_guess_sample_resolutions=igsr,
-                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
-                max_iterations=max_iterations,
-                aggressive_search_bounds=aggressive_search_bounds,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            queries=queries,
+            initial_guess_sample_resolutions=igsr,
+            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+            max_iterations=max_iterations,
+            aggressive_search_bounds=aggressive_search_bounds,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
         )
 
     @_new_core_if_modified
@@ -1164,8 +1157,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
-                f"Elevated {parametric_dimensions}.-dim. "
-                "degree of the spline."
+            f"Elevated {parametric_dimensions}.-dim. " "degree of the spline."
         )
         sync_from_core(self)
 
@@ -1184,8 +1176,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         reduced: list
         """
         reduced = super().reduce_degrees(
-                para_dims=parametric_dimensions,
-                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+            para_dims=parametric_dimensions,
+            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
         )
 
         def meaningful(r):
@@ -1193,8 +1185,9 @@ class Spline(SplinepyBase, core.CoreSpline):
             return "reduced" if r else "failed"
 
         self._logd(
-                f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
-                "Results: ", f"{[meaningful(r) for r in reduced]}."
+            f"Tried to reduce degrees for {parametric_dimensions}.-dims. "
+            "Results: ",
+            f"{[meaningful(r) for r in reduced]}.",
         )
 
         if any(reduced):
@@ -1227,8 +1220,8 @@ class Spline(SplinepyBase, core.CoreSpline):
             boundary_ids = np.array([], dtype=np.int32)
 
         return [
-                type(self)(spline=c)
-                for c in core.extract_boundaries(self, boundary_ids)
+            type(self)(spline=c)
+            for c in core.extract_boundaries(self, boundary_ids)
         ]
 
     @_new_core_if_modified
@@ -1275,8 +1268,8 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         else:
             raise ValueError(
-                    "We can only export "
-                    "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
+                "We can only export "
+                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
             )
 
         self._logi(f"Exported current spline as {fname}.")
@@ -1316,7 +1309,9 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         return dict_spline
 
-    def copy(self, ):
+    def copy(
+        self,
+    ):
         """
         Returns deepcopy of self.
 

@@ -4,7 +4,7 @@ Description
 ## Addressed issues
 *  Issues addressed
 
-## Showcase 
+## Showcase
 A short / one-liner example to highlight the (new) feature
 ```
 import splinepy

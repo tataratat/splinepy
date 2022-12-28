@@ -21,13 +21,3 @@ build = ["cp*"]
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
 build = ["cp*-many*"]
-#environment = "CC=gcc-10 CXX=g++-10"
-
-[tool.yapf]
-based_on_style = "pep8"
-coalesce_brackets = false
-continuation_align_style = "space"
-split_before_arithmetic_operator = true
-continuation_indent_width = 8
-dedent_closing_brackets = true
-split_complex_comprehension = true

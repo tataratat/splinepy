@@ -2,8 +2,8 @@
 Thin logging wrapper.
 """
 
-import logging
 import functools
+import logging
 
 
 def configure(debug=False, logfile=None):
@@ -29,7 +29,7 @@ def configure(debug=False, logfile=None):
 
     # format
     formatter = logging.Formatter(
-            fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
+        fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
     )
 
     # apply format using stream handler

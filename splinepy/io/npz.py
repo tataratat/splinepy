@@ -11,7 +11,9 @@ keys in raw files are:
 import numpy as np
 
 
-def load(fname, ):
+def load(
+    fname,
+):
     """
     Read spline in `.npz` form.
 
@@ -53,16 +55,16 @@ def export(fname, spline):
     None
     """
     property_dicts = dict(
-            degrees=spline.degrees,
-            knot_vectors=np.array([str(spline.knot_vectors)]),
-            control_points=spline.control_points,
-            whatami=np.array([spline.whatami]),
+        degrees=spline.degrees,
+        knot_vectors=np.array([str(spline.knot_vectors)]),
+        control_points=spline.control_points,
+        whatami=np.array([spline.whatami]),
     )
 
     if spline.whatami.startswith("NURBS"):
         property_dicts.update(weights=spline.weights)
 
     np.savez(
-            fname,
-            **property_dicts,
+        fname,
+        **property_dicts,
     )

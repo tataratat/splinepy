@@ -1,4 +1,4 @@
-sphinx
-piccolo-theme
-sphinx-mdinclude
 myst_parser
+piccolo-theme
+sphinx
+sphinx-mdinclude

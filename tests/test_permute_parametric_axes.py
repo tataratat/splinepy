@@ -5,7 +5,6 @@ except BaseException:
 
 
 class PermuteParametricAxesTest(c.unittest.TestCase):
-
     def test_permute_parametric_axes(self):
         """
         test permute
@@ -27,37 +26,37 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
             orig.elevate_degree(2)
             orig.elevate_degree(2)
             if "knot_vectors" in orig.required_properties:
-                orig.insert_knots(0, [.4, .7, .8])
-                orig.insert_knots(1, [.1, .2])
-                orig.insert_knots(2, [.3, .5, .6, .9])
+                orig.insert_knots(0, [0.4, 0.7, 0.8])
+                orig.insert_knots(1, [0.1, 0.2])
+                orig.insert_knots(2, [0.3, 0.5, 0.6, 0.9])
 
             perm = c.splinepy.spline.permute_parametric_axes(
-                    orig, permutation, inplace=False
+                orig, permutation, inplace=False
             )
             queries = c.np.asarray(c.q3D)
 
             self.assertTrue(
-                    c.np.allclose(
-                            orig.evaluate(queries),
-                            perm.evaluate(queries[:, permutation]),
-                    ),
-                    f"{perm.whatami} failed to permute.",
+                c.np.allclose(
+                    orig.evaluate(queries),
+                    perm.evaluate(queries[:, permutation]),
+                ),
+                f"{perm.whatami} failed to permute.",
             )
 
         # ic.nplace
         for orig in originals:
             perm = orig.copy()
             c.splinepy.spline.permute_parametric_axes(
-                    perm, permutation, inplace=True
+                perm, permutation, inplace=True
             )
             queries = c.np.asarray(c.q3D)
 
             self.assertTrue(
-                    c.np.allclose(
-                            orig.evaluate(queries),
-                            perm.evaluate(queries[:, permutation])
-                    ),
-                    f"{perm.whatami} failed to permute inplace.",
+                c.np.allclose(
+                    orig.evaluate(queries),
+                    perm.evaluate(queries[:, permutation]),
+                ),
+                f"{perm.whatami} failed to permute inplace.",
             )
 
 

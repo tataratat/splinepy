@@ -11,7 +11,7 @@ class SplinepyBase {
 public:
   /// default ctor
   SplinepyBase() = default;
-  /// 
+  ///
   virtual ~SplinepyBase() {};
 
 

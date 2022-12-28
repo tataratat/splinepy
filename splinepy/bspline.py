@@ -1,15 +1,13 @@
 import numpy as np
 
-from splinepy import spline
-from splinepy import splinepy_core
-from splinepy import settings
-from splinepy import utils
+from splinepy import settings, spline, splinepy_core, utils
 
 
 class BSplineBase(spline.Spline):
     """BSpline base. Contains extra operations that's only available for
     bspline families.
     """
+
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
@@ -49,13 +47,13 @@ class BSplineBase(spline.Spline):
 
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. (Too big)"
+                "One of the query knots not in valid knot range. (Too big)"
             )
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. "
-                    "(Too small)"
+                "One of the query knots not in valid knot range. "
+                "(Too small)"
             )
 
         splinepy_core.insert_knots(self, parametric_dimension, knots)
@@ -89,22 +87,20 @@ class BSplineBase(spline.Spline):
 
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. (Too big)"
+                "One of the query knots not in valid knot range. (Too big)"
             )
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                    "One of the query knots not in valid knot range. "
-                    "(Too small)"
+                "One of the query knots not in valid knot range. "
+                "(Too small)"
             )
 
         removed = splinepy_core.remove_knots(
-                self,
-                parametric_dimension,
-                knots,
-                tolerance=spline._default_if_none(
-                        tolerance, settings.TOLERANCE
-                )
+            self,
+            parametric_dimension,
+            knots,
+            tolerance=spline._default_if_none(tolerance, settings.TOLERANCE),
         )
 
         if any(removed):
@@ -113,7 +109,9 @@ class BSplineBase(spline.Spline):
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
 
-    def normalize_knot_vectors(self, ):
+    def normalize_knot_vectors(
+        self,
+    ):
         """
         Sets all knot vectors into a range of [0,1], if applicable
 
@@ -159,14 +157,15 @@ class BSpline(BSplineBase):
     """
     BSpline.
     """
-    __slots__ = ("_fitting_queries")
+
+    __slots__ = "_fitting_queries"
 
     def __init__(
-            self,
-            degrees=None,
-            knot_vectors=None,
-            control_points=None,
-            spline=None,
+        self,
+        degrees=None,
+        knot_vectors=None,
+        control_points=None,
+        spline=None,
     ):
         """
         BSpline. Uses Spline.__init__()
@@ -184,20 +183,20 @@ class BSpline(BSplineBase):
         None
         """
         super().__init__(
-                spline=spline,
-                degrees=degrees,
-                knot_vectors=knot_vectors,
-                control_points=control_points,
+            spline=spline,
+            degrees=degrees,
+            knot_vectors=knot_vectors,
+            control_points=control_points,
         )
 
     @classmethod
     def interpolate_curve(
-            cls,
-            query_points,
-            degree,
-            centripetal=True,
-            knot_vector=[],
-            save_query=True
+        cls,
+        query_points,
+        degree,
+        centripetal=True,
+        knot_vector=[],
+        save_query=True,
     ):
         """
         Interpolates BSpline Curve through query points.
@@ -221,16 +220,16 @@ class BSpline(BSplineBase):
         fitted: BSpline
         """
         query_points = utils.data.enforce_contiguous(
-                query_points, dtype="float64"
+            query_points, dtype="float64"
         )
 
         fitted = cls(
-                **splinepy_core.interpolate_curve(
-                        points=query_points,
-                        degree=degree,
-                        centripetal=centripetal,
-                        knot_vector=knot_vector,
-                )
+            **splinepy_core.interpolate_curve(
+                points=query_points,
+                degree=degree,
+                centripetal=centripetal,
+                knot_vector=knot_vector,
+            )
         )
 
         cls._logd("BSpline curve interpolation complete. ")
@@ -242,13 +241,13 @@ class BSpline(BSplineBase):
 
     @classmethod
     def approximate_curve(
-            cls,
-            query_points,
-            degree,
-            num_control_points,
-            centripetal=True,
-            knot_vector=[],
-            save_query=True,
+        cls,
+        query_points,
+        degree,
+        num_control_points,
+        centripetal=True,
+        knot_vector=[],
+        save_query=True,
     ):
         """
         Approximates BSpline Curve based on query points.
@@ -274,15 +273,15 @@ class BSpline(BSplineBase):
         fitted: BSpline
         """
         query_points = utils.data.enforce_contiguous(
-                query_points, dtype="float64"
+            query_points, dtype="float64"
         )
 
         results = splinepy_core.approximate_curve(
-                points=query_points,
-                degree=degree,
-                n_control_points=num_control_points,
-                centripetal=centripetal,
-                knot_vector=knot_vector,
+            points=query_points,
+            degree=degree,
+            n_control_points=num_control_points,
+            centripetal=centripetal,
+            knot_vector=knot_vector,
         )
 
         res = results.pop("residual")
@@ -299,15 +298,15 @@ class BSpline(BSplineBase):
 
     @classmethod
     def interpolate_surface(
-            cls,
-            query_points,
-            size_u,
-            size_v,
-            degree_u,
-            degree_v,
-            centripetal=True,
-            reorganize=False,
-            save_query=True,
+        cls,
+        query_points,
+        size_u,
+        size_v,
+        degree_u,
+        degree_v,
+        centripetal=True,
+        reorganize=False,
+        save_query=True,
     ):
         """
         Interpolates BSpline Surface through query points.
@@ -333,18 +332,18 @@ class BSpline(BSplineBase):
         fitted: BSpline
         """
         query_points = utils.data.enforce_contiguous(
-                query_points, dtype="float64"
+            query_points, dtype="float64"
         )
 
         fitted = cls(
-                **splinepy_core.interpolate_surface(
-                        points=query_points,
-                        size_u=size_u,
-                        size_v=size_v,
-                        degree_u=degree_u,
-                        degree_v=degree_v,
-                        centripetal=centripetal,
-                )
+            **splinepy_core.interpolate_surface(
+                points=query_points,
+                size_u=size_u,
+                size_v=size_v,
+                degree_u=degree_u,
+                degree_v=degree_v,
+                centripetal=centripetal,
+            )
         )
 
         cls._logd("BSpline surface interpolation complete. ")
@@ -363,7 +362,9 @@ class BSpline(BSplineBase):
         return fitted
 
     @property
-    def nurbs(self, ):
+    def nurbs(
+        self,
+    ):
         """
         Returns NURBS version of current BSpline by defining all the weights as
         1.
@@ -377,10 +378,8 @@ class BSpline(BSplineBase):
         same_nurbs: NURBS
         """
         same_nurbs = settings.NAME_TO_TYPE["NURBS"](
-                **self.todict(),
-                weights=np.ones(
-                        self.control_points.shape[0], dtype=np.float64
-                ),
+            **self.todict(),
+            weights=np.ones(self.control_points.shape[0], dtype=np.float64),
         )
 
         return same_nurbs

@@ -5,12 +5,12 @@ Single function file containing `load_splines`.
 
 import os
 
-from splinepy.splinepy_core import read_iges, read_xml, read_irit
+from splinepy import io
 from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
-from splinepy.nurbs import NURBS
 from splinepy.io.ioutils import abs_fname
-from splinepy import io
+from splinepy.nurbs import NURBS
+from splinepy.splinepy_core import read_iges, read_irit, read_xml
 
 
 def load_splines(fname, as_dict=False):
@@ -65,9 +65,9 @@ def load_splines(fname, as_dict=False):
 
     else:
         raise NotImplementedError(
-                "We can only import "
-                "< .iges | .xml | .itd | .npz | .mesh | .json > "
-                "spline files."
+            "We can only import "
+            "< .iges | .xml | .itd | .npz | .mesh | .json > "
+            "spline files."
         )
 
     # exit early for as_dict
