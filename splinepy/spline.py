@@ -198,10 +198,14 @@ def sync_from_core(spl):
     """
     # assign default data
     spl._data = _default_data()
-    # get current core properies and make them trackable
-    _make_core_properties_trackable(spl)
-    # set modified flags to false to all (inplace change) trackable properties
-    _set_modified_false(spl)
+    if core.have_core(spl):
+        # get current core properies and make them trackable
+        _make_core_properties_trackable(spl)
+        # set modified flags to false to all (inplace change)
+        # trackable properties
+        _set_modified_false(spl)
+    else:
+        utils.log.debug("sync_from_core() - no core to sync. Skipping.")
 
     return spl
 
@@ -433,11 +437,14 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
+            super().__init__()
+            self._data = _default_data()
             return None
 
         if spline is not None and isinstance(spline, core.CoreSpline):
             # will share core, even nullptr
             super().__init__(spline)
+            sync_from_core(self)
             # depends on the use case, here could be a place to copy _data
 
         else:
@@ -452,12 +459,7 @@ class Spline(SplinepyBase, core.CoreSpline):
             # we will call new_core to make sure all the array values are
             # contiguous
             super().__init__()  # alloc
-            self.new_core(**kwargs)
-
-        # we are here because this spline is successfully initialized
-        # get properties
-        # will initialize self._data as well.
-        sync_from_core(self)
+            self.new_core(**kwargs, raise_=False)  # this will sync
 
     @property
     def required_properties(self):
@@ -617,14 +619,14 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         # specified ones needs specific sets of kwargs
         # in case of an incomplete set of kwargs, nothing will happen
-        elif set(kwargs.keys()) == set(self.required_properties):
+        elif set(kwargs.keys()).issuperset(set(self.required_properties)):
             super().new_core(**kwargs)
 
         elif raise_:
             raise RuntimeError(
-                f"{kwargs.keys()} is not valid set of keywords to create"
+                f"{kwargs.keys()} is not valid set of keywords to create "
                 f"a new core for {type(self).__qualname__}."
-                f"Valid ones are: {self.required_properties}."
+                f"Valid ones shoul include: {self.required_properties}."
             )
 
         else:
@@ -632,8 +634,6 @@ class Spline(SplinepyBase, core.CoreSpline):
                 "Couldn't initialize a new_core with given keywords."
                 f"Keywords without None values are {kwargs.keys()}."
             )
-            # exit, nothing happened
-            return None
             # old behavior was to remove core here. maybe do so?
 
         # in case no roundtrip is desired, keep properties alive
