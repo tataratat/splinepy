@@ -1309,11 +1309,9 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         return dict_spline
 
-    def copy(
-        self,
-    ):
+    def copy(self):
         """
-        Returns deepcopy of self.
+        Returns deepcopy of stored data and newly initialized self.
 
         Parameters
         -----------
@@ -1323,9 +1321,10 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         new_spline: type(self)
         """
-        # let it go through proper init procedure of subclasses
-        new = type(self)(**self._data["properties"])
-        new._data = copy.deepcopy(self._data)
+        new = type(self)()
+        new.new_core(**self._data["properties"], properties_round_trip=False)
+        new._data = deepcopy(self._data)
+
         return new
 
     # short cuts / alias
