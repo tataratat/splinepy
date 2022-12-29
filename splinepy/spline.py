@@ -1323,7 +1323,10 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         new_spline: type(self)
         """
-        return copy.deepcopy(self)
+        # let it go through proper init procedure of subclasses
+        new = type(self)(**self._data["properties"])
+        new._data = copy.deepcopy(self._data)
+        return new
 
     # short cuts / alias
     ds = degrees
