@@ -626,7 +626,7 @@ class Spline(SplinepyBase, core.CoreSpline):
             raise RuntimeError(
                 f"{kwargs.keys()} is not valid set of keywords to create "
                 f"a new core for {type(self).__qualname__}."
-                f"Valid ones shoul include: {self.required_properties}."
+                f"Valid ones should include: {self.required_properties}."
             )
 
         else:
