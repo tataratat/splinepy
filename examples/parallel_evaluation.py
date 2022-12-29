@@ -2,38 +2,39 @@
 Parallel evaluation of spline, which requires to pickle spline.
 """
 
-from time import perf_counter as tic
 from multiprocessing import Pool
+from time import perf_counter as tic
+
+import numpy as np
 
 import splinepy
-import numpy as np
 
 if __name__ == "__main__":
     # define a bspline
     ds = [2, 2]
     kvs = [
-            [0, 0, 0, 0.5, 1, 1, 1],
-            [0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0.5, 1, 1, 1],
+        [0, 0, 0, 1, 1, 1],
     ]
     cps = [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 1.5, 0],
-            [3, 1.5, 0],
-            [-1, 0, 0],
-            [-1, 2, 0],
-            [1, 4, 0],
-            [3, 4, 0],
-            [-2, 0, 0],
-            [-2, 2, 0],
-            [1, 5, 0],
-            [3, 5, 2],
+        [0, 0, 0],
+        [0, 1, 0],
+        [1, 1.5, 0],
+        [3, 1.5, 0],
+        [-1, 0, 0],
+        [-1, 2, 0],
+        [1, 4, 0],
+        [3, 4, 0],
+        [-2, 0, 0],
+        [-2, 2, 0],
+        [1, 5, 0],
+        [3, 5, 2],
     ]
 
     b = splinepy.BSpline(
-            degrees=ds,
-            knot_vectors=kvs,
-            control_points=cps,
+        degrees=ds,
+        knot_vectors=kvs,
+        control_points=cps,
     )
 
     # elevate degree to make evaluation take a bit longer
@@ -91,7 +92,7 @@ if __name__ == "__main__":
     print(f"serial / threading = {stime / ttime}")
 
     # cool, but are they correct?
-    assert np.allclose(np.vstack(res_mp), res_s),\
-        "Something went wrong during evaluation"
-    assert np.allclose(res_t, res_s),\
-        "Something went wrong during evaluation"
+    assert np.allclose(
+        np.vstack(res_mp), res_s
+    ), "Something went wrong during evaluation"
+    assert np.allclose(res_t, res_s), "Something went wrong during evaluation"

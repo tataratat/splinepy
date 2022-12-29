@@ -1,7 +1,7 @@
 splinepy
 ==================================
 
-TEST version of docs. 
+TEST version of docs.
 
 .. toctree::
    :maxdepth: 2
@@ -11,7 +11,7 @@ TEST version of docs.
 Sources
 ============
 .. toctree::
-   Github <http://github.com/tataratat/splinepy>
+   Github <https://github.com/tataratat/splinepy>
 
 Contributing
 ===============

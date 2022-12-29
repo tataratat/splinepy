@@ -11,9 +11,8 @@ class SplinepyBase {
 public:
   /// default ctor
   SplinepyBase() = default;
-  /// 
-  virtual ~SplinepyBase() {};
-
+  ///
+  virtual ~SplinepyBase(){};
 
   /// Dynamically create correct type of spline based on input.
   /// Returned as shared pointer of SplinepyBase
@@ -189,7 +188,8 @@ public:
   SplinepyExtractBoundary(const int& boundary_id);
 
   /// Scalar Spline extraction from dim - TODO: const
-  virtual std::shared_ptr<SplinepyBase> SplinepyExtractDim(const int& phys_dim) const;
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractDim(const int& phys_dim) const;
 
   /// Derivative of composition
   virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(

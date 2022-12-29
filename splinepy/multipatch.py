@@ -16,9 +16,9 @@ class Multipatch(SplinepyBase):
     """
 
     def __init__(
-            self,
-            splines=None,
-            interfaces=None,
+        self,
+        splines=None,
+        interfaces=None,
     ):
         """
         Multipatch
@@ -71,17 +71,16 @@ class Multipatch(SplinepyBase):
         for spline in list_of_splines:
             if not issubclass(type(spline), Spline):
                 raise ValueError(
-                        "Only Splinepy-Spline types are allowed as list "
-                        "entries"
+                    "Only Splinepy-Spline types are allowed as list " "entries"
                 )
             if not spline.dim == spline_dim:
                 raise ValueError(
-                        "Dimension mismatch between splines in list of splines"
+                    "Dimension mismatch between splines in list of splines"
                 )
             if not spline.para_dim == spline_para_dim:
                 raise ValueError(
-                        "Parametric dimension mismatch between splines in list"
-                        " of splines"
+                    "Parametric dimension mismatch between splines in list"
+                    " of splines"
                 )
 
         self._spline_list = list_of_splines
@@ -115,19 +114,19 @@ class Multipatch(SplinepyBase):
         # Check types
         if not isinstance(con, np.ndarray) or (not len(con.shape)):
             raise ValueError(
-                    "Connectivity must be stored in a numpy 2D array."
+                "Connectivity must be stored in a numpy 2D array."
             )
         con = enforce_contiguous(con, np.int32)
 
         # One boundary for min and max for each parametric dimension
         n_boundaries_per_spline = self.splines[0].para_dim * 2
         if not (
-                (con.shape[1] == n_boundaries_per_spline)
-                and (con.shape[0] == len(self.splines))
+            (con.shape[1] == n_boundaries_per_spline)
+            and (con.shape[0] == len(self.splines))
         ):
             raise ValueError(
-                    "Connectivity size mismatch. Expected size is "
-                    "n_patch x n_boundaries"
+                "Connectivity size mismatch. Expected size is "
+                "n_patch x n_boundaries"
             )
 
         # Assignment
@@ -149,17 +148,17 @@ class Multipatch(SplinepyBase):
             self._logd(f"Extracting boundary with ID {abs(i_bid)}")
             boundary_list.append(np.where(self.interfaces == i_bid))
             self._logd(
-                    f"Found {boundary_list[-1][1].size} boundary "
-                    f"elements on boundary {abs(i_bid)}"
+                f"Found {boundary_list[-1][1].size} boundary "
+                f"elements on boundary {abs(i_bid)}"
             )
 
         return boundary_list
 
     def set_boundary(
-            self,
-            spline_ids,
-            boundary_faces,
-            boundary_id=None,
+        self,
+        spline_ids,
+        boundary_faces,
+        boundary_id=None,
     ):
         """
         Adds a boundary to a specific set of spline and spline-
@@ -190,8 +189,8 @@ class Multipatch(SplinepyBase):
                 self._logd(f"Creating new boundary with ID {abs(new_BID)}")
             else:
                 self._logd(
-                        "Adding new boundary elements to existing "
-                        f"boundary new boundary with ID {abs(new_BID)}"
+                    "Adding new boundary elements to existing "
+                    f"boundary new boundary with ID {abs(new_BID)}"
                 )
 
         try:
@@ -202,14 +201,14 @@ class Multipatch(SplinepyBase):
                 self.interfaces[spline_ids, boundary_faces] = new_BID
             else:
                 raise ValueError(
-                        "One or more of the assigned boundary elements do not"
-                        " ly on the patch surface, please check topology"
+                    "One or more of the assigned boundary elements do not"
+                    " ly on the patch surface, please check topology"
                 )
         except BaseException:
             raise ValueError(
-                    "spline_ids and boundary_faces need to be one-dimensional."
-                    "\nIf this error proceeds please check if interfaces "
-                    "exists by calling, \nprint(<>.interfaces)"
+                "spline_ids and boundary_faces need to be one-dimensional."
+                "\nIf this error proceeds please check if interfaces "
+                "exists by calling, \nprint(<>.interfaces)"
             )
 
     @property
@@ -256,13 +255,13 @@ class Multipatch(SplinepyBase):
         -------
         interfaces : array-like (n_patch x n_boundaries)
         """
-        from splinepy.splinepy_core import interfaces_from_boundary_centers
         from splinepy import settings
+        from splinepy.splinepy_core import interfaces_from_boundary_centers
 
         # Using the setter instead of the the member, all necessery
         # checks will be performed
         self.interfaces = interfaces_from_boundary_centers(
-                self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
+            self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
         )
 
         self._logd("Successfully provided new interfaces using uff algorithm")
@@ -270,10 +269,10 @@ class Multipatch(SplinepyBase):
         return self.interfaces
 
     def add_boundary_with_function(
-            self,
-            function,
-            only_unassigned=False,
-            boundary_id=None,
+        self,
+        function,
+        only_unassigned=False,
+        boundary_id=None,
     ):
         """
         Uses all faces, that were identified as boundaries in the
@@ -307,13 +306,13 @@ class Multipatch(SplinepyBase):
                 self._logd(f"Creating new boundary with ID {abs(new_BID)}")
             else:
                 self._logd(
-                        "Adding new boundary elements to existing "
-                        f"boundary new boundary with ID {abs(new_BID)}"
+                    "Adding new boundary elements to existing "
+                    f"boundary new boundary with ID {abs(new_BID)}"
                 )
 
         # retrieve all boundary elements
         if only_unassigned:
-            boundary_ids = (self.interfaces < 0)
+            boundary_ids = self.interfaces < 0
         else:
             boundary_ids = self.interfaces == -1
 
@@ -323,7 +322,8 @@ class Multipatch(SplinepyBase):
 
         # Check all face centers
         relevant_boundary_centers = self.spline_boundary_centers[
-                boundary_ids.flatten(), :]
+            boundary_ids.flatten(), :
+        ]
 
         # Cols and Rows
         row_ids, col_ids = np.where(boundary_ids)
@@ -333,13 +333,14 @@ class Multipatch(SplinepyBase):
             new_boundary_bools = function(relevant_boundary_centers)
         except BaseException:
             ValueError(
-                    "Function is not applicable to array. Function layout must"
-                    " f(array<n_face_points,dim>) -> bools<n_face_points>"
+                "Function is not applicable to array. Function layout must"
+                " f(array<n_face_points,dim>) -> bools<n_face_points>"
             )
 
         # Assign new boundary ID to interfaces array
-        self.interfaces[row_ids[new_boundary_bools],
-                        col_ids[new_boundary_bools]] = new_BID
+        self.interfaces[
+            row_ids[new_boundary_bools], col_ids[new_boundary_bools]
+        ] = new_BID
 
     def add_boundary_from_seed(self, seed_position, tolerance=None):
         """WIP

@@ -5,16 +5,16 @@ except BaseException:
 
 
 class ProximityTest(c.unittest.TestCase):
-
     def test_queries_inside_spline_initial_guess_with_kdt(self):
         """
         Initial guess made with kdt. Mid-point as initial guess tends to fail,
         so excluded from test.
         """
         for spline in (
-                c.splinepy.BSpline(**c.b2P2D), c.splinepy.NURBS(**c.n2P2D),
-                c.splinepy.Bezier(**c.z2P2D),
-                c.splinepy.RationalBezier(**c.r2P2D)
+            c.splinepy.BSpline(**c.b2P2D),
+            c.splinepy.NURBS(**c.n2P2D),
+            c.splinepy.Bezier(**c.z2P2D),
+            c.splinepy.RationalBezier(**c.r2P2D),
         ):
 
             # form parametric queries
@@ -26,13 +26,13 @@ class ProximityTest(c.unittest.TestCase):
 
             # proximity - single thread exe
             prox_r = spline.proximities(
-                    queries=phys_q,
-                    initial_guess_sample_resolutions=[10] * spline.para_dim,
-                    nthreads=1,
+                queries=phys_q,
+                initial_guess_sample_resolutions=[10] * spline.para_dim,
+                nthreads=1,
             )
 
             assert c.np.allclose(
-                    para_q, prox_r[0]
+                para_q, prox_r[0]
             ), f"WRONG proximity query for {spline.whatami}"
 
 

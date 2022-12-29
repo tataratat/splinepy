@@ -111,7 +111,7 @@ target_compile_definitions(splinepy
 # features
 target_compile_features(splinepy
     PUBLIC
-        cxx_std_17) 
+        cxx_std_17)
 
 # python?
 if(SPLINEPY_COMPILE_PYTHON)
@@ -149,7 +149,7 @@ install(
     DESTINATION "${cfg_dest}"
 )
 # .hpp files - keep tree
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/cpp/splinepy" 
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/cpp/splinepy"
         DESTINATION ${incl_dest} # target directory
         FILES_MATCHING PATTERN "*.hpp"
 )

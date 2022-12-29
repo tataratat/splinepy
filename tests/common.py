@@ -5,9 +5,9 @@ import numpy as np
 import splinepy
 
 __all__ = [
-        "unittest",
-        "np",
-        "splinepy",
+    "unittest",
+    "np",
+    "splinepy",
 ]
 
 # abbreviation
@@ -19,50 +19,50 @@ __all__ = [
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
 b2P2D = dict(
-        degrees=[2, 2],
-        knot_vectors=[
-                [0, 0, 0, 0.5, 1, 1, 1],
-                [0, 0, 0, 1, 1, 1],
-        ],
-        control_points=[
-                [0, 0],
-                [0, 1],
-                [1, 1.5],
-                [3, 1.5],
-                [-1, 0],
-                [-1, 2],
-                [1, 4],
-                [3, 4],
-                [-2, 0],
-                [-2, 2],
-                [1, 5],
-                [3, 5],
-        ],
+    degrees=[2, 2],
+    knot_vectors=[
+        [0, 0, 0, 0.5, 1, 1, 1],
+        [0, 0, 0, 1, 1, 1],
+    ],
+    control_points=[
+        [0, 0],
+        [0, 1],
+        [1, 1.5],
+        [3, 1.5],
+        [-1, 0],
+        [-1, 2],
+        [1, 4],
+        [3, 4],
+        [-2, 0],
+        [-2, 2],
+        [1, 5],
+        [3, 5],
+    ],
 )
 
 # half-half circle.
 n2P2D = dict(
-        degrees=[2, 1],
-        knot_vectors=[
-                [0, 0, 0, 1, 1, 1],
-                [0, 0, 1, 1],
-        ],
-        control_points=[
-                [-1., 0.],
-                [-1., 1.],
-                [0., 1.],
-                [-2., 0.],
-                [-2., 2.],
-                [0., 2.],
-        ],
-        weights=[
-                [1.],
-                [2**-.5],
-                [1.],
-                [1.],
-                [2**-.5],
-                [1.],
-        ],
+    degrees=[2, 1],
+    knot_vectors=[
+        [0, 0, 0, 1, 1, 1],
+        [0, 0, 1, 1],
+    ],
+    control_points=[
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ],
+    weights=[
+        [1.0],
+        [2**-0.5],
+        [1.0],
+        [1.0],
+        [2**-0.5],
+        [1.0],
+    ],
 )
 
 #
@@ -70,60 +70,60 @@ z2P2D = dict(degrees=n2P2D["degrees"], control_points=n2P2D["control_points"])
 
 #
 r2P2D = dict(
-        degrees=n2P2D["degrees"],
-        control_points=n2P2D["control_points"],
-        weights=n2P2D["weights"]
+    degrees=n2P2D["degrees"],
+    control_points=n2P2D["control_points"],
+    weights=n2P2D["weights"],
 )
 
 # 3D
 z3P3D = dict(
-        degrees=[1, 1, 1],
-        control_points=[
-                [0., 0., 0.],
-                [1., 0., 0.],
-                [0., 1., 0.],
-                [1., 1., 0.],
-                [0., -1., 1.],
-                [1., 0., 1.],
-                [-1., 1., 2.],
-                [2., 2., 2.],
-        ],
+    degrees=[1, 1, 1],
+    control_points=[
+        [0.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [1.0, 1.0, 0.0],
+        [0.0, -1.0, 1.0],
+        [1.0, 0.0, 1.0],
+        [-1.0, 1.0, 2.0],
+        [2.0, 2.0, 2.0],
+    ],
 )
 
 r3P3D = dict(
-        **z3P3D,
-        weights=[1.] * len(z3P3D["control_points"]),
+    **z3P3D,
+    weights=[1.0] * len(z3P3D["control_points"]),
 )
 
 b3P3D = dict(
-        **z3P3D,
-        knot_vectors=[
-                [0., 0., 1., 1.],
-                [0., 0., 1., 1.],
-                [0., 0., 1., 1.],
-        ],
+    **z3P3D,
+    knot_vectors=[
+        [0.0, 0.0, 1.0, 1.0],
+        [0.0, 0.0, 1.0, 1.0],
+        [0.0, 0.0, 1.0, 1.0],
+    ],
 )
 
 n3P3D = dict(
-        **r3P3D,
-        knot_vectors=b3P3D["knot_vectors"],
+    **r3P3D,
+    knot_vectors=b3P3D["knot_vectors"],
 )
 
 # query points
 q2D = [
-        [.01, .01],
-        [.01, .5],
-        [.9, .1],
-        [.8, .7],
-        [.4, .99],
+    [0.01, 0.01],
+    [0.01, 0.5],
+    [0.9, 0.1],
+    [0.8, 0.7],
+    [0.4, 0.99],
 ]
 
 q3D = [
-        [.1, .1, .1],
-        [.734, .525, .143],
-        [.9666, .991, .003],
-        [.5623, .0089, .99],
-        [.0431, .2, .523],
+    [0.1, 0.1, 0.1],
+    [0.734, 0.525, 0.143],
+    [0.9666, 0.991, 0.003],
+    [0.5623, 0.0089, 0.99],
+    [0.0431, 0.2, 0.523],
 ]
 
 
@@ -149,7 +149,7 @@ def are_items_same(a, b):
     all_same = True
 
     for i, (aa, bb) in enumerate(zip(a, b)):
-        this_is_same = (aa == bb)
+        this_is_same = aa == bb
         if not this_is_same:
             # print to inform
             print(f"element in index-{i} are not same")
@@ -163,13 +163,13 @@ def are_items_same(a, b):
 
 def are_stripped_lines_same(a, b, ignore_order=False):
     """returns True if items in a and b same, preceding and tailing whitespaces
-     are ignored and strings are joined"""
+    are ignored and strings are joined"""
     all_same = True
 
     for i, (line_a, line_b) in enumerate(zip(a, b)):
         # check stripped string
         stripped_a, stripped_b = line_a.strip(), line_b.strip()
-        this_is_same = (stripped_a == stripped_b)
+        this_is_same = stripped_a == stripped_b
 
         # print general info
         if not this_is_same:

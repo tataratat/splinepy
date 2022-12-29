@@ -35,7 +35,7 @@ class TrackedArray(np.ndarray):
 
     @property
     def mutable(self):
-        return self.flags['WRITEABLE']
+        return self.flags["WRITEABLE"]
 
     @mutable.setter
     def mutable(self, value):
@@ -170,7 +170,7 @@ def make_tracked_array(array, dtype=None, copy=True):
         tracked = tracked.view(TrackedArray)
 
     # should always be contiguous here
-    assert tracked.flags['C_CONTIGUOUS']
+    assert tracked.flags["C_CONTIGUOUS"]
 
     return tracked
 
@@ -219,9 +219,8 @@ def enforce_contiguous(array, dtype=None):
     contiguous_array: array-like
     """
     if isinstance(array, np.ndarray):
-        if (
-                array.flags["C_CONTIGUOUS"]
-                and (dtype is None or dtype is array.dtype)
+        if array.flags["C_CONTIGUOUS"] and (
+            dtype is None or dtype is array.dtype
         ):
             return array
         return np.ascontiguousarray(array, dtype=dtype)

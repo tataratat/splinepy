@@ -23,19 +23,19 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-        
+
     - name: install dependencies
       run: pip install numpy pytest
-            
+
     - name: build splinepy linux - gcc10
       if: matrix.os == 'ubuntu-20.04'
       run: |
-        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal
+        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal --debug
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
       run: |
-        python3 setup.py develop --minimal
+        python3 setup.py develop --minimal --debug
 
     - name: test
       run: pytest tests

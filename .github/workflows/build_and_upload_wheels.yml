@@ -21,7 +21,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: ./wheelhouse/*.whl
-  
+
   upload_test_pypi:
     needs: [wheel_build_full]
     runs-on: ubuntu-latest

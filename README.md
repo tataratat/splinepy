@@ -1,7 +1,7 @@
 # splinepy
 [![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)
 
-[![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)  
+[![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)
 
 Python Bezier, BSpline and NURBS library with C++ backend, [bezman](https://github.com/tataratat/bezman) and [SplineLib](https://github.com/tataratat/SplineLib).
 
@@ -19,7 +19,7 @@ pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 The last part `-vvv` is not necessary, but we suggest using it, since you can see the build progress. In other words, source builds takes quite long and we are working to shorten this!
 
 
-Option 2: `setup.py`  
+Option 2: `setup.py`
 You can locally compile and install using `setup.py`.
 This requires C++20 (C++17 for release mode) compatible C++ compiler
 and cmake version 3.16 or higher.

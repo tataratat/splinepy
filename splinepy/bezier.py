@@ -1,12 +1,11 @@
-from splinepy import settings
-from splinepy import spline
-from splinepy import splinepy_core
+from splinepy import settings, spline, splinepy_core
 
 
 class BezierBase(spline.Spline):
     """Bezier Base. Contain extra operations that's only
     available for bezier families.
     """
+
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
@@ -38,14 +37,14 @@ class BezierBase(spline.Spline):
         # scalar
         if isinstance(factor, float):
             return type(self)(
-                    control_points=self.control_points * factor,
-                    degrees=self.degrees
+                control_points=self.control_points * factor,
+                degrees=self.degrees,
             )
 
         # Supports only Bezier families
         if not isinstance(factor, BezierBase):
             raise TypeError(
-                    f"Multiplication with {type(factor)}-type is not suppoted."
+                f"Multiplication with {type(factor)}-type is not suppoted."
             )
 
         # multiply - dimension compatibility is checked in cpp side
@@ -157,11 +156,11 @@ class BezierBase(spline.Spline):
         """
         # compatibility check is done in cpp
         composition_der = splinepy_core.composition_derivative(
-                self, inner, inner_derivative
+            self, inner, inner_derivative
         )
 
         return settings.NAME_TO_TYPE[composition_der.name](
-                spline=composition_der
+            spline=composition_der
         )
 
 
@@ -183,7 +182,7 @@ class Bezier(BezierBase):
         None
         """
         super().__init__(
-                spline=spline,
-                degrees=degrees,
-                control_points=control_points,
+            spline=spline,
+            degrees=degrees,
+            control_points=control_points,
         )

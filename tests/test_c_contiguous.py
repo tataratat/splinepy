@@ -5,14 +5,15 @@ except BaseException:
 
 
 class ContiguousArrayInputTest(c.unittest.TestCase):
-
     def test_c_contiguous_array_input(self):
         """
         Test whether cpp sides receives contiguous array
         """
         spl_ts = (
-                c.splinepy.Bezier, c.splinepy.RationalBezier,
-                c.splinepy.BSpline, c.splinepy.NURBS
+            c.splinepy.Bezier,
+            c.splinepy.RationalBezier,
+            c.splinepy.BSpline,
+            c.splinepy.NURBS,
         )
         spl_props = (c.z2P2D, c.r2P2D, c.b2P2D, c.n2P2D)
 
