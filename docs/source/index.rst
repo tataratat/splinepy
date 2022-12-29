@@ -11,7 +11,7 @@ TEST version of docs.
 Sources
 ============
 .. toctree::
-   Github <http://github.com/tataratat/splinepy>
+   Github <https://github.com/tataratat/splinepy>
 
 Contributing
 ===============

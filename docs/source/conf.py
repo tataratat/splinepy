@@ -5,14 +5,17 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../"))
+#sys.path.insert(0, os.path.abspath("../../"))
+
+import splinepy
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "splinepy"
 copyright = "2022, Jaewook Lee"
 author = "Jaewook Lee"
-release = "0.0.5"
+release = splinepy.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
