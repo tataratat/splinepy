@@ -1,8 +1,8 @@
 """
 Abstract Spline
 """
-
 import copy
+
 import os
 from functools import wraps
 
@@ -1323,7 +1323,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         new = type(self)()
         new.new_core(**self._data["properties"], properties_round_trip=False)
-        new._data = deepcopy(self._data)
+        new._data = copy.deepcopy(self._data)
 
         return new
 
