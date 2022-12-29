@@ -2,7 +2,6 @@
 Abstract Spline
 """
 import copy
-
 import os
 from functools import wraps
 
