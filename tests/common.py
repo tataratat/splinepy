@@ -127,6 +127,21 @@ q3D = [
 ]
 
 
+def are_splines_equal(a, b):
+    """returns True if Splines are equivalent"""
+    if not a.whatami == b.whatami:
+        return False
+    for req_prop in a.current_core_properties():
+        if req_prop == "knot_vectors":
+            for aa, bb in zip(a.knot_vectors, b.knot_vectors):
+                if not np.allclose(aa, bb):
+                    return False
+        else:
+            if not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
+                return False
+    return True
+
+
 def are_items_close(a, b):
     """returns True if items in a and b are close"""
     all_close = True
