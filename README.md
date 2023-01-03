@@ -35,7 +35,7 @@ python3 setup.py install
 For details, please take a look at the [documentation](https://tataratat.github.io/splinepy).
 Most of the functions are vectorized and capable of multithread executions.
 
-### Common features:
+#### Common features
 | Method | Description |
 | ------ | ----------- |
 | evaluate() | Given parametric coordinates, returns physical (i.e., mapped / evaluated) coordinate |
@@ -45,32 +45,41 @@ Most of the functions are vectorized and capable of multithread executions.
 | basis_derivative_and_support() | Given parametric coordinates and order of partial derivatives, returns basis function derivative values. |
 | proximities() | Given physical coordinates, returns parametric coordinates that maps to the nearest physical coordinate. Often referred as "point inversion". |
 | elevate_degrees() | Elevates Spline degrees along specified parametric dimensions |
+| extract_boundaries() | Given boundary ids, returns extracted boundary splines. |
 
-### BSpline, NURBS
+#### BSpline, NURBS
 | Method | Description |
 | ------ | ----------- |
 | reduce_degrees() | Reduces spline degrees along specified parametric dimensionans, as long as the spline stays under given tolerance |
 | insert_knots() | Insert knots at given locations |
 | remove_knots() | Removes knots at given locations, as long as the spline stays under given tolerance |
+| extract_bezier_patches() | Extracts each knot spans as a Bezier spline |
 
-### Bezier, Rational Bezier
+#### Bezier, Rational Bezier
 | Method | Description |
 | ------ | ----------- |
-| multiply (*) | Given two Beziers, returns a Bezier, which evalutation equals the product of two inputs |
-| add (+) | Given two Beziers, returns a Bezier, which evalutation equals the product of two inputs |
+| multiply (*) | Given two Beziers `a` and `b`, returns a Bezier `c` that satisfies: c.evaluate(query) = a.evalute(query) * b.evaluate(query) |
+| add (+) | Given two Beziers `a` and `b`, returns a Bezier `c` that satisfies:  c.evaluate(query) = a.evaluate(query) + b.evaluate(query) |
+| derivative_spline() | Given order or partial derivatives, returns a bezier `c` that satisfies: c.derivative(query, orders) = a.derivative_spline(orders).evaluate(query) |
+| split() | Splits Bezier into multiple patches at defined locations |
+| extract_dim() | Extract a single physical dimension |
+| compose() | Given |
+| composition_derivative() | Given outer, inner, inner derivative functions (splines) |
 
 
+### Multipatch
+Basic functionalities to support multipatch concepts in Isogemetric Analysis.
 
-### Multipatch:
-
-### IO:
+### IO
+Other formats
 
 
 ## Quick start
+```python
+import splinepy
+
+
 ```
-Coming Soon!
-```
-Test version of documentations are available [here](https://tataratat.github.io/splinepy)
 
 
 ### Dependencies
