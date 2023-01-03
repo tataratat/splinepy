@@ -102,18 +102,21 @@ public:
     }
 
     auto local_to_global_bd_id = [&](const IndexT& local_id) {
-      IndexT offset{1}, id{local_id}, global_id{};
+      IndexT combined_offsets{1}, id{local_id}, global_id{};
       for (std::size_t i_pdc{}; i_pdc < dim; ++i_pdc) {
         const auto& res = grid_resolutions[i_pdc];
         if (i_pdc == plane_normal_axis) {
-          global_id += offset * plane_id;
+          global_id += combined_offsets * plane_id;
         } else {
-          const IndexT i = id % res;
-          global_id += id * offset;
-          id -= i;
+          // Determine index in coordinate indexing system
+          const IndexT rasterized_index = id % res;
+          // Use the current id to update the global index
+          global_id += rasterized_index * combined_offsets;
+          // Update the copy of the index to search for next slice
+          id -= rasterized_index;
           id /= res;
         }
-        offset *= res;
+        combined_offsets *= res;
       }
       return global_id;
     };
