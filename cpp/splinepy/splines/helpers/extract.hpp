@@ -47,14 +47,16 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       // pure copies of all basis function, which is not high degree friendly.
       Degrees b_degrees;
       KnotVectors b_knot_vectors;
+      int counter{};
       for (int i{}; i < SplineType::kParaDim; ++i) {
         if (i == plane_normal_axis) {
           continue;
         }
-        b_degrees[i] = spline.GetDegrees()[i];
+        b_degrees[counter] = spline.GetDegrees()[i];
         // knotvectors are shared_ptrs. make sure this copies
-        b_knot_vectors[i] =
+        b_knot_vectors[counter] =
             std::make_shared<KnotVector>(*spline.GetKnotVectors()[i]);
+        counter++;
       }
       // create parametric space
       auto pspace = std::make_shared<PSpace>(b_knot_vectors, b_degrees);
@@ -77,14 +79,16 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       using Degrees = typename SelfBoundary::Degrees_;
       Degrees b_degrees{};
       std::size_t ncps{1};
+      int counter{};
       for (int i{}; i < SplineType::kParaDim; ++i) {
         if (i == plane_normal_axis) {
           continue;
         }
         const auto& ds = spline.GetDegrees();
         const auto& d = ds[i];
-        b_degrees[i] = d;
+        b_degrees[counter] = d;
         ncps *= static_cast<std::size_t>(d + 1);
+        counter++;
       }
 
       if constexpr (SplineType::kIsRational) {
@@ -109,6 +113,7 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
           // copy control points
           b_coords.push_back(spline.GetControlPoints()[id]);
         }
+
         // assign boundary spline
         boundary_spline = std::make_shared<SelfBoundary>(b_degrees, b_coords);
       }
