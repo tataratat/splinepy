@@ -1157,4 +1157,42 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
   }
 }
 
+/**
+ * @brief Extract all Boundary Patches and store them in a python list
+ *
+ * @param spline_list List of splines
+ * @param interfaces interfaces, with negative values for boundary elements
+ * @return py::list
+ */
+py::list ExtractAllBoundarySplines(const py::list& spline_list,
+                                   const py::array_t<int>& interfaces) {
+  // Check input data
+  if (static_cast<int>(py::len(spline_list)) != interfaces.shape(0)) {
+    splinepy::utils::PrintAndThrowError(
+        "Number of splines in list (",
+        py::len(spline_list),
+        ") and number of elements in interfaces (",
+        interfaces.shape(0),
+        ") does not match.");
+  }
+  // Auxiliary data
+  py::list boundary_splines{};
+  const int* interface_ptr = static_cast<int*>(interfaces.request().ptr);
+  const int n_patches = interfaces.shape(0);
+  const int n_faces = interfaces.shape(1);
+  const int para_dim_ = n_faces / 2;
+  const auto cpp_spline_list =
+      ListOfPySplinesToVectorOfCoreSplines(spline_list);
+  for (int i{}; i < n_patches; i++) {
+    for (int j{}; j < n_faces; j++) {
+      if (interface_ptr[i * n_faces + j] < 0) {
+        boundary_splines.append(
+            // Extract Boundary splines
+            PySpline(cpp_spline_list[i]->SplinepyExtractBoundary(j)));
+      }
+    }
+  }
+
+  return boundary_splines;
+}
 } // namespace splinepy::py

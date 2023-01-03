@@ -33,9 +33,7 @@ class Multipatch(SplinepyBase):
         None
         """
         # Init values
-        self._interfaces = None
-        self._spline_list = None
-        self._boundaries = None
+        self._init_members()
 
         self._logd("Instantiated Multipatch object")
 
@@ -45,6 +43,23 @@ class Multipatch(SplinepyBase):
 
         if interfaces is not None:
             self.interfaces = interfaces
+
+    def _init_members(self):
+        """Defaults all relevant members to None
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        self._boundaries = None
+        self._spline_list = None
+        self._interfaces = None
+        self._boundary_splines = None
+        self._boundary_interfaces = None
 
     @property
     def splines(self):
@@ -58,6 +73,9 @@ class Multipatch(SplinepyBase):
     @splines.setter
     def splines(self, list_of_splines):
         from splinepy.spline import Spline
+
+        # We need to start from scratch if new splines are added
+        self._init_members()
 
         if not isinstance(list_of_splines, list):
             if issubclass(type(list_of_splines), Spline):
@@ -82,6 +100,8 @@ class Multipatch(SplinepyBase):
                     "Parametric dimension mismatch between splines in list"
                     " of splines"
                 )
+        # Updating the spline set will erase all precalculated data
+        self._boundaries = None
 
         self._spline_list = list_of_splines
 
@@ -153,6 +173,70 @@ class Multipatch(SplinepyBase):
             )
 
         return boundary_list
+
+    @property
+    def boundary_patches(self):
+        """Extract all boundary patches of a given Multipatch system as splines
+
+        Returns
+        -------
+        boundary_patches : list
+          list of all embedded splines
+        """
+        from splinepy import settings
+        from splinepy.splinepy_core import extract_all_boundary_splines
+
+        if self._boundary_splines is None:
+            self._logd("Determining boundary spline patches")
+            patches = extract_all_boundary_splines(
+                self.splines, self.interfaces
+            )
+            self._boundary_splines = [
+                settings.NAME_TO_TYPE[p.name](spline=p) for p in patches
+            ]
+
+        return self._boundary_splines
+
+    @property
+    def boundary_interfaces(self):
+        """Determine interfaces of the boundary patches
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        np.ndarray : connectivity
+          Connectivity in local patch enumeration system
+        """
+        from splinepy import settings
+        from splinepy.splinepy_core import interfaces_from_boundary_centers
+
+        if self._boundary_interfaces is None:
+            self._logd("Determine boundary interfaces")
+
+            # Get Boundary Centers
+            boundary_patch_face_centers = np.vstack(
+                [s.boundary_centers for s in self.boundary_patches]
+            )
+
+            # Using the setter instead of the the member, all necessery
+            # checks will be performed
+            self._boundary_interfaces = interfaces_from_boundary_centers(
+                boundary_patch_face_centers, settings.TOLERANCE, self.para_dim
+            )
+            if np.any(self._boundary_interfaces < 0):
+                raise MemoryError(
+                    "Something went wrong determining the "
+                    "boundaries. There should only be posiive integers, as the boundaries must"
+                    " be interconnected!"
+                )
+            self._logd(
+                "Successfully provided new interfaces using uff algorithm"
+            )
+
+        return self._boundary_interfaces
 
     def set_boundary(
         self,

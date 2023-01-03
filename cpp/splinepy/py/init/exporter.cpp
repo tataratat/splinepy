@@ -14,6 +14,8 @@ void init_exporter(py::module_& m) {
         py::arg("face_center_vertices"),
         py::arg("tolerance"),
         py::arg("para_dim"));
+  m.def("extract_all_boundary_splines",
+        &splinepy::py::ExtractAllBoundarySplines,
   m.def("orientations",
         &splinepy::py::GetBoundaryOrientations,
         py::arg("splines"),
