@@ -168,7 +168,7 @@ flags = dict(
     enable_warning="--enable_warning",
     serial_build="--serial_build",
     debug="--debug",
-    no_explicit="--no-explicit",
+    no_explicit="--no_explicit",
 )
 cma = dict(
     cmake_args=[],
