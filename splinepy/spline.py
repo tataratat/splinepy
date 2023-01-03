@@ -1,7 +1,6 @@
 """
 Abstract Spline
 """
-
 import copy
 import os
 from functools import wraps
@@ -1309,11 +1308,9 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         return dict_spline
 
-    def copy(
-        self,
-    ):
+    def copy(self):
         """
-        Returns deepcopy of self.
+        Returns deepcopy of stored data and newly initialized self.
 
         Parameters
         -----------
@@ -1323,7 +1320,11 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         new_spline: type(self)
         """
-        return copy.deepcopy(self)
+        new = type(self)()
+        new.new_core(**self._data["properties"], properties_round_trip=False)
+        new._data = copy.deepcopy(self._data)
+
+        return new
 
     # short cuts / alias
     ds = degrees
