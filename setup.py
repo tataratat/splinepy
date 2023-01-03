@@ -33,7 +33,7 @@ class CMakeExtension(Extension):
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
         if extra_args is not None:
             self.extra_args = extra_args
-            self.debug = extra_args.get("debug", False)
+            self.debug = extra_args.get("--debug", False)
 
 
 class CMakeBuild(build_ext):
@@ -162,7 +162,7 @@ with open("README.md") as readme:
 
 
 def if_in_argv_do(argv, flag, build_opts, value):
-    if flags in argv:
+    if flag in argv:
         argv.remove(flag)
         if flag in build_opts["cmake_args"]:
             build_opts["cmake_args"][flag] = value
@@ -177,14 +177,14 @@ def if_in_argv_do(argv, flag, build_opts, value):
         return False
 
 
-# keys
+# keys / options
 keys = (
-    "verbose_make",
-    "minimal",
-    "enable_warning",
-    "serial_build",
-    "debug",
-    "no_explicit",
+    "--verbose_make",
+    "--minimal",
+    "--enable_warning",
+    "--serial_build",
+    "--debug",
+    "--no_explicit",
 )
 
 # build options with default options
@@ -197,16 +197,6 @@ build_options = {
     },
     "build_args": {keys[3]: f"-j {os.cpu_count()}"},
     keys[4]: False,
-}
-
-# cmdline options for dev
-flags = {
-    keys[0]: "--verbose_make",
-    keys[1]: "--minimal",
-    keys[2]: "--enable_warning",
-    keys[3]: "--serial_build",
-    keys[4]: "--debug",
-    keys[5]: "--no_explicit",
 }
 
 # go through options
@@ -240,7 +230,7 @@ for key, value in build_options.items():
     else:
         print(f"  {key} : {value}")
     # pack as list
-    if key.startswith("debug"):
+    if key.startswith("--debug"):
         continue
     build_options[key] = list(value.values())
 print("}")
