@@ -161,56 +161,91 @@ with open("README.md") as readme:
     long_description = readme.read()
 
 
+def if_in_argv_do(argv, flag, build_opts, value):
+    if flags in argv:
+        argv.remove(flag)
+        if flag in build_opts["cmake_args"]:
+            build_opts["cmake_args"][flag] = value
+        elif flag in build_opts["build_args"]:
+            build_opts["build_args"][flag] = value
+        elif flag in build_opts:  # debug
+            build_opts[flag] = value
+        else:
+            raise ValueError(f"Invalid build option flag ({flag})")
+        return True
+    else:
+        return False
+
+
+# keys
+keys = (
+    "verbose_make",
+    "minimal",
+    "enable_warning",
+    "serial_build",
+    "debug",
+    "no_explicit",
+)
+
+# build options with default options
+build_options = {
+    "cmake_args": {
+        keys[0]: "-DSPLINEPY_VERBOSE_MAKE=OFF",
+        keys[1]: "-DSPLINEPY_MORE=ON",
+        keys[2]: "-DSPLINEPY_ENABLE_WARNINGS=OFF",
+        keys[5]: "-DSPLINEPY_BUILD_EXPLICIT=ON",
+    },
+    "build_args": {keys[3]: f"-j {os.cpu_count()}"},
+    keys[4]: False,
+}
+
 # cmdline options for dev
-flags = dict(
-    verbose_make="--verbose_make",
-    minimal="--minimal",
-    enable_warning="--enable_warning",
-    serial_build="--serial_build",
-    debug="--debug",
-    no_explicit="--no_explicit",
+flags = {
+    keys[0]: "--verbose_make",
+    keys[1]: "--minimal",
+    keys[2]: "--enable_warning",
+    keys[3]: "--serial_build",
+    keys[4]: "--debug",
+    keys[5]: "--no_explicit",
+}
+
+# go through options
+if_in_argv_do(sys.argv, keys[0], build_options, "-DSPLINEPY_VERBOSE_MAKE=ON")
+if_in_argv_do(sys.argv, keys[1], build_options, "-DSPLINEPY_MORE=OFF")
+if_in_argv_do(
+    sys.argv, keys[2], build_options, "-DSPLINEPY_ENABLE_WARNINGS=ON"
 )
-cma = dict(
-    cmake_args=[],
-    build_args=[],
+if_in_argv_do(sys.argv, keys[3], build_options, "-j 1")
+if_in_argv_do(sys.argv, keys[4], build_options, True)
+if_in_argv_do(
+    sys.argv, keys[5], build_options, "-DSPLINEPY_BUILD_EXPLICIT=OFF"
 )
 
-if flags["verbose_make"] in sys.argv:
-    print("*** verbose make ***")
+# environ option
+if eval(os.environ.get("SPLINEPY_MINIMAL_DEBUG_BUILD", "False")):
+    print("Environement variable SPLINEPY_MINIMAL_DEBUG_BUILD set.")
+    build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
+    build_options[keys[4]] = True
 
-    cma["cmake_args"].append("-DVERBOSE_MAKE=ON")
-    sys.argv.remove(flags["verbose_make"])
+# print options and pack items as list
+print("************* build options ************")
+print("{")
+for key, value in build_options.items():
+    # print
+    if isinstance(value, dict):
+        print(f"  {key}: " "{")
+        for kk, vv in value.items():
+            print(f"    {kk}: {vv}")
+        print("  }")
+    else:
+        print(f"  {key} : {value}")
+    # pack as list
+    if key.startswith("debug"):
+        continue
+    build_options[key] = list(value.values())
+print("}")
+print("****************************************")
 
-if flags["minimal"] in sys.argv:
-    print("*** compiling only a minimal set of splines")
-    sys.argv.remove(flags["minimal"])
-else:
-    cma["cmake_args"].append("-DSPLINEPY_MORE=ON")
-
-if flags["enable_warning"] in sys.argv:
-    print("*** adding warning flags ***")
-    cma["cmake_args"].append("-DSPLINEPY_ENABLE_WARNINGS=ON")
-    sys.argv.remove(flags["enable_warning"])
-
-if flags["serial_build"] in sys.argv:
-    print("*** serial build ***")
-    sys.argv.remove(flags["serial_build"])
-else:
-    print(f"*** parallel build using {os.cpu_count()} processes ***")
-    cma["build_args"].append(f"-j {os.cpu_count()}")
-
-if flags["debug"] in sys.argv:
-    print("*** building debug ***")
-    sys.argv.remove(flags["debug"])
-    cma["debug"] = True
-
-if flags["no_explicit"] in sys.argv:
-    print("*** NO explicit instantiation of template classes ***")
-    sys.argv.remove(flags["no_explicit"])
-    cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=OFF")
-else:
-    print("*** explicit instantiation of template classes ***")
-    cma["cmake_args"].append("-DSPLINEPY_BUILD_EXPLICIT=ON")
 
 setup(
     name="splinepy",
@@ -243,7 +278,9 @@ setup(
         "Natural Language :: English",
         "Topic :: Scientific/Engineering",
     ],
-    ext_modules=[CMakeExtension("splinepy.splinepy_core", extra_args=cma)],
+    ext_modules=[
+        CMakeExtension("splinepy.splinepy_core", extra_args=build_options)
+    ],
     cmdclass=dict(build_ext=CMakeBuild),
     extras_require={"test": ["pytest>=6.0"]},
     zip_safe=False,
