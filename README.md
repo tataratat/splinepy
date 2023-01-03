@@ -1,7 +1,7 @@
 # splinepy
 [![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)
 [![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)
-  
+
 splinepy is a python library for splines of arbitrary dimensions and degrees.
 The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and easy-to-use APIs.
 
