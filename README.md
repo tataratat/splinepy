@@ -13,14 +13,16 @@ pip install splinepy
 ```
 
 It is also possible to install current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
+1) Fast build - minimal and debug mode
 ```
-# Fast build - minimal and debug mode
 SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/splinepy.git@main -vvv
+```
 
-# Same build as in PyPI - full set of splines and optimized build
+2) Same build as in PyPI - full set of splines and optimized build
+```
 pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 ```
-The last part `-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
+`-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
 
 Of course, you can install directly from the source.
 In addition to aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, easiest way to install it would be: `pip install cmake`.
