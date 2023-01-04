@@ -25,9 +25,9 @@ def export(fname, multipatch=None, indent=True):
     None
     """
     from splinepy import NURBS, BSpline, Multipatch
-    from splinepy.settings import TOLERANCE
+    from splinepy.settings import NTHREADS, TOLERANCE
     from splinepy.spline import Spline
-    from splinepy.splinepy_core import get_orientation
+    from splinepy.splinepy_core import orientations
 
     # First transform spline-data into a multipatch-data if required
     if issubclass(type(multipatch), Spline):
@@ -104,27 +104,15 @@ def export(fname, multipatch=None, indent=True):
         con_face_id_end = con_face_id_end[end_order]
 
         # Identify Orientation
-        axis_mapping = np.empty(
-            (start_order.size, multipatch.para_dim), dtype=np.int32
+        (axis_mapping, axis_orientation,) = orientations(
+            multipatch.splines,
+            con_spline_id_start,
+            con_face_id_start,
+            con_spline_id_end,
+            con_face_id_end,
+            TOLERANCE,
+            NTHREADS,
         )
-        axis_orientation = np.empty(
-            (start_order.size, multipatch.para_dim), dtype=bool
-        )
-        for i, (id_start, start_face, id_end, end_face) in enumerate(
-            zip(
-                con_spline_id_start.ravel(),
-                con_face_id_start.ravel(),
-                con_spline_id_end.ravel(),
-                con_face_id_end.ravel(),
-            )
-        ):
-            axis_mapping[i, :], axis_orientation[i, :] = get_orientation(
-                multipatch.splines[id_start],
-                start_face,
-                multipatch.splines[id_end],
-                end_face,
-                TOLERANCE,
-            )
 
         # write to file
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an

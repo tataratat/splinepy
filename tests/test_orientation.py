@@ -35,34 +35,53 @@ class orientationTest(c.unittest.TestCase):
             degrees=[1, 1], control_points=[[2, 1], [1, 1], [2, 0], [1, 0]]
         )
 
-        # Right Arm
+        # Provide connectivity data
+        spline_list = [a_s, b_s, c_s, d_s, e_s]
+        start_ids = [0, 0, 0, 0]
+        start_face_ids = [1, 3, 0, 2]
+        neighbor_ids = [1, 2, 3, 4]
+        neighbor_face_ids = [2, 2, 1, 2]
+
+        # Determine orientation single thread
         (
             axis_mapping,
             axis_orientation,
-        ) = c.splinepy.splinepy_core.get_orientation(a_s, 1, b_s, 2, 0.001)
-        self.assertTrue(c.np.all([1, 0] == axis_mapping))
-        self.assertTrue(c.np.all([True, True] == axis_orientation))
-        # Upper Arm
+        ) = c.splinepy.splinepy_core.orientations(
+            spline_list,
+            start_ids,
+            start_face_ids,
+            neighbor_ids,
+            neighbor_face_ids,
+            0.00001,
+            1,
+        )
+
+        # Check results
+        expected_mappings = [[1, 0], [0, 1], [0, 1], [0, 1]]
+        expected_orientations = [
+            [True, True],
+            [True, True],
+            [True, False],
+            [False, False],
+        ]
+        self.assertTrue(c.np.all(expected_mappings == axis_mapping))
+        self.assertTrue(c.np.all(expected_orientations == axis_orientation))
+
+        # Repeat with multithread execution
         (
             axis_mapping,
             axis_orientation,
-        ) = c.splinepy.splinepy_core.get_orientation(a_s, 3, c_s, 2, 0.001)
-        self.assertTrue(c.np.all([0, 1] == axis_mapping))
-        self.assertTrue(c.np.all([True, True] == axis_orientation))
-        # Left Arm
-        (
-            axis_mapping,
-            axis_orientation,
-        ) = c.splinepy.splinepy_core.get_orientation(a_s, 0, d_s, 1, 0.001)
-        self.assertTrue(c.np.all([0, 1] == axis_mapping))
-        self.assertTrue(c.np.all([True, False] == axis_orientation))
-        # Lower Arm
-        (
-            axis_mapping,
-            axis_orientation,
-        ) = c.splinepy.splinepy_core.get_orientation(a_s, 2, e_s, 2, 0.001)
-        self.assertTrue(c.np.all([0, 1] == axis_mapping))
-        self.assertTrue(c.np.all([False, False] == axis_orientation))
+        ) = c.splinepy.splinepy_core.orientations(
+            spline_list,
+            start_ids,
+            start_face_ids,
+            neighbor_ids,
+            neighbor_face_ids,
+            0.00001,
+            3,
+        )
+        self.assertTrue(c.np.all(expected_mappings == axis_mapping))
+        self.assertTrue(c.np.all(expected_orientations == axis_orientation))
 
 
 if __name__ == "__main__":
