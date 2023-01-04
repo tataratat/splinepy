@@ -112,10 +112,10 @@ def export(fname, multipatch=None, indent=True):
         )
         for i, (id_start, start_face, id_end, end_face) in enumerate(
             zip(
-                con_spline_id_start.flatten(),
-                con_face_id_start.flatten(),
-                con_spline_id_end.flatten(),
-                con_face_id_end.flatten(),
+                con_spline_id_start.ravel(),
+                con_face_id_start.ravel(),
+                con_spline_id_end.ravel(),
+                con_face_id_end.ravel(),
             )
         ):
             axis_mapping[i, :], axis_orientation[i, :] = get_orientation(
