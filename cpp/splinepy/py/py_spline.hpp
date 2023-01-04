@@ -489,16 +489,12 @@ public:
 
     // prepare lambda for nthread exe
     double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    const int stride = para_dim_ * dim_;
     auto derive = [&](int begin, int end) {
       for (int i{begin}; i < end; ++i) {
-        for (int j{0}; j < para_dim_; j++) {
-          std::vector<int> orders(para_dim_); // zero init
-          orders[j] = 1;
-          Core()->SplinepyDerivative(
-              &queries_ptr[i * para_dim_],
-              orders.data(),
-              &jacobians_ptr[i * para_dim_ * dim_ + j * dim_]);
-        }
+        Core()->SplinepyJacobian(&queries_ptr[i * para_dim_],
+                                 orders.data(),
+                                 &jacobians_ptr[i * stride]);
       }
     };
 
