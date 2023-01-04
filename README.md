@@ -147,7 +147,7 @@ Available in `splinepy.io`.
 
 
 ## Dependencies
-Followings are direct dependencies for splinepy. If something is miss something, please feel free to extend!
+Followings are direct dependencies for splinepy. If something is missing, please feel free to extend!
 #### c++
 - [pybind11](https://github.com/pybind/pybind11)
 - [SplineLib](https://github.com/tataratat/SplineLib)
