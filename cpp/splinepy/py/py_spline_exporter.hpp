@@ -733,19 +733,21 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
  * @param bool_orientations_ptr (output) axis alignement
  * @return void
  */
-void GetBoundaryOrientation(const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
-                            const int& boundary_start,
-                            const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
-                            const int& boundary_end,
-                            const double& tolerance,
-                            int* int_mappings_ptr,
-                            bool* bool_orientations_ptr) {
+void GetBoundaryOrientation(
+    const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
+    const int& boundary_start,
+    const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
+    const int& boundary_end,
+    const double& tolerance,
+    int* int_mappings_ptr,
+    bool* bool_orientations_ptr) {
   // Init return values and get auxiliary data
-  const int& para_dim_ = pyspline_start.para_dim_;
-  const int& dim_ = pyspline_end.dim_;
+  const int& para_dim_ = pyspline_start->SplinepyParaDim();
+  const int& dim_ = pyspline_start->SplinepyDim();
 
   // Checks
-  if ((para_dim_ != pyspline_end.para_dim_) || (dim_ != pyspline_end.dim_)) {
+  if ((para_dim_ != pyspline_end->SplinepyParaDim())
+      || (dim_ != pyspline_end->SplinepyDim())) {
     splinepy::utils::PrintAndThrowError(
         "Spline Orientation can not be checked, as they have mismatching"
         "dimensionality start spline has dimensions ",
@@ -753,9 +755,9 @@ void GetBoundaryOrientation(const std::shared_ptr<splinepy::splines::SplinepyBas
         "D -> ",
         dim_,
         "D, the adjacent one has dimensions ",
-        pyspline_end.para_dim_,
+        pyspline_end->SplinepyParaDim(),
         "D -> ",
-        pyspline_end.dim_,
+        pyspline_end->SplinepyDim(),
         "D.");
   }
 
