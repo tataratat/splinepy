@@ -62,10 +62,10 @@ bspline = splinepy.BSpline(
 grid_cps = np.empty(2, 3, 2)  # (dim, n_cps_u, n_cps_v)
 gird_cps[:, 0, 0] = [0. , 0. ]
 gird_cps[:, 0, 1] = [0.5, 0. ]
-gird_cps[:, 0, 3] = [1. , 0. ]
+gird_cps[:, 0, 2] = [1. , 0. ]
 gird_cps[:, 1, 0] = [0. , 1. ]
 gird_cps[:, 1, 1] = [0.5, 1. ]
-gird_cps[:, 1, 0] = [1. , 1. ]
+gird_cps[:, 1, 2] = [1. , 1. ]
 
 assert np.allclose(
     bspline.control_points,
