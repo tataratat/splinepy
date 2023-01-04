@@ -32,6 +32,7 @@ cd splinepy
 git submodule update --init --recursive
 python3 setup.py install
 ```
+For visualization and extended functionalities, please take a look at [gustaf](https://github.com/tataratat/gustaf)!
 
 ## Quick start
 ```python
