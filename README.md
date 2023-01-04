@@ -74,7 +74,7 @@ Splinepy offers a common interface for multipatch geometries, i.e., geometries c
  - determine patch-interfaces automatically
  - identification of boundary faces
  - boundary assignement using different techniques, relying either on the boundary position or on the continuity inbetween patches
- - Boundary extraction 
+ - Boundary extraction
 
 ### IO
 Other formats
