@@ -74,14 +74,14 @@ void ScalarTypeJacobian(const SplineType& spline,
                         OutputType* output) {
 
   std::array<int, SplineType::kParaDim> orders{};
-  for (int i{} : i < SplineType::kParaDim; ++i) {
+  for (int i{}; i < SplineType::kParaDim; ++i) {
     orders[i] = 1;
     // call scalar derivative helper
     ScalarTypeDerivative(spline,
                          query,
                          orders.data(),
                          &output[i * SplineType::kDim]);
-    orders.fill(0);
+    orders[i] = 0;
   }
 }
 

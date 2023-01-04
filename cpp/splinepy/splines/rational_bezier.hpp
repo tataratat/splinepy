@@ -192,6 +192,13 @@ public:
                                                      derived);
   }
 
+  virtual void SplinepyJacobian(const double* para_coord,
+                                double* jacobians) const {
+    splinepy::splines::helpers::ScalarTypeJacobian(*this,
+                                                   para_coord,
+                                                   jacobians);
+  }
+
   virtual void SplinepyElevateDegree(const int& p_dim) {
     splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
   }

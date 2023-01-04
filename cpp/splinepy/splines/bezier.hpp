@@ -178,6 +178,13 @@ public:
                                                      derived);
   }
 
+  virtual void SplinepyJacobian(const double* para_coord,
+                                double* jacobians) const {
+    splinepy::splines::helpers::ScalarTypeJacobian(*this,
+                                                   para_coord,
+                                                   jacobians);
+  }
+
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
     splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(

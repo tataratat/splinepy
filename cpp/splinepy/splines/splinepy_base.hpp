@@ -104,6 +104,10 @@ public:
                                   const int* orders,
                                   double* derived) const;
 
+  /// Spline evaluation
+  virtual void SplinepyJacobian(const double* para_coord,
+                                double* jacobian) const;
+
   /// Basis Function values
   virtual void SplinepyBasis(const double* para_coord, double* basis) const;
 

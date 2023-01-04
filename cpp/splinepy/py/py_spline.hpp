@@ -493,7 +493,6 @@ public:
     auto derive = [&](int begin, int end) {
       for (int i{begin}; i < end; ++i) {
         Core()->SplinepyJacobian(&queries_ptr[i * para_dim_],
-                                 orders.data(),
                                  &jacobians_ptr[i * stride]);
       }
     };
