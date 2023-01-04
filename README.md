@@ -137,15 +137,25 @@ Splinepy offers a common interface for multipatch geometries, i.e., geometries c
 Available in `splinepy.io`.
 | Formats | Description |
 | ------- | ----------- |
-| iges | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file. |
-| irit | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format. |
+| iges | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file |
+| irit | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format |
 | json | Supports base64 encoding |
 | mfem | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
-| gismo | [GISMO](https://gismo.github.io) compatible `.xml` format. |
+| gismo | [GISMO](https://gismo.github.io) compatible `.xml` format |
 | npz | Based on np.savez() |
-| xml | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format. |
+| xml | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format |
 
 
-
-
-### Dependencies
+## Dependencies
+Followings are direct dependencies for splinepy. If something is miss something, please feel free to extend!
+**c++**
+- [pybind11](https://github.com/pybind/pybind11)
+- [SplineLib](https://github.com/tataratat/SplineLib)
+- [bezman](https://github.com/tataratat/bezman)
+- [napf](https://github.com/tataratat/napf) - wraps / based on [nanoflann](https://github.com/jlblancoc/nanoflann)
+**python**
+- [numpy](https://numpy.org)
+**build**
+- [cmake](https://cmake.org)
+- [setuptools](https://setuptools.pypa.io/en/latest/)
+- [wheel](https://wheel.readthedocs.io/en/stable/)
