@@ -7,30 +7,87 @@ The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and ea
 
 ## Install guide
 For python3.6+ splinepy is available through `pip`:
-```
+```bash
 pip install --upgrade pip
 pip install splinepy
 ```
 
 It is also possible to install current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
 1) Fast build - minimal and debug mode
-```
+```bash
 SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 ```
 
 2) Same build as in PyPI - full set of splines and optimized build
-```
+```bash
 pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 ```
 `-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
 
 Of course, you can install directly from the source.
 In addition to aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, easiest way to install it would be: `pip install cmake`.
-```
+```bash
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
 git submodule update --init --recursive
 python3 setup.py install
+```
+
+## Quick start
+```python
+import splinepy
+import numpy as np
+
+# Initialize bspline with any array-like input
+bspline = splinepy.BSpline(
+    degrees=[2, 1],
+    knot_vectors=[
+        [0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+        [0.0, 0.0, 1.0, 1.0],
+    ],
+    control_points=[
+        [0. , 0. ],
+        [0.5, 0. ],
+        [1. , 0. ],
+        [0. , 1. ],
+        [0.5, 1. ],
+        [1. , 1. ],
+    ],
+)
+
+# We always store control points in 2D arrays with
+# (total_control_points, physical_dimension) shape.
+# They fill control grid by iterating lower-indexed dimensions first.
+# But if you are rather familiar with grid-like structure, this should hold
+grid_cps = np.empty(2, 3, 2)  # (dim, n_cps_u, n_cps_v)
+gird_cps[:, 0, 0] = [0. , 0. ]
+gird_cps[:, 0, 1] = [0.5, 0. ]
+gird_cps[:, 0, 3] = [1. , 0. ]
+gird_cps[:, 1, 0] = [0. , 1. ]
+gird_cps[:, 1, 1] = [0.5, 1. ]
+gird_cps[:, 1, 0] = [1. , 1. ]
+
+assert np.allclose(
+    bspline.control_points,
+    grid_cps.reshape(-1, 2)  # (-1, dim)
+)
+
+# Evaluate spline mapping.
+# First, let's form parametric coordinate queries
+queries = [
+    [0.1, 0.2], # first query
+    [0.4, 0.5], # second query
+    [0.1156, 0.9091],  # third query
+]
+physical_coords = bspline.evaluate(queries)
+
+# we can also execute this in parallel using multithread executions in c++ side
+# (probably makes more sense if you have giant queries)
+physical_coords_parallel = bspline.evaluate(queries, nthreads=2)
+
+# this holds
+assert np.allclose(physical_coords, physical_coords_parallel)
+
 ```
 
 ## Feature Summary
@@ -80,12 +137,6 @@ Splinepy offers a common interface for multipatch geometries, i.e., geometries c
 Other formats
 
 
-## Quick start
-```python
-import splinepy
-
-
-```
 
 
 ### Dependencies
