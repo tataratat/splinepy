@@ -880,7 +880,7 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
       static_cast<bool*>(bool_orientations.request().ptr);
 
   // Provide lambda for multithread execution
-  auto get_orientation = [&](const int& start, const int& end) {
+  auto get_orientation = [&](const int start, const int end) {
     for (int i{start}; i < end; ++i) {
       GetBoundaryOrientation(cpp_spline_list[base_id_ptr[i]],
                              base_face_id_ptr[i],
