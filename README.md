@@ -147,15 +147,15 @@ Available in `splinepy.io`.
 
 
 ## Dependencies
-Followings are direct dependencies for splinepy. If something is miss something, please feel free to extend!
-**c++**
+Followings are direct dependencies for splinepy. If something is miss something, please feel free to extend!  
+**c++**  
 - [pybind11](https://github.com/pybind/pybind11)
 - [SplineLib](https://github.com/tataratat/SplineLib)
 - [bezman](https://github.com/tataratat/bezman)
 - [napf](https://github.com/tataratat/napf) - wraps / based on [nanoflann](https://github.com/jlblancoc/nanoflann)
-**python**
+**python**  
 - [numpy](https://numpy.org)
-**build**
+**build**  
 - [cmake](https://cmake.org)
 - [setuptools](https://setuptools.pypa.io/en/latest/)
 - [wheel](https://wheel.readthedocs.io/en/stable/)
