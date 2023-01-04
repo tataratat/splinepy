@@ -733,9 +733,9 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
  * @param bool_orientations_ptr (output) axis alignement
  * @return void
  */
-void GetBoundaryOrientation(const PySpline& pyspline_start,
+void GetBoundaryOrientation(const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
                             const int& boundary_start,
-                            const PySpline& pyspline_end,
+                            const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
                             const int& boundary_end,
                             const double& tolerance,
                             int* int_mappings_ptr,
@@ -771,9 +771,9 @@ void GetBoundaryOrientation(const PySpline& pyspline_start,
   /// Compare jacobians for remaining entries
   // Determine face center position in parametric space
   std::vector<double> bounds_start(para_dim_ * 2);
-  pyspline_start.Core()->SplinepyParametricBounds(bounds_start.data());
+  pyspline_start->SplinepyParametricBounds(bounds_start.data());
   std::vector<double> bounds_end(para_dim_ * 2);
-  pyspline_end.Core()->SplinepyParametricBounds(bounds_end.data());
+  pyspline_end->SplinepyParametricBounds(bounds_end.data());
   py::array_t<double> boundary_center_start(para_dim_),
       boundary_center_end(para_dim_);
   double* bcs_start_ptr =
