@@ -145,6 +145,12 @@ Available in `splinepy.io`.
 | npz | Based on np.savez() |
 | xml | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format |
 
+### BSpline fitting
+Implements fitting routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7). Available as BSpline's classmethod.
+- interpolate_curve()
+- approximate_curve()
+- interpolate_surfaces()
+
 
 ## Dependencies
 Followings are direct dependencies for splinepy. If something is missing, please feel free to extend!
