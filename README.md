@@ -57,7 +57,7 @@ bspline = splinepy.BSpline(
 )
 
 # We always store control points in 2D arrays with
-# (total_control_points, physical_dimension) shape.
+# (total_number_of_control_points, physical_dimension) shape.
 # They fill control grid by iterating lower-indexed dimensions first.
 # But if you are rather familiar with grid-like structure, this should hold
 grid_cps = np.empty(2, 3, 2)  # (dim, n_cps_u, n_cps_v)
