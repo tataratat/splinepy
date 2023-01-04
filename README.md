@@ -140,7 +140,7 @@ Available in `splinepy.io`.
 | ------- | ----------- |
 | iges | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file |
 | irit | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format |
-| json | Supports base64 encoding |
+| json | (Custom) easy-to-read format, supports base64 encoding |
 | mfem | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
 | gismo | [GISMO](https://gismo.github.io) compatible `.xml` format |
 | npz | Based on np.savez() |
