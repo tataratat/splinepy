@@ -849,8 +849,8 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
                                   const py::array_t<int>& base_face_id,
                                   const py::array_t<int>& neighbor_id,
                                   const py::array_t<int>& neighbor_face_id,
-                                  const double& tolerance,
-                                  const int& n_threads) {
+                                  const double tolerance,
+                                  const int n_threads) {
   // Basic Checks
   // Check if all have same size
   if (!((base_id.size() == base_face_id.size())
@@ -873,14 +873,14 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
 
   const int para_dim_ = cpp_spline_list[0]->SplinepyParaDim();
 
-  py::array_t<int> int_mapping(base_id.size() * para_dim_);
+  py::array_t<int> int_mapping(n_connections * para_dim_);
   int* int_mapping_ptr = static_cast<int*>(int_mapping.request().ptr);
-  py::array_t<bool> bool_orientations(base_id.size() * para_dim_);
+  py::array_t<bool> bool_orientations(n_connections * para_dim_);
   bool* bool_orientations_ptr =
       static_cast<bool*>(bool_orientations.request().ptr);
 
   // Provide lambda for multithread execution
-  auto get_orientation = [&](const int start, const int end) {
+  auto get_orientation = [&](int start, int end) {
     for (int i{start}; i < end; ++i) {
       GetBoundaryOrientation(cpp_spline_list[base_id_ptr[i]],
                              base_face_id_ptr[i],
@@ -891,11 +891,14 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
                              &bool_orientations_ptr[i * para_dim_]);
     }
   };
+
+  // Execute in parallel
   splinepy::utils::NThreadExecution(get_orientation, n_connections, n_threads);
 
   // Resize and return
   int_mapping.resize({n_connections, para_dim_});
   bool_orientations.resize({n_connections, para_dim_});
+
   return py::make_tuple(int_mapping, bool_orientations);
 }
 
