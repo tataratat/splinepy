@@ -66,6 +66,25 @@ void ScalarTypeDerivative(const SplineType& spline,
   }
 }
 
+/// Spline Jacobian
+/// output should have the size of dim * para_dim
+template<typename SplineType, typename QueryType, typename OutputType>
+void ScalarTypeJacobian(const SplineType& spline,
+                        const QueryType* query,
+                        OutputType* output) {
+
+  std::array<int, SplineType::kParaDim> orders{};
+  for (int i{}; i < SplineType::kParaDim; ++i) {
+    orders[i] = 1;
+    // call scalar derivative helper
+    ScalarTypeDerivative(spline,
+                         query,
+                         orders.data(),
+                         &output[i * SplineType::kDim]);
+    orders[i] = 0;
+  }
+}
+
 template<typename SplineType, typename ResolutionType, typename NThreadsType>
 void ScalarTypePlantNewKdTreeForProximity(SplineType& spline,
                                           const ResolutionType* resolutions,

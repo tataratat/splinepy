@@ -23,6 +23,7 @@
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/utils/print.hpp>
 
+/// @brief
 namespace splinepy::py {
 
 namespace py = pybind11;
@@ -715,6 +716,191 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
 #endif
   // dummy statement for compiler
   return py::array_t<int>();
+}
+
+/**
+ * @brief Orientation between two adjacent splines
+ *
+ * If two splines share the same boundary this function retrieves their
+ * orientation, by mapping the mappings of the parametric axis onto each other.
+ * This is (among others) required for Gismo and Nutils export
+ *
+ * @param pyspline_start Spline object from start
+ * @param boundary_start Boundary ID from start spline
+ * @param pyspline_end Spline object from end *to which is mapped
+ * @param boundary_end Boundary ID of adjacent spline
+ * @param int_mappings_ptr (output) integer mappings
+ * @param bool_orientations_ptr (output) axis alignement
+ * @return void
+ */
+void GetBoundaryOrientation(
+    const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
+    const int& boundary_start,
+    const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
+    const int& boundary_end,
+    const double& tolerance,
+    int* int_mappings_ptr,
+    bool* bool_orientations_ptr) {
+  // Init return values and get auxiliary data
+  const int& para_dim_ = pyspline_start->SplinepyParaDim();
+  const int& dim_ = pyspline_start->SplinepyDim();
+
+  // Checks
+  if ((para_dim_ != pyspline_end->SplinepyParaDim())
+      || (dim_ != pyspline_end->SplinepyDim())) {
+    splinepy::utils::PrintAndThrowError(
+        "Spline Orientation can not be checked, as they have mismatching"
+        "dimensionality start spline has dimensions ",
+        para_dim_,
+        "D -> ",
+        dim_,
+        "D, the adjacent one has dimensions ",
+        pyspline_end->SplinepyParaDim(),
+        "D -> ",
+        pyspline_end->SplinepyDim(),
+        "D.");
+  }
+
+  // First Check the orientation of the first entry by comparing their
+  const int boundary_start_p_dim = static_cast<int>(boundary_start / 2);
+  const bool boundary_start_orientation = (boundary_start % 2) == 0;
+  const int boundary_end_p_dim = static_cast<int>(boundary_end / 2);
+  const bool boundary_end_orientation = (boundary_end % 2) == 0;
+  int_mappings_ptr[boundary_start_p_dim] = boundary_end_p_dim;
+  bool_orientations_ptr[boundary_start_p_dim] =
+      (boundary_start_orientation ^ boundary_end_orientation);
+
+  /// Compare jacobians for remaining entries
+  // Calculate Parametric bounds
+  std::vector<double> bounds_start(para_dim_ * 2);
+  pyspline_start->SplinepyParametricBounds(bounds_start.data());
+  std::vector<double> bounds_end(para_dim_ * 2);
+  pyspline_end->SplinepyParametricBounds(bounds_end.data());
+  // Determine face center position in parametric space
+  std::vector<double> boundary_center_start(para_dim_),
+      boundary_center_end(para_dim_);
+
+  for (int i{}; i < para_dim_; i++) {
+    if (i == boundary_start_p_dim) {
+      boundary_center_start[i] = boundary_start_orientation
+                                     ? bounds_start[i]
+                                     : bounds_start[i + para_dim_];
+    } else {
+      boundary_center_start[i] =
+          .5 * (bounds_start[i] + bounds_start[i + para_dim_]);
+    }
+    if (i == boundary_end_p_dim) {
+      boundary_center_end[i] =
+          boundary_end_orientation ? bounds_end[i] : bounds_end[i + para_dim_];
+    } else {
+      boundary_center_end[i] = .5 * (bounds_end[i] + bounds_end[i + para_dim_]);
+    }
+  }
+
+  // Calculate Jacobians
+  std::vector<double> jacobian_start(para_dim_ * dim_),
+      jacobian_end(para_dim_ * dim_);
+  pyspline_start->SplinepyJacobian(boundary_center_start.data(),
+                                   jacobian_start.data());
+  pyspline_end->SplinepyJacobian(boundary_center_end.data(),
+                                 jacobian_end.data());
+
+  // Check the angle between the jacobian entries
+  for (int i{}; i < para_dim_; i++) {
+    if (i == boundary_start_p_dim) {
+      continue;
+    }
+    double norm_s{};
+    for (int k{}; k < dim_; k++) {
+      // [i_query * pdim * dim + i_paradim * dim + i_dim]
+      norm_s += jacobian_start[i * dim_ + k] * jacobian_start[i * dim_ + k];
+    }
+    for (int j{}; j < para_dim_; j++) {
+      double norm_e{}, dot_p{};
+      for (int k{}; k < dim_; k++) {
+        dot_p += jacobian_start[i * dim_ + k] * jacobian_end[j * dim_ + k];
+        norm_e += jacobian_end[j * dim_ + k] * jacobian_end[j * dim_ + k];
+      }
+
+      // Check angle
+      const double cos_angle = abs(dot_p / std::sqrt(norm_s * norm_e));
+      if (cos_angle > (1. - tolerance)) {
+        int_mappings_ptr[i] = j;
+        bool_orientations_ptr[i] = (dot_p > 0);
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * @brief Get the Boundary Orientations object
+ *
+ * @param spline_list
+ * @param base_id
+ * @param base_face_id
+ * @param base_id
+ * @param base_face_id
+ * @param tolerance
+ * @param n_threads
+ * @return py::tuple
+ */
+py::tuple GetBoundaryOrientations(const py::list& spline_list,
+                                  const py::array_t<int>& base_id,
+                                  const py::array_t<int>& base_face_id,
+                                  const py::array_t<int>& neighbor_id,
+                                  const py::array_t<int>& neighbor_face_id,
+                                  const double tolerance,
+                                  const int n_threads) {
+  // Basic Checks
+  // Check if all have same size
+  if (!((base_id.size() == base_face_id.size())
+        && (neighbor_id.size() == neighbor_face_id.size())
+        && (base_id.size() == neighbor_face_id.size()))) {
+    splinepy::utils::PrintAndThrowError(
+        "The ID arrays need to be of same size, please check for "
+        "consistencies.");
+  }
+
+  // Auxiliary data
+  const int* base_id_ptr = static_cast<int*>(base_id.request().ptr);
+  const int* base_face_id_ptr = static_cast<int*>(base_face_id.request().ptr);
+  const int* neighbor_id_ptr = static_cast<int*>(neighbor_id.request().ptr);
+  const int* neighbor_face_id_ptr =
+      static_cast<int*>(neighbor_face_id.request().ptr);
+  const auto cpp_spline_list =
+      ListOfPySplinesToVectorOfCoreSplines(spline_list);
+  const int n_connections = base_id.size();
+
+  const int para_dim_ = cpp_spline_list[0]->SplinepyParaDim();
+
+  py::array_t<int> int_mapping(n_connections * para_dim_);
+  int* int_mapping_ptr = static_cast<int*>(int_mapping.request().ptr);
+  py::array_t<bool> bool_orientations(n_connections * para_dim_);
+  bool* bool_orientations_ptr =
+      static_cast<bool*>(bool_orientations.request().ptr);
+
+  // Provide lambda for multithread execution
+  auto get_orientation = [&](int start, int end) {
+    for (int i{start}; i < end; ++i) {
+      GetBoundaryOrientation(cpp_spline_list[base_id_ptr[i]],
+                             base_face_id_ptr[i],
+                             cpp_spline_list[neighbor_id_ptr[i]],
+                             neighbor_face_id_ptr[i],
+                             tolerance,
+                             &int_mapping_ptr[i * para_dim_],
+                             &bool_orientations_ptr[i * para_dim_]);
+    }
+  };
+
+  // Execute in parallel
+  splinepy::utils::NThreadExecution(get_orientation, n_connections, n_threads);
+
+  // Resize and return
+  int_mapping.resize({n_connections, para_dim_});
+  bool_orientations.resize({n_connections, para_dim_});
+
+  return py::make_tuple(int_mapping, bool_orientations);
 }
 
 /**

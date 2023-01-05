@@ -51,3 +51,9 @@ if __name__ == "__main__":
 
     print("NURBS basis functions and support ids:")
     print(n.basis_and_support(q))
+
+    print("These can also be stored within a matrix using numpy functions")
+    basis_function_matrix = np.zeros((len(q), b.control_points.shape[0]))
+    bf, supports = b.basis_and_support(q)
+    np.put_along_axis(basis_function_matrix, supports, bf, axis=1)
+    print(basis_function_matrix)

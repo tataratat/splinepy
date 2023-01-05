@@ -25,7 +25,9 @@ def export(fname, multipatch=None, indent=True):
     None
     """
     from splinepy import NURBS, BSpline, Multipatch
+    from splinepy.settings import NTHREADS, TOLERANCE
     from splinepy.spline import Spline
+    from splinepy.splinepy_core import orientations
 
     # First transform spline-data into a multipatch-data if required
     if issubclass(type(multipatch), Spline):
@@ -62,11 +64,6 @@ def export(fname, multipatch=None, indent=True):
         f"{index_offset} " f"{len(multipatch.splines) - 1 + index_offset}"
     )
 
-    warning(
-        "Gismo Export only works for structured meshes and no checks are "
-        "performed whether this assumption is valid"
-    )
-
     interface_data = ET.SubElement(multipatch_element, "interfaces")
 
     con_spline_id, con_face_id = np.where(multipatch.interfaces >= 0)
@@ -99,27 +96,37 @@ def export(fname, multipatch=None, indent=True):
                 con_spline_id_end,
             )
         ).reshape(-1, 1)
-        # HERE WE SHOULD IDENTIFY THE ORIENTATION
+
+        # Reorder arrays
+        con_spline_id_start = con_spline_id_start[start_order]
+        con_face_id_start = con_face_id_start[start_order]
+        con_spline_id_end = con_spline_id_end[end_order]
+        con_face_id_end = con_face_id_end[end_order]
+
+        # Identify Orientation
+        (axis_mapping, axis_orientation,) = orientations(
+            multipatch.splines,
+            con_spline_id_start,
+            con_face_id_start,
+            con_spline_id_end,
+            con_face_id_end,
+            TOLERANCE,
+            NTHREADS,
+        )
+
         # write to file
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
         # offset of 1)
         interface_array = np.hstack(
             (
-                con_spline_id_start[start_order] + index_offset,
-                con_face_id_start[start_order] + 1,
-                con_spline_id_end[end_order] + index_offset,
-                con_face_id_end[end_order] + 1,
+                con_spline_id_start + index_offset,
+                con_face_id_start + 1,
+                con_spline_id_end + index_offset,
+                con_face_id_end + 1,
                 # This is the orientation:
-                np.repeat(
-                    np.arange(multipatch.para_dim, dtype=np.int32).reshape(
-                        1, -1
-                    ),
-                    start_order.size,
-                    axis=0,
-                ),
-                np.ones(
-                    (start_order.size, multipatch.para_dim), dtype=np.int32
-                ),
+                axis_mapping,
+                # Convert bool into -1 and 1 for gismo
+                axis_orientation.astype(np.int32) * 2 - 1,
             )
         )
         interface_data.text = "\n".join(

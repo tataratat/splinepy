@@ -439,6 +439,12 @@ void SplinepyBase::SplinepyDerivative(const double* para_coord,
                                       SplinepyWhatAmI());
 };
 
+void SplinepyBase::SplinepyJacobian(const double* para_coord,
+                                    double* jacobians) const {
+  splinepy::utils::PrintAndThrowError("SplinepyJacobian not implemented for",
+                                      SplinepyWhatAmI());
+};
+
 void SplinepyBase::SplinepyBasis(const double* para_coord,
                                  double* basis) const {
   splinepy::utils::PrintAndThrowError("SplinepyBasis not implemented for",

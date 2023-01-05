@@ -14,6 +14,15 @@ void init_exporter(py::module_& m) {
         py::arg("face_center_vertices"),
         py::arg("tolerance"),
         py::arg("para_dim"));
+  m.def("orientations",
+        &splinepy::py::GetBoundaryOrientations,
+        py::arg("splines"),
+        py::arg("base_ids"),
+        py::arg("base_face_ids"),
+        py::arg("neighbor_ids"),
+        py::arg("neighbor_face_ids"),
+        py::arg("tolerance"),
+        py::arg("nthreads") = 1);
   m.def("export_iges",
         &splinepy::py::ExportIges,
         py::arg("fname"),
