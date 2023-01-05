@@ -136,6 +136,7 @@ Splinepy offers a common interface for multipatch geometries, i.e., geometries c
 
 ### IO
 Available in `splinepy.io`.
+
 | Formats | Description |
 | ------- | ----------- |
 | iges | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file |
@@ -145,6 +146,7 @@ Available in `splinepy.io`.
 | gismo | [GISMO](https://gismo.github.io) compatible `.xml` format |
 | npz | Based on np.savez() |
 | xml | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format |
+
 
 ### BSpline fitting
 Implements fitting routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7). Available as BSpline's classmethod.
