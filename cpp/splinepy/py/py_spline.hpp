@@ -373,42 +373,6 @@ public:
     return cmr;
   }
 
-  /// @brief Evaluate Splines at boundary face centers
-  /// @return numpy array with results
-  py::array_t<double> EvaluateBoundaryCenters() const {
-    // prepare output
-    const int n_faces = 2 * para_dim_;
-    std::vector<double> queries(n_faces * para_dim_);
-    py::array_t<double> face_centers(n_faces * dim_);
-    double* face_centers_ptr = static_cast<double*>(face_centers.request().ptr);
-
-    // Get parametric bounds
-    // They are given back in the order [min_0, min_1,...,max_0, max_1...]
-    std::vector<double> bounds(para_dim_ * 2);
-    Core()->SplinepyParametricBounds(bounds.data());
-
-    // Set parametric coordinates
-    for (int i{}; i < para_dim_; i++) {
-      for (int j{}; j < para_dim_; j++) {
-        if (i == j) {
-          queries[2 * i * para_dim_ + j] = bounds[j];
-          queries[(2 * i + 1) * para_dim_ + j] = bounds[j + para_dim_];
-        } else {
-          queries[2 * i * para_dim_ + j] =
-              .5 * (bounds[j] + bounds[j + para_dim_]);
-          queries[(2 * i + 1) * para_dim_ + j] = queries[2 * i * para_dim_ + j];
-        }
-      }
-    }
-    for (int i{}; i < n_faces; ++i) {
-      Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
-                               &face_centers_ptr[i * dim_]);
-    }
-
-    face_centers.resize({n_faces, dim_});
-    return face_centers;
-  }
-
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -963,6 +927,44 @@ inline PySpline SameSplineWithKnotVectors(PySpline& spline) {
   return PySpline(props);
 }
 
+/// @brief Evaluate Splines at boundary face centers
+/// @return numpy array with results
+inline py::array_t<double> EvaluateBoundaryCenters(PySpline& spline) {
+  // prepare output
+  const int& para_dim_ = spline.para_dim_;
+  const int& dim_ = spline.dim_;
+  const int n_faces = 2 * para_dim_;
+  std::vector<double> queries(n_faces * para_dim_);
+  py::array_t<double> face_centers(n_faces * dim_);
+  double* face_centers_ptr = static_cast<double*>(face_centers.request().ptr);
+
+  // Get parametric bounds
+  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
+  std::vector<double> bounds(para_dim_ * 2);
+  spline.Core()->SplinepyParametricBounds(bounds.data());
+
+  // Set parametric coordinates
+  for (int i{}; i < para_dim_; i++) {
+    for (int j{}; j < para_dim_; j++) {
+      if (i == j) {
+        queries[2 * i * para_dim_ + j] = bounds[j];
+        queries[(2 * i + 1) * para_dim_ + j] = bounds[j + para_dim_];
+      } else {
+        queries[2 * i * para_dim_ + j] =
+            .5 * (bounds[j] + bounds[j + para_dim_]);
+        queries[(2 * i + 1) * para_dim_ + j] = queries[2 * i * para_dim_ + j];
+      }
+    }
+  }
+  for (int i{}; i < n_faces; ++i) {
+    spline.Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
+                                    &face_centers_ptr[i * dim_]);
+  }
+
+  face_centers.resize({n_faces, dim_});
+  return face_centers;
+}
+
 /// returns core spline's ptr address
 inline intptr_t CoreId(const PySpline& spline) {
   return reinterpret_cast<intptr_t>(spline.Core().get());
@@ -1020,8 +1022,6 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-      .def_property_readonly("boundary_centers",
-                             &splinepy::py::PySpline::EvaluateBoundaryCenters)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
@@ -1122,6 +1122,9 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
         py::arg("inner_derivative"));
   m.def("same_spline_with_knot_vectors",
         &splinepy::py::SameSplineWithKnotVectors,
+        py::arg("spline"));
+  m.def("boundary_centers",
+        &splinepy::py::EvaluateBoundaryCenters,
         py::arg("spline"));
   m.def("core_id", &splinepy::py::CoreId, py::arg("spline"));
   m.def("core_ref_count", &splinepy::py::CoreRefCount, py::arg("spline"));

@@ -238,8 +238,9 @@ class Multipatch(SplinepyBase):
 
         talk to at @j042
         """
+        from splinepy.splinepy_core import boundary_centers
         # If spline list is empty will throw excetion
-        return np.vstack([s.boundary_centers for s in self.splines])
+        return np.vstack([boundary_centers(s) for s in self.splines])
 
     def determine_interfaces(self):
         """

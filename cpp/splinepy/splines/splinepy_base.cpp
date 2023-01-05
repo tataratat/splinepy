@@ -441,7 +441,7 @@ void SplinepyBase::SplinepyDerivative(const double* para_coord,
 
 void SplinepyBase::SplinepyJacobian(const double* para_coord,
                                     double* jacobians) const {
-  splinepy::utils::PrintAndThrowError("SplinepyEvaluate not implemented for",
+  splinepy::utils::PrintAndThrowError("SplinepyJacobian not implemented for",
                                       SplinepyWhatAmI());
 };
 
