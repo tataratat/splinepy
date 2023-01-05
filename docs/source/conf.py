@@ -43,7 +43,7 @@ pygments_style = "sphinx"
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "piccolo_theme"
-# html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # def skip(app, what, name, obj, would_skip, options):
 #    if name == "__init__":

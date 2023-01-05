@@ -1,8 +1,6 @@
 splinepy
 ==================================
 
-TEST version of docs.
-
 .. toctree::
    :maxdepth: 2
 
@@ -23,6 +21,7 @@ Contributing
 Library
 ============
 .. toctree::
+   :maxdepth: 1
 
    API references <modules>
 
