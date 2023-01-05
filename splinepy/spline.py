@@ -1026,6 +1026,29 @@ class Spline(SplinepyBase, core.CoreSpline):
         )
 
     @_new_core_if_modified
+    def jacobian(self, queries, nthreads=None):
+        """
+        Evaluates jacobians on spline.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        n_threads: int
+
+        Returns
+        --------
+        results: (n, para_dim, dim) np.ndarray
+        """
+        self._logd("Determining spline jacobians")
+
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+
+        return super().jacobian(
+            queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
     def basis_and_support(self, queries, nthreads=None):
         """
         Returns basis function values and their support ids of given queries.
