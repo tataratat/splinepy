@@ -22,7 +22,7 @@ void init_exporter(py::module_& m) {
         py::arg("neighbor_ids"),
         py::arg("neighbor_face_ids"),
         py::arg("tolerance"),
-        py::arg("nthreads")=1);
+        py::arg("nthreads") = 1);
   m.def("export_iges",
         &splinepy::py::ExportIges,
         py::arg("fname"),
