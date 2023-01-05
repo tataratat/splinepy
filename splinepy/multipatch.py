@@ -361,7 +361,7 @@ class Multipatch(SplinepyBase):
     def add_boundary_with_function(
         self,
         function,
-        only_unassigned=False,
+        from_boundaries=None,
         boundary_id=None,
     ):
         """
@@ -373,9 +373,8 @@ class Multipatch(SplinepyBase):
         function : Callable
           Function called on every boundary center point to check if it is on
           the boundary, returns bool-type
-        only_unassigned : bool
-          Uses only previously unassigned boundaries
-          (i.e. on boundary 1)
+        from_boundaries : array-like
+          If assigned, takes only boundaries with matching ids
         boundary_id : int
           boundary_id to be assigned. If not chosen set to new lowest value
 
@@ -401,14 +400,18 @@ class Multipatch(SplinepyBase):
                 )
 
         # retrieve all boundary elements
-        if only_unassigned:
+        if from_boundaries is not None:
             boundary_ids = self.interfaces < 0
         else:
-            boundary_ids = self.interfaces == -1
+            boundary_ids = np.isin(-self.interfaces, np.abs(from_boundaries))
 
         # Check if there is a boundary
         if not boundary_ids.any():
-            raise ValueError("No boundary elements could be identified")
+            self.logd(
+                "No boundary elements could be identified that match "
+                "requirements"
+            )
+            return
 
         # Check all face centers
         relevant_boundary_centers = self.spline_boundary_centers[
@@ -460,3 +463,29 @@ class Multipatch(SplinepyBase):
         )
         self._logd(f"{n_new_boundaries} new boundaries were assigned")
         return
+
+    def combine_boundaries(self, bid_list=None):
+        """
+        Combines all boundaries that match an id from the bid_list to a single
+        boundary
+
+        Parameters
+        ----------
+        bid_list : array-like
+          List of boundary ids to be reassigned a new combined ID
+
+        Returns
+        -------
+        None
+        """
+        # retrieve all boundary elements
+        boundary_ids = np.isin(-self.interfaces, np.abs(bid_list))
+
+        if not boundary_ids.any():
+            self.logd(
+                "No boundary elements could be identified that match "
+                "requirements"
+            )
+            return
+
+        self.interfaces[boundary_ids] = np.min(bid_list)

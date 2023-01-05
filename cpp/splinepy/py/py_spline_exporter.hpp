@@ -1197,12 +1197,6 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
 }
 
 /**
- * @brief
- *
- *
- */
-
-/**
  * @brief  Adds a Boundary using a seed and G-continuity on boundary-splines
  *
  * This function might be a slight overkill, as it assignes all functions an ID,
