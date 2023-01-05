@@ -1197,7 +1197,13 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
 }
 
 /**
- * @brief Adds a Boundary using a seed and G-continuity on boundary-splines
+ * @brief
+ *
+ *
+ */
+
+/**
+ * @brief  Adds a Boundary using a seed and G-continuity on boundary-splines
  *
  * This function might be a slight overkill, as it assignes all functions an ID,
  * even when previously assigned a different ID -> Future Project
@@ -1206,39 +1212,42 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
  * @param boundary_interfaces interfaces between boundary splines
  * @param global_interfaces global interfaces (in between "volume"-patches)
  * @param tolerance tolerance to be considered g1 (1 - cos(phi) < tolerance)
+ * @param n_threads number of threads for parallel processing
+ * @return int number of new boundaries
  */
-void AddBoundariesFromContinuity(const py::list& boundary_splines,
-                                 const py::array_t<int>& boundary_interfaces,
-                                 py::array_t<int>& global_interfaces,
-                                 const double& tolerance) {
+int AddBoundariesFromContinuity(const py::list& boundary_splines,
+                                const py::array_t<int>& boundary_interfaces,
+                                py::array_t<int>& global_interfaces,
+                                const double& tolerance,
+                                const int& n_threads) {
   // Check input data
-  if (py::len(boundary_splines) != boundary_interfaces.shape(0)) {
+  if (static_cast<int>(py::len(boundary_splines))
+      != boundary_interfaces.shape(0)) {
     splinepy::utils::PrintAndThrowError(
         "Number of splines in list (",
         py::len(boundary_splines),
         ") and number of elements in connectivity (",
-        connectivity.shape(0),
+        boundary_interfaces.shape(0),
         ") does not match.");
   }
-  //
+
   // Provide auxiliary values
   const auto cpp_spline_list =
       ListOfPySplinesToVectorOfCoreSplines(boundary_splines);
-  const int n_boundary_patches{boundary_interfaces.shape(0)};
-  const int n_faces_per_boundary_patch{boundary_interfaces.shape(1)};
-  const int para_dim_{number_of_patches / 2};
-  const int dim_ = cpp_spline_list[0]->kDim;
+  const int n_boundary_patches{static_cast<int>(boundary_interfaces.shape(0))};
+  const int n_faces_per_boundary_patch{
+      static_cast<int>(boundary_interfaces.shape(1))};
+  const int para_dim_{n_faces_per_boundary_patch / 2};
+  const int dim_ = cpp_spline_list[0]->SplinepyDim();
   const int* boundary_interfaces_ptr =
       static_cast<int*>(boundary_interfaces.request().ptr);
-  // std::vector can use less memory for bools
-  std::vector<bool> is_assigned(n_boundary_patches); // defaults false
-  std::vector<int> new_boundary_id(n_boundary_patches, 1);
-  std::vector<int> queued_splines{};
+  int* global_interfaces_ptr =
+      static_cast<int*>(global_interfaces.request().ptr);
 
   // Auxiliary Lambdas to keep code clean
   // Check if to tangential vectors are g1 (tol > cos(phi))
-  auto areG1 = [&tolerance, &dim](const std::vector<double>& vec0,
-                                  const std::vector<double>& vec1) -> bool {
+  auto areG1 = [&tolerance, &dim_](const std::vector<double>& vec0,
+                                   const std::vector<double>& vec1) -> bool {
     double norm0{}, norm1{}, dot_p{};
     for (int i{}; i < dim_; i++) {
       norm0 += vec0[i] * vec0[i];
@@ -1247,22 +1256,101 @@ void AddBoundariesFromContinuity(const py::list& boundary_splines,
     }
     return (tolerance > abs(1 - abs(dot_p) / std::sqrt(norm0 * norm1)));
   };
-  // Paracoord to boundary_face_id
-  auto para_coord_to_face_id = [](const PySpline::CoreSpline_& spline,
-                                  const int& face_id) -> std::vector<double> {
-    // init return value
-    std::vector<double> para_coord;
 
-    // FILL UP HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    return para_coord;
+  // Identify face_id in adjacent patch
+  auto face_id_in_neighbor =
+      [&boundary_interfaces_ptr,
+       &n_faces_per_boundary_patch](const int& base_patch_id,
+                                    const int& neighbor_patch_id) -> int {
+    // Loop over adjacent elements until base_patch_id is found
+    for (int i{}; i < n_faces_per_boundary_patch; i++) {
+      if (boundary_interfaces_ptr[neighbor_patch_id * n_faces_per_boundary_patch
+                                  + i]
+          == base_patch_id) {
+        return i;
+      }
+    }
+    // This part should never be reached
+    splinepy::utils::PrintAndThrowError("Interface connectivity has errors, "
+                                        "unidirectional interface detected.");
+    return -1;
   };
-  // Get Face ID in adjacent spline
-  auto face_id_in_adjacent = []() {
-    // FILL UP HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    return 0;
+  // Tangential Vector on boundary based on its derivative
+  auto tangential_vector = [&cpp_spline_list, &para_dim_](
+                               const int& patch_id,
+                               const int& face_id) -> std::vector<double> {
+    // init return value (are default initialized to 0)
+    std::vector<double> para_coord(para_dim_), bounds(2 * para_dim_),
+        tangential_vector(para_dim_);
+    std::vector<int> orders(para_dim_);
+
+    //
+    const int axis_dim = face_id / 2;
+    const int is_in_front = face_id % 2;
+
+    // Parametric Bounds
+    const auto& spline = cpp_spline_list[patch_id];
+    spline->SplinepyParametricBounds(bounds.data());
+
+    for (int i{}; i < para_dim_; i++) {
+      if (i == axis_dim) {
+        para_coord[i] = bounds[i + is_in_front * para_dim_];
+        orders[i] = 1;
+      } else {
+        para_coord[i] = .5 * (bounds[i + para_dim_] + bounds[i]);
+      }
+    }
+    spline->SplinepyDerivative(para_coord.data(),
+                               orders.data(),
+                               tangential_vector.data());
+    return tangential_vector;
   };
+
+  // Start Computations ------------------------------------------------ //
+  // while the actual propagation needs to be performed in serial, the
+  // precomputation of interface tolerances can be performed in parallel
+  std::vector<bool> faces_are_g1(n_faces_per_boundary_patch
+                                 * n_boundary_patches);
+  auto precompute_tolerances = [&](const int start, const int end) {
+    // Loop over relevant faces
+    for (int i{start}; i < end; i++) {
+      // Loop over faces
+      for (int j{}; j < n_faces_per_boundary_patch; j++) {
+        const int& adjacent_id =
+            boundary_interfaces_ptr[i * n_faces_per_boundary_patch + j];
+
+        if (adjacent_id < i) {
+          // only compute if the adjacent neighbor has higher id to prevent
+          // double the work
+          continue;
+        }
+        // Get tangential vector of current patch
+        const std::vector<double> vec0 = tangential_vector(i, j);
+
+        // Get corresponding tangential vector of neighbor patch
+        const int adjacent_face_id = face_id_in_neighbor(i, adjacent_id);
+        const std::vector<double> vec1 =
+            tangential_vector(adjacent_id, adjacent_face_id);
+
+        // Check tolerance
+        const bool is_g1 = areG1(vec0, vec1);
+        faces_are_g1[i * n_faces_per_boundary_patch + j] = is_g1;
+        faces_are_g1[adjacent_id * n_faces_per_boundary_patch
+                     + adjacent_face_id] = is_g1;
+      }
+    }
+  };
+
+  // Execute in parallel
+  splinepy::utils::NThreadExecution(precompute_tolerances,
+                                    n_boundary_patches,
+                                    n_threads);
+
+  // std::vector can use less memory for bools
+  std::vector<bool> is_assigned(n_boundary_patches); // defaults false
+  std::vector<int> new_boundary_id(n_boundary_patches);
+  std::vector<int> queued_splines{};
 
   // Start Assignement
   // Loop over all patches
@@ -1276,17 +1364,49 @@ void AddBoundariesFromContinuity(const py::list& boundary_splines,
     queued_splines.push_back(i);
 
     // Start propagation
-    while (queued_splines.size() > 0) {
-      const current_id = queued_splines.pop();
+    while (!queued_splines.empty()) {
+      const int current_id = queued_splines.back();
+      queued_splines.pop_back();
       for (int i_face{}; i_face < n_faces_per_boundary_patch; i_face++) {
-        const int parametric_dimension = i_face / 2;
-        std::vector<double> para_cord0(para_dim_, .5);
+        const int combined_index = i * n_faces_per_boundary_patch + i_face;
+        // Is the neighborface G1
+        if (faces_are_g1[combined_index]) {
+          const int& adjacent_id = boundary_interfaces_ptr[combined_index];
+          // Check if the adjacent patch is already assigned
+          if (is_assigned[adjacent_id]) {
+            continue;
+          } else {
+            // Assign a BID and continue
+            new_boundary_id[adjacent_id] = current_max_id;
+            is_assigned[adjacent_id] = true;
+            queued_splines.push_back(adjacent_id);
+          }
+        }
       }
     }
 
     // End propagation and increase id
     current_max_id++;
   }
+
+  // Assign the new boundary ids to the old interface-vector
+  const int& n_interfaces = global_interfaces.size();
+  int counter{};
+  for (int i{}; i < n_interfaces; i++) {
+    if (global_interfaces_ptr[i] < 0) {
+      global_interfaces_ptr[i] = -new_boundary_id[counter];
+      counter++;
+    }
+  }
+  if (counter != n_boundary_patches) {
+    splinepy::utils::PrintAndThrowError(
+        counter,
+        " new boundary ids were assigned, however ",
+        n_boundary_patches,
+        " were expected, which means information was lost. Abort mission");
+  }
+
+  return current_max_id;
 }
 
 } // namespace splinepy::py

@@ -5,7 +5,6 @@ Multipatch Spline Configuration
 import numpy as np
 
 from splinepy._base import SplinepyBase
-from splinepy.settings import TOLERANCE
 from splinepy.utils.data import enforce_contiguous
 
 
@@ -211,25 +210,30 @@ class Multipatch(SplinepyBase):
           Connectivity in local patch enumeration system
         """
         from splinepy import settings
-        from splinepy.splinepy_core import interfaces_from_boundary_centers
+        from splinepy.splinepy_core import (
+            boundary_centers,
+            interfaces_from_boundary_centers,
+        )
 
         if self._boundary_interfaces is None:
             self._logd("Determine boundary interfaces")
 
             # Get Boundary Centers
             boundary_patch_face_centers = np.vstack(
-                [s.boundary_centers for s in self.boundary_patches]
+                [boundary_centers(s) for s in self.boundary_patches]
             )
 
             # Using the setter instead of the the member, all necessery
             # checks will be performed
             self._boundary_interfaces = interfaces_from_boundary_centers(
-                boundary_patch_face_centers, settings.TOLERANCE, self.para_dim
+                boundary_patch_face_centers,
+                settings.TOLERANCE,
+                (self.para_dim - 1),
             )
             if np.any(self._boundary_interfaces < 0):
                 raise MemoryError(
-                    "Something went wrong determining the "
-                    "boundaries. There should only be posiive integers, as the boundaries must"
+                    "Something went wrong determining the boundaries. There"
+                    " should only be posiive integers, as the boundaries must"
                     " be interconnected!"
                 )
             self._logd(
@@ -428,21 +432,31 @@ class Multipatch(SplinepyBase):
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
 
-    def add_boundary_from_seed(self, seed_position, tolerance=None):
-        """WIP
+    def boundaries_from_continuity(self):
+        """
         Starting from a seed position, the splines are propagated until they
         reach a kink (no g1 continuity). This uses the spline boundary
         information and determines the interface information.
 
         Parameters
         ----------
-        seed_position : array-like (n_dim)
-          Seed position from where the propagation starts
-        tolerance : double
-          Maximum angle (rad) between two normal vectors on boundary which is
-          accepted as g1
-        """
-        if tolerance is None:
-            tolerance = TOLERANCE
+        None
 
-        pass
+        Returns
+        -------
+        None
+        """
+        from splinepy.settings import NTHREADS, TOLERANCE
+        from splinepy.splinepy_core import boundaries_from_continuity
+
+        # Pass information to c++ backend
+        self._logd("Start propagation of information...")
+        n_new_boundaries = boundaries_from_continuity(
+            self.boundary_patches,
+            self.boundary_interfaces,
+            self.interfaces,
+            TOLERANCE,
+            NTHREADS,
+        )
+        self._logd(f"{n_new_boundaries} new boundaries were assigned")
+        return

@@ -110,6 +110,18 @@ class MultipatchTest(c.unittest.TestCase):
             ).all()
         )
 
+        # Delete all boundaries and determine new ones based on continuity
+        multipatch.boundaries_from_continuity()
+        self.assertTrue(
+            (
+                multipatch.interfaces
+                == c.np.array(
+                    [[-1, 1, 2, -2], [0, -3, -4, -5], [-1, -6, -7, 0]],
+                    dtype=int,
+                )
+            ).all()
+        )
+
 
 if __name__ == "__main__":
     c.unittest.main()
