@@ -400,7 +400,7 @@ class Multipatch(SplinepyBase):
                 )
 
         # retrieve all boundary elements
-        if from_boundaries is not None:
+        if from_boundaries is None:
             boundary_ids = self.interfaces < 0
         else:
             boundary_ids = np.isin(-self.interfaces, np.abs(from_boundaries))
