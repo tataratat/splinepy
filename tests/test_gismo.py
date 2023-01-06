@@ -8,12 +8,12 @@ except BaseException:
 
 _gismo_export_ref_2d = [
     (
-        '<xml><MultiPatch parDim="2" id="0"><patches type="id_range">'
-        "100 103</patches><interfaces>101 1 100 2 0 1 1 1\n"
+        '<xml><MultiPatch parDim="2" id="0"><patches type="id_range">100 '
+        "103</patches><interfaces>100 2 101 1 0 1 1 1\n"
     ),
-    "102 3 100 4 0 1 1 1\n",
-    "103 3 101 4 0 1 1 1\n",
-    "103 1 102 2 0 1 1 1</interfaces><boundary>100 1\n",
+    "100 4 102 3 0 1 1 1\n",
+    "101 4 103 3 0 1 1 1\n",
+    "102 2 103 1 0 1 1 1</interfaces><boundary>100 1\n",
     "100 3\n",
     "101 2\n",
     "101 3\n",
@@ -21,32 +21,31 @@ _gismo_export_ref_2d = [
     "102 4\n",
     "103 2\n",
     (
-        "103 4</boundary></MultiPatch><boundaryConditions multipatch"
-        '="0" id="1"><!--Please fill boundary conditions here--><bc t'
-        'ype="Dirichlet" unknown="0">0 3\n'
+        '103 4</boundary></MultiPatch><boundaryConditions multipatch="4" id="1'
+        '"><!--Please fill boundary conditions here--><bc type="Dirichlet" unk'
+        'nown="0">0 3\n'
     ),
     "1 3\n",
     "2 4\n",
     '3 4</bc><bc type="Dirichlet" unknown="0">0 1\n',
+    '2 1</bc><bc type="Dirichlet" unknown="0">1 2\n',
     (
-        '2 1</bc></boundaryConditions><Geometry type="TensorBSpline2" '
-        'id="100"><Basis type="TensorBSplineBasis2"><Basis type="BSpli'
-        'neBasis" index="0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0'
-        ' 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"'
-        '><KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><'
-        '/Basis><coefs geoDim="2">0.0 0.0\n'
+        '3 2</bc></boundaryConditions><Geometry type="TensorBSpline2" id="100"'
+        '><Basis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="'
+        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
+        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
+        '1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 0.0\n'
     ),
     "0.5 0.0\n",
     "1.0 0.0\n",
     "0.0 1.0\n",
     "0.5 1.0\n",
     (
-        '1.0 1.0</coefs></Geometry><Geometry type="TensorNurbs2" id="1'
-        '01"><Basis type="TensorNurbsBasis2"><Basis type="TensorBSplin'
-        'eBasis2"><Basis type="BSplineBasis" index="0"><KnotVector deg'
-        'ree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSpl'
-        'ineBasis" index="1"><KnotVector degree="1">0.0 0.0 1.0 1.0</K'
-        "notVector></Basis></Basis><weights>1.0\n"
+        '1.0 1.0</coefs></Geometry><Geometry type="TensorNurbs2" id="101"><Bas'
+        'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
+        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
+        'degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis></Basis><weights>1.0\n'
     ),
     "1.0\n",
     "1.0\n",
@@ -54,12 +53,11 @@ _gismo_export_ref_2d = [
     "2.0 0.0\n",
     "1.0 1.0\n",
     (
-        '2.0 1.0</coefs></Geometry><Geometry type="TensorBSpline2" id='
-        '"102"><Basis type="TensorBSplineBasis2"><Basis type="BSplineB'
-        'asis" index="0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.'
-        '0</KnotVector></Basis><Basis type="BSplineBasis" index="1"><K'
-        'notVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis>'
-        '</Basis><coefs geoDim="2">0.0 1.0\n'
+        '2.0 1.0</coefs></Geometry><Geometry type="TensorBSpline2" id="102"><B'
+        'asis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="0">'
+        '<KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><B'
+        'asis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5'
+        ' 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 1.0\n'
     ),
     "0.5 1.0\n",
     "1.0 1.0\n",
@@ -69,12 +67,12 @@ _gismo_export_ref_2d = [
     "0.0 2.0\n",
     "0.5 2.0\n",
     (
-        '1.0 2.0</coefs></Geometry><Geometry type="TensorNurbs2" id="1'
-        '03"><Basis type="TensorNurbsBasis2"><Basis type="TensorBSplin'
-        'eBasis2"><Basis type="BSplineBasis" index="0"><KnotVector deg'
-        'ree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSpl'
-        'ineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5 1.0 1.'
-        "0</KnotVector></Basis></Basis><weights>1.0\n"
+        '1.0 2.0</coefs></Geometry><Geometry type="TensorNurbs2" id="103"><Bas'
+        'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
+        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
+        'degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></Basis><weights>1'
+        ".0\n"
     ),
     "1.0\n",
     "1.0\n",
@@ -85,17 +83,17 @@ _gismo_export_ref_2d = [
     "1.0 1.5\n",
     "2.0 1.5\n",
     "1.0 2.0\n",
-    "2.0 2.0</coefs></Geometry></xml>",
+    "2.0 2.0</coefs></Geometry></xml>\n",
 ]
 
 _gismo_export_ref_2d_indent = [
     "<xml>\n",
     '  <MultiPatch parDim="2" id="0">\n',
     '    <patches type="id_range">100 103</patches>\n',
-    "    <interfaces>101 1 100 2 0 1 1 1\n",
-    "102 3 100 4 0 1 1 1\n",
-    "103 3 101 4 0 1 1 1\n",
-    "103 1 102 2 0 1 1 1</interfaces>\n",
+    "    <interfaces>100 2 101 1 0 1 1 1\n",
+    "100 4 102 3 0 1 1 1\n",
+    "101 4 103 3 0 1 1 1\n",
+    "102 2 103 1 0 1 1 1</interfaces>\n",
     "    <boundary>100 1\n",
     "100 3\n",
     "101 2\n",
@@ -105,7 +103,7 @@ _gismo_export_ref_2d_indent = [
     "103 2\n",
     "103 4</boundary>\n",
     "  </MultiPatch>\n",
-    '  <boundaryConditions multipatch="0" id="1">\n',
+    '  <boundaryConditions multipatch="4" id="1">\n',
     "    <!--Please fill boundary conditions here-->\n",
     '    <bc type="Dirichlet" unknown="0">0 3\n',
     "1 3\n",
@@ -113,14 +111,13 @@ _gismo_export_ref_2d_indent = [
     "3 4</bc>\n",
     '    <bc type="Dirichlet" unknown="0">0 1\n',
     "2 1</bc>\n",
+    '    <bc type="Dirichlet" unknown="0">1 2\n',
+    "3 2</bc>\n",
     "  </boundaryConditions>\n",
     '  <Geometry type="TensorBSpline2" id="100">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    (
-        '        <KnotVector degree="2">0.0 0.0 '
-        "0.0 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
     '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
@@ -156,10 +153,7 @@ _gismo_export_ref_2d_indent = [
     '  <Geometry type="TensorBSpline2" id="102">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    (
-        '        <KnotVector degree="2">0.0 0.0 0.0'
-        " 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
     '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
@@ -204,12 +198,12 @@ _gismo_export_ref_2d_indent = [
 
 _gismo_export_ref_3d = [
     (
-        '<xml><MultiPatch parDim="3" id="0"><patches type="id_range">1'
-        "00 103</patches><interfaces>101 3 100 4 0 1 2 1 1 1\n"
+        '<xml><MultiPatch parDim="3" id="0"><patches type="id_range">100 103</'
+        "patches><interfaces>100 4 101 3 0 1 2 1 1 1\n"
     ),
-    "103 1 100 2 0 1 2 1 1 1\n",
-    "102 1 101 2 0 1 2 1 1 1\n",
-    "103 4 102 3 0 1 2 1 1 1</interfaces><boundary>100 1\n",
+    "101 2 102 1 0 1 2 1 1 1\n",
+    "100 2 103 1 0 1 2 1 1 1\n",
+    "102 3 103 4 0 1 2 1 1 1</interfaces><boundary>100 1\n",
     "100 3\n",
     "100 5\n",
     "100 6\n",
@@ -225,9 +219,9 @@ _gismo_export_ref_3d = [
     "103 3\n",
     "103 5\n",
     (
-        '103 6</boundary></MultiPatch><boundaryConditions multipatch="'
-        '0" id="1"><!--Please fill boundary conditions here--><bc type'
-        '="Dirichlet" unknown="0">0 3\n'
+        '103 6</boundary></MultiPatch><boundaryConditions multipatch="4" id="1'
+        '"><!--Please fill boundary conditions here--><bc type="Dirichlet" unk'
+        'nown="0">0 3\n'
     ),
     "0 5\n",
     "0 6\n",
@@ -240,15 +234,15 @@ _gismo_export_ref_3d = [
     "3 3\n",
     "3 5\n",
     '3 6</bc><bc type="Dirichlet" unknown="0">0 1\n',
+    '1 1</bc><bc type="Dirichlet" unknown="0">2 2\n',
     (
-        '1 1</bc></boundaryConditions><Geometry type="TensorBSpline3" '
-        'id="100"><Basis type="TensorBSplineBasis3"><Basis type="BSpli'
-        'neBasis" index="0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0'
-        ' 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"'
-        '><KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><'
-        'Basis type="BSplineBasis" index="2"><KnotVector degree="2">0.'
-        "0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs geoD"
-        'im="3">0.0 0.0 0.0\n'
+        '3 2</bc></boundaryConditions><Geometry type="TensorBSpline3" id="100"'
+        '><Basis type="TensorBSplineBasis3"><Basis type="BSplineBasis" index="'
+        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
+        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
+        '1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="2"><Kno'
+        'tVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basi'
+        's><coefs geoDim="3">0.0 0.0 0.0\n'
     ),
     "0.5 0.0 0.0\n",
     "1.0 0.0 0.0\n",
@@ -267,14 +261,13 @@ _gismo_export_ref_3d = [
     "0.0 1.0 1.0\n",
     "0.5 1.0 1.0\n",
     (
-        '1.0 1.0 1.0</coefs></Geometry><Geometry type="TensorBSpline3"'
-        ' id="101"><Basis type="TensorBSplineBasis3"><Basis type="BSpl'
-        'ineBasis" index="0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.'
-        '0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1'
-        '"><KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Ba'
-        'sis><Basis type="BSplineBasis" index="2"><KnotVector degree="'
-        '2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs'
-        ' geoDim="3">0.0 1.0 0.0\n'
+        '1.0 1.0 1.0</coefs></Geometry><Geometry type="TensorBSpline3" id="101'
+        '"><Basis type="TensorBSplineBasis3"><Basis type="BSplineBasis" index='
+        '"0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basi'
+        's><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0'
+        ' 0.5 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="2"'
+        '><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><'
+        '/Basis><coefs geoDim="3">0.0 1.0 0.0\n'
     ),
     "0.5 1.0 0.0\n",
     "1.0 1.0 0.0\n",
@@ -302,14 +295,13 @@ _gismo_export_ref_3d = [
     "0.0 2.0 1.0\n",
     "0.5 2.0 1.0\n",
     (
-        '1.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" i'
-        'd="102"><Basis type="TensorNurbsBasis3"><Basis type="TensorBS'
-        'plineBasis3"><Basis type="BSplineBasis" index="0"><KnotVector'
-        ' degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="'
-        'BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5 1.'
-        '0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="2'
-        '"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>'
-        "</Basis></Basis><weights>1.0\n"
+        '1.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" id="102">'
+        '<Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Ba'
+        'sis type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 '
+        '1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVec'
+        'tor degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis><Basis type="B'
+        'SplineBasis" index="2"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector></Basis></Basis><weights>1.0\n"
     ),
     "1.0\n",
     "1.0\n",
@@ -345,14 +337,13 @@ _gismo_export_ref_3d = [
     "2.0 1.5 1.0\n",
     "1.0 2.0 1.0\n",
     (
-        '2.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" i'
-        'd="103"><Basis type="TensorNurbsBasis3"><Basis type="TensorBS'
-        'plineBasis3"><Basis type="BSplineBasis" index="0"><KnotVector'
-        ' degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="'
-        'BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 1.0 1.'
-        '0</KnotVector></Basis><Basis type="BSplineBasis" index="2"><K'
-        'notVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Ba'
-        "sis></Basis><weights>1.0\n"
+        '2.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" id="103">'
+        '<Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Ba'
+        'sis type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 '
+        '1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVec'
+        'tor degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSpli'
+        'neBasis" index="2"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</Kn'
+        "otVector></Basis></Basis><weights>1.0\n"
     ),
     "1.0\n",
     "1.0\n",
@@ -382,10 +373,10 @@ _gismo_export_ref_3d_indent = [
     "<xml>\n",
     '  <MultiPatch parDim="3" id="0">\n',
     '    <patches type="id_range">100 103</patches>\n',
-    "    <interfaces>101 3 100 4 0 1 2 1 1 1\n",
-    "103 1 100 2 0 1 2 1 1 1\n",
-    "102 1 101 2 0 1 2 1 1 1\n",
-    "103 4 102 3 0 1 2 1 1 1</interfaces>\n",
+    "    <interfaces>100 4 101 3 0 1 2 1 1 1\n",
+    "101 2 102 1 0 1 2 1 1 1\n",
+    "100 2 103 1 0 1 2 1 1 1\n",
+    "102 3 103 4 0 1 2 1 1 1</interfaces>\n",
     "    <boundary>100 1\n",
     "100 3\n",
     "100 5\n",
@@ -403,7 +394,7 @@ _gismo_export_ref_3d_indent = [
     "103 5\n",
     "103 6</boundary>\n",
     "  </MultiPatch>\n",
-    '  <boundaryConditions multipatch="0" id="1">\n',
+    '  <boundaryConditions multipatch="4" id="1">\n',
     "    <!--Please fill boundary conditions here-->\n",
     '    <bc type="Dirichlet" unknown="0">0 3\n',
     "0 5\n",
@@ -419,23 +410,19 @@ _gismo_export_ref_3d_indent = [
     "3 6</bc>\n",
     '    <bc type="Dirichlet" unknown="0">0 1\n',
     "1 1</bc>\n",
+    '    <bc type="Dirichlet" unknown="0">2 2\n',
+    "3 2</bc>\n",
     "  </boundaryConditions>\n",
     '  <Geometry type="TensorBSpline3" id="100">\n',
     '    <Basis type="TensorBSplineBasis3">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    (
-        '        <KnotVector degree="2">0.0 0.0 0.0'
-        " 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
     '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="2">\n',
-    (
-        '        <KnotVector degree="2">0.0 0.0 '
-        "0.0 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     "    </Basis>\n",
     '    <coefs geoDim="3">0.0 0.0 0.0\n',
@@ -460,19 +447,13 @@ _gismo_export_ref_3d_indent = [
     '  <Geometry type="TensorBSpline3" id="101">\n',
     '    <Basis type="TensorBSplineBasis3">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    (
-        '        <KnotVector degree="2">0.0 0.0 '
-        "0.0 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
     '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="2">\n',
-    (
-        '        <KnotVector degree="2'
-        '">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n'
-    ),
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "      </Basis>\n",
     "    </Basis>\n",
     '    <coefs geoDim="3">0.0 1.0 0.0\n',
@@ -513,10 +494,7 @@ _gismo_export_ref_3d_indent = [
     '          <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="2">\n',
-    (
-        '          <KnotVector degree="2">0.0 0.'
-        "0 0.0 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '          <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "        </Basis>\n",
     "      </Basis>\n",
     "      <weights>1.0\n",
@@ -567,10 +545,7 @@ _gismo_export_ref_3d_indent = [
     '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="2">\n',
-    (
-        '          <KnotVector degree="2">0.0 0.0 0.0'
-        " 1.0 1.0 1.0</KnotVector>\n"
-    ),
+    '          <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
     "        </Basis>\n",
     "      </Basis>\n",
     "      <weights>1.0\n",
