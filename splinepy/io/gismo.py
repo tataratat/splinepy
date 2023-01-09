@@ -72,7 +72,7 @@ def export(fname, multipatch=None, indent=True):
     else:
         # First we identify all interfaces between patches
         is_lower_id = (
-            multipatch.interfaces[con_spline_id, con_face_id] < con_spline_id
+            multipatch.interfaces[con_spline_id, con_face_id] > con_spline_id
         )
         # Divide them into start points of the connection and end point of the
         # connection based on the index of the spline and the index of the
@@ -126,7 +126,7 @@ def export(fname, multipatch=None, indent=True):
                 # This is the orientation:
                 axis_mapping,
                 # Convert bool into -1 and 1 for gismo
-                axis_orientation.astype(np.int32) * 2 - 1,
+                axis_orientation.astype(np.int32),
             )
         )
         interface_data.text = "\n".join(
@@ -154,7 +154,10 @@ def export(fname, multipatch=None, indent=True):
     boundary_condition_list = multipatch.boundaries
     if len(boundary_condition_list) > 1:
         bcs_data = ET.SubElement(
-            xml_data, "boundaryConditions", multipatch=str(0), id=str(1)
+            xml_data,
+            "boundaryConditions",
+            multipatch=str(len(multipatch.splines)),
+            id=str(1),
         )
         bcs_data.insert(
             0, ET.Comment(text="Please fill boundary conditions here")

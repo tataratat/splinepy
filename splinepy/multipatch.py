@@ -140,11 +140,11 @@ class Multipatch(SplinepyBase):
         Negativ entries mean, that there is a boundary, the absolute value
         holds the boundary ID
         """
-        # Get minimum boundary id
+        # Get minimum boundary id - boundary ids are stored as negativ values
         max_BID = self.interfaces.min()
 
         boundary_list = []
-        for i_bid in range(-1, max_BID, -1):
+        for i_bid in range(-1, max_BID - 1, -1):
             self._logd(f"Extracting boundary with ID {abs(i_bid)}")
             boundary_list.append(np.where(self.interfaces == i_bid))
             self._logd(
@@ -176,7 +176,7 @@ class Multipatch(SplinepyBase):
         -------
         None
         """
-        # Get minimum boundary id
+        # Get minimum boundary id - boundary ids are stored as negativ values
         max_BID = self.interfaces.min()
 
         if boundary_id is None:
@@ -295,7 +295,7 @@ class Multipatch(SplinepyBase):
         -------
         None
         """
-        # Get minimum boundary id
+        # Get minimum boundary id - boundary ids are stored as negativ values
         max_BID = self.interfaces.min()
 
         if boundary_id is None:
