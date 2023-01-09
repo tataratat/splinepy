@@ -87,7 +87,7 @@ class MultipatchTest(c.unittest.TestCase):
         def west_side(points):
             return points[:, 0] < 0.1
 
-        multipatch.add_boundary_with_function(west_side)
+        multipatch.boundary_from_function(west_side)
         self.assertTrue(
             (
                 multipatch.interfaces

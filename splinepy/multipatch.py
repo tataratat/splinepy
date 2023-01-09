@@ -358,7 +358,7 @@ class Multipatch(SplinepyBase):
 
         return self.interfaces
 
-    def add_boundary_with_function(
+    def boundary_from_function(
         self,
         function,
         from_boundaries=None,
