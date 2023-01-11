@@ -122,6 +122,88 @@ class MultipatchTest(c.unittest.TestCase):
             ).all()
         )
 
+    def test_interfaces_and_boundaries(self):
+        # 2 --- 3 1 --- 0
+        # |  1  | |  3  |
+        # 0 --- 1 3 --- 2
+        # 3 --- 2 0 --- 2
+        # |  2  | |  4  |
+        # 1 --- 0 1 --- 3
+        #
+        # with 1 and three flipped in the 3rd axis
+
+        # Create some splines in a random parametric swaps
+        b1 = c.splinepy.Bezier(
+            degrees=[1, 1, 1],
+            control_points=[
+                [-1, 0, 1],
+                [0, 0, 1],
+                [-1, 1, 1],
+                [0, 1, 1],
+                [-1, 0, 0],
+                [0, 0, 0],
+                [-1, 1, 0],
+                [0, 1, 0],
+            ],
+        )
+        b2 = c.splinepy.Bezier(
+            degrees=[1, 1, 1],
+            control_points=[
+                [0, -1, 0],
+                [-1, -1, 0],
+                [0, 0, 0],
+                [-1, 0, 0],
+                [0, -1, 1],
+                [-1, -1, 1],
+                [0, 0, 1],
+                [-1, 0, 1],
+            ],
+        )
+        b3 = c.splinepy.Bezier(
+            degrees=[1, 1, 1],
+            control_points=[
+                [1, 1, 1],
+                [0, 1, 1],
+                [1, 0, 1],
+                [0, 0, 1],
+                [1, 1, 0],
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 0],
+            ],
+        )
+        b4 = c.splinepy.Bezier(
+            degrees=[1, 1, 1],
+            control_points=[
+                [0, 0, 0],
+                [0, -1, 0],
+                [1, 0, 0],
+                [1, -1, 0],
+                [0, 0, 1],
+                [0, -1, 1],
+                [1, 0, 1],
+                [1, -1, 1],
+            ],
+        )
+
+        # Multipatch
+        multipatch = c.splinepy.Multipatch([b1, b2, b3, b4])
+        multipatch.boundaries_from_continuity()
+        self.assertTrue(
+            (
+                multipatch.interfaces
+                == c.np.array(
+                    [
+                        [-1, 2, 1, -2, -3, -4],
+                        [3, -1, -5, 0, -4, -3],
+                        [-6, 0, -2, 3, -3, -4],
+                        [2, -5, 1, -6, -4, -3],
+                    ],
+                    dtype=int,
+                )
+            ).all()
+        )
+
 
 if __name__ == "__main__":
     c.unittest.main()

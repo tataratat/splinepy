@@ -1362,7 +1362,8 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
       const int current_id = queued_splines.back();
       queued_splines.pop_back();
       for (int i_face{}; i_face < n_faces_per_boundary_patch; i_face++) {
-        const int combined_index = i * n_faces_per_boundary_patch + i_face;
+        const int combined_index =
+            current_id * n_faces_per_boundary_patch + i_face;
         // Is the neighborface G1
         if (faces_are_g1[combined_index]) {
           const int& adjacent_id = boundary_interfaces_ptr[combined_index];
