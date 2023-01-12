@@ -229,9 +229,9 @@ class Multipatch(SplinepyBase):
                 (self.para_dim - 1),
             )
             if np.any(self._boundary_interfaces < 0):
-                raise MemoryError(
+                raise RuntimeError(
                     "Something went wrong determining the boundaries. There"
-                    " should only be posiive integers, as the boundaries must"
+                    " should only be positive integers, as the boundaries must"
                     " be interconnected!"
                 )
             self._logd(
