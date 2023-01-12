@@ -4,7 +4,15 @@ Multipatch Spline Configuration
 
 import numpy as np
 
+from splinepy import settings
 from splinepy._base import SplinepyBase
+from splinepy.spline import Spline
+from splinepy.splinepy_core import (
+    boundaries_from_continuity,
+    boundary_centers,
+    extract_all_boundary_splines,
+    interfaces_from_boundary_centers,
+)
 from splinepy.utils.data import enforce_contiguous
 
 
@@ -71,7 +79,6 @@ class Multipatch(SplinepyBase):
 
     @splines.setter
     def splines(self, list_of_splines):
-        from splinepy.spline import Spline
 
         # We need to start from scratch if new splines are added
         self._init_members()
@@ -182,9 +189,6 @@ class Multipatch(SplinepyBase):
         boundary_patches : list
           list of all embedded splines
         """
-        from splinepy import settings
-        from splinepy.splinepy_core import extract_all_boundary_splines
-
         if self._boundary_splines is None:
             self._logd("Determining boundary spline patches")
             patches = extract_all_boundary_splines(
@@ -209,12 +213,6 @@ class Multipatch(SplinepyBase):
         np.ndarray : connectivity
           Connectivity in local patch enumeration system
         """
-        from splinepy import settings
-        from splinepy.splinepy_core import (
-            boundary_centers,
-            interfaces_from_boundary_centers,
-        )
-
         if self._boundary_interfaces is None:
             self._logd("Determine boundary interfaces")
 
@@ -326,8 +324,6 @@ class Multipatch(SplinepyBase):
 
         talk to at @j042
         """
-        from splinepy.splinepy_core import boundary_centers
-
         # If spline list is empty will throw excetion
         return np.vstack([boundary_centers(s) for s in self.splines])
 
@@ -345,8 +341,6 @@ class Multipatch(SplinepyBase):
         -------
         interfaces : array-like (n_patch x n_boundaries)
         """
-        from splinepy import settings
-        from splinepy.splinepy_core import interfaces_from_boundary_centers
 
         # Using the setter instead of the the member, all necessery
         # checks will be performed
@@ -449,8 +443,6 @@ class Multipatch(SplinepyBase):
         -------
         None
         """
-        from splinepy.settings import NTHREADS, TOLERANCE
-        from splinepy.splinepy_core import boundaries_from_continuity
 
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
@@ -458,8 +450,8 @@ class Multipatch(SplinepyBase):
             self.boundary_patches,
             self.boundary_interfaces,
             self.interfaces,
-            TOLERANCE,
-            NTHREADS,
+            settings.TOLERANCE,
+            settings.NTHREADS,
         )
         self._logd(f"{n_new_boundaries} new boundaries were assigned")
         return
