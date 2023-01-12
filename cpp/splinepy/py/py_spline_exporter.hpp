@@ -1242,6 +1242,11 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   // Check if to tangential vectors are g1 (tol > cos(phi))
   auto areG1 = [&tolerance, &dim_](const std::vector<double>& vec0,
                                    const std::vector<double>& vec1) -> bool {
+    // Checks in Debug
+    assert(vec0.size() == dim_);
+    assert(vec1.size() == dim_);
+
+    // Start actual computation
     double norm0{}, norm1{}, dot_p{};
     for (int i{}; i < dim_; i++) {
       norm0 += vec0[i] * vec0[i];
@@ -1271,15 +1276,15 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   };
 
   // Tangential Vector on boundary based on its derivative
-  auto tangential_vector = [&cpp_spline_list, &para_dim_](
+  auto tangential_vector = [&cpp_spline_list, &para_dim_, &dim_](
                                const int& patch_id,
                                const int& face_id) -> std::vector<double> {
     // init return value (are default initialized to 0)
     std::vector<double> para_coord(para_dim_), bounds(2 * para_dim_),
-        tangential_vector(para_dim_);
+        tangential_vector(dim_);
     std::vector<int> orders(para_dim_);
 
-    //
+    // Auxiliary values
     const int axis_dim = face_id / 2;
     const int is_in_front = face_id % 2;
 
