@@ -38,7 +38,9 @@ class Multipatch(SplinepyBase):
         interfaces : array-like
           Defines the connectivity inbetween patches
         as_boundary : bool
-          Multipatch is a boundary object of a higher dimensional object
+          Multipatch is a boundary object of a higher dimensional geometry. If
+          set to true, additional checks are performed on the interfaces,
+          requiring strict interconnectivity between all patches
 
         Returns
         -------
