@@ -15,7 +15,10 @@ void init_exporter(py::module_& m) {
         py::arg("tolerance"),
         py::arg("para_dim"));
   m.def("extract_all_boundary_splines",
-        &splinepy::py::ExtractAllBoundarySplines);
+        &splinepy::py::ExtractAllBoundarySplines,
+        py::arg("splines"),
+        py::arg("interfaces"),
+        py::arg("nthreads") = 1);
   m.def("orientations",
         &splinepy::py::GetBoundaryOrientations,
         py::arg("splines"),

@@ -1165,7 +1165,8 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
  * @return py::list
  */
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
-                                   const py::array_t<int>& interfaces) {
+                                   const py::array_t<int>& interfaces,
+                                   const int& n_threads) {
   // Check input data
   if (static_cast<int>(py::len(spline_list)) != interfaces.shape(0)) {
     splinepy::utils::PrintAndThrowError(
@@ -1175,22 +1176,49 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
         interfaces.shape(0),
         ") does not match.");
   }
+
+  if (n_threads < 1) {
+    splinepy::utils::PrintAndThrowError(
+        "Number of threads must be positive integer.");
+  }
   // Auxiliary data
   py::list boundary_splines{};
+  std::vector<py::list> lists_to_concatenate(n_threads);
   const int* interface_ptr = static_cast<int*>(interfaces.request().ptr);
   const int n_patches = interfaces.shape(0);
   const int n_faces = interfaces.shape(1);
   const int para_dim_ = n_faces / 2;
   const auto cpp_spline_list =
       ListOfPySplinesToVectorOfCoreSplines(spline_list);
-  for (int i{}; i < n_patches; i++) {
-    for (int j{}; j < n_faces; j++) {
-      if (interface_ptr[i * n_faces + j] < 0) {
-        boundary_splines.append(
-            // Extract Boundary splines
-            PySpline(cpp_spline_list[i]->SplinepyExtractBoundary(j)));
+  const int chunk_size = std::div((n_patches + n_threads - 1), n_threads).quot;
+
+  // This approach is a work-around for parallel execution
+  auto extract_boundaries = [&](const int start, const int) {
+    // start : process-ID
+    // end : unused hence no referencing
+
+    // Auxiliary variables
+    const int start_index = start * chunk_size;
+    const int end_index = (start + 1) * chunk_size;
+    auto& boundaries_local = lists_to_concatenate[start];
+    // Start extraction (remaining order)
+    for (int i{start_index}; i < end_index; i++) {
+      for (int j{}; j < n_faces; j++) {
+        if (interface_ptr[i * n_faces + j] < 0) {
+          boundaries_local.append(
+              // Extract Boundary splines
+              PySpline(cpp_spline_list[i]->SplinepyExtractBoundary(j)));
+        }
       }
     }
+  };
+
+  // Execute in parallel
+  splinepy::utils::NThreadExecution(extract_boundaries, n_threads, n_threads);
+
+  // Concatenate list of boundaries - should only copy pointers
+  for (auto& entries : lists_to_concatenate) {
+    boundary_splines += entries;
   }
 
   return boundary_splines;
@@ -1243,8 +1271,8 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   auto areG1 = [&tolerance, &dim_](const std::vector<double>& vec0,
                                    const std::vector<double>& vec1) -> bool {
     // Checks in Debug
-    assert(vec0.size() == dim_);
-    assert(vec1.size() == dim_);
+    assert(static_cast<int>(vec0.size()) == dim_);
+    assert(static_cast<int>(vec1.size()) == dim_);
 
     // Start actual computation
     double norm0{}, norm1{}, dot_p{};

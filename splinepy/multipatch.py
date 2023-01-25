@@ -75,7 +75,6 @@ class Multipatch(SplinepyBase):
         self._spline_list = None
         self._interfaces = None
         self._boundary_splines = None
-        self._boundary_interfaces = None
 
     @property
     def splines(self):
@@ -211,7 +210,7 @@ class Multipatch(SplinepyBase):
         if self._boundary_splines is None:
             self._logd("Determining boundary spline patches")
             patches = extract_all_boundary_splines(
-                self.splines, self.interfaces
+                self.splines, self.interfaces, settings.NTHREADS
             )
             self._boundary_splines = Multipatch(
                 splines=[
