@@ -198,7 +198,6 @@ class Multipatch(SplinepyBase):
 
         return boundary_list
 
-    @property
     def boundary_patches(self):
         """Extract all boundary patches of a given Multipatch system as splines
 
@@ -428,8 +427,8 @@ class Multipatch(SplinepyBase):
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
         n_new_boundaries = boundaries_from_continuity(
-            self.boundary_patches.splines,
-            self.boundary_patches.interfaces,
+            self.boundary_patches().splines,
+            self.boundary_patches().interfaces,
             self.interfaces,
             settings.TOLERANCE,
             settings.NTHREADS,
