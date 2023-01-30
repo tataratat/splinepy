@@ -332,10 +332,10 @@ class Multipatch(SplinepyBase):
 
         return self.interfaces
 
-    def boundary_from_function(
+    def boundaries_from_function(
         self,
         function,
-        from_boundaries=None,
+        mask=None,
         boundary_id=None,
     ):
         """
@@ -385,7 +385,7 @@ class Multipatch(SplinepyBase):
                 "No boundary elements could be identified that match "
                 "requirements"
             )
-            return
+            return None
 
         # Check all face centers
         relevant_boundary_centers = self.spline_boundary_centers[
@@ -434,7 +434,7 @@ class Multipatch(SplinepyBase):
             settings.NTHREADS,
         )
         self._logd(f"{n_new_boundaries} new boundaries were assigned")
-        return
+        return None
 
     def combine_boundaries(self, bid_list=None):
         """
@@ -458,6 +458,6 @@ class Multipatch(SplinepyBase):
                 "No boundary elements could be identified that match "
                 "requirements"
             )
-            return
+            return None
 
         self.interfaces[boundary_ids] = np.min(bid_list)

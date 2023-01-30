@@ -30,7 +30,7 @@ set(namespace "${PROJECT_NAME}::")
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(SPLINEPY_FLAGS -fPIC)
 set(SPLINEPY_OPTIMIZATION_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3>)
-set(SPLINEPY_DEFS ${SPLINEPY_DEFS} $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
+set(SPLINEPY_DEFS $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
 set(SPLINEPY_DEFS)
 
 # compiler specific flags
