@@ -4,8 +4,15 @@ Multipatch Spline Configuration
 
 import numpy as np
 
+from splinepy import settings
 from splinepy._base import SplinepyBase
-from splinepy.settings import TOLERANCE
+from splinepy.spline import Spline
+from splinepy.splinepy_core import (
+    boundaries_from_continuity,
+    boundary_centers,
+    extract_all_boundary_splines,
+    interfaces_from_boundary_centers,
+)
 from splinepy.utils.data import enforce_contiguous
 
 
@@ -19,6 +26,7 @@ class Multipatch(SplinepyBase):
         self,
         splines=None,
         interfaces=None,
+        as_boundary=False,
     ):
         """
         Multipatch
@@ -27,37 +35,67 @@ class Multipatch(SplinepyBase):
         ----------
         splines : list-like
           List of splines to store as multipatch
+        interfaces : array-like
+          Defines the connectivity inbetween patches
+        as_boundary : bool
+          Multipatch is a boundary object of a higher dimensional geometry. If
+          set to true, additional checks are performed on the interfaces,
+          requiring strict interconnectivity between all patches
 
         Returns
         -------
         None
         """
         # Init values
-        self._interfaces = None
-        self._spline_list = None
-        self._boundaries = None
+        self._init_members()
 
         self._logd("Instantiated Multipatch object")
 
         # Set properties
+        self._as_boundary = as_boundary
+
         if splines is not None:
             self.splines = splines
 
         if interfaces is not None:
             self.interfaces = interfaces
 
+    def _init_members(self):
+        """Defaults all relevant members to None
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        self._boundaries = None
+        self._spline_list = None
+        self._interfaces = None
+        self._boundary_splines = None
+        self._spline_boundary_centers = None
+
     @property
     def splines(self):
         """
         List of splines in splinepy format
 
-        Returns a list of splines that are stored in the multipatch system
+        Returns
+        -------
+        splines : list
+         list of splines that are stored in the multipatch system
+
+
         """
         return self._spline_list
 
     @splines.setter
     def splines(self, list_of_splines):
-        from splinepy.spline import Spline
+
+        # We need to start from scratch if new splines are added
+        self._init_members()
 
         if not isinstance(list_of_splines, list):
             if issubclass(type(list_of_splines), Spline):
@@ -82,6 +120,8 @@ class Multipatch(SplinepyBase):
                     "Parametric dimension mismatch between splines in list"
                     " of splines"
                 )
+        # Updating the spline set will erase all precalculated data
+        self._boundaries = None
 
         self._spline_list = list_of_splines
 
@@ -92,6 +132,11 @@ class Multipatch(SplinepyBase):
 
         Returns its interfaces in the form as an array of size
         n_patches x n_sides_per_patch
+
+        Returns
+        -------
+        interfaces : np.ndarray
+          inter-patch connectivitiy and boundaries
         """
         if self.splines is None:
             raise ValueError("Connectivity set for unknown list of splines.")
@@ -103,11 +148,8 @@ class Multipatch(SplinepyBase):
 
     @interfaces.setter
     def interfaces(self, con):
-        """
-        No Actual implementation only some checks
-
-        TBD
-        """
+        # Performes some checks prior to assigning the interface connectivity
+        # to the multipatch object
         if self.splines is None:
             raise ValueError("Connectivity set for unknown list of splines.")
 
@@ -129,6 +171,16 @@ class Multipatch(SplinepyBase):
                 "n_patch x n_boundaries"
             )
 
+        # If the multipatch is a boundary representation, than it must not
+        # contain any negative entries as lower dimensional objects must always
+        # be interconnected
+        if self._as_boundary:
+            if np.any(con < 0):
+                raise ValueError(
+                    "Interfaces are not interconnected, but interconnection is"
+                    " required for boundary representations"
+                )
+
         # Assignment
         self._interfaces = con
 
@@ -139,6 +191,11 @@ class Multipatch(SplinepyBase):
 
         Negativ entries mean, that there is a boundary, the absolute value
         holds the boundary ID
+
+        Returns
+        -------
+        boundaries : list<np.ndarray>
+          list of 2D arrays, representing the patch and face ID
         """
         # Get minimum boundary id - boundary ids are stored as negativ values
         max_BID = self.interfaces.min()
@@ -153,6 +210,37 @@ class Multipatch(SplinepyBase):
             )
 
         return boundary_list
+
+    def boundary_patches(self, use_saved=True, nthreads=None):
+        """Extract all boundary patches of a given Multipatch system as splines
+
+        Parameters
+        ----------
+        use_saved : bool
+          Reuse an already computed patch system
+        nthreads : int
+          Number of threads to be used for extraction, defaults to
+          settings.NTHREADS
+        Returns
+        -------
+        boundary_patches : Multipatch
+          Embedded splines representing boundaries of system
+        """
+        if nthreads is None:
+            nthreads = settings.NTHREADS
+        if (not use_saved) or (self._boundary_splines is None):
+            self._logd("Determining boundary spline patches")
+            patches = extract_all_boundary_splines(
+                self.splines, self.interfaces, nthreads
+            )
+            self._boundary_splines = Multipatch(
+                splines=[
+                    settings.NAME_TO_TYPE[p.name](spline=p) for p in patches
+                ],
+                as_boundary=True,
+            )
+
+        return self._boundary_splines
 
     def set_boundary(
         self,
@@ -215,6 +303,11 @@ class Multipatch(SplinepyBase):
     def para_dim(self):
         """
         Parametric dimension of the splineset
+
+        Returns
+        -------
+        para_dim : int
+          Parametric dimensionality of the multipatch system
         """
         if self.splines is None:
             raise ValueError("No Splines provided")
@@ -224,6 +317,10 @@ class Multipatch(SplinepyBase):
     def dim(self):
         """
         Physical dimension of the splineset
+        Returns
+        -------
+        dim : int
+          Physical dimensionality of the multipatch system
         """
         if self.splines is None:
             raise ValueError("No Splines provided")
@@ -233,17 +330,23 @@ class Multipatch(SplinepyBase):
     @property
     def spline_boundary_centers(self):
         """
-        This property function is a placeholder for once i figure out how to
-        use tracked-arrays
+        Evaluated centers of the individual patches, used to determine
+        connectivity and identify boundaries based on position
 
-        talk to at @j042
+        Returns
+        -------
+        spline_centers : np.ndarray
+          coordinates of the patch-boundary centers
         """
-        from splinepy.splinepy_core import boundary_centers
-
         # If spline list is empty will throw excetion
-        return np.vstack([boundary_centers(s) for s in self.splines])
+        if self._spline_boundary_centers is None:
+            self._spline_boundary_centers = np.vstack(
+                [boundary_centers(s) for s in self.splines]
+            )
 
-    def determine_interfaces(self):
+        return self._spline_boundary_centers
+
+    def determine_interfaces(self, tolerance=None):
         """
         Retrieve interfaces info
 
@@ -251,29 +354,30 @@ class Multipatch(SplinepyBase):
 
         Parameters
         ----------
-        None
+        tolerance : double
+          normed distance between two neighboring points to be considered equal
 
         Returns
         -------
         interfaces : array-like (n_patch x n_boundaries)
         """
-        from splinepy import settings
-        from splinepy.splinepy_core import interfaces_from_boundary_centers
+        if tolerance is None:
+            tolerance = settings.TOLERANCE
 
         # Using the setter instead of the the member, all necessery
         # checks will be performed
         self.interfaces = interfaces_from_boundary_centers(
-            self.spline_boundary_centers, settings.TOLERANCE, self.para_dim
+            self.spline_boundary_centers, tolerance, self.para_dim
         )
 
         self._logd("Successfully provided new interfaces using uff algorithm")
 
         return self.interfaces
 
-    def add_boundary_with_function(
+    def boundary_from_function(
         self,
         function,
-        only_unassigned=False,
+        mask=None,
         boundary_id=None,
     ):
         """
@@ -285,9 +389,8 @@ class Multipatch(SplinepyBase):
         function : Callable
           Function called on every boundary center point to check if it is on
           the boundary, returns bool-type
-        only_unassigned : bool
-          Uses only previously unassigned boundaries
-          (i.e. on boundary 1)
+        mask : array-like
+          If assigned, takes only boundaries with matching ids
         boundary_id : int
           boundary_id to be assigned. If not chosen set to new lowest value
 
@@ -313,14 +416,18 @@ class Multipatch(SplinepyBase):
                 )
 
         # retrieve all boundary elements
-        if only_unassigned:
+        if mask is None:
             boundary_ids = self.interfaces < 0
         else:
-            boundary_ids = self.interfaces == -1
+            boundary_ids = np.isin(-self.interfaces, np.abs(mask))
 
         # Check if there is a boundary
         if not boundary_ids.any():
-            raise ValueError("No boundary elements could be identified")
+            self._logd(
+                "No boundary elements could be identified that match "
+                "requirements"
+            )
+            return None
 
         # Check all face centers
         relevant_boundary_centers = self.spline_boundary_centers[
@@ -344,21 +451,72 @@ class Multipatch(SplinepyBase):
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
 
-    def add_boundary_from_seed(self, seed_position, tolerance=None):
-        """WIP
+    def boundaries_from_continuity(
+        self,
+        use_saved=True,
+        nthreads=None,
+        tolerance=None,
+    ):
+        """
         Starting from a seed position, the splines are propagated until they
         reach a kink (no g1 continuity). This uses the spline boundary
         information and determines the interface information.
 
         Parameters
         ----------
-        seed_position : array-like (n_dim)
-          Seed position from where the propagation starts
+        use_saved : bool
+          Allow function to reuse precomputed values
+        nthreads : int
+          Number of threads to be used to determine boundaries and aux values
         tolerance : double
-          Maximum angle (rad) between two normal vectors on boundary which is
-          accepted as g1
+          Tolerance between two normal vectors [cos(angle)] to be considered G1
+
+        Returns
+        -------
+        None
         """
         if tolerance is None:
-            tolerance = TOLERANCE
+            tolerance = settings.TOLERANCE
+        if nthreads is None:
+            nthreads = settings.NTHREADS
+        b_patches = self.boundary_patches(
+            use_saved=use_saved, nthreads=nthreads
+        )
 
-        pass
+        # Pass information to c++ backend
+        self._logd("Start propagation of information...")
+        n_new_boundaries = boundaries_from_continuity(
+            b_patches.splines,
+            b_patches.interfaces,
+            self.interfaces,
+            tolerance,
+            nthreads,
+        )
+        self._logd(f"{n_new_boundaries} new boundaries were assigned")
+        return None
+
+    def combine_boundaries(self, mask=None):
+        """
+        Combines all boundaries that match an id from the mask to a single
+        boundary
+
+        Parameters
+        ----------
+        mask : array-like
+          List of boundary ids to be reassigned a new combined ID
+
+        Returns
+        -------
+        None
+        """
+        # retrieve all boundary elements
+        boundary_ids = np.isin(-self.interfaces, np.abs(mask))
+
+        if not boundary_ids.any():
+            self._logd(
+                "No boundary elements could be identified that match "
+                "requirements"
+            )
+            return None
+
+        self.interfaces[boundary_ids] = np.min(mask)

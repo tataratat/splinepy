@@ -30,7 +30,7 @@ set(namespace "${PROJECT_NAME}::")
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(SPLINEPY_FLAGS -fPIC)
 set(SPLINEPY_OPTIMIZATION_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3>)
-set(SPLINEPY_DEFS)
+set(SPLINEPY_DEFS $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
 
 # compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")

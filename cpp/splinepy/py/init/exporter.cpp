@@ -14,6 +14,11 @@ void init_exporter(py::module_& m) {
         py::arg("face_center_vertices"),
         py::arg("tolerance"),
         py::arg("para_dim"));
+  m.def("extract_all_boundary_splines",
+        &splinepy::py::ExtractAllBoundarySplines,
+        py::arg("splines"),
+        py::arg("interfaces"),
+        py::arg("nthreads") = 1);
   m.def("orientations",
         &splinepy::py::GetBoundaryOrientations,
         py::arg("splines"),
@@ -21,6 +26,13 @@ void init_exporter(py::module_& m) {
         py::arg("base_face_ids"),
         py::arg("neighbor_ids"),
         py::arg("neighbor_face_ids"),
+        py::arg("tolerance"),
+        py::arg("nthreads") = 1);
+  m.def("boundaries_from_continuity",
+        &splinepy::py::AddBoundariesFromContinuity,
+        py::arg("boundary_splines"),
+        py::arg("boundary_interfaces"),
+        py::arg("global_interfaces"),
         py::arg("tolerance"),
         py::arg("nthreads") = 1);
   m.def("export_iges",

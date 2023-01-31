@@ -632,8 +632,8 @@ class gismoExportTest(c.unittest.TestCase):
             return x[:, 0] > 1.99
 
         # Add boundary
-        multipatch.add_boundary_with_function(is_bottom)
-        multipatch.add_boundary_with_function(is_top)
+        multipatch.boundary_from_function(is_bottom)
+        multipatch.boundary_from_function(is_top)
 
         # Test Output
         with tempfile.NamedTemporaryFile() as tmpf:
@@ -735,8 +735,8 @@ class gismoExportTest(c.unittest.TestCase):
         multipatch = c.splinepy.Multipatch(
             splines=[bez_el0, bsp_el2, nur_el3, rbz_el1]
         )
-        multipatch.add_boundary_with_function(is_bottom)
-        multipatch.add_boundary_with_function(is_top)
+        multipatch.boundary_from_function(is_bottom)
+        multipatch.boundary_from_function(is_top)
 
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
