@@ -423,7 +423,7 @@ class Multipatch(SplinepyBase):
 
         # Check if there is a boundary
         if not boundary_ids.any():
-            self.logd(
+            self._logd(
                 "No boundary elements could be identified that match "
                 "requirements"
             )
@@ -513,7 +513,7 @@ class Multipatch(SplinepyBase):
         boundary_ids = np.isin(-self.interfaces, np.abs(mask))
 
         if not boundary_ids.any():
-            self.logd(
+            self._logd(
                 "No boundary elements could be identified that match "
                 "requirements"
             )
