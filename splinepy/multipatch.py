@@ -93,7 +93,6 @@ class Multipatch(SplinepyBase):
 
     @splines.setter
     def splines(self, list_of_splines):
-
         # We need to start from scratch if new splines are added
         self._init_members()
 

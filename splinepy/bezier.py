@@ -165,7 +165,6 @@ class BezierBase(spline.Spline):
 
 
 class Bezier(BezierBase):
-
     __slots__ = ()
 
     def __init__(self, degrees=None, control_points=None, spline=None):

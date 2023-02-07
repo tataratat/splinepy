@@ -45,9 +45,6 @@ if __name__ == "__main__":
     b.elevate_degree(1)
     b.elevate_degree(1)
 
-    # no more update_c in backend
-    b.skip_update = True
-
     # workers
     workers = 4
 
