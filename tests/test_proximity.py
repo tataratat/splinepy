@@ -16,7 +16,6 @@ class ProximityTest(c.unittest.TestCase):
             c.splinepy.Bezier(**c.z2P2D),
             c.splinepy.RationalBezier(**c.r2P2D),
         ):
-
             # form parametric queries
             # -> parametric space is [0, 1], so no further manipulation
             para_q = c.np.random.random((10, spline.para_dim))

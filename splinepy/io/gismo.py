@@ -104,7 +104,10 @@ def export(fname, multipatch=None, indent=True):
         con_face_id_end = con_face_id_end[end_order]
 
         # Identify Orientation
-        (axis_mapping, axis_orientation,) = orientations(
+        (
+            axis_mapping,
+            axis_orientation,
+        ) = orientations(
             multipatch.splines,
             con_spline_id_start,
             con_face_id_start,

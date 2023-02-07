@@ -11,7 +11,6 @@ import numpy as np
 import splinepy
 
 if __name__ == "__main__":
-
     # define a bspline
     ds = [2, 2]
     kvs = [
@@ -49,9 +48,6 @@ if __name__ == "__main__":
 
     # let's try nurbs
     n = b.nurbs
-
-    # no more update_c in backend
-    n.skip_update = True
 
     # workers
     workers = 4
