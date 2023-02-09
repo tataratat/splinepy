@@ -82,7 +82,7 @@ void FitSurface(const double* points,
   for (v = 0; v < size_v; v++) {
     for (u = 0; u < size_u; u++) {
       for (i = 0; i < dim; i++) {
-        pts_u[u * dim + i] = points[(v + (size_v * u)) * dim + i];
+        pts_u[u * dim + i] = points[(u + (size_u * v)) * dim + i];
       }
     }
     coefficient_matrix =
@@ -94,19 +94,24 @@ void FitSurface(const double* points,
   }
 
   // v - direction global interpolation
-  control_points.clear();
+  control_points.assign(size_u * size_v * dim, 0.0);
   for (u = 0; u < size_u; u++) {
     for (v = 0; v < size_v; v++) {
       for (i = 0; i < dim; i++) {
         pts_v[v * dim + i] = tmp_control_points[(u + (size_u * v)) * dim + i];
       }
     }
+
     coefficient_matrix =
         BuildCoefficientMatrix(degree_v, knot_vector_v, v_l, size_v, size_v);
     tmp_result = LUSolve(coefficient_matrix, pts_v, size_v, dim);
-    std::move(tmp_result.begin(),
-              tmp_result.end(),
-              std::back_inserter(control_points));
+
+    for (int v = 0; v < size_v; v++) {
+      for (int i = 0; i < dim; i++) {
+        control_points[(u + (size_u * v)) * dim + i] =
+            tmp_result[(v * dim) + i];
+      }
+    }
   }
 
   delete[] pts_u;
