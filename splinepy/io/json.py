@@ -13,7 +13,7 @@ from splinepy.utils.log import debug
 
 def load(fname):
     """
-    Loads splines from json file. Returns dict-splines
+    Loads splines from json file. Returns a list of splines
 
     Parameters
     -----------
@@ -24,7 +24,7 @@ def load(fname):
     spline_list: list
     """
     # Make Required Properties locally accessible
-    from splinepy.spline import _RequiredProperties
+    from splinepy.spline import RequiredProperties
 
     # Import data from file into dict format
     jsonbz = json.load(open(fname))
@@ -39,14 +39,14 @@ def load(fname):
                 base64.b64decode(jbz["control_points"].encode("ascii")),
                 dtype=np.float64,
             ).reshape((-1, jbz["dim"]))
-            if jbz["weights"] is not None:
+            if jbz.get("weights") is not None:
                 jbz["weights"] = np.frombuffer(
                     base64.b64decode(jbz["weights"].encode("ascii")),
                     dtype=np.float64,
                 ).reshape((-1, 1))
 
         # Declare Type and get required properties
-        req_props = _RequiredProperties.of(jbz["SplineType"])
+        req_props = RequiredProperties.of(jbz["SplineType"])
         data_dict = {}
         for prop in req_props:
             data_dict[prop] = jbz[prop]

@@ -289,8 +289,8 @@ def load(fname):
 
     Returns
     -------
-    spline_dic_list : list<dict>
-      list of dictionary types, to be put into the spline constructors
+    spline_dic_list : list
+      list of splines in NAME_TO_TYPE-type
     """
 
     # Auxiliary function to unravel
