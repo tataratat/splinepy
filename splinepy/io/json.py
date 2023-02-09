@@ -7,6 +7,7 @@ import json
 
 import numpy as np
 
+from splinepy import settings
 from splinepy.utils.log import debug
 
 
@@ -23,21 +24,13 @@ def load(fname):
     spline_list: list
     """
     # Make Required Properties locally accessible
-    from splinepy._spline import _RequiredProperties
+    from splinepy.spline import _RequiredProperties
 
     # Import data from file into dict format
     jsonbz = json.load(open(fname))
 
     spline_list = []
     base64encoding = jsonbz["Base64Encoding"]
-
-    # Init return type
-    return_dict = {
-        "Bezier": [],
-        "NURBS": [],
-        "BSpline": [],
-        "RationalBezier": [],
-    }
 
     for jbz in jsonbz["SplineList"]:
         # Convert Base64 str into np array
@@ -57,11 +50,13 @@ def load(fname):
         data_dict = {}
         for prop in req_props:
             data_dict[prop] = jbz[prop]
-        return_dict[jbz["SplineType"]].append(data_dict)
+        spline_list.append(
+            settings.NAME_TO_TYPE[jbz["SplineType"]](**data_dict)
+        )
 
     debug("Imported " + str(len(spline_list)) + " splines from file.")
 
-    return return_dict
+    return spline_list
 
 
 def export(fname, spline_list, list_name=None, base64encoding=False):
@@ -104,7 +99,7 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
     }
 
     # Append all splines to a dictionary
-    from splinepy._spline import Spline
+    from splinepy.spline import Spline
 
     spline_dictonary_list = []
     for i_spline in spline_list:

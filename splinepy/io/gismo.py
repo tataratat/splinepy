@@ -3,6 +3,7 @@ from sys import version as python_version
 
 import numpy as np
 
+from splinepy import settings
 from splinepy.utils.log import debug, warning
 
 
@@ -300,7 +301,7 @@ def load(fname):
                 if "weights" in child.tag:
                     SPdict["weights"] = np.fromstring(
                         child.text.replace("\n", " "), sep=" "
-                    ).reshape(-1, dim)
+                    )
                 if "basis" in child.tag.lower():
                     retrieve_from_basis_(child, SPdict)
         elif "bspline" in ETelement.attrib["type"].lower():
@@ -326,7 +327,7 @@ def load(fname):
     debug("XML-file parsed start conversion")
 
     # Init return value
-    return_dict = {"BSpline": [], "NURBS": []}
+    list_of_splines = []
 
     # Splines start with the keyword Geometry
     for child in root:
@@ -335,6 +336,7 @@ def load(fname):
                 f"Found unsupported keyword {child.tag}, which will be"
                 " ignored"
             )
+            continue
         spline_dict = {}
         debug(f"Found new spline in xml file with id {child.attrib.get('id')}")
         for info in child:
@@ -346,13 +348,14 @@ def load(fname):
                     info.text.replace("\n", " "), sep=" "
                 ).reshape(-1, dim)
         if spline_dict.get("weights") is None:
-            return_dict["BSpline"].append(spline_dict)
+            list_of_splines.append(
+                settings.NAME_TO_TYPE["BSpline"](**spline_dict)
+            )
         else:
-            return_dict["NURBS"].append(spline_dict)
+            list_of_splines.append(
+                settings.NAME_TO_TYPE["NURBS"](**spline_dict)
+            )
 
-    debug(
-        f"Found a total of {len(return_dict['BSpline'])} "
-        f"BSplines and {len(return_dict['NURBS'])} NURBS"
-    )
+    debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
 
-    return return_dict
+    return list_of_splines

@@ -440,7 +440,7 @@ class Multipatch(SplinepyBase):
         try:
             new_boundary_bools = function(relevant_boundary_centers)
         except BaseException:
-            ValueError(
+            raise ValueError(
                 "Function is not applicable to array. Function layout must"
                 " f(array<n_face_points,dim>) -> bools<n_face_points>"
             )
