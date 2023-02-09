@@ -210,4 +210,103 @@ double ApproximateCurve(const double* points,
   return residual;
 }
 
+void ApproximateSurface(const double* points,
+                        const int& num_points_u,
+                        const int& num_points_v,
+                        const int& dim,
+                        const int& degree_u,
+                        const int& degree_v,
+                        const int& size_u,
+                        const int& size_v,
+                        const bool centripetal,
+                        std::vector<double>& knot_vector_u,
+                        std::vector<double>& knot_vector_v,
+                        std::vector<double>& control_points) {
+
+  std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
+      tmp_control_points{}, pts_u, pts_v;
+
+  pts_u.assign(num_points_u * dim, 0.0);
+  pts_v.assign(num_points_v * dim, 0.0);
+
+  ParametrizeSurface(points,
+                     num_points_u * num_points_v,
+                     dim,
+                     num_points_u,
+                     num_points_v,
+                     centripetal,
+                     u_k,
+                     v_l);
+
+  knot_vector_u = ComputeKnotVector(degree_u, num_points_u, size_u, u_k);
+
+  knot_vector_v = ComputeKnotVector(degree_v, num_points_v, size_v, v_l);
+
+  coefficient_matrix = BuildCoefficientMatrix(degree_u,
+                                              knot_vector_u,
+                                              u_k,
+                                              num_points_u,
+                                              size_u);
+
+  // u - direction global interpolation
+  for (int v = 0; v < num_points_v; v++) {
+    for (int u = 0; u < num_points_u; u++) {
+      for (int i = 0; i < dim; i++) {
+        pts_u[u * dim + i] = points[(u + (num_points_u * v)) * dim + i];
+      }
+    }
+
+    ApproximateCurve(pts_u.data(),
+                     num_points_u,
+                     dim,
+                     degree_u,
+                     size_u,
+                     u_k,
+                     knot_vector_u,
+                     coefficient_matrix,
+                     tmp_result);
+
+    std::move(tmp_result.begin(),
+              tmp_result.end(),
+              std::back_inserter(tmp_control_points));
+  }
+
+  coefficient_matrix.clear();
+  coefficient_matrix = BuildCoefficientMatrix(degree_v,
+                                              knot_vector_v,
+                                              v_l,
+                                              num_points_v,
+                                              size_v);
+  // v - direction global interpolation
+
+  control_points.clear();
+  control_points.assign(size_u * size_v * dim, 0.);
+
+  for (int u = 0; u < size_u; u++) {
+    for (int v = 0; v < num_points_v; v++) {
+      for (int i = 0; i < dim; i++) {
+        pts_v[v * dim + i] = tmp_control_points[(u + (size_u * v)) * dim + i];
+      }
+    }
+
+    ApproximateCurve(pts_v.data(),
+                     num_points_v,
+                     dim,
+                     degree_v,
+                     size_v,
+                     v_l,
+                     knot_vector_v,
+                     coefficient_matrix,
+                     tmp_result);
+
+    for (int v = 0; v < size_v; v++) {
+      for (int i = 0; i < dim; i++) {
+        control_points[(u + (size_u * v)) * dim + i] =
+            tmp_result[(v * dim) + i];
+      }
+    }
+  }
+  tmp_result.clear();
+}
+
 } // namespace splinepy::fitting

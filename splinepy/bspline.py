@@ -359,6 +359,95 @@ class BSpline(BSplineBase):
 
         return fitted
 
+    @classmethod
+    def approximate_surface(
+        cls,
+        query_points,
+        num_points_u,
+        num_points_v,
+        size_u,
+        size_v,
+        degree_u,
+        degree_v,
+        centripetal=True,
+        reorganize=False,
+        save_query=True,
+    ):
+        """
+        Approximates the BSpline surface in the least-squares sense through
+        query points.
+
+        Parameters
+        -----------
+        query_points: (num_points_u, num_points_v, 1-10) list-like
+          The query points must form a rectangular grid along the x and y-axis.
+        num_points_u: int
+          The number of sampling points along the first parametric direction.
+          By default the first parametric direction is along the cartesian
+          x-axis, this can be adapted by reorganize.
+        num_points_v: int
+          The number of sampling points along the first parametric direction.
+        size_u: int
+          Number of control points along first parametric direction.
+        size_v: int
+          Number of control points along second parametric direction.
+        degree_u: int
+        degree_v: int
+        centripetal: bool
+          (Optional) Default is True.
+        reorganize: bool
+          (Optional) Default is False. Reorganize control points, assuming they
+          are listed v-direction first, along u-direction.
+        save_query: bool
+          (Optional) Default is True. Saves query points for plotting, or
+          whatever.
+
+        Returns
+        --------
+        fitted: BSpline
+        """
+        if query_points.shape[0] != int(num_points_u * num_points_v):
+            raise ValueError(
+                "The query points do not comply the given " "number of points."
+            )
+        if (size_u > num_points_u) or (size_v > num_points_v):
+            raise ValueError(
+                """The number of sampling points must be equal
+            or larger than the number of control points in each dimension."""
+            )
+
+        query_points = utils.data.enforce_contiguous(
+            query_points, dtype="float64"
+        )
+
+        fitted = cls(
+            **splinepy_core.approximate_surface(
+                points=query_points,
+                num_points_u=num_points_u,
+                num_points_v=num_points_v,
+                size_u=size_u,
+                size_v=size_v,
+                degree_u=degree_u,
+                degree_v=degree_v,
+                centripetal=centripetal,
+            )
+        )
+
+        cls._logd("BSpline surface approximation complete. ")
+
+        if save_query:
+            fitted._fitting_queries = query_points
+
+        # Reorganize control points.
+        if reorganize:
+            ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
+            fitted.control_points = fitted.control_points[ri]
+
+        if save_query:
+            fitted._fitting_queries = query_points
+
+        return fitted
+
     @property
     def nurbs(
         self,
