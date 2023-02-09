@@ -1,10 +1,10 @@
 import tempfile
-from sys import version as python_version
 
 try:
     from . import common as c
 except BaseException:
     import common as c
+
 
 class jsonExportTest(c.unittest.TestCase):
     def test_gismo_import(self):
@@ -40,10 +40,11 @@ class jsonExportTest(c.unittest.TestCase):
         nur_el3.insert_knots(1, [0.5])
 
         # Test Output against input
-        list_of_splines = [bez_el0,rbz_el1,bsp_el2, nur_el3]
+        list_of_splines = [bez_el0, rbz_el1, bsp_el2, nur_el3]
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.json.export(
-    tmpf.name, list_of_splines, base64encoding=True)
+                tmpf.name, list_of_splines, base64encoding=True
+            )
             list_of_splines_loaded = c.splinepy.io.json.load(tmpf.name)
             self.assertTrue(
                 all(
@@ -57,7 +58,8 @@ class jsonExportTest(c.unittest.TestCase):
             )
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.json.export(
-    tmpf.name, list_of_splines, base64encoding=False)
+                tmpf.name, list_of_splines, base64encoding=False
+            )
             list_of_splines_loaded = c.splinepy.io.json.load(tmpf.name)
             self.assertTrue(
                 all(
