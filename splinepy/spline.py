@@ -1319,11 +1319,11 @@ class Spline(SplinepyBase, core.CoreSpline):
             should_copy = True
             # attr are either list or np.ndarray
             # prepare list if needed.
-            if tolist:
+            if tolist and tmp_prop:
                 if isinstance(tmp_prop, np.ndarray):
                     tmp_prop = tmp_prop.tolist()  # copies
                     should_copy = False
-                if p == "knot_vectors":
+                if p.startswith("knot_vectors"):
                     tmp_prop = [t.tolist() for t in tmp_prop]
 
             if should_copy:
