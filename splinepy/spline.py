@@ -1319,7 +1319,7 @@ class Spline(SplinepyBase, core.CoreSpline):
             should_copy = True
             # attr are either list or np.ndarray
             # prepare list if needed.
-            if tolist and tmp_prop:
+            if tolist and (tmp_prop is not None):
                 if isinstance(tmp_prop, np.ndarray):
                     tmp_prop = tmp_prop.tolist()  # copies
                     should_copy = False
