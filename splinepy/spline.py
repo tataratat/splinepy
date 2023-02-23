@@ -1092,7 +1092,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
-        return super().basis_deriative_and_support(
+        return super().basis_derivative_and_support(
             queries=queries,
             orders=orders,
             nthreads=_default_if_none(nthreads, settings.NTHREADS),
