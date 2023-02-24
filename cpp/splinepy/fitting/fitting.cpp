@@ -224,10 +224,7 @@ void ApproximateSurface(const double* points,
                         std::vector<double>& control_points) {
 
   std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
-      tmp_control_points{}, pts_u, pts_v;
-
-  pts_u.assign(num_points_u * dim, 0.0);
-  pts_v.assign(num_points_v * dim, 0.0);
+      tmp_control_points{}, pts_u{num_points_u * dim}, pts_v{num_points_v * dim};
 
   ParametrizeSurface(points,
                      num_points_u * num_points_v,
