@@ -138,6 +138,88 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
             )
         )
 
+    def test_basis_function_derivatives(self):
+        """Test the correct evaluation of basis function derivatives"""
+        # Cross-testing different libraries
+        # use random query points
+        q2D = c.np.random.rand(10, 2)
+
+        # Rational Bezier and NURBS are equivalent but use different backends
+        rational_c = self.rational
+        nurbs_c = self.nurbs
+        # increase orders for derivatives
+        for i in range(2):
+            rational_c.elevate_degrees([0, 1])
+            nurbs_c.elevate_degrees([0, 1])
+
+        # Test different derivatives - all have global supports
+        self.assertTrue(
+            c.np.allclose(
+                rational_c.basis_derivative_and_support(q2D, [1, 0])[0],
+                nurbs_c.basis_derivative_and_support(q2D, [1, 0])[0],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                rational_c.basis_derivative_and_support(q2D, [1, 0])[1],
+                nurbs_c.basis_derivative_and_support(q2D, [1, 0])[1],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                rational_c.basis_derivative_and_support(q2D, [3, 2])[0],
+                nurbs_c.basis_derivative_and_support(q2D, [3, 2])[0],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                rational_c.basis_derivative_and_support(q2D, [1, 3])[0],
+                nurbs_c.basis_derivative_and_support(q2D, [1, 3])[0],
+            )
+        )
+
+        # For polynomial splines
+        bezier_c = self.bezier.copy()
+        bspline_c = c.splinepy.BSpline(
+            **self.bezier.todict(),
+            knot_vectors=[
+                [0] * (self.bezier.degrees[i] + 1)
+                + [1] * (self.bezier.degrees[i] + 1)
+                for i in range(self.bezier.para_dim)
+            ]
+        )
+
+        # increase orders for derivatives
+        for i in range(2):
+            bezier_c.elevate_degrees([0, 1])
+            bspline_c.elevate_degrees([0, 1])
+
+        # Test different derivatives - all have global supports
+        self.assertTrue(
+            c.np.allclose(
+                bezier_c.basis_derivative_and_support(q2D, [0, 1])[0],
+                bspline_c.basis_derivative_and_support(q2D, [0, 1])[0],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                bezier_c.basis_derivative_and_support(q2D, [0, 1])[1],
+                bspline_c.basis_derivative_and_support(q2D, [0, 1])[1],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                bezier_c.basis_derivative_and_support(q2D, [2, 3])[0],
+                bspline_c.basis_derivative_and_support(q2D, [2, 3])[0],
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                bezier_c.basis_derivative_and_support(q2D, [3, 1])[0],
+                bspline_c.basis_derivative_and_support(q2D, [3, 1])[0],
+            )
+        )
+
     def test_partition_of_unity(self):
         """Test the partition of unity of the calculated basis functions."""
 
