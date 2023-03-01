@@ -25,6 +25,16 @@ void init_fitting(py::module_& m) {
         py::arg("degree_u"),
         py::arg("degree_v"),
         py::arg("centripetal"));
+  m.def("approximate_surface",
+        &splinepy::py::ApproximateSurface,
+        py::arg("points"),
+        py::arg("num_points_u"),
+        py::arg("num_points_v"),
+        py::arg("size_u"),
+        py::arg("size_v"),
+        py::arg("degree_u"),
+        py::arg("degree_v"),
+        py::arg("centripetal"));
 }
 
 } // namespace splinepy::py::init

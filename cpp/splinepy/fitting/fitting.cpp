@@ -210,4 +210,108 @@ double ApproximateCurve(const double* points,
   return residual;
 }
 
+void ApproximateSurface(const double* points,
+                        const int& num_points_u,
+                        const int& num_points_v,
+                        const int& dim,
+                        const int& degree_u,
+                        const int& degree_v,
+                        const int& size_u,
+                        const int& size_v,
+                        const bool centripetal,
+                        std::vector<double>& knot_vector_u,
+                        std::vector<double>& knot_vector_v,
+                        std::vector<double>& control_points) {
+
+  std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
+      tmp_control_points(size_u * num_points_v * dim),
+      pts_u(num_points_u * dim), pts_v(num_points_v * dim);
+
+  // Assign and compute the parameters u_k and v_l along both parametric
+  // dimensions
+  // Refer to NURBS Book Algorithm A9.3
+  ParametrizeSurface(points,
+                     num_points_u * num_points_v,
+                     dim,
+                     num_points_u,
+                     num_points_v,
+                     centripetal,
+                     u_k,
+                     v_l);
+
+  knot_vector_u = ComputeKnotVector(degree_u, num_points_u, size_u, u_k);
+  knot_vector_v = ComputeKnotVector(degree_v, num_points_v, size_v, v_l);
+
+  // Build coefficient matrix containing the evaluated basis functions along
+  // first parametric dimension
+  // Refer to equation (9.66)
+  coefficient_matrix = BuildCoefficientMatrix(degree_u,
+                                              knot_vector_u,
+                                              u_k,
+                                              num_points_u,
+                                              size_u);
+
+  // Approximate temporary control point grid row-wise along the first
+  // parametric direction as curves
+  for (int v = 0; v < num_points_v; v++) {
+    // Create pointer to avoid copying points
+    const double* pointer_to_row = &points[v * num_points_u * dim];
+
+    ApproximateCurve(pointer_to_row,
+                     num_points_u,
+                     dim,
+                     degree_u,
+                     size_u,
+                     u_k,
+                     knot_vector_u,
+                     coefficient_matrix,
+                     tmp_result);
+    // Write result column-wise into the temporary control points
+    for (int j = 0; j < size_u; j++) {
+      for (int i = 0; i < dim; i++) {
+        tmp_control_points[((num_points_v * j) + v) * dim + i] =
+            tmp_result[(j * dim) + i];
+      }
+    }
+  }
+
+  coefficient_matrix.clear();
+  coefficient_matrix = BuildCoefficientMatrix(degree_v,
+                                              knot_vector_v,
+                                              v_l,
+                                              num_points_v,
+                                              size_v);
+
+  control_points.clear();
+  control_points.assign(size_u * size_v * dim, 0.);
+
+  // Interpolate each column of the temporary control grid along the second
+  // parametric dimension
+  for (int u = 0; u < size_u; u++) {
+
+    // Create pointer to avoid copying points
+    const double* pointer_to_column =
+        &tmp_control_points[num_points_v * u * dim];
+
+    ApproximateCurve(pointer_to_column,
+                     num_points_v,
+                     dim,
+                     degree_v,
+                     size_v,
+                     v_l,
+                     knot_vector_v,
+                     coefficient_matrix,
+                     tmp_result);
+
+    // Write result column-wise into control points
+    for (int v = 0; v < size_v; v++) {
+      for (int i = 0; i < dim; i++) {
+        control_points[(u + (size_u * v)) * dim + i] =
+            tmp_result[(v * dim) + i];
+      }
+    }
+  }
+  tmp_result.clear();
+}
+
 } // namespace splinepy::fitting

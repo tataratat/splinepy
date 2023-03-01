@@ -152,7 +152,8 @@ Available in `splinepy.io`.
 Implements fitting routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7). Available as BSpline's classmethod.
 - interpolate_curve()
 - approximate_curve()
-- interpolate_surfaces()
+- interpolate_surface()
+- approximate_surface()
 
 
 ## Dependencies

@@ -202,4 +202,80 @@ py::dict InterpolateSurface(py::array_t<double> points,
   return dict_spline;
 }
 
+py::dict ApproximateSurface(py::array_t<double> points,
+                            int num_points_u,
+                            int num_points_v,
+                            int size_u,
+                            int size_v,
+                            int degree_u,
+                            int degree_v,
+                            bool centripetal) {
+
+  // Extract input array info.
+  py::buffer_info p_buf = points.request();
+  double* p_buf_ptr = static_cast<double*>(p_buf.ptr);
+
+  // Prepare vars for interpolation
+  int surface_dim = p_buf.shape[1];
+  if (surface_dim < 2) {
+    splinepy::utils::PrintAndThrowError(
+        "Query points should be at least 2D for surface fitting.");
+  }
+  std::vector<double> knot_vector_u, knot_vector_v, control_points;
+
+  splinepy::fitting::ApproximateSurface(p_buf_ptr,     //
+                                        num_points_u,  //
+                                        num_points_v,  //
+                                        surface_dim,   //
+                                        degree_u,      //
+                                        degree_v,      //
+                                        size_u,        //
+                                        size_v,        //
+                                        centripetal,   //
+                                        knot_vector_u, //
+                                        knot_vector_v, //
+                                        control_points //
+  );
+  // Write degree
+  auto p_degrees = py::array_t<int>(2);
+  py::buffer_info pd_buf = p_degrees.request();
+  int* pd_buf_ptr = static_cast<int*>(pd_buf.ptr);
+  pd_buf_ptr[0] = degree_u;
+  pd_buf_ptr[1] = degree_v;
+
+  // Write knot vector
+  py::list p_knot_vectors;
+  py::list kv_u, kv_v;
+  for (const auto& k : knot_vector_u) {
+    kv_u.append(k);
+  }
+  for (const auto& k : knot_vector_v) {
+    kv_v.append(k);
+  }
+  p_knot_vectors.append(kv_u);
+  p_knot_vectors.append(kv_v);
+
+  // Write control points
+  auto p_control_points = py::array_t<double>(control_points.size());
+  py::buffer_info pc_buf = p_control_points.request();
+  double* pc_buf_ptr = static_cast<double*>(pc_buf.ptr);
+
+  for (int i_cps = 0; i_cps < (size_u * size_v); i_cps++) {
+    for (int j_dim = 0; j_dim < surface_dim; j_dim++) {
+      pc_buf_ptr[i_cps * surface_dim + j_dim] =
+          control_points[i_cps * surface_dim + j_dim];
+    }
+  }
+
+  p_control_points.resize({size_u * size_v, surface_dim});
+
+  // prepare return
+  py::dict dict_spline;
+  dict_spline["degrees"] = p_degrees;
+  dict_spline["knot_vectors"] = p_knot_vectors;
+  dict_spline["control_points"] = p_control_points;
+
+  return dict_spline;
+}
+
 } // namespace splinepy::py
