@@ -209,23 +209,7 @@ double ApproximateCurve(const double* points,
 
   return residual;
 }
-/**
- * @brief Approximates a spline surface to points shaped in a rectangular
- * grid along the parametric directions.
- *
- * @param points rectangluar points array
- * @param num_points_u number of points along u-direction
- * @param num_points_v number of points along v-direction
- * @param dim physical dimension
- * @param degree_u spline degree in u
- * @param degree_v spline degree in v
- * @param size_u number of control points in u
- * @param size_v number of control points in v
- * @param centripetal centripetal parametrization
- * @param knot_vector_u knot vector along u
- * @param knot_vector_v knot vector along v
- * @param control_points control points array
- */
+
 void ApproximateSurface(const double* points,
                         const int& num_points_u,
                         const int& num_points_v,
