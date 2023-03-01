@@ -224,7 +224,7 @@ void ApproximateSurface(const double* points,
                         std::vector<double>& control_points) {
 
   std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
-      tmp_control_points{}, pts_u(num_points_u * dim), pts_v(num_points_v * dim);
+      tmp_control_points(size_u * num_points_v * dim), pts_u(num_points_u * dim), pts_v(num_points_v * dim);
 
   ParametrizeSurface(points,
                      num_points_u * num_points_v,
@@ -239,13 +239,17 @@ void ApproximateSurface(const double* points,
 
   knot_vector_v = ComputeKnotVector(degree_v, num_points_v, size_v, v_l);
 
+  // Build coefficient matrix containing the evaluated basis functions along 
+  // first parametric dimension
+  // Refer to equation (9.66)
   coefficient_matrix = BuildCoefficientMatrix(degree_u,
                                               knot_vector_u,
                                               u_k,
                                               num_points_u,
                                               size_u);
 
-  // u - direction global interpolation
+  // Approximate each row in the control point grid along the first parametric
+  // direction as curve
   for (int v = 0; v < num_points_v; v++) {
     for (int u = 0; u < num_points_u; u++) {
       for (int i = 0; i < dim; i++) {
@@ -274,11 +278,12 @@ void ApproximateSurface(const double* points,
                                               v_l,
                                               num_points_v,
                                               size_v);
-  // v - direction global interpolation
 
   control_points.clear();
   control_points.assign(size_u * size_v * dim, 0.);
 
+  // Interpolate each column of the temporary control grid along the second 
+  // parametric dimension 
   for (int u = 0; u < size_u; u++) {
     for (int v = 0; v < num_points_v; v++) {
       for (int i = 0; i < dim; i++) {
