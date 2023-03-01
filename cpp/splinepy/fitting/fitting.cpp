@@ -227,6 +227,9 @@ void ApproximateSurface(const double* points,
       tmp_control_points(size_u * num_points_v * dim),
       pts_u(num_points_u * dim), pts_v(num_points_v * dim);
 
+  // Assign and compute the parameters u_k and v_l along both parametric
+  // dimensions
+  // Refer to NURBS Book Algorithm A9.3
   ParametrizeSurface(points,
                      num_points_u * num_points_v,
                      dim,
@@ -262,7 +265,7 @@ void ApproximateSurface(const double* points,
                      knot_vector_u,
                      coefficient_matrix,
                      tmp_result);
-
+    // Write result column-wise into the temporary control points
     for (int j = 0; j < size_u; j++) {
       for (int i = 0; i < dim; i++) {
         tmp_control_points[((num_points_v * j) + v) * dim + i] =
@@ -298,6 +301,7 @@ void ApproximateSurface(const double* points,
                      coefficient_matrix,
                      tmp_result);
 
+    // Write result column-wise into control points
     for (int v = 0; v < size_v; v++) {
       for (int i = 0; i < dim; i++) {
         control_points[(u + (size_u * v)) * dim + i] =
