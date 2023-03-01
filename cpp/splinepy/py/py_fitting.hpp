@@ -216,7 +216,6 @@ py::dict ApproximateSurface(py::array_t<double> points,
   double* p_buf_ptr = static_cast<double*>(p_buf.ptr);
 
   // Prepare vars for interpolation
-  int num_points = p_buf.shape[0];
   int surface_dim = p_buf.shape[1];
   if (surface_dim < 2) {
     splinepy::utils::PrintAndThrowError(
