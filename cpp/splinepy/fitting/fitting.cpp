@@ -1,4 +1,5 @@
 #include "fitting.hpp"
+#include <iostream>
 
 namespace splinepy::fitting {
 
@@ -224,7 +225,8 @@ void ApproximateSurface(const double* points,
                         std::vector<double>& control_points) {
 
   std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
-      tmp_control_points(size_u * num_points_v * dim), pts_u(num_points_u * dim), pts_v(num_points_v * dim);
+      tmp_control_points(size_u * num_points_v * dim),
+      pts_u(num_points_u * dim), pts_v(num_points_v * dim);
 
   ParametrizeSurface(points,
                      num_points_u * num_points_v,
@@ -236,10 +238,9 @@ void ApproximateSurface(const double* points,
                      v_l);
 
   knot_vector_u = ComputeKnotVector(degree_u, num_points_u, size_u, u_k);
-
   knot_vector_v = ComputeKnotVector(degree_v, num_points_v, size_v, v_l);
 
-  // Build coefficient matrix containing the evaluated basis functions along 
+  // Build coefficient matrix containing the evaluated basis functions along
   // first parametric dimension
   // Refer to equation (9.66)
   coefficient_matrix = BuildCoefficientMatrix(degree_u,
@@ -248,16 +249,12 @@ void ApproximateSurface(const double* points,
                                               num_points_u,
                                               size_u);
 
-  // Approximate each row in the control point grid along the first parametric
-  // direction as curve
+  // Approximate temporary control point grid row-wise along the first
+  // parametric direction as curves
   for (int v = 0; v < num_points_v; v++) {
-    for (int u = 0; u < num_points_u; u++) {
-      for (int i = 0; i < dim; i++) {
-        pts_u[u * dim + i] = points[(u + (num_points_u * v)) * dim + i];
-      }
-    }
+    const double* pointer_to_row = &points[v * num_points_u * dim];
 
-    ApproximateCurve(pts_u.data(),
+    ApproximateCurve(pointer_to_row,
                      num_points_u,
                      dim,
                      degree_u,
@@ -267,9 +264,12 @@ void ApproximateSurface(const double* points,
                      coefficient_matrix,
                      tmp_result);
 
-    std::move(tmp_result.begin(),
-              tmp_result.end(),
-              std::back_inserter(tmp_control_points));
+    for (int j = 0; j < size_u; j++) {
+      for (int i = 0; i < dim; i++) {
+        tmp_control_points[((num_points_v * j) + v) * dim + i] =
+            tmp_result[(j * dim) + i];
+      }
+    }
   }
 
   coefficient_matrix.clear();
@@ -282,16 +282,14 @@ void ApproximateSurface(const double* points,
   control_points.clear();
   control_points.assign(size_u * size_v * dim, 0.);
 
-  // Interpolate each column of the temporary control grid along the second 
-  // parametric dimension 
+  // Interpolate each column of the temporary control grid along the second
+  // parametric dimension
   for (int u = 0; u < size_u; u++) {
-    for (int v = 0; v < num_points_v; v++) {
-      for (int i = 0; i < dim; i++) {
-        pts_v[v * dim + i] = tmp_control_points[(u + (size_u * v)) * dim + i];
-      }
-    }
 
-    ApproximateCurve(pts_v.data(),
+    const double* pointer_to_column =
+        &tmp_control_points[num_points_v * u * dim];
+
+    ApproximateCurve(pointer_to_column,
                      num_points_v,
                      dim,
                      degree_v,
