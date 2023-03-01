@@ -1,5 +1,4 @@
 #include "fitting.hpp"
-#include <iostream>
 
 namespace splinepy::fitting {
 
