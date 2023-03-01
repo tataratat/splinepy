@@ -463,7 +463,7 @@ public:
 
     splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
 
-    jacobians.resize({n_queries, para_dim_, dim_});
+    jacobians.resize({n_queries, dim_, para_dim_});
     return jacobians;
   }
 
