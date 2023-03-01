@@ -204,13 +204,17 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
         self.assertAlmostEqual(area, c.np.pi * 0.5)
 
         # Assuming that the derivative is correct
-        test_spline = c.splinepy.Bezier(degrees=[3,3],control_points=c.np.random.rand(16,3))
-        query = c.np.random.rand(1,2)
+        test_spline = c.splinepy.Bezier(
+            degrees=[3, 3], control_points=c.np.random.rand(16, 3)
+        )
+        query = c.np.random.rand(1, 2)
         jacs = test_spline.jacobian(query)[0]
-        expected_jacs = c.np.vstack((
-            test_spline.derivative(query, [1, 0]),
-            test_spline.derivative(query, [0, 1]),
-        )).T
+        expected_jacs = c.np.vstack(
+            (
+                test_spline.derivative(query, [1, 0]),
+                test_spline.derivative(query, [0, 1]),
+            )
+        ).T
         self.assertTrue(c.np.allclose(jacs, expected_jacs))
 
     def test_basis_function_derivatives(self):
