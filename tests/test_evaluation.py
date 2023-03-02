@@ -227,7 +227,7 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
         rational_c = self.rational.copy()
         nurbs_c = self.nurbs.copy()
         # increase orders for derivatives
-        for i in range(2):
+        for _ in range(2):
             rational_c.elevate_degrees([0, 1])
             nurbs_c.elevate_degrees([0, 1])
 
