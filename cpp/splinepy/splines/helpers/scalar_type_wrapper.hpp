@@ -103,7 +103,7 @@ void ScalarTypeJacobian(const SplineType& spline,
 
     // Fill output accordingly
     if constexpr (std::is_scalar<decltype(core_derived)>::value) {
-      output[0] = static_cast<OutputType>(core_derived);
+      output[i] = static_cast<OutputType>(core_derived);
     } else {
       for (std::size_t j{}; j < SplineType::kDim; ++j) {
         output[j * SplineType::kParaDim + i] =

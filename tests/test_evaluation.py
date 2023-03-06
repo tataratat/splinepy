@@ -217,6 +217,20 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
         ).T
         self.assertTrue(c.np.allclose(jacs, expected_jacs))
 
+        # Test for scalar valued splines
+        test_spline_scalar = c.splinepy.Bezier(
+            degrees=[3, 3], control_points=c.np.random.rand(16, 1)
+        )
+        query = c.np.random.rand(1, 2)
+        jacs = test_spline_scalar.jacobian(query)[0]
+        expected_jacs = c.np.vstack(
+            (
+                test_spline_scalar.derivative(query, [1, 0]),
+                test_spline_scalar.derivative(query, [0, 1]),
+            )
+        ).T
+        self.assertTrue(c.np.allclose(jacs, expected_jacs))
+
     def test_basis_function_derivatives(self):
         """Test the correct evaluation of basis function derivatives"""
         # Cross-testing different libraries
