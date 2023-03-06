@@ -1,7 +1,8 @@
 name: Full builds and tests
 
 on:
-  pull_request
+  push:
+    branches: [bug-fix-action-warnings]
 
 permissions:
   contents: read
@@ -20,7 +21,7 @@ jobs:
       with:
         submodules: recursive
     - name: Set up  ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
