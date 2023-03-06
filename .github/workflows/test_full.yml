@@ -1,8 +1,7 @@
 name: Full builds and tests
 
 on:
-  push:
-    branches: [bug-fix-action-warnings]
+  pull_request
 
 permissions:
   contents: read
