@@ -138,6 +138,99 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
             )
         )
 
+    def test_jacobian(self):
+        """Test the correct evaluation of basis function derivatives"""
+        # Test both for nurbs as for rational beziers for the integration of a
+        # circle, just because we can
+        # Get Legendre points
+        interval = [0, 1]
+        order = 7
+        dim = 2
+        positions, weights = c.np.polynomial.legendre.leggauss(order)
+        positions = interval[0] + (interval[1] - interval[0]) / 2 * (
+            positions + 1
+        )
+        weights = weights * (interval[1] - interval[0]) / 2
+        positions = c.np.reshape(
+            c.np.meshgrid(*[positions for _ in range(dim)]), (dim, -1)
+        ).T
+        weights = c.np.prod(
+            c.np.reshape(
+                c.np.meshgrid(*[weights for _ in range(dim)]), (dim, -1)
+            ).T,
+            axis=1,
+        )
+        inv_sqrt_2 = c.np.sqrt(0.5)
+        circle_bezier = c.splinepy.RationalBezier(
+            degrees=[2, 2],
+            control_points=[
+                [0, 0],
+                [0.5, -0.5],
+                [1, 0],
+                [-0.5, 0.5],
+                [0.5, 0.5],
+                [1 + 0.5, 0.5],
+                [0, 1],
+                [0.5, 1 + 0.5],
+                [1, 1],
+            ],
+            weights=[
+                1,
+                inv_sqrt_2,
+                1,
+                inv_sqrt_2,
+                1,
+                inv_sqrt_2,
+                1,
+                inv_sqrt_2,
+                1,
+            ],
+        )
+        circle_nurbs = c.splinepy.NURBS(
+            degrees=circle_bezier.degrees,
+            control_points=circle_bezier.control_points,
+            knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+            weights=circle_bezier.weights,
+        )
+
+        # Test the determinant
+        area = c.np.sum(
+            c.np.linalg.det(circle_bezier.jacobian(positions)) * weights
+        )
+        self.assertAlmostEqual(area, c.np.pi * 0.5)
+        area = c.np.sum(
+            c.np.linalg.det(circle_nurbs.jacobian(positions)) * weights
+        )
+        self.assertAlmostEqual(area, c.np.pi * 0.5)
+
+        # Assuming that the derivative is correct
+        test_spline = c.splinepy.Bezier(
+            degrees=[3, 3], control_points=c.np.random.rand(16, 3)
+        )
+        query = c.np.random.rand(1, 2)
+        jacs = test_spline.jacobian(query)[0]
+        expected_jacs = c.np.vstack(
+            (
+                test_spline.derivative(query, [1, 0]),
+                test_spline.derivative(query, [0, 1]),
+            )
+        ).T
+        self.assertTrue(c.np.allclose(jacs, expected_jacs))
+
+        # Test for scalar valued splines
+        test_spline_scalar = c.splinepy.Bezier(
+            degrees=[3, 3], control_points=c.np.random.rand(16, 1)
+        )
+        query = c.np.random.rand(1, 2)
+        jacs = test_spline_scalar.jacobian(query)[0]
+        expected_jacs = c.np.vstack(
+            (
+                test_spline_scalar.derivative(query, [1, 0]),
+                test_spline_scalar.derivative(query, [0, 1]),
+            )
+        ).T
+        self.assertTrue(c.np.allclose(jacs, expected_jacs))
+
     def test_basis_function_derivatives(self):
         """Test the correct evaluation of basis function derivatives"""
         # Cross-testing different libraries
@@ -145,10 +238,10 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
         q2D = c.np.random.rand(10, 2)
 
         # Rational Bezier and NURBS are equivalent but use different backends
-        rational_c = self.rational
-        nurbs_c = self.nurbs
+        rational_c = self.rational.copy()
+        nurbs_c = self.nurbs.copy()
         # increase orders for derivatives
-        for i in range(2):
+        for _ in range(2):
             rational_c.elevate_degrees([0, 1])
             nurbs_c.elevate_degrees([0, 1])
 

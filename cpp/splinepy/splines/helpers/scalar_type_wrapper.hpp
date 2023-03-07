@@ -66,22 +66,52 @@ void ScalarTypeDerivative(const SplineType& spline,
   }
 }
 
-/// Spline Jacobian
-/// output should have the size of dim * para_dim
+/**
+ * @brief inserts jacobian into requested pointer for single query
+ *
+ * @tparam SplineType Type of core spline
+ * @tparam QueryType Spline-Type dependent query type
+ * @tparam OutputType mostly double*
+ * @param spline spline for evaluation (core)
+ * @param query position for evaluation
+ * @param output
+ */
 template<typename SplineType, typename QueryType, typename OutputType>
 void ScalarTypeJacobian(const SplineType& spline,
                         const QueryType* query,
                         OutputType* output) {
+  // Retrieve types from splinetype
+  using Query = typename SplineType::ParametricCoordinate_;
+  using QueryValueType = typename Query::value_type;
+  using Order = typename SplineType::Derivative_;
+  using OrderValueType = typename Order::value_type;
+  Query core_query{};
+  Order core_order{};
 
-  std::array<int, SplineType::kParaDim> orders{};
+  // Copy query and requested order to core-type
+  for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+    core_query[i] = QueryValueType{query[i]};
+    core_order[i] = static_cast<OrderValueType>(0);
+  }
+
   for (int i{}; i < SplineType::kParaDim; ++i) {
-    orders[i] = 1;
-    // call scalar derivative helper
-    ScalarTypeDerivative(spline,
-                         query,
-                         orders.data(),
-                         &output[i * SplineType::kDim]);
-    orders[i] = 0;
+    // requested order
+    core_order[i] = static_cast<OrderValueType>(1);
+
+    // Perform actual computation
+    const auto core_derived = spline(core_query, core_order);
+
+    // Fill output accordingly
+    if constexpr (std::is_scalar<decltype(core_derived)>::value) {
+      output[i] = static_cast<OutputType>(core_derived);
+    } else {
+      for (std::size_t j{}; j < SplineType::kDim; ++j) {
+        output[j * SplineType::kParaDim + i] =
+            static_cast<OutputType>(core_derived[j]);
+      }
+    }
+
+    core_order[i] = static_cast<OrderValueType>(0);
   }
 }
 
