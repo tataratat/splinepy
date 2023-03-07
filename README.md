@@ -100,6 +100,7 @@ Most of the functions are vectorized and capable of multithread executions.
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | evaluate()                     | Given parametric coordinates, returns physical (i.e., mapped / evaluated) coordinate                                                                  |
 | derivative()                   | Given parametric cooridnates and order of partial derivatives, returns physical derivatives                                                           |
+| jacobian()                     | Given a number of query points, returns the jacobian of the geometry or field                                                                         |
 | sample()                       | Given number of sampling points per parametric dimension,  returns evaluated physical coordinates, which are equally distributed in parametric space. |
 | basis_and_support()            | Given parametric coordinates, returns basis function values and their support. Satisfies partition of unity.                                          |
 | basis_derivative_and_support() | Given parametric coordinates and order of partial derivatives, returns basis function derivative values.                                              |
@@ -137,15 +138,15 @@ Splinepy offers a common interface for multipatch geometries, i.e., geometries c
 ### IO
 Available in `splinepy.io`.
 
-| Formats | Description |
-| ------- | ----------- |
-| iges | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file |
-| irit | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format |
-| json | (Custom) easy-to-read format, supports base64 encoding |
-| mfem | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
-| gismo | [GISMO](https://gismo.github.io) compatible `.xml` format |
-| npz | Based on np.savez() |
-| xml | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format |
+| Formats | Description                                                                                                                                          |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| iges    | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file                                                                        |
+| irit    | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format                                                                                       |
+| json    | (Custom) easy-to-read format, supports base64 encoding                                                                                               |
+| mfem    | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
+| gismo   | [GISMO](https://gismo.github.io) compatible `.xml` format                                                                                            |
+| npz     | Based on np.savez()                                                                                                                                  |
+| xml     | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format                                                                                          |
 
 
 ### BSpline fitting
