@@ -341,7 +341,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
                                const OrderType* order) {
 
   // we will do everything with OrderType
-  const auto para_dim = static_cast<OrderType>(SplineType::kParaDim);
+  constexpr auto para_dim = static_cast<OrderType>(SplineType::kParaDim);
 
   // prepare
   const auto& homogeneous_coords = spline.GetCoordinates();
