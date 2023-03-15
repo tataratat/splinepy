@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <vector>
+#include <iterator>
 
 inline double square(double x) { return x * x; }
 
