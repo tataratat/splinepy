@@ -7,7 +7,12 @@ from splinepy import settings
 from splinepy.utils.log import debug, warning
 
 
-def export(fname, multipatch=None, indent=True):
+def export(
+    fname,
+    multipatch=None,
+    indent=True,
+    labeled_boundaries=True,
+):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
     patches are excluded as their respective non uniform counterpart
@@ -20,6 +25,8 @@ def export(fname, multipatch=None, indent=True):
       (list of) Spline-Types in splinepy format
     indent: bool
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
+    labeled_boundaries : bool
+      Writes boundaries with labels into the MultiPatch part of the XML
 
     Returns
     -------
@@ -137,44 +144,63 @@ def export(fname, multipatch=None, indent=True):
             [" ".join([str(xx) for xx in x]) for x in interface_array]
         )
 
-    # Start extracting all boundaries
-    # Boundaries are stored as patch-id (global) face-id (local)
-    boundary_spline, boundary_face = np.where(multipatch.interfaces < 0)
-    if boundary_spline.size > 0:
-        boundary_data = ET.SubElement(multipatch_element, "boundary")
-        boundary_data.text = "\n".join(
-            [
-                str(sid + index_offset) + " " + str(bid + 1)
-                for (sid, bid) in zip(boundary_spline, boundary_face)
-            ]
-        )
-    ###
-    # Boundary conditions
-    ###
-    # If there are multiple boundary IDs write them into boundary conditions
-    # and fill with dummy values
-    # Note here, that the boundary conditions are always stored in the local
-    # enumeration system of them multipatch
-    boundary_condition_list = multipatch.boundaries
-    if len(boundary_condition_list) > 1:
-        bcs_data = ET.SubElement(
-            xml_data,
-            "boundaryConditions",
-            multipatch=str(len(multipatch.splines)),
-            id=str(1),
-        )
-        bcs_data.insert(
-            0, ET.Comment(text="Please fill boundary conditions here")
-        )
-        for bc_data_i in boundary_condition_list:
-            bc = ET.SubElement(bcs_data, "bc", type="Dirichlet", unknown="0")
-            bc.text = "\n".join(
+    if labeled_boundaries:
+        # Export geometric boundaries and set a label
+        for boundary_id, face_id_list in enumerate(
+            multipatch.boundaries, start=1
+        ):
+            boundary_data = ET.SubElement(
+                multipatch_element,
+                "boundary",
+                name="BID" + str(boundary_id),
+            )
+            boundary_data.text = "\n".join(
                 [
-                    str(sid) + " " + str(bid + 1)
-                    for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
+                    str(patch_id + index_offset) + " " + str(local_face_id + 1)
+                    for (patch_id, local_face_id) in zip(*face_id_list)
                 ]
             )
-
+    else:
+        # This is valid in the old format (1. list all boundaries, 2. set BCs)
+        # Start extracting all boundaries
+        # Boundaries are stored as patch-id (global) face-id (local)
+        boundary_spline, boundary_face = np.where(multipatch.interfaces < 0)
+        if boundary_spline.size > 0:
+            boundary_data = ET.SubElement(multipatch_element, "boundary")
+            boundary_data.text = "\n".join(
+                [
+                    str(sid + index_offset) + " " + str(bid + 1)
+                    for (sid, bid) in zip(boundary_spline, boundary_face)
+                ]
+            )
+        ###
+        # Boundary conditions
+        ###
+        # If there are multiple boundary IDs write them into boundary
+        # conditions and fill with dummy values
+        # Note here, that the boundary conditions are always stored in the
+        # local enumeration system of them multipatch
+        boundary_condition_list = multipatch.boundaries
+        if len(boundary_condition_list) > 1:
+            bcs_data = ET.SubElement(
+                xml_data,
+                "boundaryConditions",
+                multipatch=str(len(multipatch.splines)),
+                id=str(1),
+            )
+            bcs_data.insert(
+                0, ET.Comment(text="Please fill boundary conditions here")
+            )
+            for bc_data_i in boundary_condition_list:
+                bc = ET.SubElement(
+                    bcs_data, "bc", type="Dirichlet", unknown="0"
+                )
+                bc.text = "\n".join(
+                    [
+                        str(sid) + " " + str(bid + 1)
+                        for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
+                    ]
+                )
     ###
     # Individual spline data
     ###
