@@ -1027,23 +1027,58 @@ class gismoExportTest(c.unittest.TestCase):
         nur_el3.insert_knots(1, [0.5])
 
         # Test Output against input
-        list_of_splines = [bsp_el2, nur_el3]
+        multipatch_geometry = c.splinepy.Multipatch([bsp_el2, nur_el3])
         with tempfile.NamedTemporaryFile() as tmpf:
             c.splinepy.io.gismo.export(
                 tmpf.name,
-                multipatch=list_of_splines,
+                multipatch=multipatch_geometry,
                 indent=False,
                 labeled_boundaries=False,
             )
-            list_of_splines_loaded = c.splinepy.io.gismo.load(tmpf.name)
+            multipatch_geometry_loaded = c.splinepy.io.gismo.load(tmpf.name)
             self.assertTrue(
                 all(
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            list_of_splines, list_of_splines_loaded
+                            multipatch_geometry.splines,
+                            multipatch_geometry_loaded.splines,
                         )
                     ]
+                )
+            )
+            self.assertTrue(
+                c.np.allclose(
+                    multipatch_geometry.interfaces,
+                    multipatch_geometry_loaded.interfaces,
+                )
+            )
+
+            # Now with modified boundaries
+            multipatch_geometry.boundaries_from_continuity()
+        with tempfile.NamedTemporaryFile() as tmpf:
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch_geometry,
+                indent=False,
+                labeled_boundaries=True,
+            )
+            multipatch_geometry_loaded = c.splinepy.io.gismo.load(tmpf.name)
+            self.assertTrue(
+                all(
+                    [
+                        c.are_splines_equal(a, b)
+                        for a, b in zip(
+                            multipatch_geometry.splines,
+                            multipatch_geometry_loaded.splines,
+                        )
+                    ]
+                )
+            )
+            self.assertTrue(
+                c.np.allclose(
+                    multipatch_geometry.interfaces,
+                    multipatch_geometry_loaded.interfaces,
                 )
             )
 

@@ -315,9 +315,10 @@ def load(fname):
 
     Returns
     -------
-    spline_dic_list : list
-      list of splines in NAME_TO_TYPE-type
+    spline_dic_list : multipatch
+      Multipatch object with list of splines in NAME_TO_TYPE-type
     """
+    from splinepy.multipatch import Multipatch
 
     # Auxiliary function to unravel
     def retrieve_from_basis_(ETelement, SPdict):
@@ -354,34 +355,106 @@ def load(fname):
 
     # Init return value
     list_of_splines = []
-
+    interface_array = None
+    invalid_integer = -99919412
     # Splines start with the keyword Geometry
     for child in root:
-        if not child.tag.startswith("Geometry"):
+        if child.tag.startswith("MultiPatch"):
+            parametric_dimension = int(child.attrib["parDim"])
+            # Patch ids
+            patch_element = child.find("patches")
+            if patch_element is None:
+                debug("Unsupported format")
+            if not patch_element.attrib.get("type") == "id_range":
+                debug(f"Invalid patch type {patch_element.attrib.get('type')}")
+            patch_range = np.fromstring(
+                patch_element.text.replace("\n", " "), sep=" ", dtype=np.int64
+            )
+            offset = patch_range[0]
+            n_splines = patch_range[1] - patch_range[0] + 1
+            number_of_faces = parametric_dimension * 2
+
+            # Extract interfaces and boundaries
+            interfaces_element = child.find("interfaces")
+            if interfaces_element is None:
+                debug("No connectivity found format")
+            else:
+                interface_information = np.fromstring(
+                    interfaces_element.text.replace("\n", " "),
+                    sep=" ",
+                    dtype=np.int64,
+                ).reshape(-1, number_of_faces + 4)
+                interface_array = (
+                    np.ones((n_splines, number_of_faces), dtype=np.int64)
+                    * invalid_integer
+                )
+                # Assign interfaces
+                interface_array[
+                    interface_information[:, 0] - offset,
+                    interface_information[:, 1] - 1,
+                ] = (
+                    interface_information[:, 2] - offset
+                )
+                interface_array[
+                    interface_information[:, 2] - offset,
+                    interface_information[:, 3] - 1,
+                ] = (
+                    interface_information[:, 0] - offset
+                )
+
+            # Extract interfaces and boundaries
+            boundary_elements = child.findall("boundary")
+            if interfaces_element is None:
+                debug("No connectivity found format")
+            else:
+                for id, boundary_element in enumerate(
+                    boundary_elements, start=1
+                ):
+                    boundary_information = np.fromstring(
+                        boundary_element.text.replace("\n", " "),
+                        sep=" ",
+                        dtype=np.int64,
+                    ).reshape(-1, 2)
+                    interface_array[
+                        boundary_information[:, 0] - offset,
+                        boundary_information[:, 1] - 1,
+                    ] = -id
+
+        elif child.tag.startswith("Geometry"):
+            spline_dict = {}
+            debug(f"Found new spline in xml with id {child.attrib.get('id')}")
+            for info in child:
+                if "basis" in info.tag.lower():
+                    retrieve_from_basis_(info, spline_dict)
+                elif info.tag.startswith("coef"):
+                    dim = int(info.attrib.get("geoDim"))
+                    spline_dict["control_points"] = np.fromstring(
+                        info.text.replace("\n", " "), sep=" "
+                    ).reshape(-1, dim)
+            if spline_dict.get("weights") is None:
+                list_of_splines.append(
+                    settings.NAME_TO_TYPE["BSpline"](**spline_dict)
+                )
+            else:
+                list_of_splines.append(
+                    settings.NAME_TO_TYPE["NURBS"](**spline_dict)
+                )
+        else:
             debug(
                 f"Found unsupported keyword {child.tag}, which will be"
                 " ignored"
             )
             continue
-        spline_dict = {}
-        debug(f"Found new spline in xml file with id {child.attrib.get('id')}")
-        for info in child:
-            if "basis" in info.tag.lower():
-                retrieve_from_basis_(info, spline_dict)
-            elif info.tag.startswith("coef"):
-                dim = int(info.attrib.get("geoDim"))
-                spline_dict["control_points"] = np.fromstring(
-                    info.text.replace("\n", " "), sep=" "
-                ).reshape(-1, dim)
-        if spline_dict.get("weights") is None:
-            list_of_splines.append(
-                settings.NAME_TO_TYPE["BSpline"](**spline_dict)
-            )
-        else:
-            list_of_splines.append(
-                settings.NAME_TO_TYPE["NURBS"](**spline_dict)
-            )
 
     debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
+    multipatch = Multipatch(list_of_splines)
+    if interface_array is not None:
+        if invalid_integer in interface_array:
+            warning("Unmatched faces or insufficient information in xml file")
+            invalid_splines = np.where(interface_array)[0][0] + offset
+            warning(f"Check faces with ids {invalid_splines}")
+            warning("Interface information ignored")
 
-    return list_of_splines
+        multipatch.interfaces = interface_array
+
+    return multipatch
