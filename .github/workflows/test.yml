@@ -13,14 +13,14 @@ jobs:
     strategy:
       matrix:
         python-version: [3.9]
-        os: [ubuntu-20.04, macos-latest]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
     - name: Set up  ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -34,6 +34,11 @@ jobs:
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
+      run: |
+        python3 setup.py develop --minimal --debug
+
+    - name: build splinepy windows
+      if: matrix.os == "windows-latest"
       run: |
         python3 setup.py develop --minimal --debug
 
