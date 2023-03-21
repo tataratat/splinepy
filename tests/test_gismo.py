@@ -196,6 +196,174 @@ _gismo_export_ref_2d_indent = [
     "</xml>",
 ]
 
+_gismo_export_ref_2d_labeled = [
+    (
+        '<xml><MultiPatch parDim="2" id="0"><patches type="id_range">100 103</'
+        "patches><interfaces>100 2 101 1 0 1 1 1\n"
+    ),
+    "100 4 102 3 0 1 1 1\n",
+    "101 4 103 3 0 1 1 1\n",
+    '102 2 103 1 0 1 1 1</interfaces><boundary name="BID1">100 3\n',
+    "101 3\n",
+    "102 4\n",
+    '103 4</boundary><boundary name="BID2">100 1\n',
+    '102 1</boundary><boundary name="BID3">101 2\n',
+    (
+        '103 2</boundary></MultiPatch><Geometry type="TensorBSpline2" id="100"'
+        '><Basis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="'
+        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
+        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
+        '1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 0.0\n'
+    ),
+    "0.5 0.0\n",
+    "1.0 0.0\n",
+    "0.0 1.0\n",
+    "0.5 1.0\n",
+    (
+        '1.0 1.0</coefs></Geometry><Geometry type="TensorNurbs2" id="101"><Bas'
+        'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
+        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
+        'degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis></Basis><weights>1.0\n'
+    ),
+    "1.0\n",
+    "1.0\n",
+    '1.0</weights></Basis><coefs geoDim="2">1.0 0.0\n',
+    "2.0 0.0\n",
+    "1.0 1.0\n",
+    (
+        '2.0 1.0</coefs></Geometry><Geometry type="TensorBSpline2" id="102"><B'
+        'asis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="0">'
+        '<KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><B'
+        'asis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5'
+        ' 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 1.0\n'
+    ),
+    "0.5 1.0\n",
+    "1.0 1.0\n",
+    "0.0 1.5\n",
+    "0.5 1.5\n",
+    "1.0 1.5\n",
+    "0.0 2.0\n",
+    "0.5 2.0\n",
+    (
+        '1.0 2.0</coefs></Geometry><Geometry type="TensorNurbs2" id="103"><Bas'
+        'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
+        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
+        'degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></Basis><weights>1'
+        ".0\n"
+    ),
+    "1.0\n",
+    "1.0\n",
+    "1.0\n",
+    "1.0\n",
+    '1.0</weights></Basis><coefs geoDim="2">1.0 1.0\n',
+    "2.0 1.0\n",
+    "1.0 1.5\n",
+    "2.0 1.5\n",
+    "1.0 2.0\n",
+    "2.0 2.0</coefs></Geometry></xml>",
+]
+
+_gismo_export_ref_2d_indent_labeled = [
+    "<xml>\n",
+    '  <MultiPatch parDim="2" id="0">\n',
+    '    <patches type="id_range">100 103</patches>\n',
+    "    <interfaces>100 2 101 1 0 1 1 1\n",
+    "100 4 102 3 0 1 1 1\n",
+    "101 4 103 3 0 1 1 1\n",
+    "102 2 103 1 0 1 1 1</interfaces>\n",
+    '    <boundary name="BID1">100 3\n',
+    "101 3\n",
+    "102 4\n",
+    "103 4</boundary>\n",
+    '    <boundary name="BID2">100 1\n',
+    "102 1</boundary>\n",
+    '    <boundary name="BID3">101 2\n',
+    "103 2</boundary>\n",
+    "  </MultiPatch>\n",
+    '  <Geometry type="TensorBSpline2" id="100">\n',
+    '    <Basis type="TensorBSplineBasis2">\n',
+    '      <Basis type="BSplineBasis" index="0">\n',
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    "      </Basis>\n",
+    '      <Basis type="BSplineBasis" index="1">\n',
+    '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    "      </Basis>\n",
+    "    </Basis>\n",
+    '    <coefs geoDim="2">0.0 0.0\n',
+    "0.5 0.0\n",
+    "1.0 0.0\n",
+    "0.0 1.0\n",
+    "0.5 1.0\n",
+    "1.0 1.0</coefs>\n",
+    "  </Geometry>\n",
+    '  <Geometry type="TensorNurbs2" id="101">\n',
+    '    <Basis type="TensorNurbsBasis2">\n',
+    '      <Basis type="TensorBSplineBasis2">\n',
+    '        <Basis type="BSplineBasis" index="0">\n',
+    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    "        </Basis>\n",
+    '        <Basis type="BSplineBasis" index="1">\n',
+    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    "        </Basis>\n",
+    "      </Basis>\n",
+    "      <weights>1.0\n",
+    "1.0\n",
+    "1.0\n",
+    "1.0</weights>\n",
+    "    </Basis>\n",
+    '    <coefs geoDim="2">1.0 0.0\n',
+    "2.0 0.0\n",
+    "1.0 1.0\n",
+    "2.0 1.0</coefs>\n",
+    "  </Geometry>\n",
+    '  <Geometry type="TensorBSpline2" id="102">\n',
+    '    <Basis type="TensorBSplineBasis2">\n',
+    '      <Basis type="BSplineBasis" index="0">\n',
+    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    "      </Basis>\n",
+    '      <Basis type="BSplineBasis" index="1">\n',
+    '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    "      </Basis>\n",
+    "    </Basis>\n",
+    '    <coefs geoDim="2">0.0 1.0\n',
+    "0.5 1.0\n",
+    "1.0 1.0\n",
+    "0.0 1.5\n",
+    "0.5 1.5\n",
+    "1.0 1.5\n",
+    "0.0 2.0\n",
+    "0.5 2.0\n",
+    "1.0 2.0</coefs>\n",
+    "  </Geometry>\n",
+    '  <Geometry type="TensorNurbs2" id="103">\n',
+    '    <Basis type="TensorNurbsBasis2">\n',
+    '      <Basis type="TensorBSplineBasis2">\n',
+    '        <Basis type="BSplineBasis" index="0">\n',
+    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    "        </Basis>\n",
+    '        <Basis type="BSplineBasis" index="1">\n',
+    '          <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    "        </Basis>\n",
+    "      </Basis>\n",
+    "      <weights>1.0\n",
+    "1.0\n",
+    "1.0\n",
+    "1.0\n",
+    "1.0\n",
+    "1.0</weights>\n",
+    "    </Basis>\n",
+    '    <coefs geoDim="2">1.0 1.0\n',
+    "2.0 1.0\n",
+    "1.0 1.5\n",
+    "2.0 1.5\n",
+    "1.0 2.0\n",
+    "2.0 2.0</coefs>\n",
+    "  </Geometry>\n",
+    "</xml>",
+]
+
 _gismo_export_ref_3d = [
     (
         '<xml><MultiPatch parDim="3" id="0"><patches type="id_range">100 103</'
@@ -591,6 +759,9 @@ class gismoExportTest(c.unittest.TestCase):
             )
             return True
 
+        ###########
+        # 2D Mesh #
+        ###########
         # Define some splines
         bez_el0 = c.splinepy.Bezier(
             degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
@@ -637,7 +808,12 @@ class gismoExportTest(c.unittest.TestCase):
 
         # Test Output
         with tempfile.NamedTemporaryFile() as tmpf:
-            c.splinepy.io.gismo.export(tmpf.name, multipatch, False)
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch,
+                indent=False,
+                labeled_boundaries=False,
+            )
 
             with open(tmpf.name) as tmp_read:
                 self.assertTrue(
@@ -649,7 +825,12 @@ class gismoExportTest(c.unittest.TestCase):
         # for python version > 3.9, test indented version
         if int(python_version.split(".")[1]) >= 9:
             with tempfile.NamedTemporaryFile() as tmpf:
-                c.splinepy.io.gismo.export(tmpf.name, multipatch, True)
+                c.splinepy.io.gismo.export(
+                    tmpf.name,
+                    multipatch=multipatch,
+                    indent=True,
+                    labeled_boundaries=False,
+                )
 
                 with open(tmpf.name) as tmp_read:
                     self.assertTrue(
@@ -657,6 +838,48 @@ class gismoExportTest(c.unittest.TestCase):
                             _gismo_export_ref_2d_indent, tmp_read.readlines()
                         )
                     )
+
+        ########################
+        # 2D Mesh - new format #
+        ########################
+        with tempfile.NamedTemporaryFile() as tmpf:
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch,
+                indent=False,
+                labeled_boundaries=True,
+            )
+
+            with open(tmpf.name) as tmp_read:
+                self.assertTrue(
+                    c.are_stripped_lines_same(
+                        _gismo_export_ref_2d_labeled,
+                        tmp_read.readlines(),
+                        True,
+                    )
+                )
+
+        # for python version > 3.9, test indented version
+        if int(python_version.split(".")[1]) >= 9:
+            with tempfile.NamedTemporaryFile() as tmpf:
+                c.splinepy.io.gismo.export(
+                    tmpf.name,
+                    multipatch=multipatch,
+                    indent=True,
+                    labeled_boundaries=True,
+                )
+
+                with open(tmpf.name) as tmp_read:
+                    self.assertTrue(
+                        c.are_items_same(
+                            _gismo_export_ref_2d_indent_labeled,
+                            tmp_read.readlines(),
+                        )
+                    )
+
+        ###########
+        # 3D Mesh #
+        ###########
 
         # Test Also 3D Meshes
         bez_el0 = c.splinepy.Bezier(
@@ -740,7 +963,12 @@ class gismoExportTest(c.unittest.TestCase):
 
         # Test output
         with tempfile.NamedTemporaryFile() as tmpf:
-            c.splinepy.io.gismo.export(tmpf.name, multipatch, False)
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch,
+                indent=False,
+                labeled_boundaries=False,
+            )
             with open(tmpf.name) as tmp_read:
                 self.assertTrue(
                     c.are_stripped_lines_same(
@@ -751,7 +979,12 @@ class gismoExportTest(c.unittest.TestCase):
         # for python version > 3.9, test indented version
         if int(python_version.split(".")[1]) >= 9:
             with tempfile.NamedTemporaryFile() as tmpf:
-                c.splinepy.io.gismo.export(tmpf.name, multipatch, True)
+                c.splinepy.io.gismo.export(
+                    tmpf.name,
+                    multipatch=multipatch,
+                    indent=True,
+                    labeled_boundaries=False,
+                )
 
                 with open(tmpf.name) as tmp_read:
                     self.assertTrue(
@@ -794,18 +1027,58 @@ class gismoExportTest(c.unittest.TestCase):
         nur_el3.insert_knots(1, [0.5])
 
         # Test Output against input
-        list_of_splines = [bsp_el2, nur_el3]
+        multipatch_geometry = c.splinepy.Multipatch([bsp_el2, nur_el3])
         with tempfile.NamedTemporaryFile() as tmpf:
-            c.splinepy.io.gismo.export(tmpf.name, list_of_splines, False)
-            list_of_splines_loaded = c.splinepy.io.gismo.load(tmpf.name)
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch_geometry,
+                indent=False,
+                labeled_boundaries=False,
+            )
+            multipatch_geometry_loaded = c.splinepy.io.gismo.load(tmpf.name)
             self.assertTrue(
                 all(
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            list_of_splines, list_of_splines_loaded
+                            multipatch_geometry.splines,
+                            multipatch_geometry_loaded.splines,
                         )
                     ]
+                )
+            )
+            self.assertTrue(
+                c.np.allclose(
+                    multipatch_geometry.interfaces,
+                    multipatch_geometry_loaded.interfaces,
+                )
+            )
+
+            # Now with modified boundaries
+            multipatch_geometry.boundaries_from_continuity()
+        with tempfile.NamedTemporaryFile() as tmpf:
+            c.splinepy.io.gismo.export(
+                tmpf.name,
+                multipatch=multipatch_geometry,
+                indent=False,
+                labeled_boundaries=True,
+            )
+            multipatch_geometry_loaded = c.splinepy.io.gismo.load(tmpf.name)
+            self.assertTrue(
+                all(
+                    [
+                        c.are_splines_equal(a, b)
+                        for a, b in zip(
+                            multipatch_geometry.splines,
+                            multipatch_geometry_loaded.splines,
+                        )
+                    ]
+                )
+            )
+            self.assertTrue(
+                c.np.allclose(
+                    multipatch_geometry.interfaces,
+                    multipatch_geometry_loaded.interfaces,
                 )
             )
 
