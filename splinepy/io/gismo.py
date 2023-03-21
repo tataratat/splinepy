@@ -12,6 +12,7 @@ def export(
     multipatch=None,
     indent=True,
     labeled_boundaries=True,
+    gismo_options=None,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -288,6 +289,30 @@ def export(
         coords.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in spline.control_points]
         )
+
+    # Add addtional options to the xml file
+    if gismo_options is not None:
+        # Verify that the list stored in the correct format
+        if not isinstance(gismo_options, list):
+            gismo_options = [gismo_options]
+        for gismo_dictionary in gismo_options:
+            name = gismo_dictionary.get("name", None)
+            if name is None and not isinstance(name, str):
+                raise ValueError(
+                    "Gismo option in unsupported format, additional options "
+                    "must be passed as a list of dictionaries, each containing"
+                    " at least an attribute name, as well as any of "
+                    "'tags'->dictionary, text->string"
+                )
+            tags = gismo_dictionary.get("tags", dict())
+            option_text = gismo_dictionary.get("tags", None)
+            optional_data = ET.SubElement(
+                xml_data,
+                name,
+                **tags,
+            )
+            if option_text is not None:
+                optional_data.text = option_text
 
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
