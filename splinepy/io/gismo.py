@@ -350,11 +350,15 @@ def load(fname, get_options=True):
     ----------
     fname : str
       filename of the gismo xml
+    get_options : bool
+      Retrieve additional options (else - multipatch/geometry only)
 
     Returns
     -------
     spline_dic_list : multipatch
       Multipatch object with list of splines in NAME_TO_TYPE-type
+    gismo_options : list
+      List of additional options, like boundary conditions and functions
     """
     from splinepy.multipatch import Multipatch
 
