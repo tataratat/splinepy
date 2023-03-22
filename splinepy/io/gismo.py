@@ -430,18 +430,19 @@ def load(fname, get_options=True):
 
             # Extract interfaces and boundaries
             interfaces_element = child.find("interfaces")
-            if interfaces_element is None:
-                debug("No connectivity found format")
+            interface_array = (
+                np.ones((n_splines, number_of_faces), dtype=np.int64)
+                * invalid_integer
+            )
+            if interfaces_element is None or interfaces_element.text is None:
+                # This can occur if only one patch is in a Multipatch
+                debug("No connectivity found")
             else:
                 interface_information = np.fromstring(
                     interfaces_element.text.replace("\n", " "),
                     sep=" ",
                     dtype=np.int64,
                 ).reshape(-1, number_of_faces + 4)
-                interface_array = (
-                    np.ones((n_splines, number_of_faces), dtype=np.int64)
-                    * invalid_integer
-                )
                 # Assign interfaces
                 interface_array[
                     interface_information[:, 0] - offset,
@@ -458,12 +459,14 @@ def load(fname, get_options=True):
 
             # Extract interfaces and boundaries
             boundary_elements = child.findall("boundary")
-            if interfaces_element is None:
-                debug("No connectivity found format")
+            if boundary_elements is None:
+                debug("No boundary information found")
             else:
                 for id, boundary_element in enumerate(
                     boundary_elements, start=1
                 ):
+                    if boundary_element.text is None:
+                        continue
                     boundary_information = np.fromstring(
                         boundary_element.text.replace("\n", " "),
                         sep=" ",
