@@ -28,6 +28,12 @@ def export(
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
     labeled_boundaries : bool
       Writes boundaries with labels into the MultiPatch part of the XML
+    gismo_options : list
+      List of dictionaries, that specify model related options, like boundary
+      conditions, assembler options, etc.. The dictionaries must have the
+      following keys, 'tag'->string, 'text'->string (optional),
+      'attributes'->dictionary (optional), 'children'->list in the same format
+      (optional)
 
     Returns
     -------
@@ -295,24 +301,31 @@ def export(
         # Verify that the list stored in the correct format
         if not isinstance(gismo_options, list):
             gismo_options = [gismo_options]
-        for gismo_dictionary in gismo_options:
-            name = gismo_dictionary.get("name", None)
-            if name is None and not isinstance(name, str):
-                raise ValueError(
-                    "Gismo option in unsupported format, additional options "
-                    "must be passed as a list of dictionaries, each containing"
-                    " at least an attribute name, as well as any of "
-                    "'tags'->dictionary, text->string"
+
+        def _apply_options(ETelement, options_list):
+            for gismo_dictionary in options_list:
+                name = gismo_dictionary.get("tag", None)
+                if name is None and not isinstance(name, str):
+                    raise ValueError(
+                        "Gismo option in unsupported format, tag must be set, "
+                        "please check out export documentation"
+                    )
+                attributes = gismo_dictionary.get("attributes", dict())
+                option_text = gismo_dictionary.get("text", None)
+                optional_data = ET.SubElement(
+                    ETelement,
+                    name,
+                    **attributes,
                 )
-            tags = gismo_dictionary.get("tags", dict())
-            option_text = gismo_dictionary.get("tags", None)
-            optional_data = ET.SubElement(
-                xml_data,
-                name,
-                **tags,
-            )
-            if option_text is not None:
-                optional_data.text = option_text
+                if option_text is not None:
+                    optional_data.text = option_text
+                if gismo_dictionary.get("children", None) is not None:
+                    _apply_options(
+                        optional_data,
+                        options_list=gismo_dictionary["children"],
+                    )
+
+        _apply_options(xml_data, gismo_options)
 
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
@@ -330,7 +343,7 @@ def export(
         f.write(file_content)
 
 
-def load(fname):
+def load(fname, get_options=True):
     """Read gismo-keyword specified xml file
 
     Parameters
@@ -373,6 +386,17 @@ def load(fname):
             SPdict["knot_vectors"] = knotvector
             SPdict["degrees"] = degrees
 
+    # Auxiliary function to store additional information in dictionary
+    def make_dictionary(ETelement):
+        new_dictionary = {}
+        new_dictionary["tag"] = ETelement.tag
+        new_dictionary["attributes"] = ETelement.attrib
+        new_dictionary["text"] = ETelement.text
+        new_dictionary["children"] = []
+        for element in ETelement.findall("./*"):
+            new_dictionary["children"].append(make_dictionary(element))
+        return new_dictionary
+
     # Parse XML file
     debug(f"Parsing xml-file '{fname}' ...")
     root = ET.parse(fname).getroot()
@@ -380,6 +404,7 @@ def load(fname):
 
     # Init return value
     list_of_splines = []
+    list_of_options = []
     interface_array = None
     invalid_integer = -99919412
     # Splines start with the keyword Geometry
@@ -465,11 +490,14 @@ def load(fname):
                     settings.NAME_TO_TYPE["NURBS"](**spline_dict)
                 )
         else:
-            debug(
-                f"Found unsupported keyword {child.tag}, which will be"
-                " ignored"
-            )
-            continue
+            if get_options:
+                list_of_options.append(make_dictionary(child))
+            else:
+                debug(
+                    f"Found unsupported keyword {child.tag}, which will be"
+                    " ignored"
+                )
+                continue
 
     debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
     multipatch = Multipatch(list_of_splines)
@@ -482,4 +510,7 @@ def load(fname):
 
         multipatch.interfaces = interface_array
 
-    return multipatch
+    if get_options:
+        return multipatch, list_of_options
+    else:
+        return multipatch
