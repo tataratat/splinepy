@@ -1036,7 +1036,7 @@ class gismoExportTest(c.unittest.TestCase):
                 labeled_boundaries=False,
             )
             multipatch_geometry_loaded = c.splinepy.io.gismo.load(
-                tmpf.name, get_options=False
+                tmpf.name, load_options=False
             )
             self.assertTrue(
                 all(
@@ -1066,7 +1066,7 @@ class gismoExportTest(c.unittest.TestCase):
                 labeled_boundaries=True,
             )
             multipatch_geometry_loaded = c.splinepy.io.gismo.load(
-                tmpf.name, get_options=False
+                tmpf.name, load_options=False
             )
             self.assertTrue(
                 all(
@@ -1150,7 +1150,7 @@ class gismoExportTest(c.unittest.TestCase):
             (
                 multipatch_geometry_loaded,
                 gismo_options_loaded,
-            ) = c.splinepy.io.gismo.load(tmpf.name, get_options=True)
+            ) = c.splinepy.io.gismo.load(tmpf.name, load_options=True)
             self.assertTrue(
                 all(
                     [
