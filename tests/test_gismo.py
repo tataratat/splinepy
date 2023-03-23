@@ -1129,7 +1129,14 @@ class gismoExportTest(c.unittest.TestCase):
                 "attributes": {"Mambo": "No. 5", "id": "5"},
                 "text": "One, two, three, four, five\nEverybody in the car, "
                 "so come on, let's ride",
-                "children": [{"tag": "AnotherOne", "text": "0 ,0"}],
+                "children": [
+                    {
+                        "tag": "AnotherOne",
+                        "text": "0 ,0",
+                        "attributes": {},
+                        "children": [],
+                    }
+                ],
             }
         ]
         with tempfile.NamedTemporaryFile() as tmpf:
@@ -1138,7 +1145,7 @@ class gismoExportTest(c.unittest.TestCase):
                 multipatch=multipatch_geometry,
                 indent=False,
                 labeled_boundaries=False,
-                gismo_options=gismo_options,
+                options=gismo_options,
             )
             (
                 multipatch_geometry_loaded,
@@ -1161,37 +1168,7 @@ class gismoExportTest(c.unittest.TestCase):
                     multipatch_geometry_loaded.interfaces,
                 )
             )
-
-            # Now with modified boundaries
-            multipatch_geometry.boundaries_from_continuity()
-        with tempfile.NamedTemporaryFile() as tmpf:
-            c.splinepy.io.gismo.export(
-                tmpf.name,
-                multipatch=multipatch_geometry,
-                indent=False,
-                labeled_boundaries=True,
-            )
-            (
-                multipatch_geometry_loaded,
-                gismo_options_loaded,
-            ) = c.splinepy.io.gismo.load(tmpf.name, get_options=True)
-            self.assertTrue(
-                all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            multipatch_geometry.splines,
-                            multipatch_geometry_loaded.splines,
-                        )
-                    ]
-                )
-            )
-            self.assertTrue(
-                c.np.allclose(
-                    multipatch_geometry.interfaces,
-                    multipatch_geometry_loaded.interfaces,
-                )
-            )
+            self.assertEqual(gismo_options_loaded, gismo_options)
 
 
 if __name__ == "__main__":

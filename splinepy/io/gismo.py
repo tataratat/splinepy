@@ -12,7 +12,7 @@ def export(
     multipatch=None,
     indent=True,
     labeled_boundaries=True,
-    gismo_options=None,
+    options=None,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -22,13 +22,13 @@ def export(
     ----------
     fname : string
       name of the output file
-    spline_list : multipatch (preferred)
+    spline_list : Multipatch (preferred)
       (list of) Spline-Types in splinepy format
     indent: bool
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
     labeled_boundaries : bool
       Writes boundaries with labels into the MultiPatch part of the XML
-    gismo_options : list
+    options : list
       List of dictionaries, that specify model related options, like boundary
       conditions, assembler options, etc.. The dictionaries must have the
       following keys, 'tag'->string, 'text'->string (optional),
@@ -297,10 +297,10 @@ def export(
         )
 
     # Add addtional options to the xml file
-    if gismo_options is not None:
+    if options is not None:
         # Verify that the list stored in the correct format
-        if not isinstance(gismo_options, list):
-            gismo_options = [gismo_options]
+        if not isinstance(options, list):
+            options = [options]
 
         def _apply_options(ETelement, options_list):
             for gismo_dictionary in options_list:
@@ -325,7 +325,7 @@ def export(
                         options_list=gismo_dictionary["children"],
                     )
 
-        _apply_options(xml_data, gismo_options)
+        _apply_options(xml_data, options)
 
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
@@ -355,9 +355,9 @@ def load(fname, get_options=True):
 
     Returns
     -------
-    spline_dic_list : multipatch
+    spline_dic_list : Multipatch
       Multipatch object with list of splines in NAME_TO_TYPE-type
-    gismo_options : list
+    options : list
       List of additional options, like boundary conditions and functions
     """
     from splinepy.multipatch import Multipatch
