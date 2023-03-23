@@ -12,6 +12,7 @@ def export(
     multipatch=None,
     indent=True,
     labeled_boundaries=True,
+    options=None,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -21,12 +22,18 @@ def export(
     ----------
     fname : string
       name of the output file
-    spline_list : multipatch (preferred)
+    spline_list : Multipatch (preferred)
       (list of) Spline-Types in splinepy format
     indent: bool
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
     labeled_boundaries : bool
       Writes boundaries with labels into the MultiPatch part of the XML
+    options : list
+      List of dictionaries, that specify model related options, like boundary
+      conditions, assembler options, etc.. The dictionaries must have the
+      following keys, 'tag'->string, 'text'->string (optional),
+      'attributes'->dictionary (optional), 'children'->list in the same format
+      (optional)
 
     Returns
     -------
@@ -289,6 +296,37 @@ def export(
             [" ".join([str(xx) for xx in x]) for x in spline.control_points]
         )
 
+    # Add addtional options to the xml file
+    if options is not None:
+        # Verify that the list stored in the correct format
+        if not isinstance(options, list):
+            options = [options]
+
+        def _apply_options(ETelement, options_list):
+            for gismo_dictionary in options_list:
+                name = gismo_dictionary.get("tag", None)
+                if name is None and not isinstance(name, str):
+                    raise ValueError(
+                        "Gismo option in unsupported format, tag must be set, "
+                        "please check out export documentation"
+                    )
+                attributes = gismo_dictionary.get("attributes", dict())
+                option_text = gismo_dictionary.get("text", None)
+                optional_data = ET.SubElement(
+                    ETelement,
+                    name,
+                    **attributes,
+                )
+                if option_text is not None:
+                    optional_data.text = option_text
+                if gismo_dictionary.get("children", None) is not None:
+                    _apply_options(
+                        optional_data,
+                        options_list=gismo_dictionary["children"],
+                    )
+
+        _apply_options(xml_data, options)
+
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
         ET.indent(xml_data)
@@ -305,18 +343,22 @@ def export(
         f.write(file_content)
 
 
-def load(fname):
+def load(fname, load_options=True):
     """Read gismo-keyword specified xml file
 
     Parameters
     ----------
     fname : str
       filename of the gismo xml
+    load_options : bool
+      Retrieve additional options (else - multipatch/geometry only)
 
     Returns
     -------
-    spline_dic_list : multipatch
+    spline_dic_list : Multipatch
       Multipatch object with list of splines in NAME_TO_TYPE-type
+    options : list
+      List of additional options, like boundary conditions and functions
     """
     from splinepy.multipatch import Multipatch
 
@@ -348,6 +390,17 @@ def load(fname):
             SPdict["knot_vectors"] = knotvector
             SPdict["degrees"] = degrees
 
+    # Auxiliary function to store additional information in dictionary
+    def make_dictionary(ETelement):
+        new_dictionary = {}
+        new_dictionary["tag"] = ETelement.tag
+        new_dictionary["attributes"] = ETelement.attrib
+        new_dictionary["text"] = ETelement.text
+        new_dictionary["children"] = []
+        for element in ETelement.findall("./*"):
+            new_dictionary["children"].append(make_dictionary(element))
+        return new_dictionary
+
     # Parse XML file
     debug(f"Parsing xml-file '{fname}' ...")
     root = ET.parse(fname).getroot()
@@ -355,6 +408,7 @@ def load(fname):
 
     # Init return value
     list_of_splines = []
+    list_of_options = []
     interface_array = None
     invalid_integer = -99919412
     # Splines start with the keyword Geometry
@@ -376,18 +430,19 @@ def load(fname):
 
             # Extract interfaces and boundaries
             interfaces_element = child.find("interfaces")
-            if interfaces_element is None:
-                debug("No connectivity found format")
+            interface_array = (
+                np.ones((n_splines, number_of_faces), dtype=np.int64)
+                * invalid_integer
+            )
+            if interfaces_element is None or interfaces_element.text is None:
+                # This can occur if only one patch is in a Multipatch
+                debug("No connectivity found")
             else:
                 interface_information = np.fromstring(
                     interfaces_element.text.replace("\n", " "),
                     sep=" ",
                     dtype=np.int64,
                 ).reshape(-1, number_of_faces + 4)
-                interface_array = (
-                    np.ones((n_splines, number_of_faces), dtype=np.int64)
-                    * invalid_integer
-                )
                 # Assign interfaces
                 interface_array[
                     interface_information[:, 0] - offset,
@@ -404,12 +459,14 @@ def load(fname):
 
             # Extract interfaces and boundaries
             boundary_elements = child.findall("boundary")
-            if interfaces_element is None:
-                debug("No connectivity found format")
+            if boundary_elements is None:
+                debug("No boundary information found")
             else:
                 for id, boundary_element in enumerate(
                     boundary_elements, start=1
                 ):
+                    if boundary_element.text is None:
+                        continue
                     boundary_information = np.fromstring(
                         boundary_element.text.replace("\n", " "),
                         sep=" ",
@@ -440,11 +497,14 @@ def load(fname):
                     settings.NAME_TO_TYPE["NURBS"](**spline_dict)
                 )
         else:
-            debug(
-                f"Found unsupported keyword {child.tag}, which will be"
-                " ignored"
-            )
-            continue
+            if load_options:
+                list_of_options.append(make_dictionary(child))
+            else:
+                debug(
+                    f"Found unsupported keyword {child.tag}, which will be"
+                    " ignored"
+                )
+                continue
 
     debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
     multipatch = Multipatch(list_of_splines)
@@ -457,4 +517,7 @@ def load(fname):
 
         multipatch.interfaces = interface_array
 
-    return multipatch
+    if load_options:
+        return multipatch, list_of_options
+    else:
+        return multipatch

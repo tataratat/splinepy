@@ -761,12 +761,16 @@ void GetBoundaryOrientation(
         "D.");
   }
 
-  // First Check the orientation of the first entry by comparing their
+  // First Check the orientation of the first entry by comparing their ids
   const int boundary_start_p_dim = static_cast<int>(boundary_start / 2);
   const bool boundary_start_orientation = (boundary_start % 2) == 0;
   const int boundary_end_p_dim = static_cast<int>(boundary_end / 2);
   const bool boundary_end_orientation = (boundary_end % 2) == 0;
   int_mappings_ptr[boundary_start_p_dim] = boundary_end_p_dim;
+  // Note: Here might be a discrepency with gismo's orientation, and it needs to
+  // be checked in the future. I am awaiting a response from gismo developers,
+  // it is poosible the orientation of the interface edge might be flipped
+  // (bugfix: negate the following expression)
   bool_orientations_ptr[boundary_start_p_dim] =
       (boundary_start_orientation ^ boundary_end_orientation);
 
@@ -806,27 +810,30 @@ void GetBoundaryOrientation(
                                  jacobian_end.data());
 
   // Check the angle between the jacobian entries
-  for (int i{}; i < para_dim_; i++) {
-    if (i == boundary_start_p_dim) {
+  for (int i_pd{}; i_pd < para_dim_; i_pd++) {
+    if (i_pd == boundary_start_p_dim) {
       continue;
     }
     double norm_s{};
     for (int k{}; k < dim_; k++) {
       // [i_query * pdim * dim + i_paradim * dim + i_dim]
-      norm_s += jacobian_start[i * dim_ + k] * jacobian_start[i * dim_ + k];
+      norm_s += jacobian_start[i_pd + k * para_dim_]
+                * jacobian_start[i_pd + k * para_dim_];
     }
     for (int j{}; j < para_dim_; j++) {
       double norm_e{}, dot_p{};
       for (int k{}; k < dim_; k++) {
-        dot_p += jacobian_start[i * dim_ + k] * jacobian_end[j * dim_ + k];
-        norm_e += jacobian_end[j * dim_ + k] * jacobian_end[j * dim_ + k];
+        dot_p += jacobian_start[i_pd + k * para_dim_]
+                 * jacobian_end[j + k * para_dim_];
+        norm_e +=
+            jacobian_end[j + k * para_dim_] * jacobian_end[j + k * para_dim_];
       }
 
       // Check angle
       const double cos_angle = abs(dot_p / std::sqrt(norm_s * norm_e));
       if (cos_angle > (1. - tolerance)) {
-        int_mappings_ptr[i] = j;
-        bool_orientations_ptr[i] = (dot_p > 0);
+        int_mappings_ptr[i_pd] = j;
+        bool_orientations_ptr[i_pd] = (dot_p > 0);
         break;
       }
     }
