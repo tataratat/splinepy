@@ -343,14 +343,14 @@ def export(
         f.write(file_content)
 
 
-def load(fname, get_options=True):
+def load(fname, load_options=True):
     """Read gismo-keyword specified xml file
 
     Parameters
     ----------
     fname : str
       filename of the gismo xml
-    get_options : bool
+    load_options : bool
       Retrieve additional options (else - multipatch/geometry only)
 
     Returns
@@ -497,7 +497,7 @@ def load(fname, get_options=True):
                     settings.NAME_TO_TYPE["NURBS"](**spline_dict)
                 )
         else:
-            if get_options:
+            if load_options:
                 list_of_options.append(make_dictionary(child))
             else:
                 debug(
@@ -517,7 +517,7 @@ def load(fname, get_options=True):
 
         multipatch.interfaces = interface_array
 
-    if get_options:
+    if load_options:
         return multipatch, list_of_options
     else:
         return multipatch
