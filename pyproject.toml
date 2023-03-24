@@ -21,3 +21,6 @@ build = ["cp*"]
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
 build = ["cp*-many*"]
+
+[tool.cibuildwheel.windows]
+skip = "pp*"

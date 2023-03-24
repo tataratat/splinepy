@@ -2,14 +2,14 @@ name: main
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "windows-wheels"]
 
 jobs:
   wheel_build_full:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v3
