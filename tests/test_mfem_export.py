@@ -1,4 +1,3 @@
-import os
 import tempfile
 
 try:
@@ -331,7 +330,7 @@ class MFEMExportTest(c.unittest.TestCase):
 
         # Test Output
         with tempfile.TemporaryDirectory() as tmpd:
-            tmpf = os.path.join(tmpd, c.tmpf)
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.mfem.export_cartesian(
                 tmpf, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
@@ -409,7 +408,7 @@ class MFEMExportTest(c.unittest.TestCase):
 
         # Test output
         with tempfile.TemporaryDirectory() as tmpd:
-            tmpf = os.path.join(tmpd, c.tmpf)
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.mfem.export_cartesian(
                 tmpf, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
