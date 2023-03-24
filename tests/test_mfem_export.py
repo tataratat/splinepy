@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 try:
@@ -329,13 +330,13 @@ class MFEMExportTest(c.unittest.TestCase):
         nur_el3.insert_knots(1, [0.5])
 
         # Test Output
-        # @todo
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = os.path.join(tmpd, c.tmpf)
             c.splinepy.io.mfem.export_cartesian(
-                tmpf.name, [bez_el0, bsp_el2, nur_el3, rbz_el1]
+                tmpf, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
-            with open(tmpf.name) as tmp_read:
+            with open(tmpf) as tmp_read:
                 self.assertTrue(
                     c.are_items_same(_mfem_export_ref_2d, tmp_read.readlines())
                 )
@@ -407,12 +408,13 @@ class MFEMExportTest(c.unittest.TestCase):
             s.elevate_degree(2)
 
         # Test output
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = os.path.join(tmpd, c.tmpf)
             c.splinepy.io.mfem.export_cartesian(
-                tmpf.name, [bez_el0, bsp_el2, nur_el3, rbz_el1]
+                tmpf, [bez_el0, bsp_el2, nur_el3, rbz_el1]
             )
 
-            with open(tmpf.name) as tmp_read:
+            with open(tmpf) as tmp_read:
                 self.assertTrue(
                     c.are_items_same(_mfem_export_ref_3d, tmp_read.readlines())
                 )
