@@ -128,8 +128,8 @@ BSplineBasisPerParametricDimension(const SplineType& spline,
 
 /// BSpline Basis support
 template<typename SplineType, typename QueryType>
-inline std::vector<QueryType> BSplineSupport(const SplineType& spline,
-                                             const QueryType* para_coord) {
+inline std::vector<int> BSplineSupport(const SplineType& spline,
+                                       const QueryType* para_coord) {
   static_assert(SplineType::kHasKnotVectors,
                 "BSplineBasis is only for bspline families.");
   // prepare query
@@ -154,7 +154,7 @@ inline std::vector<QueryType> BSplineSupport(const SplineType& spline,
           .Get();
 
   // prepare return
-  std::vector<QueryType> supports;
+  std::vector<int> supports;
   supports.reserve(n_total_basis);
 
   // fill supports.

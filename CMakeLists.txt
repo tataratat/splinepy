@@ -37,7 +37,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set(SPLINEPY_OPTIMIZATION_FLAGS
         $<$<NOT:$<CONFIG:Debug>>:/O2>
         $<$<NOT:$<CONFIG:Debug>>:/w>)
-  set(SPLINEPY_FLAGS /bigobj)
+  set(SPLINEPY_FLAGS /bigobj /MP)
 endif()
 
 # compiler specific flags
