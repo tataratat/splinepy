@@ -502,9 +502,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                                 f"{self.splines[i].degrees}, but got "
                                 f"{spline.degrees}."
                             )
-                        if (
-                            np.any(self.splines[i].control_mesh_resolutions
-                            != spline.control_mesh_resolutions)
+                        if np.any(
+                            self.splines[i].control_mesh_resolutions
+                            != spline.control_mesh_resolutions
                         ):
                             raise ValueError(
                                 "Mismatch between spline and field ctps-"
