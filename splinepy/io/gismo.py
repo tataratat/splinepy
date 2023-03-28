@@ -122,11 +122,11 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             )
         if "weights" in spline.required_properties:
             # Add weights
-            weights = ET.SubElement(
+            weights_element = ET.SubElement(
                 spline_basis_base,
                 "weights",
             )
-            weights.text = "\n".join(
+            weights_element.text = "\n".join(
                 [" ".join([str(ww) for ww in w]) for w in weights]
             )
         coords = ET.SubElement(
@@ -146,7 +146,6 @@ def export(
     labeled_boundaries=True,
     options=None,
     export_fields=False,
-    collapse_fields=False,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
