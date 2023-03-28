@@ -356,8 +356,10 @@ def export(
     if export_fields:
         field_xml = copy.deepcopy(xml_data)
         _spline_to_ET(field_xml, multipatch, index_offset, fields_only=True)
+        if int(python_version.split(".")[1]) >= 9 and indent:
+            ET.indent(field_xml)
         file_content = ET.tostring(field_xml)
-        with open(fname + "fields.xml", "wb") as f:
+        with open(fname + ".fields.xml", "wb") as f:
             f.write(file_content)
 
     _spline_to_ET(xml_data, multipatch, index_offset)

@@ -495,7 +495,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                                 "Mismatch between spline and field type"
                                 f"for spline {i}."
                             )
-                        if self.splines[i].degrees != spline.degrees:
+                        if np.any(self.splines[i].degrees != spline.degrees):
                             raise ValueError(
                                 "Mismatch between spline and field degrees"
                                 f"for spline {i}, expected"
@@ -503,8 +503,8 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                                 f"{spline.degrees}."
                             )
                         if (
-                            self.splines[i].control_mesh_resolutions
-                            != spline.control_mesh_resolutions
+                            np.any(self.splines[i].control_mesh_resolutions
+                            != spline.control_mesh_resolutions)
                         ):
                             raise ValueError(
                                 "Mismatch between spline and field ctps-"
