@@ -490,6 +490,11 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                         )
                     if check_conformity:
                         # Further check degrees and ctps-mesh-res
+                        if type(self.splines[i]) is not type(spline):
+                            raise ValueError(
+                                "Mismatch between spline and field type"
+                                f"for spline {i}."
+                            )
                         if self.splines[i].degrees != spline.degrees:
                             raise ValueError(
                                 "Mismatch between spline and field degrees"

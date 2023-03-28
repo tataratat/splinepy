@@ -1,3 +1,4 @@
+import copy
 import xml.etree.ElementTree as ET
 from sys import version as python_version
 
@@ -7,11 +8,53 @@ from splinepy import settings
 from splinepy.utils.log import debug, warning
 
 
-def _spline_to_ET(root, multipatch, index_offset):
+def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
+    """
+    Write spline data to xml element in gismo format
+
+    Parameters
+    ----------
+    root : ElementTree.Subelement
+      branch in element tree to which the spline info is to be added
+    multipatch : Multipatch
+      Multipatch containing the information requested
+    index_offset : int
+      index_offset for ids in xml export
+      (All geometries are assigned individual ids that must be unique in the
+      xml file)
+    fields_only : bool (False)
+      If set, exports only the fields associated to the multipatch data
+
+    Returns
+    -------
+    None
+    """
     from splinepy import NURBS, BSpline
     from splinepy.spline import Spline
 
+    if fields_only and (len(multipatch.fields) == 0):
+        return
+
     for id, spline in enumerate(multipatch.splines):
+        if fields_only:
+            coefs = np.hstack(
+                [
+                    multipatch.fields[j][id].control_points
+                    for j in range(len(multipatch.fields))
+                ]
+            )
+            if "weights" in spline.required_properties:
+                weights = np.hstack(
+                    [
+                        multipatch.fields[j][id].weights
+                        for j in range(len(multipatch.fields))
+                    ]
+                )
+        else:
+            coefs = spline.control_points
+            if "weights" in spline.required_properties:
+                weights = spline.weights
+
         if not issubclass(type(spline), Spline):
             raise ValueError(
                 "One of the splines handed to export is not a valid spline"
@@ -84,15 +127,15 @@ def _spline_to_ET(root, multipatch, index_offset):
                 "weights",
             )
             weights.text = "\n".join(
-                [str(w) for w in spline.weights.flatten()]
+                [" ".join([str(ww) for ww in w]) for w in weights]
             )
         coords = ET.SubElement(
             spline_element,
             "coefs",
-            geoDim=str(spline.dim),
+            geoDim=str(coefs.shape[1]),
         )
         coords.text = "\n".join(
-            [" ".join([str(xx) for xx in x]) for x in spline.control_points]
+            [" ".join([str(xx) for xx in x]) for x in coefs]
         )
 
 
@@ -309,6 +352,14 @@ def export(
     ###
     # Individual spline data
     ###
+    # Export fields first, as all necessary information is already available
+    if export_fields:
+        field_xml = copy.deepcopy(xml_data)
+        _spline_to_ET(field_xml, multipatch, index_offset, fields_only=True)
+        file_content = ET.tostring(field_xml)
+        with open(fname + "fields.xml", "wb") as f:
+            f.write(file_content)
+
     _spline_to_ET(xml_data, multipatch, index_offset)
 
     # Add addtional options to the xml file
