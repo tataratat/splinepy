@@ -17,8 +17,8 @@ jobs:
         submodules: recursive
     - name:  build wheels
       uses: pypa/cibuildwheel@v2.12.1
-        env:
-          SPLINEPY_GITHUB_ACTIONS_BUILD: True
+      env:
+        SPLINEPY_GITHUB_ACTIONS_BUILD: True
 
     - uses: actions/upload-artifact@v3
       with:
