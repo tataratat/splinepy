@@ -67,14 +67,16 @@ if(SPLINEPY_VERBOSE_MAKE)
     set(CMAKE_VERBOSE_MAKEFILE ON)
 endif()
 
+# compiling on github windows CI takes too long that it fails.
+# temporarily disable full build
+if ($ENV{SPLINEPY_GITHUB_ACTIONS_BUILD} MATCHES "True" AND
+    CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    set(SPLINEPY_MORE OFF)
+endif()
+
+
 if(SPLINEPY_MORE)
-    # compiling on github windows CI takes too long that it fails.
-    # temporarily disable full build
-    if ($ENV{SPLINEPY_GITHUB_ACTIONS_BUILD} MATCHES "True" AND
-        CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    else()
-      set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
-    endif()
+  set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
 endif(SPLINEPY_MORE)
 
 if(SPLINEPY_BUILD_EXPLICIT)
