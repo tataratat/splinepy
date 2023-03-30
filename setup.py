@@ -217,9 +217,10 @@ if eval(os.environ.get("SPLINEPY_MINIMAL_DEBUG_BUILD", "False")):
     build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
     build_options[keys[4]] = True
 
-if eval(
-    os.environ.get("SPLINEPY_GITHUB_ACTIONS_BUILD", "False")
-) and platform.system().startswith("Windows"):
+if (
+    "SPLINEPY_GITHUB_ACTIONS_BUILD" in os.environ
+    and platform.system().startswith("Windows")
+):
     print("Environment variable SPLINEPY_GITHUB_ACTIONS_BUILD set.")
     print("Platform is detected as Windows.")
     build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
