@@ -481,6 +481,8 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                     )
                 # Check parametric dimensions
                 for i, spline in enumerate(field):
+                    if spline is None:
+                        continue
                     if self.splines[i].para_dim != spline.para_dim:
                         raise ValueError(
                             "Mismatch between spline and field dimensionality"
@@ -491,7 +493,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
                     if check_conformity:
                         # Further check degrees and ctps-mesh-res
                         if type(self.splines[i]) is not type(spline):
-                            raise ValueError(
+                            self._logd(
                                 "Mismatch between spline and field type"
                                 f"for spline {i}."
                             )

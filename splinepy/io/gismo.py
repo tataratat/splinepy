@@ -35,20 +35,47 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
     if fields_only and (len(multipatch.fields) == 0):
         return
 
+    if fields_only:
+        supports = np.vstack(
+            [
+                (i, j, 0)
+                for j, field in enumerate(multipatch.fields)
+                for i, v in enumerate(field)
+                if v is not None
+            ]
+        )
+
+        # Very unintuitive solution to counting the support ids #indextrick
+        indices = np.argsort(supports[:,0])
+        counter = np.arange(supports.shape[0])
+        bincount = np.bincount(supports[:,0])
+        # Get number of occurences for previous element to correct index shift
+        index_shift = np.cumsum(np.hstack([[0],bincount[:-1]]))
+        counter -= np.repeat(index_shift, bincount)
+        supports[indices,2] = counter
+
+        # Write Matrix
+        design_v_support = ET.SubElement(
+            root,
+            "Matrix",
+            rows=str(supports.shape[0]),
+            cols=str(supports.shape[1]),
+            id=str(10),
+        )
+        design_v_support.text = "\n".join(
+            [" ".join([str(xx) for xx in x]) for x in supports]
+        )
+
     for id, spline in enumerate(multipatch.splines):
         if fields_only:
+            # Check supports
+            support = supports[supports[:, 0] == id, 1]
             coefs = np.hstack(
-                [
-                    multipatch.fields[j][id].control_points
-                    for j in range(len(multipatch.fields))
-                ]
+                [multipatch.fields[j][id].control_points for j in support]
             )
             if "weights" in spline.required_properties:
                 weights = np.hstack(
-                    [
-                        multipatch.fields[j][id].weights
-                        for j in range(len(multipatch.fields))
-                    ]
+                    [multipatch.fields[j][id].weights for j in support]
                 )
         else:
             coefs = spline.control_points
