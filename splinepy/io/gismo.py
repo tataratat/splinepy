@@ -36,23 +36,24 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
         return
 
     if fields_only:
-        supports = np.vstack(
+        supports = np.array(
             [
                 (i, j, 0)
                 for j, field in enumerate(multipatch.fields)
                 for i, v in enumerate(field)
                 if v is not None
-            ]
+            ],
+            dtype=np.int64,
         )
 
         # Very unintuitive solution to counting the support ids #indextrick
-        indices = np.argsort(supports[:,0])
+        indices = np.argsort(supports[:, 0], kind="stable")
         counter = np.arange(supports.shape[0])
-        bincount = np.bincount(supports[:,0])
+        bincount = np.bincount(supports[:, 0])
         # Get number of occurences for previous element to correct index shift
-        index_shift = np.cumsum(np.hstack([[0],bincount[:-1]]))
+        index_shift = np.cumsum(np.hstack([[0], bincount[:-1]]))
         counter -= np.repeat(index_shift, bincount)
-        supports[indices,2] = counter
+        supports[indices, 2] = counter
 
         # Write Matrix
         design_v_support = ET.SubElement(
