@@ -82,9 +82,7 @@ BSplineBasisPerParametricDimension(const SplineType& spline,
                 "BSplineBasis is only for bspline families.");
 
   // prepare unique evals
-  typename SplineType::ParameterSpace_::UniqueEvaluations_ uniq_evals;
   const auto& parameter_space = spline.GetParameterSpace();
-  parameter_space.template InitializeUniqueEvaluations<false>(uniq_evals);
 
   // prepare query
   typename SplineType::ParametricCoordinate_ sl_query;
@@ -93,37 +91,7 @@ BSplineBasisPerParametricDimension(const SplineType& spline,
         typename SplineType::ScalarParametricCoordinate_{para_coord[i]};
   }
 
-  const auto n_basis_per_dim =
-      parameter_space.GetNumberOfNonZeroBasisFunctions();
-  const auto first_non_zeros =
-      parameter_space.FindFirstNonZeroBasisFunction(sl_query);
-  const auto& basis_functions = parameter_space.GetBSplineBasisFunctions();
-
-  // prepare return
-  std::array<std::vector<double>, SplineType::kParaDim> output_basis;
-
-  // para dim loop
-  for (int i{}; i < SplineType::kParaDim; ++i) {
-    // things needed to compute
-    const auto non_zero_start = static_cast<int>(first_non_zeros.GetIndex()[i]);
-    const auto& basis_per_dim = basis_functions[i];
-    auto& uniq_evals_per_dim = uniq_evals[i];
-    auto& sl_query_per_dim = sl_query[i];
-    const auto n_basis = static_cast<int>(n_basis_per_dim[i]);
-    // prepare output
-    auto& basis_to_fill = output_basis[i];
-    basis_to_fill.reserve(n_basis);
-    // basis loop
-    for (int j{}; j < static_cast<int>(n_basis); ++j) {
-      // fill basis
-      basis_to_fill.push_back(
-          basis_per_dim[non_zero_start + j]->operator()(sl_query_per_dim,
-                                                        uniq_evals_per_dim,
-                                                        j));
-    }
-  }
-
-  return output_basis;
+  return parameter_space.EvaluateBasisValuesPerDimension(sl_query);
 }
 
 /// BSpline Basis support
@@ -250,9 +218,6 @@ BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
   static_assert(SplineType::kHasKnotVectors,
                 "BSplineBasisDerivative is only for bspline families.");
   // prepare unique eval buckets
-  typename SplineType::ParameterSpace_::UniqueDerivatives_ unique_derivatives;
-  typename SplineType::ParameterSpace_::UniqueEvaluations_ unique_evaluations;
-  typename SplineType::ParameterSpace_::IsTopLevelComputed_ top_levels_computed;
   const auto& parameter_space = spline.GetParameterSpace();
 
   // prepare query
@@ -264,62 +229,8 @@ BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
     sl_order[i] = typename SplineType::Derivative_::value_type{order[i]};
   }
 
-  // initialize buckets
-  parameter_space.template InitializeUniqueDerivativeContainers<false>(
-      sl_order,
-      top_levels_computed,
-      unique_derivatives,
-      unique_evaluations);
-
-  // prepare loop data
-  const auto n_basis_per_dim =
-      parameter_space.GetNumberOfNonZeroBasisFunctions();
-  const auto first_non_zeros =
-      parameter_space.FindFirstNonZeroBasisFunction(sl_query);
-  const auto& basis_functions = parameter_space.GetBSplineBasisFunctions();
-
-  // prepare return
-  std::array<std::vector<double>, SplineType::kParaDim> output_ders;
-
-  // para dim loop
-  for (int i{}; i < SplineType::kParaDim; ++i) {
-    // things needed to compute
-    const auto non_zero_start = static_cast<int>(first_non_zeros.GetIndex()[i]);
-    const auto& basis_function = basis_functions[i];
-    auto& unique_evaluation = unique_evaluations[i];
-    auto& unique_derivative = unique_derivatives[i];
-    auto& top_level_computed = top_levels_computed[i];
-    const auto& sl_query_entry = sl_query[i];
-    const auto& sl_order_entry = sl_order[i];
-    const auto n_basis = static_cast<int>(n_basis_per_dim[i]);
-    // prepare output
-    auto& basis_to_fill = output_ders[i];
-    basis_to_fill.reserve(n_basis);
-
-    if (order[i] != 0) {
-      // der query
-      for (int j{}; j < static_cast<int>(n_basis); ++j) {
-        basis_to_fill.push_back(
-            basis_function[non_zero_start + j]->operator()(sl_query_entry,
-                                                           sl_order_entry,
-                                                           unique_derivative,
-                                                           unique_evaluation,
-                                                           top_level_computed,
-                                                           j));
-      }
-    } else {
-      // this is just eval
-      for (int j{}; j < static_cast<int>(n_basis); ++j) {
-        // fill basis
-        basis_to_fill.push_back(
-            basis_function[non_zero_start + j]->operator()(sl_query_entry,
-                                                           unique_evaluation,
-                                                           j));
-      }
-    }
-  }
-
-  return output_ders;
+  return parameter_space.EvaluateBasisDerivativeValuesPerDimension(sl_query,
+                                                                   sl_order);
 }
 
 /// BSpline Basis functions der
