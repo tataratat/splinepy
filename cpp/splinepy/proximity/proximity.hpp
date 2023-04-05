@@ -266,7 +266,7 @@ public:
     PArrayD_ delta_guess;
     DArrayD_ difference;
     PxDMatrixD_ spline_gradient;
-    PArrayI_ clipped{}; /* clip status after most recent update */
+    PArrayI_ clipped{};          /* clip status after most recent update */
     PArrayI_ previous_clipped{};
     PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
     bool solver_skip_mask_activated = false;
@@ -379,7 +379,7 @@ public:
     PArrayD_ delta_guess;
     DArrayD_ difference;
     PxDMatrixD_ spline_gradient;
-    PArrayI_ clipped{}; /* clip status after most recent update */
+    PArrayI_ clipped{};          /* clip status after most recent update */
     PArrayI_ previous_clipped{};
     PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
     typename SplineType::Coordinate_ current_phys{};
@@ -511,7 +511,7 @@ public:
               } else {
                 nearest[k] = static_cast<double>(current_phys[k]); /* 6 */
               }
-              nearest_minus_query[k] = difference[k]; /* 7 */
+              nearest_minus_query[k] = difference[k];              /* 7 */
             }
           }
         }
