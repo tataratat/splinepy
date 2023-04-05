@@ -10,10 +10,12 @@ jobs:
   build_and_tests:
 
     runs-on: ${{ matrix.os }}
+    env:
+      SPLINEPY_GITHUB_ACTIONS_BUILD: True
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
-        os: [ubuntu-20.04, macos-latest]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -33,6 +35,10 @@ jobs:
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
+      run: python3 setup.py develop
+
+    - name: build splinepy windows
+      if: matrix.os == 'windows-latest'
       run: python3 setup.py develop
 
     - name: test

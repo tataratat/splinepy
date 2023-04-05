@@ -41,11 +41,12 @@ class jsonExportTest(c.unittest.TestCase):
 
         # Test Output against input
         list_of_splines = [bez_el0, rbz_el1, bsp_el2, nur_el3]
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.json.export(
-                tmpf.name, list_of_splines, base64encoding=True
+                tmpf, list_of_splines, base64encoding=True
             )
-            list_of_splines_loaded = c.splinepy.io.json.load(tmpf.name)
+            list_of_splines_loaded = c.splinepy.io.json.load(tmpf)
             self.assertTrue(
                 all(
                     [
@@ -56,11 +57,12 @@ class jsonExportTest(c.unittest.TestCase):
                     ]
                 )
             )
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.json.export(
-                tmpf.name, list_of_splines, base64encoding=False
+                tmpf, list_of_splines, base64encoding=False
             )
-            list_of_splines_loaded = c.splinepy.io.json.load(tmpf.name)
+            list_of_splines_loaded = c.splinepy.io.json.load(tmpf)
             self.assertTrue(
                 all(
                     [

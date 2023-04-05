@@ -1,4 +1,5 @@
 import os
+import platform
 import re
 import subprocess
 import sys
@@ -212,9 +213,17 @@ if_in_argv_do(
 
 # environ option
 if eval(os.environ.get("SPLINEPY_MINIMAL_DEBUG_BUILD", "False")):
-    print("Environement variable SPLINEPY_MINIMAL_DEBUG_BUILD set.")
+    print("Environment variable SPLINEPY_MINIMAL_DEBUG_BUILD set.")
     build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
     build_options[keys[4]] = True
+
+if (
+    "SPLINEPY_GITHUB_ACTIONS_BUILD" in os.environ
+    and platform.system().startswith("Windows")
+):
+    print("Environment variable SPLINEPY_GITHUB_ACTIONS_BUILD set.")
+    print("Platform is detected as Windows.")
+    build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
 
 # print options and pack items as list
 print("************* build options ************")

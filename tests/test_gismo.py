@@ -807,15 +807,16 @@ class gismoExportTest(c.unittest.TestCase):
         multipatch.boundary_from_function(is_top)
 
         # Test Output
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch,
                 indent=False,
                 labeled_boundaries=False,
             )
 
-            with open(tmpf.name) as tmp_read:
+            with open(tmpf) as tmp_read:
                 self.assertTrue(
                     c.are_stripped_lines_same(
                         _gismo_export_ref_2d, tmp_read.readlines(), True
@@ -824,15 +825,16 @@ class gismoExportTest(c.unittest.TestCase):
 
         # for python version > 3.9, test indented version
         if int(python_version.split(".")[1]) >= 9:
-            with tempfile.NamedTemporaryFile() as tmpf:
+            with tempfile.TemporaryDirectory() as tmpd:
+                tmpf = c.to_tmpf(tmpd)
                 c.splinepy.io.gismo.export(
-                    tmpf.name,
+                    tmpf,
                     multipatch=multipatch,
                     indent=True,
                     labeled_boundaries=False,
                 )
 
-                with open(tmpf.name) as tmp_read:
+                with open(tmpf) as tmp_read:
                     self.assertTrue(
                         c.are_items_same(
                             _gismo_export_ref_2d_indent, tmp_read.readlines()
@@ -842,15 +844,16 @@ class gismoExportTest(c.unittest.TestCase):
         ########################
         # 2D Mesh - new format #
         ########################
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch,
                 indent=False,
                 labeled_boundaries=True,
             )
 
-            with open(tmpf.name) as tmp_read:
+            with open(tmpf) as tmp_read:
                 self.assertTrue(
                     c.are_stripped_lines_same(
                         _gismo_export_ref_2d_labeled,
@@ -861,15 +864,16 @@ class gismoExportTest(c.unittest.TestCase):
 
         # for python version > 3.9, test indented version
         if int(python_version.split(".")[1]) >= 9:
-            with tempfile.NamedTemporaryFile() as tmpf:
+            with tempfile.TemporaryDirectory() as tmpd:
+                tmpf = c.to_tmpf(tmpd)
                 c.splinepy.io.gismo.export(
-                    tmpf.name,
+                    tmpf,
                     multipatch=multipatch,
                     indent=True,
                     labeled_boundaries=True,
                 )
 
-                with open(tmpf.name) as tmp_read:
+                with open(tmpf) as tmp_read:
                     self.assertTrue(
                         c.are_items_same(
                             _gismo_export_ref_2d_indent_labeled,
@@ -962,14 +966,15 @@ class gismoExportTest(c.unittest.TestCase):
         multipatch.boundary_from_function(is_top)
 
         # Test output
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch,
                 indent=False,
                 labeled_boundaries=False,
             )
-            with open(tmpf.name) as tmp_read:
+            with open(tmpf) as tmp_read:
                 self.assertTrue(
                     c.are_stripped_lines_same(
                         _gismo_export_ref_3d, tmp_read.readlines(), True
@@ -978,15 +983,16 @@ class gismoExportTest(c.unittest.TestCase):
 
         # for python version > 3.9, test indented version
         if int(python_version.split(".")[1]) >= 9:
-            with tempfile.NamedTemporaryFile() as tmpf:
+            with tempfile.TemporaryDirectory() as tmpd:
+                tmpf = c.to_tmpf(tmpd)
                 c.splinepy.io.gismo.export(
-                    tmpf.name,
+                    tmpf,
                     multipatch=multipatch,
                     indent=True,
                     labeled_boundaries=False,
                 )
 
-                with open(tmpf.name) as tmp_read:
+                with open(tmpf) as tmp_read:
                     self.assertTrue(
                         c.are_items_same(
                             _gismo_export_ref_3d_indent, tmp_read.readlines()
@@ -1028,15 +1034,16 @@ class gismoExportTest(c.unittest.TestCase):
 
         # Test Output against input
         multipatch_geometry = c.splinepy.Multipatch([bsp_el2, nur_el3])
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch_geometry,
                 indent=False,
                 labeled_boundaries=False,
             )
             multipatch_geometry_loaded = c.splinepy.io.gismo.load(
-                tmpf.name, load_options=False
+                tmpf, load_options=False
             )
             self.assertTrue(
                 all(
@@ -1058,15 +1065,16 @@ class gismoExportTest(c.unittest.TestCase):
 
             # Now with modified boundaries
             multipatch_geometry.boundaries_from_continuity()
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch_geometry,
                 indent=False,
                 labeled_boundaries=True,
             )
             multipatch_geometry_loaded = c.splinepy.io.gismo.load(
-                tmpf.name, load_options=False
+                tmpf, load_options=False
             )
             self.assertTrue(
                 all(
@@ -1139,9 +1147,10 @@ class gismoExportTest(c.unittest.TestCase):
                 ],
             }
         ]
-        with tempfile.NamedTemporaryFile() as tmpf:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.gismo.export(
-                tmpf.name,
+                tmpf,
                 multipatch=multipatch_geometry,
                 indent=False,
                 labeled_boundaries=False,
@@ -1150,7 +1159,7 @@ class gismoExportTest(c.unittest.TestCase):
             (
                 multipatch_geometry_loaded,
                 gismo_options_loaded,
-            ) = c.splinepy.io.gismo.load(tmpf.name, load_options=True)
+            ) = c.splinepy.io.gismo.load(tmpf, load_options=True)
             self.assertTrue(
                 all(
                     [

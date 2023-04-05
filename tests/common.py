@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import numpy as np
@@ -125,6 +126,11 @@ q3D = [
     [0.5623, 0.0089, 0.99],
     [0.0431, 0.2, 0.523],
 ]
+
+
+def to_tmpf(tmpd):
+    """given tmpd, returns tmpf"""
+    return os.path.join(tmpd, "nqv248p90")
 
 
 def are_splines_equal(a, b):

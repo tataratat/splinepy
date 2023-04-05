@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <iterator>
 #include <vector>
 
 inline double square(double x) { return x * x; }
