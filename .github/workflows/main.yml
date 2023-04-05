@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: ["main", "windows-wheels"]
+    branches: ["main"]
 
 jobs:
   wheel_build_full:
