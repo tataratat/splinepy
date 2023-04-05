@@ -229,7 +229,8 @@ BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
     sl_order[i] = typename SplineType::Derivative_::value_type{order[i]};
   }
 
-  return parameter_space.EvaluateBasisDerivativeValuesPerDimension(sl_query, sl_order);
+  return parameter_space.EvaluateBasisDerivativeValuesPerDimension(sl_query,
+                                                                   sl_order);
 }
 
 /// BSpline Basis functions der
