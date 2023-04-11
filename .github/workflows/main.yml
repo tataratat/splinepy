@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: ["main", "source-dist"]
+    branches: ["main"]
 
 jobs:
   wheel_build_full:
