@@ -220,6 +220,25 @@ public:
     }
   }
 
+  virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
+  SplinepyCoordinateReferences() {
+    // prepare return
+    using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
+    auto ref_coordinates =
+        std::make_shared<SplinepyBase::CoordinateReferences_>();
+    auto& ref_coords = *ref_coordinates;
+
+    // get ref
+    auto& coordinates = Base_::vector_space_->GetCoordinates();
+    ref_coords.reserve(coordinates.size());
+    for (auto& control_point : coordinates) {
+      for (auto& cp : control_point) {
+        ref_coords.emplace_back(RefHolder{static_cast<double&>(cp)});
+      }
+    }
+    return ref_coordinates;
+  }
+
   virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);
     for (std::size_t i{}; i < kParaDim; ++i) {

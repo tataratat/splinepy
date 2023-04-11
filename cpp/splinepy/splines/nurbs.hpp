@@ -227,6 +227,26 @@ public:
     }
   }
 
+  virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
+  SplinepyCoordinateReferences() {
+    using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
+    auto ref_coordinates =
+        std::make_shared<SplinepyBase::CoordinateReferences_>();
+    auto& ref_coords = *ref_coordinates;
+
+    // get ref
+    auto& coordinates = Base_::weighted_vector_space_->GetCoordinates();
+    ref_coords.reserve(coordinates.size());
+    for (auto& control_point : coordinates) {
+      // skip the last entry - control_point has kDim + 1 size.
+      for (std::size_t i{}; i < kDim; ++i) {
+        ref_coords.emplace_back(
+            RefHolder{static_cast<double&>(control_point[i])});
+      }
+    }
+    return ref_coordinates;
+  }
+
   virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);
     for (std::size_t i{}; i < kParaDim; ++i) {

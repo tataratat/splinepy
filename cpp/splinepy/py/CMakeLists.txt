@@ -2,6 +2,7 @@
 set(PYSPLINEPY_SRCS
         init/reader.cpp
         init/exporter.cpp
+        init/coordinate_reference.cpp
         init/core_spline.cpp
         init/fitting.cpp
         splinepy_core.cpp)
