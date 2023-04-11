@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "source-dist"]
 
 jobs:
   wheel_build_full:
@@ -24,8 +24,22 @@ jobs:
       with:
         path: ./wheelhouse/*.whl
 
+  source_dist:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: make sdist
+      run: python setup.py sdist
+
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./dist/*
+
   upload_test_pypi:
-    needs: [wheel_build_full]
+    needs: [wheel_build_full, source_dist]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
