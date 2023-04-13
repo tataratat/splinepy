@@ -402,12 +402,41 @@ def _new_core_if_modified(func):
         # sync if modified
         # removes saved data
         if is_modified(self):
-            self.new_core(raise_=False, **self._data["properties"])
+            self.new_core(
+                keep_properties=True, raise_=False, **self._data["properties"]
+            )
 
         # now call
         return func(*args, **kwargs)
 
     return inner
+
+
+def _get_property(spl, property_):
+    """
+    Returns spline property.
+    syncs spline from core if needed.
+
+    Parameters
+    ----------
+    spl: Spline
+    property_: str
+
+    Returns
+    -------
+    spline_property: array-like
+    """
+    p = spl._data.get("properties", dict()).get(property_, None)
+
+    # property exists, return
+    if p is not None:
+        return p
+    # p is none and core does not exist, return None
+    elif not core.have_core(spl) or property_ not in spl.required_properties:
+        return None
+
+    # core exists, and just doesn't have local copy
+    return sync_from_core(spl)._data["properties"][property_]
 
 
 class Spline(SplinepyBase, core.CoreSpline):
@@ -443,8 +472,6 @@ class Spline(SplinepyBase, core.CoreSpline):
         if spline is not None and isinstance(spline, core.CoreSpline):
             # will share core, even nullptr
             super().__init__(spline)
-            sync_from_core(self)
-            # depends on the use case, here could be a place to copy _data
 
         else:
             # do they at least contain minimal set of keywards?
@@ -591,13 +618,20 @@ class Spline(SplinepyBase, core.CoreSpline):
         core.annul_core(self)
         self._data = _default_data()
 
-    def new_core(self, *, raise_=True, **kwargs):
+    def new_core(self, *, keep_properties=False, raise_=True, **kwargs):
         """
         Creates a new core spline based on given kwargs.
         Clears any saved data afterwards.
 
         Parameters
         -----------
+        keep_properties: bool
+          Default is False. If True, keeps current properties. Otherwise,
+          all internal temporary data will be deleted, including current
+          properties.
+        raise_: bool
+          Default is True. Raises if kwargs don't contain required
+          properties.
         **kwargs: kwargs
           Keyword only argument. Takes properties.
 
@@ -605,9 +639,6 @@ class Spline(SplinepyBase, core.CoreSpline):
         -------
         None
         """
-        # hidden keyword to hint if we need to sync spline after new_core call
-        properties_round_trip = kwargs.get("properties_round_trip", True)
-
         # let's remove None valued items and make values contiguous array
         kwargs = utils.data.enforce_contiguous_values(kwargs)
 
@@ -636,14 +667,14 @@ class Spline(SplinepyBase, core.CoreSpline):
             # old behavior was to remove core here. maybe do so?
 
         # in case no roundtrip is desired, keep properties alive
-        if not properties_round_trip:
+        props = {}
+        if keep_properties:
             props = self._data["properties"]
-            self._data = _default_data()
-            self._data["properties"] = props
-            _set_modified_false(self)
 
-        else:
-            sync_from_core(self)
+        # clear saved data
+        self._data = _default_data()
+        self._data["properties"] = props
+        _set_modified_false(self)
 
     @property
     def degrees(self):
@@ -658,7 +689,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         degrees: (para_dim,) np.ndarray
         """
-        return self._data.get("properties", dict()).get("degrees", None)
+        return _get_property(self, "degrees")
 
     @degrees.setter
     def degrees(self, degrees):
@@ -695,8 +726,8 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         # try to sync core with current status
         self.new_core(
+            keep_properties=True,
             raise_=False,
-            properties_round_trip=False,
             **self._data["properties"],
         )
 
@@ -713,7 +744,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         knot_vectors: list
         """
-        return self._data.get("properties", dict()).get("knot_vectors", None)
+        return _get_property(self, "knot_vectors")
 
     @knot_vectors.setter
     def knot_vectors(self, knot_vectors):
@@ -753,8 +784,8 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         # try to sync core with current status
         self.new_core(
+            keep_properties=True,
             raise_=False,
-            properties_round_trip=False,
             **self._data["properties"],
         )
 
@@ -819,7 +850,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         control_points_: (n, dim) np.ndarray
         """
-        return self._data.get("properties", dict()).get("control_points", None)
+        return _get_property(self, "control_points")
 
     @control_points.setter
     def control_points(self, control_points):
@@ -856,8 +887,8 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         # try to sync core with current status
         self.new_core(
+            keep_properties=True,
             raise_=False,
-            properties_round_trip=False,
             **self._data["properties"],
         )
 
@@ -897,9 +928,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         return super().control_mesh_resolutions
 
     @property
-    def weights(
-        self,
-    ):
+    def weights(self):
         """
         Returns weights.
 
@@ -911,7 +940,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         self._weights: (n, 1) array-like
         """
-        return self._data.get("properties", dict()).get("weights", None)
+        return _get_property(self, "weights")
 
     @weights.setter
     def weights(self, weights):
@@ -949,8 +978,8 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         # try to sync core with current status
         self.new_core(
+            keep_properties=True,
             raise_=False,
-            properties_round_trip=False,
             **self._data["properties"],
         )
 
@@ -1347,7 +1376,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         new_spline: type(self)
         """
         new = type(self)()
-        new.new_core(**self._data["properties"], properties_round_trip=False)
+        new.new_core(**self._data["properties"], keep_properties=False)
         new._data = copy.deepcopy(self._data)
 
         return new
