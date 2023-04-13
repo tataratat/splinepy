@@ -27,7 +27,7 @@ def load(fname):
     from splinepy.spline import RequiredProperties
 
     # Import data from file into dict format
-    with open(fname, "r") as f:
+    with open(fname) as f:
         jsonbz = json.load(f)
 
     spline_list = []
