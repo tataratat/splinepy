@@ -7,7 +7,7 @@
 #include <splinepy/utils/print.hpp>
 #include <splinepy/utils/reference.hpp>
 
-PYBIND11_MAKE_OPAQUE(splinepy::splines::SplinepyBase::CoordinateReferences_);
+// PYBIND11_MAKE_OPAQUE(splinepy::splines::SplinepyBase::CoordinateReferences_);
 
 namespace splinepy::py {
 
@@ -27,12 +27,6 @@ inline void add_coordinate_references_pyclass(py::module_& m) {
       klasse(m, "CoordinateReferences");
   klasse.def(py::init<>())
       .def("__len__", [](const CoordinateReferences& r) { return r.size(); })
-      .def(
-          "__iter__",
-          [](CoordinateReferences& r) {
-            return py::make_iterator(r.begin(), r.end());
-          },
-          py::keep_alive<0, 1>() /* Keep vector alive while iterator is used*/)
       .def("__setitem__",
            [](CoordinateReferences& r,
               const py::array_t<int> ids,
@@ -56,6 +50,16 @@ inline void add_coordinate_references_pyclass(py::module_& m) {
              // assign
              for (py::ssize_t i{}; i < i_size; ++i) {
                r[ids_ptr[i]].value_ = values_ptr[i];
+             }
+           })
+      .def("broadcast_scalar",
+           [](CoordinateReferences& r,
+              const py::array_t<int> ids,
+              const double value) {
+             const py::ssize_t i_size = ids.size();
+             int* ids_ptr = static_cast<int*>(ids.request().ptr);
+             for (py::ssize_t i{}; i < i_size; ++i) {
+               r[ids_ptr[i]].value_ = value;
              }
            })
       .def("numpy", [](const CoordinateReferences& r) {

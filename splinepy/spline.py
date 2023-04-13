@@ -155,6 +155,126 @@ class RequiredProperties(SplinepyBase):
         return rp_intersection
 
 
+class CoordinateReferences(SplinepyBase):
+    """
+    Helper class to core.CoordinateReferences. Allows direct
+    access to cpp's control points.
+    Named `coordinate`, since cpp core splines store weighted control points
+    for rational splines.
+    Extends functionality to provide numpy's convenient __getitem__.
+    """
+
+    __slots__ = ("core", "spline", "id_lookup", "apply_weight")
+
+    def __init__(self, core_obj, spline, apply_weight=False):
+        """
+        Initialize with core.CoordinateReferences and its owner spline.
+        Also initialize id_lookup
+
+        Parameters
+        ----------
+        core_obj: splinepy_core.CoordinateReferences
+        spline: Spline
+        apply_weight: bool
+          Default is False, Applies weight before assigning
+        """
+        # hold core
+        self.core = core_obj
+
+        # remember coordinate's originating spline
+        self.spline = spline
+
+        # for __getitem__ trick
+        self.id_lookup = np.arange(len(core), dtype=np.int32).reshape(
+            -1, spline.dim
+        )
+
+        # what do we do with rational splines?
+        self.apply_weight = apply_weight
+
+    def __setitem__(self, key, value):
+        """
+        Sets items. uses key to get global ids from id_lookup.
+        Applies weight if needed.
+
+        Parameters
+        ----------
+        key: types allowed by numpy.ndarray.__setitem__
+        value: array-like or float
+
+        Returns
+        -------
+        None
+        """
+        ids = self.id_lookup[key].ravel()
+
+        # in case scalar, use direct version
+        if isinstance(value, (int, float)):
+            self.core.broadcast_scalar(ids, value)
+
+        # currently we will only support matching size assignment
+        value = utils.data.enforce_contiguous(value, "float64")
+
+        # for rational splines, apply weight if wanted
+        if self.apply_weight and self.spline.is_rational:
+            original_value = value.copy()
+            value *= self.spline.weights.reshape(-1)[ids // self.spline.dim]
+
+        # __setitem__ call checks that array size matches
+        self.core[ids] = value
+
+        # if there's local TrackedArray copy, update it too
+        saved_cps = self._data.get("properties", dict()).get(
+            "control_points", None
+        )
+        # if None, it doesn't have local copy, so return
+        if saved_cps is None:
+            return None
+
+        # if spline has local changes, warn!
+        if is_modified(self.spline):
+            self._logw(
+                "trying to update coordinates of a spline",
+                "that has local changes.",
+                "This may cause unexpected behavior of the spline.",
+            )
+
+        # take away the weight if weighted is on.
+        if not self.apply_weight and self.spline.is_rational:
+            value = original_value
+
+        # update and set modified flag to false
+        saved_cps[ids] = value
+
+    def set_with_global_ids(self, global_ids, values):
+        """
+        Sets values using global indices. len(values) and len(global_ids)
+        should match.
+        Skips overhead of using __getitem__ to retrieve global ids.
+
+        Parameters
+        ----------
+        global_ids: (n,) array-like
+        values: (n,) array-like
+
+        Returns
+        -------
+        None
+        """
+        # checks size match
+        self.core[global_ids] = values
+
+    def numpy(self):
+        """
+        Returns copy of current values as numpy.ndarray
+
+        Returns
+        -------
+        as_numpy: (n, spline.dim) np.ndarray
+        """
+        return self.core.numpy().reshape(-1, self.spline.dim)
+
+
 def is_modified(spl):
     """
     Checks if there are inplace changes in spline properties.
