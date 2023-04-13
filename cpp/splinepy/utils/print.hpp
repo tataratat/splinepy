@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 namespace splinepy::utils {
@@ -31,9 +32,10 @@ void PrintWarning(Args&&... args) {
 
 template<typename... Args>
 void PrintAndThrowError(Args&&... args) {
-  std::cout << "SPLINEPY ERROR - ";
-  ((std::cout << std::forward<Args>(args) << " "), ...);
-  std::cout << "\n";
-  throw std::runtime_error("Error Occured! Abort the mission!");
+  std::stringstream error_message{};
+  error_message << "SPLINEPY ERROR - ";
+  ((error_message << std::forward<Args>(args) << " "), ...);
+  error_message << "\n";
+  throw std::runtime_error(error_message.str());
 }
 } /* namespace splinepy::utils */
