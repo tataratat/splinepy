@@ -128,6 +128,37 @@ q3D = [
 ]
 
 
+def raster(bounds, resolutions):
+    """prepares raster points using np.meshgrid"""
+    l_bounds, u_bounds = bounds[0], bounds[1]
+    pts = np.meshgrid(
+        *[
+            np.linspace(lo, up, re)
+            for lo, up, re in zip(l_bounds, u_bounds, resolutions)
+        ],
+        indexing="ij"
+    )
+    #return pts
+    return np.hstack([p.reshape(-1, 1) for p in pts[::-1]])
+
+
+def nd_box(dim):
+    """creates simple box in nd"""
+    ds = [1 for _ in range(dim)]
+    cps = raster(
+        [[0 for _ in range(dim)], [1 for _ in range(dim)]],
+        [2 for _ in range(dim)],
+    )
+    kvs = [[0, 0, 1, 1] for _ in range(dim)]
+    ws = np.ones((len(cps), 1))
+    return {
+        "degrees": ds,
+        "control_points": cps,
+        "knot_vectors": kvs,
+        "weights": ws,
+    }
+
+
 def to_tmpf(tmpd):
     """given tmpd, returns tmpf"""
     return os.path.join(tmpd, "nqv248p90")
