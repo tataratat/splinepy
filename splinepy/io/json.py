@@ -27,7 +27,8 @@ def load(fname):
     from splinepy.spline import RequiredProperties
 
     # Import data from file into dict format
-    jsonbz = json.load(open(fname))
+    with open(fname) as f:
+        jsonbz = json.load(f)
 
     spline_list = []
     base64encoding = jsonbz["Base64Encoding"]
