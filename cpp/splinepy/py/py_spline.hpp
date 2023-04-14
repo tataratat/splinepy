@@ -752,7 +752,7 @@ public:
     return successful;
   }
 
-  // coordinate reference
+  /// coordinate reference
   std::shared_ptr<splinepy::splines::SplinepyBase::CoordinateReferences_>
   CoordinateReferences() {
     return Core()->SplinepyCoordinateReferences();
