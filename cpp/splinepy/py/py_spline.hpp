@@ -1094,7 +1094,7 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
 
             py::kwargs properties = t[0].cast<py::kwargs>(); // init
             PySpline spl(properties);
-            spl.data_ = t[1].cast<py::dict>(); // saved data
+            spl.data_ = t[1].cast<py::dict>();               // saved data
 
             return spl;
           }));
