@@ -1330,7 +1330,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         self._logd(
             f"Elevated {parametric_dimensions}.-dim. " "degree of the spline."
         )
-        sync_from_core(self)
+        self._data = _default_data()
 
     @_new_core_if_modified
     def reduce_degrees(self, parametric_dimensions, tolerance=None):
@@ -1362,7 +1362,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         )
 
         if any(reduced):
-            sync_from_core(self)
+            self._data = _default_data()
 
         return reduced
 
