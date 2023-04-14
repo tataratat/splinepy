@@ -136,9 +136,9 @@ def raster(bounds, resolutions):
             np.linspace(lo, up, re)
             for lo, up, re in zip(l_bounds, u_bounds, resolutions)
         ],
-        indexing="ij"
+        indexing="ij",
     )
-    #return pts
+    # return pts
     return np.hstack([p.reshape(-1, 1) for p in pts[::-1]])
 
 

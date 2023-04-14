@@ -3,8 +3,8 @@ try:
 except BaseException:
     import common as c
 
-class InplaceModificationTest(c.unittest.TestCase):
 
+class InplaceModificationTest(c.unittest.TestCase):
     def test_inplace_change_knot_vectors(self):
         """test inplace change of knot_vectors"""
         # let's test 3D splines
@@ -15,11 +15,11 @@ class InplaceModificationTest(c.unittest.TestCase):
         b = c.splinepy.BSpline(**box_data)
 
         # elevate degrees and insert some knots
-        knot_insert_dims = [1,2]
+        knot_insert_dims = [1, 2]
         for s in (n, b):
-            s.elevate_degrees([0,0,1,2])
+            s.elevate_degrees([0, 0, 1, 2])
             for kid in knot_insert_dims:
-                s.insert_knots(kid, c.np.linspace(.1, .9, 9))
+                s.insert_knots(kid, c.np.linspace(0.1, 0.9, 9))
 
         qres = 2
         raster_query = c.raster([[0] * dim, [1] * dim], [qres] * dim)
