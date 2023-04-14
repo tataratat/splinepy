@@ -17,64 +17,92 @@ __all__ = [
 # b: bspline
 # n: nurbs
 
+
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
-b2P2D = dict(
-    degrees=[2, 2],
-    knot_vectors=[
-        [0, 0, 0, 0.5, 1, 1, 1],
-        [0, 0, 0, 1, 1, 1],
-    ],
-    control_points=[
-        [0, 0],
-        [0, 1],
-        [1, 1.5],
-        [3, 1.5],
-        [-1, 0],
-        [-1, 2],
-        [1, 4],
-        [3, 4],
-        [-2, 0],
-        [-2, 2],
-        [1, 5],
-        [3, 5],
-    ],
-)
+def b2p2d():
+    return dict(
+        degrees=[2, 2],
+        knot_vectors=[
+            [0, 0, 0, 0.5, 1, 1, 1],
+            [0, 0, 0, 1, 1, 1],
+        ],
+        control_points=[
+            [0, 0],
+            [0, 1],
+            [1, 1.5],
+            [3, 1.5],
+            [-1, 0],
+            [-1, 2],
+            [1, 4],
+            [3, 4],
+            [-2, 0],
+            [-2, 2],
+            [1, 5],
+            [3, 5],
+        ],
+    )
+
+
+b2P2D = b2p2d()
+
 
 # half-half circle.
-n2P2D = dict(
-    degrees=[2, 1],
-    knot_vectors=[
-        [0, 0, 0, 1, 1, 1],
-        [0, 0, 1, 1],
-    ],
-    control_points=[
-        [-1.0, 0.0],
-        [-1.0, 1.0],
-        [0.0, 1.0],
-        [-2.0, 0.0],
-        [-2.0, 2.0],
-        [0.0, 2.0],
-    ],
-    weights=[
-        [1.0],
-        [2**-0.5],
-        [1.0],
-        [1.0],
-        [2**-0.5],
-        [1.0],
-    ],
-)
+def n2p2d():
+    return dict(
+        degrees=[2, 1],
+        knot_vectors=[
+            [0, 0, 0, 1, 1, 1],
+            [0, 0, 1, 1],
+        ],
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
+    )
+
+
+n2P2D = n2p2d()
+
+
+def n2p2d_quarter_circle():
+    """explicit function for quarter circle
+    incase n2p2d changes in the future..."""
+    return n2p2d()
+
 
 #
-z2P2D = dict(degrees=n2P2D["degrees"], control_points=n2P2D["control_points"])
+def z2p2d():
+    return dict(
+        degrees=n2P2D["degrees"], control_points=n2P2D["control_points"]
+    )
+
+
+z2P2D = z2p2d()
+
 
 #
-r2P2D = dict(
-    degrees=n2P2D["degrees"],
-    control_points=n2P2D["control_points"],
-    weights=n2P2D["weights"],
-)
+def r2p2d():
+    return dict(
+        degrees=n2P2D["degrees"],
+        control_points=n2P2D["control_points"],
+        weights=n2P2D["weights"],
+    )
+
+
+r2P2D = r2p2d()
 
 # 3D
 z3P3D = dict(
