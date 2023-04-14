@@ -809,7 +809,16 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         degrees: (para_dim,) np.ndarray
         """
-        return _get_property(self, "degrees")
+        degrees = _get_property(self, "degrees")
+        if degrees is None:
+            return degrees
+
+        # if core spline exists,
+        # degrees should not be modifiable
+        if core.have_core(self):
+            degrees.mutable = False
+
+        return degrees
 
     @degrees.setter
     def degrees(self, degrees):
