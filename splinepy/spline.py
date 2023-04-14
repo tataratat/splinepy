@@ -1077,6 +1077,23 @@ class Spline(SplinepyBase, core.CoreSpline):
         return super().control_mesh_resolutions
 
     @property
+    def greville_abscissae(self):
+        """
+        Returns greville abscissae.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        greville_abscissae: (para_dim) np.ndarray
+        """
+        return np.reshape(
+            np.meshgrid(*super().greville_abscissae), (self.para_dim, -1)
+        ).T
+
+    @property
     def coordinate_references(self):
         """
         Returns direct reference of underlying cpp coordinates.
