@@ -9,7 +9,8 @@ import gustaf as gus
 import numpy as np
 
 # Test Case
-simple_geometry = True
+simple_geometry = False
+n_refine = 15
 
 
 # Source Function
@@ -41,8 +42,9 @@ if simple_geometry:
 
 # Use refinement
 geometry.elevate_degrees([0, 1, 0, 1])
-geometry.insert_knots(0, [0.25, 0.5, 0.75])
-geometry.insert_knots(1, [0.25, 0.5, 0.75])
+new_knots = np.linspace(1 / n_refine, 1, n_refine, endpoint=False)
+geometry.insert_knots(0, new_knots)
+geometry.insert_knots(1, new_knots)
 
 # Define the solution field
 solution_field = gus.BSpline(
@@ -83,26 +85,27 @@ np.put_along_axis(solution_hessians[:, :, 1, 1], supports, basis_f_der, axis=1)
 physical_points = geometry.evaluate(evaluation_points)
 rhs = source_function(physical_points)
 
-# a is control_point, n is evaluation point
-physical_hessians = np.einsum(
-    "eli,ealk,ekj->eaij",
+# a is control_point, n is evaluation point,
+laplacian = np.einsum(
+    "eli,ealk,eki->ea",
     inverse_geometric_jacobians,
     solution_hessians,
     inverse_geometric_jacobians,
+    optimize=True,
 )
-physical_hessians -= np.einsum(
-    "eal,elm,bm,eni,ebnk,ekj->eaij",
+laplacian -= np.einsum(
+    "eal,elm,bm,eni,ebnk,eki->ea",
     solution_jacobians,
     inverse_geometric_jacobians,
     geometry.control_points,
     inverse_geometric_jacobians,
     solution_hessians,
     inverse_geometric_jacobians,
+    optimize=True,
 )
-# calculate trace for laplacian
-laplacian = np.einsum("eajj->ea", physical_hessians)
 
-# set dirichlet values
+# Set dirichlet values (identify boundary nodes and set matrix to identity rhs
+# to 0)
 cmr = solution_field.control_mesh_resolutions
 indices = np.arange(evaluation_points.shape[0])
 index_list = np.zeros((evaluation_points.shape[0]), dtype=bool)
@@ -117,10 +120,12 @@ rhs[index_list] = 0
 
 # Solve linear system
 solution_field.control_points = np.linalg.solve(laplacian, rhs).reshape(-1, 1)
+print(f"Minimum Value : {np.min(solution_field.control_points)}")
+print(f"Maximum Value : {np.max(solution_field.control_points)}")
 
 # Plot geometry and field
 geometry.splinedata["field"] = solution_field
 geometry.show_options["dataname"] = "field"
 geometry.show_options["cmap"] = "jet"
 geometry.show_options["lighting"] = "off"
-gus.show(geometry, knots=False, control_points=False)
+gus.show(geometry, knots=True, control_points=False)
