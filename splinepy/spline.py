@@ -185,7 +185,7 @@ class CoordinateReferences(SplinepyBase):
         self.spline = spline
 
         # for __getitem__ trick
-        self.id_lookup = np.arange(len(core), dtype=np.int32).reshape(
+        self.id_lookup = np.arange(len(core_obj), dtype=np.int32).reshape(
             -1, spline.dim
         )
 
@@ -208,25 +208,34 @@ class CoordinateReferences(SplinepyBase):
         """
         ids = self.id_lookup[key].ravel()
 
-        # in case scalar, use direct version
+        # in case scalar, and no apply_weight, use direct version
+        call_setitem = True
         if isinstance(value, (int, float)):
-            self.core.broadcast_scalar(ids, value)
+            if not self.apply_weight:
+                self.core.broadcast_scalar(ids, value)
+                call_setitem = False
+            else:
+                value = [value] * ids.size
 
         # currently we will only support matching size assignment
         value = utils.data.enforce_contiguous(value, "float64")
 
         # for rational splines, apply weight if wanted
         if self.apply_weight and self.spline.is_rational:
-            original_value = value.copy()
-            value *= self.spline.weights.reshape(-1)[ids // self.spline.dim]
+            original_value = value  # keep original here.
+            value = value.reshape(-1) * self.spline.weights[
+                ids // self.spline.dim
+            ].reshape(-1)
 
         # __setitem__ call checks that array size matches
-        self.core[ids] = value
+        if call_setitem:
+            self.core[ids] = value
 
         # if there's local TrackedArray copy, update it too
-        saved_cps = self._data.get("properties", dict()).get(
+        saved_cps = self.spline._data.get("properties", dict()).get(
             "control_points", None
         )
+
         # if None, it doesn't have local copy, so return
         if saved_cps is None:
             return None
@@ -240,17 +249,19 @@ class CoordinateReferences(SplinepyBase):
             )
 
         # take away the weight if weighted is on.
-        if not self.apply_weight and self.spline.is_rational:
+        if self.apply_weight and self.spline.is_rational:
             value = original_value
 
         # update and set modified flag to false
-        saved_cps[ids] = value
+        saved_cps.reshape(-1)[ids] = value.reshape(-1)
+        saved_cps._modified = False
 
     def set_with_global_ids(self, global_ids, values):
         """
         Sets values using global indices. len(values) and len(global_ids)
         should match.
         Skips overhead of using __getitem__ to retrieve global ids.
+        Does NOT apply any weights
 
         Parameters
         ----------
@@ -440,6 +451,10 @@ def _set_modified_false(spl):
     -------
     None
     """
+    # empty dict? skip
+    if not spl._data.get("properties", dict()):
+        return None
+
     for rp in spl.required_properties:
         prop = getattr(spl, rp, None)
 
@@ -592,6 +607,9 @@ class Spline(SplinepyBase, core.CoreSpline):
         if spline is not None and isinstance(spline, core.CoreSpline):
             # will share core, even nullptr
             super().__init__(spline)
+            # don't share the copy of properties
+            self._data = _default_data()
+            return None
 
         else:
             # do they at least contain minimal set of keywards?
@@ -605,7 +623,7 @@ class Spline(SplinepyBase, core.CoreSpline):
             # we will call new_core to make sure all the array values are
             # contiguous
             super().__init__()  # alloc
-            self.new_core(**kwargs, raise_=False)  # this will sync
+            self.new_core(**kwargs, raise_=False)
 
     @property
     def required_properties(self):
@@ -757,7 +775,7 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         Returns
         -------
-        None
+        core_created: bool
         """
         # let's remove None valued items and make values contiguous array
         kwargs = utils.data.enforce_contiguous_values(kwargs)
@@ -795,6 +813,8 @@ class Spline(SplinepyBase, core.CoreSpline):
         self._data = _default_data()
         self._data["properties"] = props
         _set_modified_false(self)
+
+        return core.have_core(self)
 
     @property
     def degrees(self):
@@ -1055,6 +1075,33 @@ class Spline(SplinepyBase, core.CoreSpline):
         control_mesh_resolutions: (para_dim) np.ndarray
         """
         return super().control_mesh_resolutions
+
+    @property
+    def coordinate_references(self):
+        """
+        Returns direct reference of underlying cpp coordinates.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        coordinate_references: CoordinateReferences
+          See docs of CoordinateReferences.
+        """
+        # see if it is stored
+        cr = self._data.get("coordinate_references", None)
+
+        if cr is not None:
+            return cr
+
+        # not stored, create one
+        self._data["coordinate_references"] = CoordinateReferences(
+            super().coordinate_references(), self
+        )
+
+        return self._data["coordinate_references"]
 
     @property
     def weights(self):
@@ -1492,21 +1539,46 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         return dict_spline
 
-    def copy(self):
+    def copy(self, saved_data=True):
         """
         Returns deepcopy of stored data and newly initialized self.
 
         Parameters
         -----------
-        None
+        saved_data: bool
+          Default is True. calls deepcopy on saved data excluding
+          coordinate_references
 
         Returns
         --------
         new_spline: type(self)
         """
-        new = type(self)()
-        new.new_core(**self._data["properties"], keep_properties=False)
-        new._data = copy.deepcopy(self._data)
+        new = type(self)(**self.current_core_properties())
+        if saved_data:
+            # shallow copy
+            shallow = self._data.copy()
+
+            # don't copy coordinate references
+            shallow.pop("coordinate_references", None)
+
+            # call deep copy
+            new._data = copy.deepcopy(shallow)
+
+            # copy modified status, as it is created with True flag.
+            for k in shallow.get("properties", dict()).keys():
+                if k.startswith("knot_vectors"):
+                    for kv_new, kv in zip(
+                        new._data["properties"]["knot_vectors"],
+                        shallow["properties"]["knot_vectors"],
+                    ):
+                        kv_new._modified = kv._modified
+                else:
+                    new._data["properties"][k]._modified = shallow[
+                        "properties"
+                    ][k]._modified
+
+        else:
+            new._data = _default_data()
 
         return new
 
