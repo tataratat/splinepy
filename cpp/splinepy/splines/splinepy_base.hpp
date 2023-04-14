@@ -95,6 +95,16 @@ public:
   /// Control mesh resoltuons - number of control points per para dim
   virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const;
 
+  /**
+   * @brief Calculate greville abscissae for Spline (required for e.g.
+   * collocation)
+   *
+   * @param greville_abscissae[out] pointer to solution
+   * @param i_para_dim[in] parametric dimension
+   */
+  virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
+                                         const int& i_para_dim) const;
+
   /// Spline evaluation
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const;

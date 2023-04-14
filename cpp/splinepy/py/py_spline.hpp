@@ -363,6 +363,22 @@ public:
     return pbounds;
   }
 
+  py::list GrevilleAbscissae() const {
+    // prepare output
+    py::list greville_abscissae;
+    std::vector<int> cmr(para_dim_);
+    Core()->SplinepyControlMeshResolutions(cmr.data());
+    // Calculate Abscissae
+    for (int i{}; i < para_dim_; i++) {
+      py::array_t<double> abscissae(cmr[i]);
+      double* abscissae_ptr = static_cast<double*>(abscissae.request().ptr);
+      Core()->SplinepyGrevilleAbscissae(abscissae_ptr, i);
+      abscissae.resize({cmr[i]});
+      greville_abscissae.append(abscissae);
+    }
+    return greville_abscissae;
+  }
+
   py::array_t<int> ControlMeshResolutions() const {
     // prepare output
     py::array_t<int> cmr(para_dim_);
@@ -1022,6 +1038,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
+      .def_property_readonly("greville_abscissae",
+                             &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
@@ -1076,7 +1094,7 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
 
             py::kwargs properties = t[0].cast<py::kwargs>(); // init
             PySpline spl(properties);
-            spl.data_ = t[1].cast<py::dict>();               // saved data
+            spl.data_ = t[1].cast<py::dict>(); // saved data
 
             return spl;
           }));

@@ -163,6 +163,13 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
+  virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
+                                         const int& i_para_dim) const {
+    splinepy::splines::helpers::GetGrevilleAbscissae(*this,
+                                                     greville_abscissae,
+                                                     i_para_dim);
+  }
+
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const {
     splinepy::splines::helpers::ScalarTypeEvaluate(*this,

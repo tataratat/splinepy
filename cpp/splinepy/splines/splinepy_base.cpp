@@ -426,6 +426,13 @@ void SplinepyBase::SplinepyControlMeshResolutions(int* control_mesh_res) const {
       SplinepyWhatAmI());
 }
 
+void SplinepyBase::SplinepyGrevilleAbscissae(double* greville_abscissae,
+                                             const int& i_para_dim) const {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyGrevilleAbscissae not implemented for",
+      SplinepyWhatAmI());
+}
+
 void SplinepyBase::SplinepyEvaluate(const double* para_coord,
                                     double* evaluated) const {
   splinepy::utils::PrintAndThrowError("SplinepyEvaluate not implemented for",

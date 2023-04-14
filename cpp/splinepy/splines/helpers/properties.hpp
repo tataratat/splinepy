@@ -2,6 +2,8 @@
 
 #include <array>
 
+#include "Sources/Utilities/index.hpp"
+
 namespace splinepy::splines::helpers {
 
 /// Returns parametric bounds as (para_dim x 2) array.
@@ -56,6 +58,42 @@ GetControlMeshResolutions(const SplineType& spline) {
   }
 
   return control_mesh_res;
+}
+
+template<typename SplineType>
+inline void GetGrevilleAbscissae(const SplineType& spline,
+                                 double* greville_abscissae,
+                                 const int& i_para_dim) {
+  // Precompute values
+  const auto& degrees = spline.GetDegrees();
+  // Determine size using control point resolution
+  const int cmr = [&]() {
+    if constexpr (SplineType::kHasKnotVectors) {
+      const auto& knot_vectors = spline.GetKnotVectors();
+      return static_cast<int>(knot_vectors[i_para_dim]->GetSize())
+             - static_cast<int>(degrees[i_para_dim]) - 1;
+
+    } else {
+      return static_cast<int>(degrees[i_para_dim]) + 1;
+    }
+  }();
+
+  // Fill vector with points
+  const double inv_factor = 1. / static_cast<double>(degrees[i_para_dim]);
+  for (int j{}; j < cmr; ++j) {
+    if constexpr (SplineType::kHasKnotVectors) {
+      //
+      using IndexType = typename splinelib::Index;
+      const auto& knot_vectors = spline.GetKnotVectors()[i_para_dim];
+      double factor{};
+      for (int k{0}; k < degrees[i_para_dim]; ++k) {
+        factor += knot_vectors->operator[](IndexType(k + j + 1));
+      }
+      greville_abscissae[j] = static_cast<double>(inv_factor * factor);
+    } else {
+      greville_abscissae[j] = static_cast<double>(inv_factor * j);
+    }
+  }
 }
 
 } // namespace splinepy::splines::helpers
