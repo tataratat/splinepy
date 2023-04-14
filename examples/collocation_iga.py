@@ -8,6 +8,9 @@ with source term f=1
 import gustaf as gus
 import numpy as np
 
+# Test Case
+simple_geometry = True
+
 
 # Source Function
 def source_function(x):
@@ -30,9 +33,11 @@ geometry = gus.BSpline(
     ],
     knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
 )
-geometry = gus.Bezier(
-    degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
-).bspline
+# Simpler case
+if simple_geometry:
+    geometry = gus.Bezier(
+        degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
+    ).bspline
 
 # Use refinement
 geometry.elevate_degrees([0, 1, 0, 1])
@@ -59,17 +64,7 @@ solution_hessians = np.zeros(
     (evaluation_points.shape[0], solution_field.control_points.shape[0], 2, 2)
 )
 
-# Fill Jacobian & Hessian
-# Jacobian
-basis_f_der, supports = solution_field.basis_derivative_and_support(
-    evaluation_points, orders=[1, 0]
-)
-np.put_along_axis(solution_jacobians[:, :, 0], supports, basis_f_der, axis=1)
-basis_f_der, supports = solution_field.basis_derivative_and_support(
-    evaluation_points, orders=[0, 1]
-)
-np.put_along_axis(solution_jacobians[:, :, 1], supports, basis_f_der, axis=1)
-# Hessian
+# Fill Hessian
 basis_f_der, supports = solution_field.basis_derivative_and_support(
     evaluation_points, orders=[2, 0]
 )
@@ -115,13 +110,15 @@ index_list[indices % cmr[0] == 0] = True
 index_list[indices % cmr[0] == cmr[0] - 1] = True
 index_list[np.floor_divide(indices, cmr[0]) == 0] = True
 index_list[np.floor_divide(indices, cmr[0]) == cmr[1] - 1] = True
-laplacian[index_list, :] = 0
 index_list = np.where(index_list)[0]
+laplacian[index_list, :] = 0
 laplacian[index_list, index_list] = 1
 rhs[index_list] = 0
 
+# Solve linear system
 solution_field.control_points = np.linalg.solve(laplacian, rhs).reshape(-1, 1)
 
+# Plot geometry and field
 geometry.splinedata["field"] = solution_field
 geometry.show_options["dataname"] = "field"
 geometry.show_options["cmap"] = "jet"
