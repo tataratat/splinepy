@@ -363,19 +363,41 @@ public:
     return pbounds;
   }
 
-  py::list GrevilleAbscissae() const {
+  py::array_t<double> GrevilleAbscissae() const {
     // prepare output
-    py::list greville_abscissae;
     std::vector<int> cmr(para_dim_);
     Core()->SplinepyControlMeshResolutions(cmr.data());
+    const auto n_positions = [&]() {
+      int prod{cmr[0]};
+      for (std::size_t i{1}; i < cmr.size(); i++) {
+        prod *= cmr[i];
+      }
+      return prod;
+    }();
+
     // Calculate Abscissae
+    py::array_t<double> greville_abscissae(n_positions * para_dim_);
+    double* greville_abscissae_ptr =
+        static_cast<double*>(greville_abscissae.request().ptr);
+
+    int offset{1};
+    int repetitions{n_positions};
     for (int i{}; i < para_dim_; i++) {
-      py::array_t<double> abscissae(cmr[i]);
-      double* abscissae_ptr = static_cast<double*>(abscissae.request().ptr);
-      Core()->SplinepyGrevilleAbscissae(abscissae_ptr, i);
-      abscissae.resize({cmr[i]});
-      greville_abscissae.append(abscissae);
+      repetitions /= cmr[i];
+      std::vector<double> abscissae(cmr[i]);
+      Core()->SplinepyGrevilleAbscissae(abscissae.data(), i);
+      int ii{i};
+      for (int j{}; j < repetitions; j++) {
+        for (int l{}; l < cmr[i]; l++) {
+          for (int k{}; k < offset; k++) {
+            greville_abscissae_ptr[ii] = abscissae[l];
+            ii += para_dim_;
+          }
+        }
+      }
+      offset *= cmr[i];
     }
+    greville_abscissae.resize({n_positions, para_dim_});
     return greville_abscissae;
   }
 

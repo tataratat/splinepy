@@ -1089,9 +1089,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         --------
         greville_abscissae: (para_dim) np.ndarray
         """
-        return np.reshape(
-            np.meshgrid(*super().greville_abscissae), (self.para_dim, -1)
-        ).T
+        return super().greville_abscissae
 
     @property
     def coordinate_references(self):
