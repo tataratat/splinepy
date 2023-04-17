@@ -3,12 +3,16 @@
 #include <memory>
 #include <vector>
 
+#include <splinepy/utils/reference.hpp>
+
 namespace splinepy::splines {
 
 /// Spline base to enable dynamic use of template splines.
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
+  using CoordinateReferences_ = std::vector<splinepy::utils::Reference<double>>;
+
   /// default ctor
   SplinepyBase() = default;
   ///
@@ -88,6 +92,8 @@ public:
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
+
+  virtual std::shared_ptr<CoordinateReferences_> SplinepyCoordinateReferences();
 
   /// Parameter space AABB
   virtual void SplinepyParametricBounds(double* p_bounds) const;

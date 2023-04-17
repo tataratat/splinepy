@@ -751,6 +751,12 @@ public:
 
     return successful;
   }
+
+  /// coordinate reference
+  std::shared_ptr<splinepy::splines::SplinepyBase::CoordinateReferences_>
+  CoordinateReferences() {
+    return Core()->SplinepyCoordinateReferences();
+  }
 };
 
 /* operations for certain splines */
@@ -1065,6 +1071,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
            py::arg("tolerance"))
+      .def("coordinate_references",
+           &splinepy::py::PySpline::CoordinateReferences)
       .def(py::pickle(
           [](splinepy::py::PySpline& spl) {
             return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);

@@ -414,6 +414,16 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
   return true;
 }
 
+std::shared_ptr<SplinepyBase::CoordinateReferences_>
+SplinepyBase::SplinepyCoordinateReferences() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyCoordinateReferences not implemented for",
+      SplinepyWhatAmI());
+
+  // make compiler happy
+  return std::make_shared<SplinepyBase::CoordinateReferences_>();
+};
+
 void SplinepyBase::SplinepyParametricBounds(double* p_bounds) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyParametricBounds not implemented for",

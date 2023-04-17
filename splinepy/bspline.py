@@ -60,7 +60,7 @@ class BSplineBase(spline.Spline):
 
         self._logd(f"Inserted {len(knots)} knot(s).")
 
-        spline.sync_from_core(self)
+        self._data = spline._default_data()
 
     def remove_knots(self, parametric_dimension, knots, tolerance=None):
         """
@@ -104,7 +104,7 @@ class BSplineBase(spline.Spline):
         )
 
         if any(removed):
-            spline.sync_from_core(self)
+            self._data = spline._default_data()
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
