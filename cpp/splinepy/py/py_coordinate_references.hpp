@@ -7,8 +7,6 @@
 #include <splinepy/utils/print.hpp>
 #include <splinepy/utils/reference.hpp>
 
-// PYBIND11_MAKE_OPAQUE(splinepy::splines::SplinepyBase::CoordinateReferences_);
-
 namespace splinepy::py {
 
 namespace py = pybind11;
