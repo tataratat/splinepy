@@ -103,10 +103,11 @@ for i in range(len(ukv[0]) - 1):
         det_jacs = np.linalg.det(geometry.jacobian(mapped_positions))
 
         # RHS
+        # q : quadrature point | d: dim
         bf, support = solution_field.basis_and_support(mapped_positions)
         assert np.all(support[0, :] == support)
         system_rhs[support[0, :]] += np.einsum(
-            "ij,i,i->j", bf, weights, det_jacs, optimize=True
+            "qj,q,q->j", bf, weights, det_jacs, optimize=True
         )
 
         # LHS
@@ -114,7 +115,6 @@ for i in range(len(ukv[0]) - 1):
             mapped_positions
         )
         assert np.all(support[0, :] == support)
-        # q : quadrature point | d: dim
         local_matrix = np.einsum(
             "qid ,qjd,q,q->ij",
             bf_jacobian,
