@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class GrevilleAbscussaeTest(c.unittest.TestCase):
+class GrevilleAbscissaeTest(c.unittest.TestCase):
     def test_greville_points(self):
         """
         test permute
