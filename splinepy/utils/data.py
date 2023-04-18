@@ -289,15 +289,18 @@ def cartesian_product(arrays, reverse=True):
     cartesian: (n, len(arrays)) np.ndarray
     """
     n_arr = len(arrays)
-
-    shape = *map(len, arrays), n_arr
     dtype = np.result_type(*arrays)
-    cartesian = np.empty(shape, dtype=dtype)
 
     # for reverse, use view of reverse ordered arrays
-    # plus, view of reverse ordered cartesian
     if reverse:
         arrays = arrays[::-1]
+
+    shape = *map(len, arrays), n_arr
+    cartesian = np.empty(shape, dtype=dtype)
+
+    # reverse order the view of output array, so that reverse
+    # is again in original order, but just reversed fastest iterating dim
+    if reverse:
         _cartesian = cartesian[..., ::-1]
     else:
         _cartesian = cartesian
