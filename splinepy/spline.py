@@ -710,7 +710,7 @@ class GeometryMapper(SplinepyBase):
                 for j in range(i, self._geometry_reference.para_dim):
                     (
                         geo_bf_hessians[:, :, i, j],
-                        support,
+                        support_geo,
                     ) = self._geometry_reference.basis_derivative_and_support(
                         queries=queries,
                         orders=np.eye(1, M=self._para_dim, k=i)
@@ -724,10 +724,10 @@ class GeometryMapper(SplinepyBase):
 
             # Overwrite bf_hessians (with e being query ID)
             bf_hessians -= np.einsum(
-                "ean,enm,bm,eblk->ealk",
+                "ean,enm,ebm,eblk->ealk",
                 bf_gradients,
                 invjacs,
-                self._geometry_reference.control_points,
+                self._geometry_reference.control_points[support_geo, :],
                 geo_bf_hessians,
             )
         if hessian:
