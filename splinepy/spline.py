@@ -598,7 +598,6 @@ class GeometryMapper(SplinepyBase):
         self,
         queries,
         gradient=False,
-        divergence=False,
         hessian=False,
         laplacian=False,
         nthreads=None,
@@ -613,13 +612,11 @@ class GeometryMapper(SplinepyBase):
         queries: (n, para_dim) array-like
           Evaluation points in the parametric domain
         gradient : bool
-          Evaluate Gradient mapped into the physical domain
-        divergence : bool
-          Evaluate the Divergence mapped into the physical domain
+          Evaluate Basis Function Gradient mapped into the physical domain
         hessian : bool
-          Evaluate the Hessian mapped into the physical domain
+          Evaluate Basis Function Hessian mapped into the physical domain
         laplacian : bool
-          Evaluate the Laplacian mapped into the physical domain
+          Evaluate Basis Function Laplacian mapped into the physical domain
         nthreads: int
           Number of threads available for the computation
 
@@ -638,7 +635,7 @@ class GeometryMapper(SplinepyBase):
         )
         results = {}
 
-        if gradient or divergence or hessian or laplacian:
+        if gradient or hessian or laplacian:
             bf_gradients = np.empty(
                 (
                     queries.shape[0],
@@ -660,17 +657,6 @@ class GeometryMapper(SplinepyBase):
                 "nij,njk->nik", bf_gradients, invjacs, optimize=True
             )
             results["support"] = support
-        if divergence:
-            if gradient:
-                # Use gradient values to reduce to divergence (more efficient)
-                divergence = np.einsum("njk -> nj", results["gradient"])
-                results["divergence"] = divergence
-            else:
-                divergence = np.einsum(
-                    "nij,njk->ni", bf_gradients, invjacs, optimize=True
-                )
-                results["divergence"] = divergence
-                results["support"] = support
 
         if hessian or laplacian:
             # Retrieve basis function hessians from both the geometry as from
@@ -756,6 +742,104 @@ class GeometryMapper(SplinepyBase):
 
         return results
 
+    def field_derivatives(
+        self,
+        queries,
+        gradient=False,
+        divergence=False,
+        hessian=False,
+        laplacian=False,
+        basis_function_values=False,
+        nthreads=None,
+    ):
+        """Function to retrieve more than one field derivative
+
+        More efficient implementation if more than one derivative is required.
+        Can also return basis function values if both are required, e.g., for
+        some assembly
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+          Evaluation points in the parametric domain
+        gradient : bool
+          Evaluate Gradient mapped into the physical domain
+        divergence : bool
+          Evaluate Divergenec of a vector field
+        hessian : bool
+          Evaluate Hessian mapped into the physical domain
+        laplacian : bool
+          Evaluate Laplacian mapped into the physical domain
+        basis_function_values : bool
+          Return basis function derivatives in dictionary
+        nthreads: int
+          Number of threads available for the computation
+
+        Returns
+        -------
+        results : dict
+          Dictionary with required values stored with same name as function
+          arguments (basis function derivatives as dictionary in dictionary)
+        """
+        # Compute required basis function values
+        as_dictionary = self.basis_function_derivatives(
+            queries=queries,
+            gradient=(gradient or divergence),
+            hessian=hessian,
+            laplacian=laplacian,
+            nthreads=nthreads,
+        )
+
+        results = {}
+        supports = as_dictionary["support"]
+        if basis_function_values:
+            as_dictionary["basis_function_values"] = as_dictionary
+        # Start computation
+        if gradient:
+            results["gradient"] = np.einsum(
+                "qsd,qsv->qvd",
+                as_dictionary["gradient"],
+                self._field_reference.control_points[supports, :],
+            )
+        if divergence:
+            # Can only be performed on vector fields with para_dim=dim
+            if self._field_reference.para_dim != self._field_reference.dim:
+                if gradient:
+                    results["divergence"] = np.einsum(
+                        "qvd->qv", results["gradient"]
+                    )
+                else:
+                    results["divergence"] = np.einsum(
+                        "qsd,qsv->qv",
+                        as_dictionary["gradient"],
+                        self._field_reference.control_points[supports, :],
+                    )
+            else:
+                raise ValueError(
+                    "Divergence can only be performed on vector fields with "
+                    "para_dim = dim"
+                )
+
+        if hessian:
+            results["hessian"] = np.einsum(
+                "qsij,qsv->qvij",
+                as_dictionary["hessian"],
+                self._field_reference.control_points[supports, :],
+            )
+        if laplacian:
+            if hessian:
+                results["laplacian"] = np.einsum(
+                    "qdii->qd", results["hessian"]
+                )
+            else:
+                results["laplacian"] = np.einsum(
+                    "qs,qsd->qd",
+                    as_dictionary["laplacian"],
+                    self._field_reference.control_points[supports, :],
+                )
+
+        return results
+
     def basis_gradient_and_support(self, queries, nthreads=None):
         """Map gradient of basis functions into the physical domain
 
@@ -766,41 +850,72 @@ class GeometryMapper(SplinepyBase):
 
         Returns
         --------
-        gradient: (n, prod(degrees + 1), paradim) np.ndarray
+        gradient: (n, prod(degrees + 1), para_dim) np.ndarray
         support: (n, prod(degrees + 1)) np.ndarray
         """
         as_dict = self.basis_function_derivatives(
             queries,
             gradient=True,
-            divergence=False,
             hessian=False,
             laplacian=False,
             nthreads=nthreads,
         )
         return (as_dict["gradient"], as_dict["support"])
 
-    def basis_divergence_and_support(self, queries, nthreads=None):
-        """Map divergence of basis functions into the physical domain
+    def gradient(self, queries, nthreads=None):
+        """Map gradient field into the physical domain
+
+        Gradient is in form J_ij = du^i/dx_j
 
         Parameters
         ----------
         queries: (n, para_dim) array-like
+          Points for evaluation
         nthreads: int
+          Threads used for calculation
 
         Returns
         --------
-        divergence: (n, prod(degrees + 1)) np.ndarray
-        support: (n, prod(degrees + 1)) np.ndarray
+        gradient: (n, prod(degrees + 1), paradim) np.ndarray
         """
-        as_dict = self.basis_function_derivatives(
+        return self.field_derivatives(
+            queries,
+            gradient=True,
+            divergence=False,
+            hessian=False,
+            laplacian=False,
+            basis_function_values=False,
+            nthreads=nthreads,
+        )["gradient"]
+
+    def divergence(self, queries, nthreads=None):
+        """Map field divergence (where applicable) into the physical domain
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+          Points for evaluation
+        nthreads: int
+          Threads used for calculation
+
+        Returns
+        --------
+        gradient: (n, prod(degrees + 1), paradim) np.ndarray
+        """
+        if self._field_reference.para_dim != self._field_reference.dim:
+            raise ValueError(
+                "Divergence can only be performed on vector fields with "
+                "para_dim = dim"
+            )
+        return self.field_derivatives(
             queries,
             gradient=False,
             divergence=True,
             hessian=False,
             laplacian=False,
+            basis_function_values=False,
             nthreads=nthreads,
-        )
-        return (as_dict["divergence"], as_dict["support"])
+        )["divergence"]
 
     def basis_hessian_and_support(self, queries, nthreads=None):
         """Map hessian of basis functions into the physical domain
@@ -818,12 +933,37 @@ class GeometryMapper(SplinepyBase):
         as_dict = self.basis_function_derivatives(
             queries,
             gradient=False,
-            divergence=False,
             hessian=True,
             laplacian=False,
             nthreads=nthreads,
         )
         return (as_dict["hessian"], as_dict["support"])
+
+    def hessian(self, queries, nthreads=None):
+        """Map hessian field into the physical domain
+
+        Gradient is in form J_ij = du^i/dx_j
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+          Points for evaluation
+        nthreads: int
+          Threads used for calculation
+
+        Returns
+        --------
+        gradient: (n, prod(degrees + 1), paradim) np.ndarray
+        """
+        return self.field_derivatives(
+            queries,
+            gradient=False,
+            divergence=False,
+            hessian=True,
+            laplacian=False,
+            basis_function_values=False,
+            nthreads=nthreads,
+        )["hessian"]
 
     def basis_laplacian_and_support(self, queries, nthreads=None):
         """Map laplacian of basis functions into the physical domain
@@ -841,12 +981,35 @@ class GeometryMapper(SplinepyBase):
         as_dict = self.basis_function_derivatives(
             queries,
             gradient=False,
-            divergence=False,
             hessian=False,
             laplacian=True,
             nthreads=nthreads,
         )
         return (as_dict["laplacian"], as_dict["support"])
+
+    def laplacian(self, queries, nthreads=None):
+        """Map laplacian field into the physical domain
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+          Points for evaluation
+        nthreads: int
+          Threads used for calculation
+
+        Returns
+        --------
+        laplacian: (n) np.ndarray
+        """
+        return self.field_derivatives(
+            queries,
+            gradient=False,
+            divergence=False,
+            hessian=False,
+            laplacian=True,
+            basis_function_values=False,
+            nthreads=nthreads,
+        )["laplacian"]
 
 
 class Spline(SplinepyBase, core.CoreSpline):

@@ -62,9 +62,8 @@ solution_field.insert_knots(1, new_knots)
 
 # Get greville points and geometric values
 evaluation_points = solution_field.greville_abscissae
-bf_laplacian, support = solution_field.geometry_mapper(
-    geometry=geometry
-).basis_laplacian_and_support(evaluation_points)
+mapper = solution_field.geometry_mapper(geometry=geometry)
+bf_laplacian, support = mapper.basis_laplacian_and_support(evaluation_points)
 # Use the values and support to store it in global matrix (sparse)
 laplacian = np.zeros(
     (evaluation_points.shape[0], solution_field.control_points.shape[0])
