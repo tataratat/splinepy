@@ -363,6 +363,44 @@ public:
     return pbounds;
   }
 
+  py::array_t<double> GrevilleAbscissae() const {
+    // prepare output
+    std::vector<int> cmr(para_dim_);
+    Core()->SplinepyControlMeshResolutions(cmr.data());
+    const auto n_positions = [&]() {
+      int prod{cmr[0]};
+      for (std::size_t i{1}; i < cmr.size(); i++) {
+        prod *= cmr[i];
+      }
+      return prod;
+    }();
+
+    // Calculate Abscissae
+    py::array_t<double> greville_abscissae(n_positions * para_dim_);
+    double* greville_abscissae_ptr =
+        static_cast<double*>(greville_abscissae.request().ptr);
+
+    int offset{1};
+    int repetitions{n_positions};
+    for (int i{}; i < para_dim_; i++) {
+      repetitions /= cmr[i];
+      std::vector<double> abscissae(cmr[i]);
+      Core()->SplinepyGrevilleAbscissae(abscissae.data(), i);
+      int ii{i};
+      for (int j{}; j < repetitions; j++) {
+        for (int l{}; l < cmr[i]; l++) {
+          for (int k{}; k < offset; k++) {
+            greville_abscissae_ptr[ii] = abscissae[l];
+            ii += para_dim_;
+          }
+        }
+      }
+      offset *= cmr[i];
+    }
+    greville_abscissae.resize({n_positions, para_dim_});
+    return greville_abscissae;
+  }
+
   py::array_t<int> ControlMeshResolutions() const {
     // prepare output
     py::array_t<int> cmr(para_dim_);
@@ -1028,6 +1066,8 @@ inline void add_spline_pyclass(py::module& m, const char* class_name) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
+      .def_property_readonly("greville_abscissae",
+                             &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("evaluate",
