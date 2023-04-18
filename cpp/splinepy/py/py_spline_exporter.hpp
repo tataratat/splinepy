@@ -37,9 +37,10 @@ using SplineLibIoSplines =
 
 /// convert CoreSpline (shared_ptr of splinepybase) to splinelib io splines
 /// PySpline has the same namespace
-SplineLibIoSpline PySplineToSplineLibIoSpline(PySpline& pyspline) {
+SplineLibIoSpline
+PySplineToSplineLibIoSpline(std::shared_ptr<PySpline>& pyspline) {
   return std::dynamic_pointer_cast<typename SplineLibIoSpline::element_type>(
-      splinepy::py::SameSplineWithKnotVectors(pyspline).Core());
+      splinepy::py::SameSplineWithKnotVectors(pyspline)->Core());
 }
 
 /// convert list of PySplines to vector of splinelib SplineItems
@@ -49,7 +50,7 @@ SplineLibIoSplines ListOfPySplinesToSplineLibIoSplines(py::list pysplines) {
   io_splines.reserve(pysplines.size());
   for (py::handle pys : pysplines) {
     io_splines.emplace_back(
-        PySplineToSplineLibIoSpline(py::cast<PySpline&>(pys)));
+        PySplineToSplineLibIoSpline(py::cast<std::shared_ptr<PySpline>&>(pys)));
   }
   return io_splines;
 }
