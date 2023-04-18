@@ -574,6 +574,155 @@ def _get_property(spl, property_):
     return sync_from_core(spl)._data["properties"][property_]
 
 
+class GeometryMapper(SplinepyBase):
+    def __init__(self, field, geometry):
+        self._field_reference = field
+        self._geometry_reference = geometry
+
+        # Check the parametric dimensions
+        if not geometry.para_dim == field.para_dim:
+            raise ValueError("Parametric dimension mismatch")
+        if not geometry.para_dim == geometry.dim:
+            raise ValueError(
+                "Mismatch between physical and parametric dimension for "
+                "geometry representation"
+            )
+
+        # Temporary check for field values
+        if not field.dim == 1:
+            raise ValueError("Currently only available for 1D field problems")
+
+    def basis_function_derivatives(
+        self,
+        queries,
+        gradient=False,
+        divergence=False,
+        hessian=False,
+        laplacian=False,
+        nthreads=None,
+    ):
+        """Function to retrieve more than one basis function derivative
+
+        More efficient implementation if more than one derivative is required,
+        as many values can be precalculated
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+          Evaluation points in the parametric domain
+        gradient : bool
+          Evaluate Gradient mapped into the physical domain
+        divergence : bool
+          Evaluate the Divergence mapped into the physical domain
+        hessian : bool
+          Evaluate the Hessian mapped into the physical domain
+        laplacian : bool
+          Evaluate the Laplacian mapped into the physical domain
+        nthreads: int
+          Number of threads available for the computation
+
+        Returns
+        -------
+        results : dict
+          Dictionary with required values stored with same name as function
+          arguments
+        """
+        self._logd("Evaluating basis function gradients in physical space")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+
+        # Precompute required values
+        invjacs = np.linalg.inv(
+            self._geometry_reference.jacobian(queries, nthreads)
+        )
+        results = {}
+
+        if gradient or divergence:
+            gradients = np.empty(
+                (
+                    queries.shape[0],
+                    np.prod(self._field_reference.degrees + 1),
+                    self._field_reference.para_dim,
+                )
+            )
+            for i in range(self._field_reference.para_dim):
+                (
+                    gradients[:, :, i],
+                    support,
+                ) = self._field_reference.basis_derivative_and_support(
+                    queries=queries,
+                    orders=np.eye(1, M=self._field_reference.para_dim, k=i),
+                    nthreads=_default_if_none(nthreads, settings.NTHREADS),
+                )
+        if gradient:
+            gradients = np.einsum(
+                "nij,njk->nik", gradients, invjacs, optimize=True
+            )
+            results["gradient"] = gradients
+            results["support"] = support
+        if divergence:
+            if gradient:
+                # Use gradient values to reduce to divergence (more efficient)
+                divergence = np.einsum("njk -> nj", gradients)
+                results["divergence"] = divergence
+            else:
+                divergence = np.einsum(
+                    "nij,njk->ni", gradients, invjacs, optimize=True
+                )
+                results["divergence"] = divergence
+                results["support"] = support
+
+        if hessian or laplacian:
+            pass
+
+        return results
+
+    def basis_gradient_and_support(self, queries, nthreads=None):
+        """Map gradient of basis functions into the physical domain
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        gradient: (n, prod(degrees + 1), paradim) np.ndarray
+        support: (n, prod(degrees + 1)) np.ndarray
+        """
+        as_dict = self.basis_function_derivatives(
+            queries,
+            gradient=True,
+            divergence=False,
+            hessian=False,
+            laplacian=False,
+            nthreads=nthreads,
+        )
+        return (as_dict["gradient"], as_dict["support"])
+
+    def basis_divergence_and_support(self, queries, nthreads=None):
+        """Map divergence of basis functions into the physical domain
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        divergence: (n, prod(degrees + 1)) np.ndarray
+        support: (n, prod(degrees + 1)) np.ndarray
+        """
+        as_dict = self.basis_function_derivatives(
+            queries,
+            gradient=False,
+            divergence=True,
+            hessian=False,
+            laplacian=False,
+            nthreads=nthreads,
+        )
+        return (as_dict["divergence"], as_dict["support"])
+
+
 class Spline(SplinepyBase, core.CoreSpline):
     """
     Spline base class. Extends CoreSpline with documentation.
@@ -1075,6 +1224,22 @@ class Spline(SplinepyBase, core.CoreSpline):
         control_mesh_resolutions: (para_dim) np.ndarray
         """
         return super().control_mesh_resolutions
+
+    def geometry_mapper(self, geometry):
+        """Retrieve a geometry mapper that can be used to get physical
+        derivatives such as a gradient or hessian in physical space
+
+        Parameters
+        ----------
+        geometry : spline
+          Spline that represents the geometry of the field
+
+        Returns
+        -------
+        geometry_mapper : GeometryMapper
+          Mapper to calculate physical gradients and hessians
+        """
+        return GeometryMapper(self, geometry=geometry)
 
     @property
     def greville_abscissae(self):
