@@ -2,7 +2,7 @@ r"""
 In this file we will prototype a galerkin IGA example (in the simplest way),
 that shows how to implement a Poisson problem in the form
 .. math::
-        \Delta u = f
+        -\Delta u = f
 with source term f=1
 
 The refinement will only be applied to the solution field, to make the
