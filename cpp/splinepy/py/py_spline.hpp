@@ -107,6 +107,8 @@ public:
         dim_(another_py_spline.dim_) {
     // nichts
   }
+  PySpline(std::shared_ptr<PySpline>& another_py_spline_ptr)
+      : PySpline(*another_py_spline_ptr) {}
 
   /// Creates a corresponding spline based on kwargs
   /// similar to previous update_c()
@@ -800,18 +802,19 @@ public:
 /* operations for certain splines */
 
 /// (multiple) knot insertion, single dimension
-inline void
-InsertKnots(PySpline& spline, int para_dim, py::array_t<double> knots) {
+inline void InsertKnots(std::shared_ptr<PySpline>& spline,
+                        int para_dim,
+                        py::array_t<double> knots) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
   for (int i{}; i < n_request; ++i) {
-    spline.Core()->SplinepyInsertKnot(para_dim, knots_ptr[i]);
+    spline->Core()->SplinepyInsertKnot(para_dim, knots_ptr[i]);
   }
 }
 
 /// (multiple) knot removal, single dimension
-inline py::list RemoveKnots(PySpline& spline,
+inline py::list RemoveKnots(std::shared_ptr<PySpline>& spline,
                             int para_dim,
                             py::array_t<double> knots,
                             double tolerance) {
@@ -821,42 +824,50 @@ inline py::list RemoveKnots(PySpline& spline,
   py::list successful;
   for (int i{}; i < n_request; ++i) {
     successful.append(
-        spline.Core()->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
+        spline->Core()->SplinepyRemoveKnot(para_dim, knots_ptr[i], tolerance));
   }
 
   return successful;
 }
 
 /// spline multiplication - currently only for bezier
-inline PySpline Multiply(const PySpline& a, const PySpline& b) {
+inline std::shared_ptr<PySpline> Multiply(const std::shared_ptr<PySpline>& a,
+                                          const std::shared_ptr<PySpline>& b) {
   // performs runtime checks and throws error
-  return PySpline(a.Core()->SplinepyMultiply(b.Core()));
+  return std::make_shared<PySpline>(a->Core()->SplinepyMultiply(b->Core()));
 }
 
 /// spline addition - currently only for bezier
-inline PySpline Add(const PySpline& a, const PySpline& b) {
+inline std::shared_ptr<PySpline> Add(const std::shared_ptr<PySpline>& a,
+                                     const std::shared_ptr<PySpline>& b) {
   // performs runtime checks and throws error
-  return PySpline(a.Core()->SplinepyAdd(b.Core()));
+  return std::make_shared<PySpline>(a->Core()->SplinepyAdd(b->Core()));
 }
 
 /// spline composition - currently only for bezier
-inline PySpline Compose(const PySpline& inner, const PySpline& outer) {
+inline std::shared_ptr<PySpline>
+Compose(const std::shared_ptr<PySpline>& inner,
+        const std::shared_ptr<PySpline>& outer) {
   // performs runtime checks and throws error
-  return PySpline(inner.Core()->SplinepyCompose(outer.Core()));
+  return std::make_shared<PySpline>(
+      inner->Core()->SplinepyCompose(outer->Core()));
 }
 
 /// spline derivative spline
-inline PySpline DerivativeSpline(const PySpline& spline,
-                                 py::array_t<int> orders) {
-  CheckPyArraySize(orders, spline.para_dim_);
+inline std::shared_ptr<PySpline>
+DerivativeSpline(const std::shared_ptr<PySpline>& spline,
+                 py::array_t<int> orders) {
+  CheckPyArraySize(orders, spline->para_dim_);
 
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
-  return PySpline(spline.Core()->SplinepyDerivativeSpline(orders_ptr));
+  return std::make_shared<PySpline>(
+      spline->Core()->SplinepyDerivativeSpline(orders_ptr));
 }
 
 /// spline split - returns py::list of PySplines
-inline py::list
-Split(const PySpline& spline, int p_dim, py::array_t<double> locations) {
+inline py::list Split(const std::shared_ptr<PySpline>& spline,
+                      int p_dim,
+                      py::array_t<double> locations) {
   // make sure they are sorted
   std::vector<double> locs(locations.size());
   std::copy_n(static_cast<double*>(locations.request().ptr),
@@ -868,44 +879,44 @@ Split(const PySpline& spline, int p_dim, py::array_t<double> locations) {
   // split and append
   py::list splitted;
   // very first
-  auto tmp_splitted = spline.Core()->SplinepySplit(p_dim, locs[0]);
-  splitted.append(PySpline(tmp_splitted[0]));
+  auto tmp_splitted = spline->Core()->SplinepySplit(p_dim, locs[0]);
+  splitted.append(std::make_shared<PySpline>(tmp_splitted[0]));
   for (std::size_t i{1}; i < locs.size(); ++i) {
     const double locs_with_offset =
         (locs[i] - locs[i - 1]) / (1. - locs[i - 1]);
     tmp_splitted = tmp_splitted[1]->SplinepySplit(p_dim, locs_with_offset);
-    splitted.append(PySpline(tmp_splitted[0]));
+    splitted.append(std::make_shared<PySpline>(tmp_splitted[0]));
   }
   // very last
-  splitted.append(PySpline(tmp_splitted[1]));
+  splitted.append(std::make_shared<PySpline>(tmp_splitted[1]));
 
   return splitted;
 }
 
 /// bezier patch extraction.
-inline py::list ExtractBezierPatches(const PySpline& spline) {
-  const auto sp_patches = spline.Core()->SplinepyExtractBezierPatches();
+inline py::list ExtractBezierPatches(const std::shared_ptr<PySpline>& spline) {
+  const auto sp_patches = spline->Core()->SplinepyExtractBezierPatches();
   py::list patches;
   for (const auto& p : sp_patches) {
-    patches.append(PySpline(p));
+    patches.append(std::make_shared<PySpline>(p));
   }
   return patches;
 }
 
 /// boundary spline extraction
-inline py::list ExtractBoundaries(const PySpline& spline,
+inline py::list ExtractBoundaries(const std::shared_ptr<PySpline>& spline,
                                   const py::array_t<int>& boundary_ids) {
   // Init return value
   py::list boundary_splines{};
   const int n_boundaries = boundary_ids.size();
   int* bid_ptr = static_cast<int*>(boundary_ids.request().ptr);
   if (boundary_ids.size() == 0) {
-    for (int i{}; i < spline.para_dim_ * 2; ++i) {
-      boundary_splines.append(
-          PySpline(spline.Core()->SplinepyExtractBoundary(i)));
+    for (int i{}; i < spline->para_dim_ * 2; ++i) {
+      boundary_splines.append(std::make_shared<PySpline>(
+          spline->Core()->SplinepyExtractBoundary(i)));
     }
   } else {
-    const int max_bid = spline.para_dim_ * 2 - 1;
+    const int max_bid = spline->para_dim_ * 2 - 1;
     for (int i{}; i < n_boundaries; ++i) {
       const int& bid = bid_ptr[i];
       if (bid < 0 || bid > max_bid) {
@@ -913,8 +924,8 @@ inline py::list ExtractBoundaries(const PySpline& spline,
                                             bid,
                                             "exceeds admissible range.");
       }
-      boundary_splines.append(
-          PySpline(spline.Core()->SplinepyExtractBoundary(bid_ptr[i])));
+      boundary_splines.append(std::make_shared<PySpline>(
+          spline->Core()->SplinepyExtractBoundary(bid_ptr[i])));
     }
   }
 
@@ -922,29 +933,33 @@ inline py::list ExtractBoundaries(const PySpline& spline,
 }
 
 /// extract a single physical dimension from a spline
-inline PySpline ExtractDim(const PySpline& spline, int phys_dim) {
-  return PySpline(spline.Core()->SplinepyExtractDim(phys_dim));
+inline std::shared_ptr<PySpline>
+ExtractDim(const std::shared_ptr<PySpline>& spline, int phys_dim) {
+  return std::make_shared<PySpline>(
+      spline->Core()->SplinepyExtractDim(phys_dim));
 }
 
 /// composition derivative
-inline PySpline CompositionDerivative(const PySpline& outer,
-                                      const PySpline& inner,
-                                      const PySpline& inner_derivative) {
-  return PySpline(
-      outer.Core()->SplinepyCompositionDerivative(inner.Core(),
-                                                  inner_derivative.Core()));
+inline std::shared_ptr<PySpline>
+CompositionDerivative(const std::shared_ptr<PySpline>& outer,
+                      const std::shared_ptr<PySpline>& inner,
+                      const std::shared_ptr<PySpline>& inner_derivative) {
+  return std::make_shared<PySpline>(
+      outer->Core()->SplinepyCompositionDerivative(inner->Core(),
+                                                   inner_derivative->Core()));
 }
 
 /// returns a spline with knot vectors.
 /// if the spline already has knots, it returns the same spline
 /// else, returns a same spline with knots
-inline PySpline SameSplineWithKnotVectors(PySpline& spline) {
+inline std::shared_ptr<PySpline>
+SameSplineWithKnotVectors(std::shared_ptr<PySpline>& spline) {
   // early exit if the spline has knot vectors already
-  if (spline.HasKnotVectors()) {
+  if (spline->HasKnotVectors()) {
     return spline;
   }
 
-  py::dict props = spline.CurrentCoreProperties();
+  py::dict props = spline->CurrentCoreProperties();
 
   // based on degrees, generate knot vectors
   py::array_t<int> degrees = py::cast<py::array_t<int>>(props["degrees"]);
@@ -968,15 +983,16 @@ inline PySpline SameSplineWithKnotVectors(PySpline& spline) {
   // update knot vectors to dict spline
   props["knot_vectors"] = kvs;
 
-  return PySpline(props);
+  return std::make_shared<PySpline>(props);
 }
 
 /// @brief Evaluate Splines at boundary face centers
 /// @return numpy array with results
-inline py::array_t<double> EvaluateBoundaryCenters(PySpline& spline) {
+inline py::array_t<double>
+EvaluateBoundaryCenters(std::shared_ptr<PySpline>& spline) {
   // prepare output
-  const int& para_dim_ = spline.para_dim_;
-  const int& dim_ = spline.dim_;
+  const int& para_dim_ = spline->para_dim_;
+  const int& dim_ = spline->dim_;
   const int n_faces = 2 * para_dim_;
   std::vector<double> queries(n_faces * para_dim_);
   py::array_t<double> face_centers(n_faces * dim_);
@@ -985,7 +1001,7 @@ inline py::array_t<double> EvaluateBoundaryCenters(PySpline& spline) {
   // Get parametric bounds
   // They are given back in the order [min_0, min_1,...,max_0, max_1...]
   std::vector<double> bounds(para_dim_ * 2);
-  spline.Core()->SplinepyParametricBounds(bounds.data());
+  spline->Core()->SplinepyParametricBounds(bounds.data());
 
   // Set parametric coordinates
   for (int i{}; i < para_dim_; i++) {
@@ -1001,8 +1017,8 @@ inline py::array_t<double> EvaluateBoundaryCenters(PySpline& spline) {
     }
   }
   for (int i{}; i < n_faces; ++i) {
-    spline.Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
-                                    &face_centers_ptr[i * dim_]);
+    spline->Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
+                                     &face_centers_ptr[i * dim_]);
   }
 
   face_centers.resize({n_faces, dim_});
@@ -1010,25 +1026,25 @@ inline py::array_t<double> EvaluateBoundaryCenters(PySpline& spline) {
 }
 
 /// returns core spline's ptr address
-inline intptr_t CoreId(const PySpline& spline) {
-  return reinterpret_cast<intptr_t>(spline.Core().get());
+inline intptr_t CoreId(const std::shared_ptr<PySpline>& spline) {
+  return reinterpret_cast<intptr_t>(spline->Core().get());
 }
 
 /// reference count of core spline
-inline int CoreRefCount(const PySpline& spline) {
-  return spline.Core().use_count();
+inline int CoreRefCount(const std::shared_ptr<PySpline>& spline) {
+  return spline->Core().use_count();
 }
 
 /// have core? A non error raising checker
-inline bool HaveCore(const PySpline& spline) {
-  return (spline.c_spline_) ? true : false;
+inline bool HaveCore(const std::shared_ptr<PySpline>& spline) {
+  return (spline->c_spline_) ? true : false;
 }
 
 /// Overwrite core with a nullptr and assign neg values to dims
-inline void AnnulCore(PySpline& spline) {
-  spline.c_spline_ = nullptr;
-  spline.para_dim_ = -1;
-  spline.dim_ = -1;
+inline void AnnulCore(std::shared_ptr<PySpline>& spline) {
+  spline->c_spline_ = nullptr;
+  spline->para_dim_ = -1;
+  spline->dim_ = -1;
 }
 
 /// Internal use only
@@ -1048,7 +1064,8 @@ ListOfPySplinesToVectorOfCoreSplines(py::list pysplines) {
 }
 
 inline void add_spline_pyclass(py::module& m, const char* class_name) {
-  py::class_<splinepy::py::PySpline> klasse(m, class_name);
+  py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
+      klasse(m, class_name);
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
