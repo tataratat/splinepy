@@ -21,6 +21,7 @@
 
 // splinepy
 #include <splinepy/py/py_spline.hpp>
+#include <splinepy/py/py_spline_extensions.hpp>
 #include <splinepy/utils/print.hpp>
 
 /// @brief
