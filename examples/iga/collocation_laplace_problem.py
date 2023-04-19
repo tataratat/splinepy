@@ -96,8 +96,8 @@ if has_gus:
     solution_field = gus.spline.BSpline(spline=solution_field)
 
     # Plot geometry and field
-    geometry.splinedata["field"] = solution_field
-    geometry.show_options["dataname"] = "field"
+    geometry.spline_data["field"] = solution_field
+    geometry.show_options["data_name"] = "field"
     geometry.show_options["cmap"] = "jet"
     geometry.show_options["lighting"] = "off"
     geometry.show_options["scalarbar"] = True

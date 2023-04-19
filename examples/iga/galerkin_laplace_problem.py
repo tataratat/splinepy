@@ -116,7 +116,7 @@ for i in range(len(ukv[0]) - 1):
         )
         assert np.all(support[0, :] == support)
         local_matrix = np.einsum(
-            "qid ,qjd,q,q->ij",
+            "qid,qjd,q,q->ij",
             bf_jacobian,
             bf_jacobian,
             weights,
@@ -152,8 +152,8 @@ if has_gus:
     solution_field = gus.spline.BSpline(spline=solution_field)
 
     # Plot geometry and field
-    geometry.splinedata["field"] = solution_field
-    geometry.show_options["dataname"] = "field"
+    geometry.spline_data["field"] = solution_field
+    geometry.show_options["data_name"] = "field"
     geometry.show_options["cmap"] = "jet"
     geometry.show_options["lighting"] = "off"
     geometry.show_options["scalarbar"] = True
