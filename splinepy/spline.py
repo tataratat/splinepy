@@ -655,10 +655,6 @@ class GeometryMapper(SplinepyBase):
         # Easy access
         self._para_dim = geometry.para_dim
 
-        # Temporary check for field values
-        if not field.dim == 1:
-            raise ValueError("Currently only available for 1D field problems")
-
     def basis_function_derivatives(
         self,
         queries,
@@ -854,6 +850,14 @@ class GeometryMapper(SplinepyBase):
           Dictionary with required values stored with same name as function
           arguments (basis function derivatives as dictionary in dictionary)
         """
+        # Remark : In terms of computations, it might actually be more
+        # efficient, to calculate the derivatives of the spline values
+        # directly, rather than to precompute al basis function derivatives, as
+        # more efficient methods might be implemented in both SplineLib and
+        # Bezman, however, for sake of simplicity, we will stick to the basis
+        # function based implemntation here, as basis function derivatives are
+        # mostly required in IGA applications.
+
         # Compute required basis function values
         as_dictionary = self.basis_function_derivatives(
             queries=queries,
@@ -877,7 +881,7 @@ class GeometryMapper(SplinepyBase):
             )
         if divergence:
             # Can only be performed on vector fields with para_dim=dim
-            if self._field_reference.para_dim != self._field_reference.dim:
+            if self._field_reference.para_dim == self._field_reference.dim:
                 if gradient:
                     results["divergence"] = np.einsum(
                         "qii->q", results["gradient"], optimize=True
