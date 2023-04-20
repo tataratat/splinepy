@@ -1,6 +1,7 @@
 from splinepy import (
     bezier,
     bspline,
+    helpme,
     io,
     load,
     multipatch,
@@ -10,7 +11,6 @@ from splinepy import (
     spline,
     splinepy_core,
     utils,
-    helpme,
 )
 from splinepy._version import __version__
 from splinepy.bezier import Bezier

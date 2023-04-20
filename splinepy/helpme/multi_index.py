@@ -9,6 +9,7 @@ class MultiIndex:
     Performs same task as `np.ravel_multi_index`. However, you can use it with
     __getitem__ like queries.
     """
+
     __slots__ = ("_raveled_indices", "_ndim")
     _ellipsis_type = type(Ellipsis)
 
@@ -22,7 +23,10 @@ class MultiIndex:
         grid_resolutions: array-like
         """
         if not isinstance(grid_resolutions, (tuple, list, np.ndarray)):
-            raise TypeError("grid_resolutions must be array-like type, not" f"{type(grid_resolutions)}")
+            raise TypeError(
+                "grid_resolutions must be array-like type, not"
+                f"{type(grid_resolutions)}"
+            )
 
         # create raveled indices
         raveled = np.arange(np.product(grid_resolutions), dtype="int32")
@@ -31,7 +35,6 @@ class MultiIndex:
         # grid's shape
         self._raveled_indices = raveled.reshape(*grid_resolutions[::-1])
         self._ndim = self._raveled_indices.ndim
-
 
     def __getitem__(self, args):
         """
@@ -70,5 +73,3 @@ class MultiIndex:
                 args.append(s)
 
         return self._raveled_indices.__getitem__(tuple(args[::-1])).ravel()
-
-
