@@ -130,17 +130,17 @@ for i in range(len(ukv[0]) - 1):
 
 # Set dirichlet values (identify boundary nodes and set matrix to identity rhs
 # to 0)
-cmr = solution_field.control_mesh_resolutions
-indices = np.arange(n_dofs)
-index_list = np.zeros((n_dofs), dtype=bool)
-index_list[indices % cmr[0] == 0] = True
-index_list[indices % cmr[0] == cmr[0] - 1] = True
-index_list[np.floor_divide(indices, cmr[0]) == 0] = True
-index_list[np.floor_divide(indices, cmr[0]) == cmr[1] - 1] = True
-index_list = np.where(index_list)[0]
-system_matrix[index_list, :] = 0
-system_matrix[index_list, index_list] = 1
-system_rhs[index_list] = 0
+indices = np.hstack(
+    (
+        solution_field.multi_index[0, :],
+        solution_field.multi_index[-1, :],
+        solution_field.multi_index[:, 0],
+        solution_field.multi_index[:, -1],
+    )
+)
+system_matrix[indices, :] = 0
+system_matrix[indices, indices] = 1
+system_rhs[indices] = 0
 
 # Solve linear system
 solution_field.control_points = np.linalg.solve(

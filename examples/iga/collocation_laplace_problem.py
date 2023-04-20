@@ -76,17 +76,17 @@ rhs = source_function(physical_points)
 
 # Set dirichlet values (identify boundary nodes and set matrix to identity rhs
 # to 0)
-cmr = solution_field.control_mesh_resolutions
-indices = np.arange(evaluation_points.shape[0])
-index_list = np.zeros((evaluation_points.shape[0]), dtype=bool)
-index_list[indices % cmr[0] == 0] = True
-index_list[indices % cmr[0] == cmr[0] - 1] = True
-index_list[np.floor_divide(indices, cmr[0]) == 0] = True
-index_list[np.floor_divide(indices, cmr[0]) == cmr[1] - 1] = True
-index_list = np.where(index_list)[0]
-laplacian[index_list, :] = 0
-laplacian[index_list, index_list] = 1
-rhs[index_list] = 0
+indices = np.hstack(
+    (
+        solution_field.multi_index[0, :],
+        solution_field.multi_index[-1, :],
+        solution_field.multi_index[:, 0],
+        solution_field.multi_index[:, -1],
+    )
+)
+laplacian[indices, :] = 0
+laplacian[indices, indices] = 1
+rhs[indices] = 0
 
 # Solve linear system
 solution_field.control_points = np.linalg.solve(-laplacian, rhs).reshape(-1, 1)
