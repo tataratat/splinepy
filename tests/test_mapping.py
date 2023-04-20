@@ -351,8 +351,13 @@ class TestGeometryMapping(c.unittest.TestCase):
         )
 
         # Check reduced values
-        laplacian = hessian[:, :, 0, 0] + hessian[:, :, 1, 1]
-        divergence = gradient[:, 0, 0] + gradient[:, 1, 1]
+        laplacian = (
+            references["hessian"][:, :, 0, 0]
+            + references["hessian"][:, :, 1, 1]
+        )
+        divergence = (
+            references["gradient"][:, 0, 0] + references["gradient"][:, 1, 1]
+        )
         self.assertTrue(c.np.allclose(laplacian, references["laplacian"]))
         self.assertTrue(c.np.allclose(divergence, references["divergence"]))
 
