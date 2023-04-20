@@ -259,6 +259,7 @@ setup(
         "splinepy",
         "splinepy.io",
         "splinepy.utils",
+        "splinepy.helpme",
     ],
     install_requires=[
         "numpy",

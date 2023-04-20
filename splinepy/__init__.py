@@ -1,6 +1,7 @@
 from splinepy import (
     bezier,
     bspline,
+    helpme,
     io,
     load,
     multipatch,
@@ -39,6 +40,7 @@ __all__ = [
     "splinepy_core",
     "utils",
     "settings",
+    "helpme",
     "Bezier",
     "BSpline",
     "Multipatch",

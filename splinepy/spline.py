@@ -7,7 +7,7 @@ from functools import wraps
 
 import numpy as np
 
-from splinepy import io, settings
+from splinepy import helpme, io, settings
 from splinepy import splinepy_core as core
 from splinepy import utils
 from splinepy._base import SplinepyBase
@@ -1117,6 +1117,33 @@ class Spline(SplinepyBase, core.CoreSpline):
         )
 
         return self._data["coordinate_references"]
+
+    @property
+    def multi_index(self):
+        """
+        Easy control point / weights access using (unraveled) multi index.
+        Useful for getting indices if you want to "slice" a control mesh,
+        or find ids that relate to a certain boundary.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        multi_index_helper: MultiIndex
+        """
+        mi = self._data.get("multi_index", None)
+        if mi is not None:
+            return mi
+
+        # not stored, create one
+        # this is okay to be copied together in copy()
+        self._data["multi_index"] = helpme.multi_index.MultiIndex(
+            self.control_mesh_resolutions
+        )
+
+        return self._data["multi_index"]
 
     @property
     def weights(self):
