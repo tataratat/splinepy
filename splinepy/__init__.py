@@ -10,6 +10,7 @@ from splinepy import (
     spline,
     splinepy_core,
     utils,
+    helpme,
 )
 from splinepy._version import __version__
 from splinepy.bezier import Bezier
@@ -39,6 +40,7 @@ __all__ = [
     "splinepy_core",
     "utils",
     "settings",
+    "helpme",
     "Bezier",
     "BSpline",
     "Multipatch",
