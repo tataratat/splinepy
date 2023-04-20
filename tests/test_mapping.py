@@ -200,10 +200,161 @@ class TestGeometryMapping(c.unittest.TestCase):
         self.assertTrue(c.np.allclose(bf_gradient, bf_reference))
 
     def test_second_order_analytical(self):
-        pass
+        mapper2D = self.solution_field_rando.geometry_mapper(self.rotating2D)
+        bf_hessian, support = mapper2D.basis_hessian_and_support(
+            self.query_points2D
+        )
+        bf_reference = c.np.zeros(
+            (
+                self.query_points2D.shape[0],
+                c.np.prod(self.solution_field_rando.degrees + 1),
+                2,
+                2,
+            )
+        )
+
+        (
+            bf_reference[:, :, 0, 0],
+            supportb,
+        ) = self.solution_field_rando.basis_derivative_and_support(
+            self.query_points2D, [2, 0]
+        )
+        (
+            bf_reference[:, :, 1, 0],
+            supportb,
+        ) = self.solution_field_rando.basis_derivative_and_support(
+            self.query_points2D, [1, 1]
+        )
+        (
+            bf_reference[:, :, 1, 1],
+            supportc,
+        ) = self.solution_field_rando.basis_derivative_and_support(
+            self.query_points2D, [0, 2]
+        )
+        bf_reference[:, :, 0, 1] = bf_reference[:, :, 1, 0]
+        self.assertTrue(
+            c.np.allclose(support, supportb)
+            and c.np.allclose(support, supportc)
+        )
+        # Rotate bf_reference
+        bf_reference = c.np.einsum(
+            "ij,qsjk,kl->qsil",
+            self.rotation_matrix,
+            bf_reference,
+            self.rotation_matrix.T,
+        )
+        self.assertTrue(c.np.allclose(bf_hessian, bf_reference))
 
     def test_second_order_fd(self):
-        pass
+        "Use proximity to get points on askew geometry and approcimate hessian"
+        mapper = self.solution_field_rando2D.geometry_mapper(
+            self.askew_spline2D
+        )
+        center_point_reference = c.np.random.rand(1, 2)
+        dx = 1e-4
+
+        # Analytical solution
+        bf_references = mapper.basis_function_derivatives(
+            queries=center_point_reference,
+            gradient=True,
+            hessian=True,
+            laplacian=True,
+        )
+        references = mapper.field_derivatives(
+            queries=center_point_reference,
+            gradient=True,
+            hessian=True,
+            laplacian=True,
+            divergence=True,
+        )
+
+        # Compute aux values for FD
+        center_point = self.askew_spline2D.evaluate(center_point_reference)
+        center_point = c.np.repeat(center_point, 9, axis=0)
+        center_point += c.np.array(
+            [
+                [-dx, -dx],
+                [0, -2 * dx],
+                [dx, -dx],
+                [-2 * dx, 0],
+                [0, 0],
+                [2 * dx, 0],
+                [-dx, dx],
+                [0, 2 * dx],
+                [dx, dx],
+            ]
+        )
+        # Approximate points in the physical domain
+        center_point_parametric = self.askew_spline2D.proximities(
+            center_point,
+            initial_guess_sample_resolutions=[10, 10],
+            tolerance=1e-12,
+        )[0]
+        bfv, support = self.solution_field_rando2D.basis_and_support(
+            center_point_parametric
+        )
+        values = self.solution_field_rando2D.evaluate(center_point_parametric)
+
+        self.assertTrue(
+            c.np.allclose(
+                center_point_parametric[4, :], center_point_reference
+            )
+        )
+
+        # Use FD to approximate
+        # Gradient of basis function
+        bf_gradient = c.np.zeros(bf_references["gradient"].shape)
+        bf_gradient[:, :, 0] = (bfv[5, :] - bfv[3, :]) / (4 * dx)
+        bf_gradient[:, :, 1] = (bfv[7, :] - bfv[1, :]) / (4 * dx)
+        self.assertTrue(
+            c.np.allclose(bf_gradient, bf_references["gradient"], atol=1e-4)
+        )
+
+        # Hessians of basis function
+        bf_hessian = c.np.zeros(bf_references["hessian"].shape)
+        bf_hessian[:, :, 0, 0] = (bfv[5, :] + bfv[3, :] - 2 * bfv[4, :]) / (
+            4 * dx * dx
+        )
+        bf_hessian[:, :, 1, 1] = (bfv[1, :] + bfv[7, :] - 2 * bfv[4, :]) / (
+            4 * dx * dx
+        )
+        bf_hessian[:, :, 1, 0] = (
+            bfv[8, :] - bfv[6, :] - bfv[2, :] + bfv[0, :]
+        ) / (4 * dx * dx)
+        bf_hessian[:, :, 0, 1] = bf_hessian[:, :, 1, 0]
+        self.assertTrue(
+            c.np.allclose(bf_hessian, bf_references["hessian"], atol=1e-4)
+        )
+
+        # Gradient
+        gradient = c.np.zeros(references["gradient"].shape)
+        gradient[:, :, 0] = (values[5, :] - values[3, :]) / (4 * dx)
+        gradient[:, :, 1] = (values[7, :] - values[1, :]) / (4 * dx)
+        self.assertTrue(
+            c.np.allclose(gradient, references["gradient"], atol=1e-4)
+        )
+
+        # Hessians
+        hessian = c.np.zeros(references["hessian"].shape)
+        hessian[:, :, 0, 0] = (
+            values[5, :] + values[3, :] - 2 * values[4, :]
+        ) / (4 * dx * dx)
+        hessian[:, :, 1, 1] = (
+            values[1, :] + values[7, :] - 2 * values[4, :]
+        ) / (4 * dx * dx)
+        hessian[:, :, 1, 0] = (
+            values[8, :] - values[6, :] - values[2, :] + values[0, :]
+        ) / (4 * dx * dx)
+        hessian[:, :, 0, 1] = hessian[:, :, 1, 0]
+        self.assertTrue(
+            c.np.allclose(hessian, references["hessian"], atol=1e-4)
+        )
+
+        # Check reduced values
+        laplacian = hessian[:, :, 0, 0] + hessian[:, :, 1, 1]
+        divergence = gradient[:, 0, 0] + gradient[:, 1, 1]
+        self.assertTrue(c.np.allclose(laplacian, references["laplacian"]))
+        self.assertTrue(c.np.allclose(divergence, references["divergence"]))
 
 
 if __name__ == "__main__":
