@@ -1122,6 +1122,8 @@ class Spline(SplinepyBase, core.CoreSpline):
     def multi_index(self):
         """
         Easy control point / weights access using (unraveled) multi index.
+        Useful for getting indices if you want to "slice" a control mesh,
+        or find ids that relate to a certain boundary.
 
         Parameters
         ----------
