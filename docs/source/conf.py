@@ -27,9 +27,10 @@ source_suffix = {
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
     "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
     "sphinx_mdinclude",
 ]
 
@@ -42,7 +43,7 @@ pygments_style = "sphinx"
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = "furo"
+html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 
 # def skip(app, what, name, obj, would_skip, options):
