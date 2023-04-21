@@ -1320,7 +1320,7 @@ class Spline(SplinepyBase, core.CoreSpline):
     @_new_core_if_modified
     def basis(self, queries, nthreads=None):
         """
-        Returns basis function values of given queries.
+        Returns basis function values on the supports of given queries.
 
         Parameters
         -----------
@@ -1366,7 +1366,8 @@ class Spline(SplinepyBase, core.CoreSpline):
     @_new_core_if_modified
     def basis_derivative(self, queries, orders, nthreads=None):
         """
-        Returns derivative of basis functions of given queries.
+        Returns derivative of basis functions evaluated on the supports
+        of given queries.
 
         Parameters
         ----------
