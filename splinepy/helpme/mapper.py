@@ -56,8 +56,13 @@ class Mapper(SplinepyBase):
 
     .. math:: \frac{\partial^2 N^a}{\partial x_i\partial x_j} =
       \bar{J}_{li} \left(
-        H^a_{kl} - \frac{\partial N^a}{\partial u_n}\bar{J}_{nm} x^b_m H^b_{ln}
+        H^a_{kl} - \frac{\partial N^a}{\partial u_n}\bar{J}_{nm} x^b_m H^b_{lk}
       \right) \bar{J}_{kj}
+
+    Here, the expression :math:`x^b_mH^b_{lk}` represents the Hessian of the
+    geometric reference spline :math:`\tilde{H}_{mlk}`, which can sometimes be
+    calculated more efficiently using spline methods implemented in SplineLib
+    and Bezman.
 
     Here we used the following identity:
 
@@ -189,37 +194,33 @@ class Mapper(SplinepyBase):
                         bf_hessians[:, :, j, i] = bf_hessians[:, :, i, j]
             # This is unnecessary if isoparametric (but if only field is high
             # order, this is more efficient)
-            geo_bf_hessians = np.empty(
+            geo_hessians = np.empty(
                 (
                     queries.shape[0],
-                    np.prod(self._geometry_reference.degrees + 1),
+                    self._para_dim,  # dim==para_dim
                     self._para_dim,
                     self._para_dim,
                 )
             )
             for i in range(self._para_dim):
                 for j in range(i, self._geometry_reference.para_dim):
-                    (
-                        geo_bf_hessians[:, :, i, j],
-                        support_geo,
-                    ) = self._geometry_reference.basis_derivative_and_support(
+                    geo_hessians[
+                        :, :, i, j
+                    ] = self._geometry_reference.derivative(
                         queries=queries,
                         orders=np.eye(1, M=self._para_dim, k=i)
                         + np.eye(1, M=self._para_dim, k=j),
                         nthreads=nthreads,
                     )
                     if i != j:
-                        geo_bf_hessians[:, :, j, i] = geo_bf_hessians[
-                            :, :, i, j
-                        ]
+                        geo_hessians[:, :, j, i] = geo_hessians[:, :, i, j]
 
             # Overwrite bf_hessians (see documentation for indices)
             bf_hessians -= np.einsum(
-                "qan,qnm,qbm,qblk->qalk",
+                "qan,qnm,qmlk->qalk",
                 bf_gradients,
                 invjacs,
-                self._geometry_reference.control_points[support_geo, :],
-                geo_bf_hessians,
+                geo_hessians,
                 optimize=True,
             )
         if hessian:
