@@ -3,8 +3,9 @@ Helps you find control point ids.
 """
 import numpy as np
 
-from splinepy._base import SplinepyBase
 from splinepy import utils
+from splinepy._base import SplinepyBase
+
 
 class Mapper(SplinepyBase):
     r"""Map expressions and derivatives into the physical domain using a
@@ -135,23 +136,28 @@ class Mapper(SplinepyBase):
         )
         results = {}
 
-        if gradient or hessian or laplacian:
-            bf_gradients = np.empty(
-                (
-                    queries.shape[0],
-                    np.prod(self._field_reference.degrees + 1),
-                    self._para_dim,
-                )
+        bf_gradients = np.empty(
+            (
+                queries.shape[0],
+                np.prod(self._field_reference.degrees + 1),
+                self._para_dim,
             )
-            for i in range(self._para_dim):
-                (
-                    bf_gradients[:, :, i],
-                    support,
-                ) = self._field_reference.basis_derivative_and_support(
-                    queries=queries,
-                    orders=np.eye(1, M=self._para_dim, k=i),
-                    nthreads=nthreads,
-                )
+        )
+        (
+            bf_gradients[:, :, 0],
+            support,
+        ) = self._field_reference.basis_derivative_and_support(
+            queries=queries,
+            orders=np.eye(1, M=self._para_dim, k=0),
+            nthreads=nthreads,
+        )
+        results["support"] = support
+        for i in range(1, self._para_dim):
+            bf_gradients[:, :, i] = self._field_reference.basis_derivative(
+                queries=queries,
+                orders=np.eye(1, M=self._para_dim, k=i),
+                nthreads=nthreads,
+            )
         if gradient:
             results["gradient"] = np.einsum(
                 "qsi,qij->qsj", bf_gradients, invjacs, optimize=True
@@ -171,10 +177,9 @@ class Mapper(SplinepyBase):
             )
             for i in range(self._para_dim):
                 for j in range(i, self._para_dim):
-                    (
-                        bf_hessians[:, :, i, j],
-                        support,
-                    ) = self._field_reference.basis_derivative_and_support(
+                    bf_hessians[
+                        :, :, i, j
+                    ] = self._field_reference.basis_derivative(
                         queries=queries,
                         orders=np.eye(1, M=self._para_dim, k=i)
                         + np.eye(1, M=self._para_dim, k=j),
