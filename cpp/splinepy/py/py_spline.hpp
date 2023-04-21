@@ -562,6 +562,54 @@ public:
     return derived;
   }
 
+  /// Basis  support id
+  py::array_t<double> Support(py::array_t<double> queries, int nthreads) {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+    const int n_queries = queries.shape(0);
+
+    // prepare results
+    const int n_support = Core()->SplinepyNumberOfSupports();
+    py::array_t<int> supports({n_queries, n_support});
+
+    // prepare_lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    int* supports_ptr = static_cast<int*>(supports.request().ptr);
+    auto support = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        Core()->SplinepySupport(&queries_ptr[i * para_dim_],
+                                &supports_ptr[i * n_support]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(support, n_queries, nthreads);
+
+    return supports;
+  }
+
+  /// Basis function values
+  py::array_t<double> Basis(py::array_t<double> queries, int nthreads) {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+    const int n_queries = queries.shape(0);
+
+    // prepare results
+    const int n_support = Core()->SplinepyNumberOfSupports();
+    py::array_t<double> bases({n_queries, n_support});
+
+    // prepare_lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    double* bases_ptr = static_cast<double*>(bases.request().ptr);
+    auto basis = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        Core()->SplinepyBasis(&queries_ptr[i * para_dim_],
+                              &bases_ptr[i * n_support]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(basis, n_queries, nthreads);
+
+    return bases;
+  }
+
   /// Basis function values and support id
   py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -590,6 +638,59 @@ public:
     support.resize({n_queries, n_support});
 
     return py::make_tuple(basis, support);
+  }
+
+  py::array_t<double> BasisDerivative(py::array_t<double> queries,
+                                      py::array_t<int> orders,
+                                      int nthreads) {
+    CheckPyArrayShape(queries, {-1, para_dim_}, true);
+    const int n_queries = queries.shape(0);
+
+    int constant_orders_factor = 0;
+    if (!CheckPyArraySize(orders, para_dim_, false)) {
+      if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
+        splinepy::utils::PrintAndThrowError(
+            "Derivative-query-orders (orders) must either have same size as",
+            "spline's parametric dimension or same shape as queries.",
+            "Expected: size{",
+            para_dim_,
+            "} or shape{",
+            n_queries,
+            ",",
+            para_dim_,
+            "}",
+            "Given: size{",
+            orders.size(),
+            "}, approx. shape {(size / para_dim), para_dim} = {",
+            orders.size() / para_dim_,
+            ",",
+            para_dim_,
+            "}");
+      } else {
+        constant_orders_factor = 1;
+      }
+    }
+
+    // prepare results
+    const int n_support = Core()->SplinepyNumberOfSupports();
+    py::array_t<double> basis_der({n_queries, n_support});
+
+    // prepare_lambda for nthread exe
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    int* orders_ptr = static_cast<int*>(orders.request().ptr);
+    double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
+    auto basis_derivative = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        Core()->SplinepyBasisDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[constant_orders_factor * i * para_dim_],
+            &basis_der_ptr[i * n_support]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(basis_derivative, n_queries, nthreads);
+
+    return basis_der;
   }
 
   /// Basis function values and support id
@@ -856,9 +957,22 @@ inline void add_spline_pyclass(py::module& m) {
            &splinepy::py::PySpline::Jacobian,
            py::arg("queries"),
            py::arg("nthreads") = 1)
+      .def("support",
+           &splinepy::py::PySpline::Support,
+           py::arg("queries"),
+           py::arg("nthreads") = 1)
+      .def("basis",
+           &splinepy::py::PySpline::Basis,
+           py::arg("queries"),
+           py::arg("nthreads") = 1)
       .def("basis_and_support",
            &splinepy::py::PySpline::BasisAndSupport,
            py::arg("queries"),
+           py::arg("nthreads") = 1)
+      .def("basis_derivative",
+           &splinepy::py::PySpline::BasisDerivative,
+           py::arg("queries"),
+           py::arg("orders"),
            py::arg("nthreads") = 1)
       .def("basis_derivative_and_support",
            &splinepy::py::PySpline::BasisDerivativeAndSupport,

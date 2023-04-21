@@ -1296,9 +1296,54 @@ class Spline(SplinepyBase, core.CoreSpline):
         )
 
     @_new_core_if_modified
+    def support(self, queries, nthreads=None):
+        """
+        Returns basis support ids of given queries.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        n_threads: int
+
+        Returns
+        --------
+        support: (n, prod(degrees + 1)) np.ndarray
+        """
+        self._logd("Evaluating support ids")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+
+        return super().support(
+            queries=queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
+    def basis(self, queries, nthreads=None):
+        """
+        Returns basis function values on the supports of given queries.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        n_threads: int
+
+        Returns
+        --------
+        basis: (n, prod(degrees + 1)) np.ndarray
+        """
+        self._logd("Evaluating basis functions")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+
+        return super().basis(
+            queries=queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
     def basis_and_support(self, queries, nthreads=None):
         """
         Returns basis function values and their support ids of given queries.
+        Same as calling `basis` and `support` at the same time.
 
         Parameters
         -----------
@@ -1310,7 +1355,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         basis: (n, prod(degrees + 1)) np.ndarray
         support: (n, prod(degrees + 1)) np.ndarray
         """
-        self._logd("Evaluating basis functions")
+        self._logd("Evaluating basis functions and support")
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
         return super().basis_and_support(
@@ -1319,10 +1364,37 @@ class Spline(SplinepyBase, core.CoreSpline):
         )
 
     @_new_core_if_modified
+    def basis_derivative(self, queries, orders, nthreads=None):
+        """
+        Returns derivative of basis functions evaluated on the supports
+        of given queries.
+
+        Parameters
+        ----------
+        queries: (n, para_dim) array-like
+        orders: (para_dim,) or (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        basis_derivatives: (n, prod(degrees + 1)) np.ndarray
+        """
+        self._logd("Evaluating basis function derivatives")
+        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        orders = utils.data.enforce_contiguous(orders, dtype="int32")
+
+        return super().basis_derivative(
+            queries=queries,
+            orders=orders,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @_new_core_if_modified
     def basis_derivative_and_support(self, queries, orders, nthreads=None):
         """
         Returns derivative of basis functions and their support ids of given
-        queries.
+        queries. Same as calling `basis_derivative` and `support` at the same
+        time.
 
         Parameters
         ----------
