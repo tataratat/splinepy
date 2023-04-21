@@ -1076,6 +1076,22 @@ class Spline(SplinepyBase, core.CoreSpline):
         """
         return super().control_mesh_resolutions
 
+    def mapper(self, reference):
+        """Retrieve a mapper that can be used to get physical derivatives such
+        as a gradient or hessian in physical space
+
+        Parameters
+        ----------
+        reference : spline
+          Spline that represents the geometry of the field
+
+        Returns
+        -------
+        mapper : Mapper
+          Mapper to calculate physical gradients and hessians
+        """
+        return helpme.mapper.Mapper(self, reference=reference)
+
     @property
     def greville_abscissae(self):
         """
