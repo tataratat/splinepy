@@ -153,6 +153,7 @@ class Mapper(SplinepyBase):
             support,
         ) = self._field_reference.basis_derivative_and_support(
             queries=queries,
+            # Array size M with [0, ..., 0, 1, 0, ..., 0] with 1 at position k
             orders=np.eye(1, M=self._para_dim, k=0),
             nthreads=nthreads,
         )
