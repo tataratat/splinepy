@@ -10,6 +10,7 @@
 // pybind11
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl_bind.h>
 
 // first four are required for Create* implmentations
 #include <splinepy/splines/bezier.hpp>
