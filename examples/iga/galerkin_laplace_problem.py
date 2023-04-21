@@ -87,7 +87,7 @@ ukv = solution_field.unique_knots
 n_dofs = solution_field.control_points.shape[0]
 system_matrix = np.zeros((n_dofs, n_dofs))
 system_rhs = np.zeros(n_dofs)
-mapper = solution_field.geometry_mapper(geometry=geometry)
+mapper = solution_field.mapper(reference=geometry)
 
 # Element Loop
 for i in range(len(ukv[0]) - 1):

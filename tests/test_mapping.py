@@ -81,9 +81,7 @@ class TestGeometryMapping(c.unittest.TestCase):
         are called at the same time
         """
         # Test Basis functions first
-        mapper = self.solution_field_rando2D.geometry_mapper(
-            self.askew_spline2D
-        )
+        mapper = self.solution_field_rando2D.mapper(self.askew_spline2D)
         bf_results = mapper.basis_function_derivatives(
             self.query_points2D, gradient=True, hessian=True, laplacian=True
         )
@@ -140,12 +138,12 @@ class TestGeometryMapping(c.unittest.TestCase):
         )
 
     def check_assertions(self):
-        mapper = self.solution_field_rando.geometry_mapper(self.askew_spline2D)
+        mapper = self.solution_field_rando.mapper(self.askew_spline2D)
         self.assertRaises(mapper.divergence(self.query_points2D))
 
     def test_first_order_derivatives_analytical(self):
-        mapper2D = self.solution_field_rando.geometry_mapper(self.rotating2D)
-        mapper3D = self.solution_field_mono3D.geometry_mapper(self.scaling3D)
+        mapper2D = self.solution_field_rando.mapper(self.rotating2D)
+        mapper3D = self.solution_field_mono3D.mapper(self.scaling3D)
         bf_gradient, support = mapper2D.basis_gradient_and_support(
             self.query_points2D
         )
@@ -200,7 +198,7 @@ class TestGeometryMapping(c.unittest.TestCase):
         self.assertTrue(c.np.allclose(bf_gradient, bf_reference))
 
     def test_second_order_analytical(self):
-        mapper2D = self.solution_field_rando.geometry_mapper(self.rotating2D)
+        mapper2D = self.solution_field_rando.mapper(self.rotating2D)
         bf_hessian, support = mapper2D.basis_hessian_and_support(
             self.query_points2D
         )
@@ -247,9 +245,7 @@ class TestGeometryMapping(c.unittest.TestCase):
 
     def test_second_order_fd(self):
         "Use proximity to get points on askew geometry and approcimate hessian"
-        mapper = self.solution_field_rando2D.geometry_mapper(
-            self.askew_spline2D
-        )
+        mapper = self.solution_field_rando2D.mapper(self.askew_spline2D)
         center_point_reference = c.np.random.rand(1, 2)
         dx = 1e-4
 
