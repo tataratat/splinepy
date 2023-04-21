@@ -293,7 +293,9 @@ class TestGeometryMapping(c.unittest.TestCase):
 
         self.assertTrue(
             c.np.allclose(
-                center_point_parametric[4, :], center_point_reference
+                center_point_parametric[4, :],
+                center_point_reference,
+                atol=1e-10,
             )
         )
 
