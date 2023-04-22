@@ -6,6 +6,7 @@ set(PYSPLINEPY_SRCS
         init/core_spline.cpp
         init/fitting.cpp
         init/spline_extensions.cpp
+        init/spline_list.cpp
         splinepy_core.cpp)
 
 # add target
