@@ -121,7 +121,7 @@ def strip_tabs(fname, overwrite=True, tab_expand=2):
         out_name = "copy." + fname
     with open(fname) as inputFile:
         file_contents = inputFile.read()
-        file_contents.replace("\t", " " * tab_expand)
+    file_contents.replace("\t", " " * tab_expand)
     with open(out_name, "w") as exportFile:
         exportFile.write(file_contents)
 
