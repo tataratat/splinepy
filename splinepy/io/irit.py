@@ -13,6 +13,10 @@ def load(fname, save_replace=True):
     -----------
     fname: str
 
+      Path to the irit file to read in.
+    save_replace: bool
+      Replace all tabs in the irit file. Defaults to True.
+
     Returns
     --------
     splines: list
