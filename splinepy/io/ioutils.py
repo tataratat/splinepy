@@ -97,3 +97,50 @@ def abs_fname(fname):
         fname = os.path.abspath(fname)
 
     return fname
+
+
+def strip_tabs(fname, overwrite=True, tab_expand=2):
+    """Replaces tabs in a text file with spaces
+
+    Parameters
+    ----------
+    fname : string
+      Filename
+    overwrite : bool
+      Inplace modification, otherwise new file with prefix copy is created
+    tab_expand : int
+      Determines how many spaces to be set for each tab
+
+    Returns
+    -------
+    None
+    """
+    if overwrite:
+        out_name = fname
+    else:
+        out_name = "copy." + fname
+    with open(fname) as inputFile:
+        file_contents = inputFile.read()
+        file_contents.replace("\t", " " * tab_expand)
+    with open(out_name, "w") as exportFile:
+        exportFile.write(file_contents)
+
+
+def dict_to_spline(spline_dictionary):
+    """Create a list of splines from a list of dictionaries
+
+    Parameters
+    ----------
+    spline_dictionary : list
+      List of dictionaries
+
+    Returns
+    -------
+    spline_lits : list
+      List of splines in called format (NAME_TO_TYPE)
+    """
+    from splinepy.settings import NAME_TO_TYPE
+    from splinepy.spline import Spline
+
+    spline_list = [Spline(**spd) for spd in spline_dictionary]
+    return [NAME_TO_TYPE[spd.name](spline=spd) for spd in spline_list]
