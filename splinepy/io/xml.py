@@ -4,6 +4,7 @@ Keyword follows RWTH CATS's spline format.
 Possiblely will be turned into pure python io.
 """
 from splinepy import splinepy_core
+from splinepy.io import ioutils
 
 
 def load(fname):
@@ -18,8 +19,9 @@ def load(fname):
     Returns
     --------
     splines: list
+      Spline Type defined in NAME_TO_TYPE
     """
-    return splinepy_core.read_xml(fname)
+    return ioutils.dict_to_spline(splinepy_core.read_xml(fname))
 
 
 def export(fname, splines):
