@@ -12,12 +12,32 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
+using PySplineList = std::vector<std::shared_ptr<PySpline>>;
+
+
+inline py::array_t<double> Evaluate(const PySplineList& splist, const int nthreads) {
+}
+
+inline py::array_t<double> EvaluateUsingSameBasis(const PySplineList& splist, const int nthreads) {
+}
+
+inline py::array_t<double> Derivative(const PySplineList& splist, const int nthreads) {
+}
+
+inline py::array_t<double> DerivativeUsingSameBasis(const PySplineList& splist, const int nthreads) {
+}
+
+inline py::array_t<double> Sample(const PySplineList& splist, const int nthreads) {
+}
+
+
+
 /// bind vector of PySpline and add some deprecated cpp functions that maybe
 /// nice to have
 inline void add_spline_list_pyclass(py::module& m) {
-  using PySplineList = std::vector<std::shared_ptr<PySpline>>;
 
-  py::bind_vector<PySplineList>(m, "SplineList");
+  // use shared_ptr as holder
+  py::bind_vector<PySplineList, std::shared_ptr<PySplineList>>(m, "SplineList");
 
   m.def("reserve_list",
         [](PySplineList& splist, py::ssize_t size) { splist.reserve(size); });
