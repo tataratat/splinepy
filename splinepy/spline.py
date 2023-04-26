@@ -617,7 +617,9 @@ class Spline(SplinepyBase, core.CoreSpline):
             # if spline is modified, update this spline first
             if is_modified(spline):
                 spline.new_core(
-                    keep_properties=True, raise_=False, **self._data["properties"]
+                    keep_properties=True,
+                    raise_=False,
+                    **self._data["properties"],
                 )
 
             # spline based init - takes SplinepyBase, even the nullptr
