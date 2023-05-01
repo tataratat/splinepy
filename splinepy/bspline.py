@@ -6,6 +6,32 @@ from splinepy import settings, spline, splinepy_core, utils
 class BSplineBase(spline.Spline):
     """BSpline base. Contains extra operations that's only available for
     bspline families.
+
+    All B-Spline-like splines feature knot vectors for each parametric 
+    dimension. A knot vector can be considered as a set of non-decreasing
+    parametric coordinates. If coordinates in the parametric dimension are
+    denoted by :math:`\xi\in\mathbb{R}^{paradim}`, then the knot vector in the
+    :math:`i`-th dimension contains values
+    .. math::
+            \Theta^i = \{\xi^i_1,\xi^i_2,\hdots,\xi^i_{n^i+p^i+1}\}
+    such that
+    .. math::
+            \xi^i_1 \leq \xi^i_2 \leq \hdots \leq \xi^i_{n^i+p^i+1}
+    Here, :math:`n^i` denotes the number of basis functions/control points in 
+    the :math:`i`-th parametric dimension and :math:`p^i` the polynomial order
+    of these basis functions.
+    :math:`\xi^i_j` is referred to as the :math:`j`-th knot. Intervals of the
+    type :math:`[\xi^i_j,\xi^i_{j+1}]` are known as knot spans or elements.
+
+    Based on the knot vectors, the mono-variate basis functions are defined 
+    recursively via the Cox-de-Boor recursion formula for each parametric 
+    dimension:
+    .. math::
+            N_{j,0}(\xi) = \begin{cases}1 & \xi\in[\xi_j,\xi_{j+1}] \\ 
+                                0 & \mathrm{else} \end{cases}
+
+            N_{j,p}(\xi) = \frac{\xi-\xi_j}{\xi_{j+p}-\xi_j}N_{j,p-1}(\xi)
+                + \frac{\xi_{j+p+1}-\xi}{\xi_{j+p+1}-\xi_{j+1}}N_{j+1,p-1}(\xi)
     """
 
     __slots__ = ()
