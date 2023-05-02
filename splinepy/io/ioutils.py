@@ -115,10 +115,15 @@ def strip_tabs(fname, overwrite=True, tab_expand=2):
     -------
     None
     """
+    import os.path as op
+
+    # Safe guard in case an absolut path is handed to the function
     if overwrite:
         out_name = fname
     else:
-        out_name = "copy." + fname
+        dir, file = op.split(fname)
+        out_name = dir + "copy_" + file
+
     with open(fname) as inputFile:
         file_contents = inputFile.read()
     file_contents.replace("\t", " " * tab_expand)
