@@ -312,7 +312,7 @@ def is_modified(spl):
             if utils.data.is_modified(prop):
                 return True
 
-    return modified
+    return False
 
 
 def sync_from_core(spl):
