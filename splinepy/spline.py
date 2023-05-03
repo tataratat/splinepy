@@ -300,19 +300,17 @@ def is_modified(spl):
     --------
     modified: bool
     """
-    # init return
-    modified = False
-
     # take a look at saved values. we don't want this call to create
     # a new copy.
     saved_properties = spl._data.get("properties", dict())
     if len(saved_properties) == 0:
-        return modified
+        return False
 
     for rp in spl.required_properties:
         prop = saved_properties.get(rp, None)
         if prop is not None:
-            modified |= utils.data.is_modified(prop)
+            if utils.data.is_modified(prop):
+                return True
 
     return modified
 
