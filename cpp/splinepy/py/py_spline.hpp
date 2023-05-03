@@ -440,9 +440,12 @@ public:
 
   /// Sample wraps evaluate to allow nthread executions
   /// Requires SplinepyParametricBounds
-  py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const {
-    CheckPyArraySize(resolutions, para_dim_, true);
-
+  py::array_t<double> Sample(py::array_t<int> resolutions,
+                             int nthreads,
+                             const bool check_size = true) const {
+    if (check_size) {
+      CheckPyArraySize(resolutions, para_dim_, true);
+    }
     // get sampling bounds
     std::vector<double> bounds(para_dim_ * 2);
     double* bounds_ptr = bounds.data();
@@ -1008,7 +1011,7 @@ inline void add_spline_pyclass(py::module& m) {
 
             py::kwargs properties = t[0].cast<py::kwargs>(); // init
             PySpline spl(properties);
-            spl.data_ = t[1].cast<py::dict>();               // saved data
+            spl.data_ = t[1].cast<py::dict>(); // saved data
 
             return spl;
           }));
