@@ -22,7 +22,7 @@ def load(fname, expand_tabs=True):
     splines: list
       Spline Type defined in NAME_TO_TYPE
     """
-    if save_replace:
+    if expand_tabs:
         ioutils.expand_tabs(fname)
     return ioutils.dict_to_spline(splinepy_core.read_irit(fname))
 
