@@ -300,13 +300,19 @@ def is_modified(spl):
     --------
     modified: bool
     """
-    modified = False
-    for rp in spl.required_properties:
-        prop = getattr(spl, rp, None)
-        if prop is not None:
-            modified |= utils.data.is_modified(prop)
+    # take a look at saved values. we don't want this call to create
+    # a new copy.
+    saved_properties = spl._data.get("properties", dict())
+    if len(saved_properties) == 0:
+        return False
 
-    return modified
+    for rp in spl.required_properties:
+        prop = saved_properties.get(rp, None)
+        if prop is not None:
+            if utils.data.is_modified(prop):
+                return True
+
+    return False
 
 
 def sync_from_core(spl):
@@ -604,9 +610,19 @@ class Spline(SplinepyBase, core.CoreSpline):
             self._data = _default_data()
             return None
 
+        # current core spline based init if given spline has no local changes
         if spline is not None and isinstance(spline, core.CoreSpline):
-            # will share core, even nullptr
+            # if spline is modified, update this spline first
+            if is_modified(spline):
+                spline.new_core(
+                    keep_properties=True,
+                    raise_=False,
+                    **self._data["properties"],
+                )
+
+            # spline based init - takes SplinepyBase, even the nullptr
             super().__init__(spline)
+
             # don't share the copy of properties
             self._data = _default_data()
             return None
