@@ -5,7 +5,7 @@ from splinepy import splinepy_core
 from splinepy.io import ioutils
 
 
-def load(fname, save_replace=True):
+def load(fname, expand_tabs=True):
     """
     Read spline in `.itd` form.
 
@@ -14,7 +14,7 @@ def load(fname, save_replace=True):
     fname: str
 
       Path to the irit file to read in.
-    save_replace: bool
+    expand_tabs: bool
       Replace all tabs in the irit file. Defaults to True.
 
     Returns
@@ -23,7 +23,7 @@ def load(fname, save_replace=True):
       Spline Type defined in NAME_TO_TYPE
     """
     if save_replace:
-        ioutils.strip_tabs(fname)
+        ioutils.expand_tabs(fname)
     return ioutils.dict_to_spline(splinepy_core.read_irit(fname))
 
 
