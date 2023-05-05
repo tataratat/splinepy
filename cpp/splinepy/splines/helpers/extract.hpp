@@ -43,23 +43,13 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       using KnotVectors = typename PSpace::KnotVectors_;
       using KnotVector = typename KnotVectors::value_type::element_type;
       using VSpace = typename SelfBoundary::PhysicalSpace_;
-      // PSpace - let it create a new basis. Otherwise, it will make
-      // pure copies of all basis function, which is not high degree friendly.
-      Degrees b_degrees;
-      KnotVectors b_knot_vectors;
-      int counter{};
-      for (int i{}; i < SplineType::kParaDim; ++i) {
-        if (i == plane_normal_axis) {
-          continue;
-        }
-        b_degrees[counter] = spline.GetDegrees()[i];
-        // knotvectors are shared_ptrs. make sure this copies
-        b_knot_vectors[counter] =
-            std::make_shared<KnotVector>(*spline.GetKnotVectors()[i]);
-        counter++;
-      }
-      // create parametric space
-      auto pspace = std::make_shared<PSpace>(b_knot_vectors, b_degrees);
+
+      // slices splines can use parent's parameter space without
+      // recreating basis.
+      // RemoveOneParametricDimension() creates a new parameter space with
+      // same shared pointers to all the required properties.
+      auto pspace = spline.GetParameterSpace().RemoveOneParametricDimension(
+          plane_normal_axis);
 
       // VSpace - maybe it is also
       // create (weighted) vector space
