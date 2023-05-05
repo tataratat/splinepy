@@ -99,7 +99,7 @@ def abs_fname(fname):
     return fname
 
 
-def strip_tabs(fname, overwrite=True, tab_expand=2):
+def expand_tabs(fname, overwrite=True, tab_expand=2):
     """Replaces tabs in a text file with spaces
 
     Parameters
@@ -148,4 +148,4 @@ def dict_to_spline(spline_dictionary):
     from splinepy.spline import Spline
 
     spline_list = [Spline(**spd) for spd in spline_dictionary]
-    return [NAME_TO_TYPE[spd.name](spline=spd) for spd in spline_list]
+    return [NAME_TO_TYPE[spl.name](spline=spl) for spl in spline_list]
