@@ -31,6 +31,47 @@ void ScalarTypeEvaluate(const SplineType& spline,
   }
 }
 
+/// @brief Evaluate Splines at boundary face centers
+/// output should have size of 2 * para_dim * dim
+template<typename SplineType, typename OutputType>
+void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
+                                       OutputType* output) {
+
+  // Prepare inputs
+  const int para_dim = spline.SplinepyParaDim();
+  const int dim = spline.SplinepyDim();
+  const int n_faces = 2 * para_dim;
+
+  double* queries = new double[n_faces * para_dim];
+
+  // get parametric bounds
+  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
+  double* bounds = new double[2 * para_dim];
+  spline.SplinepyParametricBounds(bounds);
+
+  // Set parametric coordinate queries
+  for (int i{}; i < para_dim; ++i) {
+    for (int j{}; j < para_dim; ++j) {
+      if (i == j) {
+        queries[2 * i * para_dim + j] = bounds[j];
+        queries[(2 * i + 1) * para_dim + j] = bounds[j + para_dim];
+      } else {
+        const auto q = .5 * (bounds[j] + bounds[j + para_dim]);
+        queries[2 * i * para_dim + j] = q;
+        queries[(2 * i + 1) * para_dim + j] = q;
+      }
+    }
+  }
+
+  // Evaluate
+  for (int i{}; i < n_faces; ++i) {
+    spline.SplinepyEvaluate(&queries[i * para_dim], &output[i * dim]);
+  }
+
+  delete[] queries;
+  delete[] bounds;
+}
+
 /// SplineLib spline derivatives (single query).
 template<typename SplineType,
          typename QueryType,
