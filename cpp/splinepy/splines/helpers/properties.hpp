@@ -83,7 +83,7 @@ inline void GetGrevilleAbscissae(const SplineType& spline,
   for (int j{}; j < cmr; ++j) {
     if constexpr (SplineType::kHasKnotVectors) {
       //
-      using IndexType = typename splinelib::Index;
+      using IndexType = splinelib::Index;
       const auto& knot_vectors = spline.GetKnotVectors()[i_para_dim];
       double factor{};
       for (int k{0}; k < degrees[i_para_dim]; ++k) {
