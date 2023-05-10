@@ -9,6 +9,7 @@ The refinement will only be applied to the solution field, to make the
 calculations more efficient
 """
 import numpy as np
+from scipy.sparse import lil_matrix, linalg
 
 import splinepy as sp
 
@@ -85,7 +86,7 @@ weights = np.prod(weights, axis=1)
 # Assemble individual elements
 ukv = solution_field.unique_knots
 n_dofs = solution_field.control_points.shape[0]
-system_matrix = np.zeros((n_dofs, n_dofs))
+system_matrix = lil_matrix((n_dofs, n_dofs))
 system_rhs = np.zeros(n_dofs)
 mapper = solution_field.mapper(reference=geometry)
 
@@ -142,10 +143,7 @@ system_matrix[indices, :] = 0
 system_matrix[indices, indices] = 1
 system_rhs[indices] = 0
 
-# Solve linear system
-solution_field.control_points = np.linalg.solve(
-    system_matrix, system_rhs
-).reshape(-1, 1)
+solution_field.control_points = linalg.spsolve(system_matrix.tocsc(), system_rhs).reshape(-1, 1)
 
 if has_gus:
     geometry = gus.spline.BSpline(spline=geometry)
