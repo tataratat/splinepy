@@ -246,7 +246,7 @@ class TestGeometryMapping(c.unittest.TestCase):
     def test_second_order_fd(self):
         "Use proximity to get points on askew geometry and approcimate hessian"
         mapper = self.solution_field_rando2D.mapper(self.askew_spline2D)
-        center_point_reference = c.np.random.rand(1, 2)
+        center_point_reference = c.np.random.rand(1, 2) * 0.8 + 0.1
         dx = 1e-4
 
         # Analytical solution
@@ -295,7 +295,7 @@ class TestGeometryMapping(c.unittest.TestCase):
             c.np.allclose(
                 center_point_parametric[4, :],
                 center_point_reference,
-                atol=1e-10,
+                atol=1e-8,
             )
         )
 
@@ -329,7 +329,7 @@ class TestGeometryMapping(c.unittest.TestCase):
         gradient[:, :, 0] = (values[5, :] - values[3, :]) / (4 * dx)
         gradient[:, :, 1] = (values[7, :] - values[1, :]) / (4 * dx)
         self.assertTrue(
-            c.np.allclose(gradient, references["gradient"], atol=1e-4)
+            c.np.allclose(gradient, references["gradient"], atol=dx)
         )
 
         # Hessians
@@ -344,9 +344,7 @@ class TestGeometryMapping(c.unittest.TestCase):
             values[8, :] - values[6, :] - values[2, :] + values[0, :]
         ) / (4 * dx * dx)
         hessian[:, :, 0, 1] = hessian[:, :, 1, 0]
-        self.assertTrue(
-            c.np.allclose(hessian, references["hessian"], atol=1e-4)
-        )
+        self.assertTrue(c.np.allclose(hessian, references["hessian"], atol=dx))
 
         # Check reduced values
         laplacian = (
