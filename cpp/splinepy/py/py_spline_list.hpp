@@ -6,7 +6,7 @@
 
 #include <splinepy/py/py_spline.hpp>
 
-PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<splinepy::py::PySpline>>);
+// PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<splinepy::py::PySpline>>);
 
 namespace splinepy::py {
 
@@ -14,27 +14,35 @@ namespace py = pybind11;
 
 using PySplineList = std::vector<std::shared_ptr<PySpline>>;
 
+inline py::array_t<double> Evaluate(const PySplineList& splist,
+                                    const py::array_t<double>& queries,
+                                    const int nthreads) {}
 
-inline py::array_t<double> Evaluate(const PySplineList& splist, const int nthreads) {
-}
+inline py::array_t<double>
+EvaluateUsingSameBasis(const PySplineList& splist,
+                       const py::array_t<double>& queries,
+                       const int nthreads) {}
 
-inline py::array_t<double> EvaluateUsingSameBasis(const PySplineList& splist, const int nthreads) {
-}
+inline py::array_t<double> Derivative(const PySplineList& splist,
+                                      const py::array_t<double>& queries,
+                                      const py::array_t<int>& orders,
+                                      const int nthreads) {}
 
-inline py::array_t<double> Derivative(const PySplineList& splist, const int nthreads) {
-}
+inline py::array_t<double>
+DerivativeUsingSameBasis(const PySplineList& splist,
+                         const py::array_t<double>& queries,
+                         const py::array_t<int>& orders,
+                         const int nthreads) {}
 
-inline py::array_t<double> DerivativeUsingSameBasis(const PySplineList& splist, const int nthreads) {
-}
+inline py::array_t<double> Sample(const PySplineList& splist,
+                                  const py::array<int> const int nthreads) {}
 
-inline py::array_t<double> Sample(const PySplineList& splist, const int nthreads) {
-}
+inline std::shared_ptr<PySplineList>
+ExtractBoundarySplines(const PySplineList& splist)
 
-
-
-/// bind vector of PySpline and add some deprecated cpp functions that maybe
-/// nice to have
-inline void add_spline_list_pyclass(py::module& m) {
+    /// bind vector of PySpline and add some deprecated cpp functions that maybe
+    /// nice to have
+    inline void add_spline_list_pyclass(py::module& m) {
 
   // use shared_ptr as holder
   py::bind_vector<PySplineList, std::shared_ptr<PySplineList>>(m, "SplineList");
