@@ -1,5 +1,6 @@
 """
-Helps you find control point ids.
+Helps you map derivatives of fields and basis function into the physical
+(image) domain
 """
 import numpy as np
 
@@ -31,8 +32,8 @@ class Mapper(SplinepyBase):
     .. math:: J_{ij} = \frac{\partial x_i}{\partial u_j}
     .. math:: \bar{J}_{ij} = \frac{\partial u_i}{\partial x_j}
 
-    Basis function derivatives of first order can be mapped into the physical
-    domain, using the following equation:
+    Basis function derivatives of the first order can be mapped into the
+    physical domain, using the following equation:
 
     .. math:: \frac{\partial N^a}{\partial x_i} =
       \frac{ \partial N^a}{\partial u_j} \frac{ \partial u_j}{\partial x_i} =
