@@ -143,7 +143,9 @@ system_matrix[indices, :] = 0
 system_matrix[indices, indices] = 1
 system_rhs[indices] = 0
 
-solution_field.control_points = linalg.spsolve(system_matrix.tocsc(), system_rhs).reshape(-1, 1)
+solution_field.control_points = linalg.spsolve(
+    system_matrix.tocsc(), system_rhs
+).reshape(-1, 1)
 
 if has_gus:
     geometry = gus.spline.BSpline(spline=geometry)

@@ -9,8 +9,9 @@ The refinement will only be applied to the solution field, to make the
 calculations more efficient
 """
 import numpy as np
-from scipy.sparse import csc_matrix
 import scipy
+from scipy.sparse import csc_matrix
+
 import splinepy as sp
 
 try:
@@ -71,9 +72,16 @@ laplacian = np.zeros(
 )
 
 n_dofs = evaluation_points.shape[0]
-row_ids = np.arange(support.shape[0]).reshape(-1,1).repeat(support.shape[1], axis=1).flatten()
+row_ids = (
+    np.arange(support.shape[0])
+    .reshape(-1, 1)
+    .repeat(support.shape[1], axis=1)
+    .flatten()
+)
 col_ids = support.flatten()
-laplacian = scipy.sparse.csc_array((bf_laplacian.flatten(), (row_ids, col_ids)), shape=(n_dofs, n_dofs))
+laplacian = scipy.sparse.csc_array(
+    (bf_laplacian.flatten(), (row_ids, col_ids)), shape=(n_dofs, n_dofs)
+)
 
 # Evaluate RHS function
 physical_points = geometry.evaluate(evaluation_points)
@@ -94,7 +102,9 @@ laplacian[indices, indices] = 1
 rhs[indices] = 0
 
 # Solve linear system
-solution_field.control_points = scipy.sparse.linalg.spsolve(-laplacian, rhs).reshape(-1, 1)
+solution_field.control_points = scipy.sparse.linalg.spsolve(
+    -laplacian, rhs
+).reshape(-1, 1)
 
 if has_gus:
     geometry = gus.spline.BSpline(spline=geometry)
