@@ -14,6 +14,33 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
+/// checks if given PySpline has specified para_dim and dim
+/// optionally raise if they don't match
+inline bool CheckParaDimAndDim(const PySpline& spline,
+                               const int& para_dim,
+                               const int& dim,
+                               const bool throw_ = true) {
+  if (para_dim != spline.para_dim_ || dim != spline.dim_) {
+    if (throw_) {
+      splinepy::utils::PrintAndThrowError(
+          "Spline is expected to have (para_dim",
+          para_dim,
+          ", dim",
+          dim,
+          ".",
+          "But it has",
+          "(",
+          spline.para_dim_,
+          ",",
+          spline.dim_,
+          ").");
+    }
+    return false;
+  }
+
+  return true;
+}
+
 /// (multiple) knot insertion, single dimension
 inline py::list InsertKnots(std::shared_ptr<PySpline>& spline,
                             int para_dim,
