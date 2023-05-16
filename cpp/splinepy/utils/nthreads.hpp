@@ -27,6 +27,8 @@ void NThreadExecution(const Func& f,
     return;
   }
 
+  nthread = std::min(total, nthread);
+
   // get chunk size and prepare threads
   // make sure it rounds up
   const IndexT chunk_size = std::div((total + nthread - 1), nthread).quot;
