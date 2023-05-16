@@ -1,13 +1,15 @@
-# reader, export helper, and pyhton module
+# reader, export helper, and python module
 set(PYSPLINEPY_SRCS
-        init/reader.cpp
         init/exporter.cpp
         init/coordinate_reference.cpp
         init/core_spline.cpp
         init/fitting.cpp
+        init/reader.cpp
         init/spline_extensions.cpp
         init/spline_list.cpp
-        splinepy_core.cpp)
+        init/uffpy.cpp
+        splinepy_core.cpp
+        )
 
 # add target
 pybind11_add_module(splinepy_core ${PYSPLINEPY_SRCS})

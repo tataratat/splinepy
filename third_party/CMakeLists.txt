@@ -11,3 +11,4 @@ add_subdirectory(bezman)
 
 add_subdirectory(pybind11)
 add_subdirectory(napf)
+add_subdirectory(uff)
