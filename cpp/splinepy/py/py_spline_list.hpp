@@ -97,7 +97,7 @@ inline void RaiseIfElementsHaveUnequalParaDimOrDim(const PySplineList& splist,
 }
 
 /// evaluates splines of same para_dim and dim.
-inline py::array_t<double> EvaluateList(const PySplineList& splist,
+inline py::array_t<double> ListEvaluate(const PySplineList& splist,
                                         const py::array_t<double>& queries,
                                         const int nthreads,
                                         const bool check_dims) {
@@ -154,7 +154,7 @@ inline py::array_t<double> EvaluateList(const PySplineList& splist,
   return evaluated;
 }
 
-inline py::array_t<double> DerivativeList(const PySplineList& splist,
+inline py::array_t<double> ListDerivative(const PySplineList& splist,
                                           const py::array_t<double>& queries,
                                           const py::array_t<int>& orders,
                                           const int nthreads) {
@@ -162,7 +162,7 @@ inline py::array_t<double> DerivativeList(const PySplineList& splist,
 }
 
 /// Samples equal resoltions for each para dim
-inline py::array_t<double> SampleList(const PySplineList& splist,
+inline py::array_t<double> ListSample(const PySplineList& splist,
                                       const int resolution,
                                       const int nthreads,
                                       const bool same_parametric_bounds,
@@ -202,8 +202,10 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
   // same_parametric_bounds
   std::function<void(int, int)> thread_func;
 
-  // GridPoints for same_parametric_bounds=true, this will have size=1.
-  std::vector<splinepy::utils::CStyleArrayPointerGridPoints> grid_points;
+  // GridPoints for same_parametric_bounds=true, else, won't be used
+  splinepy::utils::DefaultInitializationVector<
+      splinepy::utils::CStyleArrayPointerGridPoints>
+      grid_points;
 
   // if you know all the queries have same parametric bounds
   // you don't need to re-compute queries
@@ -213,13 +215,9 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
     double* para_bounds = para_bounds_vector.data();
     first_spline.Core()->SplinepyParametricBounds(para_bounds);
 
-    // create grid points helper
-    grid_points.emplace_back(
-        splinepy::utils::CStyleArrayPointerGridPoints(para_dim,
+    splinepy::utils::CStyleArrayPointerGridPoints gp_generator(para_dim,
                                                       para_bounds,
-                                                      resolutions));
-    const auto& gp_generator = grid_points[0];
-
+                                                      resolutions);
     // assign queries
     queries_vector.resize(n_queries * para_dim);
     queries = queries_vector.data();
@@ -459,13 +457,13 @@ inline void add_spline_list_pyclass(py::module& m) {
     splist_a.swap(splist_b);
   });
   m.def("list_evaluate",
-        &EvaluateList,
+        &ListEvaluate,
         py::arg("spline_list"),
         py::arg("queries"),
         py::arg("nthreads"),
         py::arg("check_dims"));
   m.def("list_sample",
-        &SampleList,
+        &ListSample,
         py::arg("spline_list"),
         py::arg("resolution"),
         py::arg("nthreads"),
