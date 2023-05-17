@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <type_traits>
 
+#include <splinepy/utils/default_initialization_allocator.hpp>
+
 namespace splinepy::splines::helpers {
 /// SplineLib spline evaluation (single query).
 template<typename SplineType, typename QueryType, typename OutputType>
@@ -28,6 +30,48 @@ void ScalarTypeEvaluate(const SplineType& spline,
     for (std::size_t i{}; i < SplineType::kDim; ++i) {
       output[i] = static_cast<OutputType>(core_evaluated[i]);
     }
+  }
+}
+
+/// @brief Evaluate Splines at boundary face centers
+/// output should have size of 2 * para_dim * dim
+template<typename SplineType, typename OutputType>
+void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
+                                       OutputType* output) {
+
+  using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
+
+  // Prepare inputs
+  const int para_dim = spline.SplinepyParaDim();
+  const int dim = spline.SplinepyDim();
+  const int n_faces = 2 * para_dim;
+
+  DoubleVector queries_vector(n_faces * para_dim);
+  double* queries = queries_vector.data();
+
+  // get parametric bounds
+  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
+  DoubleVector bounds_vector(2 * para_dim);
+  double* bounds = bounds_vector.data();
+  spline.SplinepyParametricBounds(bounds);
+
+  // Set parametric coordinate queries
+  for (int i{}; i < para_dim; ++i) {
+    for (int j{}; j < para_dim; ++j) {
+      if (i == j) {
+        queries[2 * i * para_dim + j] = bounds[j];
+        queries[(2 * i + 1) * para_dim + j] = bounds[j + para_dim];
+      } else {
+        const auto q = .5 * (bounds[j] + bounds[j + para_dim]);
+        queries[2 * i * para_dim + j] = q;
+        queries[(2 * i + 1) * para_dim + j] = q;
+      }
+    }
+  }
+
+  // Evaluate
+  for (int i{}; i < n_faces; ++i) {
+    spline.SplinepyEvaluate(&queries[i * para_dim], &output[i * dim]);
   }
 }
 

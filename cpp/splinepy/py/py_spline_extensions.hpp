@@ -8,6 +8,7 @@
 #include <pybind11/pybind11.h>
 
 #include <splinepy/py/py_spline.hpp>
+#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 
 namespace splinepy::py {
 
@@ -203,37 +204,13 @@ SameSplineWithKnotVectors(std::shared_ptr<PySpline>& spline) {
 inline py::array_t<double>
 EvaluateBoundaryCenters(std::shared_ptr<PySpline>& spline) {
   // prepare output
-  const int& para_dim_ = spline->para_dim_;
-  const int& dim_ = spline->dim_;
-  const int n_faces = 2 * para_dim_;
-  std::vector<double> queries(n_faces * para_dim_);
-  py::array_t<double> face_centers(n_faces * dim_);
+  py::array_t<double> face_centers({2 * spline->para_dim_, spline->dim_});
   double* face_centers_ptr = static_cast<double*>(face_centers.request().ptr);
 
-  // Get parametric bounds
-  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
-  std::vector<double> bounds(para_dim_ * 2);
-  spline->Core()->SplinepyParametricBounds(bounds.data());
+  splinepy::splines::helpers::ScalarTypeEvaluateBoundaryCenters(
+      *spline->Core(),
+      face_centers_ptr);
 
-  // Set parametric coordinates
-  for (int i{}; i < para_dim_; i++) {
-    for (int j{}; j < para_dim_; j++) {
-      if (i == j) {
-        queries[2 * i * para_dim_ + j] = bounds[j];
-        queries[(2 * i + 1) * para_dim_ + j] = bounds[j + para_dim_];
-      } else {
-        queries[2 * i * para_dim_ + j] =
-            .5 * (bounds[j] + bounds[j + para_dim_]);
-        queries[(2 * i + 1) * para_dim_ + j] = queries[2 * i * para_dim_ + j];
-      }
-    }
-  }
-  for (int i{}; i < n_faces; ++i) {
-    spline->Core()->SplinepyEvaluate(&queries.data()[i * para_dim_],
-                                     &face_centers_ptr[i * dim_]);
-  }
-
-  face_centers.resize({n_faces, dim_});
   return face_centers;
 }
 
