@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <type_traits>
 
+#include <splinepy/utils/default_intialization_allocator.hpp>
+
 namespace splinepy::splines::helpers {
 /// SplineLib spline evaluation (single query).
 template<typename SplineType, typename QueryType, typename OutputType>
@@ -37,16 +39,20 @@ template<typename SplineType, typename OutputType>
 void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
                                        OutputType* output) {
 
+  using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
+
   // Prepare inputs
   const int para_dim = spline.SplinepyParaDim();
   const int dim = spline.SplinepyDim();
   const int n_faces = 2 * para_dim;
 
-  double* queries = new double[n_faces * para_dim];
+  DoubleVector queries_vector(n_faces * para_dim);
+  double* queries = queries_vector.data();
 
   // get parametric bounds
   // They are given back in the order [min_0, min_1,...,max_0, max_1...]
-  double* bounds = new double[2 * para_dim];
+  DoubleVector bounds_vector(2 * para_dim);
+  double* bounds = bounds_vector.data();
   spline.SplinepyParametricBounds(bounds);
 
   // Set parametric coordinate queries
@@ -67,9 +73,6 @@ void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
   for (int i{}; i < n_faces; ++i) {
     spline.SplinepyEvaluate(&queries[i * para_dim], &output[i * dim]);
   }
-
-  delete[] queries;
-  delete[] bounds;
 }
 
 /// SplineLib spline derivatives (single query).
