@@ -309,8 +309,65 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
   return sampled;
 }
 
+// extracts boundary splines from splist.
 inline std::shared_ptr<PySplineList>
-ExtractBoundarySplines(const PySplineList& splist, const int nthreads) {}
+ListExtractBoundaries(const PySplineList& splist,
+                      const int nthreads,
+                      const bool same_para_dims) {
+  const int n_splines = splist.size();
+  // to accumulate
+  int n_boundaries{};
+  // gather offsets for boundary add one last so that we can always find out
+  // n_boundary for each spline
+  IntVector boundary_offsets{};
+  boundary_offsets.reserve(n_splines + 1);
+
+  // in case of same para dim, it'd be equidistance
+  if (same_para_dims) {
+    // compute n_boundary
+    const int& n_boundary = splist[0]->para_dim_ * 2;
+
+    // fill offset
+    int offset{};
+    for (int i{}; i < n_splines; ++i) {
+      boundary_offsets.push_back(offset);
+      offset += n_boundary;
+    }
+
+    // set n_boundaries
+    n_boundaries = offset;
+  } else {
+    // for un-equal boundary sizes, we lookup each one of them
+    int offset{};
+    for (int i{}; i < n_splines; ++i) {
+      boundary_offsets.push_back(offset);
+      offset += splist[i]->para_dim_ * 2;
+    }
+    // set n_boundareis
+    n_boundaries = offset;
+  }
+
+  // prepare output
+  auto out_boundaries = std::make_shared<PySplineList>(n_boundaries);
+
+  // prepare lambda
+  auto boundary_extract =
+      [&](int begin, int end) {
+        auto& ob_deref = *out_boundaries;
+        for (int i{begin}; i < end; ++i) {
+          auto& core = *splist[i]->Core();
+          for (int j{}; j < boundary_offsets[i + 1] - boundary_offsets[i];
+               ++i) {
+            ob_deref[i + j] =
+                std::make_shared<PySpline>(core.SplinepyExtractBoundary(j));
+          }
+        }
+      };
+
+  splinepy::utils::NThreadExecution(boundary_extract, n_splines, nthreads);
+
+  return out_boundaries;
+}
 
 inline py::array_t<double> BoundaryCenters(const PySplineList& splist,
                                            const int nthreads) {}
@@ -322,28 +379,33 @@ inline void add_spline_list_pyclass(py::module& m) {
   // use shared_ptr as holder
   py::bind_vector<PySplineList, std::shared_ptr<PySplineList>>(m, "SplineList");
 
-  m.def("reserve_list",
+  m.def("list_reserve",
         [](PySplineList& splist, py::ssize_t size) { splist.reserve(size); });
-  m.def("resize_list",
+  m.def("list_resize",
         [](PySplineList& splist, py::ssize_t size) { splist.resize(size); });
-  m.def("shrink_to_fit_list",
+  m.def("list_shrink_to_fit",
         [](PySplineList& splist) { splist.shrink_to_fit(); });
-  m.def("swap_list", [](PySplineList& splist_a, PySplineList& splist_b) {
+  m.def("list_swap", [](PySplineList& splist_a, PySplineList& splist_b) {
     splist_a.swap(splist_b);
   });
-  m.def("evaluate_list",
+  m.def("list_evaluate",
         &EvaluateList,
         py::arg("spline_list"),
         py::arg("queries"),
         py::arg("nthreads"),
         py::arg("check_dims"));
-  m.def("sample_list",
+  m.def("list_sample",
         &SampleList,
         py::arg("spline_list"),
         py::arg("resolution"),
         py::arg("nthreads"),
         py::arg("same_parametric_bounds"),
         py::arg("check_dims"));
+  m.def("list_extract_boundaries",
+        &ListExtractBoundaries,
+        py::arg("spline_list"),
+        py::arg("n_threads"),
+        py::arg("same_para_dims"));
 }
 
 } // namespace splinepy::py

@@ -54,7 +54,7 @@ class SplineListTest(c.unittest.TestCase):
         splist4 = SplineList()
 
         # should fill with nullptr
-        c.splinepy.splinepy_core.resize_list(splist4, len(splines))
+        c.splinepy.splinepy_core.list_resize(splist4, len(splines))
         assert len(splist4) == len(splines)
 
         for s4 in splist4:
