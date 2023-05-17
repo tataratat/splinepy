@@ -37,7 +37,7 @@ void ScalarTypeEvaluate(const SplineType& spline,
 /// @tparam SplineType
 /// @tparam OutputType
 /// @param spline
-/// @param output should have size of 2 * para_dim * dim
+/// @param output should have size of 2 * para_dim * para_dim
 template<typename SplineType, typename OutputType>
 void ScalarTypeBoundaryCenters(const SplineType& spline, OutputType* output) {
   using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
