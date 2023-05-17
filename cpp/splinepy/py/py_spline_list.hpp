@@ -10,15 +10,17 @@
 
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/py/py_spline_extensions.hpp>
+#include <splinepy/utils/default_initialization_allocator.hpp>
 #include <splinepy/utils/nthreads.hpp>
-
-// PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<splinepy::py::PySpline>>);
 
 namespace splinepy::py {
 
 namespace py = pybind11;
 
+// alias
 using PySplineList = std::vector<std::shared_ptr<PySpline>>;
+using IntVector = splinepy::utils::DefaultInitializationVector<int>;
+using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
 
 struct PySplineListNThreadExecutionHelper {
   // thread level info
@@ -177,7 +179,8 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
   const int n_splines = splist.size();
 
   // prepare resolutions
-  int* resolutions = new int[para_dim];
+  IntVector resolutions_vector(para_dim);
+  int* resolutions = resolutions_vector.data();
   for (int i{}; i < para_dim; ++i) {
     resolutions[i] = resolution;
     n_queries *= resolution;
@@ -189,6 +192,7 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
   double* sampled_ptr = static_cast<double*>(sampled.request().ptr);
 
   // queries - will only be filled if same_parametric_bounds=true
+  DoubleVector queries_vector;
   double* queries;
 
   // create variable for lambda - needs different ones based on
@@ -202,7 +206,8 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
   // you don't need to re-compute queries
   if (same_parametric_bounds) {
     // get para bounds
-    double* para_bounds = new double[2 * para_dim];
+    DoubleVector para_bounds_vector(2 * para_dim);
+    double* para_bounds = para_bounds_vector.data();
     first_spline.Core()->SplinepyParametricBounds(para_bounds);
 
     // create grid points helper
@@ -213,7 +218,8 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
     const auto& gp_generator = grid_points[0];
 
     // assign queries
-    queries = new double[n_queries * para_dim];
+    queries_vector.resize(n_queries * para_dim);
+    queries = queries_vector.data();
 
     gp_generator.Fill(queries);
 
@@ -242,9 +248,6 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
       }
     };
 
-    // release
-    delete[] para_bounds;
-
   } else {
     // we assume each spline has different parametric bounds
 
@@ -253,7 +256,8 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
 
     // create grid_points
     auto create_grid_points = [&](int begin, int end) {
-      double* para_bounds = new double[2 * para_dim];
+      DoubleVector para_bounds_vector(2 * para_dim);
+      double* para_bounds = para_bounds_vector.data();
 
       for (int i{begin}; i < end; ++i) {
         // get para_bounds
@@ -261,7 +265,6 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
         // setup grid points helper
         grid_points[i].SetUp(para_dim, para_bounds, resolutions);
       }
-      delete[] para_bounds;
     };
 
     // pre compute entries
@@ -276,7 +279,8 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
                                                               n_queries,
                                                               dim);
       // each thread needs just one query array
-      double* q_ptr = new double[para_dim];
+      DoubleVector thread_query_vector(para_dim);
+      double* thread_query = thread_query_vector.data();
       // loop splines
       for (int i{}; i < n_splines; ++i) {
         // get spline core and grid point helper
@@ -289,25 +293,18 @@ inline py::array_t<double> SampleList(const PySplineList& splist,
         // queries for splines
         for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
              ++j) {
-          gp_helper.IdToGridPoint(j, q_ptr);
+          gp_helper.IdToGridPoint(j, thread_query);
 
           core.SplinepyEvaluate(
-              q_ptr,
+              thread_query,
               &sampled_ptr[thread_helper.output_offset_ + (j * dim)]);
         }
       }
-      delete[] q_ptr;
     };
   }
 
   // nthread exe
   splinepy::utils::NThreadExecution(thread_func, n_total, nthreads);
-
-  // release
-  delete[] resolutions;
-  if (same_parametric_bounds) {
-    delete[] queries;
-  }
 
   return sampled;
 }
