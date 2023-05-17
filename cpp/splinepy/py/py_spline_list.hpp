@@ -10,6 +10,7 @@
 
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/py/py_spline_extensions.hpp>
+#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/utils/default_initialization_allocator.hpp>
 #include <splinepy/utils/nthreads.hpp>
 
@@ -156,7 +157,9 @@ inline py::array_t<double> EvaluateList(const PySplineList& splist,
 inline py::array_t<double> DerivativeList(const PySplineList& splist,
                                           const py::array_t<double>& queries,
                                           const py::array_t<int>& orders,
-                                          const int nthreads) {}
+                                          const int nthreads) {
+  return py::array_t<double>();
+}
 
 /// Samples equal resoltions for each para dim
 inline py::array_t<double> SampleList(const PySplineList& splist,
@@ -323,54 +326,121 @@ ListExtractBoundaries(const PySplineList& splist,
   boundary_offsets.reserve(n_splines + 1);
 
   // in case of same para dim, it'd be equidistance
+  int offset{}; // offset counter
   if (same_para_dims) {
     // compute n_boundary
-    const int& n_boundary = splist[0]->para_dim_ * 2;
+    const int n_boundary = splist[0]->para_dim_ * 2;
 
     // fill offset
-    int offset{};
+
     for (int i{}; i < n_splines; ++i) {
       boundary_offsets.push_back(offset);
       offset += n_boundary;
     }
 
-    // set n_boundaries
-    n_boundaries = offset;
   } else {
     // for un-equal boundary sizes, we lookup each one of them
-    int offset{};
     for (int i{}; i < n_splines; ++i) {
       boundary_offsets.push_back(offset);
       offset += splist[i]->para_dim_ * 2;
     }
-    // set n_boundareis
-    n_boundaries = offset;
   }
+  // current offset value should equal to total boundary count
+  boundary_offsets.push_back(offset);
+  n_boundaries = offset;
 
   // prepare output
   auto out_boundaries = std::make_shared<PySplineList>(n_boundaries);
 
   // prepare lambda
-  auto boundary_extract =
-      [&](int begin, int end) {
-        auto& ob_deref = *out_boundaries;
-        for (int i{begin}; i < end; ++i) {
-          auto& core = *splist[i]->Core();
-          for (int j{}; j < boundary_offsets[i + 1] - boundary_offsets[i];
-               ++i) {
-            ob_deref[i + j] =
-                std::make_shared<PySpline>(core.SplinepyExtractBoundary(j));
-          }
-        }
-      };
+  auto boundary_extract = [&](int begin, int end) {
+    // deref
+    auto& ob_deref = *out_boundaries;
+    for (int i{begin}; i < end; ++i) {
+      // get core
+      auto& core = *splist[i]->Core();
+      // start of the offset
+      auto const& this_offset = boundary_offsets[i];
+      // end of the offset
+      auto const& next_offset = boundary_offsets[i + 1];
+      for (int j{}; j < next_offset - this_offset; ++j) {
+        ob_deref[this_offset + j] =
+            std::make_shared<PySpline>(core.SplinepyExtractBoundary(j));
+      }
+    }
+  };
 
   splinepy::utils::NThreadExecution(boundary_extract, n_splines, nthreads);
 
   return out_boundaries;
 }
 
-inline py::array_t<double> BoundaryCenters(const PySplineList& splist,
-                                           const int nthreads) {}
+// computes boundary centers for splines of same para_dim and dim
+inline py::array_t<double>
+ListBoundaryCenters(const PySplineList& splist,
+                    const int nthreads,
+                    const bool same_parametric_bounds,
+                    const bool check_dims) {
+  // dim check first
+  if (check_dims) {
+    RaiseIfElementsHaveUnequalParaDimOrDim(splist, nthreads);
+  }
+
+  // prepare output
+  const int n_splines = splist.size();
+  const int& para_dim = splist[0]->para_dim_;
+  const int& dim = splist[0]->dim_;
+  const int n_queries = 2 * para_dim;
+  const int n_total = n_queries * n_splines;
+  py::array_t<double> boundary_centers({n_total, dim});
+  double* boundary_centers_ptr =
+      static_cast<double*>(boundary_centers.request().ptr);
+
+  // we assume from here that all the splines have the same para_dim and dim
+  auto calc_boundary_centers = [&](int begin, int end) {
+    // each thread needs one query
+    DoubleVector queries_vector(2 * para_dim * para_dim);
+    double* queries = queries_vector.data();
+
+    // pre compute boundary centers if para bounds are the same
+    if (same_parametric_bounds) {
+      splinepy::splines::helpers::ScalarTypeBoundaryCenters(*splist[0]->Core(),
+                                                            queries);
+    }
+
+    // prepare thread helper
+    auto thread_helper = PySplineListNThreadExecutionHelper(begin,
+                                                            end,
+                                                            n_splines,
+                                                            n_queries,
+                                                            dim);
+    // loop splines
+    for (int i{}; i < n_splines; ++i) {
+      // get core spline (SplinepyBase)
+      const auto& core = *splist[i]->Core();
+
+      // compute start and end of query, and output ptr offset.
+      thread_helper.SetSplineId(i);
+
+      // in case para_bounds are assumed to be different, compute query
+      if (!same_parametric_bounds) {
+        splinepy::splines::helpers::ScalarTypeBoundaryCenters(core, queries);
+      }
+
+      // queries for splines
+      for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
+           ++j) {
+        core.SplinepyEvaluate(
+            &queries[j * para_dim],
+            &boundary_centers_ptr[thread_helper.output_offset_ + (j * dim)]);
+      }
+    }
+  };
+
+  splinepy::utils::NThreadExecution(calc_boundary_centers, n_total, nthreads);
+
+  return boundary_centers;
+}
 
 /// bind vector of PySpline and add some deprecated cpp functions that maybe
 /// nice to have
@@ -406,6 +476,12 @@ inline void add_spline_list_pyclass(py::module& m) {
         py::arg("spline_list"),
         py::arg("n_threads"),
         py::arg("same_para_dims"));
+  m.def("list_boundary_centers",
+        &ListBoundaryCenters,
+        py::arg("spline_list"),
+        py::arg("nthreads"),
+        py::arg("same_parametric_bounds"),
+        py::arg("check_dims"));
 }
 
 } // namespace splinepy::py
