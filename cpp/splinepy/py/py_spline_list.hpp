@@ -216,8 +216,8 @@ inline py::array_t<double> ListSample(const PySplineList& splist,
     first_spline.Core()->SplinepyParametricBounds(para_bounds);
 
     splinepy::utils::CStyleArrayPointerGridPoints gp_generator(para_dim,
-                                                      para_bounds,
-                                                      resolutions);
+                                                               para_bounds,
+                                                               resolutions);
     // assign queries
     queries_vector.resize(n_queries * para_dim);
     queries = queries_vector.data();
