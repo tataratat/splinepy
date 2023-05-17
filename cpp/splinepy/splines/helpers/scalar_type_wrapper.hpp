@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include <splinepy/utils/default_intialization_allocator.hpp>
+#include <splinepy/utils/default_initialization_allocator.hpp>
 
 namespace splinepy::splines::helpers {
 /// SplineLib spline evaluation (single query).
