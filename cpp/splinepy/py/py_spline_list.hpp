@@ -440,46 +440,49 @@ ListBoundaryCenters(const PySplineList& splist,
   return boundary_centers;
 }
 
+inline std::shared_ptr<PySplineList> ListCompose() {}
+inline std::shared_ptr<PySplineList> ListCompositionDerivative() {}
+
 /// bind vector of PySpline and add some deprecated cpp functions that maybe
 /// nice to have
 inline void add_spline_list_pyclass(py::module& m) {
 
   // use shared_ptr as holder
-  py::bind_vector<PySplineList, std::shared_ptr<PySplineList>>(m, "SplineList");
+  auto klasse = py::bind_vector<PySplineList, std::shared_ptr<PySplineList>>(
+      m,
+      "SplineList");
 
-  m.def("list_reserve",
-        [](PySplineList& splist, py::ssize_t size) { splist.reserve(size); });
-  m.def("list_resize",
-        [](PySplineList& splist, py::ssize_t size) { splist.resize(size); });
-  m.def("list_shrink_to_fit",
-        [](PySplineList& splist) { splist.shrink_to_fit(); });
-  m.def("list_swap", [](PySplineList& splist_a, PySplineList& splist_b) {
-    splist_a.swap(splist_b);
-  });
-  m.def("list_evaluate",
-        &ListEvaluate,
-        py::arg("spline_list"),
-        py::arg("queries"),
-        py::arg("nthreads"),
-        py::arg("check_dims"));
-  m.def("list_sample",
-        &ListSample,
-        py::arg("spline_list"),
-        py::arg("resolution"),
-        py::arg("nthreads"),
-        py::arg("same_parametric_bounds"),
-        py::arg("check_dims"));
-  m.def("list_extract_boundaries",
-        &ListExtractBoundaries,
-        py::arg("spline_list"),
-        py::arg("n_threads"),
-        py::arg("same_para_dims"));
-  m.def("list_boundary_centers",
-        &ListBoundaryCenters,
-        py::arg("spline_list"),
-        py::arg("nthreads"),
-        py::arg("same_parametric_bounds"),
-        py::arg("check_dims"));
+  klasse
+      .def("reserve",
+           [](PySplineList& splist, py::ssize_t size) { splist.reserve(size); })
+      .def("resize",
+           [](PySplineList& splist, py::ssize_t size) { splist.resize(size); })
+      .def("shrink_to_fit",
+           [](PySplineList& splist) { splist.shrink_to_fit(); })
+      .def("swap",
+           [](PySplineList& splist_a, PySplineList& splist_b) {
+             splist_a.swap(splist_b);
+           })
+      .def("evaluate",
+           &ListEvaluate,
+           py::arg("queries"),
+           py::arg("nthreads"),
+           py::arg("check_dims"))
+      .def("sample",
+           &ListSample,
+           py::arg("resolution"),
+           py::arg("nthreads"),
+           py::arg("same_parametric_bounds"),
+           py::arg("check_dims"))
+      .def("extract_boundaries",
+           &ListExtractBoundaries,
+           py::arg("n_threads"),
+           py::arg("same_para_dims"))
+      .def("boundary_centers",
+           &ListBoundaryCenters,
+           py::arg("nthreads"),
+           py::arg("same_parametric_bounds"),
+           py::arg("check_dims"));
 }
 
 } // namespace splinepy::py
