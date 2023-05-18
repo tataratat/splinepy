@@ -316,7 +316,6 @@ inline void add_spline_extensions(py::module& m) {
   m.def("core_ref_count", &splinepy::py::CoreRefCount, py::arg("spline"));
   m.def("have_core", &splinepy::py::HaveCore, py::arg("spline"));
   m.def("annul_core", &splinepy::py::AnnulCore, py::arg("spline"));
-  ;
 }
 
 } // namespace splinepy::py
