@@ -79,6 +79,9 @@ struct PySplineListNThreadExecutionHelper {
   }
 };
 
+/// @brief raises if elements' para_dim and dims aren't equal
+/// @param splist
+/// @param nthreads
 inline void RaiseIfElementsHaveUnequalParaDimOrDim(const PySplineList& splist,
                                                    const int nthreads) {
   // use first spline as guide line
@@ -463,6 +466,9 @@ inline void add_spline_list_pyclass(py::module& m) {
            [](PySplineList& splist_a, PySplineList& splist_b) {
              splist_a.swap(splist_b);
            })
+      .def("raise_dim_mismatch",
+           &RaiseIfElementsHaveUnequalParaDimOrDim,
+           py::arg("nthreads"))
       .def("evaluate",
            &ListEvaluate,
            py::arg("queries"),
