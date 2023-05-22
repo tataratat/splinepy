@@ -22,6 +22,7 @@ namespace py = pybind11;
 using CoreSplineVector =
     std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>;
 using IntVector = splinepy::utils::DefaultInitializationVector<int>;
+using IntVectorVector = splinepy::utils::DefaultInitializationVector<IntVector>;
 using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
 
 /// TODO: move ListOfPySplinesToVectorOfCoreSplines here and rename
@@ -544,12 +545,159 @@ ListCompose(const PySplineList& outer_splines,
   return composed_splines_ptr;
 }
 
+/// @brief NThread composition derivative. same query options as ListCompose()
+/// @param outer_splines
+/// @param inner_splines
+/// @param inner_derivative
+/// @param cartesian_product
+/// @param nthreads
+/// @return
 inline std::shared_ptr<PySplineList>
 ListCompositionDerivative(const PySplineList& outer_splines,
                           const PySplineList& inner_splines,
-                          const PySplineList& innter_derivative,
+                          const PySplineList& inner_derivatives,
                           const bool cartesian_product,
-                          const int nthreads) {}
+                          const int nthreads) {
+  // get size
+  const int n_outer = outer_splines.size();
+  const int n_inner = inner_splines.size();
+  const int n_inner_der = inner_derivatives.size();
+
+  // number of queries equals to para_dim
+  const int& n_queries = inner_splines[0]->para_dim_;
+
+  // create output
+  std::shared_ptr<PySplineList> composition_derivatives_ptr;
+  auto& composition_derivatives = *composition_derivatives_ptr;
+
+  // create derivative spline container in case of cartesian product
+  // this one can be a vector of splinepy base
+  std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>
+      outer_spline_derivatives, inner_derivatives_single_dims;
+
+  // check if size matchs
+  // 1. inner and inner_der
+  if (n_inner != n_inner_der) {
+    splinepy::utils::PrintAndThrowError(
+        "Length mismatch - inner_splines (",
+        n_inner,
+        ") and inner_derivatives (",
+        n_inner_der,
+        ") should have same length. To compose each inner splines to all outer "
+        "splines, please set cartesian_product=True.");
+  }
+  // 2. outer and inner incase of not - cartesian product.
+  if (!cartesian_product) {
+    if (n_outer != n_inner) {
+      splinepy::utils::PrintAndThrowError(
+          "Length mismatch of outer_splines (",
+          n_outer,
+          ") and inner_splines (",
+          n_inner,
+          "). To compose each inner splines to all outer splines, please set "
+          "cartesian_product=True.");
+    }
+
+    // acquisition of output space
+    composition_derivatives.resize(n_outer);
+
+    // exe
+    auto calc_composition_derivatives = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        composition_derivatives[i] =
+            splinepy::py::CompositionDerivative(outer_splines[i],
+                                                inner_splines[i],
+                                                inner_derivatives[i]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(calc_composition_derivatives,
+                                      n_outer,
+                                      nthreads);
+
+  } else {
+    const int n_total = n_outer * n_inner;
+    composition_derivatives.resize(n_total);
+
+    const int n_outer_precompute = n_outer * n_queries;
+    const int n_inner_precompute = n_inner * n_queries;
+
+    // resize vectors to hold der splines of outer splines and der splines
+    // their para_dim and dim should match. Otherwise, it will raise.
+    outer_spline_derivatives.resize(n_outer_precompute);
+    inner_derivatives_single_dims.resize(n_inner_precompute);
+
+    // make query arrays
+    IntVectorVector order_queries(n_queries);
+    for (int i{}; i < n_queries; ++i) {
+      auto& order_query = order_queries[i];
+      order_query.resize(n_queries, 0);
+      order_query[i] = 1;
+    }
+
+    // let's fill der splines and extracted splines
+    auto calc_der_splines_and_extract_dim = [&](int begin, int total_) {
+      for (int i{begin}; i < total_; i += nthreads) {
+        const auto [i_spline, i_query] = std::div(i, n_queries);
+
+        // fill if outer is still in range
+        if (i_spline < n_outer) {
+          outer_spline_derivatives[i] =
+              outer_splines[i_spline]->Core()->SplinepyDerivativeSpline(
+                  order_queries[i_query].data());
+        }
+
+        if (i_spline < n_inner) {
+          inner_derivatives_single_dims[i] =
+              inner_derivatives[i_spline]->Core()->SplinepyExtractDim(i_query);
+        }
+      }
+    };
+
+    // precompute
+    const int precompute_total =
+        std::max(n_outer_precompute, n_inner_precompute);
+    splinepy::utils::NThreadExecution(calc_der_splines_and_extract_dim,
+                                      precompute_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
+
+    // now, composition der
+    auto calc_composition_derivatives_step = [&](int begin, int total_) {
+      for (int i{}; i < total_; i += nthreads) {
+        const auto [i_outer, i_inner] = std::div(i, n_inner);
+
+        // frequently used core
+        const auto& inner_core = inner_splines[i_inner]->Core();
+
+        // this one needs a loop
+        // create
+        auto this_comp_der =
+            outer_spline_derivatives[i_outer]
+                ->SplinepyCompose(inner_core)
+                ->SplinepyMultiply(inner_derivatives_single_dims[i_inner]);
+
+        // add
+        for (int j{1}; j < n_queries; ++j) {
+          this_comp_der = this_comp_der->SplinepyAdd(
+              outer_spline_derivatives[i_outer + j]
+                  ->SplinepyCompose(inner_core)
+                  ->SplinepyMultiply(inner_derivatives_single_dims[i_inner]));
+        }
+
+        // now fill
+        composition_derivatives[i] = std::make_shared<PySpline>(this_comp_der);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(calc_composition_derivatives_step,
+                                      n_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
+  }
+
+  return composition_derivatives_ptr;
+}
 
 /// bind vector of PySpline and add some deprecated cpp functions that maybe
 /// nice to have
