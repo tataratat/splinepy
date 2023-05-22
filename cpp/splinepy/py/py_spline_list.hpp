@@ -396,7 +396,7 @@ inline void add_spline_list_pyclass(py::module& m) {
            py::arg("check_dims"))
       .def("extract_boundaries",
            &ListExtractBoundaries,
-           py::arg("n_threads"),
+           py::arg("nthreads"),
            py::arg("same_para_dims"))
       .def("boundary_centers",
            &ListBoundaryCenters,
