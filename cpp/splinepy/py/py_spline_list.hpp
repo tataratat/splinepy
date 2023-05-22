@@ -23,62 +23,6 @@ using PySplineList = std::vector<std::shared_ptr<PySpline>>;
 using IntVector = splinepy::utils::DefaultInitializationVector<int>;
 using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
 
-struct PySplineListNThreadExecutionHelper {
-  // thread level info
-  int n_common_, n_rem_, spline_start_, spline_end_, query_offset_, n_queries_,
-      dim_;
-  // spline level info
-  int query_start_, query_end_, output_offset_;
-
-  PySplineListNThreadExecutionHelper(const int& begin_id,
-                                     const int& end_id,
-                                     const int& n_splines,
-                                     const int& n_queries,
-                                     const int& dim) {
-    const int thread_load = end_id - begin_id;
-
-    // number of queries common to all splines
-    n_common_ = thread_load / n_splines;
-
-    // number of remaining queries.
-    n_rem_ = thread_load % n_splines;
-
-    // beginning spline id of this load
-    spline_start_ = begin_id % n_splines;
-
-    // ending spline id of this load
-    spline_end_ = (end_id - 1) % n_splines;
-
-    // offset to the very first query for this thread
-    query_offset_ = begin_id / n_splines;
-
-    // copy n_queries and dim
-    n_queries_ = n_queries;
-    dim_ = dim;
-  }
-
-  /// computes information required for each spline within the thread.
-  void SetSplineId(const int& spline_id) {
-
-    // output ptr offset
-    output_offset_ = spline_id * n_queries_ * dim_;
-
-    // init start
-    query_start_ = query_offset_;
-
-    // get query start and end
-    int n_additional{};
-    if (spline_id < spline_start_) {
-      n_additional -= 1;
-      query_start_ += 1;
-    }
-    if (n_rem_ != 0 && spline_id <= spline_end_) {
-      n_additional += 1;
-    }
-    query_end_ = query_start_ + n_common_ + n_additional;
-  }
-};
-
 /// @brief raises if elements' para_dim and dims aren't equal
 /// @param splist
 /// @param nthreads
@@ -126,33 +70,20 @@ inline py::array_t<double> ListEvaluate(const PySplineList& splist,
   double* evaluated_ptr = static_cast<double*>(evaluated.request().ptr);
 
   // each thread evaluates similar amount of queries from each spline
-  auto evaluate = [&](int begin, int end) {
-    auto thread_helper = PySplineListNThreadExecutionHelper(begin,
-                                                            end,
-                                                            n_splines,
-                                                            n_queries,
-                                                            dim);
-
-    // loop splines
-    for (int i{}; i < n_splines; ++i) {
-      const auto& spl = *splist[i];
-      const auto& core = *spl.Core();
-
-      // compute start and end of query, and output ptr offset.
-      thread_helper.SetSplineId(i);
-
-      // queries for splines
-      for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
-           ++j) {
-        core.SplinepyEvaluate(
-            &queries_ptr[j * para_dim],
-            &evaluated_ptr[thread_helper.output_offset_ + (j * dim)]);
-      }
+  auto evaluate_step = [&](int begin, int total_) {
+    for (int i{begin}; i < total_; i += nthreads) {
+      const auto [i_spline, i_query] = std::div(i, n_queries);
+      splist[i_spline]->Core()->SplinepyEvaluate(
+          &queries_ptr[i_query * para_dim],
+          &evaluated_ptr[(i_spline * n_queries + i_query) * dim]);
     }
   };
 
   // exe
-  splinepy::utils::NThreadExecution(evaluate, n_total, nthreads);
+  splinepy::utils::NThreadExecution(evaluate_step,
+                                    n_total,
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
 
   return evaluated;
 }
@@ -197,66 +128,49 @@ inline py::array_t<double> ListSample(const PySplineList& splist,
   py::array_t<double> sampled({n_total, dim});
   double* sampled_ptr = static_cast<double*>(sampled.request().ptr);
 
-  // queries - will only be filled if same_parametric_bounds=true
-  DoubleVector queries_vector;
-  double* queries;
-
-  // create variable for lambda - needs different ones based on
-  // same_parametric_bounds
-  std::function<void(int, int)> thread_func;
-
-  // GridPoints for same_parametric_bounds=true, else, won't be used
-  splinepy::utils::DefaultInitializationVector<
-      splinepy::utils::CStyleArrayPointerGridPoints>
-      grid_points;
-
   // if you know all the queries have same parametric bounds
   // you don't need to re-compute queries
   if (same_parametric_bounds) {
+
     // get para bounds
     DoubleVector para_bounds_vector(2 * para_dim);
     double* para_bounds = para_bounds_vector.data();
     first_spline.Core()->SplinepyParametricBounds(para_bounds);
 
+    // prepare queries
+    DoubleVector queries_vector(n_queries * para_dim);
+    double* queries = queries_vector.data();
+
+    // use grid point generator to fill queries
     splinepy::utils::CStyleArrayPointerGridPoints gp_generator(para_dim,
                                                                para_bounds,
                                                                resolutions);
-    // assign queries
-    queries_vector.resize(n_queries * para_dim);
-    queries = queries_vector.data();
-
     gp_generator.Fill(queries);
 
     // create lambda for nthread exe
-    thread_func = [&](int begin, int end) {
-      auto thread_helper = PySplineListNThreadExecutionHelper(begin,
-                                                              end,
-                                                              n_splines,
-                                                              n_queries,
-                                                              dim);
-
-      // loop splines
-      for (int i{}; i < n_splines; ++i) {
-        const auto& core = *splist[i]->Core();
-
-        // compute start and end of query, and output ptr offset.
-        thread_helper.SetSplineId(i);
-
-        // queries for splines
-        for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
-             ++j) {
-          core.SplinepyEvaluate(
-              &queries[j * para_dim],
-              &sampled_ptr[thread_helper.output_offset_ + (j * dim)]);
-        }
+    auto sample_same_bounds_step = [&](int begin, int total_) {
+      for (int i{begin}; i < total_; i += nthreads) {
+        const auto [i_spline, i_query] = std::div(i, n_queries);
+        splist[i_spline]->Core()->SplinepyEvaluate(
+            &queries[i_query * para_dim],
+            &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
       }
     };
 
-  } else {
-    // we assume each spline has different parametric bounds
+    splinepy::utils::NThreadExecution(sample_same_bounds_step,
+                                      n_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
 
-    // resize grid points to have same size as input spline list
-    grid_points.resize(n_splines);
+  } else {
+    // here, we will execute 2 times:
+    //   first, to create grid point helpers for each spline
+    //   second, to sample
+
+    // create a container to hold grid point helper.
+    splinepy::utils::DefaultInitializationVector<
+        splinepy::utils::CStyleArrayPointerGridPoints>
+        grid_points(n_splines);
 
     // create grid_points
     auto create_grid_points = [&](int begin, int end) {
@@ -271,44 +185,32 @@ inline py::array_t<double> ListSample(const PySplineList& splist,
       }
     };
 
-    // pre compute entries
+    // pre compute entries -> this one is a chunk query
     splinepy::utils::NThreadExecution(create_grid_points, n_splines, nthreads);
 
     // similar to the one with same_parametric_bounds, except it computes query
     // on the fly
-    thread_func = [&](int begin, int end) {
-      auto thread_helper = PySplineListNThreadExecutionHelper(begin,
-                                                              end,
-                                                              n_splines,
-                                                              n_queries,
-                                                              dim);
+    auto sample_step = [&](int begin, int total_) {
       // each thread needs just one query array
       DoubleVector thread_query_vector(para_dim);
       double* thread_query = thread_query_vector.data();
-      // loop splines
-      for (int i{}; i < n_splines; ++i) {
-        // get spline core and grid point helper
-        const auto& core = *splist[i]->Core();
-        const auto& gp_helper = grid_points[i];
 
-        // compute start and end of query, and output ptr offset.
-        thread_helper.SetSplineId(i);
-
-        // queries for splines
-        for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
-             ++j) {
-          gp_helper.IdToGridPoint(j, thread_query);
-
-          core.SplinepyEvaluate(
-              thread_query,
-              &sampled_ptr[thread_helper.output_offset_ + (j * dim)]);
-        }
+      for (int i{begin}; i < total_; i += nthreads) {
+        const auto [i_spline, i_query] = std::div(i, n_queries);
+        const auto& gp_helper = grid_points[i_spline];
+        gp_helper.IdToGridPoint(i_query, thread_query);
+        splist[i_spline]->Core()->SplinepyEvaluate(
+            thread_query,
+            &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
       }
     };
-  }
 
-  // nthread exe
-  splinepy::utils::NThreadExecution(thread_func, n_total, nthreads);
+    // exe - this one is step
+    splinepy::utils::NThreadExecution(sample_step,
+                                      n_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
+  }
 
   return sampled;
 }
@@ -388,6 +290,7 @@ ListBoundaryCenters(const PySplineList& splist,
   }
 
   // prepare output
+  // from here we assume that all the splines have the same para_dim and dim
   const int n_splines = splist.size();
   const int& para_dim = splist[0]->para_dim_;
   const int& dim = splist[0]->dim_;
@@ -397,48 +300,59 @@ ListBoundaryCenters(const PySplineList& splist,
   double* boundary_centers_ptr =
       static_cast<double*>(boundary_centers.request().ptr);
 
-  // we assume from here that all the splines have the same para_dim and dim
-  auto calc_boundary_centers = [&](int begin, int end) {
+  // pre-compute boundary centers
+  DoubleVector para_bounds;
+  double* para_bounds_ptr;
+  if (!same_parametric_bounds) {
+    para_bounds.resize(n_total * para_dim);
+    para_bounds_ptr = para_bounds.data();
+    const int stride = n_queries * para_dim;
+
+    auto calc_para_bounds = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        splinepy::splines::helpers::ScalarTypeBoundaryCenters(
+            *splist[i]->Core(),
+            &para_bounds_ptr[stride * i]);
+      }
+    };
+
+    // exe
+    splinepy::utils::NThreadExecution(calc_para_bounds, n_splines, nthreads);
+  }
+
+  auto calc_boundary_centers_step = [&](int begin, int total_) {
     // each thread needs one query
-    DoubleVector queries_vector(2 * para_dim * para_dim);
-    double* queries = queries_vector.data();
+    DoubleVector queries_vector; /* unused if same_parametric_bounds=true*/
+    double* queries;
 
     // pre compute boundary centers if para bounds are the same
     if (same_parametric_bounds) {
+      queries_vector.resize(2 * para_dim * para_dim);
+      queries = queries_vector.data();
       splinepy::splines::helpers::ScalarTypeBoundaryCenters(*splist[0]->Core(),
                                                             queries);
     }
 
-    // prepare thread helper
-    auto thread_helper = PySplineListNThreadExecutionHelper(begin,
-                                                            end,
-                                                            n_splines,
-                                                            n_queries,
-                                                            dim);
-    // loop splines
-    for (int i{}; i < n_splines; ++i) {
-      // get core spline (SplinepyBase)
-      const auto& core = *splist[i]->Core();
+    for (int i{begin}; i < total_; i += nthreads) {
+      const auto [i_spline, i_query] = std::div(i, n_queries);
+      const auto& core = *splist[i_spline]->Core();
 
-      // compute start and end of query, and output ptr offset.
-      thread_helper.SetSplineId(i);
-
-      // in case para_bounds are assumed to be different, compute query
+      // get ptr start
       if (!same_parametric_bounds) {
-        splinepy::splines::helpers::ScalarTypeBoundaryCenters(core, queries);
+        queries = &para_bounds_ptr[i_spline * n_queries * para_dim];
       }
 
-      // queries for splines
-      for (int j{thread_helper.query_start_}; j < thread_helper.query_end_;
-           ++j) {
-        core.SplinepyEvaluate(
-            &queries[j * para_dim],
-            &boundary_centers_ptr[thread_helper.output_offset_ + (j * dim)]);
-      }
+      // eval
+      core.SplinepyEvaluate(
+          &queries[i_query * para_dim],
+          &boundary_centers_ptr[(i_spline * n_queries + i_query) * dim]);
     }
   };
 
-  splinepy::utils::NThreadExecution(calc_boundary_centers, n_total, nthreads);
+  splinepy::utils::NThreadExecution(calc_boundary_centers_step,
+                                    n_total,
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
 
   return boundary_centers;
 }

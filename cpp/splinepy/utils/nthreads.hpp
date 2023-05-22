@@ -5,13 +5,22 @@
 
 namespace splinepy::utils {
 
+enum class NThreadQueryType : int {
+  // split queries into chunks that can allows contiguous visit
+  Chunk = 0,
+  // visit queries with nthread steps. similar to python's
+  // `queries[start::nthread]`
+  Step = 1
+};
+
 /// N-Thread execution. Queries will be splitted into chunks and each thread
 /// will execute those.
 template<typename Func, typename IndexT>
-void NThreadExecution(const Func& f,
-                      const IndexT& total,
-                      IndexT nthread /* copy */
-) {
+void NThreadExecution(
+    const Func& f,
+    const IndexT& total,
+    IndexT nthread /* copy */,
+    const NThreadQueryType query_type = NThreadQueryType::Chunk) {
   // For any negative value, std::thread::hardware_concurrency() will be taken
   // If you are not satisfied with returned value, use positive value.
   // For more info:
@@ -27,21 +36,34 @@ void NThreadExecution(const Func& f,
     return;
   }
 
+  // we don't want nthread to exceed total
   nthread = std::min(total, nthread);
 
-  // get chunk size and prepare threads
-  // make sure it rounds up
-  const IndexT chunk_size = std::div((total + nthread - 1), nthread).quot;
+  // reserve thread pool
   std::vector<std::thread> thread_pool;
   thread_pool.reserve(nthread);
 
-  for (int i{0}; i < (nthread - 1); i++) {
-    thread_pool.emplace_back(
-        std::thread{f, i * chunk_size, (i + 1) * chunk_size});
-  }
-  {
-    // last one
-    thread_pool.emplace_back(std::thread{f, (nthread - 1) * chunk_size, total});
+  if (query_type == NThreadQueryType::Chunk) {
+    // get chunk size and prepare threads
+    // make sure it rounds up
+    const IndexT chunk_size = std::div((total + nthread - 1), nthread).quot;
+
+    for (int i{}; i < (nthread - 1); ++i) {
+      thread_pool.emplace_back(
+          std::thread{f, i * chunk_size, (i + 1) * chunk_size});
+    }
+    {
+      // last one
+      thread_pool.emplace_back(
+          std::thread{f, (nthread - 1) * chunk_size, total});
+    }
+
+  } else if (query_type == NThreadQueryType::Step) {
+    for (int i{}; i < nthread; ++i) {
+      // strictly, (most of the time) we don't need total for lambda funcs
+      // keep it for conformity
+      thread_pool.emplace_back(std::thread{f, i, total});
+    }
   }
 
   for (auto& t : thread_pool) {
