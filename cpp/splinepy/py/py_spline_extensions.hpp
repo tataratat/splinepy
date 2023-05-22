@@ -89,11 +89,11 @@ inline std::shared_ptr<PySpline> Add(const std::shared_ptr<PySpline>& a,
 
 /// spline composition - currently only for bezier
 inline std::shared_ptr<PySpline>
-Compose(const std::shared_ptr<PySpline>& inner,
-        const std::shared_ptr<PySpline>& outer) {
+Compose(const std::shared_ptr<PySpline>& outer,
+        const std::shared_ptr<PySpline>& inner) {
   // performs runtime checks and throws error
   return std::make_shared<PySpline>(
-      inner->Core()->SplinepyCompose(outer->Core()));
+      outer->Core()->SplinepyCompose(inner->Core()));
 }
 
 /// spline derivative spline
