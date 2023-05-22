@@ -137,7 +137,7 @@ class SplineListTest(c.unittest.TestCase):
         splines2d = c.all2p2d()
         slist2d = c.splinepy.splinepy_core.SplineList(splines2d)
 
-        # prepare 3d splines
+        # prepare mixed dim splines
         splines2d3d = [*splines2d, *c.all3p3d()]
         slist2d3d = c.splinepy.splinepy_core.SplineList(splines2d3d)
 
@@ -203,6 +203,21 @@ class SplineListTest(c.unittest.TestCase):
             nthreads=2, same_parametric_bounds=False, check_dims=False
         )
         assert c.np.allclose(ref_centers, list_centers)
+
+    def test_raise_dim_mismatch(self):
+        """see if function raises dim mismatch correctly"""
+        slist2d = c.splinepy.splinepy_core.SplineList(c.all2p2d())
+
+        # prepare mixed
+        slist2d3d = c.splinepy.splinepy_core.SplineList(
+            [*c.all2p2d(), *c.all3p3d()]
+        )
+
+        # nothing happens
+        slist2d.raise_dim_mismatch(nthreads=2)
+
+        with self.assertRaises(RuntimeError):
+            slist2d3d.raise_dim_mismatch(nthreads=2)
 
 
 if __name__ == "__main__":
