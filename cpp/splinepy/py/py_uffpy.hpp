@@ -20,8 +20,8 @@ namespace py = pybind11;
 py::tuple uffpy(py::array_t<double> points, double tolerance, bool stable) {
   // Access points
   double* p_buf_ptr = static_cast<double*>(points.request().ptr);
-  int npoints = points.request().shape[0];
-  int pdim = points.request().shape[1];
+  int npoints = points.shape(0);
+  int pdim = points.shape(1);
 
   // selecting metric for you.
   std::vector<double> metric(pdim, 1.);
@@ -36,18 +36,12 @@ py::tuple uffpy(py::array_t<double> points, double tolerance, bool stable) {
   int* inverse = static_cast<int*>(i_buf.ptr);
 
   // prepare additional input vars
-  int nnewpoints;
+  int nnewpoints{};
 
   // prepare temp array to store newpoints.
   // we call this thing phil
-  py::array_t<double> np_newpoints({nnewpoints, pdim});
+  py::array_t<double> np_newpoints({npoints, pdim});
 
-  // Dialogue
-  // ---------
-  // pyuff - (calls uff)
-  // uff - Guten Tag uff am Apparat
-  // pyuff - einmal uff bitte
-  // uff - ::uff!
   uff::uff(p_buf_ptr,
            npoints,
            pdim,
@@ -60,6 +54,7 @@ py::tuple uffpy(py::array_t<double> points, double tolerance, bool stable) {
            inverse);
 
   // real newpoints
+  assert(nnewpoints > 0);
   np_newpoints.resize({nnewpoints, pdim}, false);
 
   return py::make_tuple(np_newpoints, np_newpointmasks, np_inverse);
