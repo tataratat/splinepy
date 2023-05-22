@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdlib>
-#include <iostream>
+#include <string>
 #include <tuple>
 
 // pybind
@@ -32,15 +32,44 @@ inline void RaiseIfElementsHaveUnequalParaDimOrDim(const PySplineList& splist,
   const int& para_dim = splist[0]->para_dim_;
   const int& dim = splist[0]->dim_;
 
-  auto check_dims = [&](int begin, int end) {
-    for (int i{begin}; i < end; ++i) {
-      CheckParaDimAndDim(*splist[i], para_dim, dim, true);
+  std::vector<IntVector> mismatches(nthreads);
+
+  auto check_dims_step = [&](int begin, int total_) {
+    for (int i{begin}; i < total_; i += nthreads) {
+      if (!CheckParaDimAndDim(*splist[i], para_dim, dim, false)) {
+        mismatches[begin].push_back(i);
+      }
     }
   };
 
-  splinepy::utils::NThreadExecution(check_dims,
+  splinepy::utils::NThreadExecution(check_dims_step,
                                     static_cast<int>(splist.size()),
-                                    nthreads);
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
+  // prepare error prints
+  IntVector all_mismatches{};
+  for (const auto& m : mismatches) {
+    const auto m_size = m.size();
+    if (m_size != 0) {
+      all_mismatches.reserve(all_mismatches.size() + m_size);
+      all_mismatches.insert(all_mismatches.end(), m.begin(), m.end());
+    }
+  }
+
+  if (all_mismatches.size() == 0) {
+    return;
+  }
+
+  std::string mismatch_ids{};
+  for (const auto& am : all_mismatches) {
+    mismatch_ids += std::to_string(am);
+    mismatch_ids += ", ";
+  }
+  splinepy::utils::PrintAndThrowError(
+      "Splines in following entries has mismatching para_dim or dim compared "
+      "to the first entry (",
+      mismatch_ids,
+      ")");
 }
 
 /// evaluates splines of same para_dim and dim.
