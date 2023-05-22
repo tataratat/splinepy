@@ -8,8 +8,10 @@ namespace splinepy::utils {
 enum class NThreadQueryType : int {
   // split queries into chunks that can allows contiguous visit
   Chunk = 0,
-  // visit queries with nthread steps. similar to python's
-  // `queries[start::nthread]`
+  // useful if you want to visit queries with nthread steps,
+  // similar to python's `queries[start::nthread]`.
+  // practical difference is that it passes (i_thread, total) to the function f,
+  // instead of (chunk_begin, chunk_end)
   Step = 1
 };
 
