@@ -735,7 +735,18 @@ inline void add_spline_list_pyclass(py::module& m) {
            py::arg("spline_list"),
            py::arg("nthreads"),
            py::arg("same_parametric_bounds"),
-           py::arg("check_dims"));
+           py::arg("check_dims"))
+      .def("compose",
+           &ListCompose,
+           py::arg("inner_splines"),
+           py::arg("cartesian_product"),
+           py::arg("nthreads"))
+      .def("composition_derivatives",
+           &ListCompositionDerivative,
+           py::arg("inner_splines"),
+           py::arg("inner_derivatives"),
+           py::arg("cartesian_product"),
+           py::arg("nthreads"));
 }
 
 } // namespace splinepy::py
