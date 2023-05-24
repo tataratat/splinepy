@@ -197,6 +197,57 @@ class SplineListTest(c.unittest.TestCase):
         """check if list compose yield same spline as spline compose"""
         pass
 
+    def _bezier_noisy_boxes_and_test_shapes(self):
+        # prepare boxes with some noise
+        box2d = c.nd_box(2)
+        box2d.pop("knot_vectors")
+        rbox2d = c.splinepy.RationalBezier(**box2d)
+        box2d.pop("weights")
+        zbox2d = c.splinepy.Bezier(**box2d)
+        box3d = c.nd_box(3)
+        box3d.pop("knot_vectors")
+        rbox3d = c.splinepy.RationalBezier(**box3d)
+        box3d.pop("weights")
+        zbox3d = c.splinepy.Bezier(**box2d)
+
+        outer = [zbox2d, rbox2d, zbox3d, rbox3d]
+        # add some noise
+        for o in outer:
+            o.cps = o.cps + c.np.random.normal(0, 0.025, o.cps.shape)
+
+        # test shapes
+        z2 = c.splinepy.Bezier(**c.z2p2d())
+        z3 = c.splinepy.Bezier(**c.z3p3d())
+        r2 = c.splinepy.RationalBezier(**c.r2p2d())
+        r3 = c.splinepy.RationalBezier(**c.r3p3d())
+
+        return outer[:2], outer[2:], [z2, r2], [z3, r3]
+
+    def test_list_compose(self):
+        """check if list compose yield same spline as spline compose"""
+        # prepare boxes with some noise
+        outer_2d, outer_3d, inner_2d, inner_3d = [
+            c.splinepy.splinepy_core.SplineList(beziers)
+            for beziers in self._bezier_noisy_boxes_and_test_shapes()
+        ]
+
+        t = []
+        for beziers in self._bezier_noisy_boxes_and_test_shapes():
+            sl = c.splinepy.splinepy_core.SplineList(beziers)
+            print(sl[0])
+            t.append(sl)
+
+
+        ref_composed = [o.compose(i) for o, i in zip(outer_2d, inner_2d)]
+
+        # list compose
+        list_composed = outer_2d.compose(
+            inner_2d, cartesian_product=False, nthreads=2
+        )
+
+        for r, l in zip(ref_composed, list_composed):
+            assert c.are_splines_equal(r, l)
+
 
 if __name__ == "__main__":
     c.unittest.main()
