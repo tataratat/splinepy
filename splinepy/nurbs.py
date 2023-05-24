@@ -32,7 +32,7 @@ class NURBS(BSplineBase):
 
     1. A NURBS of degree :math:`p` with control points
     :math:`P_i\in\mathbb{R}^{N_{phys}}`, weights :math:`w_i\in\mathbb{R}`,
-    and a one-dimensional parameter space (:math:`N_{param}=1`) corresponds to 
+    and a one-dimensional parameter space (:math:`N_{param}=1`) corresponds to
     a line, embedded into the physical space:
 
     .. math::
@@ -46,7 +46,7 @@ class NURBS(BSplineBase):
     2. A NURBS of degrees :math:`p,q` with control points
     :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}`, weights
     :math:`w_{i,j}\in\mathbb{R}`, and a two-dimensional parameter space
-    (:math:`N_{param}=2`) corresponds to a surface, embedded into the physical 
+    (:math:`N_{param}=2`) corresponds to a surface, embedded into the physical
     space:
 
     .. math::
@@ -61,7 +61,7 @@ class NURBS(BSplineBase):
     3. A NURBS of degrees :math:`p,q,r` with control points
     :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
     :math:`w_{i,j,k}\in\mathbb{R}`, and a three-dimensional parameter space
-    (:math:`N_{param}=3`) corresponds to a volume, embedded into the physical 
+    (:math:`N_{param}=3`) corresponds to a volume, embedded into the physical
     space:
 
     .. math::
