@@ -411,6 +411,133 @@ public:
             static_cast<RationalBezier<para_dim, dim>&>(*a)));
   }
 
+  template<bool is_rational, size_t inner_para_dim>
+  std::vector<std::shared_ptr<SplinepyBase>> ConvertComposeToBase(
+      const std::shared_ptr<SplinepyBase>& inner_function) const {
+    if constexpr (is_rational) {
+      auto super_return = this->ComposeSensitivity(
+          static_cast<RationalBezier<inner_para_dim, para_dim>&>(
+              *inner_function));
+
+      std::vector<std::shared_ptr<SplinepyBase>> to_return(super_return.size());
+
+      for (size_t i{}; i < super_return.size(); ++i) {
+        to_return[i] = std::make_shared<RationalBezier<inner_para_dim, 1>>(
+            super_return[i]);
+      }
+      return to_return;
+    } else {
+      auto super_return = this->ComposeSensitivity(
+          static_cast<Bezier<inner_para_dim, para_dim>&>(*inner_function));
+
+      std::vector<std::shared_ptr<SplinepyBase>> to_return(super_return.size());
+
+      for (size_t i{}; i < super_return.size(); ++i) {
+        to_return[i] = std::make_shared<RationalBezier<inner_para_dim, 1>>(
+            super_return[i]);
+      }
+      return to_return;
+    }
+  }
+
+  /// Spline composition.
+  /// inner_function requirements:
+  ///   1. Bezier Types
+  ///   2. dim is same as outer_function's par_dim
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepyComposeSensitivities(
+      const std::shared_ptr<SplinepyBase>& inner_function) const {
+    // type check
+    if (inner_function->SplinepySplineName().find("Bezier")
+        == std::string::npos) {
+      splinepy::utils::PrintAndThrowError(
+          "Bezier composition requires inner function to be a bezier type.",
+          "Given inner function -",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // composable?
+    if (inner_function->SplinepyDim() != this->SplinepyParaDim()) {
+      splinepy::utils::PrintAndThrowError(
+          "Spline composition requires inner function to have same physical",
+          "dimension as outer function's parametric dimension.",
+          "Outer Function:",
+          this->SplinepyWhatAmI(),
+          "/",
+          "Inner Function:",
+          inner_function->SplinepyWhatAmI());
+    }
+
+    // compose - return correct type.
+    if (inner_function->SplinepyIsRational()) {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return ConvertComposeToBase<true, 1>(inner_function);
+      case 2:
+        return ConvertComposeToBase<true, 2>(inner_function);
+      case 3:
+        return ConvertComposeToBase<true, 3>(inner_function);
+#ifdef SPLINEPY_MORE
+      case 4:
+        return ConvertComposeToBase<true, 4>(inner_function);
+      case 5:
+        return ConvertComposeToBase<true, 5>(inner_function);
+      case 6:
+        return ConvertComposeToBase<true, 6>(inner_function);
+      case 7:
+        return ConvertComposeToBase<true, 7>(inner_function);
+      case 8:
+        return ConvertComposeToBase<true, 8>(inner_function);
+      case 9:
+        return ConvertComposeToBase<true, 9>(inner_function);
+      case 10:
+        return ConvertComposeToBase<true, 10>(inner_function);
+#endif
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "Something went wrong during ComposeSensitivity. Please help us by "
+            "writing an issue about this case at [ "
+            "github.com/tataratat/splinepy ]");
+      }
+    } else {
+      switch (inner_function->SplinepyParaDim()) {
+      case 1:
+        return ConvertComposeToBase<false, 1>(inner_function);
+      case 2:
+        return ConvertComposeToBase<false, 2>(inner_function);
+      case 3:
+        return ConvertComposeToBase<false, 3>(inner_function);
+#ifdef SPLINEPY_MORE
+      case 4:
+        return ConvertComposeToBase<false, 4>(inner_function);
+      case 5:
+        return ConvertComposeToBase<false, 5>(inner_function);
+      case 6:
+        return ConvertComposeToBase<false, 6>(inner_function);
+      case 7:
+        return ConvertComposeToBase<false, 7>(inner_function);
+      case 8:
+        return ConvertComposeToBase<false, 8>(inner_function);
+      case 9:
+        return ConvertComposeToBase<false, 9>(inner_function);
+      case 10:
+        return ConvertComposeToBase<false, 10>(inner_function);
+#endif
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "Something went wrong during ComposeSensitivity. Please help us by "
+            "writing an issue about this case at [ "
+            "github.com/tataratat/splinepy ]");
+      }
+    }
+    splinepy::utils::PrintAndThrowError(
+        "Something went wrong during ComposeSensitivity. Please help us by "
+        "writing an issue about this case at [ "
+        "github.com/tataratat/splinepy ]");
+    // make compiler happy
+    return std::vector<std::shared_ptr<SplinepyBase>>{};
+  }
+
   /// Spline composition.
   /// inner_function requirements:
   ///   1. Bezier Types
