@@ -121,13 +121,23 @@ class BezierBase(spline.Spline):
 
     @spline._new_core_if_modified
     def compose_sensitivities(self, inner_function):
-        """
-        Calculates the spline that forms the composition of the inner function
-        spline (function argument), using the caller spline as the outer (or
-        deformation function).
+        r"""
+        Calculates the derivative of the composed spline with respect to the
+        outer function's control point positions. This corresponds to the basis
+        function representation (which is given by a scalar valued spline).
+        This function differs from :func:`.composition_derivative`, which
+        computes the derivatives concerning the inner functions geometric
+        parametrization.
 
-        The resulting spline fulfills the equation
-          spline_self(inner_function(t)) = result(t)
+        Given an outer function :math:`\mathcal{T}` with control points
+        :math:`C_i` and an inner function :math:`\mathcal{K}`. This function
+        computes:
+
+        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial C_i} =
+                  B_i(\mathcal{K})
+
+        where :math:`B_i` represents the basis function associated to control
+        point :math:`C_i`.
 
         Parameters
         ----------
@@ -135,7 +145,9 @@ class BezierBase(spline.Spline):
 
         Returns
         -------
-        composed : BezierBase
+        composed : list
+          list of scalar valued Bezier splines, representing the basis
+          composition's basis functions
         """
         # dimension compatibility checked in cpp
         composed_sensivities = splinepy_core.compose_sensitivities(
@@ -146,6 +158,47 @@ class BezierBase(spline.Spline):
             settings.NAME_TO_TYPE[cc.name](spline=cc)
             for cc in composed_sensivities
         ]
+
+    @spline._new_core_if_modified
+    def composition_derivative(self, inner, inner_derivative):
+        r"""
+        Derivative of composition when given the differentiated inner function
+        with constant outer function. This function differs from
+        :func:`.compose_sensitivities`, which computes the derivatives
+        concerning the outer function's control point positions.
+
+        Given an outer function :math:`\mathcal{T}` and an inner function
+        :math:`\mathcal{K}` with its derivative with respect to some design
+        variable :math:`\alpha`, i.e.,
+        :math:`\frac{\partial \mathcal{K}}{\partial \alpha}`, this function
+        returns the derivative of the composed geometry in the form
+        :math:`\frac{\partial \mathcal{T}(\mathcal{K})}{\partial\alpha}` by
+        computing.
+
+        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial\alpha} =
+                  \frac{\partial \mathcal{T}}{\partial u}(\mathcal{K})\cdot
+                  \frac{\partial \mathcal{K}}{\partial \alpha}
+
+        Here :math:`u` refers to the parametric coordinates of the deformation
+        function.
+
+        Parameters
+        ----------
+        inner: BezierBase
+        inner_derivative: BezierBase
+
+        Returns
+        -------
+        composition_der: BezierBase
+        """
+        # compatibility check is done in cpp
+        composition_der = splinepy_core.composition_derivative(
+            self, inner, inner_derivative
+        )
+
+        return settings.NAME_TO_TYPE[composition_der.name](
+            spline=composition_der
+        )
 
     @spline._new_core_if_modified
     def split(self, para_dim, locations):
@@ -186,29 +239,6 @@ class BezierBase(spline.Spline):
             raise ValueError(f"Can't extract ({dim}) dim from {self.whatami}.")
 
         return type(self)(spline=splinepy_core.extract_dim(self, dim))
-
-    @spline._new_core_if_modified
-    def composition_derivative(self, inner, inner_derivative):
-        """
-        Derivative of composition.
-
-        Parameters
-        ----------
-        inner: BezierBase
-        inner_derivative: BezierBase
-
-        Returns
-        -------
-        composition_der: BezierBase
-        """
-        # compatibility check is done in cpp
-        composition_der = splinepy_core.composition_derivative(
-            self, inner, inner_derivative
-        )
-
-        return settings.NAME_TO_TYPE[composition_der.name](
-            spline=composition_der
-        )
 
 
 class Bezier(BezierBase):
