@@ -24,17 +24,17 @@ class compositionSensitivitiesTest(c.unittest.TestCase):
         )
         inner_polynomial = c.splinepy.Bezier(
             degrees=[1, 1],
-            control_points=[[0.2, 0.0], [0.0, 0.2], [0.0, 0.8], [0.8, 0]],
+            control_points=[[0.2, 0.0], [1.0, 0.2], [0.0, 0.8], [0.8, 1.0]],
         )
         inner_rational = c.splinepy.RationalBezier(
             degrees=[2, 1],
             control_points=[
                 [0.2, 0.0],
                 [0.5, 0.5],
-                [0.0, 0.2],
+                [1.0, 0.2],
                 [0.0, 0.8],
                 [0.5, 0.5],
-                [0.8, 0],
+                [0.8, 1.0],
             ],
             weights=[1, 0.5, 1, 1, 0.5, 1],
         )
