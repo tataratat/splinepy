@@ -17,13 +17,13 @@ class NURBS(BSplineBase):
     Consequently, for two-dimensional case, we have
 
     .. math::
-            W(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v) 
+            W(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
                 w_{i,j}
 
     and for the three-dimensional case
 
     .. math::
-            W(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+            W(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n}
                 N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) w_{i,j,k}
 
     We can now construct different spline embeddings similar to the
@@ -63,7 +63,7 @@ class NURBS(BSplineBase):
     corresponds to a line, embedded into the physical space:
 
     .. math::
-            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n}
                 R_{i,j,k;p,q,r}(u,v,w) P_{i,j,k}
 
     with the modified (rational) basis functions

@@ -10,7 +10,7 @@ class BSplineBase(spline.Spline):
     All B-Spline-like splines feature knot vectors for each parametric
     dimension. A knot vector can be considered as a set of non-decreasing
     parametric coordinates. If coordinates in the parametric dimension are
-    denoted by :math:`u\\in\\mathbb{R}^{N_{param}}`, then the knot vector 
+    denoted by :math:`u\\in\\mathbb{R}^{N_{param}}`, then the knot vector
     associated with this dimension contains values
 
     .. math::
@@ -22,7 +22,7 @@ class BSplineBase(spline.Spline):
             u_1 \\leq u_2 \\leq \\hdots \\leq u_{l+p+1}
 
     Here, :math:`l` denotes the number of basis functions/control points along
-    this parametric dimension and :math:`p` the polynomial order of these 
+    this parametric dimension and :math:`p` the polynomial order of these
     basis functions.
     :math:`u_i` is referred to as the :math:`i`-th *knot*. Intervals of the
     type :math:`\[u_i,u_{i+1}\]` are known as *knot spans* or *elements*.
@@ -59,7 +59,7 @@ class BSplineBase(spline.Spline):
     space corresponds to a surface, embedded into the physical space:
 
     .. math::
-            S(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v) 
+            S(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
                 P_{i,j}
 
     Due to the tensor-product nature of the B-Spline basis functions, this is
@@ -73,7 +73,7 @@ class BSplineBase(spline.Spline):
     space corresponds to a volume, embedded into the physical space:
 
     .. math::
-            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n}
                 N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
