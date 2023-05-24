@@ -99,11 +99,11 @@ class BezierBase(spline.Spline):
     @spline._new_core_if_modified
     def compose(self, inner_function):
         """
-        Calculates the spline that formes the composition of the inner function
+        Calculates the spline that forms the composition of the inner function
         spline (function argument), using the caller spline as the outer (or
         deformation function).
 
-        The resulting spline fulfils the equation
+        The resulting spline fulfills the equation
           spline_self(inner_function(t)) = result(t)
 
         Parameters
@@ -118,6 +118,34 @@ class BezierBase(spline.Spline):
         composed = splinepy_core.compose(self, inner_function)
 
         return settings.NAME_TO_TYPE[composed.name](spline=composed)
+
+    @spline._new_core_if_modified
+    def compose_sensitivities(self, inner_function):
+        """
+        Calculates the spline that forms the composition of the inner function
+        spline (function argument), using the caller spline as the outer (or
+        deformation function).
+
+        The resulting spline fulfills the equation
+          spline_self(inner_function(t)) = result(t)
+
+        Parameters
+        ----------
+        inner_function : BezierBase
+
+        Returns
+        -------
+        composed : BezierBase
+        """
+        # dimension compatibility checked in cpp
+        composed_sensivities = splinepy_core.compose_sensitivities(
+            self, inner_function
+        )
+
+        return [
+            settings.NAME_TO_TYPE[cc.name](spline=cc)
+            for cc in composed_sensivities
+        ]
 
     @spline._new_core_if_modified
     def split(self, para_dim, locations):
