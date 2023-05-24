@@ -584,22 +584,22 @@ class Spline(SplinepyBase, core.CoreSpline):
     """
     Spline base class. Extends CoreSpline with documentation.
 
-    Generally, all types of splines can be seen as mappings from a 
-    :math:`N_{param}`-dimensional parametric domain 
-    :math:`\Omega_{param} \subset \mathbb{R}^{N_{param}}` to a 
+    Generally, all types of splines can be seen as mappings from a
+    :math:`N_{param}`-dimensional parametric domain
+    :math:`\\Omega_{param} \\subset \\mathbb{R}^{N_{param}}` to a
     :math:`N_{phys}`-dimensional physical domain
-    :math:`\Omega_{phys} \subset \mathbb{R}^{N_{phys}}`, i.e.,
+    :math:`\\Omega_{phys} \\subset \\mathbb{R}^{N_{phys}}`, i.e.,
 
     .. math::
-            f : \Omega_{param} \\to \Omega_{phys}
+            f : \\Omega_{param} \\to \\Omega_{phys}
 
-    :code:`splinepy` generally supports different combinations of embeddings, 
+    :code:`splinepy` generally supports different combinations of embeddings,
     that is different combinations of dimensionalities :math:`N_{param}` and
     :math:`N_{phys}`, up to dimension 10.
-    The supported spline types differ in the way how the spline function 
-    :math:`f` is defined. For an overview of the mathematical theories for the 
-    different types of supported splines, we refer to the documentation of the 
-    classes :class:`.BSplineBase` and :class:`.BezierBase`, as well as their 
+    The supported spline types differ in the way how the spline function
+    :math:`f` is defined. For an overview of the mathematical theories for the
+    different types of supported splines, we refer to the documentation of the
+    classes :class:`.BSplineBase` and :class:`.BezierBase`, as well as their
     children :class:`.NURBS` and :class:`.RationalBezier`.
     """
 

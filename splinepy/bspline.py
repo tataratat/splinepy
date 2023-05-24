@@ -39,14 +39,14 @@ class BSplineBase(spline.Spline):
                 + \frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1;p-1}(u)
 
     With the help of these mono-variate basis functions, we can now define
-    B-Splines. For simplicity, we restrict ourselves in the following to the 
-    three most common types splines, namely curves, surfaces and volumes, 
-    although :code:`splinepy` also supports different possibilities, see 
+    B-Splines. For simplicity, we restrict ourselves in the following to the
+    three most common types splines, namely curves, surfaces and volumes,
+    although :code:`splinepy` also supports different possibilities, see
     :class:`Spline` for more information.
 
     1. A B-Spline of degree :math:`p` with control points
     :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
-    (:math:`N_{param}=1`) corresponds to a line embedded into the physical 
+    (:math:`N_{param}=1`) corresponds to a line embedded into the physical
     space:
 
     .. math::
@@ -54,7 +54,7 @@ class BSplineBase(spline.Spline):
 
     2. A B-Spline of degrees :math:`p,q` with control points
     :math:`P_{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
-    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the 
+    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
     physical space:
 
     .. math::
@@ -69,7 +69,7 @@ class BSplineBase(spline.Spline):
 
     3. A B-Spline of degrees :math:`p,q,r` with control points
     :math:`P_{i,j,k} \in \mathbb{R}^{N_{phys}}` and a three-dimensional
-    parameter space (:math:`N_{param}=3`) corresponds to a volume, embedded 
+    parameter space (:math:`N_{param}=3`) corresponds to a volume, embedded
     into the physical space:
 
     .. math::
