@@ -10,81 +10,77 @@ class BSplineBase(spline.Spline):
     All B-Spline-like splines feature knot vectors for each parametric
     dimension. A knot vector can be considered as a set of non-decreasing
     parametric coordinates. If coordinates in the parametric dimension are
-    denoted by :math:`u\\in\\mathbb{R}^{N_{param}}`, then the knot vector in
-    the :math:`i`-th dimension contains values
+    denoted by :math:`u\\in\\mathbb{R}^{N_{param}}`, then the knot vector 
+    associated with this dimension contains values
 
     .. math::
-            \\Theta^i = \\{u^i_1,u^i_2,\\hdots,u^i_{n^i+p^i+1}\\}
+            \\Theta_u = \\{u_1,u_2,\\hdots,u_{l+p+1}\\}
 
     such that
 
     .. math::
-            u^i_1 \\leq u^i_2 \\leq \\hdots \\leq u^i_{n^i+p^i+1}
+            u_1 \\leq u_2 \\leq \\hdots \\leq u_{l+p+1}
 
-    Here, :math:`n^i` denotes the number of basis functions/control points in
-    the :math:`i`-th parametric dimension and :math:`p^i` the polynomial order
-    of these basis functions.
-    :math:`u^i_j` is referred to as the :math:`j`-th knot. Intervals of the
-    type :math:`\[u^i_j,u^i_{j+1}\]` are known as knot spans or elements.
+    Here, :math:`l` denotes the number of basis functions/control points along
+    this parametric dimension and :math:`p` the polynomial order of these 
+    basis functions.
+    :math:`u_i` is referred to as the :math:`i`-th *knot*. Intervals of the
+    type :math:`\[u_i,u_{i+1}\]` are known as *knot spans* or *elements*.
 
     Based on the knot vectors, the mono-variate basis functions are defined
     recursively via the Cox-de-Boor recursion formula for each parametric
     dimension:
 
     .. math::
-            N_{j;0}^{\\Theta^1}(u) = \\begin{cases}
-                1 & u\\in\\[u_j,u_{j+1}\\] \\\\
+            N_{i;0}(u) = \\begin{cases}
+                1 & u\\in\\[u_i,u_{i+1}\\] \\\\
                 0 & \\mathrm{else} \\end{cases} \\\\
-            N_{j;p}^{\\Theta^1}(u) = \\frac{u-u_j}{u_{j+p}-u_j}N_{j;p-1}(u)
-                + \\frac{u_{j+p+1}-u}{u_{j+p+1}-u_{j+1}}N_{j+1;p-1}(u)
+            N_{i;p}(u) = \\frac{u-u_i}{u_{i+p}-u_i}N_{i;p-1}(u)
+                + \\frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1;p-1}(u)
 
-    With the help of the mono-variate basis functions, we can now define
+    With the help of these mono-variate basis functions, we can now define
     B-Splines. B-Splines can be understood as mappings from the parametric
     into the physical domain, that is
     :math:`S:\\mathbb{R}^{N_{param}}\\to\\mathbb{R}^{N_{phys}}`,
     where :math:`N_{param}` and :math:`N_{phys}` denote the number of
-    dimensions of the parametric and physical space respectively. We can
+    dimensions of the parametric and physical space, respectively. We can
     distinguish between different types of splines depending on the dimension
     of the parametric space.
 
-    #. A spline of degree :math:`p^1` with control points
+    #. A spline of degree :math:`p` with control points
     :math:`P_i\\in\\mathbb{R}^{N_{phys}` and a one-dimensional parameter space
     corresponds to a line embedded into the physical space:
 
     .. math::
-            S(u^1) = \\sum_{i=1}^{n^1} N_{i;p^1}^{\\Theta^1}(u^1) P_i
+            S(u) = \\sum_{i=1}^{l} N_{i;p}(u) P_i
 
-    #. A spline of degrees :math:`p^1,p^2` with control points
+    #. A spline of degrees :math:`p,q` with control points
     :math:`P_{i,j}\\in\\mathbb{R}^{N_{phys}` and a two-dimensional parameter
     space corresponds to a surface, embedded into the physical space:
 
     .. math::
-            S(u^1,u^2) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                N_{i;p^1}^{\\Theta^1}(u^1) N_{j;p^2}^{\\Theta^2}(u^2) P_{i,j}
+            S(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v) 
+                P_{i,j}
 
     Due to the tensor-product nature of the B-Spline basis functions, this is
     often rewritten as in terms of multi-variate basis functions
 
     .. math::
-            \\tilde{N}_{i,j;p,q}(u^1,u^2) \\coloneqq
-                N_{i;p^1}^{\\Theta^1}(u^1) N_{j;p^2}^{\\Theta^2}(u^2)
+            \\tilde{N}_{i,j;p,q}(u,v) \\coloneqq N_{i;p}(u) N_{j;q}(v)
 
-    #. A spline of degrees :math:`p^1,p^2,p^3` with control points
+    #. A spline of degrees :math:`p,q,r` with control points
     :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}` and a three-dimensional parameter
     space corresponds to a volume, embedded into the physical space:
 
     .. math::
-            S(u^1,u^2,u^3) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                \\sum_{k=1}^{n^3} N_{i;p^1}^{\\Theta^1}(u^1)
-                N_{j;p^2}^{\\Theta^2}(u^2) N_{k;p^3}^{\\Theta^3}(u^3)
-                P_{i,j,k}
+            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
 
     ..math::
-            \\tilde{N}_{i,j,k;p,q,r}(u^1,u^2,u^3) \\coloneqq
-                N_{i;p^1}^{\\Theta^1}(u^1) N_{j;p^2}^{\\Theta^2}(u^2)
-                N_{k;p^3}^{\\Theta^3}(u^3)
+            \\tilde{N}_{i,j,k;p,q,r}(u,v,w) \\coloneqq N_{i;p}(u) N_{j;q}(v)
+                N_{k;r}(w)
     """
 
     __slots__ = ()

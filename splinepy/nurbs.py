@@ -11,71 +11,69 @@ class NURBS(BSplineBase):
     defined as (for a one-dimensional parameter space)
 
     .. math::
-            W(u^1) = \\sum_{i=1}^{n^1} N_{i;p^1}^{\\Theta^1}(u^1) w_i
+            W(u) = \\sum_{i=1}^{l} N_{i;p}(u) w_i
 
     with scalar weights :math:`w_i\\in\\mathbb{R}`.
     Consequently, for two-dimensional case, we have
 
     .. math::
-            W(u^1,u^2) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                N_{i;p^1}^{\\Theta^1}(u^1) N_{j;p^2}^{\\Theta^2}(u^2) w_{i,j}
+            W(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v) 
+                w_{i,j}
 
     and for the three-dimensional case
 
     .. math::
-            W(u^1,u^2,u^3) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                \\sum_{k=1}^{n^3} N_{i;p^1}^{\\Theta^1}(u^1)
-                N_{j;p^2}^{\\Theta^2}(u^2) N_{j;p^3}^{\\Theta^3}(u^3) w_{i,j,k}
+            W(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) w_{i,j,k}
 
     We can now construct different spline embeddings similar to the
-    description in :class:`.BSplineBase` just including the additional
+    description in :class:`.BSplineBase`, only including the additional
     weighting:
 
-    #. A NURBS of degree :math:`p^1` with control points
+    #. A NURBS of degree :math:`p` with control points
     :math:`P_i\\in\\mathbb{R}^{N_{phys}`, weights :math:`w_i\\in\\mathbb{R}`,
     and a one-dimensional parameter space corresponds to a line, embedded into
     the physical space:
 
     .. math::
-            S(u^1) = \\sum_{i=1}^{n^1} R_{i;p^1}(u^1) P_i
+            S(u) = \\sum_{i=1}^{l} R_{i;p}(u) P_i
 
     with the modified (rational) basis functions
 
     .. math::
-            R_{i;p^1}(u^1) = \\frac{N_{i;p^1}^{\\Theta^1}(u^1)w_i}{W(u^1)}
+            R_{i;p}(u) = \\frac{N_{i;p}(u)w_i}{W(u)}
 
-    #. A NURBS of degrees :math:`p^1,p^2` with control points
+    #. A NURBS of degrees :math:`p,q` with control points
     :math:`P_{i,j}\\in\\mathbb{R}^{N_{phys}`, weights
     :math:`w_{i,j}\\in\\mathbb{R}`, and a two-dimensional parameter space
     corresponds to a line, embedded into the physical space:
 
     .. math::
-            S(u^1,u^2) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                R_{i,j;p^1,p^2}(u^1,u^2) P_{i,j}
+            S(u,v) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} R_{i,j;p,q}(u,v) P_{i,j}
 
     with the modified (rational) basis functions
 
     .. math::
-            R_{i,j;p^1,p^2}(u^1,u^2) =
-                \\frac{\\tilde{N}_{i,j;p^1,p^2}(u^1,u^2)w_{i,j}}{W(u^1,u^2)}
+            R_{i,j;p,q}(u,v) =
+                \\frac{\\tilde{N}_{i,j;p,q}(u,v) w_{i,j}}{W(u,v)}
 
-    #. A NURBS of degrees :math:`p^1,p^2,p^3` with control points
+    #. A NURBS of degrees :math:`p,q,r` with control points
     :math:`P_{i,j,k}\\in\\mathbb{R}^{N_{phys}`, weights
     :math:`w_{i,j,k}\\in\\mathbb{R}`, and a three-dimensional parameter space
     corresponds to a line, embedded into the physical space:
 
     .. math::
-            S(u^1,u^2,u^3) = \\sum_{i=1}^{n^1} \\sum_{j=1}^{n^2}
-                \\sum_{k=1}^{n^3} R_{i,j,k;p^1,p^2,p^3}(u^1,u^2,u^3) P_{i,j,k}
+            S(u,v,w) = \\sum_{i=1}^{l} \\sum_{j=1}^{m} \\sum_{k=1}^{n} 
+                R_{i,j,k;p,q,r}(u,v,w) P_{i,j,k}
 
     with the modified (rational) basis functions
 
     .. math::
-            R_{i,j,k;p^1,p^2,p^3}(u^1,u^2,u^3) =
+            R_{i,j,k;p,q,r}(u,v,w) =
                 \\frac{
-                    \\tilde{N}_{i,j,k;p^1,p^2,p^3}(u^1,u^2,u^3)w_{i,j,k}
+                    \\tilde{N}_{i,j,k;p,q,r}(u,v,w) w_{i,j,k}
                 }{
-                    W(u^1,u^2,u^3)
+                    W(u,v,w)
                 }
     """
 
