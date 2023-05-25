@@ -5,7 +5,9 @@ from splinepy import settings, spline, splinepy_core, utils
 
 class BSplineBase(spline.Spline):
     r"""BSpline base. Contains extra operations that are only available for
-    bspline families.
+    bspline families, i.e., :class:`.BSpline` and :class:`.NURBS`.
+
+    Passes all arguments to :code:`super.__init__()`, see :class:`.Spline`.
 
     All B-Spline-like splines feature knot vectors for each parametric
     dimension. A knot vector can be considered as a set of non-decreasing
@@ -21,11 +23,22 @@ class BSplineBase(spline.Spline):
     .. math::
             u_1 \leq u_2 \leq ... \leq u_{l+p+1}
 
-    Here, :math:`l` denotes the number of basis functions/control points along
-    this parametric dimension and :math:`p` the polynomial order of these
-    basis functions.
     :math:`u_i` is referred to as the :math:`i`-th *knot*. Intervals of the
     type :math:`[u_i,u_{i+1}]` are known as *knot spans* or *elements*.
+    As we can see, the number of knot entries, the number of control points,
+    and the polynomial degree of the spline are related to each other by the 
+    equation :math`#knots=l+p+1`. Here, :math:`l` denotes the number of 
+    control points along a parametric dimension and :math:`p` the polynomial 
+    order of the spline. 
+    In the special case of a so-called *open knot vector*, the first and the 
+    last entry of the knot vector are repeated :math:`p+1` times, that is
+
+    .. math::
+           u_1 = ... = u_{p+1} < u_{p+2} < ... < u_l < u_{l+1} = ... = u_{l+p+1}
+
+    Splines with open knot vectors have the property that they exactly 
+    interpolate the first and the last control point in this parametric
+    dimension.
 
     Based on the knot vectors, the mono-variate basis functions are defined
     recursively via the Cox-de-Boor recursion formula for each parametric
@@ -38,65 +51,14 @@ class BSplineBase(spline.Spline):
             N_{i;p}(u) &= \frac{u-u_i}{u_{i+p}-u_i} N_{i;p-1}(u)
                 + \frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1;p-1}(u)
 
-    With the help of these mono-variate basis functions, we can now define
-    B-Splines. For simplicity, we restrict ourselves in the following to the
-    three most common types splines, namely curves, surfaces and volumes,
-    although :code:`splinepy` also supports different possibilities, see
-    :class:`Spline` for more information.
-
-    1. A B-Spline of degree :math:`p` with control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
-    (:math:`N_{param}=1`) corresponds to a line embedded into the physical
-    space:
-
-    .. math::
-            S^N(u) = \sum_{i=1}^{l} N_{i;p}(u) P_i
-
-    2. A B-Spline of degrees :math:`p,q` with control points
-    :math:`P_{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
-    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
-    physical space:
-
-    .. math::
-            S^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
-                P_{i,j}
-
-    Due to the tensor-product nature of the B-Spline basis functions, this is
-    often rewritten in terms of multi-variate basis functions
-
-    .. math::
-            \tilde{N}_{i,j;p,q}(u,v) := N_{i;p}(u) N_{j;q}(v)
-
-    3. A B-Spline of degrees :math:`p,q,r` with control points
-    :math:`P_{i,j,k} \in \mathbb{R}^{N_{phys}}` and a three-dimensional
-    parameter space (:math:`N_{param}=3`) corresponds to a volume, embedded
-    into the physical space:
-
-    .. math::
-            S^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
-                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
-
-    Here, we can introduce the multi-variate basis functions
-
-    .. math::
-            \tilde{N}_{i,j,k;p,q,r}(u,v,w) := N_{i;p}(u) N_{j;q}(v) N_{k;r}(w)
+    For explanations on how to construct splines using these 
+    basis functions and usage examples, we refer to the documentation of the 
+    classes :class:`.BSpline` and :class:`.NURBS`.
     """
 
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
-        """
-        BSplineBase. Serves as a base for bspline families.
-
-        Parameters
-        -----------
-        *args: args
-        **kwargs: kwargs
-
-        Returns
-        --------
-        None
-        """
         super().__init__(*args, **kwargs)
 
     @spline._new_core_if_modified
@@ -226,10 +188,95 @@ class BSplineBase(spline.Spline):
 
 
 class BSpline(BSplineBase):
-    """
-    BSpline.
+    r"""
+    BSpline. 
+    
+    Passes all arguments to :code:`super.__init__()`, see 
+    :class:`.BSplineBase`.
 
-    See :class:`.BSplineBase` for more information on the theory of B-Splines.
+    With the help of the mono-variate basis functions introduced from the 
+    B-Spline introduction in :class:`.BSplineBase`, we can now construct
+    B-Splines. 
+    
+    .. note::
+        For simplicity, we restrict ourselves to the three most common types 
+        of splines in the following, namely curves, surfaces and volumes,
+        although :code:`splinepy` also supports higher dimensions, see
+        the documentation of :class:`.Spline` for more information.
+
+    1. A B-Spline of degree :math:`p` with control points
+    :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
+    (:math:`N_{param}=1`) corresponds to a line embedded into the physical
+    space:
+
+    .. math::
+            S^N(u) = \sum_{i=1}^{l} N_{i;p}(u) P_i
+
+    2. A B-Spline of degrees :math:`p,q` with control points
+    :math:`P_{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
+    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
+    physical space:
+
+    .. math::
+            S^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
+                P_{i,j}
+
+    Due to the tensor-product nature of the B-Spline basis functions, this is
+    often rewritten in terms of multi-variate basis functions
+
+    .. math::
+            \tilde{N}_{i,j;p,q}(u,v) := N_{i;p}(u) N_{j;q}(v)
+
+    3. A B-Spline of degrees :math:`p,q,r` with control points
+    :math:`P_{i,j,k} \in \mathbb{R}^{N_{phys}}` and a three-dimensional
+    parameter space (:math:`N_{param}=3`) corresponds to a volume, embedded
+    into the physical space:
+
+    .. math::
+            S^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
+                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
+
+    Here, we can introduce the multi-variate basis functions
+
+    .. math::
+            \tilde{N}_{i,j,k;p,q,r}(u,v,w) := N_{i;p}(u) N_{j;q}(v) N_{k;r}(w)
+
+    Higher-dimensional instances are constructed accordingly.
+
+    **Usage**:
+
+    .. code-block:: python
+
+        bspline_volume = splinepy.BSpline(
+            degrees=[1,1,1],
+            knot_vectors=[
+                [0.0, 0.0, 1.0, 1.0],
+                [0.0, 0.0, 1.0, 1.0],
+                [0.0, 0.0, 1.0, 1.0],
+            ],
+            control_points=[
+                [0.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0],
+                [1.0, 1.0, 0.0],
+                [0.0, -1.0, 1.0],
+                [1.0, 0.0, 1.0],
+                [-1.0, 1.0, 2.0],
+                [2.0, 2.0, 2.0],
+            ]
+        )
+
+    Parameters
+    ----------
+    degrees: (para_dim) array-like
+    knot_vectors: (para_dim) list
+        list of array-like
+    control_points: (n, dim) array-like
+    spline: Spline
+
+    Returns
+    -------
+    None
     """
 
     __slots__ = "_fitting_queries"
@@ -241,21 +288,6 @@ class BSpline(BSplineBase):
         control_points=None,
         spline=None,
     ):
-        """
-        BSpline. Uses Spline.__init__()
-
-        Parameters
-        ----------
-        degrees: (para_dim) array-like
-        knot_vectors: (para_dim) list
-          list of array-like
-        control_points: (n, dim) array-like
-        spline: Spline
-
-        Returns
-        -------
-        None
-        """
         super().__init__(
             spline=spline,
             degrees=degrees,
