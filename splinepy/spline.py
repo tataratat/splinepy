@@ -591,13 +591,13 @@ class Spline(SplinepyBase, core.CoreSpline):
     :math:`\Omega_{phys} \subset \mathbb{R}^{N_{phys}}`, i.e.,
 
     .. math::
-            f : \Omega_{param} \to \Omega_{phys}
+            M : \Omega_{param} \to \Omega_{phys}
 
     :code:`splinepy` generally supports different combinations of embeddings,
     that is different combinations of dimensionalities :math:`N_{param}` and
     :math:`N_{phys}`, up to dimension 10.
     The supported spline types differ in the way how the spline function
-    :math:`f` is defined. For an overview of the mathematical theories for the
+    :math:`M` is defined. For an overview of the mathematical theories for the
     different types of supported splines, we refer to the documentation of the
     classes :class:`.BSplineBase` and :class:`.BezierBase` for a more in-depth
     discussion of the theory on B-Spline/Bezier families, as well as to their

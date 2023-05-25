@@ -45,11 +45,11 @@ class BSplineBase(spline.Spline):
     dimension:
 
     .. math::
-            N_{i;0}(u) &= \begin{cases}
+            N^{i;0}(u) &= \begin{cases}
                 1 & u\in [u_i,u_{i+1}] \\\\
                 0 & \mathrm{else} \end{cases} \\\\
-            N_{i;p}(u) &= \frac{u-u_i}{u_{i+p}-u_i} N_{i;p-1}(u)
-                + \frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1;p-1}(u)
+            N^{i;p}(u) &= \frac{u-u_i}{u_{i+p}-u_i} N^{i;p-1}(u)
+                + \frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N^{i+1;p-1}(u)
 
     For explanations on how to construct splines using these
     basis functions and usage examples, we refer to the documentation of the
@@ -205,41 +205,41 @@ class BSpline(BSplineBase):
         the documentation of :class:`.Spline` for more information.
 
     1. A B-Spline of degree :math:`p` with control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
+    :math:`P^i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
     (:math:`N_{param}=1`) corresponds to a line embedded into the physical
     space:
 
     .. math::
-            S^N(u) = \sum_{i=1}^{l} N_{i;p}(u) P_i
+            C(u) = \sum_{i=1}^{l} N^{i;p}(u) P^i
 
     2. A B-Spline of degrees :math:`p,q` with control points
-    :math:`P_{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
+    :math:`P^{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
     space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
     physical space:
 
     .. math::
-            S^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
-                P_{i,j}
+            S(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N^{i;p}(u) N^{j;q}(v)
+                P^{i,j}
 
     Due to the tensor-product nature of the B-Spline basis functions, this is
     often rewritten in terms of multi-variate basis functions
 
     .. math::
-            \tilde{N}_{i,j;p,q}(u,v) := N_{i;p}(u) N_{j;q}(v)
+            \tilde{N}_{i,j;p,q}(u,v) := N^{i;p}(u) N^{j;q}(v)
 
     3. A B-Spline of degrees :math:`p,q,r` with control points
-    :math:`P_{i,j,k} \in \mathbb{R}^{N_{phys}}` and a three-dimensional
+    :math:`P^{i,j,k} \in \mathbb{R}^{N_{phys}}` and a three-dimensional
     parameter space (:math:`N_{param}=3`) corresponds to a volume, embedded
     into the physical space:
 
     .. math::
-            S^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
-                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
+            V(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
+                N^{i;p}(u) N^{j;q}(v) N^{k;r}(w) P^{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
 
     .. math::
-            \tilde{N}_{i,j,k;p,q,r}(u,v,w) := N_{i;p}(u) N_{j;q}(v) N_{k;r}(w)
+            \tilde{N}^{i,j,k;p,q,r}(u,v,w) := N^{i;p}(u) N^{j;q}(v) N^{k;r}(w)
 
     Higher-dimensional instances are constructed accordingly.
 

@@ -9,27 +9,27 @@ class RationalBezier(BezierBase):
 
     Rational Beziers are an extension to classical Beziers, similar like NURBS
     are an extension to B-Splines. By introducing a scalar weighting function
-    :math:`W^B:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, we can construct
+    :math:`W:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, we can construct
     modified (rational) basis functions, that allow to define rational
     Beziers.
     For a one-dimensional parameter space (:math:`N_{param}=1`), this
     weighting function reads
 
     .. math::
-            W^B(u) = \sum_{i=0}^{l} B_{i;p}(u) w_i
+            W(u) = \sum_{i=0}^{l} B^{i;p}(u) w^i
 
-    with scalar weights :math:`w_i\in\mathbb{R}^{+}_{*}`.
+    with scalar weights :math:`w^i\in\mathbb{R}^{+}_{*}`.
     Consequently, for the two-dimensional case (:math:`N_{param}=2`) we have
 
     .. math::
-            W^B(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B_{i;p}(u) B_{j;q}(v)
-                w_{i,j}
+            W(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B^{i;p}(u) B^{j;q}(v)
+                w^{i,j}
 
     and for the three-dimensional case (:math:`N_{param}=3`)
 
     .. math::
-            W^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
-                B_{i;p}(u) B_{j;q}(v) B_{k;r}(w) w_{i,j,k}
+            W(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
+                B^{i;p}(u) B^{j;q}(v) B^{k;r}(w) w^{i,j,k}
 
     We proceed with a description of how to construct rational Beziers:
 
@@ -40,52 +40,52 @@ class RationalBezier(BezierBase):
         the documentation of :class:`.Spline` for more information.
 
     1. A rational Bezier of degree :math:`p` with control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_i\in\mathbb{R}^{+}_{*}`, and a one-dimensional parameter space
+    :math:`P^i\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^i\in\mathbb{R}^{+}_{*}`, and a one-dimensional parameter space
     (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the
     physical space
 
     .. math::
-            C^B(u) = \sum_{i=0}^{l} R^B_{i;p}(u) P_i
+            C(u) = \sum_{i=0}^{l} R^{i;p}(u) P^i
 
     with the modified (rational) basis functions
 
     .. math::
-            R^B_{i;p}(u) = \frac{B_{i;p}(u) w_i}{W^B(u)}
+            R^{i;p}(u) = \frac{B^{i;p}(u) w^i}{W(u)}
 
     2. A rational Bezier of degrees :math:`p,q` with control points
-    :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_{i,j}\in\mathbb{R}^{+}_{*}`, and a two-dimensional parameter
+    :math:`P^{i,j}\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^{i,j}\in\mathbb{R}^{+}_{*}`, and a two-dimensional parameter
     space (i.e., :math:`N_{param}=2`) corresponds to a surface embedded into
     the physical space
 
     .. math::
-            S^B(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} R^B_{i,j;p,q}(u,v) P_{i,j}
+            S(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} R^{i,j;p,q}(u,v) P^{i,j}
 
     with the modified (rational) basis functions
 
     .. math::
-            R^B_{i,j;p,q}(u,v) =
-                \frac{\tilde{N}_{i,j;p,q}(u,v) w_{i,j}}{W^B(u,v)}
+            R^{i,j;p,q}(u,v) =
+                \frac{\tilde{N}^{i,j;p,q}(u,v) w^{i,j}}{W(u,v)}
 
     3. A rational Bezier of degrees :math:`p,q,r` with control points
-    :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_{i,j,k}\in\mathbb{R}^{+}_{*}`, and a three-dimensional parameter
+    :math:`P^{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^{i,j,k}\in\mathbb{R}^{+}_{*}`, and a three-dimensional parameter
     space (i.e., :math:`N_{param}=3`) corresponds to a volume embedded into
     the physical space
 
     .. math::
-            V^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
-                R^B_{i,j,k;p,q,r}(u,v,w) P_{i,j,k}
+            V(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
+                R^{i,j,k;p,q,r}(u,v,w) P^{i,j,k}
 
     with the modified (rational) basis functions
 
     .. math::
-            R^B_{i,j,k;p,q,r}(u,v,w) =
+            R^{i,j,k;p,q,r}(u,v,w) =
                 \frac{
-                    \tilde{N}_{i,j,k;p,q,r}(u,v,w) w_{i,j,k}
+                    \tilde{N}^{i,j,k;p,q,r}(u,v,w) w^{i,j,k}
                 }{
-                    W^B(u,v,w)
+                    W(u,v,w)
                 }
 
     Higher-dimensional instances are constructed accordingly.

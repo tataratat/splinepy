@@ -12,7 +12,7 @@ class BezierBase(spline.Spline):
     *Berstein polynomials*
 
     .. math::
-            B_{i;p}(u) = \binom{p}{i} u^i (1-u)^{p-i}
+            B^{i;p}(u) = \binom{p}{i} u^i (1-u)^{p-i}
 
     The parametric domain of a Bezier spline is always a multi-dimensional
     hypercube, that is :math:`\Omega_{param}=[0,1]^{N_{param}}`.
@@ -199,42 +199,42 @@ class Bezier(BezierBase):
         the documentation of :class:`.Spline` for more information.
 
     1. A spline of degree :math:`p` with :math:`(p+1)` control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
+    :math:`P^i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
     (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the
     physical space:
 
     .. math::
-            C^B(u) = \sum_{i=0}^{l} B_{i;p}(u) P_i
+            C(u) = \sum_{i=0}^{l} B^{i;p}(u) P^i
 
     2. A spline of degrees :math:`p,q` with :math:`(p+1)\cdot(q+1)` control
-    points :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional
+    points :math:`P^{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional
     parameter space (i.e., :math:`N_{param}=2`) corresponds to a surface,
     embedded into the physical space:
 
     .. math::
-            S^B(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B_{i;p}(u) B_{j;q}(v)
-                P_{i,j}
+            S(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B^{i;p}(u) B^{j;q}(v)
+                P^{i,j}
 
     Due to the tensor-product nature of the Bezier basis functions, this is
     often rewritten as in terms of multi-variate basis functions
 
     .. math::
-            \tilde{B}_{i,j;p,q}(u,v) := B_{i;p}(u) B_{j;q}(v)
+            \tilde{B}^{i,j;p,q}(u,v) := B^{i;p}(u) B^{j;q}(v)
 
     3. A spline of degrees :math:`p,q,r` with :math:`(p+1)\cdot(q+1)\cdot(r+1)`
-    control points :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}` and a
+    control points :math:`P^{i,j,k}\in\mathbb{R}^{N_{phys}}` and a
     three-dimensional parameter space (i.e., :math:`N_{param}=3`) corresponds
     to a volume, embedded into the physical space:
 
     .. math::
             V^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
-                B_{i;p}(u) B_{j;q}(v) B_{k;r}(w) P_{i,j,k}
+                B^{i;p}(u) B^{j;q}(v) B^{k;r}(w) P^{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
 
     .. math::
-            \tilde{B}_{i,j,k;p,q,r}(u,v,w) := B_{i;p}(u) B_{j;q}(v)
-                B_{k;r}(w)
+            \tilde{B}^{i,j,k;p,q,r}(u,v,w) := B^{i;p}(u) B^{j;q}(v)
+                B^{k;r}(w)
 
     Higher-dimensional instances are constructed accordingly.
 

@@ -10,26 +10,26 @@ class NURBS(BSplineBase):
     NURBS are an extension of B-Splines overcoming their drawback of being
     unable to represent circular shapes. This is achieved by the introduction
     of a weighting function
-    :math:`W^N:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, defined as (for
-    a one-dimensional parameter space, i.e., :math:`N_{param}=1`)
+    :math:`W:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, defined as (for a 
+    one-dimensional parameter space, i.e., :math:`N_{param}=1`)
 
     .. math::
-            W^N(u) = \sum_{i=1}^{l} N_{i;p}(u) w_i
+            W(u) = \sum_{i=1}^{l} N^{i;p}(u) w^i
 
-    with scalar weights :math:`w_i\in\mathbb{R}^{+}_{*}`. Note, that the same
+    with scalar weights :math:`w^i\in\mathbb{R}^{+}_{*}`. Note, that the same
     basis functions are used for both the weighting function and projection
     space. Consequently, for the two-dimensional case (:math:`N_{param}=2`) we
     have
 
     .. math::
-            W^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
-                w_{i,j}
+            W(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N^{i;p}(u) N^{j;q}(v)
+                w^{i,j}
 
     and for the three-dimensional case (:math:`N_{param}=3`)
 
     .. math::
-            W^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
-                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) w_{i,j,k}
+            W(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
+                N^{i;p}(u) N^{j;q}(v) N^{k;r}(w) w^{i,j,k}
 
     We can now construct different spline embeddings similar to the
     description in :class:`.BSplineBase`, only including the additional
@@ -42,52 +42,52 @@ class NURBS(BSplineBase):
         the documentation of :class:`.Spline` for more information.
 
     1. A NURBS of degree :math:`p` with control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_i\in\mathbb{R}^{+}_{*}`, and a one-dimensional parameter space
+    :math:`P^i\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^i\in\mathbb{R}^{+}_{*}`, and a one-dimensional parameter space
     (:math:`N_{param}=1`) corresponds to a line, embedded into the physical
     space:
 
     .. math::
-            C^N(u) = \sum_{i=1}^{l} R^N_{i;p}(u) P_i
+            C(u) = \sum_{i=1}^{l} R^{i;p}(u) P^i
 
     with the modified (rational) basis functions
 
     .. math::
-            R^N_{i;p}(u) = \frac{N_{i;p}(u)w_i}{W^N(u)}
+            R^{i;p}(u) = \frac{N^{i;p}(u)w^i}{W(u)}
 
     2. A NURBS of degrees :math:`p,q` with control points
-    :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_{i,j}\in\mathbb{R}^{+}_{*}`, and a two-dimensional parameter
+    :math:`P^{i,j}\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^{i,j}\in\mathbb{R}^{+}_{*}`, and a two-dimensional parameter
     space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
     physical space:
 
     .. math::
-            S^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} R^N_{i,j;p,q}(u,v) P_{i,j}
+            S(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} R^{i,j;p,q}(u,v) P^{i,j}
 
     with the modified (rational) basis functions
 
     .. math::
-            R^N_{i,j;p,q}(u,v) =
-                \frac{\tilde{N}_{i,j;p,q}(u,v) w_{i,j}}{W^N(u,v)}
+            R^{i,j;p,q}(u,v) =
+                \frac{\tilde{N}^{i,j;p,q}(u,v) w^{i,j}}{W(u,v)}
 
     3. A NURBS of degrees :math:`p,q,r` with control points
-    :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_{i,j,k}\in\mathbb{R}^{+}_{*}`, and a three-dimensional parameter
+    :math:`P^{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w^{i,j,k}\in\mathbb{R}^{+}_{*}`, and a three-dimensional parameter
     space (:math:`N_{param}=3`) corresponds to a volume, embedded into the
     physical space:
 
     .. math::
-            V^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
-                R^N_{i,j,k;p,q,r}(u,v,w) P_{i,j,k}
+            V(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
+                R^{i,j,k;p,q,r}(u,v,w) P^{i,j,k}
 
     with the modified (rational) basis functions
 
     .. math::
-            R^N_{i,j,k;p,q,r}(u,v,w) =
+            R^{i,j,k;p,q,r}(u,v,w) =
                 \frac{
-                    \tilde{N}_{i,j,k;p,q,r}(u,v,w) w_{i,j,k}
+                    \tilde{N}^{i,j,k;p,q,r}(u,v,w) w^{i,j,k}
                 }{
-                    W^N(u,v,w)
+                    W(u,v,w)
                 }
 
     Higher-dimensional instances are constructed accordingly.
