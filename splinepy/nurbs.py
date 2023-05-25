@@ -10,7 +10,7 @@ class NURBS(BSplineBase):
     NURBS are an extension of B-Splines overcoming their drawback of being
     unable to represent circular shapes. This is achieved by the introduction
     of a weighting function
-    :math:`W:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, defined as (for a 
+    :math:`W:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, defined as (for a
     one-dimensional parameter space, i.e., :math:`N_{param}=1`)
 
     .. math::
