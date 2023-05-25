@@ -904,15 +904,19 @@ public:
 /// Internal use only
 /// Extract CoreSpline_s from list of PySplines
 inline std::vector<PySpline::CoreSpline_>
-ListOfPySplinesToVectorOfCoreSplines(py::list pysplines) {
+ListOfPySplinesToVectorOfCoreSplines(py::list pysplines,
+                                     const int nthreads = 1) {
   // prepare return obj
-  std::vector<PySpline::CoreSpline_> core_splines;
-  core_splines.reserve(pysplines.size());
+  const int n_splines = static_cast<int>(pysplines.size());
+  std::vector<PySpline::CoreSpline_> core_splines(n_splines);
 
-  // loop and append
-  for (py::handle pys : pysplines) {
-    core_splines.emplace_back(py::cast<PySpline>(pys).Core());
-  }
+  auto to_core = [&](int begin, int end) {
+    for (int i{begin}; i < end; ++i) {
+      core_splines[i] =
+          pysplines[i].template cast<std::shared_ptr<PySpline>>()->Core();
+    }
+  };
+  splinepy::utils::NThreadExecution(to_core, n_splines, nthreads);
 
   return core_splines;
 }
