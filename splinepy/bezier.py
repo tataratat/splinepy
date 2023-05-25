@@ -59,11 +59,11 @@ class BezierBase(spline.Spline):
     special type of B-Splines with open knot vectors (i.e., the first and last
     entry are repeated :math:`p+1`-times) that do not feature additional
     internal knots.
-    
+
     Usage:
-    
+
     .. code-block:: python
-       
+
        # Polynomial Bezier surface
        polynomial_bezier = splinepy.Bezier(
            degrees=[2,1],
