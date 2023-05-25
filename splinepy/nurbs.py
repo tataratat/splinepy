@@ -7,8 +7,8 @@ class NURBS(BSplineBase):
 
     NURBS are an extension of B-Splines overcoming their drawback of being
     unable to represent circular shapes. This is achieved by the introduction
-    of a weighting function 
-    :math:`W^N:\mathbb{R}^{N_{param}}\to\mathbb{R}^{> 0}`, defined as (for 
+    of a weighting function
+    :math:`W^N:\mathbb{R}^{N_{param}}\to\mathbb{R}^{> 0}`, defined as (for
     a one-dimensional parameter space, i.e., :math:`N_{param}=1`)
 
     .. math::
@@ -32,9 +32,9 @@ class NURBS(BSplineBase):
     weighting:
 
     1. A NURBS of degree :math:`p` with control points
-    :math:`P_i\in\mathbb{R}^{N_{phys}}`, weights 
-    :math:`w_i\in\mathbb{R}^{> 0}`, and a one-dimensional parameter space 
-    (:math:`N_{param}=1`) corresponds to a line, embedded into the physical 
+    :math:`P_i\in\mathbb{R}^{N_{phys}}`, weights
+    :math:`w_i\in\mathbb{R}^{> 0}`, and a one-dimensional parameter space
+    (:math:`N_{param}=1`) corresponds to a line, embedded into the physical
     space:
 
     .. math::
@@ -47,8 +47,8 @@ class NURBS(BSplineBase):
 
     2. A NURBS of degrees :math:`p,q` with control points
     :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}`, weights
-    :math:`w_{i,j}\in\mathbb{R}^{> 0}`, and a two-dimensional parameter 
-    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the 
+    :math:`w_{i,j}\in\mathbb{R}^{> 0}`, and a two-dimensional parameter
+    space (:math:`N_{param}=2`) corresponds to a surface, embedded into the
     physical space:
 
     .. math::
@@ -63,7 +63,7 @@ class NURBS(BSplineBase):
     3. A NURBS of degrees :math:`p,q,r` with control points
     :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}`, weights
     :math:`w_{i,j,k}\in\mathbb{R}^{> 0}`, and a three-dimensional parameter
-    space (:math:`N_{param}=3`) corresponds to a volume, embedded into the 
+    space (:math:`N_{param}=3`) corresponds to a volume, embedded into the
     physical space:
 
     .. math::
