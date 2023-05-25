@@ -26,17 +26,17 @@ class BSplineBase(spline.Spline):
     :math:`u_i` is referred to as the :math:`i`-th *knot*. Intervals of the
     type :math:`[u_i,u_{i+1}]` are known as *knot spans* or *elements*.
     As we can see, the number of knot entries, the number of control points,
-    and the polynomial degree of the spline are related to each other by the 
-    equation :math`#knots=l+p+1`. Here, :math:`l` denotes the number of 
-    control points along a parametric dimension and :math:`p` the polynomial 
-    order of the spline. 
-    In the special case of a so-called *open knot vector*, the first and the 
+    and the polynomial degree of the spline are related to each other by the
+    equation :math`#knots=l+p+1`. Here, :math:`l` denotes the number of
+    control points along a parametric dimension and :math:`p` the polynomial
+    order of the spline.
+    In the special case of a so-called *open knot vector*, the first and the
     last entry of the knot vector are repeated :math:`p+1` times, that is
 
     .. math::
            u_1 = ... = u_{p+1} < u_{p+2} < ... < u_l < u_{l+1} = ... = u_{l+p+1}
 
-    Splines with open knot vectors have the property that they exactly 
+    Splines with open knot vectors have the property that they exactly
     interpolate the first and the last control point in this parametric
     dimension.
 
@@ -51,8 +51,8 @@ class BSplineBase(spline.Spline):
             N_{i;p}(u) &= \frac{u-u_i}{u_{i+p}-u_i} N_{i;p-1}(u)
                 + \frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1;p-1}(u)
 
-    For explanations on how to construct splines using these 
-    basis functions and usage examples, we refer to the documentation of the 
+    For explanations on how to construct splines using these
+    basis functions and usage examples, we refer to the documentation of the
     classes :class:`.BSpline` and :class:`.NURBS`.
     """
 
@@ -189,17 +189,17 @@ class BSplineBase(spline.Spline):
 
 class BSpline(BSplineBase):
     r"""
-    BSpline. 
-    
-    Passes all arguments to :code:`super.__init__()`, see 
+    BSpline.
+
+    Passes all arguments to :code:`super.__init__()`, see
     :class:`.BSplineBase`.
 
-    With the help of the mono-variate basis functions introduced from the 
+    With the help of the mono-variate basis functions introduced from the
     B-Spline introduction in :class:`.BSplineBase`, we can now construct
-    B-Splines. 
-    
+    B-Splines.
+
     .. note::
-        For simplicity, we restrict ourselves to the three most common types 
+        For simplicity, we restrict ourselves to the three most common types
         of splines in the following, namely curves, surfaces and volumes,
         although :code:`splinepy` also supports higher dimensions, see
         the documentation of :class:`.Spline` for more information.

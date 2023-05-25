@@ -601,7 +601,7 @@ class Spline(SplinepyBase, core.CoreSpline):
     different types of supported splines, we refer to the documentation of the
     classes :class:`.BSplineBase` and :class:`.BezierBase` for a more in-depth
     discussion of the theory on B-Spline/Bezier families, as well as to their
-    children :class:`.BSpline`, :class:`.NURBS`, :class:`.Bezier`, and 
+    children :class:`.BSpline`, :class:`.NURBS`, :class:`.Bezier`, and
     :class:`.RationalBezier` for usage examples.
 
     Parameters

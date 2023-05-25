@@ -16,16 +16,16 @@ class BezierBase(spline.Spline):
 
     The parametric domain of a Bezier spline is always a multi-dimensional
     hypercube, that is :math:`\Omega_{param}=[0,1]^{N_{param}}`.
-    We refer to the documentation of the classes :class:`.Bezier` and 
+    We refer to the documentation of the classes :class:`.Bezier` and
     :class:`.RationalBezier` for explanations how to construct splines using
     Berstein polynomials as basis.
 
-    Moreover, we like to make the point that Bezier splines can also be seen 
+    Moreover, we like to make the point that Bezier splines can also be seen
     as a special type of B-Splines with open knot vectors (i.e., the first and
     last entry are repeated :math:`p+1`-times) that do not feature additional
     internal knots.
 
-    For usage examples, we once again refer to the derived classes 
+    For usage examples, we once again refer to the derived classes
     :class:`.Bezier` and :class:`.RationalBezier`.
     """
 
@@ -193,7 +193,7 @@ class Bezier(BezierBase):
     dimension of the parametric space.
 
     .. note::
-        For simplicity, we restrict ourselves to the three most common types 
+        For simplicity, we restrict ourselves to the three most common types
         of splines in the following, namely curves, surfaces and volumes,
         although :code:`splinepy` also supports higher dimensions, see
         the documentation of :class:`.Spline` for more information.
@@ -206,9 +206,9 @@ class Bezier(BezierBase):
     .. math::
             C^B(u) = \sum_{i=0}^{l} B_{i;p}(u) P_i
 
-    2. A spline of degrees :math:`p,q` with :math:`(p+1)\cdot(q+1)` control 
-    points :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional 
-    parameter space (i.e., :math:`N_{param}=2`) corresponds to a surface, 
+    2. A spline of degrees :math:`p,q` with :math:`(p+1)\cdot(q+1)` control
+    points :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional
+    parameter space (i.e., :math:`N_{param}=2`) corresponds to a surface,
     embedded into the physical space:
 
     .. math::
@@ -222,8 +222,8 @@ class Bezier(BezierBase):
             \tilde{B}_{i,j;p,q}(u,v) := B_{i;p}(u) B_{j;q}(v)
 
     3. A spline of degrees :math:`p,q,r` with :math:`(p+1)\cdot(q+1)\cdot(r+1)`
-    control points :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}` and a 
-    three-dimensional parameter space (i.e., :math:`N_{param}=3`) corresponds 
+    control points :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}` and a
+    three-dimensional parameter space (i.e., :math:`N_{param}=3`) corresponds
     to a volume, embedded into the physical space:
 
     .. math::

@@ -34,7 +34,7 @@ class RationalBezier(BezierBase):
     We proceed with a description of how to construct rational Beziers:
 
     .. note::
-        For simplicity, we restrict ourselves to the three most common types 
+        For simplicity, we restrict ourselves to the three most common types
         of splines in the following, namely curves, surfaces and volumes,
         although :code:`splinepy` also supports higher dimensions, see
         the documentation of :class:`.Spline` for more information.
@@ -104,7 +104,7 @@ class RationalBezier(BezierBase):
             ],
             weights=[1.0, 2.0**-0.5, 1.0]
         )
-    
+
     Parameters
     -----------
     degrees: (para_dim,) array-like

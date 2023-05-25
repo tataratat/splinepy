@@ -16,8 +16,8 @@ class NURBS(BSplineBase):
     .. math::
             W^N(u) = \sum_{i=1}^{l} N_{i;p}(u) w_i
 
-    with scalar weights :math:`w_i\in\mathbb{R}^{+}_{*}`. Note, that the same 
-    basis functions are used for both the weighting function and projection 
+    with scalar weights :math:`w_i\in\mathbb{R}^{+}_{*}`. Note, that the same
+    basis functions are used for both the weighting function and projection
     space. Consequently, for the two-dimensional case (:math:`N_{param}=2`) we
     have
 
@@ -36,7 +36,7 @@ class NURBS(BSplineBase):
     weighting:
 
     .. note::
-        For simplicity, we restrict ourselves to the three most common types 
+        For simplicity, we restrict ourselves to the three most common types
         of splines in the following, namely curves, surfaces and volumes,
         although :code:`splinepy` also supports higher dimensions, see
         the documentation of :class:`.Spline` for more information.
@@ -89,7 +89,7 @@ class NURBS(BSplineBase):
                 }{
                     W^N(u,v,w)
                 }
-    
+
     Higher-dimensional instances are constructed accordingly.
 
     **Usage**:
