@@ -8,13 +8,13 @@ class NURBS(BSplineBase):
     NURBS are an extension of B-Splines overcoming their drawback of being
     unable to represent circular shapes. This is achieved by the introduction
     of a weighting function
-    :math:`W^N:\mathbb{R}^{N_{param}}\to\mathbb{R}^{> 0}`, defined as (for
+    :math:`W^N:\mathbb{R}^{N_{param}}\to\mathbb{R}^{+}_{*}`, defined as (for
     a one-dimensional parameter space, i.e., :math:`N_{param}=1`)
 
     .. math::
             W^N(u) = \sum_{i=1}^{l} N_{i;p}(u) w_i
 
-    with scalar weights :math:`w_i\in\mathbb{R}^{> 0}`.
+    with scalar weights :math:`w_i\in\mathbb{R}^{> 0}`. Note, that the same basis functions are used for both the weighting function and projection space.
     Consequently, for the two-dimensional case (:math:`N_{param}=2`) we have
 
     .. math::

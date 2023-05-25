@@ -17,7 +17,7 @@ class BezierBase(spline.Spline):
     We can distinguish between different types of splines depending on the
     dimension of the parametric space.
 
-    1. A spline of degree :math:`p` with control points
+    1. A spline of degree :math:`p` with :math:`(p+1)` control points
     :math:`P_i\\in\\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
     (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the
     physical space:
@@ -59,6 +59,33 @@ class BezierBase(spline.Spline):
     special type of B-Splines with open knot vectors (i.e., the first and last
     entry are repeated :math:`p+1`-times) that do not feature additional
     internal knots.
+    
+    Usage:
+    
+    .. code-block:: python
+       
+       # Polynomial Bezier surface
+       polynomial_bezier = splinepy.Bezier(
+           degrees=[2,1],
+           control_points=[
+               [0.0, 0.0],
+               [1.0, 0.0],
+               [2.0, 1.0],
+               [0.0, 2.0],
+               [1.0, 1.0],
+               [2.0, 2.0]
+           ]
+       )
+       # Rational bezier surface (quarter arc)
+       rational_bezier = splinepy.RationalBezier(
+           degrees=[2],
+           control_points=[
+               [0.0, 0.0],
+               [1.0, 0.0],
+               [1.0, 1.0]
+           ],
+           weights=[1.0, 2.0**-0.5, 1.0]
+       )
     """
 
     __slots__ = ()
