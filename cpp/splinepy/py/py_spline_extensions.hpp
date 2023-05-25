@@ -16,11 +16,11 @@ namespace py = pybind11;
 
 /// checks if given PySpline has specified para_dim and dim
 /// optionally raise if they don't match
-inline bool CheckParaDimAndDim(const PySpline& spline,
-                               const int& para_dim,
-                               const int& dim,
-                               const bool throw_ = true) {
-  if (para_dim != spline.para_dim_ || dim != spline.dim_) {
+inline bool CheckCoreParaDimAndDim(const PySpline::CoreSpline_& spline,
+                                   const int& para_dim,
+                                   const int& dim,
+                                   const bool throw_ = true) {
+  if (para_dim != spline->SplinepyParaDim() || dim != spline->SplinepyDim()) {
     if (throw_) {
       splinepy::utils::PrintAndThrowError(
           "Spline is expected to have (para_dim",
@@ -30,9 +30,9 @@ inline bool CheckParaDimAndDim(const PySpline& spline,
           ".",
           "But it has",
           "(",
-          spline.para_dim_,
+          spline->SplinepyParaDim(),
           ",",
-          spline.dim_,
+          spline->SplinepyDim(),
           ").");
     }
     return false;
