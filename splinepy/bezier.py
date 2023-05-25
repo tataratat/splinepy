@@ -10,51 +10,55 @@ class BezierBase(spline.Spline):
     *Berstein polynomials*
 
     .. math::
-            N_{i;p}(u) = \\binom{p}{i} u^i (1-u)^{p-i}
+            B_{i;p}(u) = \\binom{p}{i} u^i (1-u)^{p-i}
 
-    A Bezier spline itself can be seen as a map from the parametric domain
-    :math:`[0,1]^{N_{param}}` to the physical domain
-    :math:`\\mathbb{R}^{N_{phys}}`. We can distinguish between different types
-    of splines depending on the dimension of the parametric space.
+    The parametric domain of a Bezier spline is always a multi-dimensional 
+    hypercube, that is :math:`\Omega_{param}=[0,1]^{N_{param}}`. 
+    We can distinguish between different types of splines depending on the 
+    dimension of the parametric space.
 
-    #. A spline of degree :math:`p` with control points
-    :math:`P_i\\in\\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
-    corresponds to a line embedded into the physical space:
-
-    .. math::
-            C(u) = \\sum_{i=0}^{l} N_{i;p}(u) P_i
-
-    #. A spline of degrees :math:`p,q` with control points
-    :math:`P_{i,j}\\in\\mathbb{R}^{N_{phys}}` and a two-dimensional parameter
-    space corresponds to a surface, embedded into the physical space:
+    1. A spline of degree :math:`p` with control points
+    :math:`P_i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
+    (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the 
+    physical space:
 
     .. math::
-            C(u,v) = \\sum_{i=0}^{l} \\sum_{j=0}^{m} N_{i;p}(u) N_{j;q}(v)
+            S^B(u) = \sum_{i=0}^{l} B_{i;p}(u) P_i
+
+    2. A spline of degrees :math:`p,q` with control points
+    :math:`P_{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional parameter
+    space (i.e., :math:`N_{param}=2`) corresponds to a surface, embedded into 
+    the physical space:
+
+    .. math::
+            S^B(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B_{i;p}(u) B_{j;q}(v)
                 P_{i,j}
 
     Due to the tensor-product nature of the Bezier basis functions, this is
     often rewritten as in terms of multi-variate basis functions
 
     .. math::
-            \\tilde{N}_{i,j;p,q}(u,v) := N_{i;p}(u) N_{j;q}(v)
+            \\tilde{B}_{i,j;p,q}(u,v) := B_{i;p}(u) B_{j;q}(v)
 
-    #. A spline of degrees :math:`p,q,r` with control points
-    :math:`P_{i,j,k}\\in\\mathbb{R}^{N_{phys}}` and a three-dimensional
-    parameter space corresponds to a volume, embedded into the physical space:
+    3. A spline of degrees :math:`p,q,r` with control points
+    :math:`P_{i,j,k}\in\mathbb{R}^{N_{phys}}` and a three-dimensional
+    parameter space (i.e., :math:`N_{param}=3`) corresponds to a volume, 
+    embedded into the physical space:
 
     .. math::
-            C(u,v,w) = \\sum_{i=0}^{l} \\sum_{j=0}^{m} \\sum_{k=0}^{n}
-                N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
+            S^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
+                B_{i;p}(u) B_{j;q}(v) B_{k;r}(w) P_{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
 
     .. math::
-            \\tilde{N}_{i,j,k;p,q,r}(u,v,w) \\coloneqq N_{i;p}(u) N_{j;q}(v)
-                N_{k;r}(w)
+            \\tilde{B}_{i,j,k;p,q,r}(u,v,w) := B_{i;p}(u) B_{j;q}(v)
+                B_{k;r}(w)
 
-    Finally, we like to emphasize that Bezier splines can be seen as a special
-    type of B-Splines, where the knot vectors do not feature internal knots
-    but only have the first and last entry :math:`p^i+1`-times repeated.
+    Finally, we like to emphasize that Bezier splines can also be seen as a 
+    special type of B-Splines with open knot vectors (i.e., the first and last 
+    entry are repeated :math:`p+1`-times) that do not feature additional  
+    internal knots.
     """
 
     __slots__ = ()
@@ -216,14 +220,17 @@ class BezierBase(spline.Spline):
 
 
 class Bezier(BezierBase):
+    """
+    Bezier (Spline).
+
+    See :class:`.BezierBase` for more information on the theory of Bezier 
+    splines.
+    """
     __slots__ = ()
 
     def __init__(self, degrees=None, control_points=None, spline=None):
         """
         Bezier (Spline).
-
-        See :class:`.BezierBase` for more information on the theory of Bezier
-        splines.
 
         Parameters
         -----------

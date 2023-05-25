@@ -50,7 +50,7 @@ class BSplineBase(spline.Spline):
     space:
 
     .. math::
-            S(u) = \sum_{i=1}^{l} N_{i;p}(u) P_i
+            S^N(u) = \sum_{i=1}^{l} N_{i;p}(u) P_i
 
     2. A B-Spline of degrees :math:`p,q` with control points
     :math:`P_{i,j} \in \mathbb{R}^{N_{phys}}` and a two-dimensional parameter
@@ -58,7 +58,7 @@ class BSplineBase(spline.Spline):
     physical space:
 
     .. math::
-            S(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
+            S^N(u,v) = \sum_{i=1}^{l} \sum_{j=1}^{m} N_{i;p}(u) N_{j;q}(v)
                 P_{i,j}
 
     Due to the tensor-product nature of the B-Spline basis functions, this is
@@ -73,7 +73,7 @@ class BSplineBase(spline.Spline):
     into the physical space:
 
     .. math::
-            S(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
+            S^N(u,v,w) = \sum_{i=1}^{l} \sum_{j=1}^{m} \sum_{k=1}^{n}
                 N_{i;p}(u) N_{j;q}(v) N_{k;r}(w) P_{i,j,k}
 
     Here, we can introduce the multi-variate basis functions
