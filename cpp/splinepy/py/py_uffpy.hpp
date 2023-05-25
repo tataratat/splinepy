@@ -3,7 +3,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
-#include "third_party/uff/src/uff.hpp"
+#include "uff/src/uff.hpp"
 
 namespace splinepy::py {
 
