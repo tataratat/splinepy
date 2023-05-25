@@ -5,89 +5,35 @@ except BaseException:
 
 
 class SplineListTest(c.unittest.TestCase):
-    def test_spline_list(self):
-        """
-        test SplineList and some cpp vector manipulation calls.
-        std::vector wrapping is provided by pybind,
-        so, minimal test to make sure it works in our context
-        """
-        # Define some splines
-        splines = c.all2p2d()
-        b_id = splines.index(splines[2])  # this should be b_spline
-
-        # short cut
-        SplineList = c.splinepy.splinepy_core.SplineList
-
-        # test if creating a spline is at the end the same thing
-        # 0. append
-        splist0 = SplineList()
-        splist0.append(splines[0])
-        splist0.append(splines[1])
-        splist0.append(splines[2])
-        splist0.append(splines[3])
-
-        # 1. extend
-        splist1 = SplineList()
-        splist1.extend(splines)
-
-        # 2. iterable init - list
-        splist2 = SplineList(splines)
-
-        # 3. iterable init - tuple
-        splist3 = SplineList(tuple(splines))
-
-        # are they the same?
-        assert splist0 == splist1 == splist2 == splist3
-
-        # are they really ref?
-        # edit cps
-        splines[b_id].cps[0] += 0.5
-        for splist in [splist0, splist1, splist2, splist3]:
-            # if they are ref, this should be modified
-            assert splist[b_id].cps._modified
-
-        # test resize
-        splist4 = SplineList()
-
-        # should fill with nullptr
-        splist4.resize(len(splines))
-        assert len(splist4) == len(splines)
-
-        for s4 in splist4:
-            # thankfully nullptr is casted to None
-            assert s4 is None
-
-        for i, s in enumerate(splines):
-            splist4[i] = s
-        assert splist0 == splist4
-
     def test_spline_list_evaluate(self):
         """list evaluation"""
         # get list of splines
         splines = c.all2p2d()
 
-        # create SplineList
-        slist = c.splinepy.splinepy_core.SplineList(splines)
-
         # get reference solution
         ref_solutions = c.np.vstack([s.evaluate(c.q2D) for s in splines])
 
         # call eval, don't check dim
-        list_solutions = slist.evaluate(c.q2D, nthreads=2, check_dims=False)
+        list_solutions = c.splinepy.splinepy_core.evaluate(
+            splines, c.q2D, nthreads=2, check_dims=False
+        )
         assert c.np.allclose(ref_solutions, list_solutions)
 
         # call eval, check dim
-        list_solutions = slist.evaluate(c.q2D, nthreads=2, check_dims=True)
+        list_solutions = c.splinepy.splinepy_core.evaluate(
+            splines, c.q2D, nthreads=2, check_dims=True
+        )
         assert c.np.allclose(ref_solutions, list_solutions)
 
         # call eval, single thread
-        list_solutions = slist.evaluate(c.q2D, nthreads=1, check_dims=True)
+        list_solutions = c.splinepy.splinepy_core.evaluate(
+            splines, c.q2D, nthreads=1, check_dims=True
+        )
         assert c.np.allclose(ref_solutions, list_solutions)
 
     def test_spline_list_sample(self):
         """spline sample"""
         splines = c.all2p2d()
-        slist = c.splinepy.splinepy_core.SplineList(splines)
 
         # set resolution. this is int,
         # because it is implemented for equal resolution only
@@ -98,7 +44,8 @@ class SplineListTest(c.unittest.TestCase):
         )
 
         # check everything and compute
-        list_samples = slist.sample(
+        list_samples = c.splinepy.splinepy_core.sample(
+            splines,
             resolution,
             nthreads=2,
             same_parametric_bounds=True,
@@ -107,7 +54,8 @@ class SplineListTest(c.unittest.TestCase):
         assert c.np.allclose(ref_solutions, list_samples)
 
         # don't check p bounds
-        list_samples = slist.sample(
+        list_samples = c.splinepy.splinepy_core.sample(
+            splines,
             resolution,
             nthreads=2,
             same_parametric_bounds=True,
@@ -119,11 +67,12 @@ class SplineListTest(c.unittest.TestCase):
         bspline_id = 2
         nurbs_id = 3
         for i in [bspline_id, nurbs_id]:
-            new_kvs = [kv * 2 for kv in slist[i].kvs]
-            slist[i].kvs = new_kvs
+            new_kvs = [kv * 2 for kv in splines[i].kvs]
+            splines[i].kvs = new_kvs
 
         # check p bounds,
-        list_samples = slist.sample(
+        list_samples = c.splinepy.splinepy_core.sample(
+            splines,
             resolution,
             nthreads=2,
             same_parametric_bounds=False,
@@ -135,14 +84,12 @@ class SplineListTest(c.unittest.TestCase):
         """extract boundaries. allowed for splines with unmatching dims"""
         # prepare 2d splines
         splines2d = c.all2p2d()
-        slist2d = c.splinepy.splinepy_core.SplineList(splines2d)
 
         # prepare mixed dim splines
         splines2d3d = [*splines2d, *c.all3p3d()]
-        slist2d3d = c.splinepy.splinepy_core.SplineList(splines2d3d)
 
         # prepare test func
-        def _test(pure_list, spline_list, same_p_dims):
+        def _test(pure_list, same_p_dims):
             """actual test routine"""
             ref_boundaries = []
             for s in pure_list:
@@ -150,8 +97,8 @@ class SplineListTest(c.unittest.TestCase):
                     c.splinepy.splinepy_core.extract_boundaries(s, [])
                 )
 
-            list_boundaries = spline_list.extract_boundaries(
-                nthreads=2, same_para_dims=False
+            list_boundaries = c.splinepy.splinepy_core.extract_boundaries(
+                pure_list, nthreads=2, same_para_dims=False
             )
 
             # for same p_dims,
@@ -159,8 +106,8 @@ class SplineListTest(c.unittest.TestCase):
             if same_p_dims:
                 ref_boundaries.extend(ref_boundaries)
                 list_boundaries.extend(
-                    spline_list.extract_boundaries(
-                        nthreads=2, same_para_dims=True
+                    c.splinepy.splinepy_core.extract_boundaries(
+                        pure_list, nthreads=2, same_para_dims=True
                     )
                 )
 
@@ -173,21 +120,20 @@ class SplineListTest(c.unittest.TestCase):
                 # for individual attr, so cast
                 assert c.are_splines_equal(c.to_derived(rb), c.to_derived(lb))
 
-        _test(splines2d, slist2d, True)
-        _test(splines2d3d, slist2d3d, False)
+        _test(splines2d, True)
+        _test(splines2d3d, False)
 
     def test_boundary_centers(self):
         """boundary centers"""
         splines = c.all2p2d()
-        slist = c.splinepy.splinepy_core.SplineList(splines)
 
         ref_centers = c.np.vstack(
             [c.splinepy.splinepy_core.boundary_centers(s) for s in splines]
         )
 
         # test same bounds
-        list_centers = slist.boundary_centers(
-            nthreads=2, same_parametric_bounds=True, check_dims=False
+        list_centers = c.splinepy.splinepy_core.boundary_centers(
+            splines, nthreads=2, same_parametric_bounds=True, check_dims=False
         )
         assert c.np.allclose(ref_centers, list_centers)
 
@@ -196,28 +142,56 @@ class SplineListTest(c.unittest.TestCase):
         bspline_id = 2
         nurbs_id = 3
         for i in [bspline_id, nurbs_id]:
-            new_kvs = [kv * 2 for kv in slist[i].kvs]
-            slist[i].kvs = new_kvs
+            new_kvs = [kv * 2 for kv in splines[i].kvs]
+            splines[i].kvs = new_kvs
 
-        list_centers = slist.boundary_centers(
-            nthreads=2, same_parametric_bounds=False, check_dims=False
+        list_centers = c.splinepy.splinepy_core.boundary_centers(
+            splines, nthreads=2, same_parametric_bounds=False, check_dims=False
         )
         assert c.np.allclose(ref_centers, list_centers)
 
     def test_raise_dim_mismatch(self):
         """see if function raises dim mismatch correctly"""
-        slist2d = c.splinepy.splinepy_core.SplineList(c.all2p2d())
+        slist2d = c.all2p2d()
 
         # prepare mixed
-        slist2d3d = c.splinepy.splinepy_core.SplineList(
-            [*c.all2p2d(), *c.all3p3d()]
-        )
+        slist2d3d = [*c.all2p2d(), *c.all3p3d()]
 
         # nothing happens
-        slist2d.raise_dim_mismatch(nthreads=2)
+        c.splinepy.splinepy_core.raise_dim_mismatch(slist2d, nthreads=2)
 
         with self.assertRaises(RuntimeError):
-            slist2d3d.raise_dim_mismatch(nthreads=2)
+            c.splinepy.splinepy_core.raise_dim_mismatch(slist2d3d, nthreads=2)
+
+    def _bezier_noisy_boxes_and_test_shapes(self):
+        # prepare boxes with some noise
+        box2d = c.nd_box(2)
+        box2d.pop("knot_vectors")
+        rbox2d = c.splinepy.RationalBezier(**box2d)
+        box2d.pop("weights")
+        zbox2d = c.splinepy.Bezier(**box2d)
+        box3d = c.nd_box(3)
+        box3d.pop("knot_vectors")
+        rbox3d = c.splinepy.RationalBezier(**box3d)
+        box3d.pop("weights")
+        zbox3d = c.splinepy.Bezier(**box2d)
+
+        outer = [zbox2d, rbox2d, zbox3d, rbox3d]
+        # add some noise
+        for o in outer:
+            o.cps = o.cps + c.np.random.normal(0, 0.025, o.cps.shape)
+
+        # test shapes
+        z2 = c.splinepy.Bezier(**c.z2p2d())
+        z3 = c.splinepy.Bezier(**c.z3p3d())
+        r2 = c.splinepy.RationalBezier(**c.r2p2d())
+        r3 = c.splinepy.RationalBezier(**c.r3p3d())
+
+        return outer[:2], outer[2:], [z2, r2], [z3, r3]
+
+    def test_list_compose(self):
+        """check if list compose yield same spline as spline compose"""
+        pass
 
 
 if __name__ == "__main__":
