@@ -258,18 +258,30 @@ class SplineListTest(c.unittest.TestCase):
             inner_3d,
         ) = self._bezier_noisy_boxes_and_test_shapes()
 
-        ref_composed = [o.composition_derivatives(i, i_d) for o, i, i_d in zip(outer_2d, inner_2d, inner_2d)]
+        # create 2d ref
+        ref_composed = [
+            o.composition_derivative(i, i) for o, i in zip(outer_2d, inner_2d)
+        ]
 
         # list compose
-        list_composed = c.splinepy.splinepy_core.lists.composition_derivatives(
-            outer_2d, inner_2d, inner_2d cartesian_product=False, nthreads=2
+        list_composed = c.splinepy.splinepy_core.lists.composition_derivative(
+            outer_2d, inner_2d, inner_2d, cartesian_product=False, nthreads=2
         )
 
         # add 3d
-        ref_composed.extend([o.composition_derivatives(i, i_d) for o, i, i_d in zip(outer_3d, inner_3d, inner_3d)])
+        ref_composed.extend(
+            [
+                o.composition_derivative(i, i)
+                for o, i in zip(outer_3d, inner_3d)
+            ]
+        )
         list_composed.extend(
-            c.splinepy.splinepy_core.lists.compose(
-                outer_3d, inner_3d, inner_3d cartesian_product=False, nthreads=2
+            c.splinepy.splinepy_core.lists.composition_derivative(
+                outer_3d,
+                inner_3d,
+                inner_3d,
+                cartesian_product=False,
+                nthreads=2,
             )
         )
 
@@ -277,20 +289,40 @@ class SplineListTest(c.unittest.TestCase):
             assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
 
         # test cartesian
+        #
+        # rational_bz.composition_derivative(poly, poly_der) not supported
+        # so, remove
+        for inn in [inner_2d, inner_3d]:
+            # pop poly
+            inn.pop(0)
+
+            # clone rat
+            rat = inn[-1].copy()
+            rat.cps[:, 0] = 0.5
+            rat.cps[:, 0] += c.np.random.uniform(-0.4, 0.4, len(rat.cps))
+            # force sync - list exe doesn't sync before exe
+            rat.new_core(**rat._data["properties"])
+            inn.append(rat)
+
         ref_composed = []
         for o in outer_2d:
             for i in inner_2d:
-                ref_composed.append(o.compose(i))
+                ref_composed.append(o.composition_derivative(i, i))
         for o in outer_3d:
             for i in inner_3d:
-                ref_composed.append(o.compose(i))
+                ref_composed.append(o.composition_derivative(i, i))
 
-        list_composed = c.splinepy.splinepy_core.lists.compose(
-            outer_2d, inner_2d, cartesian_product=True, nthreads=2
+        list_composed = c.splinepy.splinepy_core.lists.composition_derivative(
+            outer_2d, inner_2d, inner_2d, cartesian_product=True, nthreads=2
         )
+
         list_composed.extend(
-            c.splinepy.splinepy_core.lists.compose(
-                outer_3d, inner_3d, cartesian_product=True, nthreads=2
+            c.splinepy.splinepy_core.lists.composition_derivative(
+                outer_3d,
+                inner_3d,
+                inner_3d,
+                cartesian_product=True,
+                nthreads=2,
             )
         )
 
