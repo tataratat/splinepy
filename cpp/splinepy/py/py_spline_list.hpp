@@ -25,6 +25,26 @@ using IntVector = splinepy::utils::DefaultInitializationVector<int>;
 using IntVectorVector = splinepy::utils::DefaultInitializationVector<IntVector>;
 using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
 
+/// Internal use only
+/// Extract CoreSpline_s from list of PySplines
+inline std::vector<PySpline::CoreSpline_>
+ListOfPySplinesToVectorOfCoreSplines(py::list pysplines,
+                                     const int nthreads = 1) {
+  // prepare return obj
+  const int n_splines = static_cast<int>(pysplines.size());
+  std::vector<PySpline::CoreSpline_> core_splines(n_splines);
+
+  auto to_core = [&](int begin, int end) {
+    for (int i{begin}; i < end; ++i) {
+      core_splines[i] =
+          pysplines[i].template cast<std::shared_ptr<PySpline>>()->Core();
+    }
+  };
+  splinepy::utils::NThreadExecution(to_core, n_splines, nthreads);
+
+  return core_splines;
+}
+
 /// TODO: move ListOfPySplinesToVectorOfCoreSplines here and rename
 inline py::list CoreSplineVectorToPySplineList(CoreSplineVector& splist,
                                                int nthreads) {
