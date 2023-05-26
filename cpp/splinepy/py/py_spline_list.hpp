@@ -650,15 +650,16 @@ CoreSplineVectorCompositionDerivative(const CoreSplineVector& outer_splines,
       for (int i{begin}; i < total_; i += nthreads) {
         const auto [i_spline, i_query] = std::div(i, n_queries);
 
+        const int offset = i_spline * n_queries;
         // fill if outer is still in range
         if (i_spline < n_outer) {
-          outer_spline_derivatives[i] =
+          outer_spline_derivatives[offset + i_query] =
               outer_splines[i_spline]->SplinepyDerivativeSpline(
                   order_queries[i_query].data());
         }
 
         if (i_spline < n_inner) {
-          inner_derivatives_single_dims[i] =
+          inner_derivatives_single_dims[offset + i_query] =
               inner_derivatives[i_spline]->SplinepyExtractDim(i_query);
         }
       }
@@ -671,30 +672,29 @@ CoreSplineVectorCompositionDerivative(const CoreSplineVector& outer_splines,
                                       precompute_total,
                                       nthreads,
                                       splinepy::utils::NThreadQueryType::Step);
-
     // now, composition der
     auto calc_composition_derivatives_step = [&](int begin, int total_) {
-      for (int i{}; i < total_; i += nthreads) {
+      for (int i{begin}; i < total_; i += nthreads) {
         const auto [i_outer, i_inner] = std::div(i, n_inner);
-
         // frequently used core
         const auto& inner_core = inner_splines[i_inner];
 
         // this one needs a loop
         // create
         auto this_comp_der =
-            outer_spline_derivatives[i_outer]
+            outer_spline_derivatives[i_outer * n_queries]
                 ->SplinepyCompose(inner_core)
-                ->SplinepyMultiply(inner_derivatives_single_dims[i_inner]);
+                ->SplinepyMultiply(
+                    inner_derivatives_single_dims[i_inner * n_queries]);
 
         // add
         for (int j{1}; j < n_queries; ++j) {
           this_comp_der = this_comp_der->SplinepyAdd(
-              outer_spline_derivatives[i_outer + j]
+              outer_spline_derivatives[i_outer * n_queries + j]
                   ->SplinepyCompose(inner_core)
-                  ->SplinepyMultiply(inner_derivatives_single_dims[i_inner]));
+                  ->SplinepyMultiply(
+                      inner_derivatives_single_dims[i_inner * n_queries + j]));
         }
-
         // now fill
         composition_derivatives[i] = this_comp_der;
       }
@@ -774,7 +774,7 @@ inline void add_spline_list_pyclass(py::module& m) {
            py::arg("inner_splines"),
            py::arg("cartesian_product"),
            py::arg("nthreads"))
-      .def("composition_derivatives",
+      .def("composition_derivative",
            &ListCompositionDerivative,
            py::arg("outer_splines"),
            py::arg("inner_splines"),
