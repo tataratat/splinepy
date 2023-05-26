@@ -26,16 +26,20 @@ using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
 
 /// TODO: move ListOfPySplinesToVectorOfCoreSplines here and rename
 inline py::list CoreSplineVectorToPySplineList(CoreSplineVector& splist,
-                                               const int nthreads) {
+                                               int nthreads) {
   // prepare return obj
   const int n_splines = static_cast<int>(splist.size());
-  py::list pyspline_list{n_splines};
+  py::list pyspline_list(n_splines);
 
   auto to_pyspline = [&](int begin, int end) {
     for (int i{begin}; i < end; ++i) {
       pyspline_list[i] = std::make_shared<PySpline>(splist[i]);
     }
   };
+
+  // multi thread execution causes segfault.
+  // until we find a better solution, do single exe
+  nthreads = 1;
 
   splinepy::utils::NThreadExecution(to_pyspline, n_splines, nthreads);
 
@@ -355,11 +359,13 @@ CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
   auto boundary_extract = [&](int begin, int end) {
     for (int i{begin}; i < end; ++i) {
       // start of the offset
-      auto const& this_offset = boundary_offsets[i];
+      const auto& this_offset = boundary_offsets[i];
       // end of the offset
-      auto const& next_offset = boundary_offsets[i + 1];
+      const auto& next_offset = boundary_offsets[i + 1];
+      // get spline
+      auto& spline_i = *splist[i];
       for (int j{}; j < next_offset - this_offset; ++j) {
-        out_boundaries[this_offset + j] = splist[i]->SplinepyExtractBoundary(j);
+        out_boundaries[this_offset + j] = spline_i.SplinepyExtractBoundary(j);
       }
     }
   };
