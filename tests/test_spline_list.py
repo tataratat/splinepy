@@ -14,19 +14,19 @@ class SplineListTest(c.unittest.TestCase):
         ref_solutions = c.np.vstack([s.evaluate(c.q2D) for s in splines])
 
         # call eval, don't check dim
-        list_solutions = c.splinepy.splinepy_core.evaluate(
+        list_solutions = c.splinepy.splinepy_core.lists.evaluate(
             splines, c.q2D, nthreads=2, check_dims=False
         )
         assert c.np.allclose(ref_solutions, list_solutions)
 
         # call eval, check dim
-        list_solutions = c.splinepy.splinepy_core.evaluate(
+        list_solutions = c.splinepy.splinepy_core.lists.evaluate(
             splines, c.q2D, nthreads=2, check_dims=True
         )
         assert c.np.allclose(ref_solutions, list_solutions)
 
         # call eval, single thread
-        list_solutions = c.splinepy.splinepy_core.evaluate(
+        list_solutions = c.splinepy.splinepy_core.lists.evaluate(
             splines, c.q2D, nthreads=1, check_dims=True
         )
         assert c.np.allclose(ref_solutions, list_solutions)
@@ -44,7 +44,7 @@ class SplineListTest(c.unittest.TestCase):
         )
 
         # check everything and compute
-        list_samples = c.splinepy.splinepy_core.sample(
+        list_samples = c.splinepy.splinepy_core.lists.sample(
             splines,
             resolution,
             nthreads=2,
@@ -54,7 +54,7 @@ class SplineListTest(c.unittest.TestCase):
         assert c.np.allclose(ref_solutions, list_samples)
 
         # don't check p bounds
-        list_samples = c.splinepy.splinepy_core.sample(
+        list_samples = c.splinepy.splinepy_core.lists.sample(
             splines,
             resolution,
             nthreads=2,
@@ -71,7 +71,7 @@ class SplineListTest(c.unittest.TestCase):
             splines[i].kvs = new_kvs
 
         # check p bounds,
-        list_samples = c.splinepy.splinepy_core.sample(
+        list_samples = c.splinepy.splinepy_core.lists.sample(
             splines,
             resolution,
             nthreads=2,
@@ -97,8 +97,10 @@ class SplineListTest(c.unittest.TestCase):
                     c.splinepy.splinepy_core.extract_boundaries(s, [])
                 )
 
-            list_boundaries = c.splinepy.splinepy_core.extract_boundaries(
-                pure_list, nthreads=2, same_para_dims=False
+            list_boundaries = (
+                c.splinepy.splinepy_core.lists.extract_boundaries(
+                    pure_list, nthreads=2, same_para_dims=False
+                )
             )
 
             # for same p_dims,
@@ -106,7 +108,7 @@ class SplineListTest(c.unittest.TestCase):
             if same_p_dims:
                 ref_boundaries.extend(ref_boundaries)
                 list_boundaries.extend(
-                    c.splinepy.splinepy_core.extract_boundaries(
+                    c.splinepy.splinepy_core.lists.extract_boundaries(
                         pure_list, nthreads=2, same_para_dims=True
                     )
                 )
@@ -132,7 +134,7 @@ class SplineListTest(c.unittest.TestCase):
         )
 
         # test same bounds
-        list_centers = c.splinepy.splinepy_core.boundary_centers(
+        list_centers = c.splinepy.splinepy_core.lists.boundary_centers(
             splines, nthreads=2, same_parametric_bounds=True, check_dims=False
         )
         assert c.np.allclose(ref_centers, list_centers)
@@ -145,7 +147,7 @@ class SplineListTest(c.unittest.TestCase):
             new_kvs = [kv * 2 for kv in splines[i].kvs]
             splines[i].kvs = new_kvs
 
-        list_centers = c.splinepy.splinepy_core.boundary_centers(
+        list_centers = c.splinepy.splinepy_core.lists.boundary_centers(
             splines, nthreads=2, same_parametric_bounds=False, check_dims=False
         )
         assert c.np.allclose(ref_centers, list_centers)
@@ -158,10 +160,12 @@ class SplineListTest(c.unittest.TestCase):
         slist2d3d = [*c.all2p2d(), *c.all3p3d()]
 
         # nothing happens
-        c.splinepy.splinepy_core.raise_dim_mismatch(slist2d, nthreads=2)
+        c.splinepy.splinepy_core.lists.raise_dim_mismatch(slist2d, nthreads=2)
 
         with self.assertRaises(RuntimeError):
-            c.splinepy.splinepy_core.raise_dim_mismatch(slist2d3d, nthreads=2)
+            c.splinepy.splinepy_core.lists.raise_dim_mismatch(
+                slist2d3d, nthreads=2
+            )
 
     def _bezier_noisy_boxes_and_test_shapes(self):
         # prepare boxes with some noise
