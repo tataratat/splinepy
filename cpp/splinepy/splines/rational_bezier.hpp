@@ -522,7 +522,7 @@ public:
 
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractDim(const int& phys_dim) const {
-    return std::make_shared<Bezier<para_dim, 1>>(
+    return std::make_shared<RationalBezier<para_dim, 1>>(
         Base_::ExtractDimension(static_cast<std::size_t>(phys_dim)));
   }
 
