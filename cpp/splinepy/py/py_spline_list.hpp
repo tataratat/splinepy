@@ -484,34 +484,39 @@ inline std::shared_ptr<CoreSplineVector> ListCompositionDerivative() {}
 /// nice to have
 inline void add_spline_list_pyclass(py::module& m) {
 
-  m.def("raise_dim_mismatch",
-        &ListRaiseIfElementsHaveUnequalParaDimOrDim,
-        py::arg("spline_list"),
-        py::arg("nthreads"));
-  m.def("evaluate",
-        &ListEvaluate,
-        py::arg("spline_list"),
-        py::arg("queries"),
-        py::arg("nthreads"),
-        py::arg("check_dims"));
-  m.def("sample",
-        &ListSample,
-        py::arg("spline_list"),
-        py::arg("resolution"),
-        py::arg("nthreads"),
-        py::arg("same_parametric_bounds"),
-        py::arg("check_dims"));
-  m.def("extract_boundaries",
-        &ListExtractBoundaries,
-        py::arg("spline_list"),
-        py::arg("nthreads"),
-        py::arg("same_para_dims"));
-  m.def("boundary_centers",
-        &ListBoundaryCenters,
-        py::arg("spline_list"),
-        py::arg("nthreads"),
-        py::arg("same_parametric_bounds"),
-        py::arg("check_dims"));
+  auto list_module = m.def_submodule(
+      "lists",
+      "Module for list based queries with multithreading capabilities.");
+
+  list_module
+      .def("raise_dim_mismatch",
+           &ListRaiseIfElementsHaveUnequalParaDimOrDim,
+           py::arg("spline_list"),
+           py::arg("nthreads"))
+      .def("evaluate",
+           &ListEvaluate,
+           py::arg("spline_list"),
+           py::arg("queries"),
+           py::arg("nthreads"),
+           py::arg("check_dims"))
+      .def("sample",
+           &ListSample,
+           py::arg("spline_list"),
+           py::arg("resolution"),
+           py::arg("nthreads"),
+           py::arg("same_parametric_bounds"),
+           py::arg("check_dims"))
+      .def("extract_boundaries",
+           &ListExtractBoundaries,
+           py::arg("spline_list"),
+           py::arg("nthreads"),
+           py::arg("same_para_dims"))
+      .def("boundary_centers",
+           &ListBoundaryCenters,
+           py::arg("spline_list"),
+           py::arg("nthreads"),
+           py::arg("same_parametric_bounds"),
+           py::arg("check_dims"));
 }
 
 } // namespace splinepy::py
