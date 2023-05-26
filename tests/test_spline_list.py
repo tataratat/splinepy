@@ -250,7 +250,52 @@ class SplineListTest(c.unittest.TestCase):
             assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
 
     def test_list_compose_derivatives(self):
-        pass
+        # prepare boxes with some noise
+        (
+            outer_2d,
+            outer_3d,
+            inner_2d,
+            inner_3d,
+        ) = self._bezier_noisy_boxes_and_test_shapes()
+
+        ref_composed = [o.composition_derivatives(i, i_d) for o, i, i_d in zip(outer_2d, inner_2d, inner_2d)]
+
+        # list compose
+        list_composed = c.splinepy.splinepy_core.lists.composition_derivatives(
+            outer_2d, inner_2d, inner_2d cartesian_product=False, nthreads=2
+        )
+
+        # add 3d
+        ref_composed.extend([o.composition_derivatives(i, i_d) for o, i, i_d in zip(outer_3d, inner_3d, inner_3d)])
+        list_composed.extend(
+            c.splinepy.splinepy_core.lists.compose(
+                outer_3d, inner_3d, inner_3d cartesian_product=False, nthreads=2
+            )
+        )
+
+        for r, l in zip(ref_composed, list_composed):
+            assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
+
+        # test cartesian
+        ref_composed = []
+        for o in outer_2d:
+            for i in inner_2d:
+                ref_composed.append(o.compose(i))
+        for o in outer_3d:
+            for i in inner_3d:
+                ref_composed.append(o.compose(i))
+
+        list_composed = c.splinepy.splinepy_core.lists.compose(
+            outer_2d, inner_2d, cartesian_product=True, nthreads=2
+        )
+        list_composed.extend(
+            c.splinepy.splinepy_core.lists.compose(
+                outer_3d, inner_3d, cartesian_product=True, nthreads=2
+            )
+        )
+
+        for r, l in zip(ref_composed, list_composed):
+            assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
 
 
 if __name__ == "__main__":
