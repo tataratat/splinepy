@@ -534,7 +534,7 @@ CoreSplineVectorCompose(const CoreSplineVector& outer_splines,
       }
     };
     splinepy::utils::NThreadExecution(compose_step,
-                                      n_outer,
+                                      n_total,
                                       nthreads,
                                       splinepy::utils::NThreadQueryType::Step);
   }
