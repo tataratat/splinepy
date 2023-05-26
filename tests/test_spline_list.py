@@ -178,7 +178,7 @@ class SplineListTest(c.unittest.TestCase):
         box3d.pop("knot_vectors")
         rbox3d = c.splinepy.RationalBezier(**box3d)
         box3d.pop("weights")
-        zbox3d = c.splinepy.Bezier(**box2d)
+        zbox3d = c.splinepy.Bezier(**box3d)
 
         outer = [zbox2d, rbox2d, zbox3d, rbox3d]
         # add some noise
@@ -191,61 +191,66 @@ class SplineListTest(c.unittest.TestCase):
         r2 = c.splinepy.RationalBezier(**c.r2p2d())
         r3 = c.splinepy.RationalBezier(**c.r3p3d())
 
-        return outer[:2], outer[2:], [z2, r2], [z3, r3]
-
-    def test_list_compose(self):
-        """check if list compose yield same spline as spline compose"""
-        pass
-
-    def _bezier_noisy_boxes_and_test_shapes(self):
-        # prepare boxes with some noise
-        box2d = c.nd_box(2)
-        box2d.pop("knot_vectors")
-        rbox2d = c.splinepy.RationalBezier(**box2d)
-        box2d.pop("weights")
-        zbox2d = c.splinepy.Bezier(**box2d)
-        box3d = c.nd_box(3)
-        box3d.pop("knot_vectors")
-        rbox3d = c.splinepy.RationalBezier(**box3d)
-        box3d.pop("weights")
-        zbox3d = c.splinepy.Bezier(**box2d)
-
-        outer = [zbox2d, rbox2d, zbox3d, rbox3d]
-        # add some noise
-        for o in outer:
-            o.cps = o.cps + c.np.random.normal(0, 0.025, o.cps.shape)
-
-        # test shapes
-        z2 = c.splinepy.Bezier(**c.z2p2d())
-        z3 = c.splinepy.Bezier(**c.z3p3d())
-        r2 = c.splinepy.RationalBezier(**c.r2p2d())
-        r3 = c.splinepy.RationalBezier(**c.r3p3d())
+        # fit into unit box
+        for bez in [z2, z3, r2, r3]:
+            # offset
+            bez.cps -= bez.cps.min(axis=0)
+            # scale
+            bez.cps = bez.cps * (1 / bez.cps.max(axis=0))
 
         return outer[:2], outer[2:], [z2, r2], [z3, r3]
 
     def test_list_compose(self):
         """check if list compose yield same spline as spline compose"""
         # prepare boxes with some noise
-        outer_2d, outer_3d, inner_2d, inner_3d = (
-            c.splinepy.splinepy_core.SplineList(beziers)
-            for beziers in self._bezier_noisy_boxes_and_test_shapes()
-        )
-
-        t = []
-        for beziers in self._bezier_noisy_boxes_and_test_shapes():
-            sl = c.splinepy.splinepy_core.SplineList(beziers)
-            print(sl[0])
-            t.append(sl)
+        (
+            outer_2d,
+            outer_3d,
+            inner_2d,
+            inner_3d,
+        ) = self._bezier_noisy_boxes_and_test_shapes()
 
         ref_composed = [o.compose(i) for o, i in zip(outer_2d, inner_2d)]
 
         # list compose
-        list_composed = outer_2d.compose(
-            inner_2d, cartesian_product=False, nthreads=2
+        list_composed = c.splinepy.splinepy_core.lists.compose(
+            outer_2d, inner_2d, cartesian_product=False, nthreads=2
+        )
+
+        # add 3d
+        ref_composed.extend([o.compose(i) for o, i in zip(outer_3d, inner_3d)])
+        list_composed.extend(
+            c.splinepy.splinepy_core.lists.compose(
+                outer_3d, inner_3d, cartesian_product=False, nthreads=2
+            )
         )
 
         for r, l in zip(ref_composed, list_composed):
-            assert c.are_splines_equal(r, l)
+            assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
+
+        # test cartesian
+        ref_composed = []
+        for o in outer_2d:
+            for i in inner_2d:
+                ref_composed.append(o.compose(i))
+        for o in outer_3d:
+            for i in inner_3d:
+                ref_composed.append(o.compose(i))
+
+        list_composed = c.splinepy.splinepy_core.lists.compose(
+            outer_2d, inner_2d, cartesian_product=True, nthreads=2
+        )
+        list_composed.extend(
+            c.splinepy.splinepy_core.lists.compose(
+                outer_3d, inner_3d, cartesian_product=True, nthreads=2
+            )
+        )
+
+        for r, l in zip(ref_composed, list_composed):
+            assert c.are_splines_equal(c.to_derived(r), c.to_derived(l))
+
+    def test_list_compose_derivatives(self):
+        pass
 
 
 if __name__ == "__main__":
