@@ -581,29 +581,50 @@ def _get_property(spl, property_):
 
 
 class Spline(SplinepyBase, core.CoreSpline):
-    """
-    Spline base class. Extends CoreSpline with documentation.
+    r"""
+    Spline base class. Extends :class:`.CoreSpline` with documentation.
+
+    Generally, all types of splines can be seen as mappings from a
+    :math:`N_{param}`-dimensional parametric domain
+    :math:`\Omega_{param} \subset \mathbb{R}^{N_{param}}` to a
+    :math:`N_{phys}`-dimensional physical domain
+    :math:`\Omega_{phys} \subset \mathbb{R}^{N_{phys}}`, i.e.,
+
+    .. math::
+            M : \Omega_{param} \to \Omega_{phys}
+
+    :code:`splinepy` generally supports different combinations of embeddings,
+    that is different combinations of dimensionalities :math:`N_{param}` and
+    :math:`N_{phys}`, up to dimension 10.
+    The supported spline types differ in the way how the spline function
+    :math:`M` is defined. For an overview of the mathematical theories for the
+    different types of supported splines, we refer to the documentation of the
+    classes :class:`.BSplineBase` and :class:`.BezierBase` for a more in-depth
+    discussion of the theory on B-Spline/Bezier families, as well as to their
+    children :class:`.BSpline`, :class:`.NURBS`, :class:`.Bezier`, and
+    :class:`.RationalBezier` for usage examples.
+
+    Parameters
+    -----------
+    spline: Spline
+        Initialize using another spline. Will SHARE core spline.
+    degrees: (para_dim,) array-like
+        Keyword only parameter.
+    knot_vectors: (para_dim, n) list of array-like
+        Keyword only parameter.
+    control_points: (m, dim) array-like
+        Keyword only parameter.
+    weights: (m,) array-like
+        Keyword only parameter.
+
+    Returns
+    -------
+    None
     """
 
     __slots__ = ()
 
     def __init__(self, spline=None, **kwargs):
-        """
-        Base Spline.
-
-        Parameters
-        -----------
-        spline: Spline
-          Initialize using another spline. Will SHARE core spline.
-        degrees: (para_dim,) array-like
-          Keyword only parameter.
-        knot_vectors: (para_dim, n) list of array-like
-          Keyword only parameter.
-        control_points: (m, dim) array-like
-          Keyword only parameter.
-        weights: (m,) array-like
-          Keyword only parameter.
-        """
         # return if this is an empty init
         if spline is None and len(kwargs) == 0:
             super().__init__()

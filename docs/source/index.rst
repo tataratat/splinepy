@@ -16,7 +16,7 @@ Contributing
 .. toctree::
    :maxdepth: 1
 
-   Contiributing <CONTRIBUTING>
+   Contributing <CONTRIBUTING>
 
 Library
 ============

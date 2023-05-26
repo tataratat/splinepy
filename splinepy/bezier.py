@@ -2,17 +2,36 @@ from splinepy import settings, spline, splinepy_core
 
 
 class BezierBase(spline.Spline):
-    """Bezier Base. Contain extra operations that's only
+    r"""Bezier Base. Contains extra operations that are only
     available for bezier families.
+
+    Passes all arguments to :code:`super.__init__()`, see :class:`.Spline`.
+
+    Beziers are a special type of spline where the basis functions have
+    a global support. The basis functions are given by the so-called
+    *Berstein polynomials*
+
+    .. math::
+            B^{i;p}(u) = \binom{p}{i} u^i (1-u)^{p-i}
+
+    The parametric domain of a Bezier spline is always a multi-dimensional
+    hypercube, that is :math:`\Omega_{param}=[0,1]^{N_{param}}`.
+    We refer to the documentation of the classes :class:`.Bezier` and
+    :class:`.RationalBezier` for explanations how to construct splines using
+    Berstein polynomials as basis.
+
+    Moreover, we like to make the point that Bezier splines can also be seen
+    as a special type of B-Splines with open knot vectors (i.e., the first and
+    last entry are repeated :math:`p+1`-times) that do not feature additional
+    internal knots.
+
+    For usage examples, we once again refer to the derived classes
+    :class:`.Bezier` and :class:`.RationalBezier`.
     """
 
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
-        """
-        BezierBase. Serves as a base for bezier families.
-        Passes all the args to super.__init__
-        """
         super().__init__(*args, **kwargs)
 
     @spline._new_core_if_modified
@@ -165,21 +184,90 @@ class BezierBase(spline.Spline):
 
 
 class Bezier(BezierBase):
+    r"""
+    Bezier (Spline).
+
+    Passes all arguments to :code:`super.__init__()`, see :class:`.BezierBase`.
+
+    We can distinguish between different types of splines depending on the
+    dimension of the parametric space.
+
+    .. note::
+        For simplicity, we restrict ourselves to the three most common types
+        of splines in the following, namely curves, surfaces and volumes,
+        although :code:`splinepy` also supports higher dimensions, see
+        the documentation of :class:`.Spline` for more information.
+
+    1. A spline of degree :math:`p` with :math:`(p+1)` control points
+    :math:`P^i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space
+    (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the
+    physical space:
+
+    .. math::
+            C(u) = \sum_{i=0}^{l} B^{i;p}(u) P^i
+
+    2. A spline of degrees :math:`p,q` with :math:`(p+1)\cdot(q+1)` control
+    points :math:`P^{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional
+    parameter space (i.e., :math:`N_{param}=2`) corresponds to a surface,
+    embedded into the physical space:
+
+    .. math::
+            S(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B^{i;p}(u) B^{j;q}(v)
+                P^{i,j}
+
+    Due to the tensor-product nature of the Bezier basis functions, this is
+    often rewritten as in terms of multi-variate basis functions
+
+    .. math::
+            \tilde{B}^{i,j;p,q}(u,v) := B^{i;p}(u) B^{j;q}(v)
+
+    3. A spline of degrees :math:`p,q,r` with :math:`(p+1)\cdot(q+1)\cdot(r+1)`
+    control points :math:`P^{i,j,k}\in\mathbb{R}^{N_{phys}}` and a
+    three-dimensional parameter space (i.e., :math:`N_{param}=3`) corresponds
+    to a volume, embedded into the physical space:
+
+    .. math::
+            V^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}
+                B^{i;p}(u) B^{j;q}(v) B^{k;r}(w) P^{i,j,k}
+
+    Here, we can introduce the multi-variate basis functions
+
+    .. math::
+            \tilde{B}^{i,j,k;p,q,r}(u,v,w) := B^{i;p}(u) B^{j;q}(v)
+                B^{k;r}(w)
+
+    Higher-dimensional instances are constructed accordingly.
+
+    **Usage**:
+
+    .. code-block:: python
+
+        # Polynomial Bezier surface
+        polynomial_bezier = splinepy.Bezier(
+            degrees=[2,1],
+            control_points=[
+                [0.0, 0.0],
+                [1.0, 0.0],
+                [2.0, 1.0],
+                [0.0, 2.0],
+                [1.0, 1.0],
+                [2.0, 2.0]
+            ]
+        )
+
+    Parameters
+    -----------
+    degrees: (para_dim,) list-like
+    control_points: (m, dim) list-like
+
+    Returns
+    --------
+    None
+    """
+
     __slots__ = ()
 
     def __init__(self, degrees=None, control_points=None, spline=None):
-        """
-        Bezier (Spline).
-
-        Parameters
-        -----------
-        degrees: (para_dim,) list-like
-        control_points: (m, dim) list-like
-
-        Returns
-        --------
-        None
-        """
         super().__init__(
             spline=spline,
             degrees=degrees,
