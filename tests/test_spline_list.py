@@ -226,17 +226,16 @@ class SplineListTest(c.unittest.TestCase):
     def test_list_compose(self):
         """check if list compose yield same spline as spline compose"""
         # prepare boxes with some noise
-        outer_2d, outer_3d, inner_2d, inner_3d = [
+        outer_2d, outer_3d, inner_2d, inner_3d = (
             c.splinepy.splinepy_core.SplineList(beziers)
             for beziers in self._bezier_noisy_boxes_and_test_shapes()
-        ]
+        )
 
         t = []
         for beziers in self._bezier_noisy_boxes_and_test_shapes():
             sl = c.splinepy.splinepy_core.SplineList(beziers)
             print(sl[0])
             t.append(sl)
-
 
         ref_composed = [o.compose(i) for o, i in zip(outer_2d, inner_2d)]
 
