@@ -477,8 +477,79 @@ ListBoundaryCenters(py::list& splist,
                                          check_dims);
 }
 
-inline std::shared_ptr<CoreSplineVector> ListCompose() {}
-inline std::shared_ptr<CoreSplineVector> ListCompositionDerivative() {}
+/// @brief NThread Compose. Invalid inputs will raise runtime_error on the fly
+/// @param outer_splines
+/// @param inner_splines
+/// @param cartesian_product If true, composes each inner splines to all outer
+/// splines. Else, outer and inner splines must have same len.
+/// @param nthreads
+/// @return
+inline std::shared_ptr<PySplineList>
+ListCompose(const PySplineList& outer_splines,
+            const PySplineList& inner_splines,
+            const bool cartesian_product,
+            const int nthreads) {
+
+  // get size
+  const int n_outer = outer_splines.size();
+  const int n_inner = inner_splines.size();
+  // create total counter
+  int n_total{};
+
+  // create output
+  std::shared_ptr<PySplineList> composed_splines_ptr;
+  auto& composed_splines = *composed_splines_ptr;
+
+  // check if size matchs
+  if (!cartesian_product) {
+    if (n_outer != n_inner) {
+      splinepy::utils::PrintAndThrowError(
+          "Length mismatch of outer_splines (",
+          n_outer,
+          ") and inner_splines (",
+          n_inner,
+          "). To compose each inner splines to all outer splines, please set "
+          "cartesian_product=True.");
+    }
+
+    // acquisition of output space
+    composed_splines.resize(n_outer);
+    n_total = n_outer;
+  } else {
+    n_total = n_outer * n_inner;
+    composed_splines.resize(n_total);
+  }
+
+  // good to go!
+  // create lambda
+  // this one visits queries in "transposed" manner compared to sample, for
+  // example
+  auto compose = [&](int begin, int end) {
+    if (!cartesian_product) {
+      for (int i{begin}; i < end; ++i) {
+        composed_splines[i] =
+            splinepy::py::Compose(outer_splines[i], inner_splines[i]);
+      }
+    } else {
+      for (int i{begin}; i < end; ++i) {
+        const auto [i_outer, i_inner] = std::div(i, n_inner);
+        composed_splines[i] = splinepy::py::Compose(outer_splines[i_outer],
+                                                    inner_splines[i_inner]);
+      }
+    }
+  };
+
+  splinepy::utils::NThreadExecution(compose, n_total, nthreads);
+
+  return composed_splines_ptr;
+}
+
+inline std::shared_ptr<PySplineList>
+ListCompositionDerivative(const PySplineList& outer_splines,
+                          const PySplineList& inner_splines,
+                          const PySplineList& innter_derivative,
+                          const bool cartesian_product,
+                          const int nthreads) {}
 
 /// bind vector of PySpline and add some deprecated cpp functions that maybe
 /// nice to have
