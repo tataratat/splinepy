@@ -5,7 +5,8 @@ class NURBS(BSplineBase):
     r"""
     Non-Uniform Rational B-Spline.
 
-    Passes all arguments to :code:`super.__init__()`, see :class:`.BSplineBase`.
+    Passes all arguments to :code:`super.__init__()`,
+    see :class:`.BSplineBase`.
 
     NURBS are an extension of B-Splines overcoming their drawback of being
     unable to represent circular shapes. This is achieved by the introduction

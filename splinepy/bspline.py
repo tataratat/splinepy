@@ -27,14 +27,14 @@ class BSplineBase(spline.Spline):
     type :math:`[u_i,u_{i+1}]` are known as *knot spans* or *elements*.
     As we can see, the number of knot entries, the number of control points,
     and the polynomial degree of the spline are related to each other by the
-    equation :math`#knots=l+p+1`. Here, :math:`l` denotes the number of
+    equation :math:`\# knots=l+p+1`. Here, :math:`l` denotes the number of
     control points along a parametric dimension and :math:`p` the polynomial
     order of the spline.
     In the special case of a so-called *open knot vector*, the first and the
     last entry of the knot vector are repeated :math:`p+1` times, that is
 
     .. math::
-           u_1 = ... = u_{p+1} < u_{p+2} < ... < u_l < u_{l+1} = ... = u_{l+p+1}
+          u_1 = ... = u_{p+1} < u_{p+2} < ... < u_l < u_{l+1} = ... = u_{l+p+1}
 
     Splines with open knot vectors have the property that they exactly
     interpolate the first and the last control point in this parametric
