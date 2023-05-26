@@ -737,7 +737,8 @@ inline void add_spline_list_pyclass(py::module& m) {
 
   auto list_module = m.def_submodule(
       "lists",
-      "Module for list based queries with multithreading capabilities.");
+      "Module for list based queries with multithreading capabilities. Please "
+      "make sure splines don't have any inplace modifications.");
 
   list_module
       .def("raise_dim_mismatch",
