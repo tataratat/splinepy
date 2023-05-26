@@ -3,7 +3,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
-#include "uff/src/uff.hpp"
+#include <uff.hpp>
 
 namespace splinepy::py {
 
@@ -61,7 +61,7 @@ py::tuple uffpy(py::array_t<double> points, double tolerance, bool stable) {
 }
 
 inline void add_uffpy(py::module& m) {
-  m.def("unique_vertices_uff",
+  m.def("uffpy",
         &splinepy::py::uffpy,
         py::arg("queries"),
         py::arg("tolerance"),

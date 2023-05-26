@@ -8,8 +8,7 @@ set(PYSPLINEPY_SRCS
         init/spline_extensions.cpp
         init/spline_list.cpp
         init/uffpy.cpp
-        splinepy_core.cpp
-        )
+        splinepy_core.cpp)
 
 # add target
 pybind11_add_module(splinepy_core ${PYSPLINEPY_SRCS})
@@ -43,3 +42,6 @@ target_link_libraries(splinepy_core PRIVATE fitting)
 
 # link napf
 target_link_libraries(splinepy_core PRIVATE napf)
+
+# link uff
+target_link_libraries(splinepy_core PRIVATE uff)
