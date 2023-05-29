@@ -40,7 +40,17 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
     // Safety checks (Might be put into debugging block)
     if ((i >= deg) || j > deg) {
       splinepy::utils::PrintAndThrowError(
-          "Requested index outside matrix definition.");
+          "Requested index outside matrix definition.",
+          "Requested query: \nt :",
+          t,
+          "\nmu : ",
+          mu,
+          "\ndeg : ",
+          deg,
+          "\ni : ",
+          i,
+          "\nj : ",
+          j);
     }
     // Matrix is bi-diagonal i == j and i == j+1
     if ((i > j) || (j > i + 1)) {
@@ -63,12 +73,12 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
 
   // As we assume closed knot-vectors (we can ignore the last entry)
   std::size_t equal_index_count{0};
-  std::size_t current_old_id{old_kv.size() - 2};
-  std::size_t current_knot_span{old_kv.size() - 1};
+  std::size_t current_old_id{static_cast<std::size_t>(old_kv.size() - 2)};
+  std::size_t current_knot_span{static_cast<std::size_t>(old_kv.size() - 1)};
 
   // Prepare some values that will be required later (Ignore last value loop
   // begins at new_kv.size() - 2)
-  for (size_t i{new_kv.size() - 1}; i-- > 0;) {
+  for (size_t i{static_cast<std::size_t>(new_kv.size() - 1)}; i-- > 0;) {
     // Check knots against each other with a tolerance
     if (std::abs(old_kv_ptr[current_old_id] - new_kv_ptr[i]) < tolerance) {
       equal_index_count++;
@@ -85,7 +95,7 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
       equal_index_count = 0;
     }
     if (new_kv_ptr[i] < old_kv_ptr[current_knot_span]) {
-      index_of_knot_span_base[i] = current_knot_span - 1;
+      index_of_knot_span_base[i] = current_old_id;
     } else {
       index_of_knot_span_base[i] = current_knot_span;
     }
@@ -131,7 +141,7 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
       // additional aux vector and store solution of multiplication directly
       // into the solution matrix. A little harder to read, but makes the code
       // more efficient.
-      for (std::size_t q{d}; d-- > 0;) {
+      for (std::size_t q{d - 1}; q > 0; q--) {
         matrix(i, j + q) =
             matrix(i, j + q - 1) * R_matrix(new_kv_ptr[i + d], mu, d, q - 1, q)
             + matrix(i, j + q) * R_matrix(new_kv_ptr[i + d], mu, d, q, q);
@@ -140,11 +150,10 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
       //  line
       matrix(i, j) = R_matrix(new_kv_ptr[i + d], mu, d, 0, 0) * matrix(i, j);
     }
-
-    // assign shape and return result
-    return_matrix.resize({(int) n_cps_new, (int) n_cps_old});
-    return return_matrix;
   }
+  // assign shape and return result
+  return_matrix.resize({(int) n_cps_new, (int) n_cps_old});
+  return return_matrix;
 }
 
 } // namespace splinepy::py
