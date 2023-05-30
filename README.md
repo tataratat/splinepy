@@ -47,11 +47,11 @@ bspline = splinepy.BSpline(
         [0.0, 0.0, 1.0, 1.0],
     ],
     control_points=[
+        [0. , 0.5 ],
+        [1., 0. ],
+        [0.5 , 1. ],
         [0. , 0. ],
-        [0.5, 0. ],
-        [1. , 0. ],
-        [0. , 1. ],
-        [0.5, 1. ],
+        [0., 1. ],
         [1. , 1. ],
     ],
 )
@@ -60,13 +60,14 @@ bspline = splinepy.BSpline(
 # (total_number_of_control_points, physical_dimension) shape.
 # They fill control grid by iterating lower-indexed dimensions first.
 # But if you prefer the grid-like structure, this should hold
-grid_cps = np.empty(2, 3, 2)  # (dim, n_cps_u, n_cps_v)
-gird_cps[:, 0, 0] = [0. , 0. ]
-gird_cps[:, 0, 1] = [0.5, 0. ]
-gird_cps[:, 0, 2] = [1. , 0. ]
-gird_cps[:, 1, 0] = [0. , 1. ]
-gird_cps[:, 1, 1] = [0.5, 1. ]
-gird_cps[:, 1, 2] = [1. , 1. ]
+grid_cps = np.empty([2, 3, 2])  # (dim, n_cps_u, n_cps_v)
+grid_cps[:, 0, 0] = [0. , 0. ]
+grid_cps[:, 0, 1] = [0.5, 0. ]
+grid_cps[:, 1, 0] = [1. , 0. ]
+grid_cps[:, 1, 1] = [0. , 1. ]
+grid_cps[:, 2, 0] = [0.5, 1. ]
+grid_cps[:, 2, 1] = [1. , 1. ]
+
 
 assert np.allclose(
     bspline.control_points,
