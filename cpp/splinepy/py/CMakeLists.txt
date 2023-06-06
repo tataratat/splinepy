@@ -4,6 +4,7 @@ set(PYSPLINEPY_SRCS
         init/coordinate_reference.cpp
         init/core_spline.cpp
         init/fitting.cpp
+        init/multi_patch.cpp
         init/reader.cpp
         init/spline_extensions.cpp
         init/spline_list.cpp
