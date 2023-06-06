@@ -422,13 +422,13 @@ SplinepyBase::SplinepyCoordinateReferences() {
 
   // make compiler happy
   return std::make_shared<SplinepyBase::CoordinateReferences_>();
-};
+}
 
 void SplinepyBase::SplinepyParametricBounds(double* p_bounds) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyParametricBounds not implemented for",
       SplinepyWhatAmI());
-};
+}
 
 void SplinepyBase::SplinepyControlMeshResolutions(int* control_mesh_res) const {
   splinepy::utils::PrintAndThrowError(
@@ -447,20 +447,20 @@ void SplinepyBase::SplinepyEvaluate(const double* para_coord,
                                     double* evaluated) const {
   splinepy::utils::PrintAndThrowError("SplinepyEvaluate not implemented for",
                                       SplinepyWhatAmI());
-};
+}
 
 void SplinepyBase::SplinepyDerivative(const double* para_coord,
                                       const int* orders,
                                       double* derived) const {
   splinepy::utils::PrintAndThrowError("SplinepyDerivative not implemented for",
                                       SplinepyWhatAmI());
-};
+}
 
 void SplinepyBase::SplinepyJacobian(const double* para_coord,
                                     double* jacobians) const {
   splinepy::utils::PrintAndThrowError("SplinepyJacobian not implemented for",
                                       SplinepyWhatAmI());
-};
+}
 
 void SplinepyBase::SplinepyBasis(const double* para_coord,
                                  double* basis) const {
@@ -526,7 +526,7 @@ void SplinepyBase::SplinepyElevateDegree(const int& para_dims) {
   splinepy::utils::PrintAndThrowError(
       "SplinepyElevateDegree not implemented for",
       SplinepyWhatAmI());
-};
+}
 
 bool SplinepyBase::SplinepyReduceDegree(const int& para_dims,
                                         const double& tolerance) {
@@ -534,12 +534,12 @@ bool SplinepyBase::SplinepyReduceDegree(const int& para_dims,
       "SplinepyReduceDegree not implemented for",
       SplinepyWhatAmI());
   return false;
-};
+}
 
 void SplinepyBase::SplinepyInsertKnot(const int& para_dim, const double& knot) {
   splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
                                       SplinepyWhatAmI());
-};
+}
 
 bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,
                                       const double& knot,
@@ -547,7 +547,7 @@ bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,
   splinepy::utils::PrintAndThrowError("SplinepyRemoveKnot not implemented for",
                                       SplinepyWhatAmI());
   return false;
-};
+}
 
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
@@ -583,7 +583,7 @@ SplinepyBase::SplinepyDerivativeSpline(const int* orders) const {
       "SplinepyDerivativeSpline is not implemented for",
       SplinepyWhatAmI());
   return std::shared_ptr<SplinepyBase>{};
-};
+}
 
 std::vector<std::shared_ptr<SplinepyBase>>
 SplinepyBase::SplinepyExtractBezierPatches() const {
