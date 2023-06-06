@@ -1313,14 +1313,22 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
 ///        "patch" and "spline" are interchangeable
 class PyMultiPatch {
 public:
+  using CorePatches_ = std::vector<typename PySpline::CoreSpline_>;
+
   /// individual patches, a.k.a. splines
   py::list patches_;
 
   /// casted, core splines (patches) from patches_ (list of PySpline).
-  std::vector<typename PySpline::CoreSpline_> core_patches_;
+  CorePatches_ core_patches_;
+
+  /// sub patches - similar concept to subelement / face elements
+  std::shared_ptr<PyMultiPatch> sub_patches_ = nullptr;
+
+  /// ids for boundary_patches from sub_patches_
+  py::array_t<int> boundary_patch_ids_;
 
   /// Boundary multi patches. Should consist of one smaller parametric dim
-  std::shared_ptr<PyMultiPatch> boundary_patches_;
+  std::shared_ptr<PyMultiPatch> boundary_patches_ = nullptr;
 
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
@@ -1334,6 +1342,35 @@ public:
 
   /// ctor
   PyMultiPatch() = default;
+
+  /// list (iterable) init -> pybind will cast to list for us if needed
+  PyMultiPatch(py::list& patches){
+      // once, we will turn patches into
+  };
+
+  CorePatches_& CorePatches() {
+    if (core_patches_.size() == 0) {
+      splinepy::utils::PrintAndThrowError("No splines/patches set");
+    }
+  }
+
+  void SetPatches(py::list& patches) {}
+  py::list GetPatches() { return patches_; }
+
+  void SetInterfaces(py::array_t<int>& interfaces) {}
+  py::array_t<int> GetInterfaces() {}
+
+  std::shared_ptr<PyMultiPatch> BoundaryPatches(const int nthreads) {}
+
+  py::array_t<double> Evaluate(py::array_t<double> queries,
+                               const int nthreads) {}
+
+  py::array_t<double> Sample(const int resolution, const int nthreads) {}
+
+  bool AddFields(py::args fields,
+                 const bool check_dims,
+                 const bool check_degrees,
+                 const bool check_control_mesh_resolutions) {}
 };
 
 inline void add_multi_patch(py::module& m) {
