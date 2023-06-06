@@ -6,7 +6,7 @@
 
 #include <splinepy/py/py_spline.hpp>
 
-PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<splinepy::py::PySpline>>);
+PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<splinepy::py::PySpline>>)
 
 namespace splinepy::py {
 
