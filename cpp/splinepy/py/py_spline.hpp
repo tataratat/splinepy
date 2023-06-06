@@ -108,7 +108,7 @@ public:
         dim_(another_py_spline.dim_) {
     // nichts
   }
-  PySpline(std::shared_ptr<PySpline>& another_py_spline_ptr)
+  PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
       : PySpline(*another_py_spline_ptr) {}
 
   /// Creates a corresponding spline based on kwargs

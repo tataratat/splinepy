@@ -9,6 +9,7 @@
 
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
+#include <splinepy/splines/null_spline.hpp>
 
 namespace splinepy::py {
 
@@ -263,6 +264,12 @@ inline void AnnulCore(std::shared_ptr<PySpline>& spline) {
   spline->dim_ = -1;
 }
 
+static std::shared_ptr<PySpline> CreateNullSpline(const int para_dim,
+                                                  const int dim) {
+  return std::make_shared<PySpline>(
+      splinepy::splines::kNullSplineLookup[para_dim - 1][dim - 1]);
+}
+
 inline void add_spline_extensions(py::module& m) {
   m.def("insert_knots",
         &splinepy::py::InsertKnots,
@@ -313,6 +320,10 @@ inline void add_spline_extensions(py::module& m) {
   m.def("core_ref_count", &splinepy::py::CoreRefCount, py::arg("spline"));
   m.def("have_core", &splinepy::py::HaveCore, py::arg("spline"));
   m.def("annul_core", &splinepy::py::AnnulCore, py::arg("spline"));
+  m.def("null_spline",
+        &splinepy::py::CreateNullSpline,
+        py::arg("para_dim"),
+        py::arg("dim"));
 }
 
 } // namespace splinepy::py
