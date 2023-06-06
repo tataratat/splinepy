@@ -86,6 +86,7 @@ public:
   virtual bool SplinepyIsRational() const = 0;
   virtual int SplinepyNumberOfControlPoints() const = 0;
   virtual int SplinepyNumberOfSupports() const = 0;
+  virtual bool SplinepyIsNull() const { return false; };
   /// Extract core spline properties. Similar to previous update_p
   virtual void
   SplinepyCurrentProperties(int* degrees,
