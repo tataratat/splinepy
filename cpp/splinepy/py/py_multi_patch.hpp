@@ -47,6 +47,44 @@ ToCoreSplineVector(py::list pysplines, const int nthreads = 1) {
   return core_splines;
 }
 
+/// @brief Overload to allow None entries. Will be filled with null spline
+/// @param pysplines
+/// @param para_dim_if_none
+/// @param dim_if_none
+/// @param nthreads
+/// @return
+inline std::vector<PySpline::CoreSpline_>
+ToCoreSplineVector(py::list pysplines,
+                   const int para_dim_if_none,
+                   const int dim_if_none,
+                   const int nthreads) {
+  // prepare return obj
+  const int n_splines = static_cast<int>(pysplines.size());
+  std::vector<PySpline::CoreSpline_> core_splines(n_splines);
+
+  auto to_core = [&](int begin, int end) {
+    for (int i{begin}; i < end; ++i) {
+      // get accessor
+      auto spline = pysplines[i];
+
+      // if None, fill null spline
+      if (spline.is_none()) {
+        core_splines[i] =
+            splinepy::splines::kNullSplineLookup[para_dim_if_none - 1]
+                                                [dim_if_none - 1];
+        continue;
+      }
+
+      // not none,
+      core_splines[i] =
+          spline.template cast<std::shared_ptr<PySpline>>()->Core();
+    }
+  };
+  splinepy::utils::NThreadExecution(to_core, n_splines, nthreads);
+
+  return core_splines;
+}
+
 /// @brief
 /// @param splist
 /// @param nthreads
@@ -1550,28 +1588,191 @@ public:
   PyMultiPatch() = default;
 
   /// list (iterable) init -> pybind will cast to list for us if needed
-  PyMultiPatch(py::list& patches){
-      // once, we will turn patches into
+  PyMultiPatch(py::list& patches, const int nthreads = 1){
+      // once, we will turn patches into core patches
   };
 
   CorePatches_& CorePatches() {
     if (core_patches_.size() == 0) {
       splinepy::utils::PrintAndThrowError("No splines/patches set");
     }
+    return core_patches_;
   }
 
-  void SetPatches(py::list& patches) {}
+  void Clear() {
+    patches_ = py::list();
+    core_patches_ = CorePatches_{};
+    sub_patches_ = nullptr;
+    boundary_patch_ids_ = py::array_t<int>();
+    boundary_patches_ = nullptr;
+    interfaces_ = py::array_t<int>();
+    boundary_ids_ = py::array_t<int>();
+    boundary_centers_ = py::array_t<double>();
+  }
+
+  void SetPatches(py::list& patches, const int nthreads = 1) {}
   py::list GetPatches() { return patches_; }
+
+  int ParaDim() { return CorePatches()[0]->SplinepyParaDim(); }
+
+  int Dim() { return CorePatches()[0]->SplinepyDim(); }
 
   void SetInterfaces(py::array_t<int>& interfaces) {}
   py::array_t<int> GetInterfaces() {}
 
+  std::shared_ptr<PyMultiPatch> SubPatches(const int nthreads) {}
+
   std::shared_ptr<PyMultiPatch> BoundaryPatches(const int nthreads) {}
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
-                               const int nthreads) {}
+                               const int nthreads) {
+    // use first spline as dimension guide line
+    const int para_dim = ParaDim();
+    const int dim = Dim();
 
-  py::array_t<double> Sample(const int resolution, const int nthreads) {}
+    // query dim check
+    CheckPyArrayShape(queries, {-1, para_dim}, true);
+
+    // prepare input and output
+    double* queries_ptr = static_cast<double*>(queries.request().ptr);
+    const int n_splines = core_patches_.size();
+    const int n_queries = queries.shape(0);
+    const int n_total = n_splines * n_queries;
+    py::array_t<double> evaluated({n_total, dim});
+    double* evaluated_ptr = static_cast<double*>(evaluated.request().ptr);
+
+    // each thread evaluates similar amount of queries from each spline
+    auto evaluate_step = [&](int begin, int total_) {
+      for (int i{begin}; i < total_; i += nthreads) {
+        const auto [i_spline, i_query] = std::div(i, n_queries);
+        core_patches_[i_spline]->SplinepyEvaluate(
+            &queries_ptr[i_query * para_dim],
+            &evaluated_ptr[(i_spline * n_queries + i_query) * dim]);
+      }
+    };
+
+    // exe
+    splinepy::utils::NThreadExecution(evaluate_step,
+                                      n_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
+
+    return evaluated;
+  }
+
+  py::array_t<double> Sample(const int resolution,
+                             const int nthreads,
+                             const bool same_parametric_bounds) {
+    const int para_dim = ParaDim();
+    const int dim = Dim();
+
+    // n_queries, and n_splines;
+    int n_queries{1};
+    const int n_splines = core_patches_.size();
+
+    // prepare resolutions
+    IntVector resolutions_vector(para_dim);
+    int* resolutions = resolutions_vector.data();
+    for (int i{}; i < para_dim; ++i) {
+      resolutions[i] = resolution;
+      n_queries *= resolution;
+    }
+
+    // prepare input /  output
+    const int n_total = n_splines * n_queries;
+    py::array_t<double> sampled({n_total, dim});
+    double* sampled_ptr = static_cast<double*>(sampled.request().ptr);
+
+    // if you know all the queries have same parametric bounds
+    // you don't need to re-compute queries
+    if (same_parametric_bounds) {
+
+      // get para bounds
+      DoubleVector para_bounds_vector(2 * para_dim);
+      double* para_bounds = para_bounds_vector.data();
+      core_patches_[0]->SplinepyParametricBounds(para_bounds);
+
+      // prepare queries
+      DoubleVector queries_vector(n_queries * para_dim);
+      double* queries = queries_vector.data();
+
+      // use grid point generator to fill queries
+      splinepy::utils::CStyleArrayPointerGridPoints gp_generator(para_dim,
+                                                                 para_bounds,
+                                                                 resolutions);
+      gp_generator.Fill(queries);
+
+      // create lambda for nthread exe
+      auto sample_same_bounds_step = [&](int begin, int total_) {
+        for (int i{begin}; i < total_; i += nthreads) {
+          const auto [i_spline, i_query] = std::div(i, n_queries);
+          core_patches_[i_spline]->SplinepyEvaluate(
+              &queries[i_query * para_dim],
+              &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
+        }
+      };
+
+      splinepy::utils::NThreadExecution(
+          sample_same_bounds_step,
+          n_total,
+          nthreads,
+          splinepy::utils::NThreadQueryType::Step);
+
+    } else {
+      // here, we will execute 2 times:
+      //   first, to create grid point helpers for each spline
+      //   second, to sample
+
+      // create a container to hold grid point helper.
+      splinepy::utils::DefaultInitializationVector<
+          splinepy::utils::CStyleArrayPointerGridPoints>
+          grid_points(n_splines);
+
+      // create grid_points
+      auto create_grid_points = [&](int begin, int end) {
+        DoubleVector para_bounds_vector(2 * para_dim);
+        double* para_bounds = para_bounds_vector.data();
+
+        for (int i{begin}; i < end; ++i) {
+          // get para_bounds
+          core_patches_[i]->SplinepyParametricBounds(para_bounds);
+          // setup grid points helper
+          grid_points[i].SetUp(para_dim, para_bounds, resolutions);
+        }
+      };
+
+      // pre compute entries -> this one is a chunk query
+      splinepy::utils::NThreadExecution(create_grid_points,
+                                        n_splines,
+                                        nthreads);
+
+      // similar to the one with same_parametric_bounds, except it computes
+      // query on the fly
+      auto sample_step = [&](int begin, int total_) {
+        // each thread needs just one query array
+        DoubleVector thread_query_vector(para_dim);
+        double* thread_query = thread_query_vector.data();
+
+        for (int i{begin}; i < total_; i += nthreads) {
+          const auto [i_spline, i_query] = std::div(i, n_queries);
+          const auto& gp_helper = grid_points[i_spline];
+          gp_helper.IdToGridPoint(i_query, thread_query);
+          core_patches_[i_spline]->SplinepyEvaluate(
+              thread_query,
+              &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
+        }
+      };
+
+      // exe - this one is step
+      splinepy::utils::NThreadExecution(
+          sample_step,
+          n_total,
+          nthreads,
+          splinepy::utils::NThreadQueryType::Step);
+    }
+
+    return sampled;
+  }
 
   bool AddFields(py::args fields,
                  const bool check_dims,
