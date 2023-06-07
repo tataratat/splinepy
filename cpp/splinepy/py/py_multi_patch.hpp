@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
+
 // pybind
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -7,6 +10,7 @@
 // Bezman
 #include <bezman/src/utils/algorithms/point_uniquifier.hpp>
 
+//
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/py/py_spline_list.hpp>
 #include <splinepy/utils/print.hpp>
@@ -14,6 +18,211 @@
 namespace splinepy::py {
 
 namespace py = pybind11;
+
+// alias for frequently used vectors
+using CoreSplineVector =
+    std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>;
+using IntVector = splinepy::utils::DefaultInitializationVector<int>;
+using IntVectorVector = splinepy::utils::DefaultInitializationVector<IntVector>;
+using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
+
+/// @brief Extracts CoreSpline from list of PySplines.
+/// @param pysplines
+/// @param nthreads
+/// @return
+inline std::vector<PySpline::CoreSpline_>
+ToCoreSplineVector(py::list pysplines, const int nthreads = 1) {
+  // prepare return obj
+  const int n_splines = static_cast<int>(pysplines.size());
+  std::vector<PySpline::CoreSpline_> core_splines(n_splines);
+
+  auto to_core = [&](int begin, int end) {
+    for (int i{begin}; i < end; ++i) {
+      core_splines[i] =
+          pysplines[i].template cast<std::shared_ptr<PySpline>>()->Core();
+    }
+  };
+  splinepy::utils::NThreadExecution(to_core, n_splines, nthreads);
+
+  return core_splines;
+}
+
+/// @brief
+/// @param splist
+/// @param nthreads
+/// @return
+inline py::list ToPySplineList(CoreSplineVector& splist, int nthreads) {
+  // prepare return obj
+  const int n_splines = static_cast<int>(splist.size());
+  py::list pyspline_list(n_splines);
+
+  auto to_pyspline = [&](int begin, int end) {
+    for (int i{begin}; i < end; ++i) {
+      pyspline_list[i] = std::make_shared<PySpline>(splist[i]);
+    }
+  };
+
+  // multi thread execution causes segfault.
+  // until we find a better solution, do single exe
+  nthreads = 1;
+
+  splinepy::utils::NThreadExecution(to_pyspline, n_splines, nthreads);
+
+  return pyspline_list;
+}
+
+/// @brief raises if there's any mismatch.
+/// @param splist
+/// @param para_dim
+/// @param dim
+/// @param degrees
+/// @param control_mesh_resolutions
+/// @param nthreads
+inline void RaiseMisMatch(const CoreSplineVector& splist,
+                          const std::string name,
+                          const int para_dim,
+                          const int dim,
+                          const IntVector degrees,
+                          const IntVector control_mesh_resolutions,
+                          const int nthreads) {
+  // for verbose output
+  std::unordered_map<std::string, IntVectorVector> mismatches{};
+
+  // check flags
+  bool check_name{}, check_para_dim{}, check_dim{}, check_degrees{},
+      check_control_mesh_resolutions{};
+  // input vector sizes
+  const int d_size = degrees.size();
+  const int cmr_size = control_mesh_resolutions.size();
+  // true para_dim to use as reference -> will be updated / compared
+  int ref_para_dim{para_dim};
+
+  // parse input and allocate vector for mismatch book keeping
+  if (name.size() > 0) {
+    check_name = true;
+    mismatches["name"].resize(nthreads);
+  }
+  if (dim > 0) {
+    check_dim = true;
+    mismatches["dim"].resize(nthreads);
+  }
+  if (d_size > 0) {
+    check_degrees = true;
+    ref_para_dim = d_size;
+    mismatches["degrees"].resize(nthreads);
+  }
+  if (cmr_size > 0) {
+    check_control_mesh_resolutions = true;
+    mismatches["control_mesh_resolutions"].resize(nthreads);
+  }
+  if (para_dim > 0 || check_degrees || check_control_mesh_resolutions) {
+    check_para_dim = true;
+
+    // sanity check
+    for (const auto& candidate : {para_dim, d_size, cmr_size}) {
+      if (candidate != ref_para_dim && candidate > 0) {
+        splinepy::utils::PrintAndThrowError(
+            "Mismatch in given para_dim (",
+            para_dim,
+            "), size of degrees, (",
+            d_size,
+            "), size of control_mesh_resolutions (",
+            cmr_size,
+            ").");
+      }
+    }
+    mismatches["para_dim"].resize(nthreads);
+  }
+
+  // lambda for nthread comparison
+  auto check_mismatch_step = [&](int begin, int total_) {
+    // in step-style query, begin is i_thread
+    const int thread_index = begin;
+    // alloc vectors incase we need to compare
+    IntVector spline_degree(ref_para_dim), spline_cmr(ref_para_dim);
+
+    for (int i{begin}; i < total_; i += nthreads) {
+      // get spline to check
+      const auto& spline = splist[i];
+
+      // skip null splines
+      if (spline->SplinepyIsNull()) {
+        continue;
+      }
+
+      // default value for para_dim match
+      bool para_dim_matches{true};
+
+      // check
+      if (check_name && (name != spline->SplinepySplineName())) {
+        mismatches["name"][thread_index].push_back(i);
+      }
+      if (check_para_dim && (ref_para_dim != spline->SplinepyParaDim())) {
+        mismatches["para_dim"][thread_index].push_back(i);
+        para_dim_matches = false;
+      }
+      if (check_dim && (dim != spline->SplinepyDim())) {
+        mismatches["dim"][thread_index].push_back(i);
+      }
+      // check properties that arerelevent iff para_dim matches
+      if (para_dim_matches) {
+        if (check_degrees) {
+          spline->SplinepyCurrentProperties(spline_degree.data(),
+                                            nullptr,
+                                            nullptr,
+                                            nullptr);
+          if (spline_degree != degrees) {
+            mismatches["degrees"][thread_index].push_back(i);
+          }
+        }
+        if (check_control_mesh_resolutions) {
+          spline->SplinepyControlMeshResolutions(spline_cmr.data());
+          if (spline_cmr != control_mesh_resolutions) {
+            mismatches["control_mesh_resolutions"][thread_index].push_back(i);
+          }
+        }
+      }
+    }
+  };
+
+  splinepy::utils::NThreadExecution(check_mismatch_step,
+                                    static_cast<int>(splist.size()),
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
+
+  // prepare output or maybe exit
+  std::unordered_map<std::string, IntVector> concat_mismatches{};
+  bool raise{false};
+
+  for (const auto& [key, mismatch_per_threads] : mismatches) {
+    auto& concat_vec = concat_mismatches[key];
+    for (const auto& mismatch : mismatch_per_threads) {
+      const auto m_size = mismatch.size();
+      if (m_size != 0) {
+        concat_vec.insert(concat_vec.end(), mismatch.begin(), mismatch.end());
+      }
+    }
+    if (concat_vec.size() != 0) {
+      raise = true;
+    }
+  };
+
+  // everything matches
+  if (!raise) {
+    return;
+  }
+
+  // form mismatch info
+  std::string mismatch_info{};
+  for (const auto& [key, concat_mismatch] : concat_mismatches) {
+    mismatch_info += "\n[" + key + "] : ";
+    for (const auto& ids : concat_mismatch) {
+      mismatch_info += std::to_string(ids) + ", ";
+    }
+  }
+
+  splinepy::utils::PrintAndThrowError("Found mismatches.", mismatch_info);
+}
 
 template<std::size_t parametric_dimension, std::size_t physical_dimension>
 py::array_t<int>
@@ -740,8 +949,7 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
   const int* neighbor_id_ptr = static_cast<int*>(neighbor_id.request().ptr);
   const int* neighbor_face_id_ptr =
       static_cast<int*>(neighbor_face_id.request().ptr);
-  const auto cpp_spline_list =
-      ListOfPySplinesToVectorOfCoreSplines(spline_list);
+  const auto cpp_spline_list = ToCoreSplineVector(spline_list);
   const int n_connections = base_id.size();
 
   const int para_dim_ = cpp_spline_list[0]->SplinepyParaDim();
@@ -1060,8 +1268,7 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
   const int n_patches = interfaces.shape(0);
   const int n_faces = interfaces.shape(1);
   const int para_dim_ = n_faces / 2;
-  const auto cpp_spline_list =
-      ListOfPySplinesToVectorOfCoreSplines(spline_list);
+  const auto cpp_spline_list = ToCoreSplineVector(spline_list);
   const int chunk_size = std::div((n_patches + n_threads - 1), n_threads).quot;
 
   // This approach is a work-around for parallel execution
@@ -1126,8 +1333,7 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   }
 
   // Provide auxiliary values
-  const auto cpp_spline_list =
-      ListOfPySplinesToVectorOfCoreSplines(boundary_splines);
+  const auto cpp_spline_list = ToCoreSplineVector(boundary_splines);
   const int n_boundary_patches{static_cast<int>(boundary_interfaces.shape(0))};
   const int n_faces_per_boundary_patch{
       static_cast<int>(boundary_interfaces.shape(1))};
