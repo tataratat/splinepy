@@ -47,7 +47,7 @@ bspline = splinepy.BSpline(
         [0.0, 0.0, 1.0, 1.0],
     ],
     control_points=[
-        [0.0, 0.0],  # [0, 0]
+        [0.0, 0.0],  # [0, 0] (control grid index)
         [0.5, 0.0],  # [1, 0]
         [1.0, 0.0],  # [2, 0]
         [0.0, 1.0],  # [0, 1]
@@ -62,7 +62,7 @@ bspline = splinepy.BSpline(
 # lower-indexed dimensions first. But if you prefer a
 # grid-like structure, try
 multi_index = bspline.multi_index
-grid_cps = np.empty((6, 2))
+grid_cps = np.empty(bspline.control_points.shape)
 grid_cps[multi_index[0, 0]] = [0.0, 0.0]
 grid_cps[multi_index[1, 0]] = [0.5, 0.0]
 grid_cps[multi_index[2, 0], 0] = 1.0
