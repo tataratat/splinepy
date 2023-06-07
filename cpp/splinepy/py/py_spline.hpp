@@ -27,6 +27,10 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
+/// @brief python function splinepy.to_derived()
+static const auto py_to_derived =
+    py::module_::import("splinepy").attr("to_derived");
+
 template<typename ValueType>
 static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
                               const std::vector<int>& shape,
@@ -899,6 +903,11 @@ public:
   CoordinateReferences() {
     return Core()->SplinepyCoordinateReferences();
   }
+
+  /// @brief returns current spline as package's derived spline types based on
+  /// splinepy.settings.NAME_TO_TYPE
+  /// @return
+  py::object ToDerived() { return py_to_derived(py::cast(this)); }
 };
 
 inline void add_spline_pyclass(py::module& m) {
@@ -981,6 +990,7 @@ inline void add_spline_pyclass(py::module& m) {
            py::arg("tolerance"))
       .def("coordinate_references",
            &splinepy::py::PySpline::CoordinateReferences)
+      .def("to_derived", &splinepy::py::PySpline::ToDerived)
       .def(py::pickle(
           [](splinepy::py::PySpline& spl) {
             return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);
