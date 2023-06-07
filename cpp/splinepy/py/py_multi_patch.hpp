@@ -109,19 +109,20 @@ inline py::list ToPySplineList(CoreSplineVector& splist, int nthreads) {
   return pyspline_list;
 }
 
-/// @brief raises if there's any mismatch.
+/// @brief raises if there's any mismatch between specified properties and all
+/// the entries in the vector.
 /// @param splist
 /// @param para_dim
 /// @param dim
 /// @param degrees
 /// @param control_mesh_resolutions
 /// @param nthreads
-inline void RaiseMisMatch(const CoreSplineVector& splist,
+inline void RaiseMismatch(const CoreSplineVector& splist,
                           const std::string name,
                           const int para_dim,
                           const int dim,
-                          const IntVector degrees,
-                          const IntVector control_mesh_resolutions,
+                          const IntVector& degrees,
+                          const IntVector& control_mesh_resolutions,
                           const int nthreads) {
   // for verbose output
   std::unordered_map<std::string, IntVectorVector> mismatches{};
@@ -225,6 +226,158 @@ inline void RaiseMisMatch(const CoreSplineVector& splist,
 
   splinepy::utils::NThreadExecution(check_mismatch_step,
                                     static_cast<int>(splist.size()),
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
+
+  // prepare output or maybe exit
+  std::unordered_map<std::string, IntVector> concat_mismatches{};
+  bool raise{false};
+
+  for (const auto& [key, mismatch_per_threads] : mismatches) {
+    auto& concat_vec = concat_mismatches[key];
+    for (const auto& mismatch : mismatch_per_threads) {
+      const auto m_size = mismatch.size();
+      if (m_size != 0) {
+        concat_vec.insert(concat_vec.end(), mismatch.begin(), mismatch.end());
+      }
+    }
+    if (concat_vec.size() != 0) {
+      raise = true;
+    }
+  };
+
+  // everything matches
+  if (!raise) {
+    return;
+  }
+
+  // form mismatch info
+  std::string mismatch_info{};
+  for (const auto& [key, concat_mismatch] : concat_mismatches) {
+    mismatch_info += "\n[" + key + "] : ";
+    for (const auto& ids : concat_mismatch) {
+      mismatch_info += std::to_string(ids) + ", ";
+    }
+  }
+
+  splinepy::utils::PrintAndThrowError("Found mismatches.", mismatch_info);
+}
+
+/// @brief raises if there's any mismatch between two given vectors of splines.
+/// @param splist
+/// @param para_dim
+/// @param dim
+/// @param degrees
+/// @param control_mesh_resolutions
+/// @param nthreads
+inline void RaiseMismatch(const CoreSplineVector& splist0,
+                          const CoreSplineVector& splist1,
+                          const bool name,
+                          const bool para_dim,
+                          const bool dim,
+                          const bool degrees,
+                          const bool control_mesh_resolutions,
+                          const int nthreads) {
+  // len check
+  if (splist0.size() != splist1.size()) {
+    splinepy::utils::PrintAndThrowError(
+        "Size mismatch between first and second list of splines.",
+        splist0.size(),
+        "vs",
+        splist1.size());
+  }
+  // for verbose output
+  std::unordered_map<std::string, IntVectorVector> mismatches{};
+  bool check_para_dim{false};
+
+  // parse input and allocate vector for mismatch book keeping
+  if (name) {
+    mismatches["name"].resize(nthreads);
+  }
+  if (dim) {
+    mismatches["dim"].resize(nthreads);
+  }
+  if (degrees) {
+    mismatches["degrees"].resize(nthreads);
+  }
+  if (control_mesh_resolutions) {
+    mismatches["control_mesh_resolutions"].resize(nthreads);
+  }
+  if (para_dim || degrees || control_mesh_resolutions) {
+    check_para_dim = true;
+    mismatches["para_dim"].resize(nthreads);
+  }
+
+  // lambda for nthread comparison
+  auto check_mismatch_step = [&](int begin, int total_) {
+    // in step-style query, begin is i_thread
+    const int thread_index = begin;
+
+    // alloc some tmp vector if needed
+    IntVector int_vec0, int_vec1;
+
+    for (int i{begin}; i < total_; i += nthreads) {
+      // get spline to check
+      const auto& spline0 = splist0[i];
+      const auto& spline1 = splist1[i];
+
+      // skip null splines
+      if (spline1->SplinepyIsNull() || spline0->SplinepyIsNull()) {
+        continue;
+      }
+
+      // default value for para_dim match
+      bool para_dim_matches{true};
+
+      // check
+      if (name
+          && (spline0->SplinepySplineName() != spline1->SplinepySplineName())) {
+        mismatches["name"][thread_index].push_back(i);
+      }
+      if (para_dim
+          && (spline0->SplinepyParaDim() != spline1->SplinepyParaDim())) {
+        mismatches["para_dim"][thread_index].push_back(i);
+        para_dim_matches = false;
+      }
+      if (dim && (spline0->SplinepyDim() != spline1->SplinepyDim())) {
+        mismatches["dim"][thread_index].push_back(i);
+      }
+
+      // check properties that are relevent iff para_dim matches
+      if (para_dim_matches && (degrees || control_mesh_resolutions)) {
+        // alloc some space
+        int_vec0.resize(spline0->SplinepyParaDim());
+        int_vec1.resize(spline1->SplinepyParaDim());
+
+        if (degrees) {
+          spline0->SplinepyCurrentProperties(int_vec0.data(),
+                                             nullptr,
+                                             nullptr,
+                                             nullptr);
+          spline1->SplinepyCurrentProperties(int_vec1.data(),
+                                             nullptr,
+                                             nullptr,
+                                             nullptr);
+
+          if (int_vec0 != int_vec1) {
+            mismatches["degrees"][thread_index].push_back(i);
+          }
+        }
+
+        if (control_mesh_resolutions) {
+          spline0->SplinepyControlMeshResolutions(int_vec0.data());
+          spline1->SplinepyControlMeshResolutions(int_vec1.data());
+
+          if (int_vec0 != int_vec1) {
+            mismatches["control_mesh_resolutions"][thread_index].push_back(i);
+          }
+        }
+      }
+    }
+  };
+
+  splinepy::utils::NThreadExecution(check_mismatch_step,
+                                    static_cast<int>(splist0.size()),
                                     nthreads,
                                     splinepy::utils::NThreadQueryType::Step);
 
@@ -1584,13 +1737,39 @@ public:
   /// center of each boundary elements.
   py::array_t<double> boundary_centers_;
 
+  /// default number of threads, only used in SetPatches, as it will just be a
+  /// setter in python side
+  int n_default_threads_{1};
+
+  /// internal flag to indicate that this a field multipatch that may contain
+  /// null spline
+  bool has_null_splines_{false};
+
   /// ctor
   PyMultiPatch() = default;
 
   /// list (iterable) init -> pybind will cast to list for us if needed
-  PyMultiPatch(py::list& patches, const int nthreads = 1){
-      // once, we will turn patches into core patches
-  };
+  PyMultiPatch(py::list& patches, const int n_default_threads = 1)
+      : n_default_threads_(n_default_threads) {
+    SetPatchesNThreads(patches, n_default_threads);
+  }
+
+  /// @brief Internal use only. used to save field splines.
+  /// @param patchces
+  /// @param n_default_threads
+  /// @param para_dim_if_none
+  /// @param dim_if_none
+  PyMultiPatch(py::list& patches,
+               const int n_default_threads,
+               const int para_dim_if_none,
+               const int dim_if_none)
+      : n_default_threads_(n_default_threads),
+        has_null_splines_(true) {
+    SetPatchesWithNullSplines(patches,
+                              n_default_threads,
+                              para_dim_if_none,
+                              dim_if_none);
+  }
 
   CorePatches_& CorePatches() {
     if (core_patches_.size() == 0) {
@@ -1610,14 +1789,80 @@ public:
     boundary_centers_ = py::array_t<double>();
   }
 
-  void SetPatches(py::list& patches, const int nthreads = 1) {}
+  // could overload, but it won't be clear for pybind
+
+  /// @brief default patches setter, exposed to python
+  /// @param patches
+  void SetPatchesDefault(py::list& patches) {
+    SetPatchesNThreads(patches, n_default_threads_);
+  }
+  /// @brief patches setter with nthreads
+  /// @param patches
+  /// @param nthreads
+  void SetPatchesNThreads(py::list& patches, const int nthreads = 1) {
+    // clear first, incase this is a new setting
+    Clear();
+
+    // register patches
+    patches_ = patches;
+
+    // convert
+    core_patches_ = ToCoreSplineVector(patches, nthreads);
+
+    // check only dim mismatch
+    RaiseMismatch(core_patches_,
+                  "",
+                  core_patches_[0]->SplinepyParaDim(),
+                  core_patches_[0]->SplinepyDim(),
+                  {},
+                  {},
+                  nthreads);
+  }
+  /// @brief patches setter for field patches that may contain null splines.
+  /// @param patches
+  /// @param nthreads
+  /// @param para_dim_if_none
+  /// @param dim_if_none
+  /// @param check_conformity
+  void SetPatchesWithNullSplines(py::list& patches,
+                                 const int nthreads,
+                                 const int para_dim_if_none,
+                                 const int dim_if_none) {
+    // clear
+    Clear();
+
+    // save
+    patches_ = patches;
+
+    // convert using null spline friendly converter
+    core_patches_ =
+        ToCoreSplineVector(patches, para_dim_if_none, dim_if_none, nthreads);
+
+    // check only dim mismatch
+    RaiseMismatch(core_patches_,
+                  "",
+                  core_patches_[0]->SplinepyParaDim(),
+                  core_patches_[0]->SplinepyDim(),
+                  {},
+                  {},
+                  nthreads);
+  }
   py::list GetPatches() { return patches_; }
 
   int ParaDim() { return CorePatches()[0]->SplinepyParaDim(); }
 
   int Dim() { return CorePatches()[0]->SplinepyDim(); }
 
-  void SetInterfaces(py::array_t<int>& interfaces) {}
+  void SetInterfaces(py::array_t<int>& interfaces) {
+    // size check
+    splinepy::py::CheckPyArrayShape(
+        interfaces,
+        {static_cast<int>(CorePatches().size()),
+         static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
+        true);
+
+    interfaces_ = interfaces;
+  }
   py::array_t<int> GetInterfaces() {}
 
   std::shared_ptr<PyMultiPatch> SubPatches(const int nthreads) {}
