@@ -748,7 +748,7 @@ class Spline(SplinepyBase, core.CoreSpline):
         return super().name
 
     @property
-    def has_knot_vector(self):
+    def has_knot_vectors(self):
         """
         Returns True iff spline has knot vectors. Bezier splines don't.
 
@@ -758,9 +758,9 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         Returns
         -------
-        has_knot_vector: bool
+        has_knot_vectors: bool
         """
-        return super().has_knot_vector
+        return super().has_knot_vectors
 
     @property
     def is_rational(self):
