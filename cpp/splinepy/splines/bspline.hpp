@@ -188,34 +188,41 @@ public:
     const auto& vector_space = GetVectorSpace();
 
     // degrees
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
+    if (degrees) {
+      for (std::size_t i{}; i < kParaDim; ++i) {
+        degrees[i] = static_cast<int>(parameter_space.GetDegrees()[i]);
+      }
     }
 
     // knot_vectors
-    const auto& core_kvs = parameter_space.GetKnotVectors();
-    knot_vectors->clear();
-    knot_vectors->reserve(kParaDim);
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      const auto& core_kv = *core_kvs[i];
-      const std::size_t kvsize = static_cast<std::size_t>(core_kv.GetSize());
-      std::vector<double> kv;
-      kv.reserve(kvsize);
-      // Index wants int
-      for (int j{}; j < static_cast<int>(kvsize); ++j) {
-        kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
+    if (knot_vectors) {
+      const auto& core_kvs = parameter_space.GetKnotVectors();
+      knot_vectors->clear();
+      knot_vectors->reserve(kParaDim);
+      for (std::size_t i{}; i < kParaDim; ++i) {
+        const auto& core_kv = *core_kvs[i];
+        const std::size_t kvsize = static_cast<std::size_t>(core_kv.GetSize());
+        std::vector<double> kv;
+        kv.reserve(kvsize);
+        // Index wants int
+        for (int j{}; j < static_cast<int>(kvsize); ++j) {
+          kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
+        }
+        knot_vectors->push_back(std::move(kv));
       }
-      knot_vectors->push_back(std::move(kv));
     }
 
-    // control_points and weights
-    std::size_t ncps = vector_space.GetNumberOfCoordinates();
-    // fill it up, phil!
-    for (std::size_t i{}; i < ncps; ++i) {
-      auto const& coord_named_phil = vector_space[splinelib::Index{
-          static_cast<splinelib::Index::Type_>(i)}];
-      for (std::size_t j{}; j < kDim; ++j) {
-        control_points[i * kDim + j] = static_cast<double>(coord_named_phil[j]);
+    // control_points
+    if (control_points) {
+      std::size_t ncps = vector_space.GetNumberOfCoordinates();
+      // fill it up, phil!
+      for (std::size_t i{}; i < ncps; ++i) {
+        auto const& coord_named_phil = vector_space[splinelib::Index{
+            static_cast<splinelib::Index::Type_>(i)}];
+        for (std::size_t j{}; j < kDim; ++j) {
+          control_points[i * kDim + j] =
+              static_cast<double>(coord_named_phil[j]);
+        }
       }
     }
   }
