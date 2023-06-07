@@ -364,8 +364,8 @@ bool SplinepyBase::SplinepySplineNameMatches(const SplinepyBase& a,
       splinepy::utils::PrintAndThrowError(description,
                                           "Spline name mismatch -"
                                           "Spline0:",
-                                          "/",
                                           a.SplinepySplineName(),
+                                          "/",
                                           "Spline1:",
                                           b.SplinepySplineName());
     }
@@ -384,8 +384,8 @@ bool SplinepyBase::SplinepyParaDimMatches(const SplinepyBase& a,
           description,
           "Spline parametric dimension mismatch - "
           "Spline0:",
-          "/",
           a.SplinepyParaDim(),
+          "/",
           "Spline1:",
           b.SplinepyParaDim());
     }
@@ -404,8 +404,8 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
           description,
           "Spline parametric dimension mismatch - "
           "Spline0:",
-          "/",
           a.SplinepyDim(),
+          "/",
           "Spline1:",
           b.SplinepyDim());
     }
