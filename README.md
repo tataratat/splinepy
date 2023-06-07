@@ -47,44 +47,43 @@ bspline = splinepy.BSpline(
         [0.0, 0.0, 1.0, 1.0],
     ],
     control_points=[
-        [0. , 0.5 ],
-        [1., 0. ],
-        [0.5 , 1. ],
-        [0. , 0. ],
-        [0., 1. ],
-        [1. , 1. ],
+        [0.0, 0.0],  # [0, 0]
+        [0.5, 0.0],  # [1, 0]
+        [1.0, 0.0],  # [2, 0]
+        [0.0, 1.0],  # [0, 1]
+        [0.5, 1.0],  # [1, 1]
+        [1.0, 1.0],  # [2, 1]
     ],
 )
 
-# We always store control points in 2D arrays with
-# (total_number_of_control_points, physical_dimension) shape.
-# They fill control grid by iterating lower-indexed dimensions first.
-# But if you prefer the grid-like structure, this should hold
-grid_cps = np.empty([2, 3, 2])  # (dim, n_cps_u, n_cps_v)
-grid_cps[:, 0, 0] = [0. , 0. ]
-grid_cps[:, 0, 1] = [0.5, 0. ]
-grid_cps[:, 1, 0] = [1. , 0. ]
-grid_cps[:, 1, 1] = [0. , 1. ]
-grid_cps[:, 2, 0] = [0.5, 1. ]
-grid_cps[:, 2, 1] = [1. , 1. ]
+# We always store control points in 2D arrays with shape
+# (total_number_of_control_points, physical_dimension).
+# The indexing of the control grid is defined by iterating
+# lower-indexed dimensions first. But if you prefer a
+# grid-like structure, try
+multi_index = bspline.multi_index
+grid_cps = np.empty((6, 2))
+grid_cps[multi_index[0, 0]] = [0.0, 0.0]
+grid_cps[multi_index[1, 0]] = [0.5, 0.0]
+grid_cps[multi_index[2, 0], 0] = 1.0
+# which also supports ranges
+grid_cps[multi_index[:, 0], 1] = 0.0
+grid_cps[multi_index[:, 1], 1] = 1.0
+grid_cps[multi_index[:, 1], 0] = [0.0, 0.5, 1.0]
 
-
-assert np.allclose(
-    bspline.control_points,
-    grid_cps.reshape(-1, 2)  # (-1, dim)
-)
+assert np.allclose(bspline.control_points, grid_cps)
 
 # Evaluate spline mapping.
 # First, let's form parametric coordinate queries
 queries = [
-    [0.1, 0.2], # first query
-    [0.4, 0.5], # second query
+    [0.1, 0.2],        # first query
+    [0.4, 0.5],        # second query
     [0.1156, 0.9091],  # third query
 ]
 physical_coords = bspline.evaluate(queries)
 
-# we can also execute this in parallel using multithread executions in c++ side
-# (probably makes more sense if you have giant queries)
+# we can also execute this in parallel using multithread
+# executions on c++ side (for heavy multi-queries scenarios)
 physical_coords_parallel = bspline.evaluate(queries, nthreads=2)
 
 # this holds
