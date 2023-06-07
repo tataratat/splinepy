@@ -96,7 +96,7 @@ inline py::list ToPySplineList(CoreSplineVector& splist, int nthreads) {
 
   auto to_pyspline = [&](int begin, int end) {
     for (int i{begin}; i < end; ++i) {
-      pyspline_list[i] = std::make_shared<PySpline>(splist[i]);
+      pyspline_list[i] = std::make_shared<PySpline>(splist[i])->ToDerived();
     }
   };
 
@@ -1719,13 +1719,16 @@ public:
   CorePatches_ core_patches_;
 
   /// sub patches - similar concept to subelement / face elements
-  std::shared_ptr<PyMultiPatch> sub_patches_ = nullptr;
+  std::shared_ptr<PyMultiPatch> sub_multi_patches_ = nullptr;
+
+  /// center of each sub patch.
+  py::array_t<double> sub_patch_centers_;
 
   /// ids for boundary_patches from sub_patches_
   py::array_t<int> boundary_patch_ids_;
 
   /// Boundary multi patches. Should consist of one smaller parametric dim
-  std::shared_ptr<PyMultiPatch> boundary_patches_ = nullptr;
+  std::shared_ptr<PyMultiPatch> boundary_multi_patches_ = nullptr;
 
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
@@ -1733,9 +1736,6 @@ public:
 
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
-
-  /// center of each boundary elements.
-  py::array_t<double> boundary_centers_;
 
   /// default number of threads, only used in SetPatches, as it will just be a
   /// setter in python side
@@ -1781,12 +1781,12 @@ public:
   void Clear() {
     patches_ = py::list();
     core_patches_ = CorePatches_{};
-    sub_patches_ = nullptr;
+    sub_multi_patches_ = nullptr;
     boundary_patch_ids_ = py::array_t<int>();
-    boundary_patches_ = nullptr;
+    boundary_multi_patches_ = nullptr;
     interfaces_ = py::array_t<int>();
     boundary_ids_ = py::array_t<int>();
-    boundary_centers_ = py::array_t<double>();
+    sub_patch_centers_ = py::array_t<double>();
   }
 
   // could overload, but it won't be clear for pybind
@@ -1849,10 +1849,131 @@ public:
   }
   py::list GetPatches() { return patches_; }
 
+  /// @brief returns para_dim of the first patch
+  /// @return
   int ParaDim() { return CorePatches()[0]->SplinepyParaDim(); }
 
+  /// @brief returns dim of the first patch
+  /// @return
   int Dim() { return CorePatches()[0]->SplinepyDim(); }
 
+  /// @brief returns sub patches as multi patches
+  /// @param nthreads
+  /// @return
+  std::shared_ptr<PyMultiPatch> SubMultiPatches(const int nthreads) {
+    // quick exit if they exist.
+    if (sub_multi_patches_) {
+      return sub_multi_patches_;
+    }
+
+    const int n_splines = CorePatches().size();
+    // to accumulate
+    const int n_boundary = ParaDim() * 2;
+    const int n_boundaries = n_splines * n_boundary;
+
+    // prepare output
+    CoreSplineVector out_boundaries(n_boundaries);
+
+    // prepare lambda
+    auto boundary_extract = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        // start of the offset
+        const int offset = i * n_boundary;
+        // deref this spline
+        auto& spline = *core_patches_[i];
+        for (int j{}; j < n_boundary; ++j) {
+          out_boundaries[offset + j] = spline.SplinepyExtractBoundary(j);
+        }
+      }
+    };
+
+    splinepy::utils::NThreadExecution(boundary_extract, n_splines, nthreads);
+
+    // create multi patch to return
+    sub_multi_patches_ = std::make_shared<PyMultiPatch>();
+
+    // set both core and py splines
+    sub_multi_patches_->patches_ = ToPySplineList(out_boundaries, nthreads);
+    sub_multi_patches_->core_patches_ = std::move(out_boundaries);
+
+    return sub_multi_patches_;
+  }
+
+  py::array_t<double> SubPatchCenters(const int nthreads,
+                                      const bool same_parametric_bounds) {
+    if (sub_patch_centers_.size() != 0) {
+      return sub_patch_centers_;
+    }
+
+    // prepare output
+    // from here we assume that all the splines have the same para_dim and dim
+    const int n_splines = CorePatches().size();
+    const int para_dim = ParaDim();
+    const int dim = Dim();
+    const int n_queries = 2 * para_dim;
+    const int n_total = n_queries * n_splines;
+    sub_patch_centers_ = py::array_t<double>({n_total, dim});
+    double* sub_patch_centers_ptr =
+        static_cast<double*>(sub_patch_centers_.request().ptr);
+
+    // pre-compute boundary centers
+    DoubleVector para_bounds;
+    double* para_bounds_ptr;
+    if (!same_parametric_bounds) {
+      para_bounds.resize(n_total * para_dim);
+      para_bounds_ptr = para_bounds.data();
+      const int stride = n_queries * para_dim;
+
+      auto calc_para_bounds = [&](int begin, int end) {
+        for (int i{begin}; i < end; ++i) {
+          splinepy::splines::helpers::ScalarTypeBoundaryCenters(
+              *core_patches_[i],
+              &para_bounds_ptr[stride * i]);
+        }
+      };
+
+      // exe
+      splinepy::utils::NThreadExecution(calc_para_bounds, n_splines, nthreads);
+    }
+
+    auto calc_sub_patch_centers_step = [&](int begin, int total_) {
+      // each thread needs one query
+      DoubleVector queries_vector; /* unused if same_parametric_bounds=true*/
+      double* queries;
+
+      // pre compute boundary centers if para bounds are the same
+      if (same_parametric_bounds) {
+        queries_vector.resize(2 * para_dim * para_dim);
+        queries = queries_vector.data();
+        splinepy::splines::helpers::ScalarTypeBoundaryCenters(*core_patches_[0],
+                                                              queries);
+      }
+
+      for (int i{begin}; i < total_; i += nthreads) {
+        const auto [i_spline, i_query] = std::div(i, n_queries);
+
+        // get ptr start
+        if (!same_parametric_bounds) {
+          queries = &para_bounds_ptr[i_spline * n_queries * para_dim];
+        }
+
+        // eval
+        core_patches_[i_spline]->SplinepyEvaluate(
+            &queries[i_query * para_dim],
+            &sub_patch_centers_ptr[(i_spline * n_queries + i_query) * dim]);
+      }
+    };
+
+    splinepy::utils::NThreadExecution(calc_sub_patch_centers_step,
+                                      n_total,
+                                      nthreads,
+                                      splinepy::utils::NThreadQueryType::Step);
+
+    return sub_patch_centers_;
+  }
+
+  /// @brief sets interface info. runs array shape check
+  /// @param interfaces
   void SetInterfaces(py::array_t<int>& interfaces) {
     // size check
     splinepy::py::CheckPyArrayShape(
@@ -1863,11 +1984,12 @@ public:
 
     interfaces_ = interfaces;
   }
+
+  /// @brief either returns existing or creates one
+  /// @return
   py::array_t<int> GetInterfaces() {}
 
-  std::shared_ptr<PyMultiPatch> SubPatches(const int nthreads) {}
-
-  std::shared_ptr<PyMultiPatch> BoundaryPatches(const int nthreads) {}
+  std::shared_ptr<PyMultiPatch> BoundaryMultiPatches(const int nthreads) {}
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                const int nthreads) {
