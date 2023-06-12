@@ -447,6 +447,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         *fields,
         check_compliance=False,
         check_conformity=False,
+        nthreads=None,
     ):
         """
         Add fields using lists of splines
@@ -463,59 +464,23 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         check_conformity : bool (False)
           Check for conformity between patches and fields by comparing degrees
           and control-mesh-resolutions
+        nthreads : int
 
         Returns
         -------
         None
         """
-        if check_compliance:
-            for field in fields:
-                # Check if is a list
-                if not isinstance(field, list):
-                    if issubclass(type(field), Spline):
-                        field = list(field)
-                # Check if size matches
-                if not len(field) == len(self.splines):
-                    raise ValueError(
-                        "Size mismatch between fields and geometry"
-                    )
-                # Check parametric dimensions
-                for i, spline in enumerate(field):
-                    if spline is None:
-                        continue
-                    if self.splines[i].para_dim != spline.para_dim:
-                        raise ValueError(
-                            "Mismatch between spline and field dimensionality"
-                            f"for spline {i}, expected"
-                            f"{self.splines[i].para_dim}P{self.splines[i].dim}"
-                            f"D, but got {spline.para_dim}P{spline.dim}D."
-                        )
-                    if check_conformity:
-                        # Further check degrees and ctps-mesh-res
-                        if type(self.splines[i]) is not type(spline):
-                            self._logd(
-                                "Mismatch between spline and field type"
-                                f"for spline {i}."
-                            )
-                        if np.any(self.splines[i].degrees != spline.degrees):
-                            raise ValueError(
-                                "Mismatch between spline and field degrees"
-                                f"for spline {i}, expected"
-                                f"{self.splines[i].degrees}, but got "
-                                f"{spline.degrees}."
-                            )
-                        if np.any(
-                            self.splines[i].control_mesh_resolutions
-                            != spline.control_mesh_resolutions
-                        ):
-                            raise ValueError(
-                                "Mismatch between spline and field ctps-"
-                                f"resolution for spline {i}, expected"
-                                f"{self.splines[i].control_mesh_resolutions}"
-                                f", but got {spline.control_mesh_resolutions}."
-                            )
-        # Add fields
-        self._field_list.extend(fields)
+        if nthreads is None:
+            nthreads = settings.NTHREADS
+
+        super().add_fields(
+            fields,
+            check_compliance,
+            check_compliance,
+            check_conformity,
+            check_conformity,
+            nthreads,
+        )
 
     @property
     def fields(self):
@@ -530,10 +495,4 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         fields : list<list>
           List of all field representation in the form of list of splines
         """
-        return self._field_list
-
-    @fields.setter
-    def fields(self, a):
-        raise ValueError(
-            "Fields may not be set directly, use add_fields instead"
-        )
+        return self.fields()
