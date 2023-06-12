@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdlib>
+#include <mutex>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -9,6 +12,9 @@
 
 // Bezman
 #include <bezman/src/utils/algorithms/point_uniquifier.hpp>
+
+// uff
+#include <uff.hpp>
 
 //
 #include <splinepy/py/py_spline.hpp>
@@ -92,19 +98,48 @@ ToCoreSplineVector(py::list pysplines,
 inline py::list ToPySplineList(CoreSplineVector& splist, int nthreads) {
   // prepare return obj
   const int n_splines = static_cast<int>(splist.size());
-  py::list pyspline_list(n_splines);
 
-  auto to_pyspline = [&](int begin, int end) {
-    for (int i{begin}; i < end; ++i) {
-      pyspline_list[i] = std::make_shared<PySpline>(splist[i])->ToDerived();
+  // temporary list to gather splines
+  std::vector<py::list> lists_to_concat(nthreads);
+
+  // to return
+  py::list pyspline_list{};
+
+  // get start to end for each thread
+  const int chunk_size = std::div((n_splines + nthreads - 1), nthreads).quot;
+  IntVector interval;
+  interval.reserve(std::max(std::max(nthreads, n_splines), 1) + 1);
+  interval.emplace_back(0);
+  for (int i{1}; i < nthreads; ++i) {
+    interval.emplace_back(chunk_size * i);
+  }
+  interval.emplace_back(n_splines);
+
+  // locally create and use __iadd__ to concat
+  auto to_pyspline_step = [&](int begin, int total_) {
+    const auto& start = interval[begin];
+    const auto& end = interval[begin + 1];
+
+    // assign size
+    auto& local_list = lists_to_concat[begin];
+    local_list = py::list(start - end);
+
+    // loop chunk, concat
+    for (int i{start}; i < end; ++i) {
+      local_list[i] = std::make_shared<PySpline>(splist[i])->ToDerived();
     }
   };
 
-  // multi thread execution causes segfault.
-  // until we find a better solution, do single exe
-  nthreads = 1;
+  // exe
+  splinepy::utils::NThreadExecution(to_pyspline_step,
+                                    n_splines,
+                                    nthreads,
+                                    splinepy::utils::NThreadQueryType::Step);
 
-  splinepy::utils::NThreadExecution(to_pyspline, n_splines, nthreads);
+  // concat
+  for (auto& local_list : lists_to_concat) {
+    pyspline_list += local_list;
+  }
 
   return pyspline_list;
 }
@@ -321,19 +356,10 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
       const auto& spline0 = splist0[i];
       const auto& spline1 = splist1[i];
 
-      // skip null splines
-      if (spline1->SplinepyIsNull() || spline0->SplinepyIsNull()) {
-        continue;
-      }
-
       // default value for para_dim match
       bool para_dim_matches{true};
 
-      // check
-      if (name
-          && (spline0->SplinepySplineName() != spline1->SplinepySplineName())) {
-        mismatches["name"][thread_index].push_back(i);
-      }
+      // check dims
       if (para_dim
           && (spline0->SplinepyParaDim() != spline1->SplinepyParaDim())) {
         mismatches["para_dim"][thread_index].push_back(i);
@@ -341,6 +367,16 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
       }
       if (dim && (spline0->SplinepyDim() != spline1->SplinepyDim())) {
         mismatches["dim"][thread_index].push_back(i);
+      }
+      // null spline should have at least same dims. but nothing else matters.
+      // skip null splines
+      if (spline1->SplinepyIsNull() || spline0->SplinepyIsNull()) {
+        continue;
+      }
+
+      if (name
+          && (spline0->SplinepySplineName() != spline1->SplinepySplineName())) {
+        mismatches["name"][thread_index].push_back(i);
       }
 
       // check properties that are relevent iff para_dim matches
@@ -1719,7 +1755,7 @@ public:
   CorePatches_ core_patches_;
 
   /// sub patches - similar concept to subelement / face elements
-  std::shared_ptr<PyMultiPatch> sub_multi_patches_ = nullptr;
+  std::shared_ptr<PyMultiPatch> sub_multi_patch_ = nullptr;
 
   /// center of each sub patch.
   py::array_t<double> sub_patch_centers_;
@@ -1728,7 +1764,7 @@ public:
   py::array_t<int> boundary_patch_ids_;
 
   /// Boundary multi patches. Should consist of one smaller parametric dim
-  std::shared_ptr<PyMultiPatch> boundary_multi_patches_ = nullptr;
+  std::shared_ptr<PyMultiPatch> boundary_multi_patch_ = nullptr;
 
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
@@ -1737,20 +1773,34 @@ public:
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
 
-  /// default number of threads, only used in SetPatches, as it will just be a
-  /// setter in python side
+  // fields - raw list format
+  py::list field_list_;
+
+  // fields - they are saved as multi-patches
+  std::vector<std::shared_ptr<PyMultiPatch>> field_multi_patches_;
+
+  /// default number of threads for all the operations besides queries
   int n_default_threads_{1};
+
+  /// hint flag that can be used to accelerate property decisions
+  bool same_parametric_bounds_{false};
 
   /// internal flag to indicate that this a field multipatch that may contain
   /// null spline
   bool has_null_splines_{false};
 
+  /// default tolerance
+  double tolerance_{1e-11};
+
   /// ctor
   PyMultiPatch() = default;
 
   /// list (iterable) init -> pybind will cast to list for us if needed
-  PyMultiPatch(py::list& patches, const int n_default_threads = 1)
-      : n_default_threads_(n_default_threads) {
+  PyMultiPatch(py::list& patches,
+               const int n_default_threads = 1,
+               const bool same_parametric_bounds = false)
+      : n_default_threads_(n_default_threads),
+        same_parametric_bounds_(same_parametric_bounds) {
     SetPatchesNThreads(patches, n_default_threads);
   }
 
@@ -1781,12 +1831,13 @@ public:
   void Clear() {
     patches_ = py::list();
     core_patches_ = CorePatches_{};
-    sub_multi_patches_ = nullptr;
+    sub_multi_patch_ = nullptr;
     boundary_patch_ids_ = py::array_t<int>();
-    boundary_multi_patches_ = nullptr;
+    boundary_multi_patch_ = nullptr;
     interfaces_ = py::array_t<int>();
     boundary_ids_ = py::array_t<int>();
     sub_patch_centers_ = py::array_t<double>();
+    field_multi_patches_ = {};
   }
 
   // could overload, but it won't be clear for pybind
@@ -1857,13 +1908,23 @@ public:
   /// @return
   int Dim() { return CorePatches()[0]->SplinepyDim(); }
 
-  /// @brief returns sub patches as multi patches
-  /// @param nthreads
+  /// @brief my name is MultiPatch
   /// @return
-  std::shared_ptr<PyMultiPatch> SubMultiPatches(const int nthreads) {
+  std::string Name() { return "MultiPatch"; }
+
+  /// @brief MultiPatch with n patches
+  /// @return
+  std::string WhatAmI() {
+    return "MultiPatch with " + std::to_string(core_patches_.size())
+           + " patches.";
+  }
+
+  /// @brief returns sub patches as multi patches, uses default nthreads
+  /// @return
+  std::shared_ptr<PyMultiPatch> SubMultiPatches() {
     // quick exit if they exist.
-    if (sub_multi_patches_) {
-      return sub_multi_patches_;
+    if (sub_multi_patch_) {
+      return sub_multi_patch_;
     }
 
     const int n_splines = CorePatches().size();
@@ -1887,21 +1948,24 @@ public:
       }
     };
 
-    splinepy::utils::NThreadExecution(boundary_extract, n_splines, nthreads);
+    splinepy::utils::NThreadExecution(boundary_extract,
+                                      n_splines,
+                                      n_default_threads_);
 
     // create multi patch to return
-    sub_multi_patches_ = std::make_shared<PyMultiPatch>();
+    sub_multi_patch_ = std::make_shared<PyMultiPatch>();
 
     // set both core and py splines
-    sub_multi_patches_->patches_ = ToPySplineList(out_boundaries, nthreads);
-    sub_multi_patches_->core_patches_ = std::move(out_boundaries);
+    sub_multi_patch_->patches_ =
+        ToPySplineList(out_boundaries, n_default_threads_);
+    sub_multi_patch_->core_patches_ = std::move(out_boundaries);
 
-    return sub_multi_patches_;
+    return sub_multi_patch_;
   }
 
-  py::array_t<double> SubPatchCenters(const int nthreads,
-                                      const bool same_parametric_bounds) {
-    if (sub_patch_centers_.size() != 0) {
+  py::array_t<double> SubPatchCenters() {
+    // return saved
+    if (sub_patch_centers_.size() > 0) {
       return sub_patch_centers_;
     }
 
@@ -1919,7 +1983,7 @@ public:
     // pre-compute boundary centers
     DoubleVector para_bounds;
     double* para_bounds_ptr;
-    if (!same_parametric_bounds) {
+    if (!same_parametric_bounds_) {
       para_bounds.resize(n_total * para_dim);
       para_bounds_ptr = para_bounds.data();
       const int stride = n_queries * para_dim;
@@ -1933,7 +1997,9 @@ public:
       };
 
       // exe
-      splinepy::utils::NThreadExecution(calc_para_bounds, n_splines, nthreads);
+      splinepy::utils::NThreadExecution(calc_para_bounds,
+                                        n_splines,
+                                        n_default_threads_);
     }
 
     auto calc_sub_patch_centers_step = [&](int begin, int total_) {
@@ -1942,18 +2008,18 @@ public:
       double* queries;
 
       // pre compute boundary centers if para bounds are the same
-      if (same_parametric_bounds) {
+      if (same_parametric_bounds_) {
         queries_vector.resize(2 * para_dim * para_dim);
         queries = queries_vector.data();
         splinepy::splines::helpers::ScalarTypeBoundaryCenters(*core_patches_[0],
                                                               queries);
       }
 
-      for (int i{begin}; i < total_; i += nthreads) {
+      for (int i{begin}; i < total_; i += n_default_threads_) {
         const auto [i_spline, i_query] = std::div(i, n_queries);
 
         // get ptr start
-        if (!same_parametric_bounds) {
+        if (!same_parametric_bounds_) {
           queries = &para_bounds_ptr[i_spline * n_queries * para_dim];
         }
 
@@ -1966,30 +2032,192 @@ public:
 
     splinepy::utils::NThreadExecution(calc_sub_patch_centers_step,
                                       n_total,
-                                      nthreads,
+                                      n_default_threads_,
                                       splinepy::utils::NThreadQueryType::Step);
 
     return sub_patch_centers_;
   }
 
-  /// @brief sets interface info. runs array shape check
+  /// @brief setter and getter for interface info. runs array shape check for
+  /// setter
   /// @param interfaces
-  void SetInterfaces(py::array_t<int>& interfaces) {
-    // size check
-    splinepy::py::CheckPyArrayShape(
-        interfaces,
-        {static_cast<int>(CorePatches().size()),
-         static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
-        true);
+  py::array_t<int> Interfaces(const py::array_t<int>& interfaces) {
+    // check if we should set or get
+    // set
+    if (interfaces.size() > 0) {
+      // size check
+      splinepy::py::CheckPyArrayShape(
+          interfaces,
+          {static_cast<int>(CorePatches().size()),
+           static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
+          true);
 
-    interfaces_ = interfaces;
+      interfaces_ = interfaces;
+      return interfaces_;
+    }
+
+    // here's get
+    if (interfaces_.size() > 0) {
+      return interfaces_;
+    }
+
+    // now, first compute, then get
+    // first, centers. will either compute or return saved
+
+    // get centers
+    auto sub_p_centers = SubPatchCenters();
+    const int n_centers = sub_p_centers.shape(0);
+    const int dim = Dim();
+    double* sub_p_centers_ptr =
+        static_cast<double*>(sub_p_centers.request().ptr);
+    // call uff
+    // create temporary arrays
+    DoubleVector metric(Dim(), 1.);
+    DoubleVector new_points(n_centers * dim);
+    IntVector new_point_masks(n_centers);
+    IntVector inverse(n_centers);
+    int n_newpoints{}; // out
+
+    // temporary copied for raw input -> uff doesn't have `const` for simplest
+    // fortran compatibility
+    int n_centers_in{n_centers}, dim_in{dim};
+    double tolerance_in{tolerance_};
+
+    uff::uff(sub_p_centers_ptr,
+             n_centers_in,
+             dim_in,
+             metric.data(),
+             tolerance_in,
+             true,
+             new_points.data(),
+             new_point_masks.data(),
+             n_newpoints,
+             inverse.data());
+
+    // create return - reassign interfaces_
+    const int n_boundary = ParaDim() * 2;
+    interfaces_ =
+        py::array_t<int>({static_cast<int>(CorePatches().size()), n_boundary});
+    int* interfaces_ptr = static_cast<int*>(interfaces.request().ptr);
+
+    // sanity check?
+    if (static_cast<int>(interfaces_.size()) != n_centers) {
+      splinepy::utils::PrintAndThrowError(
+          "Size mismatch between interfaces and sub_patch_centers.");
+    }
+
+    // turn inverse to interfaces
+    auto inverse_to_interfaces = [&](int begin, int end) {
+      for (int i{begin}; i < end; ++i) {
+        const auto& inv = inverse[i];
+        if (inv < i) {
+          interfaces_ptr[i] = std::div(inv, n_boundary).quot;
+          interfaces_ptr[inv] = std::div(i, n_boundary).quot;
+        } else {
+          interfaces_ptr[i] = -1;
+        }
+      }
+    };
+
+    splinepy::utils::NThreadExecution(inverse_to_interfaces,
+                                      n_centers,
+                                      n_default_threads_);
+
+    // one more sanity check - elements should  not be referenced more than
+    // once. could do this with mutex, but probably won't gain much. this does
+    // not perform orientation check
+    // this one, we actually want 0 init
+    std::vector<int> inv_counts(n_centers);
+    for (const auto& inv : inverse) {
+      if (++inv_counts[inv] > 2) {
+        splinepy::utils::PrintAndThrowError(
+            "Interface is invalid, found a subpatch center that overlaps more "
+            "than twice.");
+      }
+    }
+
+    // Original - TODO remove if above is fine
+    // interfaces_ = InterfacesFromBoundaryCenters(
+    //    SubPatchCenters(n_default_threads_, same_parametric_bounds_),
+    //    tolerance_,
+    //    ParaDim());
+
+    return interfaces_;
   }
 
-  /// @brief either returns existing or creates one
-  /// @return
-  py::array_t<int> GetInterfaces() {}
+  py::array_t<int> BoundaryPatchIds() {
+    // return if it exists
+    if (boundary_patch_ids_.size() != 0) {
+      return boundary_patch_ids_;
+    }
 
-  std::shared_ptr<PyMultiPatch> BoundaryMultiPatches(const int nthreads) {}
+    // prepare only ingredient - interfaces
+    // negative entries in interfaces mean boundary patch
+    auto interfaces = Interfaces({});
+    const int n_interfaces = interfaces.size();
+    const int* interfaces_ptr = static_cast<int*>(interfaces.request().ptr);
+
+    // create new array
+    boundary_patch_ids_ = py::array_t<int>(n_interfaces);
+    int* boundary_patch_ids_ptr =
+        static_cast<int*>(boundary_patch_ids_.request().ptr);
+
+    // add ids of negative interface entries
+    int j{};
+    for (int i{}; i < n_interfaces; ++i) {
+      if (interfaces_ptr[i] < 0) {
+        boundary_patch_ids_ptr[j] = i;
+        ++j;
+      }
+    }
+
+    // resize ids
+    boundary_patch_ids_.resize({j}, false);
+
+    return boundary_patch_ids_;
+  }
+
+  std::shared_ptr<PyMultiPatch> BoundaryMultiPatches() {
+    // return early if exists
+    if (boundary_multi_patch_) {
+      return boundary_multi_patch_;
+    }
+
+    // get boundary_patch_ids;
+    auto boundary_pid = BoundaryPatchIds();
+    int* boundary_pid_ptr = static_cast<int*>(boundary_pid.request().ptr);
+    const int n_boundary_pid = boundary_pid.size();
+
+    // values needed for offset
+    const int n_subpatches = ParaDim() * 2;
+
+    // create boundary patches with enough space
+    CoreSplineVector boundary_core_patches(n_boundary_pid);
+
+    // extract patches
+    auto extract_boundaries_step = [&](const int begin, const int total_) {
+      for (int i{begin}; i < total_; i += n_default_threads_) {
+        const auto [i_spline, i_subpatch] =
+            std::div(boundary_pid_ptr[i], n_subpatches);
+        boundary_core_patches[i] =
+            core_patches_[i_spline]->SplinepyExtractBoundary(i_subpatch);
+      }
+    };
+
+    // Execute in parallel
+    splinepy::utils::NThreadExecution(extract_boundaries_step,
+                                      n_boundary_pid,
+                                      n_default_threads_,
+                                      splinepy::utils::NThreadQueryType::Step);
+
+    // create return patch
+    boundary_multi_patch_ = std::make_shared<PyMultiPatch>();
+    boundary_multi_patch_->patches_ =
+        ToPySplineList(boundary_core_patches, n_default_threads_);
+    boundary_multi_patch_->core_patches_ = std::move(boundary_core_patches);
+
+    return boundary_multi_patch_;
+  }
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                const int nthreads) {
@@ -2141,15 +2369,69 @@ public:
     return sampled;
   }
 
-  bool AddFields(py::args fields,
+  void AddFields(py::list& fields,
+                 const bool check_name,
                  const bool check_dims,
                  const bool check_degrees,
-                 const bool check_control_mesh_resolutions) {}
+                 const bool check_control_mesh_resolutions,
+                 const int nthreads) {
+
+    // allocate space
+    const auto n_current_fields = static_cast<int>(field_multi_patches_.size());
+    const auto n_new_fields = static_cast<int>(fields.size());
+    const int n_total_fields = n_current_fields + n_new_fields;
+    field_multi_patches_.resize(n_total_fields);
+
+    // some hint values for null splines
+    const int para_dim = ParaDim();
+    const int dim = Dim();
+
+    // prepare error message
+    std::string field_mismatch_info{};
+    std::mutex field_mismatch_mutex;
+
+    // loop each field
+    auto field_to_multi_patch = [&](int begin, int end) {
+      // with in this nthread exe, we only use nthreads=1. This won't create
+      // any threads.
+      for (int i{n_current_fields + begin}, j{begin}; j < end; ++i, ++j) {
+        // create multipatch
+        py::list casted_list = fields[j].template cast<py::list>();
+        field_multi_patches_[i] =
+            std::make_shared<PyMultiPatch>(casted_list, para_dim, dim, 1);
+        try {
+          // check mismatch - doesn't check null splines
+          RaiseMismatch(core_patches_,
+                        field_multi_patches_[i]->core_patches_,
+                        check_name,
+                        check_dims,
+                        check_dims,
+                        check_degrees,
+                        check_control_mesh_resolutions,
+                        1);
+
+        } catch (const std::runtime_error& e) {
+          // set true, and add error message.
+          std::lock_guard<std::mutex> guard(field_mismatch_mutex);
+          field_mismatch_info += "[mismatch error from the field with index ("
+                                 + std::to_string(j) + ")]\n" + e.what();
+        }
+      }
+    };
+
+    // raise, if there were error.
+    if (field_mismatch_info.size() != 0) {
+      splinepy::utils::PrintAndThrowError(field_mismatch_info);
+    }
+
+    // all good, extend to list
+    field_list_ += fields;
+  }
 };
 
 inline void add_multi_patch(py::module& m) {
-  // returns [connectivity, vertex_ids, edge_information, boundaries]
 
+  // returns [connectivity, vertex_ids, edge_information, boundaries]
   m.def("retrieve_mfem_information",
         &splinepy::py::RetrieveMfemInformation,
         py::arg("corner_vertices"),
@@ -2180,6 +2462,12 @@ inline void add_multi_patch(py::module& m) {
         py::arg("global_interfaces"),
         py::arg("tolerance"),
         py::arg("nthreads") = 1);
+
+  py::class_<splinepy::py::PyMultiPatch,
+             std::shared_ptr<splinepy::py::PyMultiPatch>>
+      klasse(m, "PyMultiPatch");
+
+  klasse.def(py::init<>());
 }
 
 } // namespace splinepy::py
