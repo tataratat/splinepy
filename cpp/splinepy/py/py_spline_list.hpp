@@ -24,8 +24,8 @@ inline py::array_t<double> EvaluateUsingSameBasis(const PySplineList& splist, co
 inline py::array_t<double> Derivative(const PySplineList& splist, const int nthreads) {
 }
 
-inline py::array_t<double> DerivativeUsingSameBasis(const PySplineList& splist, const int nthreads) {
-}
+inline py::array_t<double> Sample(const PySplineList& splist,
+                                  const py::array<int> const int nthreads) {}
 
 inline py::array_t<double> Sample(const PySplineList& splist, const int nthreads) {
 }
