@@ -8,6 +8,9 @@
 
 namespace splinepy::splines {
 
+inline std::shared_ptr<SplinepyBase> NullSplineFromLookup(const int para_dim,
+                                                          const int dim);
+
 /// @brief Null Spline. Placeholder spline that only implements evaluate to
 ///        return zeros.
 ///
@@ -69,6 +72,18 @@ public:
 
     std::fill_n(evaluated, dim_, 0.0);
   }
+
+  /// Parametric AABB. fills zeros. this enables Sample() interface
+  virtual void SplinepyParametricBounds(double* para_bounds) const {
+    std::fill_n(para_bounds, para_dim_, 0.0);
+  }
+
+  /// required to support boundary only evaluations of multi patch field
+  /// Boundary spline extraction
+  virtual std::shared_ptr<SplinepyBase>
+  SplinepyExtractBoundary(const int& boundary_id) {
+    return NullSplineFromLookup(para_dim_ - 1, dim_);
+  };
 };
 
 // maxdim to pre-create null splines
@@ -81,7 +96,7 @@ using LookupArray_ =
     std::array<std::array<std::shared_ptr<SplinepyBase>, kMaxLookupDim>,
                kMaxLookupDim>;
 /// pre-create null splines up to the dimension we support
-static const LookupArray_ kNullSplineLookup = [] {
+inline static const LookupArray_ kNullSplineLookup = [] {
   LookupArray_ lookup;
   int i{0};
   for (auto& para_dim_array : lookup) {
@@ -94,5 +109,10 @@ static const LookupArray_ kNullSplineLookup = [] {
   }
   return lookup;
 }();
+
+std::shared_ptr<SplinepyBase> NullSplineFromLookup(const int para_dim,
+                                                   const int dim) {
+  return kNullSplineLookup[para_dim - 1][dim - 1];
+}
 
 } // namespace splinepy::splines
