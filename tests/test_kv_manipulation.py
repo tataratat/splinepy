@@ -77,6 +77,66 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
             )
         )
 
+    def test_insert_knot_with_matrix(self):
+        """Test the knot insertion function (.insert_knot())."""
+
+        # insert knots
+        matrix_bspline = self.bspline.insert_knots(
+            0, c.np.random.rand(8), return_matrix=True
+        )
+        matrix_bspline = (
+            self.bspline.insert_knots(
+                1, c.np.random.rand(9), return_matrix=True
+            )
+            @ matrix_bspline
+        )
+
+        matrix_nurbs = self.nurbs.insert_knots(
+            0, c.np.random.rand(10), return_matrix=True
+        )
+        matrix_nurbs = (
+            self.nurbs.insert_knots(
+                1, c.np.random.rand(11), return_matrix=True
+            )
+            @ matrix_nurbs
+        )
+
+        # use random query points
+        q2D = c.np.random.rand(50, 2)
+
+        # test evaluation
+        self.assertTrue(
+            c.np.allclose(
+                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
+            )
+        )
+
+        # Test control points and weights
+        self.assertTrue(
+            c.np.allclose(
+                self.bspline.control_points,
+                matrix_bspline @ self.ref_bspline.control_points,
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                self.nurbs.weights, matrix_nurbs @ self.ref_nurbs.weights
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(
+                self.nurbs.control_points,
+                matrix_nurbs
+                @ (self.ref_nurbs.weights * self.ref_nurbs.control_points)
+                / self.nurbs.weights,
+            )
+        )
+
     def test_remove_knot(self):
         """Test the function .remove_knots.
         This test also depends on the function .insert_knots!"""

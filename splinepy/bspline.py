@@ -1,5 +1,13 @@
 import numpy as np
 
+try:
+    import scipy
+
+    has_scipy = True
+except ImportError():
+    has_scipy = False
+
+
 from splinepy import settings, spline, splinepy_core, utils
 
 
@@ -62,7 +70,7 @@ class BSplineBase(spline.Spline):
         super().__init__(*args, **kwargs)
 
     @spline._new_core_if_modified
-    def insert_knots(self, parametric_dimension, knots):
+    def insert_knots(self, parametric_dimension, knots, return_matrix=False):
         """
         Inserts knots.
 
@@ -100,6 +108,8 @@ class BSplineBase(spline.Spline):
         self._logd(f"Inserted {len(knots)} knot(s).")
 
         self._data = spline._default_data()
+        if return_matrix:
+            return matrix
 
         return inserted
 

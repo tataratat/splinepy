@@ -13,8 +13,9 @@ void init_knot_insertion_matrix(py::module_& m) {
   m.def("global_knot_insertion_matrix",
         &splinepy::py::ComputeGlobalKnotInsertionMatrix,
         py::arg("old_knot_vectors"),
-        py::arg("new_knot_vectors"),
         py::arg("degrees"),
+        py::arg("para_dim"),
+        py::arg("new_knots"),
         py::arg("tolerance"));
 }
 

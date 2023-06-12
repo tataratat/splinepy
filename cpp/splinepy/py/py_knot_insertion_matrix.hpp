@@ -1,14 +1,26 @@
 #pragma once
 
+#include <algorithm>
+
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
 #include <splinepy/utils/print.hpp>
 
+/// @brief
 namespace splinepy::py {
 
 namespace py = pybind11;
 
+/**
+ * @brief Create a local (dense) matrix that correlates two knot vectors
+ *
+ * @param old_kv Old knot vector
+ * @param new_kv New knot vector
+ * @param degree
+ * @param tolerance tolerance (to identify multiple knots)
+ * @return std::tuple<py::array_t<double>, std::vector<std::size_t>>
+ */
 std::tuple<py::array_t<double>, std::vector<std::size_t>>
 ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
                                       const py::array_t<double>& new_kv,
@@ -19,6 +31,7 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
   const double* new_kv_ptr = static_cast<double*>(new_kv.request().ptr);
   const std::size_t n_cps_old{old_kv.size() - degree - 1};
   const std::size_t n_cps_new{new_kv.size() - degree - 1};
+  // Create and initialize
   py::array_t<double> return_matrix(n_cps_new * n_cps_old);
   double* return_matrix_ptr = static_cast<double*>(return_matrix.request().ptr);
   for (std::size_t i{}; i < n_cps_new * n_cps_old; i++) {
@@ -168,8 +181,8 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
 }
 
 /**
- * @brief Compute the Global knot insertion matrix for all parametric dimensions
- * at once
+ * @brief  Compute the Global knot insertion matrix for all parametric
+ * dimensions at once
  *
  * Currently we return a list of length (para_dim) containing a tuple of numpy
  * arrays, that can be used to instantiate scipy sparse matrices. This helps
@@ -179,49 +192,77 @@ ComputeKnotInsertionMatrix(const py::array_t<double>& old_kv,
  *
  * @param old_kvs list of arrays, representing the individual knot vectors of
  * the start spline
- * @param new_kvs list of arrays, representing the individual knot vectors of
- * the target spline
  * @param degrees degrees along all parametric dimensions
+ * @param parametric_dimension where knots are to be inserted
+ * @param new_kvs new knots
  * @param tolerance tolerance for idenifying individual knots
- * @return py::array_t<double> Conversion matrix
+ * @return py::tuple to create new matrix
  */
-py::list ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
-                                          const py::list& new_kvs,
-                                          const py::array_t<int>& degrees,
-                                          const double& tolerance) {
+py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
+                                           const py::array_t<int>& degrees,
+                                           const int parametric_dimension,
+                                           const py::array_t<double>& new_knots,
+                                           const double& tolerance) {
 
   // Create aliases
   const int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
   const size_t n_para_dims = static_cast<size_t>(degrees.size());
+  double* new_knots_ptr = static_cast<double*>(new_knots.request().ptr);
 
-  // Precompute and initialize auxiliary values. The dimensionwise matrices are
-  // very small compared to higher dimensional spline matrices.
-  std::vector<py::array_t<double>> dimensionwise_matrices{};
-  std::vector<std::vector<std::size_t>> knot_span_ids{};
+  // Make sure new knots are sorted
+  std::sort(new_knots_ptr, new_knots_ptr + new_knots.size());
+
+  // Precompute and initialize auxiliary values
   std::vector<size_t> n_cp_old(n_para_dims), n_cp_new(n_para_dims);
-  dimensionwise_matrices.reserve(n_para_dims);
-  knot_span_ids.reserve(n_para_dims);
   std::size_t n_cps_old{1};
   for (std::size_t i{}; i < n_para_dims; i++) {
     // Knot vectors are stored as numpy arrays
     const py::array_t<double> knot_vector_old =
         py::cast<py::array_t<double>>(old_kvs[i]);
-    const py::array_t<double> knot_vector_new =
-        py::cast<py::array_t<double>>(new_kvs[i]);
 
     // Comput number of cps before and after insertion
     n_cp_old[i] = knot_vector_old.size() - degrees_ptr[i] - 1;
-    n_cp_new[i] = knot_vector_new.size() - degrees_ptr[i] - 1;
+    n_cp_new[i] = n_cp_old[i];
     n_cps_old *= n_cp_old[i];
-
-    // // Compute dimensionwise matrix and knot spans and assign to new values
-    const auto results = ComputeKnotInsertionMatrixAndKnotSpan(knot_vector_old,
-                                                               knot_vector_new,
-                                                               degrees_ptr[i],
-                                                               tolerance);
-    dimensionwise_matrices.push_back(std::get<0>(results));
-    knot_span_ids.push_back(std::get<1>(results));
   }
+  n_cp_new[parametric_dimension] += new_knots.size();
+  const size_t n_cps_new = n_cps_old / n_cp_old[parametric_dimension]
+                           * n_cp_new[parametric_dimension];
+
+  // Compute dimensionwise (or line-) matrices. These matrices
+  // are very small compared to higher dimensional spline matrices.
+  const py::array_t<double> knot_vector_old =
+      py::cast<py::array_t<double>>(old_kvs[parametric_dimension]);
+  double* knot_vector_old_ptr =
+      static_cast<double*>(knot_vector_old.request().ptr);
+
+  // Build new knot_vector
+  py::array_t<double> knot_vector_new(knot_vector_old.size()
+                                      + new_knots.size());
+  double* knot_vector_new_ptr =
+      static_cast<double*>(knot_vector_new.request().ptr);
+  for (int i_old{}, j_new{}; i_old + j_new < knot_vector_new.size();) {
+    if ((knot_vector_old_ptr[i_old] < new_knots_ptr[j_new])
+        || (j_new >= new_knots.size())) {
+      knot_vector_new_ptr[i_old + j_new] = knot_vector_old_ptr[i_old];
+      i_old++;
+    } else {
+      knot_vector_new_ptr[i_old + j_new] = new_knots_ptr[j_new];
+      j_new++;
+    }
+  }
+
+  // Compute dimensionwise (or line-) matrices. These matrices
+  // are very small compared to higher dimensional spline matrices.
+  const auto results =
+      ComputeKnotInsertionMatrixAndKnotSpan(knot_vector_old,
+                                            knot_vector_new,
+                                            degrees_ptr[parametric_dimension],
+                                            tolerance);
+  const py::array_t<double> dimensionwise_matrix{std::get<0>(results)};
+  const double* dimensionwise_matrix_ptr =
+      static_cast<double*>(dimensionwise_matrix.request().ptr);
+  const std::vector<std::size_t> knot_span_ids{std::get<1>(results)};
 
   // Create auxiliary functions to access individual cps positions
   auto local_to_global_id =
@@ -249,70 +290,54 @@ py::list ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
     return local_ids;
   };
 
-  // Loop over all parametric dimensions, each parametric dimension contributes
-  // to a matrix.
-  py::list return_value;
-  // Keep track of current cps_dimensions
-  std::vector<std::size_t> n_cp_current{n_cp_old};
-  for (std::size_t i_para{}; i_para < n_para_dims; i_para++) {
-    // All matrices have specific size n_cps_new (post knot insertion) x
-    // n_cps_old (prior to knot insertion), with a k-diagonal block structure,
-    // where k is the degree along the parametric axis i. Some of the values
-    // will be zero, if they do not contribute to one of the new inserted knots.
-    // We will update the new and old ctps size in every loop.
-    std::size_t n_cps_new{n_cps_old / n_cp_old[i_para] * n_cp_new[i_para]};
-    n_cp_current[i_para] = n_cp_new[i_para];
+  // All matrices have specific size n_cps_new (post knot insertion) x
+  // n_cps_old (prior to knot insertion), with a k-diagonal block structure,
+  // where k is the degree along the parametric axis i. Some of the values
+  // will be zero, if they do not contribute to one of the new inserted knots.
 
-    // Auxiliary accessors
-    const double* local_matrix =
-        static_cast<double*>(dimensionwise_matrices[i_para].request().ptr);
+  // Initiate return values
+  const std::size_t n_entries{(degrees_ptr[parametric_dimension] + 1)
+                              * n_cps_new};
+  py::array_t<double> values(n_entries);
+  py::array_t<int> rows(n_entries);
+  py::array_t<int> cols(n_entries);
 
-    // Initiate return values
-    const std::size_t n_entries{(degrees_ptr[i_para] + 1) * n_cps_new};
-    py::array_t<double> values(n_entries);
-    py::array_t<int> rows(n_entries);
-    py::array_t<int> cols(n_entries);
+  // Retrieve pointers to data
+  double* values_ptr = static_cast<double*>(values.request().ptr);
+  int* rows_ptr = static_cast<int*>(rows.request().ptr);
+  int* cols_ptr = static_cast<int*>(cols.request().ptr);
 
-    // Retrieve pointers to data
-    double* values_ptr = static_cast<double*>(values.request().ptr);
-    int* rows_ptr = static_cast<int*>(rows.request().ptr);
-    int* cols_ptr = static_cast<int*>(cols.request().ptr);
+  // Assign values accordingly
+  std::size_t counter{};
+  for (std::size_t j_ctps{}; j_ctps < n_cps_new; ++j_ctps) {
+    // j_ctps refers to the row associated to the current knot-span basis
+    // n_cp_current
+    std::vector<std::size_t> local_id_new =
+        global_to_local_id(j_ctps, n_cp_new);
+    const std::size_t i_row = local_id_new[parametric_dimension];
+    // get knot-span
+    const std::size_t knot_span_base_id =
+        knot_span_ids[local_id_new[parametric_dimension]];
 
-    // Assign values accordingly
-    std::size_t counter{};
-    for (std::size_t j_ctps{}; j_ctps < n_cps_new; ++j_ctps) {
-      // j_ctps refers to the row associated to the current knot-span basis
-      // n_cp_current
-      std::vector<std::size_t> local_id_new =
-          global_to_local_id(j_ctps, n_cp_current);
-      const std::size_t i_row = local_id_new[i_para];
-      // get knot-span
-      const std::size_t knot_span_base_id =
-          knot_span_ids[i_para][local_id_new[i_para]];
-
-      for (std::size_t k_deg{knot_span_base_id - degrees_ptr[i_para]};
-           k_deg <= knot_span_base_id;
-           ++k_deg) {
-        local_id_new[i_para] = k_deg;
-        const std::size_t col_id = local_to_global_id(local_id_new, n_cp_old);
-        // Assign values
-        rows_ptr[counter] = static_cast<int>(j_ctps);
-        cols_ptr[counter] = static_cast<int>(col_id);
-        values_ptr[counter] = local_matrix[i_row * n_cp_old[i_para] + k_deg];
-        counter++;
-      }
+    for (std::size_t k_deg{knot_span_base_id
+                           - degrees_ptr[parametric_dimension]};
+         k_deg <= knot_span_base_id;
+         ++k_deg) {
+      local_id_new[parametric_dimension] = k_deg;
+      const std::size_t col_id = local_to_global_id(local_id_new, n_cp_old);
+      // Assign values
+      rows_ptr[counter] = static_cast<int>(j_ctps);
+      cols_ptr[counter] = static_cast<int>(col_id);
+      values_ptr[counter] =
+          dimensionwise_matrix_ptr[i_row * n_cp_old[parametric_dimension]
+                                   + k_deg];
+      counter++;
     }
-
-    // Add contributions to list
-    return_value.append(
-        py::make_tuple(py::make_tuple(values, py::make_tuple(rows, cols)),
-                       py::make_tuple(static_cast<int>(n_cps_new),
-                                      static_cast<int>(n_cps_old))));
-
-    // Update n_cp_old
-    n_cps_old = n_cps_new;
-    n_cp_old[i_para] = n_cp_new[i_para];
   }
-  return return_value;
+
+  // Add contributions to list
+  return py::make_tuple(
+      py::make_tuple(values, py::make_tuple(rows, cols)),
+      py::make_tuple(static_cast<int>(n_cps_new), static_cast<int>(n_cps_old)));
 }
 } // namespace splinepy::py
