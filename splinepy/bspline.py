@@ -4,7 +4,7 @@ try:
     import scipy
 
     has_scipy = True
-except ImportError():
+except ImportError:
     has_scipy = False
 
 
