@@ -74,10 +74,35 @@ class BSplineBase(spline.Spline):
         """
         Inserts knots.
 
+        Matrix can be used to multiply old control points in multi-query 
+        scenarios. It describes the relation between the old and new control 
+        points
+
+        .. math::
+          c_{new}^i = A c_{old}^i
+
+        Usage:
+
+        .. code-block:: python
+
+            bspline_ref = bspline.copy()
+            matrix = bspline.insert_knots(0, [0.3, 0.5], return_matrix=True)
+            np.allclose(
+                bspline.control_points,
+                matrix @ bspline_ref.control_points
+            )
+
+
         Parameters
         -----------
         parametric_dimension: int
+          parametric axis, wehre knots are to be inserted
         knots: list or float
+          list of new knots to be inserted into the parametric domain
+        return_matrix : bool
+          Deicides if the knot insertion matrix is returned or not. If
+          available matrix will be returned in sparse scipy format, if not, the
+          a dense numpy matrix will be returned
 
         Returns
         --------
