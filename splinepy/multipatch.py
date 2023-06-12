@@ -147,16 +147,15 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         return boundary_list
 
-    def boundary_patches(self, use_saved=True, nthreads=None):
+    def boundary_patches(self, nthreads=None):
         """Extract all boundary patches of a given Multipatch system as splines
 
         Parameters
         ----------
-        use_saved : bool
-          Reuse an already computed patch system
         nthreads : int
           Number of threads to be used for extraction, defaults to
           settings.NTHREADS
+
         Returns
         -------
         boundary_patches : Multipatch
@@ -164,19 +163,16 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         """
         if nthreads is None:
             nthreads = settings.NTHREADS
-        if (not use_saved) or (self._boundary_splines is None):
-            self._logd("Determining boundary spline patches")
-            patches = extract_all_boundary_splines(
-                self.splines, self.interfaces, nthreads
-            )
-            self._boundary_splines = Multipatch(
-                splines=[
-                    settings.NAME_TO_TYPE[p.name](spline=p) for p in patches
-                ],
-                as_boundary=True,
-            )
 
-        return self._boundary_splines
+        # apply nthreads
+        previous_nthreads = self.n_default_threads
+        self.n_default_threads = nthreads
+
+        b_patches = super().boundary_multi_patch()
+
+        self.n_default_threads = previous_nthreads
+
+        return b_patches
 
     def set_boundary(
         self,
@@ -393,7 +389,6 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
     def boundaries_from_continuity(
         self,
-        use_saved=True,
         nthreads=None,
         tolerance=None,
     ):
@@ -404,8 +399,6 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         Parameters
         ----------
-        use_saved : bool
-          Allow function to reuse precomputed values
         nthreads : int
           Number of threads to be used to determine boundaries and aux values
         tolerance : double
@@ -419,15 +412,13 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             tolerance = settings.TOLERANCE
         if nthreads is None:
             nthreads = settings.NTHREADS
-        b_patches = self.boundary_patches(
-            use_saved=use_saved, nthreads=nthreads
-        )
+        b_patches = self.boundary_patches(nthreads=nthreads)
 
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
         n_new_boundaries = boundaries_from_continuity(
-            b_patches.splines,
-            b_patches.interfaces,
+            b_patches.patches,
+            b_patches.interfaces([]),
             self.interfaces,
             tolerance,
             nthreads,
