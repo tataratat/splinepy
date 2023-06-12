@@ -6,12 +6,7 @@ import numpy as np
 
 from splinepy import settings
 from splinepy._base import SplinepyBase
-from splinepy.splinepy_core import (
-    PyMultiPatch,
-    boundaries_from_continuity,
-    boundary_centers,
-    extract_all_boundary_splines,
-)
+from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
 
 
 class Multipatch(SplinepyBase, PyMultiPatch):
@@ -270,13 +265,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         spline_centers : np.ndarray
           coordinates of the patch-boundary centers
         """
-        # If spline list is empty will throw excetion
-        if self._spline_boundary_centers is None:
-            self._spline_boundary_centers = np.vstack(
-                [boundary_centers(s) for s in self.splines]
-            )
-
-        return self._spline_boundary_centers
+        return self.sub_patch_centers()
 
     def determine_interfaces(self, tolerance=None):
         """
