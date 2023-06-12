@@ -187,12 +187,24 @@ bool ScalarTypeReduceDegree(SplineType& spline,
 
 /// single knot insertion
 template<typename SplineType, typename QueryDimType, typename QueryType>
-void ScalarTypeInsertKnot(SplineType& spline,
+bool ScalarTypeInsertKnot(SplineType& spline,
                           QueryDimType query_dim,
                           QueryType query) {
+
   using Dim = typename SplineType::Dimension_;
   using Knot = typename SplineType::Knot_;
+
+  // since BSpline::InsertKnot is void func, we count knots before and after to
+  // see if it was successful
+  const auto& knot_vector =
+      *spline.GetParameterSpace().GetKnotVectors()[query_dim];
+  const auto n_knots_before = knot_vector.GetSize();
+
   spline.InsertKnot(Dim{query_dim}, Knot{query});
+
+  const auto n_knots_after = knot_vector.GetSize();
+
+  return (n_knots_after > n_knots_before) ? true : false;
 }
 
 /// single knot removal

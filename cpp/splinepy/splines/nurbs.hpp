@@ -371,8 +371,8 @@ public:
                                                               tolerance);
   }
 
-  virtual void SplinepyInsertKnot(const int& p_dim, const double& knot) {
-    splinepy::splines::helpers::ScalarTypeInsertKnot(*this, p_dim, knot);
+  virtual bool SplinepyInsertKnot(const int& p_dim, const double& knot) {
+    return splinepy::splines::helpers::ScalarTypeInsertKnot(*this, p_dim, knot);
   }
 
   virtual bool SplinepyRemoveKnot(const int& p_dim,

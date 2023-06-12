@@ -172,7 +172,7 @@ public:
                                     const double& tolerance);
 
   /// Spline knot insertion.
-  virtual void SplinepyInsertKnot(const int& para_dim, const double& knot);
+  virtual bool SplinepyInsertKnot(const int& para_dim, const double& knot);
 
   /// Spline knot removal.
   virtual bool SplinepyRemoveKnot(const int& para_dim,

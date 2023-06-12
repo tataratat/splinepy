@@ -15,15 +15,18 @@ namespace splinepy::py {
 namespace py = pybind11;
 
 /// (multiple) knot insertion, single dimension
-inline void InsertKnots(std::shared_ptr<PySpline>& spline,
-                        int para_dim,
-                        py::array_t<double> knots) {
+inline py::list InsertKnots(std::shared_ptr<PySpline>& spline,
+                            int para_dim,
+                            py::array_t<double> knots) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
+  py::list successful;
   for (int i{}; i < n_request; ++i) {
-    spline->Core()->SplinepyInsertKnot(para_dim, knots_ptr[i]);
+    successful.append(
+        spline->Core()->SplinepyInsertKnot(para_dim, knots_ptr[i]));
   }
+  return successful;
 }
 
 /// (multiple) knot removal, single dimension
