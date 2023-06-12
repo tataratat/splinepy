@@ -27,9 +27,15 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
+#ifdef SPLINEPY_COMPILE_PYTHON
 /// @brief python function splinepy.to_derived()
-static const auto py_to_derived =
+inline static const auto py_to_derived =
     py::module_::import("splinepy").attr("to_derived");
+#else
+// dummy function that will just return py::obj
+inline py::object py_to_derived(py::object&& pyobj) { return pyobj; }
+
+#endif
 
 template<typename ValueType>
 static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
