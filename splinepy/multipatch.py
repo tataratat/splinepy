@@ -15,11 +15,12 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     interfaces
     """
 
+    __slots__ = ()
+
     def __init__(
         self,
         splines=None,
         interfaces=None,
-        as_boundary=False,
     ):
         """
         Multipatch
@@ -30,10 +31,6 @@ class Multipatch(SplinepyBase, PyMultiPatch):
           List of splines to store as multipatch
         interfaces : array-like
           Defines the connectivity inbetween patches
-        as_boundary : bool
-          Multipatch is a boundary object of a higher dimensional geometry. If
-          set to true, additional checks are performed on the interfaces,
-          requiring strict interconnectivity between all patches
 
         Returns
         -------
@@ -45,36 +42,10 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         else:
             super().__init__()
 
-        self._init_members()
-
         self._logd("Instantiated Multipatch object")
-
-        # Set properties
-        self._as_boundary = as_boundary
-
-        if splines is not None:
-            self.splines = splines
 
         if interfaces is not None:
             self.interfaces = interfaces
-
-    def _init_members(self):
-        """Defaults all relevant members to None
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        self._boundaries = None
-        self._spline_list = None
-        self._interfaces = None
-        self._boundary_splines = None
-        self._spline_boundary_centers = None
-        self._field_list = []
 
     @property
     def splines(self):
