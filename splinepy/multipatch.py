@@ -8,6 +8,7 @@ from splinepy import settings
 from splinepy._base import SplinepyBase
 from splinepy.spline import Spline
 from splinepy.splinepy_core import (
+    PyMultiPatch,
     boundaries_from_continuity,
     boundary_centers,
     extract_all_boundary_splines,
@@ -16,7 +17,7 @@ from splinepy.splinepy_core import (
 from splinepy.utils.data import enforce_contiguous
 
 
-class Multipatch(SplinepyBase):
+class Multipatch(SplinepyBase, PyMultiPatch):
     """
     System of patches to store information such as boundaries and
     interfaces
@@ -47,6 +48,11 @@ class Multipatch(SplinepyBase):
         None
         """
         # Init values
+        if splines is not None:
+            super().__init__(splines, settings.NTHREADS, False)
+        else:
+            super().__init__()
+
         self._init_members()
 
         self._logd("Instantiated Multipatch object")
