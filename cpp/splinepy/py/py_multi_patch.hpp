@@ -2427,6 +2427,10 @@ public:
     // all good, extend to list
     field_list_ += fields;
   }
+
+  py::list GetFields() {
+    return field_list_;
+  }
 };
 
 inline void add_multi_patch(py::module& m) {
@@ -2469,6 +2473,9 @@ inline void add_multi_patch(py::module& m) {
 
   klasse.def(py::init<>())
       .def(py::init<py::list&, const int, const bool>())
+      .def_readwrite("n_default_threads", &PyMultiPatch::n_default_threads_)
+      .def_readwrite("same_parametric_bounds", &PyMultiPatch::same_parametric_bounds_)
+      .def_readwrite("tolerance", &PyMultiPatch::tolerance_)
       .def("clear", &PyMultiPatch::Clear)
       .def_property_readonly("para_dim", &PyMultiPatch::ParaDim)
       .def_property_readonly("dim", &PyMultiPatch::Dim)
@@ -2499,6 +2506,7 @@ inline void add_multi_patch(py::module& m) {
            py::arg("check_degrees"),
            py::arg("checK_control_mesh_resolutions"),
            py::arg("nthreads"))
+      .def("fields", &PyMultiPatch::GetFields)
       //.def("", &PyMultiPatch::)
       ;
 }
