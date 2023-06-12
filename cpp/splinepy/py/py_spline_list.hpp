@@ -46,15 +46,15 @@ ListOfPySplinesToVectorOfCoreSplines(py::list pysplines,
 }
 
 /// TODO: move ListOfPySplinesToVectorOfCoreSplines here and rename
-inline py::list CoreSplineVectorToPySplineList(CoreSplineVector& splist,
+inline py::list CoreSplineVectorToPySplineList(CoreSplineVector& core_patches_,
                                                int nthreads) {
   // prepare return obj
-  const int n_splines = static_cast<int>(splist.size());
+  const int n_splines = static_cast<int>(core_patches_.size());
   py::list pyspline_list(n_splines);
 
   auto to_pyspline = [&](int begin, int end) {
     for (int i{begin}; i < end; ++i) {
-      pyspline_list[i] = std::make_shared<PySpline>(splist[i]);
+      pyspline_list[i] = std::make_shared<PySpline>(core_patches_[i]);
     }
   };
 
@@ -68,27 +68,28 @@ inline py::list CoreSplineVectorToPySplineList(CoreSplineVector& splist,
 }
 
 /// @brief raises if elements' para_dim and dims aren't equal
-/// @param splist
+/// @param core_patches_
 /// @param nthreads
 inline void
-RaiseIfElementsHaveUnequalParaDimOrDim(const CoreSplineVector& splist,
+RaiseIfElementsHaveUnequalParaDimOrDim(const CoreSplineVector& core_patches_,
                                        const int nthreads) {
   // use first spline as guide line
-  const int para_dim = splist[0]->SplinepyParaDim();
-  const int dim = splist[0]->SplinepyDim();
+  const int para_dim = core_patches_[0]->SplinepyParaDim();
+  const int dim = core_patches_[0]->SplinepyDim();
 
   std::vector<IntVector> mismatches(nthreads);
 
   auto check_dims_step = [&](int begin, int total_) {
     for (int i{begin}; i < total_; i += nthreads) {
-      if (!CheckCoreParaDimAndDim(splist[i], para_dim, dim, false)) {
+      if (core_patches_[i]->SplinepyParaDim() != para_dim
+          || core_patches_[i]->SplinepyDim() != dim) {
         mismatches[begin].push_back(i);
       }
     }
   };
 
   splinepy::utils::NThreadExecution(check_dims_step,
-                                    static_cast<int>(splist.size()),
+                                    static_cast<int>(core_patches_.size()),
                                     nthreads,
                                     splinepy::utils::NThreadQueryType::Step);
   // prepare error prints
@@ -117,23 +118,23 @@ RaiseIfElementsHaveUnequalParaDimOrDim(const CoreSplineVector& splist,
       ")");
 }
 
-inline void ListRaiseIfElementsHaveUnequalParaDimOrDim(py::list& splist,
+inline void ListRaiseIfElementsHaveUnequalParaDimOrDim(py::list& core_patches_,
                                                        const int nthreads) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
 
   RaiseIfElementsHaveUnequalParaDimOrDim(core_vector, nthreads);
 }
 
 /// evaluates splines of same para_dim and dim.
 inline py::array_t<double>
-CoreSplineVectorEvaluate(const CoreSplineVector& splist,
+CoreSplineVectorEvaluate(const CoreSplineVector& core_patches_,
                          const py::array_t<double>& queries,
                          const int nthreads,
                          const bool check_dims) {
   // use first spline as dimension guide line
-  const int para_dim = splist[0]->SplinepyParaDim();
-  const int dim = splist[0]->SplinepyDim();
+  const int para_dim = core_patches_[0]->SplinepyParaDim();
+  const int dim = core_patches_[0]->SplinepyDim();
 
   // query dim check
   CheckPyArrayShape(queries, {-1, para_dim}, true);
@@ -141,12 +142,12 @@ CoreSplineVectorEvaluate(const CoreSplineVector& splist,
   // check dims if wanted. Else it will assume that every spline has same
   // dimension as the first entry's
   if (check_dims) {
-    RaiseIfElementsHaveUnequalParaDimOrDim(splist, nthreads);
+    RaiseIfElementsHaveUnequalParaDimOrDim(core_patches_, nthreads);
   }
 
   // prepare input and output
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
-  const int n_splines = splist.size();
+  const int n_splines = core_patches_.size();
   const int n_queries = queries.shape(0);
   const int n_total = n_splines * n_queries;
   py::array_t<double> evaluated({n_total, dim});
@@ -156,7 +157,7 @@ CoreSplineVectorEvaluate(const CoreSplineVector& splist,
   auto evaluate_step = [&](int begin, int total_) {
     for (int i{begin}; i < total_; i += nthreads) {
       const auto [i_spline, i_query] = std::div(i, n_queries);
-      splist[i_spline]->SplinepyEvaluate(
+      core_patches_[i_spline]->SplinepyEvaluate(
           &queries_ptr[i_query * para_dim],
           &evaluated_ptr[(i_spline * n_queries + i_query) * dim]);
     }
@@ -171,54 +172,54 @@ CoreSplineVectorEvaluate(const CoreSplineVector& splist,
   return evaluated;
 }
 
-inline py::array_t<double> ListEvaluate(py::list& splist,
+inline py::array_t<double> ListEvaluate(py::list& core_patches_,
                                         const py::array_t<double>& queries,
                                         const int nthreads,
                                         const bool check_dims) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
 
   return CoreSplineVectorEvaluate(core_vector, queries, nthreads, check_dims);
 }
 
 inline py::array_t<double>
-CoreSplineVectorDerivative(const CoreSplineVector& splist,
+CoreSplineVectorDerivative(const CoreSplineVector& core_patches_,
                            const py::array_t<double>& queries,
                            const py::array_t<int>& orders,
                            const int nthreads) {
   return py::array_t<double>();
 }
 
-inline py::array_t<double> ListDerivative(py::list& splist,
+inline py::array_t<double> ListDerivative(py::list& core_patches_,
                                           const py::array_t<double>& queries,
                                           const py::array_t<int>& orders,
                                           const int nthreads) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
 
   return CoreSplineVectorDerivative(core_vector, queries, orders, nthreads);
 }
 
 /// Samples equal resoltions for each para dim
 inline py::array_t<double>
-CoreSplineVectorSample(const CoreSplineVector& splist,
+CoreSplineVectorSample(const CoreSplineVector& core_patches_,
                        const int resolution,
                        const int nthreads,
                        const bool same_parametric_bounds,
                        const bool check_dims) {
   // use first spline as dimension guide line
-  const auto& first_spline = *splist[0];
+  const auto& first_spline = *core_patches_[0];
   const int para_dim = first_spline.SplinepyParaDim();
   const int dim = first_spline.SplinepyDim();
 
   // dim check first
   if (check_dims) {
-    RaiseIfElementsHaveUnequalParaDimOrDim(splist, nthreads);
+    RaiseIfElementsHaveUnequalParaDimOrDim(core_patches_, nthreads);
   }
 
   // n_queries, and n_splines;
   int n_queries{1};
-  const int n_splines = splist.size();
+  const int n_splines = core_patches_.size();
 
   // prepare resolutions
   IntVector resolutions_vector(para_dim);
@@ -256,7 +257,7 @@ CoreSplineVectorSample(const CoreSplineVector& splist,
     auto sample_same_bounds_step = [&](int begin, int total_) {
       for (int i{begin}; i < total_; i += nthreads) {
         const auto [i_spline, i_query] = std::div(i, n_queries);
-        splist[i_spline]->SplinepyEvaluate(
+        core_patches_[i_spline]->SplinepyEvaluate(
             &queries[i_query * para_dim],
             &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
       }
@@ -284,7 +285,7 @@ CoreSplineVectorSample(const CoreSplineVector& splist,
 
       for (int i{begin}; i < end; ++i) {
         // get para_bounds
-        splist[i]->SplinepyParametricBounds(para_bounds);
+        core_patches_[i]->SplinepyParametricBounds(para_bounds);
         // setup grid points helper
         grid_points[i].SetUp(para_dim, para_bounds, resolutions);
       }
@@ -304,7 +305,7 @@ CoreSplineVectorSample(const CoreSplineVector& splist,
         const auto [i_spline, i_query] = std::div(i, n_queries);
         const auto& gp_helper = grid_points[i_spline];
         gp_helper.IdToGridPoint(i_query, thread_query);
-        splist[i_spline]->SplinepyEvaluate(
+        core_patches_[i_spline]->SplinepyEvaluate(
             thread_query,
             &sampled_ptr[(i_spline * n_queries + i_query) * dim]);
       }
@@ -321,13 +322,13 @@ CoreSplineVectorSample(const CoreSplineVector& splist,
 }
 
 /// Samples equal resoltions for each para dim
-inline py::array_t<double> ListSample(py::list& splist,
+inline py::array_t<double> ListSample(py::list& core_patches_,
                                       const int resolution,
                                       const int nthreads,
                                       const bool same_parametric_bounds,
                                       const bool check_dims) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
 
   return CoreSplineVectorSample(core_vector,
                                 resolution,
@@ -336,12 +337,12 @@ inline py::array_t<double> ListSample(py::list& splist,
                                 check_dims);
 }
 
-// extracts boundary splines from splist.
+// extracts boundary splines from core_patches_.
 inline CoreSplineVector
-CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
+CoreSplineVectorExtractBoundaries(const CoreSplineVector& core_patches_,
                                   const int nthreads,
                                   const bool same_para_dims) {
-  const int n_splines = splist.size();
+  const int n_splines = core_patches_.size();
   // to accumulate
   int n_boundaries{};
   // gather offsets for boundary add one last so that we can always find out
@@ -353,7 +354,7 @@ CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
   int offset{}; // offset counter
   if (same_para_dims) {
     // compute n_boundary
-    const int n_boundary = splist[0]->SplinepyParaDim() * 2;
+    const int n_boundary = core_patches_[0]->SplinepyParaDim() * 2;
 
     // fill offset
 
@@ -366,7 +367,7 @@ CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
     // for un-equal boundary sizes, we lookup each one of them
     for (int i{}; i < n_splines; ++i) {
       boundary_offsets.push_back(offset);
-      offset += splist[i]->SplinepyParaDim() * 2;
+      offset += core_patches_[i]->SplinepyParaDim() * 2;
     }
   }
   // current offset value should equal to total boundary count
@@ -384,7 +385,7 @@ CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
       // end of the offset
       const auto& next_offset = boundary_offsets[i + 1];
       // get spline
-      auto& spline_i = *splist[i];
+      auto& spline_i = *core_patches_[i];
       for (int j{}; j < next_offset - this_offset; ++j) {
         out_boundaries[this_offset + j] = spline_i.SplinepyExtractBoundary(j);
       }
@@ -396,11 +397,11 @@ CoreSplineVectorExtractBoundaries(const CoreSplineVector& splist,
   return out_boundaries;
 }
 
-inline py::list ListExtractBoundaries(py::list& splist,
+inline py::list ListExtractBoundaries(py::list& core_patches_,
                                       const int nthreads,
                                       const bool same_para_dims) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
   auto boundaries =
       CoreSplineVectorExtractBoundaries(core_vector, nthreads, same_para_dims);
 
@@ -409,20 +410,20 @@ inline py::list ListExtractBoundaries(py::list& splist,
 
 // computes boundary centers for splines of same para_dim and dim
 inline py::array_t<double>
-CoreSplineVectorBoundaryCenters(const CoreSplineVector& splist,
+CoreSplineVectorBoundaryCenters(const CoreSplineVector& core_patches_,
                                 const int nthreads,
                                 const bool same_parametric_bounds,
                                 const bool check_dims) {
   // dim check first
   if (check_dims) {
-    RaiseIfElementsHaveUnequalParaDimOrDim(splist, nthreads);
+    RaiseIfElementsHaveUnequalParaDimOrDim(core_patches_, nthreads);
   }
 
   // prepare output
   // from here we assume that all the splines have the same para_dim and dim
-  const int n_splines = splist.size();
-  const int para_dim = splist[0]->SplinepyParaDim();
-  const int dim = splist[0]->SplinepyDim();
+  const int n_splines = core_patches_.size();
+  const int para_dim = core_patches_[0]->SplinepyParaDim();
+  const int dim = core_patches_[0]->SplinepyDim();
   const int n_queries = 2 * para_dim;
   const int n_total = n_queries * n_splines;
   py::array_t<double> boundary_centers({n_total, dim});
@@ -440,7 +441,7 @@ CoreSplineVectorBoundaryCenters(const CoreSplineVector& splist,
     auto calc_para_bounds = [&](int begin, int end) {
       for (int i{begin}; i < end; ++i) {
         splinepy::splines::helpers::ScalarTypeBoundaryCenters(
-            *splist[i],
+            *core_patches_[i],
             &para_bounds_ptr[stride * i]);
       }
     };
@@ -458,7 +459,7 @@ CoreSplineVectorBoundaryCenters(const CoreSplineVector& splist,
     if (same_parametric_bounds) {
       queries_vector.resize(2 * para_dim * para_dim);
       queries = queries_vector.data();
-      splinepy::splines::helpers::ScalarTypeBoundaryCenters(*splist[0],
+      splinepy::splines::helpers::ScalarTypeBoundaryCenters(*core_patches_[0],
                                                             queries);
     }
 
@@ -471,7 +472,7 @@ CoreSplineVectorBoundaryCenters(const CoreSplineVector& splist,
       }
 
       // eval
-      splist[i_spline]->SplinepyEvaluate(
+      core_patches_[i_spline]->SplinepyEvaluate(
           &queries[i_query * para_dim],
           &boundary_centers_ptr[(i_spline * n_queries + i_query) * dim]);
     }
@@ -486,12 +487,12 @@ CoreSplineVectorBoundaryCenters(const CoreSplineVector& splist,
 }
 
 inline py::array_t<double>
-ListBoundaryCenters(py::list& splist,
+ListBoundaryCenters(py::list& core_patches_,
                     const int nthreads,
                     const bool same_parametric_bounds,
                     const bool check_dims) {
   const auto core_vector =
-      ListOfPySplinesToVectorOfCoreSplines(splist, nthreads);
+      ListOfPySplinesToVectorOfCoreSplines(core_patches_, nthreads);
   return CoreSplineVectorBoundaryCenters(core_vector,
                                          nthreads,
                                          same_parametric_bounds,
