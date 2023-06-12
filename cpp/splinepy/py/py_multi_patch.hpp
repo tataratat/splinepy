@@ -18,7 +18,7 @@
 
 //
 #include <splinepy/py/py_spline.hpp>
-#include <splinepy/py/py_spline_list.hpp>
+#include <splinepy/splines/null_spline.hpp>
 #include <splinepy/utils/print.hpp>
 
 namespace splinepy::py {
