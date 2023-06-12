@@ -74,8 +74,8 @@ class BSplineBase(spline.Spline):
         """
         Inserts knots.
 
-        Matrix can be used to multiply old control points in multi-query 
-        scenarios. It describes the relation between the old and new control 
+        Matrix can be used to multiply old control points in multi-query
+        scenarios. It describes the relation between the old and new control
         points
 
         .. math::
