@@ -1840,6 +1840,25 @@ public:
     field_multi_patches_ = {};
   }
 
+  /// @brief returns para_dim of the first patch
+  /// @return
+  int ParaDim() { return CorePatches()[0]->SplinepyParaDim(); }
+
+  /// @brief returns dim of the first patch
+  /// @return
+  int Dim() { return CorePatches()[0]->SplinepyDim(); }
+
+  /// @brief my name is MultiPatch
+  /// @return
+  std::string Name() { return "MultiPatch"; }
+
+  /// @brief MultiPatch with n patches
+  /// @return
+  std::string WhatAmI() {
+    return "MultiPatch with " + std::to_string(core_patches_.size())
+           + " patches.";
+  }
+
   // could overload, but it won't be clear for pybind
 
   /// @brief default patches setter, exposed to python
@@ -1900,28 +1919,9 @@ public:
   }
   py::list GetPatches() { return patches_; }
 
-  /// @brief returns para_dim of the first patch
-  /// @return
-  int ParaDim() { return CorePatches()[0]->SplinepyParaDim(); }
-
-  /// @brief returns dim of the first patch
-  /// @return
-  int Dim() { return CorePatches()[0]->SplinepyDim(); }
-
-  /// @brief my name is MultiPatch
-  /// @return
-  std::string Name() { return "MultiPatch"; }
-
-  /// @brief MultiPatch with n patches
-  /// @return
-  std::string WhatAmI() {
-    return "MultiPatch with " + std::to_string(core_patches_.size())
-           + " patches.";
-  }
-
   /// @brief returns sub patches as multi patches, uses default nthreads
   /// @return
-  std::shared_ptr<PyMultiPatch> SubMultiPatches() {
+  std::shared_ptr<PyMultiPatch> SubMultiPatch() {
     // quick exit if they exist.
     if (sub_multi_patch_) {
       return sub_multi_patch_;
@@ -2177,7 +2177,7 @@ public:
     return boundary_patch_ids_;
   }
 
-  std::shared_ptr<PyMultiPatch> BoundaryMultiPatches() {
+  std::shared_ptr<PyMultiPatch> BoundaryMultiPatch() {
     // return early if exists
     if (boundary_multi_patch_) {
       return boundary_multi_patch_;
@@ -2467,7 +2467,40 @@ inline void add_multi_patch(py::module& m) {
              std::shared_ptr<splinepy::py::PyMultiPatch>>
       klasse(m, "PyMultiPatch");
 
-  klasse.def(py::init<>());
+  klasse.def(py::init<>())
+      .def(py::init<py::list&, const int, const bool>())
+      .def("clear", &PyMultiPatch::Clear)
+      .def_property_readonly("para_dim", &PyMultiPatch::ParaDim)
+      .def_property_readonly("dim", &PyMultiPatch::Dim)
+      .def_property_readonly("name", &PyMultiPatch::Name)
+      .def_property_readonly("whatami", &PyMultiPatch::WhatAmI)
+      .def_property("patches",
+                    &PyMultiPatch::GetPatches,
+                    &PyMultiPatch::SetPatchesDefault)
+      .def("sub_multi_patch", &PyMultiPatch::SubMultiPatch)
+      .def("sub_patch_centers", &PyMultiPatch::SubPatchCenters)
+      .def("interfaces", &PyMultiPatch::Interfaces)
+      .def("boundary_patch_ids", &PyMultiPatch::BoundaryPatchIds)
+      .def("boundary_multi_patch", &PyMultiPatch::BoundaryMultiPatch)
+      .def("evaluate",
+           &PyMultiPatch::Evaluate,
+           py::arg("queries"),
+           py::arg("nthreads"))
+      .def("sample",
+           &PyMultiPatch::Sample,
+           py::arg("resolution"),
+           py::arg("nthreads"),
+           py::arg("same_parametric_bounds"))
+      .def("add_fields",
+           &PyMultiPatch::AddFields,
+           py::arg("fields"),
+           py::arg("check_name"),
+           py::arg("check_dims"),
+           py::arg("check_degrees"),
+           py::arg("checK_control_mesh_resolutions"),
+           py::arg("nthreads"))
+      //.def("", &PyMultiPatch::)
+      ;
 }
 
 } // namespace splinepy::py
