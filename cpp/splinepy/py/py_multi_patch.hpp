@@ -95,50 +95,16 @@ ToCoreSplineVector(py::list pysplines,
 /// @param splist
 /// @param nthreads
 /// @return
-inline py::list ToPySplineList(CoreSplineVector& splist, int nthreads) {
+inline py::list ToPySplineList(CoreSplineVector& splist) {
   // prepare return obj
   const int n_splines = static_cast<int>(splist.size());
 
-  // temporary list to gather splines
-  std::vector<py::list> lists_to_concat(nthreads);
-
   // to return
-  py::list pyspline_list{};
+  py::list pyspline_list(n_splines);
 
-  // get start to end for each thread
-  const int chunk_size = std::div((n_splines + nthreads - 1), nthreads).quot;
-  IntVector interval;
-  interval.reserve(std::max(std::max(nthreads, n_splines), 1) + 1);
-  interval.emplace_back(0);
-  for (int i{1}; i < nthreads; ++i) {
-    interval.emplace_back(chunk_size * i);
-  }
-  interval.emplace_back(n_splines);
-
-  // locally create and use __iadd__ to concat
-  auto to_pyspline_step = [&](int begin, int total_) {
-    const auto& start = interval[begin];
-    const auto& end = interval[begin + 1];
-
-    // assign size
-    auto& local_list = lists_to_concat[begin];
-    local_list = py::list(start - end);
-
-    // loop chunk, concat
-    for (int i{start}; i < end; ++i) {
-      local_list[i] = std::make_shared<PySpline>(splist[i])->ToDerived();
-    }
-  };
-
-  // exe
-  splinepy::utils::NThreadExecution(to_pyspline_step,
-                                    n_splines,
-                                    nthreads,
-                                    splinepy::utils::NThreadQueryType::Step);
-
-  // concat
-  for (auto& local_list : lists_to_concat) {
-    pyspline_list += local_list;
+  // cast - single threads, as we should respect GIL
+  for (int i{}; i < n_splines; ++i) {
+    pyspline_list[i] = std::make_shared<PySpline>(splist[i])->ToDerived();
   }
 
   return pyspline_list;
@@ -1561,6 +1527,7 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
 
   // Provide auxiliary values
   const auto cpp_spline_list = ToCoreSplineVector(boundary_splines);
+
   const int n_boundary_patches{static_cast<int>(boundary_interfaces.shape(0))};
   const int n_faces_per_boundary_patch{
       static_cast<int>(boundary_interfaces.shape(1))};
@@ -1956,8 +1923,7 @@ public:
     sub_multi_patch_ = std::make_shared<PyMultiPatch>();
 
     // set both core and py splines
-    sub_multi_patch_->patches_ =
-        ToPySplineList(out_boundaries, n_default_threads_);
+    sub_multi_patch_->patches_ = ToPySplineList(out_boundaries);
     sub_multi_patch_->core_patches_ = std::move(out_boundaries);
 
     return sub_multi_patch_;
@@ -2213,8 +2179,7 @@ public:
 
     // create return patch
     boundary_multi_patch_ = std::make_shared<PyMultiPatch>();
-    boundary_multi_patch_->patches_ =
-        ToPySplineList(boundary_core_patches, n_default_threads_);
+    boundary_multi_patch_->patches_ = ToPySplineList(boundary_core_patches);
     boundary_multi_patch_->core_patches_ = std::move(boundary_core_patches);
 
     return boundary_multi_patch_;
