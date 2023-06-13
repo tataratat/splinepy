@@ -1539,7 +1539,7 @@ class Spline(SplinepyBase, core.CoreSpline):
                 queries=queries,
                 initial_guess_sample_resolutions=_default_if_none(
                     initial_guess_sample_resolutions,
-                    self.control_mesh_resolutions * 2
+                    self.control_mesh_resolutions * 2,
                 ),
                 tolerance=_default_if_none(tolerance, settings.TOLERANCE),
                 max_iterations=max_iterations,
@@ -1551,7 +1551,7 @@ class Spline(SplinepyBase, core.CoreSpline):
                 queries=queries,
                 initial_guess_sample_resolutions=_default_if_none(
                     initial_guess_sample_resolutions,
-                    self.control_mesh_resolutions * 2
+                    self.control_mesh_resolutions * 2,
                 ),
                 tolerance=_default_if_none(tolerance, settings.TOLERANCE),
                 max_iterations=max_iterations,
