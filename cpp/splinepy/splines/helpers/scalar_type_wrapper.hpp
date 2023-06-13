@@ -204,7 +204,7 @@ bool ScalarTypeInsertKnot(SplineType& spline,
 
   const auto n_knots_after = knot_vector.GetSize();
 
-  return (n_knots_after > n_knots_before) ? true : false;
+  return (n_knots_after > n_knots_before);
 }
 
 /// single knot removal
