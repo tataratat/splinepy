@@ -4,23 +4,21 @@ A spline is a very flexible and in particular smooth way of representing geometr
 
 Splines come in many colors and facets, but there are a few properties that the most common ones (Bézier splines, B-splines, and NURBS) share:
 
-\begin{enumerate}
-\item Splines are parametric geometry descriptions. This means that each spline coordinate is expressed as a function of a local parameter. Assume that we are dealing with a spline curve, which is embedded in a two-dimensional space. Then the coordinates :math:`(x,y)` are computed as :math:`(x(\xi),y(\xi))`, where :math:`\xi` is the local parameter. An example could be :math:`x(\xi)=\cos(\xi),y(\xi)=\sin(\xi)`, which represents the unit circle. Usually, the local parameter is normalized, meaning that it takes on the value of :math:`0` at one end of the curve and the value of :math:`1` at the other end of the curve. Notice that parameterizations are not unique and one can represent the same geometry using different parameterizations.
-\item The dimension of the geometric entity (i.e., 1D for a curve, 2D for a surface, 3D for a volume, etc.) determines the dimension of the parameter space. This means that a curve always has one local parameter, a curve two, etc.
-\item In many cases, one is faced with so-called immersions, i.e., a spline of lower dimension is embedded into a higher-dimensional space, such as a curve into a 2D space. For this reason, the dimension of the parameter space (defined in :math:`\pmb{\xi}`-coordinates) does not necessarily match the dimension of embedding space, which we will call the global space (defined in :math:`\mathbf{x}`-coordinates).
-\item The general equation for a spline curve :math:`\mathbf{S}` is
+1. Splines are parametric geometry descriptions. This means that each spline coordinate is expressed as a function of a local parameter. Assume that we are dealing with a spline curve, which is embedded in a two-dimensional space. Then the coordinates :math:`(x,y)` are computed as :math:`(x(\xi),y(\xi))`, where :math:`\xi` is the local parameter. An example could be :math:`x(\xi)=\cos(\xi),y(\xi)=\sin(\xi)`, which represents the unit circle. Usually, the local parameter is normalized, meaning that it takes on the value of :math:`0` at one end of the curve and the value of :math:`1` at the other end of the curve. Notice that parameterizations are not unique and one can represent the same geometry using different parameterizations.
+2. The dimension of the geometric entity (i.e., 1D for a curve, 2D for a surface, 3D for a volume, etc.) determines the dimension of the parameter space. This means that a curve always has one local parameter, a curve two, etc.
+3. In many cases, one is faced with so-called immersions, i.e., a spline of lower dimension is embedded into a higher-dimensional space, such as a curve into a 2D space. For this reason, the dimension of the parameter space (defined in :math:`\pmb{\xi}`-coordinates) does not necessarily match the dimension of embedding space, which we will call the global space (defined in :math:`\mathbf{x}`-coordinates).
+4. The general equation for a spline curve :math:`\mathbf{S}` is
 \begin{equation}
     \mathbf{S} = \sum_{i=1}^n N_i(\xi) \mathbf{P}
 \end{equation}
 Here, :math:`N` denotes the basis functions, :math:`\mathbf{P}` the coordinates of the control points, and :math:`n` the number of basis functions / control points. Geometrically, this means that one selects a certain number of points in the global space (i.e., the control points) and these points are ``connected'' using the basis functions. Notice that for splines, the basis functions can take on values within the interval :math:`[0,1]`. However, they will usually never reach the value of one. As a consequence, the control points are not interpolated (meaning that the spline does not go through them), but they only guide the spline.
-\item Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions :math:`N_i(\xi)` and :math:`M_j(\eta)`. Consider the example of a splines surface:
+5. Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions :math:`N_i(\xi)` and :math:`M_j(\eta)`. Consider the example of a splines surface:
 
 \begin{equation}
     \mathbf{S}(\xi, \eta) = \sum_{i=1}^n \sum_{j=1}^m N_i(\xi) M_j(\eta) \mathbf{P}_{i,j}
 \end{equation}
 
 Notice that the structure of :math:`N_i` and :math:`M_j` is exactly the same. They are simply defined in different coordinate directions.
-\end{enumerate}
 
 # In which situations are splines helpful?
 
@@ -91,29 +89,27 @@ After this basic definition, we will continue with a few examples.
 ### Properties of Bézier curves
 
 Bézier curves have the following properties:
-	\begin{itemize}
-		\item The curve is contained in the convex hull of the control polygon (i.e. the largest convex polygon defined by the CPs).
-		\item The basis functions are real and (non-zero) throughout the entire definition space.
-		\item :math:`\mathbf{P}_{1}=\mathbf{S}(0)` and :math:`\mathbf{P}_{n}=\mathbf{S}(1)`. This follows from:
-		\begin{align*}
-			N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}_{=1}\underbrace{0^{0}}_{=1}\underbrace{(1-0)^{p}}_{=1}=1 \\
-			N_{i,p}(0)&=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1 \\
-			C(0)=1\cdot P_{1}
-		\end{align*}
-        A similar argument can be made for :math:`\mathbf{P}_n`.
+	
+-  The curve is contained in the convex hull of the control polygon (i.e. the largest convex polygon defined by the CPs).
+-  The basis functions are real and (non-zero) throughout the entire definition space.
+-  :math:`\mathbf{P}_{1}=\mathbf{S}(0)` and :math:`\mathbf{P}_{n}=\mathbf{S}(1)`. This follows from:
+\begin{align*}
+N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}_{=1}\underbrace{0^{0}}_{=1}\underbrace{(1-0)^{p}}_{=1}=1 \\
+N_{i,p}(0)&=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1 \\
+C(0)=1\cdot P_{1}
+\end{align*}
+     A similar argument can be made for :math:`\mathbf{P}_n`.
 
-		\item Bernstein polynomials form a partition  of unity.
+-  Bernstein polynomials form a partition  of unity.
 
-	\end{itemize}
+	
 
 	### Drawbacks of Bézier curves
 
 In modern CAD systems, Bézier curves no longer play a role. This is due to two drawbacks:
 
-	\begin{enumerate}
-		\item Important types of curves cannot be represented using polynomials and thus also not with a Bézier spline, which has a polynomial basis. These include conic sections like circles, cylinders, cones, spheres, etc..
-		\item The control over the curve geometry is not sufficiently local (single segment curve). A high polynomial degree is required to satisfy a large number of constraints, i.e., complex shapes.
-	\end{enumerate}
+1. Important types of curves cannot be represented using polynomials and thus also not with a Bézier spline, which has a polynomial basis. These include conic sections like circles, cylinders, cones, spheres, etc..
+2. The control over the curve geometry is not sufficiently local (single segment curve). A high polynomial degree is required to satisfy a large number of constraints, i.e., complex shapes.
 
 
 ## Rational Bézier splines
@@ -152,12 +148,12 @@ It has a length of :math:`m=5` and contains four knot spans. The first knot span
 
 There are different types of knot vectors:
 
-	\begin{itemize}
-	\item open  :math:`\leftrightarrow` periodic \\
-		In an open knot vector, the first and last value appears :math:`p+1` times. A knot vector is called periodic, if it is not open. :math:`\Xi=\[0,\;0,\;0,\;0.5,\;1,\;1,\;1\]` is an open knot vector if :math:`p=2`.
-    \item uniform  :math:`\leftrightarrow` non-uniform \\
-		In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., :math:`\Xi=\[0,0.2,0.4,0.6,0.8,1\]`. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., :math:`\[0,\;0,\;0,\;0.5,\;1,\;1,\;1\]`. This knot vector is then still called uniform, if all middle knots are equally spaced.
-	\end{itemize}
+	
+-  open  :math:`\leftrightarrow` periodic \\
+In an open knot vector, the first and last value appears :math:`p+1` times. A knot vector is called periodic, if it is not open. :math:`\Xi=\[0,\;0,\;0,\;0.5,\;1,\;1,\;1\]` is an open knot vector if :math:`p=2`.
+  -  uniform  :math:`\leftrightarrow` non-uniform \\
+In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., :math:`\Xi=\[0,0.2,0.4,0.6,0.8,1\]`. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., :math:`\[0,\;0,\;0,\;0.5,\;1,\;1,\;1\]`. This knot vector is then still called uniform, if all middle knots are equally spaced.
+	
 
 \vspace{0.5cm}
 Once the knot vector has been specified, the basis functions :math:`N_{i,p}` can be defined. Again, :math:`i` indicates the number of the basis function and :math:`p` the degree.  :math:`N_{i,p}` is defined by the Cox de Boor recurrence formula. The starting point are constant basis functions (:math:`p=0`) defined as follows:
@@ -180,16 +176,16 @@ until the desired degree has been reached.
 \\
 
 		Properties of B-spline basis functions:
-	\begin{itemize}
-		\item constitute a partition of unity
-		\[\sum_{i=1}^{n}N_{i,p}(\xi)=1\]
-		\item non-negative
-		\item continuously differentiable within knot spans, :math:`p\cdots` times differentiable across knots (multiplicity of knot)
-		\item computation of a set of basis functions requires a knot vector :math:`\Xi` and a degree :math:`p`
-		\item basis functions are non-zero in :math:`[\xi_{i},\;\xi_{i+p+1})`, i.e., in :math:`p+1` knot spans
-		\item in each knot span, :math:`p+1` basis function will be nonzero
-		\item if the number of basis functions is :math:`p+1`, the B-spline basis reduces to the Bézier basis
-	\end{itemize}
+	
+-  constitute a partition of unity
+\[\sum_{i=1}^{n}N_{i,p}(\xi)=1\]
+-  non-negative
+-  continuously differentiable within knot spans, :math:`p\cdots` times differentiable across knots (multiplicity of knot)
+-  computation of a set of basis functions requires a knot vector :math:`\Xi` and a degree :math:`p`
+-  basis functions are non-zero in :math:`[\xi_{i},\;\xi_{i+p+1})`, i.e., in :math:`p+1` knot spans
+-  in each knot span, :math:`p+1` basis function will be nonzero
+-  if the number of basis functions is :math:`p+1`, the B-spline basis reduces to the Bézier basis
+	
 
 
 
@@ -211,8 +207,6 @@ Again, :math:`\omega_i` is a weight.
 
 As further reading, we suggest
 
-\begin{enumerate}
-    \item Rogers, David F. An introduction to NURBS: with historical perspective. Morgan Kaufmann, 2001.
-    \item Piegl, Les, and Wayne Tiller. The NURBS book. Springer Science and Business Media, 1996.
-    \item Hughes, Thomas JR, John A. Cottrell, and Yuri Bazilevs. Isogeometric analysis: CAD, finite elements, NURBS, exact geometry and mesh refinement. Computer methods in applied mechanics and engineering 194, no. 39-41 (2005): 4135-4195.
-\end{enumerate}
+1. Rogers, David F. An introduction to NURBS: with historical perspective. Morgan Kaufmann, 2001.
+2. Piegl, Les, and Wayne Tiller. The NURBS book. Springer Science and Business Media, 1996.
+3. Hughes, Thomas JR, John A. Cottrell, and Yuri Bazilevs. Isogeometric analysis: CAD, finite elements, NURBS, exact geometry and mesh refinement. Computer methods in applied mechanics and engineering 194, no. 39-41 (2005): 4135-4195.
