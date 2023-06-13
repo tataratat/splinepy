@@ -28,6 +28,7 @@ class ProximityTest(c.unittest.TestCase):
                 queries=phys_q,
                 initial_guess_sample_resolutions=[10] * spline.para_dim,
                 nthreads=1,
+                return_verbose=True
             )
 
             assert c.np.allclose(
