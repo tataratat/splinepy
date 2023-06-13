@@ -5,6 +5,7 @@ splinepy
    :maxdepth: 2
 
 .. mdinclude:: ../../README.md
+.. mdinclude:: markdown/spline_intro.md
 
 Sources
 ============

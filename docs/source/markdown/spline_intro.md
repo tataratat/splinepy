@@ -1,46 +1,3 @@
-%--------------------
-% Packages
-% -------------------
-\documentclass[11pt,a4paper]{article}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-%\usepackage{gentium}
-\usepackage{amsmath}
-\setlength{\parindent}{0pt}
-
-
-\usepackage[pdftex]{graphicx} % Required for including pictures
-\usepackage[swedish]{babel} % Swedish translations
-\usepackage[pdftex,linkcolor=black,pdfborder={0 0 0}]{hyperref} % Format links for pdf
-\usepackage{calc} % To reset the counter in the document after title page
-\usepackage{enumitem} % Includes lists
-
-\frenchspacing % No double spacing between sentences
-\linespread{1.2} % Set linespace
-\usepackage[a4paper, lmargin=0.1666\paperwidth, rmargin=0.1666\paperwidth, tmargin=0.1111\paperheight, bmargin=0.1111\paperheight]{geometry} %margins
-%\usepackage{parskip}
-
-\usepackage[all]{nowidow} % Tries to remove widows
-\usepackage[protrusion=true,expansion=true]{microtype} % Improves typography, load after fontpackage is selected
-
-\usepackage{amsfonts}
-
-
-%-----------------------
-% Set pdf information and add title, fill in the fields
-%-----------------------
-\hypersetup{
-pdfsubject = {},
-pdftitle = {},
-pdfauthor = {}
-}
-
-%-----------------------
-% Begin document
-%-----------------------
-\begin{document} %All text i dokumentet hamnar mellan dessa taggar, allt ovanför är formatering av dokumentet
-
-
 \section{A general introduction to splines}
 
 A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section further reading for the exact reference).
@@ -259,6 +216,3 @@ As further reading, we suggest
     \item Piegl, Les, and Wayne Tiller. The NURBS book. Springer Science and Business Media, 1996.
     \item Hughes, Thomas JR, John A. Cottrell, and Yuri Bazilevs. Isogeometric analysis: CAD, finite elements, NURBS, exact geometry and mesh refinement. Computer methods in applied mechanics and engineering 194, no. 39-41 (2005): 4135-4195.
 \end{enumerate}
-
-
-\end{document}
