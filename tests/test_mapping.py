@@ -285,7 +285,7 @@ class TestGeometryMapping(c.unittest.TestCase):
             center_point,
             initial_guess_sample_resolutions=[10, 10],
             tolerance=1e-12,
-        )[0]
+        )
         bfv, support = self.solution_field_rando2D.basis_and_support(
             center_point_parametric
         )
