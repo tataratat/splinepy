@@ -1474,11 +1474,12 @@ class Spline(SplinepyBase, core.CoreSpline):
     def proximities(
         self,
         queries,
-        initial_guess_sample_resolutions,
+        initial_guess_sample_resolutions=None,
         tolerance=None,
         max_iterations=-1,
         aggressive_search_bounds=False,
         nthreads=None,
+        return_verbose=False,
     ):
         """
         Given physical coordinate, finds a parametric coordinate that maps to
@@ -1509,32 +1510,52 @@ class Spline(SplinepyBase, core.CoreSpline):
           Default is False.
           Set search bound to aabb of direct neighbors from the sample grid.
         nthreads: int
+        return_verbose : bool
+          If False, returns only parametric coords
 
         Returns
         --------
         para_coord: (n, para_dim) np.ndarray
+          Parametric coordinates
         phys_coord: (n, dim) np.ndarray
+          (only if return_verbose) respective physical coordinates
         phys_diff: (n, dim) np.ndarray
+          (only if return_verbose) respective cartesian difference to query
         distance: (n, 1) np.ndarray
+          (only if return_verbose) respective 2-norm of difference
         convergence_norm: (n, 1) np.ndarrray
+          (only if return_verbose) Newton residual
         first_derivatives: (n, para_dim, dim) np.ndarray
+          (only if return_verbose) Convergence information
         second_derivatives: (n, para_dim, para_dim, dim) np.ndarray
+          (only if return_verbose) Convergence information
         """
         self._logd("Searching for nearest parametric coord")
 
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
-        # so long, so-long-varname
-        igsr = initial_guess_sample_resolutions
-
-        return super().proximities(
-            queries=queries,
-            initial_guess_sample_resolutions=igsr,
-            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
-            max_iterations=max_iterations,
-            aggressive_search_bounds=aggressive_search_bounds,
-            nthreads=_default_if_none(nthreads, settings.NTHREADS),
-        )
+        if return_verbose:
+            return super().proximities(
+                queries=queries,
+                initial_guess_sample_resolutions=_default_if_none(
+                    tolerance, self.control_mesh_resolutions * 2
+                ),
+                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+                max_iterations=max_iterations,
+                aggressive_search_bounds=aggressive_search_bounds,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            )
+        else:
+            return super().proximities(
+                queries=queries,
+                initial_guess_sample_resolutions=_default_if_none(
+                    tolerance, self.control_mesh_resolutions * 2
+                ),
+                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+                max_iterations=max_iterations,
+                aggressive_search_bounds=aggressive_search_bounds,
+                nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            )[0]
 
     @_new_core_if_modified
     def elevate_degrees(self, parametric_dimensions):
