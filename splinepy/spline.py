@@ -1534,30 +1534,31 @@ class Spline(SplinepyBase, core.CoreSpline):
 
         queries = utils.data.enforce_contiguous(queries, dtype="float64")
 
+        verbose_info = super().proximities(
+            queries=queries,
+            initial_guess_sample_resolutions=_default_if_none(
+                initial_guess_sample_resolutions,
+                self.control_mesh_resolutions * 2,
+            ),
+            tolerance=_default_if_none(tolerance, settings.TOLERANCE),
+            max_iterations=max_iterations,
+            aggressive_search_bounds=aggressive_search_bounds,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
         if return_verbose:
-            return super().proximities(
-                queries=queries,
-                initial_guess_sample_resolutions=_default_if_none(
-                    initial_guess_sample_resolutions,
-                    self.control_mesh_resolutions * 2,
-                ),
-                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
-                max_iterations=max_iterations,
-                aggressive_search_bounds=aggressive_search_bounds,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
-            )
+            return verbose_info
         else:
-            return super().proximities(
-                queries=queries,
-                initial_guess_sample_resolutions=_default_if_none(
-                    initial_guess_sample_resolutions,
-                    self.control_mesh_resolutions * 2,
-                ),
-                tolerance=_default_if_none(tolerance, settings.TOLERANCE),
-                max_iterations=max_iterations,
-                aggressive_search_bounds=aggressive_search_bounds,
-                nthreads=_default_if_none(nthreads, settings.NTHREADS),
-            )[0]
+            if np.any(
+                verbose_info[3]
+                > _default_if_none(tolerance, settings.TOLERANCE)
+            ):
+                self._logw(
+                    "Remaining distance of some of the points is larger than "
+                    "tolerance, please rerun proximity search with "
+                    "return_verbose=True to get more information."
+                )
+            return verbose_info[0]
 
     @_new_core_if_modified
     def elevate_degrees(self, parametric_dimensions):
