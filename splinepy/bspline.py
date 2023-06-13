@@ -73,7 +73,8 @@ class BSplineBase(spline.Spline):
 
         Returns
         --------
-        None
+        inserted: list
+          List of bool. True if the knots are inserted. Otherwise, False
         """
         if parametric_dimension >= self.para_dim:
             raise ValueError("Invalid parametric dimension to remove knots.")
@@ -92,18 +93,19 @@ class BSplineBase(spline.Spline):
                 "(Too small)"
             )
 
-        splinepy_core.insert_knots(self, parametric_dimension, knots)
+        inserted = splinepy_core.insert_knots(
+            self, parametric_dimension, knots
+        )
 
         self._logd(f"Inserted {len(knots)} knot(s).")
 
         self._data = spline._default_data()
 
+        return inserted
+
     def remove_knots(self, parametric_dimension, knots, tolerance=None):
         """
-        Tries to removes knots. If you've compiled `splinepy` in `Debug`
-        and your removal request is not "accepted", you will get an error.
-        See the comments for `Nurbs::remove_knots` @
-        `splinepy/src/nurbs.hpp` for more info.
+        Tries to removes knots.
 
         Parameters
         -----------
@@ -113,7 +115,8 @@ class BSplineBase(spline.Spline):
 
         Returns
         --------
-        None
+        removed: list<bool>
+          List of bool. True if the knots are Removed. Otherwise, False
         """
         if parametric_dimension >= self.para_dim:
             raise ValueError("Invalid parametric dimension to remove knots.")
@@ -144,6 +147,8 @@ class BSplineBase(spline.Spline):
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
+
+        return removed
 
     def normalize_knot_vectors(self):
         """
