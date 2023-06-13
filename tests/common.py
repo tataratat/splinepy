@@ -229,11 +229,6 @@ def to_tmpf(tmpd):
     return os.path.join(tmpd, "nqv248p90")
 
 
-def to_derived(spline):
-    """initialize to derived types in python"""
-    return splinepy.settings.NAME_TO_TYPE[spline.name](spline=spline)
-
-
 def are_splines_equal(a, b):
     """returns True if Splines are equivalent"""
     if not a.whatami == b.whatami:
