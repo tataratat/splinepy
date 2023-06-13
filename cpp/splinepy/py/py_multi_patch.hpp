@@ -1826,13 +1826,13 @@ public:
            + " patches.";
   }
 
-  // could overload, but it won't be clear for pybind
-
+  /// could overload, but it won't be clear for pybind
   /// @brief default patches setter, exposed to python
   /// @param patches
   void SetPatchesDefault(py::list& patches) {
     SetPatchesNThreads(patches, n_default_threads_);
   }
+
   /// @brief patches setter with nthreads
   /// @param patches
   /// @param nthreads
@@ -1855,6 +1855,7 @@ public:
                   {},
                   nthreads);
   }
+
   /// @brief patches setter for field patches that may contain null splines.
   /// @param patches
   /// @param nthreads
@@ -2026,86 +2027,8 @@ public:
     if (interfaces_.size() > 0) {
       return interfaces_;
     }
-    /*
-        // now, first compute, then get
-        // first, centers. will either compute or return saved
 
-        // get centers
-        auto sub_p_centers = SubPatchCenters();
-        const int n_centers = sub_p_centers.shape(0);
-        const int dim = Dim();
-        double* sub_p_centers_ptr =
-            static_cast<double*>(sub_p_centers.request().ptr);
-        // call uff
-        // create temporary arrays
-        DoubleVector metric(Dim(), 1.);
-        DoubleVector new_points(n_centers * dim);
-        IntVector new_point_masks(n_centers);
-        IntVector inverse(n_centers);
-        int n_newpoints{}; // out
-
-        // temporary copied for raw input -> uff doesn't have `const` for
-       simplest
-        // fortran compatibility
-        int n_centers_in{n_centers}, dim_in{dim};
-        double tolerance_in{tolerance_};
-
-        uff::uff(sub_p_centers_ptr,
-                 n_centers_in,
-                 dim_in,
-                 metric.data(),
-                 tolerance_in,
-                 true,
-                 new_points.data(),
-                 new_point_masks.data(),
-                 n_newpoints,
-                 inverse.data());
-
-        // create return - reassign interfaces_
-        const int n_boundary = ParaDim() * 2;
-        interfaces_ =
-            py::array_t<int>({static_cast<int>(CorePatches().size()),
-       n_boundary}); int* interfaces_ptr =
-       static_cast<int*>(interfaces.request().ptr);
-
-        // sanity check?
-        if (static_cast<int>(interfaces_.size()) != n_centers) {
-          splinepy::utils::PrintAndThrowError(
-              "Size mismatch between interfaces and sub_patch_centers.");
-        }
-
-        // turn inverse to interfaces
-        auto inverse_to_interfaces = [&](int begin, int end) {
-          for (int i{begin}; i < end; ++i) {
-            const auto& inv = inverse[i];
-            if (inv < i) {
-              interfaces_ptr[i] = std::div(inv, n_boundary).quot;
-              interfaces_ptr[inv] = std::div(i, n_boundary).quot;
-            } else {
-              interfaces_ptr[i] = -1;
-            }
-          }
-        };
-
-        splinepy::utils::NThreadExecution(inverse_to_interfaces,
-                                          n_centers,
-                                          n_default_threads_);
-
-        // one more sanity check - elements should  not be referenced more than
-        // once. could do this with mutex, but probably won't gain much. this
-       does
-        // not perform orientation check
-        // this one, we actually want 0 init
-        std::vector<int> inv_counts(n_centers);
-        for (const auto& inv : inverse) {
-          if (++inv_counts[inv] > 2) {
-            splinepy::utils::PrintAndThrowError(
-                "Interface is invalid, found a subpatch center that overlaps
-       more " "than twice.");
-          }
-        }
-    */
-    // Original - TODO remove if above is fine
+    // here's compute
     interfaces_ =
         InterfacesFromBoundaryCenters(SubPatchCenters(), tolerance_, ParaDim());
 

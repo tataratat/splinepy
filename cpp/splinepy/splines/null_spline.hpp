@@ -75,7 +75,7 @@ public:
 
   /// Parametric AABB. fills zeros. this enables Sample() interface
   virtual void SplinepyParametricBounds(double* para_bounds) const {
-    std::fill_n(para_bounds, para_dim_, 0.0);
+    std::fill_n(para_bounds, para_dim_ * 2, 0.0);
   }
 
   /// required to support boundary only evaluations of multi patch field
