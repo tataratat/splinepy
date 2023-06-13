@@ -29,7 +29,7 @@
 %-----------------------
 % Set pdf information and add title, fill in the fields
 %-----------------------
-\hypersetup{ 	
+\hypersetup{
 pdfsubject = {},
 pdftitle = {},
 pdfauthor = {}
@@ -43,19 +43,19 @@ pdfauthor = {}
 
 \section{A general introduction to splines}
 
-A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section further reading for the exact reference). 
+A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section further reading for the exact reference).
 
 Splines come in many colors and facets, but there are a few properties that the most common ones (Bézier splines, B-splines, and NURBS) share:
 
 \begin{enumerate}
 \item Splines are parametric geometry descriptions. This means that each spline coordinate is expressed as a function of a local parameter. Assume that we are dealing with a spline curve, which is embedded in a two-dimensional space. Then the coordinates $(x,y)$ are computed as $(x(\xi), y(\xi))$, where $\xi$ is the local parameter. An example could be $x(\xi) = \cos(\xi), y(\xi) = \sin(\xi)$, which represents the unit circle. Usually, the local parameter is normalized, meaning that it takes on the value of $0$ at one end of the curve and the value of $1$ at the other end of the curve. Notice that parameterizations are not unique and one can represent the same geometry using different parameterizations.
 \item The dimension of the geometric entity (i.e., 1D for a curve, 2D for a surface, 3D for a volume, etc.) determines the dimension of the parameter space. This means that a curve always has one local parameter, a curve two, etc.
-\item In many cases, one is faced with so-called immersions, i.e., a spline of lower dimension is embedded into a higher-dimensional space, such as a curve into a 2D space. For this reason, the dimension of the parameter space (defined in $\boldsymbol{\xi}$-coordinates) does not necessarily match the dimension of embedding space, which we will call the global space (defined in ${\bf x}$-coordinates). 
-\item The general equation for a spline curve $\bf S$ is 
+\item In many cases, one is faced with so-called immersions, i.e., a spline of lower dimension is embedded into a higher-dimensional space, such as a curve into a 2D space. For this reason, the dimension of the parameter space (defined in $\boldsymbol{\xi}$-coordinates) does not necessarily match the dimension of embedding space, which we will call the global space (defined in ${\bf x}$-coordinates).
+\item The general equation for a spline curve $\bf S$ is
 \begin{equation}
     {\bf S} = \sum_{i=1}^n N_i(\xi) {\bf P}
 \end{equation}
-Here, $N$ denotes the basis functions, $\bf P$ the coordinates of the control points, and $n$ the number of basis functions / control points. Geometrically, this means that one selects a certain number of points in the global space (i.e., the control points) and these points are ``connected'' using the basis functions. Notice that for splines, the basis functions can take on values within the interval $[0,1]$. However, they will usually never reach the value of one. As a consequence, the control points are not interpolated (meaning that the spline does not go through them), but they only guide the spline. 
+Here, $N$ denotes the basis functions, $\bf P$ the coordinates of the control points, and $n$ the number of basis functions / control points. Geometrically, this means that one selects a certain number of points in the global space (i.e., the control points) and these points are ``connected'' using the basis functions. Notice that for splines, the basis functions can take on values within the interval $[0,1]$. However, they will usually never reach the value of one. As a consequence, the control points are not interpolated (meaning that the spline does not go through them), but they only guide the spline.
 \item Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions $N_i(\xi)$ and $M_j(\eta)$. Consider the example of a splines surface:
 
 \begin{equation}
@@ -67,7 +67,7 @@ Notice that the structure of $N_i$ and $M_j$ is exactly the same. They are simpl
 
 \section{In which situations are splines helpful?}
 
-As previously mentioned, splines, or in particular non-uniform rational B-spline (NURBS), constitute the basis of computer aided design. However, this is not where the stories of splines ends. They are also very helpful in geometry representation for shape optimization, fitting of data points, but most of all, have become an important means also in numerical analysis. Here, we refer to the idea of isogeometric analysis (IGA), proposed by Hughes, Cottrell and Bazilevs in 2005. 
+As previously mentioned, splines, or in particular non-uniform rational B-spline (NURBS), constitute the basis of computer aided design. However, this is not where the stories of splines ends. They are also very helpful in geometry representation for shape optimization, fitting of data points, but most of all, have become an important means also in numerical analysis. Here, we refer to the idea of isogeometric analysis (IGA), proposed by Hughes, Cottrell and Bazilevs in 2005.
 
 \section{An introduction to different spline types}
 
@@ -83,11 +83,11 @@ N_{i,p}(\xi)=\frac{(p)!}{(i-1)!(p+1-i)!}\xi^{i-1}(1-\xi)^{p+1-i} \,,
 
 with
 	\[\xi\in[0;\;1];\; 0^{0}\equiv 1;\; 0!=1\]
-	
+
 and the fixed relation between degree of the polynomial $p$ and number of control points $n$
 
 	\[n=p+1 \,.\]
-	
+
 This means that the number of control points cannot be chosen freely, but is fixed the moment the degree has been chosen. Actually, this is a good moment to point to a terminology conflict that becomes very apparent, when geometers and analysts try to communicate: While a geometer uses the terms ``degree'' and ``order'' differently, assuming that order= degree+1, an analyst will tend to use those two terms interchangeably, meaning that order = degree.
 
 After this basic definition, we will continue with a few examples.
@@ -98,14 +98,14 @@ After this basic definition, we will continue with a few examples.
 \subsubsection{Examples}
 
 {\bf{Example 1: Bézier curve with $n=2$ control points and degree $p=1$}}
-	
- In this case, there are two basis functions, both of degree $1$. We denote the basis functions as $N_{i,p}$, where $i$ indicates the number of the basis function and $p$ the degree of the basis function. 
+
+ In this case, there are two basis functions, both of degree $1$. We denote the basis functions as $N_{i,p}$, where $i$ indicates the number of the basis function and $p$ the degree of the basis function.
 
 	\begin{align}
 		N_{1,1}(\xi)&=\frac{1!}{0!1!}\xi^{0}(1-\xi)^{1}=1-\xi \,,\\
 		N_{2,1}(\xi)&=\frac{1!}{1!0!}\xi^{1}(1-\xi)^{0}=\xi \,.
 	\end{align}
-	
+
 \noindent The resulting spline curve can then be computed as follows:
 
 \begin{align}
@@ -115,7 +115,7 @@ After this basic definition, we will continue with a few examples.
 
 \noindent {\bf{Example 2: Bézier curve with $n=3$ control points and degree $p=2$}}
 
-\noindent In this case, there are three basis functions, all of degree $2$. 
+\noindent In this case, there are three basis functions, all of degree $2$.
 
 	\begin{align*}
 		N_{1,2}(\xi)&=\frac{2!}{0!(2!)}\xi^{0}(1-\xi)^{2}=(1-\xi)^{2} \\
@@ -130,7 +130,7 @@ After this basic definition, we will continue with a few examples.
 	\end{align}
 
 
-	
+
 \subsubsection{Properties of Bézier curves}
 
 Bézier curves have the following properties:
@@ -146,9 +146,9 @@ Bézier curves have the following properties:
         A similar argument can be made for ${\bf P}_n$.
 
 		\item Bernstein polynomials form a partition  of unity.
-	
+
 	\end{itemize}
-	
+
 	\subsubsection{Drawbacks of Bézier curves}
 
 In modern CAD systems, Bézier curves no longer play a role. This is due to two drawbacks:
@@ -157,7 +157,7 @@ In modern CAD systems, Bézier curves no longer play a role. This is due to two 
 		\item Important types of curves cannot be represented using polynomials and thus also not with a Bézier spline, which has a polynomial basis. These include conic sections like circles, cylinders, cones, spheres, etc..
 		\item The control over the curve geometry is not sufficiently local (single segment curve). A high polynomial degree is required to satisfy a large number of constraints, i.e., complex shapes.
 	\end{enumerate}
-	
+
 
 \subsection{Rational Bézier splines}
 
@@ -182,7 +182,7 @@ The entries of the knot vector form a non-decreasing sequence: $\xi_{i}\le\xi_{i
 \begin{align}
 &m=n+p+1 \\
 		&n:\text{ number of basis functions/CPs} \nonumber \\
-		&p:\text{ degree} \nonumber 
+		&p:\text{ degree} \nonumber
 \end{align}
 
 An example of a knot vector could be:
@@ -197,9 +197,9 @@ There are different types of knot vectors:
 
 	\begin{itemize}
 	\item open  $\leftrightarrow$ periodic \\
-		In an open knot vector, the first and last value appears $p+1$ times. A knot vector is called periodic, if it is not open. $\Xi=[0,\; 0,\; 0,\; 0.5,\; 1,\; 1,\; 1]$ is an open knot vector if $p=2$.		
+		In an open knot vector, the first and last value appears $p+1$ times. A knot vector is called periodic, if it is not open. $\Xi=[0,\; 0,\; 0,\; 0.5,\; 1,\; 1,\; 1]$ is an open knot vector if $p=2$.
     \item uniform  $\leftrightarrow$ non-uniform \\
-		In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., $ \Xi=[0, 0.2, 0.4, 0.6, 0.8, 1]$. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., $[0,\; 0,\; 0,\; 0.5,\; 1,\; 1,\; 1]$. This knot vector is then still called uniform, if all middle knots are equally spaced. 
+		In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., $ \Xi=[0, 0.2, 0.4, 0.6, 0.8, 1]$. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., $[0,\; 0,\; 0,\; 0.5,\; 1,\; 1,\; 1]$. This knot vector is then still called uniform, if all middle knots are equally spaced.
 	\end{itemize}
 
 \vspace{0.5cm}
@@ -219,9 +219,9 @@ Subsequently, the degree of the basis function can be raised bit by bit using
 N_{i,p}(\xi)=\frac{\xi-\xi_{i}}{\xi_{i+p}-\xi_{i}}N_{i,p-1}(\xi)+\frac{\xi_{i+p+1}-\xi}{\xi_{i+p+1}-\xi_{i+1}}N_{i+1,p-1}(\xi) \,,
 \end{align}
 
-until the desired degree has been reached. 
+until the desired degree has been reached.
 \\
-	
+
 		Properties of B-spline basis functions:
 	\begin{itemize}
 		\item constitute a partition of unity
@@ -233,8 +233,8 @@ until the desired degree has been reached.
 		\item in each knot span, $p+1$ basis function will be nonzero
 		\item if the number of basis functions is $p+1$, the B-spline basis reduces to the Bézier basis
 	\end{itemize}
-	
-	
+
+
 
 \subsection{Non-uniform rational B-splines (NURBS)}
 
