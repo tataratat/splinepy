@@ -1762,6 +1762,9 @@ public:
   /// ctor
   PyMultiPatch() = default;
 
+  /// move ctor
+  PyMultiPatch(PyMultiPatch&& other) noexcept = default;
+
   /// list (iterable) init -> pybind will cast to list for us if needed
   PyMultiPatch(py::list& patches,
                const int n_default_threads = 1,
@@ -1788,6 +1791,12 @@ public:
                               dim_if_none);
   }
 
+  /// @brief given other shared pointer, tries to steal the contents with move
+  /// ctor. Expected use is only for  to_derived call.
+  /// @param other
+  PyMultiPatch(std::shared_ptr<PyMultiPatch>& other)
+      : PyMultiPatch(std::move(*other)) {}
+
   CorePatches_& CorePatches() {
     if (core_patches_.size() == 0) {
       splinepy::utils::PrintAndThrowError("No splines/patches set");
@@ -1804,6 +1813,7 @@ public:
     interfaces_ = py::array_t<int>();
     boundary_ids_ = py::array_t<int>();
     sub_patch_centers_ = py::array_t<double>();
+    field_list_ = py::list();
     field_multi_patches_ = {};
   }
 

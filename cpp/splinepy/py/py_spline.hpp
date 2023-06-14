@@ -989,7 +989,6 @@ inline void add_spline_pyclass(py::module& m) {
            py::arg("tolerance"))
       .def("coordinate_references",
            &splinepy::py::PySpline::CoordinateReferences)
-      .def("to_derived", &splinepy::py::PySpline::ToDerived)
       .def(py::pickle(
           [](splinepy::py::PySpline& spl) {
             return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);
