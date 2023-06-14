@@ -536,9 +536,10 @@ bool SplinepyBase::SplinepyReduceDegree(const int& para_dims,
   return false;
 }
 
-void SplinepyBase::SplinepyInsertKnot(const int& para_dim, const double& knot) {
+bool SplinepyBase::SplinepyInsertKnot(const int& para_dim, const double& knot) {
   splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
                                       SplinepyWhatAmI());
+  return false;
 }
 
 bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,
