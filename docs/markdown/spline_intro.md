@@ -208,7 +208,7 @@ The NURBS basis functions :math:`R_{i,p}` are computed using the B-spline basis 
 
 Again, :math:`\omega_i` is a weight.
 
-# A selection of spline operations offered by splinepy
+<!-- # A selection of spline operations offered by splinepy -->
 
 # Further reading
 
