@@ -1,26 +1,23 @@
-splinepy
-==================================
-
 .. toctree::
    :maxdepth: 2
 
 .. mdinclude:: ../../README.md
-.. mdinclude:: markdown/spline_intro.md
 
-Sources
-============
+Related Links and further Information
+=======================================
 .. toctree::
    Github <https://github.com/tataratat/splinepy>
 
-Contributing
-===============
+.. toctree::
+   :maxdepth: 1
+
+   Introduction to splines <spline_intro>
+
 .. toctree::
    :maxdepth: 1
 
    Contributing <CONTRIBUTING>
 
-Library
-============
 .. toctree::
    :maxdepth: 1
 

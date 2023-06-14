@@ -158,15 +158,16 @@ Implements fitting routines from the [The NURBS Book](https://link.springer.com/
 
 
 ## Dependencies
-Followings are direct dependencies for splinepy. If something is missing, please feel free to extend!
-#### c++
-- [pybind11](https://github.com/pybind/pybind11)
-- [SplineLib](https://github.com/tataratat/SplineLib)
-- [bezman](https://github.com/tataratat/bezman)
-- [napf](https://github.com/tataratat/napf) - wraps / based on [nanoflann](https://github.com/jlblancoc/nanoflann)
-#### python
-- [numpy](https://numpy.org)
-#### build
-- [cmake](https://cmake.org)
-- [setuptools](https://setuptools.pypa.io/en/latest/)
-- [wheel](https://wheel.readthedocs.io/en/stable/)
+Followings are direct dependencies for splinepy. Please feel free to check out the repositories linked in the following.
+
+| Dependency                                          |                                                                                    | Usage                                           |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
+| <tr><td rowspan="5">C++</td></tr>                   | [pybind11](https://github.com/pybind/pybind11)                                     | Binding between C++ Backend and Python frontend |
+| [SplineLib](https://github.com/tataratat/SplineLib) | Backend for BSplines and NURBS                                                     |
+| [bezman](https://github.com/tataratat/bezman)       | Backend for (rational) Beziers                                                     |
+| [napf](https://github.com/tataratat/napf)           | Used for KD-Trees, wrapper for [nanoflann](https://github.com/jlblancoc/nanoflann) |
+| <tr><td rowspan="3">Python</td></tr>                | [numpy](https://numpy.org)                                                         | Used for data storage and data manipulation     |
+| [scipy](https://scipy.org) (optional)               | Used for sparse matrices, where applicable                                         |
+| <tr><td rowspan="4">Build process</td></tr>         | [cmake](https://cmake.org)                                                         | Platform independent build system for Backend   |
+| [setuptools](https://setuptools.pypa.io/en/latest/) |                                                                                    |
+| [wheel](https://wheel.readthedocs.io/en/stable/)    |                                                                                    |
