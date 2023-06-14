@@ -1,5 +1,4 @@
 # A general introduction to splines
-
 A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section further reading for the exact reference).
 
 Splines come in many colors and facets, but there are a few properties that the most common ones (Bézier splines, B-splines, and NURBS) share:
@@ -14,7 +13,7 @@ Splines come in many colors and facets, but there are a few properties that the 
 
 Here, :math:`N` denotes the basis functions, :math:`\mathbf{P}` the coordinates of the control points, and :math:`n` the number of basis functions / control points. Geometrically, this means that one selects a certain number of points in the global space (i.e., the control points) and these points are "connected" using the basis functions. Notice that for splines, the basis functions can take on values within the interval :math:`[0,1]`. However, they will usually never reach the value of one. As a consequence, the control points are not interpolated (meaning that the spline does not go through them), but they only guide the spline.
 1. Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions :math:`N_i(u)` and :math:`M_j(\eta)`. Consider the example of a splines surface:
-   
+
 .. math::
   \mathbf{S}(u, \eta) = \sum_{i=1}^n \sum_{j=1}^m N_i(u) M_j(\eta) \mathbf{P}\_{i,j}
 
@@ -33,7 +32,7 @@ As described in the introduction, the principal structure of most spline types i
 Named after Pierre Bézier (1910-1999), a French engineer at Renault and one of the founders of CAD/CAM systems, Bézier splines were one of the earliest spline representations. They use Bernstein polynomials as their basis function, which are defined as follows:
 
 .. math::
-  N_{i,p}(u)=\frac{(p)!}{(i-1)!(p+1-i)!}u^{i-1}(1-u)^{p+1-i} \,,
+  N_{i,p}(u)=\frac{(p)!}{(i-1)!(p+1-i)!}u^{i-1}(1-u)^{p+1-i} ,
 
 with
 
@@ -56,7 +55,7 @@ In this case, there are two basis functions, both of degree :math:`1`. We denote
 
 .. math::
 
-    N_{1,1}(u)&=\frac{1!}{0!1!}u^{0}(1-u)^{1}=1-u , 
+    N_{1,1}(u)&=\frac{1!}{0!1!}u^{0}(1-u)^{1}=1-u ,
 
     N_{2,1}(u)&=\frac{1!}{1!0!}u^{1}(1-u)^{0}=u .
 
@@ -64,7 +63,7 @@ The resulting spline curve can then be computed as follows:
 
 .. math::
 
-  \mathbf{S}(u)=(1-u)\mathbf{P}\_{1}+u \mathbf{P}\_{2} \,.
+  \mathbf{S}(u)=(1-u)\mathbf{P}\_{1}+u \mathbf{P}\_{2} .
 
 **Example 2**: Bézier curve with :math:`n=3` control points and degree :math:`p=2`
 
@@ -72,7 +71,7 @@ The resulting spline curve can then be computed as follows:
 
 .. math::
 
-    N_{1,2}(u)&=\frac{2!}{0!(2!)}u^{0}(1-u)^{2}=(1-u)^{2} 
+    N_{1,2}(u)&=\frac{2!}{0!(2!)}u^{0}(1-u)^{2}=(1-u)^{2}
 
     N_{2,2}(u)&=\frac{2!}{1!(1!)}u^{1}(1-u)^{1}=2u (1-u)
 
@@ -83,24 +82,24 @@ The resulting spline curve can then be computed as follows:
 .. math::
 
    \mathbf{S}(u)=(1-u)^{2}\mathbf{P}\_{1}+2u (1-u)\mathbf{P}\_{2}+u^{2}\mathbf{P}\_{3}
-  
+
 #### Properties of Bézier curves
 
 Bézier curves have the following properties:
-  
+
 -  The curve is contained in the convex hull of the control polygon (i.e. the largest convex polygon defined by the CPs).
 -  The basis functions are real and (non-zero) throughout the entire definition space.
 -  :math:`\mathbf{P}_{1}=\mathbf{S}(0)` and :math:`\mathbf{P}_{n}=\mathbf{S}(1)`. This follows from:
 
-.. math:: 
+.. math::
 
-  N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}\_{=1}\underbrace{0^{0}}\_{=1}\underbrace{(1-0)^{p}}\_{=1}=1 
+  N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}\_{=1}\underbrace{0^{0}}\_{=1}\underbrace{(1-0)^{p}}\_{=1}=1
 
-  N_{i,p}(0)&=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1 
+  N_{i,p}(0)&=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1
 
   C(0)&=1\cdot P_{1}
 
-A similar argument can be made for :math:`\mathbf{P}\_n`.
+A similar argument can be made for :math:`\mathbf{P}_n`.
 
 -  Bernstein polynomials form a partition  of unity.
 
@@ -118,7 +117,7 @@ One of the drawbacks of Bézier spline listed above is that it cannot be used to
 
 .. math::
 
-  R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} \,.
+  R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} .
 
 
 
@@ -133,14 +132,14 @@ Just like the Bézier basis functions, B-spline basis functions are polynomials.
 
 
 
-The entries of the knot vector form a non-decreasing sequence: :math:`u_{i}\le u_{i+1}`. It is however possible to repeat knot values. The interval :math:`[u_{i},u_{i+1}]` is called the :math:`i`th knot span. The length (meaning number of entries) of the knot vector, :math:`m`, is fixed as
+The entries of the knot vector form a non-decreasing sequence: :math:`u_{i}\le u_{i+1}`. It is however possible to repeat knot values. The interval :math:`[u_{i},u_{i+1}]` is called the :math:`i`-th knot span. The length (meaning number of entries) of the knot vector, :math:`m`, is fixed as
 
 .. math::
-  
+
   &m=n+p+1
-  
+
   &n:\text{ number of basis functions/CPs}
-  
+
   &p:\text{ degree} \nonumber
 
 
@@ -156,8 +155,8 @@ It has a length of :math:`m=5` and contains four knot spans. The first knot span
 
 There are different types of knot vectors:
 
-  
--  open  :math:`\leftrightarrow` periodic 
+
+-  open  :math:`\leftrightarrow` periodic
 
 In an open knot vector, the first and last value appears :math:`p+1` times. A knot vector is called periodic, if it is not open. :math:`u=[0,0,0,0.5,1,1,1]` is an open knot vector if :math:`p=2`.
   -  uniform  :math:`\leftrightarrow` non-uniform \\
@@ -177,7 +176,7 @@ Once the knot vector has been specified, the basis functions :math:`N_{i,p}` can
 Subsequently, the degree of the basis function can be raised bit by bit using
 
 .. math::
-  N_{i,p}(u)=\frac{u-u_{i}}{u_{i+p}-u_{i}}N_{i,p-1}(u)+\frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1,p-1}(u) \,,
+  N_{i,p}(u)=\frac{u-u_{i}}{u_{i+p}-u_{i}}N_{i,p-1}(u)+\frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1,p-1}(u) ,
 
 
 
@@ -192,7 +191,7 @@ until the desired degree has been reached.
 -  basis functions are non-zero in :math:`[u_{i},u_{i+p+1})`, i.e., in :math:`p+1` knot spans
 -  in each knot span, :math:`p+1` basis function will be nonzero
 -  if the number of basis functions is :math:`p+1`, the B-spline basis reduces to the Bézier basis
-  
+
 
 
 
@@ -203,7 +202,7 @@ In an argument similar to rational Bézier splines, NURBS are the rational count
 The NURBS basis functions :math:`R_{i,p}` are computed using the B-spline basis functions :math:`N_{i,p}`:
 
 .. math::
-  R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} \,.
+  R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} .
 
 
 
@@ -218,4 +217,3 @@ As further reading, we suggest
 1. Rogers, David F. An introduction to NURBS: with historical perspective. Morgan Kaufmann, 2001.
 2. Piegl, Les, and Wayne Tiller. The NURBS book. Springer Science and Business Media, 1996.
 3. Hughes, Thomas JR, John A. Cottrell, and Yuri Bazilevs. Isogeometric analysis: CAD, finite elements, NURBS, exact geometry and mesh refinement. Computer methods in applied mechanics and engineering 194, no. 39-41 (2005): 4135-4195.
-  
