@@ -1781,5 +1781,3 @@ class Spline(SplinepyBase, core.CoreSpline):
 
     # Deprecated - TODO: inform
     knot_vector_bounds = parametric_bounds
-    elevate_degree = elevate_degrees
-    reduce_degree = reduce_degrees

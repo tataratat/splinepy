@@ -615,7 +615,7 @@ def export(fname, nurbs, precision=10):
             d_diff = int(max_degree - d)
             if d_diff > 0:
                 for _ in range(d_diff):
-                    nurbs.elevate_degree(i)
+                    nurbs.elevate_degrees(i)
 
         cnr = nurbs.control_mesh_resolutions
 

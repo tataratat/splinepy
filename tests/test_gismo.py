@@ -784,8 +784,8 @@ class gismoExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bez_el0.elevate_degree(0)
-        bsp_el2.elevate_degree(0)
+        bez_el0.elevate_degrees(0)
+        bsp_el2.elevate_degrees(0)
 
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
@@ -944,12 +944,12 @@ class gismoExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bez_el0.elevate_degree(0)
-        bsp_el2.elevate_degree(0)
+        bez_el0.elevate_degrees(0)
+        bsp_el2.elevate_degrees(0)
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
         for s in [bez_el0, bsp_el2, nur_el3, rbz_el1]:
-            s.elevate_degree(2)
+            s.elevate_degrees(2)
 
         # Define some functions for boundary identification
         def is_bottom(x):
@@ -1025,10 +1025,10 @@ class gismoExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bsp_el2.elevate_degree(0)
-        bsp_el2.elevate_degree(1)
-        nur_el3.elevate_degree(0)
-        nur_el3.elevate_degree(1)
+        bsp_el2.elevate_degrees(0)
+        bsp_el2.elevate_degrees(1)
+        nur_el3.elevate_degrees(0)
+        nur_el3.elevate_degrees(1)
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
 
@@ -1120,10 +1120,10 @@ class gismoExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bsp_el2.elevate_degree(0)
-        bsp_el2.elevate_degree(1)
-        nur_el3.elevate_degree(0)
-        nur_el3.elevate_degree(1)
+        bsp_el2.elevate_degrees(0)
+        bsp_el2.elevate_degrees(1)
+        nur_el3.elevate_degrees(0)
+        nur_el3.elevate_degrees(1)
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
 

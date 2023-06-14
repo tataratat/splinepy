@@ -38,12 +38,12 @@ if __name__ == "__main__":
     )
 
     # elevate degree to make evaluation take a bit longer
-    b.elevate_degree(0)
-    b.elevate_degree(0)
-    b.elevate_degree(0)
-    b.elevate_degree(1)
-    b.elevate_degree(1)
-    b.elevate_degree(1)
+    b.elevate_degrees(0)
+    b.elevate_degrees(0)
+    b.elevate_degrees(0)
+    b.elevate_degrees(1)
+    b.elevate_degrees(1)
+    b.elevate_degrees(1)
 
     # workers
     workers = 4
