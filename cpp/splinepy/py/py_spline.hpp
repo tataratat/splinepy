@@ -563,8 +563,8 @@ public:
     return derived;
   }
 
-  /// Basis  support id
-  py::array_t<double> Support(py::array_t<double> queries, int nthreads) {
+  /// Basis support id
+  py::array_t<int> Support(py::array_t<double> queries, int nthreads) {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
     const int n_queries = queries.shape(0);
 

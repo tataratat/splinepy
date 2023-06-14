@@ -322,8 +322,8 @@ class MFEMExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bez_el0.elevate_degree(0)
-        bsp_el2.elevate_degree(0)
+        bez_el0.elevate_degrees(0)
+        bsp_el2.elevate_degrees(0)
 
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
@@ -399,12 +399,12 @@ class MFEMExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bez_el0.elevate_degree(0)
-        bsp_el2.elevate_degree(0)
+        bez_el0.elevate_degrees(0)
+        bsp_el2.elevate_degrees(0)
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
         for s in [bez_el0, bsp_el2, nur_el3, rbz_el1]:
-            s.elevate_degree(2)
+            s.elevate_degrees(2)
 
         # Test output
         with tempfile.TemporaryDirectory() as tmpd:

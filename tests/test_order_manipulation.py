@@ -20,7 +20,7 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
         self.ref_rational = c.splinepy.RationalBezier(**c.r2P2D)
 
     def test_elevate_degree(self):
-        """Test the order elevation function (.elevate_degree())."""
+        """Test the order elevation function (.elevate_degrees())."""
 
         # reference solution
         bspline_ref_kv = [
@@ -81,8 +81,8 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
         )
 
     def test_reduce_degree(self):
-        """Test the function .reduce_degree.
-        This test also depends on the function .elevate_degree!"""
+        """Test the function .reduce_degrees.
+        This test also depends on the function .elevate_degrees!"""
 
         # elevate and reduce order
         self.bspline.elevate_degrees(0)

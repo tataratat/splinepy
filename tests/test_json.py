@@ -32,10 +32,10 @@ class jsonExportTest(c.unittest.TestCase):
         )
 
         # Make it more tricky
-        bsp_el2.elevate_degree(0)
-        bsp_el2.elevate_degree(1)
-        nur_el3.elevate_degree(0)
-        nur_el3.elevate_degree(1)
+        bsp_el2.elevate_degrees(0)
+        bsp_el2.elevate_degrees(1)
+        nur_el3.elevate_degrees(0)
+        nur_el3.elevate_degrees(1)
         bsp_el2.insert_knots(1, [0.5])
         nur_el3.insert_knots(1, [0.5])
 

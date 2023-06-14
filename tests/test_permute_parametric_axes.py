@@ -22,9 +22,9 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
         # return permuted
         for orig in originals:
             # make more work
-            orig.elevate_degree(1)
-            orig.elevate_degree(2)
-            orig.elevate_degree(2)
+            orig.elevate_degrees(1)
+            orig.elevate_degrees(2)
+            orig.elevate_degrees(2)
             if "knot_vectors" in orig.required_properties:
                 orig.insert_knots(0, [0.4, 0.7, 0.8])
                 orig.insert_knots(1, [0.1, 0.2])
