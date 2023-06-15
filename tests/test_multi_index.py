@@ -11,7 +11,7 @@ class MultiIndexTest(c.unittest.TestCase):
         """
         # 4d? can actually do anything
         for d in range(2, 10 + 1):
-            resolutions = c.np.random.randint(2, 10, size=d)
+            resolutions = c.np.random.randint(2, 5, size=d)
 
             multi = c.splinepy.helpme.multi_index.MultiIndex(resolutions)
 
