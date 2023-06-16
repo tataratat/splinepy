@@ -1,6 +1,7 @@
 # splinepy
 [![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)
 [![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tataratat/try-splinepy/main)
 
 splinepy is a python library for splines of arbitrary dimensions and degrees.
 The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and easy-to-use APIs.
@@ -88,48 +89,36 @@ physical_coords_parallel = bspline.evaluate(queries, nthreads=2)
 
 # this holds
 assert np.allclose(physical_coords, physical_coords_parallel)
-
 ```
+You can also try `splinepy` online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
 
 ## Feature Summary
 For details, please take a look at the [documentation](https://tataratat.github.io/splinepy).
 Most of the functions are vectorized and capable of multithread executions.
 
-#### Common features
-| Method                         | Description                                                                                                                                           |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| evaluate()                     | Given parametric coordinates, returns physical (i.e., mapped / evaluated) coordinate                                                                  |
-| derivative()                   | Given parametric cooridnates and order of partial derivatives, returns physical derivatives                                                           |
-| jacobian()                     | Given a number of query points, returns the jacobian of the geometry or field                                                                         |
-| sample()                       | Given number of sampling points per parametric dimension,  returns evaluated physical coordinates, which are equally distributed in parametric space. |
-| basis_and_support()            | Given parametric coordinates, returns basis function values and their support. Satisfies partition of unity.                                          |
-| basis_derivative_and_support() | Given parametric coordinates and order of partial derivatives, returns basis function derivative values.                                              |
-| proximities()                  | Given physical coordinates, returns parametric coordinates that maps to the nearest physical coordinate. Often referred as "point inversion".         |
-| elevate_degrees()              | Elevates Spline degrees along specified parametric dimensions                                                                                         |
-| extract_boundaries()           | Given boundary ids, returns extracted boundary splines.                                                                                               |
+### Splines
+__Any type of spline is capable of:__
+- computing spline mappings, derivatives, partial derivatives, jacobian, basis functions, basis function derivatives, basis function partial derivatives, and proximity (point inversion, nearest mapping search),
+- degree evalation, and
+- extracting boundary splines.
 
-#### BSpline, NURBS
-| Method                   | Description                                                                                                       |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| reduce_degrees()         | Reduces spline degrees along specified parametric dimensionans, as long as the spline stays under given tolerance |
-| insert_knots()           | Insert knots at given locations                                                                                   |
-| remove_knots()           | Removes knots at given locations, as long as the spline stays under given tolerance                               |
-| extract_bezier_patches() | Extracts each knot spans as a Bezier spline                                                                       |
+In addition to the common features, __Bezier and Rational Bezier__ can:
+- add / multiply two splines,
+- split itself into multiple pathces,
+- create derivative splines, and
+- compose an inner spline into an outer spline and compute its composition derivative
 
-#### Bezier, Rational Bezier
-| Method                   | Description                                                                                                                                                                                                                        |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| multiply (*)             | Given two Beziers `a` and `b`, returns a Bezier `c` that satisfies: c.evaluate(query) = a.evalute(query) * b.evaluate(query)                                                                                                       |
-| add (+)                  | Given two Beziers `a` and `b`, returns a Bezier `c` that satisfies:  c.evaluate(query) = a.evaluate(query) + b.evaluate(query)                                                                                                     |
-| derivative_spline()      | Given order or partial derivatives, returns a bezier `c` that satisfies: c.derivative(query, orders) = a.derivative_spline(orders).evaluate(query)                                                                                 |
-| split()                  | Splits Bezier into multiple patches at defined locations                                                                                                                                                                           |
-| extract_dim()            | Extract a single physical dimension                                                                                                                                                                                                |
-| compose()                | Given an inner function spline `a` and an outer function spline `b`, it returns their functional composition that satisfies c.evaluate(query) = b.evaluate(a.evaluate(query))                                                      |
-| composition_derivative() | Given an outer function `a`, an inner function `b` and its derivative `b'` with respect to some variable `s`, it returns the derivative with respect to the same variable `s` of the composition `a(b)` by applying the chain-rule |
+and __BSpline and NURBS__ can:
+- reduce degrees,
+- insert and remove knots, and
+- extract bezier patches.
 
+Some __BSpline fitting__ routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
+- curve interpolation / approximation
+- surface interpolation / approximation
 
 ### Multipatch
-Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is both used for complex geometries as for Isogeometric Analysis. Multipatch objects have the following functionalities:
+Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is both used for complex geometries as for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
  - determine patch-interfaces automatically
  - identification of boundary faces
  - boundary assignement using different techniques, relying either on the boundary position or on the continuity inbetween patches
@@ -147,14 +136,6 @@ Available in `splinepy.io`.
 | gismo   | [GISMO](https://gismo.github.io) compatible `.xml` format                                                                                            |
 | npz     | Based on np.savez()                                                                                                                                  |
 | xml     | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format                                                                                          |
-
-
-### BSpline fitting
-Implements fitting routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7). Available as BSpline's classmethod.
-- interpolate_curve()
-- approximate_curve()
-- interpolate_surface()
-- approximate_surface()
 
 
 ## Dependencies
