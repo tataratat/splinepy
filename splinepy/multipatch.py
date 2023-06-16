@@ -466,4 +466,4 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         fields : list<list>
           List of all field representation in the form of list of splines
         """
-        return self.fields()
+        return super().fields()
