@@ -141,23 +141,32 @@ public:
       double* weights) const {
 
     // degrees
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
+    if (degrees) {
+      for (std::size_t i{}; i < kParaDim; ++i) {
+        degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
+      }
     }
 
     // control_points and weights
-    const std::size_t ncps = Base_::GetWeightedControlPoints().size();
-    for (std::size_t i{}; i < ncps; ++i) {
-      const double w = Base_::GetWeights()[i];
-      weights[i] = w;
-      double inv_weight = static_cast<double>(1.) / w;
-      if constexpr (dim > 1) {
-        for (std::size_t j{}; j < kDim; ++j) {
-          control_points[i * kDim + j] =
-              Base_::GetWeightedControlPoints()[i][j] * inv_weight;
+    if (control_points || weights) {
+      const std::size_t ncps = Base_::GetWeightedControlPoints().size();
+      for (std::size_t i{}; i < ncps; ++i) {
+        const double w = Base_::GetWeights()[i];
+        if (weights) {
+          weights[i] = w;
         }
-      } else {
-        control_points[i] = Base_::GetWeightedControlPoints()[i] * inv_weight;
+        if (control_points) {
+          double inv_weight = static_cast<double>(1.) / w;
+          if constexpr (dim > 1) {
+            for (std::size_t j{}; j < kDim; ++j) {
+              control_points[i * kDim + j] =
+                  Base_::GetWeightedControlPoints()[i][j] * inv_weight;
+            }
+          } else {
+            control_points[i] =
+                Base_::GetWeightedControlPoints()[i] * inv_weight;
+          }
+        }
       }
     }
   }
@@ -522,7 +531,7 @@ public:
 
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractDim(const int& phys_dim) const {
-    return std::make_shared<Bezier<para_dim, 1>>(
+    return std::make_shared<RationalBezier<para_dim, 1>>(
         Base_::ExtractDimension(static_cast<std::size_t>(phys_dim)));
   }
 

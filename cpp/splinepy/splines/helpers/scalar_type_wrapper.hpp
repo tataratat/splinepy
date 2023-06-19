@@ -33,6 +33,39 @@ void ScalarTypeEvaluate(const SplineType& spline,
   }
 }
 
+/// @brief Computes parametric coordinate of boundary centers
+/// @tparam SplineType
+/// @tparam OutputType
+/// @param spline
+/// @param output should have size of 2 * para_dim * para_dim
+template<typename SplineType, typename OutputType>
+void ScalarTypeBoundaryCenters(const SplineType& spline, OutputType* output) {
+  using DoubleVector = splinepy::utils::DefaultInitializationVector<double>;
+
+  // Prepare inputs
+  const int para_dim = spline.SplinepyParaDim();
+
+  // get parametric bounds
+  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
+  DoubleVector bounds_vector(2 * para_dim);
+  double* bounds = bounds_vector.data();
+  spline.SplinepyParametricBounds(bounds);
+
+  // Set parametric coordinate queries
+  for (int i{}; i < para_dim; ++i) {
+    for (int j{}; j < para_dim; ++j) {
+      if (i == j) {
+        output[2 * i * para_dim + j] = bounds[j];
+        output[(2 * i + 1) * para_dim + j] = bounds[j + para_dim];
+      } else {
+        const auto q = .5 * (bounds[j] + bounds[j + para_dim]);
+        output[2 * i * para_dim + j] = q;
+        output[(2 * i + 1) * para_dim + j] = q;
+      }
+    }
+  }
+}
+
 /// @brief Evaluate Splines at boundary face centers
 /// output should have size of 2 * para_dim * dim
 template<typename SplineType, typename OutputType>
@@ -49,25 +82,8 @@ void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
   DoubleVector queries_vector(n_faces * para_dim);
   double* queries = queries_vector.data();
 
-  // get parametric bounds
-  // They are given back in the order [min_0, min_1,...,max_0, max_1...]
-  DoubleVector bounds_vector(2 * para_dim);
-  double* bounds = bounds_vector.data();
-  spline.SplinepyParametricBounds(bounds);
-
-  // Set parametric coordinate queries
-  for (int i{}; i < para_dim; ++i) {
-    for (int j{}; j < para_dim; ++j) {
-      if (i == j) {
-        queries[2 * i * para_dim + j] = bounds[j];
-        queries[(2 * i + 1) * para_dim + j] = bounds[j + para_dim];
-      } else {
-        const auto q = .5 * (bounds[j] + bounds[j + para_dim]);
-        queries[2 * i * para_dim + j] = q;
-        queries[(2 * i + 1) * para_dim + j] = q;
-      }
-    }
-  }
+  // compute queries
+  ScalarTypeBoundaryCenters(spline, queries);
 
   // Evaluate
   for (int i{}; i < n_faces; ++i) {

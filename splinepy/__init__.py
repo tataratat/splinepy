@@ -27,6 +27,22 @@ settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
 # configure logging
 utils.log.configure()
 
+
+def to_derived(spline):
+    """
+    Returns derived spline type based on NAME_TO_TYPE conversion.
+
+    Parameters
+    ----------
+    spline: CoreSpline
+
+    Returns
+    -------
+    derived_spline: DerivedSpline
+    """
+    return settings.NAME_TO_TYPE[spline.name](spline=spline)
+
+
 __all__ = [
     "__version__",
     "bezier",
@@ -49,4 +65,5 @@ __all__ = [
     "Spline",
     "load_splines",
     "load_solution",
+    "to_derived",
 ]

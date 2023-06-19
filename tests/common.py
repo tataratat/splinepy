@@ -104,39 +104,76 @@ def r2p2d():
 
 r2P2D = r2p2d()
 
+
+def all2p2d():
+    z = splinepy.Bezier(**z2p2d())
+    r = splinepy.RationalBezier(**r2p2d())
+    b = splinepy.BSpline(**b2p2d())
+    n = splinepy.NURBS(**n2p2d())
+    return [z, r, b, n]
+
+
 # 3D
-z3P3D = dict(
-    degrees=[1, 1, 1],
-    control_points=[
-        [0.0, 0.0, 0.0],
-        [1.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0],
-        [1.0, 1.0, 0.0],
-        [0.0, -1.0, 1.0],
-        [1.0, 0.0, 1.0],
-        [-1.0, 1.0, 2.0],
-        [2.0, 2.0, 2.0],
-    ],
-)
+def z3p3d():
+    return dict(
+        degrees=[1, 1, 1],
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, -1.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [-1.0, 1.0, 2.0],
+            [2.0, 2.0, 2.0],
+        ],
+    )
 
-r3P3D = dict(
-    **z3P3D,
-    weights=[1.0] * len(z3P3D["control_points"]),
-)
 
-b3P3D = dict(
-    **z3P3D,
-    knot_vectors=[
-        [0.0, 0.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0],
-    ],
-)
+z3P3D = z3p3d()
 
-n3P3D = dict(
-    **r3P3D,
-    knot_vectors=b3P3D["knot_vectors"],
-)
+
+def r3p3d():
+    return dict(
+        **z3P3D,
+        weights=[1.0] * len(z3P3D["control_points"]),
+    )
+
+
+r3P3D = r3p3d()
+
+
+def b3p3d():
+    return dict(
+        **z3P3D,
+        knot_vectors=[
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+        ],
+    )
+
+
+b3P3D = b3p3d()
+
+
+def n3p3d():
+    return dict(
+        **r3P3D,
+        knot_vectors=b3P3D["knot_vectors"],
+    )
+
+
+n3P3D = n3p3d()
+
+
+def all3p3d():
+    z = splinepy.Bezier(**z3p3d())
+    r = splinepy.RationalBezier(**r3p3d())
+    b = splinepy.BSpline(**b3p3d())
+    n = splinepy.NURBS(**n3p3d())
+    return [z, r, b, n]
+
 
 # query points
 q2D = [
@@ -196,7 +233,7 @@ def are_splines_equal(a, b):
     """returns True if Splines are equivalent"""
     if not a.whatami == b.whatami:
         return False
-    for req_prop in a.current_core_properties():
+    for req_prop in a.required_properties:
         if req_prop == "knot_vectors":
             for aa, bb in zip(a.knot_vectors, b.knot_vectors):
                 if not np.allclose(aa, bb):

@@ -131,19 +131,23 @@ public:
       double* weights /* untouched */) const {
 
     // degrees
-    for (std::size_t i{}; i < kParaDim; ++i) {
-      degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
+    if (degrees) {
+      for (std::size_t i{}; i < kParaDim; ++i) {
+        degrees[i] = static_cast<int>(Base_::GetDegrees()[i]);
+      }
     }
 
     // control_points
-    const std::size_t ncps = Base_::control_points.size();
-    for (std::size_t i{}; i < ncps; ++i) {
-      if constexpr (dim > 1) {
-        for (std::size_t j{}; j < kDim; ++j) {
-          control_points[i * kDim + j] = Base_::control_points[i][j];
+    if (control_points) {
+      const std::size_t ncps = Base_::control_points.size();
+      for (std::size_t i{}; i < ncps; ++i) {
+        if constexpr (dim > 1) {
+          for (std::size_t j{}; j < kDim; ++j) {
+            control_points[i * kDim + j] = Base_::control_points[i][j];
+          }
+        } else {
+          control_points[i] = Base_::control_points[i];
         }
-      } else {
-        control_points[i] = Base_::control_points[i];
       }
     }
   }

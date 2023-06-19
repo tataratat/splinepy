@@ -193,11 +193,35 @@ public:
     }
   }
 
+  /// @brief given global id, returns grid point coordinate
+  /// @param id in
+  /// @param grid_point out
   void IdToGridPoint(const int& id, double* grid_point) const {
     int tmp{id};
     for (int i{0}; i < dim_; ++i) {
       grid_point[i] = entries_[i][tmp % resolutions_[i]];
       tmp /= resolutions_[i];
+    }
+  }
+
+  /// @brief fills array with full set of grid points
+  /// @param grid_point_to_fill
+  void Fill(double* grid_point_to_fill) const {
+    int i{}, tile{len_}, repeat{1};
+    for (const auto& entry : entries_) {
+      const int entry_size = entry.size();
+      tile /= entry_size;
+      int output_id{i};
+      for (int j{}; j < tile; ++j) {
+        for (const auto& e : entry) {
+          for (int k{}; k < repeat; ++k) {
+            grid_point_to_fill[output_id] = e;
+            output_id += dim_;
+          }
+        }
+      }
+      ++i;
+      repeat *= entry_size;
     }
   }
 

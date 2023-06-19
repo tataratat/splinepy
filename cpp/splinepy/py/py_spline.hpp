@@ -108,7 +108,7 @@ public:
         dim_(another_py_spline.dim_) {
     // nichts
   }
-  PySpline(std::shared_ptr<PySpline>& another_py_spline_ptr)
+  PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
       : PySpline(*another_py_spline_ptr) {}
 
   /// Creates a corresponding spline based on kwargs
@@ -899,23 +899,15 @@ public:
   CoordinateReferences() {
     return Core()->SplinepyCoordinateReferences();
   }
-};
 
-/// Internal use only
-/// Extract CoreSpline_s from list of PySplines
-inline std::vector<PySpline::CoreSpline_>
-ListOfPySplinesToVectorOfCoreSplines(py::list pysplines) {
-  // prepare return obj
-  std::vector<PySpline::CoreSpline_> core_splines;
-  core_splines.reserve(pysplines.size());
-
-  // loop and append
-  for (py::handle pys : pysplines) {
-    core_splines.emplace_back(py::cast<PySpline>(pys).Core());
+  /// @brief returns current spline as package's derived spline types based on
+  /// splinepy.settings.NAME_TO_TYPE
+  /// @return
+  py::object ToDerived() {
+    const auto to_derived = py::module_::import("splinepy").attr("to_derived");
+    return to_derived(py::cast(this));
   }
-
-  return core_splines;
-}
+};
 
 inline void add_spline_pyclass(py::module& m) {
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>

@@ -1,3 +1,4 @@
+import copy
 import xml.etree.ElementTree as ET
 from sys import version as python_version
 
@@ -7,12 +8,172 @@ from splinepy import settings
 from splinepy.utils.log import debug, warning
 
 
+def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
+    """
+    Write spline data to xml element in gismo format
+
+    Parameters
+    ----------
+    root : ElementTree.Subelement
+      branch in element tree to which the spline info is to be added
+    multipatch : Multipatch
+      Multipatch containing the information requested
+    index_offset : int
+      index_offset for ids in xml export
+      (All geometries are assigned individual ids that must be unique in the
+      xml file)
+    fields_only : bool (False)
+      If set, exports only the fields associated to the multipatch data
+
+    Returns
+    -------
+    None
+    """
+    from splinepy import NURBS, BSpline
+    from splinepy.spline import Spline
+
+    if fields_only and (len(multipatch.fields) == 0):
+        return
+
+    if fields_only:
+        supports = np.array(
+            [
+                (i, j, 0)
+                for j, field in enumerate(multipatch.fields)
+                for i, v in enumerate(field)
+                if v is not None
+            ],
+            dtype=np.int64,
+        )
+
+        # Very unintuitive solution to counting the support ids #indextrick
+        indices = np.argsort(supports[:, 0], kind="stable")
+        counter = np.arange(supports.shape[0])
+        bincount = np.bincount(supports[:, 0])
+        # Get number of occurences for previous element to correct index shift
+        index_shift = np.cumsum(np.hstack([[0], bincount[:-1]]))
+        counter -= np.repeat(index_shift, bincount)
+        supports[indices, 2] = counter
+
+        # Write Matrix
+        design_v_support = ET.SubElement(
+            root,
+            "Matrix",
+            rows=str(supports.shape[0]),
+            cols=str(supports.shape[1]),
+            id=str(10),
+        )
+        design_v_support.text = "\n".join(
+            [" ".join([str(xx) for xx in x]) for x in supports]
+        )
+
+    for id, spline in enumerate(multipatch.splines):
+        if fields_only:
+            # Check supports
+            support = supports[supports[:, 0] == id, 1]
+            coefs = np.hstack(
+                [multipatch.fields[j][id].control_points for j in support]
+            )
+            if "weights" in spline.required_properties:
+                weights = np.hstack(
+                    [multipatch.fields[j][id].weights for j in support]
+                )
+        else:
+            coefs = spline.control_points
+            if "weights" in spline.required_properties:
+                weights = spline.weights
+
+        if not issubclass(type(spline), Spline):
+            raise ValueError(
+                "One of the splines handed to export is not a valid spline"
+                " representation"
+            )
+
+        # Transform bezier types, as they are not supported in gismo
+        if spline.name.startswith("Bezier"):
+            type_name = "BSpline"
+            spline = BSpline(
+                **spline.todict(),
+                knot_vectors=[
+                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
+                ],
+            )
+        elif spline.name.startswith("RationalBezier"):
+            type_name = "Nurbs"
+            spline = NURBS(
+                **spline.todict(),
+                knot_vectors=[
+                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
+                ],
+            )
+        elif spline.name.startswith("BSpline"):
+            type_name = "BSpline"
+        elif spline.name.startswith("NURBS"):
+            type_name = "Nurbs"
+
+        # Start element definition
+        spline_element = ET.SubElement(
+            root,
+            "Geometry",
+            type="Tensor" + type_name + str(spline.para_dim),
+            id=str(id + index_offset),
+        )
+
+        # Define Basis functions
+        if "weights" in spline.required_properties:
+            spline_basis_base = ET.SubElement(
+                spline_element,
+                "Basis",
+                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
+            )
+            spline_basis = ET.SubElement(
+                spline_basis_base,
+                "Basis",
+                type="TensorBSplineBasis" + str(spline.para_dim),
+            )
+        else:
+            spline_basis = ET.SubElement(
+                spline_element,
+                "Basis",
+                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
+            )
+
+        for i_para in range(spline.para_dim):
+            basis_fun = ET.SubElement(
+                spline_basis, "Basis", type="BSplineBasis", index=str(i_para)
+            )
+            knot_vector = ET.SubElement(
+                basis_fun, "KnotVector", degree=str(spline.degrees[i_para])
+            )
+            knot_vector.text = " ".join(
+                [str(k) for k in spline.knot_vectors[i_para]]
+            )
+        if "weights" in spline.required_properties:
+            # Add weights
+            weights_element = ET.SubElement(
+                spline_basis_base,
+                "weights",
+            )
+            weights_element.text = "\n".join(
+                [" ".join([str(ww) for ww in w]) for w in weights]
+            )
+        coords = ET.SubElement(
+            spline_element,
+            "coefs",
+            geoDim=str(coefs.shape[1]),
+        )
+        coords.text = "\n".join(
+            [" ".join([str(xx) for xx in x]) for x in coefs]
+        )
+
+
 def export(
     fname,
     multipatch=None,
     indent=True,
     labeled_boundaries=True,
     options=None,
+    export_fields=False,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -34,12 +195,18 @@ def export(
       following keys, 'tag'->string, 'text'->string (optional),
       'attributes'->dictionary (optional), 'children'->list in the same format
       (optional)
+    export_fields : bool
+      Export fields to seperate files ending with field<id>.xml, e.g.,
+      filename.xml.field1.xml
+    collapse_fields : cool
+      Only valid if export_fields is True, writes all fields in the same file
+      by collapsing the control points, requires conformity (not checked)
 
     Returns
     -------
     None
     """
-    from splinepy import NURBS, BSpline, Multipatch
+    from splinepy import Multipatch
     from splinepy.settings import NTHREADS, TOLERANCE
     from splinepy.spline import Spline
     from splinepy.splinepy_core import orientations
@@ -208,93 +375,21 @@ def export(
                         for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
                     ]
                 )
+
     ###
     # Individual spline data
     ###
-    for id, spline in enumerate(multipatch.splines):
-        if not issubclass(type(spline), Spline):
-            raise ValueError(
-                "One of the splines handed to export is not a valid spline"
-                " representation"
-            )
+    # Export fields first, as all necessary information is already available
+    if export_fields:
+        field_xml = copy.deepcopy(xml_data)
+        _spline_to_ET(field_xml, multipatch, index_offset, fields_only=True)
+        if int(python_version.split(".")[1]) >= 9 and indent:
+            ET.indent(field_xml)
+        file_content = ET.tostring(field_xml)
+        with open(fname + ".fields.xml", "wb") as f:
+            f.write(file_content)
 
-        # Transform bezier types, as they are not supported in gismo
-        if spline.name.startswith("Bezier"):
-            type_name = "BSpline"
-            spline = BSpline(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
-        elif spline.name.startswith("RationalBezier"):
-            type_name = "Nurbs"
-            spline = NURBS(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
-        elif spline.name.startswith("BSpline"):
-            type_name = "BSpline"
-        elif spline.name.startswith("NURBS"):
-            type_name = "Nurbs"
-
-        # Start element definition
-        spline_element = ET.SubElement(
-            xml_data,
-            "Geometry",
-            type="Tensor" + type_name + str(spline.para_dim),
-            id=str(id + index_offset),
-        )
-
-        # Define Basis functions
-        if "weights" in spline.required_properties:
-            spline_basis_base = ET.SubElement(
-                spline_element,
-                "Basis",
-                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
-            )
-            spline_basis = ET.SubElement(
-                spline_basis_base,
-                "Basis",
-                type="TensorBSplineBasis" + str(spline.para_dim),
-            )
-        else:
-            spline_basis = ET.SubElement(
-                spline_element,
-                "Basis",
-                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
-            )
-
-        for i_para in range(spline.para_dim):
-            basis_fun = ET.SubElement(
-                spline_basis, "Basis", type="BSplineBasis", index=str(i_para)
-            )
-            knot_vector = ET.SubElement(
-                basis_fun, "KnotVector", degree=str(spline.degrees[i_para])
-            )
-            knot_vector.text = " ".join(
-                [str(k) for k in spline.knot_vectors[i_para]]
-            )
-        if "weights" in spline.required_properties:
-            # Add weights
-            weights = ET.SubElement(
-                spline_basis_base,
-                "weights",
-            )
-            weights.text = "\n".join(
-                [str(w) for w in spline.weights.flatten()]
-            )
-
-        coords = ET.SubElement(
-            spline_element,
-            "coefs",
-            geoDim=str(spline.dim),
-        )
-        coords.text = "\n".join(
-            [" ".join([str(xx) for xx in x]) for x in spline.control_points]
-        )
+    _spline_to_ET(xml_data, multipatch, index_offset)
 
     # Add addtional options to the xml file
     if options is not None:
