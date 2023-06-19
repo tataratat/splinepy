@@ -202,7 +202,7 @@ inline void RaiseMismatch(const CoreSplineVector& splist,
       if (check_dim && (dim != spline->SplinepyDim())) {
         mismatches["dim"][thread_index].push_back(i);
       }
-      // check properties that arerelevent iff para_dim matches
+      // check properties that are relevent iff para_dim matches
       if (para_dim_matches) {
         if (check_degrees) {
           spline->SplinepyCurrentProperties(spline_degree.data(),
@@ -2311,8 +2311,13 @@ public:
       for (int i{n_current_fields + begin}, j{begin}; j < end; ++i, ++j) {
         // create multipatch
         py::list casted_list = fields[j].template cast<py::list>();
-        field_multi_patches_[i] =
+        auto field_multi_patch =
             std::make_shared<PyMultiPatch>(casted_list, para_dim, dim, 1);
+        // propagate same_parametric_bounds_ flag
+        field_multi_patch->same_parametric_bounds_ = same_parametric_bounds_;
+        // set item
+        field_multi_patches_[i] = field_multi_patch;
+
         try {
           // check mismatch - doesn't check null splines
           RaiseMismatch(core_patches_,
