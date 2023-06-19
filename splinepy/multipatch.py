@@ -17,11 +17,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
     __slots__ = ()
 
-    def __init__(
-        self,
-        splines=None,
-        interfaces=None,
-    ):
+    def __init__(self, splines=None, interfaces=None, *, spline=None):
         """
         Multipatch
 
@@ -31,18 +27,25 @@ class Multipatch(SplinepyBase, PyMultiPatch):
           List of splines to store as multipatch
         interfaces : array-like
           Defines the connectivity inbetween patches
+        spline : PyMultiPatch
+          keyword only argument, implemented to support to_derived() interface.
+          calls move constructor.
 
         Returns
         -------
         None
         """
         # Init values
-        if splines is not None:
+        if spline is not None:
+            if not isinstance(spline, PyMultiPatch):
+                raise TypeError("spline must be PyMultiPatch.")
+            super().__init__(spline)
+        elif splines is not None:
             super().__init__(splines, settings.NTHREADS, False)
         else:
             super().__init__()
 
-        self._logd("Instantiated Multipatch object")
+        self._logd("Initialized Multipatch object")
 
         if interfaces is not None:
             self.interfaces = interfaces
@@ -378,8 +381,8 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
         n_new_boundaries = boundaries_from_continuity(
-            b_patches.patches,
-            b_patches.interfaces([]),
+            b_patches.splines,
+            b_patches.interfaces,
             self.interfaces,
             tolerance,
             nthreads,

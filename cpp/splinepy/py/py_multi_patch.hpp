@@ -1707,6 +1707,16 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   return current_max_id;
 }
 
+class PyMultiPatch;
+
+/// @brief ToDerived for PyMultiPatches
+/// @param core_obj
+/// @return
+py::object ToDerived(std::shared_ptr<PyMultiPatch> core_obj) {
+  const auto to_derived = py::module_::import("splinepy").attr("to_derived");
+  return to_derived(py::cast(core_obj));
+}
+
 /// @brief Multi-patch splines. Here, use of the words
 ///        "patch" and "spline" are interchangeable
 class PyMultiPatch {
@@ -1938,6 +1948,12 @@ public:
     return sub_multi_patch_;
   }
 
+  /// @brief returns derived class of SubMultiPatch
+  /// @return
+  py::object PySubMultiPatch() { return ToDerived(SubMultiPatch()); }
+
+  /// @brief Computes centers of subpatches
+  /// @return
   py::array_t<double> SubPatchCenters() {
     // return saved
     if (sub_patch_centers_.size() > 0) {
@@ -2112,6 +2128,10 @@ public:
 
     return boundary_multi_patch_;
   }
+
+  /// @brief returns derived class of boundary multi patch
+  /// @return
+  py::object PyBoundaryMultiPatch() { return ToDerived(BoundaryMultiPatch()); }
 
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                const int nthreads) {
@@ -2365,6 +2385,7 @@ inline void add_multi_patch(py::module& m) {
 
   klasse.def(py::init<>())
       .def(py::init<py::list&, const int, const bool>())
+      .def(py::init<std::shared_ptr<PyMultiPatch>&>()) // for to_derived()
       .def_readwrite("n_default_threads", &PyMultiPatch::n_default_threads_)
       .def_readwrite("same_parametric_bounds",
                      &PyMultiPatch::same_parametric_bounds_)
@@ -2377,11 +2398,11 @@ inline void add_multi_patch(py::module& m) {
       .def_property("patches",
                     &PyMultiPatch::GetPatches,
                     &PyMultiPatch::SetPatchesDefault)
-      .def("sub_multi_patch", &PyMultiPatch::SubMultiPatch)
+      .def("sub_multi_patch", &PyMultiPatch::PySubMultiPatch)
       .def("sub_patch_centers", &PyMultiPatch::SubPatchCenters)
       .def("interfaces", &PyMultiPatch::Interfaces)
       .def("boundary_patch_ids", &PyMultiPatch::BoundaryPatchIds)
-      .def("boundary_multi_patch", &PyMultiPatch::BoundaryMultiPatch)
+      .def("boundary_multi_patch", &PyMultiPatch::PyBoundaryMultiPatch)
       .def("evaluate",
            &PyMultiPatch::Evaluate,
            py::arg("queries"),
