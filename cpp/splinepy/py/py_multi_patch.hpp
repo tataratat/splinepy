@@ -80,8 +80,6 @@ ToCoreSplineVector(py::list pysplines,
                                                 [dim_if_none - 1];
         continue;
       }
-
-      // not none,
       core_splines[i] =
           spline.template cast<std::shared_ptr<PySpline>>()->Core();
     }
@@ -2030,18 +2028,15 @@ public:
           true);
 
       interfaces_ = interfaces;
-      return interfaces_;
+    } else if (interfaces_.size() == 0) {
+      // get, but need to compute since saved member is empty
+      interfaces_ = InterfacesFromBoundaryCenters(SubPatchCenters(),
+                                                  tolerance_,
+                                                  ParaDim());
     }
 
-    // here's get
-    if (interfaces_.size() > 0) {
-      return interfaces_;
-    }
-
-    // here's compute
-    interfaces_ =
-        InterfacesFromBoundaryCenters(SubPatchCenters(), tolerance_, ParaDim());
-
+    // regardless of set/get, it will always return the saved member of
+    // current state
     return interfaces_;
   }
 
