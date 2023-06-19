@@ -415,7 +415,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
     def add_fields(
         self,
-        *fields,
+        fields,
         check_compliance=False,
         check_conformity=False,
         nthreads=None,
