@@ -3,6 +3,7 @@
 .. currentmodule:: {{ module }}
 
 .. autoclass:: {{ objname }}
+   :show-inheritance:
 
    {% block methods %}
 
@@ -10,8 +11,13 @@
    .. rubric:: {{ _('Methods') }}
 
    .. autosummary::
+      :toctree:
    {% for item in methods %}
-      ~{{ name }}.{{ item }}
+      {% if item not in skipmethods %}
+        {% if item not in inherited_members %}
+          {{ name }}.{{ item }}
+        {% endif %}
+      {% endif %}
    {%- endfor %}
    {% endif %}
    {% endblock %}
@@ -21,8 +27,11 @@
    .. rubric:: {{ _('Attributes') }}
 
    .. autosummary::
+      :toctree:
    {% for item in attributes %}
-      ~{{ name }}.{{ item }}
+      {% if item not in inherited_members %}
+         {{ name }}.{{ item }}
+      {% endif %}
    {%- endfor %}
    {% endif %}
    {% endblock %}

@@ -21,7 +21,7 @@ Related Links and further Information
 .. toctree::
    :maxdepth: 1
 
-   API references <_autosummary/splinepy>
+   API references <api_references>
 
 .. Indices and tables
 .. ==================

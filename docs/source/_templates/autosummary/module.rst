@@ -1,3 +1,5 @@
+.. _{{ fullname }}:
+
 {{ fullname | escape | underline}}
 
 .. automodule:: {{ fullname }}
@@ -32,6 +34,7 @@
 
    .. autosummary::
       :toctree:
+      :template:
    {% for item in classes %}
       {{ item }}
    {%- endfor %}
