@@ -911,7 +911,7 @@ public:
 
 inline void add_spline_pyclass(py::module& m) {
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
-      klasse(m, "CoreSpline");
+      klasse(m, "PySpline");
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?

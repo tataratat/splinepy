@@ -580,9 +580,9 @@ def _get_property(spl, property_):
     return sync_from_core(spl)._data["properties"][property_]
 
 
-class Spline(SplinepyBase, core.CoreSpline):
+class Spline(SplinepyBase, core.PySpline):
     r"""
-    Spline base class. Extends :class:`.CoreSpline` with documentation.
+    Spline base class. Extends :class:`.PySpline` with documentation.
 
     Generally, all types of splines can be seen as mappings from a
     :math:`N_{param}`-dimensional parametric domain
@@ -632,7 +632,7 @@ class Spline(SplinepyBase, core.CoreSpline):
             return None
 
         # current core spline based init if given spline has no local changes
-        if spline is not None and isinstance(spline, core.CoreSpline):
+        if spline is not None and isinstance(spline, core.PySpline):
             # if spline is modified, update this spline first
             if is_modified(spline):
                 spline.new_core(
