@@ -46,6 +46,11 @@ pygments_style = "sphinx"
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 
+
+autodoc_default_options = {
+    "autosummary": True,
+}
+
 # def skip(app, what, name, obj, would_skip, options):
 #    if name == "__init__":
 #        return False

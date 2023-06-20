@@ -29,7 +29,9 @@ jobs:
     - name: build docs
       run: |
         pip install -r ./docs/requirements.txt
-        sphinx-apidoc -f -t docs/source/_templates -o docs/source splinepy
+        # call autogen first, so that we can link splinepy docs
+        # otherwise, we'd have to have a page "inbetween"
+        sphinx-autogen -o docs/source/_autosummary -t docs/source/_templates docs/modules.rst
         sphinx-build -W -b html docs/source docs/build
 
     - name: deploy docs only if it is pushed to main
