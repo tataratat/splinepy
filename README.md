@@ -160,14 +160,15 @@ Implements fitting routines from the [The NURBS Book](https://link.springer.com/
 ## Dependencies
 Followings are direct dependencies for splinepy. Please feel free to check out the repositories linked in the following.
 
-| Dependency                                          |                                                                                    | Usage                                           |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
-| <tr><td rowspan="5">C++</td></tr>                   | [pybind11](https://github.com/pybind/pybind11)                                     | Binding between C++ Backend and Python frontend |
-| [SplineLib](https://github.com/tataratat/SplineLib) | Backend for BSplines and NURBS                                                     |
-| [bezman](https://github.com/tataratat/bezman)       | Backend for (rational) Beziers                                                     |
-| [napf](https://github.com/tataratat/napf)           | Used for KD-Trees, wrapper for [nanoflann](https://github.com/jlblancoc/nanoflann) |
-| <tr><td rowspan="3">Python</td></tr>                | [numpy](https://numpy.org)                                                         | Used for data storage and data manipulation     |
-| [scipy](https://scipy.org) (optional)               | Used for sparse matrices, where applicable                                         |
-| <tr><td rowspan="4">Build process</td></tr>         | [cmake](https://cmake.org)                                                         | Platform independent build system for Backend   |
-| [setuptools](https://setuptools.pypa.io/en/latest/) |                                                                                    |
-| [wheel](https://wheel.readthedocs.io/en/stable/)    |                                                                                    |
+| Package | Description                                             | python | c++ |
+| ------- | ------------------------------------------------------- | ------ | --- |
+| [pybind11](https://github.com/pybind/pybind11) | Binds c++ and python | X | X |
+| [SplineLib](https://github.com/tataratat/SplineLib) | Main functionalities for BSplines and NURBS |    | X |
+| [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
+| [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provides initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
+| [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   | 
+| [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
+| [cmake](https://cmake.org) | Platform independent build system for c++ implementations |   | X |
+| [setuptools](https://setuptools.pypa.io/en/latest/) | Build python package  | X |  |
+| [wheel](https://wheel.readthedocs.io/en/stable/)    | Implementation of python binary packaging standard | X | X |
+| [cibuildwheel](https://cibuildwheel.readthedocs.io/en/stable/) | Builds and tests wheels on CI server | X | X |

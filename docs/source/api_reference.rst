@@ -11,7 +11,8 @@ Overview
 - :class:`splinepy.helpme` module contains useful application-driven tools / utility functions.
 
 
-splinepy
---------
+Python API
+----------
 .. toctree::
-   full_api
+   python_api
+
