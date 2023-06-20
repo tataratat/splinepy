@@ -147,7 +147,7 @@ Followings are direct dependencies for splinepy. Please feel free to check out t
 | [SplineLib](https://github.com/tataratat/SplineLib) | Main functionalities for BSplines and NURBS |    | X |
 | [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
 | [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provides initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
-| [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   | 
+| [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   |
 | [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
 | [cmake](https://cmake.org) | Platform independent build system for c++ implementations |   | X |
 | [setuptools](https://setuptools.pypa.io/en/latest/) | Build python package  | X |  |

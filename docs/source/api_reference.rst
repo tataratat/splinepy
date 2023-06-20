@@ -15,4 +15,3 @@ Python API
 ----------
 .. toctree::
    python_api
-
