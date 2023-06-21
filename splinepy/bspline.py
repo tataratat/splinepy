@@ -562,9 +562,7 @@ class BSpline(BSplineBase):
         return fitted
 
     @property
-    def nurbs(
-        self,
-    ):
+    def nurbs(self):
         """
         Returns NURBS version of current BSpline by defining all the weights as
         1.
