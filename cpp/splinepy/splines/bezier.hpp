@@ -19,6 +19,10 @@
 
 namespace splinepy::splines {
 
+/// @class Bezier
+/// @brief Bezier class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<std::size_t para_dim, std::size_t dim>
 using BezierSplineType = bezman::BezierSpline<
     static_cast<std::size_t>(para_dim),
@@ -101,29 +105,38 @@ public:
   }
 
   // required implementations
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyParaDim
   virtual int SplinepyParaDim() const { return kParaDim; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyDim
   virtual int SplinepyDim() const { return kDim; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
   virtual std::string SplinepySplineName() const { return "Bezier"; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyWhatAmI
   virtual std::string SplinepyWhatAmI() const {
     return "Bezier, parametric dimension: " + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyHasKnotVectors
   virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyIsRational
   virtual bool SplinepyIsRational() const { return kIsRational; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfControlPoints
   virtual int SplinepyNumberOfControlPoints() const {
     return static_cast<int>(Base_::control_points.size());
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfSupports
   virtual int SplinepyNumberOfSupports() const {
     return splinepy::splines::helpers::GetNumberOfSupports(*this);
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCurrentProperties
   virtual void SplinepyCurrentProperties(
       int* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
@@ -152,6 +165,7 @@ public:
     }
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCoordinateReferences
   virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
   SplinepyCoordinateReferences() {
     using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
@@ -188,6 +202,10 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
+  /// @brief Calculate Greville abscissae for Bezier
+  ///
+  /// @param[out] greville_abscissae pointer to solution
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,

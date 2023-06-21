@@ -89,10 +89,9 @@ ToCoreSplineVector(py::list pysplines,
   return core_splines;
 }
 
-/// @brief
+/// @brief Converts a CoreSplineVector to a Python spline list
 /// @param splist
-/// @param nthreads
-/// @return
+/// @return py::list
 inline py::list ToPySplineList(CoreSplineVector& splist) {
   // prepare return obj
   const int n_splines = static_cast<int>(splist.size());
@@ -111,6 +110,7 @@ inline py::list ToPySplineList(CoreSplineVector& splist) {
 /// @brief raises if there's any mismatch between specified properties and all
 /// the entries in the vector.
 /// @param splist
+/// @param name
 /// @param para_dim
 /// @param dim
 /// @param degrees
@@ -263,7 +263,9 @@ inline void RaiseMismatch(const CoreSplineVector& splist,
 }
 
 /// @brief raises if there's any mismatch between two given vectors of splines.
-/// @param splist
+/// @param splist0
+/// @param splist1
+/// @param name
 /// @param para_dim
 /// @param dim
 /// @param degrees
@@ -983,21 +985,20 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
   return py::array_t<int>();
 }
 
-/**
- * @brief Orientation between two adjacent splines
- *
- * If two splines share the same boundary this function retrieves their
- * orientation, by mapping the mappings of the parametric axis onto each other.
- * This is (among others) required for Gismo and Nutils export
- *
- * @param pyspline_start Spline object from start
- * @param boundary_start Boundary ID from start spline
- * @param pyspline_end Spline object from end *to which is mapped
- * @param boundary_end Boundary ID of adjacent spline
- * @param int_mappings_ptr (output) integer mappings
- * @param bool_orientations_ptr (output) axis alignement
- * @return void
- */
+
+/// @brief Orientation between two adjacent splines
+///
+/// If two splines share the same boundary this function retrieves their
+/// orientation, by mapping the mappings of the parametric axis onto each other.
+/// This is (among others) required for Gismo and Nutils export
+///
+/// @param pyspline_start Spline object from start
+/// @param boundary_start Boundary ID from start spline
+/// @param pyspline_end Spline object from end///to which is mapped
+/// @param boundary_end Boundary ID of adjacent spline
+/// @param tolerance Tolerance
+/// @param int_mappings_ptr (output) integer mappings
+/// @param bool_orientations_ptr (output) axis alignement
 void GetBoundaryOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
@@ -1105,18 +1106,17 @@ void GetBoundaryOrientation(
   }
 }
 
-/**
- * @brief Get the Boundary Orientations object
- *
- * @param spline_list
- * @param base_id
- * @param base_face_id
- * @param base_id
- * @param base_face_id
- * @param tolerance
- * @param n_threads
- * @return py::tuple
- */
+
+/// @brief Get the Boundary Orientations object
+///
+/// @param spline_list
+/// @param base_id
+/// @param base_face_id
+/// @param neighbor_id
+/// @param neighbor_face_id
+/// @param tolerance
+/// @param n_threads
+/// @return py::tuple
 py::tuple GetBoundaryOrientations(const py::list& spline_list,
                                   const py::array_t<int>& base_id,
                                   const py::array_t<int>& base_face_id,
@@ -1428,13 +1428,13 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
   }
 }
 
-/**
- * @brief Extract all Boundary Patches and store them in a python list
- *
- * @param spline_list List of splines
- * @param interfaces interfaces, with negative values for boundary elements
- * @return py::list
- */
+
+/// @brief Extract all Boundary Patches and store them in a python list
+///
+/// @param spline_list List of splines
+/// @param interfaces interfaces, with negative values for boundary elements
+/// @param n_threads Number of threads
+/// @return py::list
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
                                    const py::array_t<int>& interfaces,
                                    const int& n_threads) {
@@ -1783,7 +1783,7 @@ public:
   }
 
   /// @brief Internal use only. used to save field splines.
-  /// @param patchces
+  /// @param patches
   /// @param n_default_threads
   /// @param para_dim_if_none
   /// @param dim_if_none
@@ -1879,7 +1879,6 @@ public:
   /// @param nthreads
   /// @param para_dim_if_none
   /// @param dim_if_none
-  /// @param check_conformity
   void SetPatchesWithNullSplines(py::list& patches,
                                  const int nthreads,
                                  const int para_dim_if_none,

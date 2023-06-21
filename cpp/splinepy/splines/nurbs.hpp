@@ -12,6 +12,10 @@
 
 namespace splinepy::splines {
 
+/// @class Nurbs
+/// @brief Non-uniform rational B-spline (NURBS) class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class Nurbs : public splinepy::splines::SplinepyBase,
               public splinelib::sources::splines::Nurbs<para_dim, dim> {
@@ -274,6 +278,10 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
+  /// @brief Calculate Greville abscissae for Nurbs
+  ///
+  /// @param[out] greville_abscissae pointer to solution
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,

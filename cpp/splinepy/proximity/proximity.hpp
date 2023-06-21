@@ -173,10 +173,10 @@ public:
   /*!
    * Builds RHS and fills spline_gradient, which is also required in LHS.
    *
-   * @params[in] guess current parametric coordinate guess
-   * @params[in] difference result of `GuessMinusQuery()`
-   * @params[out] spline_gradient
-   * @params[out] rhs
+   * @param[in] guess current parametric coordinate guess
+   * @param[in] difference result of `GuessMinusQuery()`
+   * @param[out] spline_gradient
+   * @param[out] rhs
    */
   void FillSplineGradientAndRhs(
       const typename SplineType::ParametricCoordinate_& guess,
@@ -215,10 +215,10 @@ public:
   /*!
    * Builds LHS
    *
-   * @params[in] guess
-   * @params[in] difference
-   * @params[in] spline_gradient
-   * @params[out] lhs
+   * @param[in] guess
+   * @param[in] difference
+   * @param[in] spline_gradient
+   * @param[out] lhs
    */
   void FillLhs(const typename SplineType::ParametricCoordinate_& guess,
                const DArrayD_& difference,
@@ -248,13 +248,11 @@ public:
     }
   }
 
-  /*!
-   * Given physical coordinate, finds closest parametric coordinate.
-   *
-   * @params query
-   * @params initial_guess
-   * @params tolerance
-   */
+  /// @brief Given physical coordinate, finds closest parametric coordinate
+  /// @param query
+  /// @param initial_guess
+  /// @param tolerance
+  /// @param aggressive_bounds
   typename SplineType::ParametricCoordinate_
   FindNearestParametricCoordinate(const double* query,
                                   InitialGuess initial_guess,
@@ -346,22 +344,19 @@ public:
 
   void FirstOrderFallBack() {}
 
-  /*!
-   * Given physical coordinate, finds closest parametric coordinate.
-   * Always takes initial guess based on kdtree.
-   *
-   * @params[in] query
-   * @params[in] tolerance
-   * @params[in] max_iterations
-   * @params[in] aggresive_bounds
-   * @params[out] final_guess (dim)
-   * @params[out] nearest (dim)
-   * @params[out] nearest_minus_query (dim)
-   * @params[out] distance
-   * @params[out] convergence_norm
-   * @params[out] first_derivatives (para_dim x dim)
-   * @params[out] second_derivatives (para_dim x para_dim x dim)
-   */
+  /// @brief Given physical coordinate, finds closest parametric coordinate. Always takes initial guess based on kdtree.
+  ///
+  /// @param[in] query
+  /// @param[in] tolerance
+  /// @param[in] max_iterations
+  /// @param[in] aggressive_bounds
+  /// @param[out] final_guess (dim)
+  /// @param[out] nearest (dim)
+  /// @param[out] nearest_minus_query (dim)
+  /// @param[out] distance
+  /// @param[out] convergence_norm
+  /// @param[out] first_derivatives (para_dim x dim)
+  /// @param[out] second_derivatives (para_dim x para_dim x dim)
   void VerboseQuery(const double* query,
                     const double& tolerance,
                     const int& max_iterations,

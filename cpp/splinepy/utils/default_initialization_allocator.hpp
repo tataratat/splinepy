@@ -5,7 +5,7 @@
 
 namespace splinepy::utils {
 
-/// Adapted from a post from @Casey
+/// Adapted from a post from Casey
 /// http://stackoverflow.com/a/21028912/273767
 /// mentioned in `Note` at
 /// http://en.cppreference.com/w/cpp/container/vector/resize
