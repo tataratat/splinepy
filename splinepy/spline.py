@@ -1104,7 +1104,7 @@ class Spline(SplinepyBase, core.PySpline):
                 for k, d in zip(kv[1:], np.diff(kv)):
                     if d > settings.TOLERANCE:
                         unique_knots_per_dim.append(k)
-                unique_knots.append(unique_knots_per_dim)
+                unique_knots.append(np.array(unique_knots_per_dim))
 
             return unique_knots
 

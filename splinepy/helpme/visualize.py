@@ -1,5 +1,5 @@
-import numpy as np
 import gustaf as gus
+import numpy as np
 from gustaf import Vertices
 from gustaf.helpers import options
 from gustaf.utils.arr import enforce_len
@@ -408,6 +408,7 @@ def show(spline, **kwargs):
     if (spline.para_dim, spline.dim) not in allowed_dim_combo:
         raise ValueError("Sorry, can't show given spline.")
 
+    orig_show_options = None
     if kwargs:
         orig_show_options = spline.show_options
         spline._show_options = spline.__show_option__(spline)
@@ -424,6 +425,10 @@ def show(spline, **kwargs):
 
     # Prepare things to show dict.
     things_to_show = make_showable(spline)
+
+    # set original options back
+    if orig_show_options is not None:
+        spline._show_options = orig_show_options
 
     para_space = kwargs.pop("parametric_space", False)
     if para_space:
