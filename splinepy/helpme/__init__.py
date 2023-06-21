@@ -1,3 +1,3 @@
-from splinepy.helpme import mapper, multi_index
+from splinepy.helpme import create, extract, mapper, multi_index, visualize
 
-__all__ = ["multi_index", "mapper"]
+__all__ = ["multi_index", "mapper", "create", "extract", "visualize"]
