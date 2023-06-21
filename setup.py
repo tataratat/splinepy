@@ -260,6 +260,8 @@ setup(
         "splinepy.io",
         "splinepy.utils",
         "splinepy.helpme",
+        "splinepy.microstructure",
+        "splinepy.microstructure.tiles",
     ],
     install_requires=[
         "numpy",
