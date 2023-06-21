@@ -10,13 +10,13 @@ def extruded(spline, extrusion_vector=None):
 
     Parameters
     ----------
-    spline: GustafSpline
+    spline: Spline
     extrusion_vector: np.ndarray
     """
-    from gustaf.spline.base import GustafSpline
+    from splinepy.spline import Spline
 
     # Check input type
-    if not issubclass(type(spline), GustafSpline):
+    if not isinstance(spline, Spline):
         raise NotImplementedError("Extrude only works for splines")
 
     # Check extrusion_vector
@@ -73,7 +73,7 @@ def revolved(
 
     Parameters
     ----------
-    spline : GustafSpline
+    spline : Spline
       Basis-Spline to be revolved
     axis : np.ndarray
       Axis of revolution
@@ -88,13 +88,12 @@ def revolved(
 
     Returns
     -------
-    spline : GustafSpline
+    spline : Spline
     """
-
-    from gustaf.spline.base import GustafSpline
+    from splinepy.spline import Spline
 
     # Check input type
-    if not issubclass(type(spline), GustafSpline):
+    if not isinstance(spline, Spline):
         raise NotImplementedError("Revolutions only works for splines")
 
     # Check axis
@@ -352,8 +351,6 @@ def line(points):
     line: BSpline
       Spline degree [1].
     """
-    from gustaf import BSpline
-
     # lines have degree 1
     degree = 1
 
@@ -368,7 +365,7 @@ def line(points):
         )
     )
 
-    spline = BSpline(
+    spline = settings.NAME_TO_TYPE["BSpline"](
         control_points=cps, knot_vectors=[knots], degrees=[degree]
     )
 
@@ -402,14 +399,12 @@ def arc(
     -------
     arc: NURBS or RationalBezier
     """
-    from gustaf import RationalBezier
-
     # Define point spline of degree 0 at starting point of the arc
     if degree:
         start_angle = np.radians(start_angle)
         angle = np.radians(angle)
     start_point = [radius * np.cos(start_angle), radius * np.sin(start_angle)]
-    point_spline = RationalBezier(
+    point_spline = settings.NAME_TO_TYPE["RationalBezier"](
         degrees=[0], control_points=[start_point], weights=[1.0]
     )
     # Bezier splines only support angles lower than 180 degrees
@@ -458,11 +453,11 @@ def box(*lengths):
     -------
     nd_box: Bezier
     """
-    from gustaf import Bezier
-
     # may dim check here?
     # starting point
-    nd_box = Bezier(degrees=[1], control_points=[[0], [lengths[0]]])
+    nd_box = settings.NAME_TO_TYPE["Bezier"](
+        degrees=[1], control_points=[[0], [lengths[0]]]
+    )
     # use extrude
     for i, l in enumerate(lengths[1:]):
         nd_box = nd_box.create.extruded([0] * int(i + 1) + [l])
@@ -483,8 +478,6 @@ def plate(radius=1.0):
     -------
     plate: RationalBezier
     """
-    from gustaf.spline import RationalBezier
-
     degrees = [2, 2]
     control_points = (
         np.array(
@@ -504,7 +497,7 @@ def plate(radius=1.0):
     )
     weights = np.tile([1.0, 1 / np.sqrt(2)], 5)[:-1]
 
-    return RationalBezier(
+    return settings.NAME_TO_TYPE["RationalBezier"](
         degrees=degrees, control_points=control_points, weights=weights
     )
 
@@ -536,9 +529,6 @@ def disk(
     disk: NURBS
       Surface NURBS of degrees (1,2)
     """
-
-    from gustaf.spline import NURBS
-
     if inner_radius is None:
         inner_radius = 0.0
 
@@ -546,7 +536,7 @@ def disk(
     weights = np.ones([cps.shape[0]])
     knots = np.repeat([0.0, 1.0], 2)
 
-    return NURBS(
+    return settings.NAME_TO_TYPE["NURBS"](
         control_points=cps, knot_vectors=[knots], degrees=[1], weights=weights
     ).create.revolved(angle=angle, n_knot_spans=n_knot_spans, degree=degree)
 

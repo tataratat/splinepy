@@ -1,5 +1,4 @@
 import numpy as np
-
 from gustaf import Edges, Faces, Vertices, Volumes
 from gustaf.utils import arr, connec
 
@@ -61,7 +60,9 @@ def edges(
                 mask = np.ones(spline.para_dim, dtype=bool)
                 mask[i] = False
                 # gather knots along current knot
-                extract_knot_queries = cartesian_product(unique_knots[mask], reverse=False)
+                extract_knot_queries = cartesian_product(
+                    unique_knots[mask], reverse=False
+                )
 
                 for ekq in extract_knot_queries:
                     temp_edges.append(
@@ -300,9 +301,7 @@ def control_edges(spline):
 
     return Edges(
         vertices=spline.control_points,
-        edges=connec.range_to_edges(
-            len(spline.control_points), closed=False
-        ),
+        edges=connec.range_to_edges(len(spline.control_points), closed=False),
     )
 
 
@@ -342,9 +341,7 @@ def control_volumes(spline):
 
     return Volumes(
         vertices=spline.control_points,
-        volumes=connec.make_hexa_volumes(
-            spline.control_mesh_resolutions
-        ),
+        volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
     )
 
 
