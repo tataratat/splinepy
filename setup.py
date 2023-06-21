@@ -263,7 +263,7 @@ setup(
     ],
     install_requires=[
         "numpy",
-        "gustaf",
+        # "gustaf",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

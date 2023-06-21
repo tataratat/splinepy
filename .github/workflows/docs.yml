@@ -24,7 +24,9 @@ jobs:
       run: CC=clang-12 CXX=clang++-12 python3 setup.py --minimal --debug develop
 
     - name: test
-      run: pytest tests
+      run: |
+        pip install git+https://github.com/tataratat/gustaf.git@no-splines
+        pytest tests
 
     - name: build docs
       run: |

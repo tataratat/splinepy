@@ -43,4 +43,6 @@ jobs:
         python3 setup.py develop --minimal
 
     - name: test
-      run: pytest tests
+      run: |
+        pip install git+https://github.com/tataratat/gustaf.git@no-splines
+        pytest tests
