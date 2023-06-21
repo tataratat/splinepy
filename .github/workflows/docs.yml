@@ -29,7 +29,6 @@ jobs:
     - name: build docs
       run: |
         pip install -r ./docs/requirements.txt
-        sphinx-apidoc -f -t docs/source/_templates -o docs/source splinepy
         sphinx-build -W -b html docs/source docs/build
 
     - name: deploy docs only if it is pushed to main

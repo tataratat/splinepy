@@ -27,7 +27,6 @@ source_suffix = {
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.inheritance_diagram",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
@@ -46,11 +45,11 @@ pygments_style = "sphinx"
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 
-# def skip(app, what, name, obj, would_skip, options):
-#    if name == "__init__":
-#        return False
-#
-#    return would_skip
-#
-# def setup(app):
-#    app.connect("autodoc-skip-member", skip)
+
+autodoc_default_options = {
+    "autosummary": True,
+}
+
+autosummary_context = {
+    "skipmethods": ["__init__"],
+}

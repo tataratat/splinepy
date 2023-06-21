@@ -10,9 +10,9 @@ git clone git@github.com:<path-to-your-fork>
 cd splinepy  # or <forkname>
 git submodule update --init --recursive
 git checkout -b new-feature0
-python3 setup.py develop --minimal
+python3 setup.py develop --minimal --debug
 ```
-`--minimal` flag builds splines upto 3D (both parametric and physical dimensions), and that way we can reduce compile time. We are experimenting with the ways to reduce compile time during development. Let us know if you have a great idea!
+`--minimal` flag builds splines upto 3D (both parametric and physical dimensions), and that way we can reduce compile time. `--debug` build also reduces compile time. We are experimenting with the ways to reduce compile time during development. Let us know if you have a great idea!
 
 ## Python style / implementation preferences
 - use `if` and `raise` instead of `assert`
@@ -30,4 +30,11 @@ To check the format and style of your code use the following commands:
 ```bash
 pip install pre-commit
 precommit run -a
+```
+
+## Local documentation build
+```bash
+pip install -r docs/requirements.txt
+sphinx-build -b html docs/source docs/build -E -j auto  # `-E` to ignore existing files, -j auto for parallel build (or specify number of processes)
+# you can now open `docs/build/index.html` with your browser
 ```
