@@ -1874,14 +1874,40 @@ class Spline(SplinepyBase, core.PySpline):
         return new
 
     def show(self, **kwargs):
-        """Equivalent to `splinepy.helpme.visualize.show(spline, **kwargs)`"""
+        """Equivalent to
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(spline, **kwargs)
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        showable_or_plotter: dict or vedo.Plotter
+        """
         return visualize.show(self, **kwargs)
 
     def showable(self, **kwargs):
         """Equivalent to
-        `splinepy.helpme.visualize.show(
-            spline, return_showable=True, **kwargs
-        )`
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(
+               spline, return_showable=True, **kwargs
+            )
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        spline_showable: dict
         """
         return visualize.show(self, return_showable=True, **kwargs)
 
