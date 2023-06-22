@@ -19,10 +19,7 @@
 
 namespace splinepy::splines {
 
-/// @class Bezier
-/// @brief Bezier class
-/// @tparam para_dim Dimension of parametric space
-/// @tparam dim Dimension of physical space
+
 template<std::size_t para_dim, std::size_t dim>
 using BezierSplineType = bezman::BezierSpline<
     static_cast<std::size_t>(para_dim),
@@ -30,16 +27,28 @@ using BezierSplineType = bezman::BezierSpline<
     double>;
 
 // splinepy's Rational Bezier
+/// @class Rational Bezier
+/// @brief Rational Bezier class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<std::size_t para_dim, std::size_t dim>
 class RationalBezier;
 
+/// @class Bezier
+/// @brief Bezier class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<std::size_t para_dim, std::size_t dim>
 class Bezier : public splinepy::splines::SplinepyBase,
                public BezierSplineType<para_dim, dim> {
 public:
+  /// @brief Parametric space dimension
   static constexpr int kParaDim = static_cast<int>(para_dim);
+  /// @brief Physical space dimension
   static constexpr int kDim = static_cast<int>(dim);
+  /// @brief True iff it is rational Bezier
   static constexpr bool kIsRational = false;
+  /// @brief True iff spline has knot vectors
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
@@ -57,6 +66,9 @@ public:
   using Dimension_ = std::size_t;
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
 
+  /// @brief Creates Base for Bezier
+  /// @param degrees 
+  /// @param control_points
   static Base_ CreateBase(const int* degrees, const double* control_points) {
 
     std::array<std::size_t, para_dim> bm_degrees{};
@@ -82,24 +94,33 @@ public:
     return Base_(bm_degrees, bm_control_points);
   }
 
-  // rawptr based ctor
+  /// @brief Constructor based on raw pointer
+  /// @param degrees Degrees of the Bezier
+  /// @param control_points Control points of the Bezier
   Bezier(const int* degrees, const double* control_points)
       : Base_(CreateBase(degrees, control_points)) {}
-  // base (copy) ctor
+  /// @brief (Copy) constructor
   Bezier(const Base_& rhs) : Base_(rhs) {}
-  // inherit ctor
+  /// @brief Inherited constructor
   using Base_::Base_;
 
   // function wrapper, also for helper functions.
+  /// @brief Evaluates Bezier
+  /// @param query
   constexpr auto operator()(const ParametricCoordinate_& query) const {
     return Base_::Evaluate(query);
   }
 
+  /// @brief Evaluates derivative
+  /// @param query 
+  /// @param order
   constexpr auto operator()(const ParametricCoordinate_& query,
                             const Derivative_& order) const {
     return Base_::EvaluateDerivative(query, order);
   }
 
+  /// @brief Elevates degrees
+  /// @param p_dim
   constexpr auto ElevateDegree(const Dimension_ p_dim) {
     return Base_::OrderElevateAlongParametricDimension(p_dim);
   }
@@ -572,10 +593,13 @@ public:
     return composition_derivative;
   }
 
+  /// @brief Gets proximity
   constexpr Proximity_& GetProximity() { return *proximity_; }
+  /// @brief Gets proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
 protected:
+  /// @brief Proximity
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
 }; /* class Bezier */
 

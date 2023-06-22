@@ -22,6 +22,10 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
+/// @class BSpline parser
+/// @brief BSpline parser class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class BSplineParser {
 public:
@@ -37,7 +41,10 @@ public:
 
   using SplineEntry = input_output::SplineEntry;
 
-  int i, j;
+  /// Counter variable
+  int i;
+  /// Counter variable for inner loops
+  int j;
 
   BSplineParser() {}
 
@@ -112,6 +119,10 @@ public:
   }
 };
 
+/// @class BSpline parser
+/// @brief BSpline parser class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class NurbsParser {
 public:
@@ -225,6 +236,8 @@ public:
   }
 };
 
+/// @class Spline reader
+/// @brief Spline reader class
 class SplineReader {
 public:
   using Splines = input_output::Splines;
@@ -415,24 +428,25 @@ public:
 };
 
 /* direct load calls */
-// iges
+/// Load iges
 py::list read_iges(std::string fname) {
   auto sr = SplineReader();
   return sr.read_iges(fname);
 }
 
-// xml
+/// Load xml
 py::list read_xml(std::string fname) {
   auto sr = SplineReader();
   return sr.read_xml(fname);
 }
 
-// irit
+/// Load irit
 py::list read_irit(std::string fname) {
   auto sr = SplineReader();
   return sr.read_irit(fname);
 }
 
+/// 
 inline void add_spline_reader(py::module& m) {
   // Functions that return list of dict.
   // Keys are ["knot_vectors", "control_points", "degrees"] (+ ["weights"])

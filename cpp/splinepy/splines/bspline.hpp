@@ -436,7 +436,9 @@ public:
     return *Base_::vector_space_;
   }
 
+  /// @brief Gets proximity
   constexpr Proximity_& GetProximity() { return *proximity_; }
+  /// @brief Gets proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
 protected:
