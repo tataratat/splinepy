@@ -4,17 +4,7 @@ except BaseException:
     import common as c
 
 
-class TestSplinepyEvaluation(c.unittest.TestCase):
-    def setUp(self):
-        self.b2P2D = c.b2P2D.copy()
-        self.n2P2D = c.n2P2D.copy()
-        self.z2P2D = c.z2P2D.copy()
-        self.r2P2D = c.r2P2D.copy()
-        self.bspline = c.splinepy.BSpline(**self.b2P2D)
-        self.nurbs = c.splinepy.NURBS(**self.n2P2D)
-        self.bezier = c.splinepy.Bezier(**self.z2P2D)
-        self.rational = c.splinepy.RationalBezier(**self.r2P2D)
-
+class TestSplinepyEvaluation(c.SplineBasedTestCase):
     def test_basis_and_support(self):
         """Test the correct calculation of the basis functions.
         (.basis_and_support())"""

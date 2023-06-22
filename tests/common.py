@@ -20,6 +20,30 @@ __all__ = [
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
+def bspline_2d():
+    return splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[
+            [0, 0, 0, 0.5, 1, 1, 1],
+            [0, 0, 0, 1, 1, 1],
+        ],
+        control_points=[
+            [0, 0],
+            [0, 1],
+            [1, 1.5],
+            [3, 1.5],
+            [-1, 0],
+            [-1, 2],
+            [1, 4],
+            [3, 4],
+            [-2, 0],
+            [-2, 2],
+            [1, 5],
+            [3, 5],
+        ],
+    )
+
+
 def b2p2d():
     return dict(
         degrees=[2, 2],
@@ -48,6 +72,32 @@ b2P2D = b2p2d()
 
 
 # half-half circle.
+def nurbs_half_circle_2d():
+    return splinepy.NURBS(
+        degrees=[2, 1],
+        knot_vectors=[
+            [0, 0, 0, 1, 1, 1],
+            [0, 0, 1, 1],
+        ],
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
+    )
+
+
 def n2p2d():
     return dict(
         degrees=[2, 1],
@@ -83,6 +133,20 @@ def n2p2d_quarter_circle():
     return n2p2d()
 
 
+def bezier_2d():
+    return splinepy.Bezier(
+        degrees=[2, 1],
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+    )
+
+
 #
 def z2p2d():
     return dict(
@@ -103,6 +167,28 @@ def r2p2d():
 
 
 r2P2D = r2p2d()
+
+
+def rational_bezier_2d():
+    return splinepy.RationalBezier(
+        degrees=[2, 1],
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
+    )
 
 
 def all2p2d():
@@ -316,3 +402,15 @@ def are_stripped_lines_same(a, b, ignore_order=False):
                         all_same = False
 
     return all_same
+
+
+class SplineBasedTestCase(unittest.TestCase):
+    def setUp(self):
+        self.bspline = bspline_2d()
+        self.nurbs = nurbs_half_circle_2d()
+        self.bezier = bezier_2d()
+        self.rational = rational_bezier_2d()
+        self.ref_bspline = bspline_2d()
+        self.ref_nurbs = nurbs_half_circle_2d()
+        self.ref_bezier = bezier_2d()
+        self.ref_rational = rational_bezier_2d()

@@ -4,15 +4,7 @@ except BaseException:
     import common as c
 
 
-class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
-    def setUp(self):
-        self.b2P2D = c.b2P2D.copy()
-        self.n2P2D = c.n2P2D.copy()
-        self.bspline = c.splinepy.BSpline(**self.b2P2D)
-        self.nurbs = c.splinepy.NURBS(**self.n2P2D)
-        self.ref_bspline = c.splinepy.BSpline(**c.b2P2D)
-        self.ref_nurbs = c.splinepy.NURBS(**c.n2P2D)
-
+class TestSplinepyKnotVectorManipulation(c.SplineBasedTestCase):
     def test_insert_knot(self):
         """Test the knot insertion function (.insert_knot())."""
 
