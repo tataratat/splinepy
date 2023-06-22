@@ -261,6 +261,20 @@ class BSplineBase(spline.Spline):
         -------
         None
         """
+        # check if knot_vectors is already normalized
+        # creating new parametric space in backend can be expensive, so
+        # let's avoid it if we can.
+        para_bounds = self.parametric_bounds
+        kv_modified = utils.data.is_modified(
+            self._data.get("properties", dict()).get("knot_vectors", [])
+        )
+        lower_bounds_are_zero = np.allclose(
+            para_bounds[0], [0] * self.para_dim
+        )
+        upper_bounds_are_one = np.allclose(para_bounds[1], [1] * self.para_dim)
+        if not kv_modified and lower_bounds_are_zero and upper_bounds_are_one:
+            return None
+
         new_kvs = []
         for i, kv in enumerate(self.knot_vectors):
             offset = kv[0]
