@@ -1,5 +1,5 @@
-import numpy as np
 import gustaf as gus
+import numpy as np
 
 import splinepy
 
@@ -224,7 +224,9 @@ if __name__ == "__main__":
 
     # 8. fixed location data that uses callback
     # predefind some locations
-    bottom = splinepy.helpme.create.arc(radius=0.5, angle=-180)  # zero centered
+    bottom = splinepy.helpme.create.arc(
+        radius=0.5, angle=-180
+    )  # zero centered
     bottom.cps += [0.5, 0.55]
     circle1 = splinepy.helpme.create.circle(radius=0.1)
     circle2 = circle1.copy()
