@@ -649,20 +649,18 @@ def sphere(
     sphere: NURBS
       Volumetric NURBS with degrees (1,2,2)
     """
-
-    if inner_radius is None:
-        sphere = plate(outer_radius).nurbs.create.revolved(
-            axis=[1, 0, 0],
-            center=[0, 0, 0],
-            angle=angle,
-            n_knot_spans=n_knot_spans,
-            degree=degree,
-        )
-    else:
+    if inner_radius is not None:
         inner_radius = float(inner_radius)
-        sphere = disk(outer_radius, inner_radius).nurbs.create.revolved(
-            angle=angle, n_knot_spans=n_knot_spans, degree=degree
-        )
+
+    sphere = disk(
+        outer_radius, inner_radius, angle=180, degree=True
+    ).nurbs.create.revolved(
+        axis=[1, 0, 0],
+        angle=angle,
+        n_knot_spans=n_knot_spans,
+        degree=degree,
+    )
+
     return sphere
 
 
