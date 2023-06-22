@@ -404,6 +404,15 @@ def are_stripped_lines_same(a, b, ignore_order=False):
     return all_same
 
 
+def get_all_spline_typs_as_list():
+    return [
+        bspline_2d(),
+        nurbs_half_circle_2d(),
+        bezier_2d(),
+        rational_bezier_2d(),
+    ]
+
+
 class SplineBasedTestCase(unittest.TestCase):
     def setUp(self):
         self.bspline = bspline_2d()
