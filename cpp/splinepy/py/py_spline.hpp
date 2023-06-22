@@ -85,29 +85,41 @@ class PySpline {
 public:
   using CoreSpline_ = typename std::shared_ptr<splinepy::splines::SplinepyBase>;
 
+  /// @brief Core spline
   CoreSpline_ c_spline_ = nullptr;
 
   // store very frequently used values - from python this will be readonly
+  /// @brief Dimension of parameter space
   int para_dim_ = -1;
+  /// @brief Dimension of physical space
   int dim_ = -1;
 
-  // place to store and access from both python and cpp side.
+  /// @brief Place to store and access from both python and cpp side.
   py::dict data_;
 
   // ctor
   PySpline() = default;
+  /// @brief Move constructor
   PySpline(PySpline&&) = default;
+  /// @brief Constructor
+  /// @param kwargs
   PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
+  /// @brief Constructor
+  /// @param another_core 
   PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
     para_dim_ = c_spline_->SplinepyParaDim();
     dim_ = c_spline_->SplinepyDim();
   }
+  /// @brief Constructor
+  /// @param another_py_spline
   PySpline(PySpline& another_py_spline)
       : c_spline_(another_py_spline.Core()),
         para_dim_(another_py_spline.para_dim_),
         dim_(another_py_spline.dim_) {
     // nichts
   }
+  /// @brief Constructor
+  /// @param another_py_spline_ptr 
   PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
       : PySpline(*another_py_spline_ptr) {}
 
@@ -281,6 +293,7 @@ public:
     return c_spline_;
   }
 
+  /// @brief Core spline
   const CoreSpline_& Core() const {
     if (!c_spline_) {
       splinepy::utils::PrintAndThrowError(
@@ -291,9 +304,14 @@ public:
     return c_spline_;
   }
 
+  /// @brief What am I?
   std::string WhatAmI() const { return Core()->SplinepyWhatAmI(); }
+  /// @brief Get spline name
   std::string Name() const { return Core()->SplinepySplineName(); }
+  /// @brief Returns true iff spline has knot vectors
   bool HasKnotVectors() const { return Core()->SplinepyHasKnotVectors(); }
+  /// @brief Returns True iff spline is rational. NURBS is rational,
+  /// for example.
   bool IsRational() const { return Core()->SplinepyIsRational(); }
 
   /// Returns currunt properties of core spline
@@ -366,6 +384,7 @@ public:
     return pbounds;
   }
 
+  /// @brief Calculate Greville abscissae for Spline
   py::array_t<double> GrevilleAbscissae() const {
     // prepare output
     std::vector<int> cmr(para_dim_);
@@ -404,6 +423,7 @@ public:
     return greville_abscissae;
   }
 
+  /// @brief Returns control mesh resolutions
   py::array_t<int> ControlMeshResolutions() const {
     // prepare output
     py::array_t<int> cmr(para_dim_);
@@ -414,6 +434,9 @@ public:
     return cmr;
   }
 
+  /// @brief Evaluate spline at query points
+  /// @param queries Query points
+  /// @param nthreads Number of threads to use
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                int nthreads) const {
     CheckPyArrayShape(queries, {-1, para_dim_}, true);
@@ -641,6 +664,10 @@ public:
     return py::make_tuple(basis, support);
   }
 
+  /// @brief Get basis derivative
+  /// @param queries Query points
+  /// @param orders
+  /// @param nthreads number of threads to use
   py::array_t<double> BasisDerivative(py::array_t<double> queries,
                                       py::array_t<int> orders,
                                       int nthreads) {
@@ -909,6 +936,8 @@ public:
   }
 };
 
+/// @brief Add Spline Pyclass
+/// @param m 
 inline void add_spline_pyclass(py::module& m) {
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
       klasse(m, "PySpline");

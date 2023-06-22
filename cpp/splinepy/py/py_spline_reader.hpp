@@ -22,7 +22,6 @@ namespace py = pybind11;
 
 using namespace splinelib::sources;
 
-/// @class BSpline parser
 /// @brief BSpline parser class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
@@ -48,6 +47,8 @@ public:
 
   BSplineParser() {}
 
+  /// @brief Convert BSpline to Python dictionary
+  /// @param bspline BSpline object
   py::dict bspline_to_dict(SplineEntry const& bspline) {
 
     py::dict spline; //  to return
@@ -119,7 +120,6 @@ public:
   }
 };
 
-/// @class BSpline parser
 /// @brief BSpline parser class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
@@ -142,10 +142,15 @@ public:
 
   using SplineEntry = input_output::SplineEntry;
 
-  int i, j;
+  /// Counter variable
+  int i;
+  /// Counter variable for inner loops
+  int j;
 
   NurbsParser() {}
 
+  /// @brief Convert Nurbs to Python dictionary
+  /// @param nurbs Nurbs object
   py::dict nurbs_to_dict(SplineEntry const& nurbs) {
 
     py::dict spline; //  to return
@@ -236,20 +241,26 @@ public:
   }
 };
 
-/// @class Spline reader
 /// @brief Spline reader class
 class SplineReader {
 public:
   using Splines = input_output::Splines;
   using SplineEntry = input_output::SplineEntry;
 
+  /// Counter variable
   int i;
+  /// Counter variable for inner loops
   int j;
 
+  /// @brief Spline object in C
   Splines c_splines;
+
+  /// @brief Python-spline object
   py::list
       p_splines; // [dict(weights, degrees, knot_vectors, control_points), ...]
 
+  /// @brief Read spline in .iges form.
+  /// @param fname File name
   py::list read_iges(std::string fname) {
 
     c_splines = input_output::iges::Read(fname);
@@ -258,6 +269,8 @@ public:
     return p_splines;
   }
 
+  /// @brief Read spline in .itd form.
+  /// @param fname File name
   py::list read_irit(std::string fname) {
     c_splines = input_output::irit::Read(fname);
     read(c_splines);
@@ -265,6 +278,8 @@ public:
     return p_splines;
   }
 
+  /// @brief Read spline in .xml form. RWTH CATS spline format.
+  /// @param fname File name
   py::list read_xml(std::string fname) {
     c_splines = input_output::xml::Read(fname);
     read(c_splines);
@@ -272,6 +287,8 @@ public:
     return p_splines;
   }
 
+  /// @brief Parse BSpline
+  /// @param bspline BSpline object
   void parse_bspline(SplineEntry const& bspline) {
 
     // Get paradim and dim
@@ -338,6 +355,8 @@ public:
     }
   }
 
+  /// @brief Parse Nurbs
+  /// @param nurbs Nurbs object
   void parse_nurbs(SplineEntry const& nurbs) {
 
     // Get paradim and dim
@@ -404,6 +423,8 @@ public:
     }
   }
 
+  /// @brief Reads spline
+  /// @param splines
   void read(Splines splines) {
 
     // Assign a new list
@@ -446,10 +467,10 @@ py::list read_irit(std::string fname) {
   return sr.read_irit(fname);
 }
 
-/// 
+///  @brief Adds spline reader. Keys are
+/// ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
+/// @param m Python module
 inline void add_spline_reader(py::module& m) {
-  // Functions that return list of dict.
-  // Keys are ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
   m.def("read_iges", &read_iges, py::arg("fname"))
       .def("read_xml", &read_xml, py::arg("fname"))
       .def("read_irit", &read_irit, py::arg("fname"));

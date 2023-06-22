@@ -342,6 +342,7 @@ public:
     return current_guess;
   }
 
+  /// @brief First order fall back
   void FirstOrderFallBack() {}
 
   /// @brief Given physical coordinate, finds closest parametric coordinate. Always takes initial guess based on kdtree.

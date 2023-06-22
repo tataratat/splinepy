@@ -19,6 +19,7 @@ class DefaultInitializationAllocator : public BaseAllocator {
 
 public:
   template<typename U>
+  /// @brief Rebind
   struct rebind {
     using other = DefaultInitializationAllocator<
         U,
@@ -27,11 +28,19 @@ public:
 
   using BaseAllocator::BaseAllocator;
 
+  /// @brief Construct
+  /// @tparam U 
+  /// @param ptr 
   template<typename U>
   void
   construct(U* ptr) noexcept(std::is_nothrow_default_constructible<U>::value) {
     ::new (static_cast<void*>(ptr)) U;
   }
+  /// @brief Construct
+  /// @tparam U 
+  /// @tparam ...Args 
+  /// @param ptr 
+  /// @param ...args 
   template<typename U, typename... Args>
   void construct(U* ptr, Args&&... args) {
     AllocatorTraits_::construct(static_cast<BaseAllocator&>(*this),

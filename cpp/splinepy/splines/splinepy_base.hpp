@@ -86,14 +86,15 @@ public:
   virtual std::string SplinepySplineName() const = 0;
   /// @brief What am I?
   virtual std::string SplinepyWhatAmI() const = 0;
-  /// @brief Returns True iff spline has knot vectors. Bezier splines don’t.
+  /// @brief Returns true iff spline has knot vectors. Bezier splines don’t.
   virtual bool SplinepyHasKnotVectors() const = 0;
-  /// @brief Returns True iff spline is rational. NURBS is rational, for example.
+  /// @brief Returns true iff spline is rational. NURBS is rational, for example.
   virtual bool SplinepyIsRational() const = 0;
   /// @brief Get number of control points
   virtual int SplinepyNumberOfControlPoints() const = 0;
   /// @brief Get number of supports
   virtual int SplinepyNumberOfSupports() const = 0;
+  /// @brief Returns true iff spline is null-spline
   virtual bool SplinepyIsNull() const { return false; };
   /// @brief Extract core spline properties. Similar to previous update_p
   /// @param degrees

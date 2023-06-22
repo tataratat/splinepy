@@ -27,14 +27,12 @@ using BezierSplineType = bezman::BezierSpline<
     double>;
 
 // splinepy's Rational Bezier
-/// @class Rational Bezier
 /// @brief Rational Bezier class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
 template<std::size_t para_dim, std::size_t dim>
 class RationalBezier;
 
-/// @class Bezier
 /// @brief Bezier class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space

@@ -10,7 +10,6 @@ template<int para_dim, int dim>
 class BSpline;
 
 // Type Identifier
-/// @struct Nurbs identifier
 /// @brief Nurbs identifier
 /// @tparam SplineType
 template<typename SplineType>
@@ -19,7 +18,6 @@ struct isNurbs {
   constexpr static bool value = false;
 };
 
-/// @struct Nurbs identifier
 /// @brief Nurbs identifier
 /// @tparam para_dim Parametric dimension
 /// @tparam dim Physical dimension
@@ -32,7 +30,6 @@ struct isNurbs<Nurbs<para_dim, dim>> {
 template<typename SplineType>
 constexpr bool isNurbs_v = isNurbs<SplineType>::value;
 
-/// @struct BSpline identifier
 /// @brief BSpline identifier
 /// @tparam SplineType
 template<typename SplineType>
@@ -41,7 +38,6 @@ struct isBSpline {
   constexpr static bool value = false;
 };
 
-/// @struct BSpline identifier
 /// @brief BSpline identifier
 /// @tparam para_dim Parametric dimension
 /// @tparam dim Physical dimension

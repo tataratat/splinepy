@@ -417,6 +417,11 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
   splinepy::utils::PrintAndThrowError("Found mismatches.", mismatch_info);
 }
 
+/// @brief Get interfaces from boundary centers
+/// @tparam parametric_dimension 
+/// @tparam physical_dimension 
+/// @param py_center_vertices 
+/// @param tolerance
 template<std::size_t parametric_dimension, std::size_t physical_dimension>
 py::array_t<int>
 InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
@@ -1748,10 +1753,10 @@ public:
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
 
-  // fields - raw list format
+  /// @brief Fields - raw list format
   py::list field_list_;
 
-  // fields - they are saved as multi-patches
+  /// @brief Fields - they are saved as multi-patches
   std::vector<std::shared_ptr<PyMultiPatch>> field_multi_patches_;
 
   /// default number of threads for all the operations besides queries
@@ -1773,7 +1778,10 @@ public:
   /// move ctor
   PyMultiPatch(PyMultiPatch&& other) noexcept = default;
 
-  /// list (iterable) init -> pybind will cast to list for us if needed
+  /// @brief list (iterable) init -> pybind will cast to list for us if needed
+  /// @param patches
+  /// @param n_default_threads
+  /// @param same_parametric_bounds
   PyMultiPatch(py::list& patches,
                const int n_default_threads = 1,
                const bool same_parametric_bounds = false)
@@ -1805,6 +1813,7 @@ public:
   PyMultiPatch(std::shared_ptr<PyMultiPatch>& other)
       : PyMultiPatch(std::move(*other)) {}
 
+  /// @brief Gets core patches
   CorePatches_& CorePatches() {
     if (core_patches_.size() == 0) {
       splinepy::utils::PrintAndThrowError("No splines/patches set");
@@ -1812,6 +1821,7 @@ public:
     return core_patches_;
   }
 
+  /// @brief Clears
   void Clear() {
     patches_ = py::list();
     core_patches_ = CorePatches_{};
@@ -1902,6 +1912,7 @@ public:
                   {},
                   nthreads);
   }
+  /// @brief Gets patches
   py::list GetPatches() { return patches_; }
 
   /// @brief returns sub patches as multi patches, uses default nthreads
@@ -2055,6 +2066,7 @@ public:
     return interfaces_;
   }
 
+  /// @brief Gets IDs of boundary patch
   py::array_t<int> BoundaryPatchIds() {
     // return if it exists
     if (boundary_patch_ids_.size() != 0) {
@@ -2087,6 +2099,7 @@ public:
     return boundary_patch_ids_;
   }
 
+  /// @brief Gets boundary multi patch
   std::shared_ptr<PyMultiPatch> BoundaryMultiPatch() {
     // return early if exists
     if (boundary_multi_patch_) {
@@ -2132,6 +2145,9 @@ public:
   /// @return
   py::object PyBoundaryMultiPatch() { return ToDerived(BoundaryMultiPatch()); }
 
+  /// @brief Evaluate at query points
+  /// @param queries Query points
+  /// @param nthreads Number of threads to use
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                const int nthreads) {
     // use first spline as dimension guide line
@@ -2168,6 +2184,10 @@ public:
     return evaluated;
   }
 
+  /// @brief Sample multi patch
+  /// @param resolution 
+  /// @param nthreads Number of threads to use
+  /// @param same_parametric_bounds
   py::array_t<double> Sample(const int resolution,
                              const int nthreads,
                              const bool same_parametric_bounds) {
@@ -2282,6 +2302,13 @@ public:
     return sampled;
   }
 
+  /// @brief Adds fields
+  /// @param fields 
+  /// @param check_name 
+  /// @param check_dims 
+  /// @param check_degrees 
+  /// @param check_control_mesh_resolutions 
+  /// @param nthreads 
   void AddFields(py::list& fields,
                  const bool check_name,
                  const bool check_dims,
@@ -2346,9 +2373,13 @@ public:
     field_list_ += fields;
   }
 
+  /// @brief Gets list of fields
   py::list GetFields() { return field_list_; }
 };
 
+/// @brief Add multi patch.
+/// Returns [connectivity, vertex_ids, edge_information, boundaries]
+/// @param m 
 inline void add_multi_patch(py::module& m) {
 
   // returns [connectivity, vertex_ids, edge_information, boundaries]

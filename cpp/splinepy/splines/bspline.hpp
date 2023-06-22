@@ -22,13 +22,19 @@ template<int para_dim, int dim>
 class BSpline : public splinepy::splines::SplinepyBase,
                 public splinelib::sources::splines::BSpline<para_dim, dim> {
 public:
+  /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
+  /// @brief Dimension of physical space
   static constexpr int kDim = dim;
+  /// @brief It is not a rational spline
   static constexpr bool kIsRational = false;
+  /// @brief It has knot vectors
   static constexpr bool kHasKnotVectors = true;
 
-  // TODO remve afterwards
+  // TODO remove afterwards
+  /// @brief Dimension of parameter space
   constexpr static int para_dim_ = para_dim;
+  /// @brief Dimension of physical space
   constexpr static int dim_ = dim;
 
   // self
@@ -428,10 +434,12 @@ public:
     return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
   }
 
+  /// @brief Gets parameter space
   constexpr const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }
 
+  /// @brief Gets vector space
   constexpr const VectorSpace_& GetVectorSpace() const {
     return *Base_::vector_space_;
   }
@@ -442,6 +450,7 @@ public:
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
 protected:
+  /// @brief Unique pointer to proximity
   std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
 };
 

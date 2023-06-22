@@ -19,10 +19,13 @@ inline std::shared_ptr<SplinepyBase> NullSplineFromLookup(const int para_dim,
 /// For example, if you have numerous list of
 class NullSpline : public splinepy::splines::SplinepyBase {
 public:
-  /// parametric and physical dimension needs to be known at creation
-  /// with these two, for whatever reason, if they are exposed to python side,
+  /// @brief Parametric dimension. Needs to be known at creation
+  /// for whatever reason, if it is exposed to python side,
   /// it is still possible to call implemented query functions
   const int para_dim_;
+  /// @brief Physical dimension. Needs to be known at creation
+  /// for whatever reason, if it is exposed to python side,
+  /// it is still possible to call implemented query functions
   const int dim_;
 
   /// @brief ctor with parametric and physical dimension
@@ -32,29 +35,40 @@ public:
       : para_dim_(para_dim),
         dim_(dim) {}
 
-  /// basic implementations
+  // basic implementations
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyParaDim
   virtual int SplinepyParaDim() const { return para_dim_; }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyDim
   virtual int SplinepyDim() const { return dim_; }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
   virtual std::string SplinepySplineName() const { return "NullSpline"; }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyWhatAmI
   virtual std::string SplinepyWhatAmI() const {
     return "NullSpline, parametric dimension: " + std::to_string(para_dim_)
            + ", physical dimension: " + std::to_string(dim_);
   }
-  /// @brief Shouldn't ask NullSpline for has_knot_vectors, and is_rational
+  /// @brief Shouldn't ask NullSpline for has_knot_vectors
   virtual bool SplinepyHasKnotVectors() const {
     splinepy::utils::PrintAndThrowError(
         "SplinepyHasKnotVectors() - invalid function call for",
         SplinepyWhatAmI());
     return false;
   }
+  /// @brief Shouldn't ask NullSpline for is_rational
   virtual bool SplinepyIsRational() const {
     splinepy::utils::PrintAndThrowError(
         "SplinepyIsRational() - invalid function call for",
         SplinepyWhatAmI());
     return false;
   }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfControlPoints
+  /// @returns -1
   virtual int SplinepyNumberOfControlPoints() const { return -1; }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfSupports
+  /// @returns -1
   virtual int SplinepyNumberOfSupports() const { return -1; }
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyIsNull
+  /// @returns true
   virtual bool SplinepyIsNull() const { return true; }
   virtual void
   SplinepyCurrentProperties(int* degrees,

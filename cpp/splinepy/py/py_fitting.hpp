@@ -81,6 +81,12 @@ void FitCurve(const py::array_t<double>& points,
   return_spline["control_points"] = p_control_points;
 }
 
+/// @brief Interpolates curve through query points
+/// @param points Query points
+/// @param degree 
+/// @param centripetal 
+/// @param knot_vectors 
+/// @return py::dict
 py::dict InterpolateCurve(py::array_t<double> points,
                           int degree,
                           bool centripetal,
@@ -104,6 +110,12 @@ py::dict InterpolateCurve(py::array_t<double> points,
   return return_dict;
 }
 
+/// @brief Approximates curve based on query points
+/// @param points Query points
+/// @param degree
+/// @param num_control_points
+/// @param centripetal
+/// @param knot_vectors
 py::dict ApproximateCurve(py::array_t<double> points,
                           int degree,
                           int num_control_points,
@@ -127,6 +139,13 @@ py::dict ApproximateCurve(py::array_t<double> points,
   return return_dict;
 }
 
+/// @brief Interpolates surface through query points
+/// @param points Query points
+/// @param size_u
+/// @param size_v
+/// @param degree_u
+/// @param degree_v
+/// @param centripetal
 py::dict InterpolateSurface(py::array_t<double> points,
                             int size_u,
                             int size_v,
@@ -202,6 +221,19 @@ py::dict InterpolateSurface(py::array_t<double> points,
   return dict_spline;
 }
 
+/// @brief Approximates surface in the least-squares sense through query points
+/// @param points The query points must form a rectangular grid along the x-
+/// and y-axis
+/// @param num_points_u The number of sampling points along the first
+/// parametric direction. By default the first parametric direction is along 
+/// the cartesian x-axis, this can be adapted by reorganize.
+/// @param num_points_v The number of sampling points along the second 
+/// parametric direction.
+/// @param size_u Number of control points along first parametric direction
+/// @param size_v Number of control points along second parametric direction
+/// @param degree_u
+/// @param degree_v
+/// @param centripetal
 py::dict ApproximateSurface(py::array_t<double> points,
                             int num_points_u,
                             int num_points_v,
@@ -278,6 +310,8 @@ py::dict ApproximateSurface(py::array_t<double> points,
   return dict_spline;
 }
 
+/// @brief Functions that return fitted BSpline as dict
+/// @param m
 inline void add_fitting(py::module& m) {
   // Functions that return fitted bspline as dict.
   m.def("interpolate_curve",
