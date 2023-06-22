@@ -384,10 +384,10 @@ def spline(spline, para_dim, split_plane):
     -------
     spline
     """
-    from gustaf.spline.base import GustafSpline
+    from splinepy.spline import Spline
 
     # Check type
-    if not issubclass(type(spline), GustafSpline):
+    if not isinstance(spline, Spline):
         raise TypeError("Unknown spline representation passed to sub spline")
 
     # Check arguments for sanity
