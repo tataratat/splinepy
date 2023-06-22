@@ -1,3 +1,4 @@
+from splinepy import settings
 from splinepy.bspline import BSplineBase
 
 
@@ -144,3 +145,7 @@ class NURBS(BSplineBase):
             control_points=control_points,
             weights=weights,
         )
+
+    @property
+    def nurbs(self):
+        return settings.NAME_TO_TYPE["NURBS"](spline=self)

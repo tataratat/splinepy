@@ -131,6 +131,10 @@ class RationalBezier(BezierBase):
         )
 
     @property
+    def rationalbezier(self):
+        return settings.NAME_TO_TYPE["RationalBezier"](spline=self)
+
+    @property
     def nurbs(self):
         return settings.NAME_TO_TYPE["NURBS"](
             spline=splinepy_core.same_spline_with_knot_vectors(self)
