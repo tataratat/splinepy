@@ -26,8 +26,8 @@ using RationalBezierSplineType = bezman::RationalBezierSpline<
     double>;
 
 /// @brief Rational Bezier (Spline)
-/// @tparam para_dim 
-/// @tparam dim 
+/// @tparam para_dim
+/// @tparam dim
 template<std::size_t para_dim, std::size_t dim>
 class RationalBezier : public splinepy::splines::SplinepyBase,
                        public RationalBezierSplineType<para_dim, dim> {
@@ -62,10 +62,10 @@ public:
       splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
   /// @brief Create base
-  /// @param degrees 
-  /// @param control_points 
-  /// @param weights 
-  /// @return 
+  /// @param degrees
+  /// @param control_points
+  /// @param weights
+  /// @return
   static Base_ CreateBase(const int* degrees,
                           const double* control_points,
                           const double* weights) {
@@ -106,19 +106,20 @@ public:
                  const double* weights)
       : Base_(CreateBase(degrees, control_points, weights)) {}
   /// @brief  Base (copy) constructor
-  /// @param rhs 
+  /// @param rhs
   RationalBezier(const Base_& rhs) : Base_(rhs){};
   /// @brief Inherited constructor
   using Base_::Base_;
 
-  /// @brief Function wrapper, also for helper functions. Evaluates query parametric coordinate
+  /// @brief Function wrapper, also for helper functions. Evaluates query
+  /// parametric coordinate
   /// @param query
   constexpr auto operator()(const ParametricCoordinate_& query) const {
     return Base_::Evaluate(query);
   }
 
   /// @brief Evaluates derivative of spline
-  /// @param query 
+  /// @param query
   /// @param order
   constexpr auto operator()(const ParametricCoordinate_& query,
                             const Derivative_& order) const {
@@ -126,7 +127,7 @@ public:
   }
 
   /// @brief Elevate degree
-  /// @param p_dim 
+  /// @param p_dim
   constexpr auto ElevateDegree(const Dimension_ p_dim) {
     return Base_::OrderElevateAlongParametricDimension(p_dim);
   }
@@ -206,7 +207,6 @@ public:
     }
   }
 
-  
   virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
   SplinepyCoordinateReferences() {
     using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
@@ -247,7 +247,7 @@ public:
   /// @brief Calculate Greville abscissae for Rational Bezier
   ///
   /// @param[out] greville_abscissae pointer to solution
-  /// @param[in] i_para_dim parametric dimension 
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,

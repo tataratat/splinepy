@@ -9,9 +9,9 @@
 namespace splinepy::utils {
 
 /// @brief Grid points class
-/// @tparam DataT 
-/// @tparam IndexT 
-/// @tparam dim 
+/// @tparam DataT
+/// @tparam IndexT
+/// @tparam dim
 template<typename DataT, typename IndexT, int dim>
 class GridPoints {
 public:
@@ -20,8 +20,8 @@ public:
 
   GridPoints() = default;
   /// @brief Constructor
-  /// @param bounds 
-  /// @param resolutions 
+  /// @param bounds
+  /// @param resolutions
   GridPoints(const std::array<std::array<DataT, dim>, 2>& bounds,
              const std::array<IndexT, dim>& resolutions)
       : res_(resolutions),
@@ -111,8 +111,8 @@ public:
     // Determine size of return vector
     IndexT n_points_on_boundary{1};
     for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
-      if (i_pd == plane_normal_axis)set up
-        continue;
+      if (i_pd == plane_normal_axis)
+        set up continue;
       n_points_on_boundary *= grid_resolutions[i_pd];
     }
 

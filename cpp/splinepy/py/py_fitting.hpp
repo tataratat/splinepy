@@ -83,9 +83,9 @@ void FitCurve(const py::array_t<double>& points,
 
 /// @brief Interpolates curve through query points
 /// @param points Query points
-/// @param degree 
-/// @param centripetal 
-/// @param knot_vectors 
+/// @param degree
+/// @param centripetal
+/// @param knot_vectors
 /// @return py::dict
 py::dict InterpolateCurve(py::array_t<double> points,
                           int degree,
@@ -225,9 +225,9 @@ py::dict InterpolateSurface(py::array_t<double> points,
 /// @param points The query points must form a rectangular grid along the x-
 /// and y-axis
 /// @param num_points_u The number of sampling points along the first
-/// parametric direction. By default the first parametric direction is along 
+/// parametric direction. By default the first parametric direction is along
 /// the cartesian x-axis, this can be adapted by reorganize.
-/// @param num_points_v The number of sampling points along the second 
+/// @param num_points_v The number of sampling points along the second
 /// parametric direction.
 /// @param size_u Number of control points along first parametric direction
 /// @param size_v Number of control points along second parametric direction

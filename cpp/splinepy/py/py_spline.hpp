@@ -105,7 +105,7 @@ public:
   /// @param kwargs
   PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
   /// @brief Constructor
-  /// @param another_core 
+  /// @param another_core
   PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
     para_dim_ = c_spline_->SplinepyParaDim();
     dim_ = c_spline_->SplinepyDim();
@@ -119,7 +119,7 @@ public:
     // nichts
   }
   /// @brief Constructor
-  /// @param another_py_spline_ptr 
+  /// @param another_py_spline_ptr
   PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
       : PySpline(*another_py_spline_ptr) {}
 
@@ -937,7 +937,7 @@ public:
 };
 
 /// @brief Add Spline Pyclass
-/// @param m 
+/// @param m
 inline void add_spline_pyclass(py::module& m) {
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
       klasse(m, "PySpline");

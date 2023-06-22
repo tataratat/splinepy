@@ -418,9 +418,9 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
 }
 
 /// @brief Get interfaces from boundary centers
-/// @tparam parametric_dimension 
-/// @tparam physical_dimension 
-/// @param py_center_vertices 
+/// @tparam parametric_dimension
+/// @tparam physical_dimension
+/// @param py_center_vertices
 /// @param tolerance
 template<std::size_t parametric_dimension, std::size_t physical_dimension>
 py::array_t<int>
@@ -990,7 +990,6 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
   return py::array_t<int>();
 }
 
-
 /// @brief Orientation between two adjacent splines
 ///
 /// If two splines share the same boundary this function retrieves their
@@ -1110,7 +1109,6 @@ void GetBoundaryOrientation(
     }
   }
 }
-
 
 /// @brief Get the Boundary Orientations object
 ///
@@ -1432,7 +1430,6 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
     throw std::runtime_error("Dimension mismatch");
   }
 }
-
 
 /// @brief Extract all Boundary Patches and store them in a python list
 ///
@@ -2185,7 +2182,7 @@ public:
   }
 
   /// @brief Sample multi patch
-  /// @param resolution 
+  /// @param resolution
   /// @param nthreads Number of threads to use
   /// @param same_parametric_bounds
   py::array_t<double> Sample(const int resolution,
@@ -2303,12 +2300,12 @@ public:
   }
 
   /// @brief Adds fields
-  /// @param fields 
-  /// @param check_name 
-  /// @param check_dims 
-  /// @param check_degrees 
-  /// @param check_control_mesh_resolutions 
-  /// @param nthreads 
+  /// @param fields
+  /// @param check_name
+  /// @param check_dims
+  /// @param check_degrees
+  /// @param check_control_mesh_resolutions
+  /// @param nthreads
   void AddFields(py::list& fields,
                  const bool check_name,
                  const bool check_dims,
@@ -2379,7 +2376,7 @@ public:
 
 /// @brief Add multi patch.
 /// Returns [connectivity, vertex_ids, edge_information, boundaries]
-/// @param m 
+/// @param m
 inline void add_multi_patch(py::module& m) {
 
   // returns [connectivity, vertex_ids, edge_information, boundaries]

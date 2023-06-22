@@ -155,9 +155,9 @@ public:
   }
 
   /// @brief Constructor based on raw pointer
-  /// @param degrees 
-  /// @param knot_vectors 
-  /// @param control_points 
+  /// @param degrees
+  /// @param knot_vectors
+  /// @param control_points
   BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
           const double* control_points)

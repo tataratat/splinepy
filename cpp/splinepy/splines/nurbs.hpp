@@ -285,7 +285,7 @@ public:
     }
     return ref_coordinates;
   }
-  
+
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds
   virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);

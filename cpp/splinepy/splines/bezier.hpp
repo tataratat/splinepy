@@ -19,7 +19,6 @@
 
 namespace splinepy::splines {
 
-
 template<std::size_t para_dim, std::size_t dim>
 using BezierSplineType = bezman::BezierSpline<
     static_cast<std::size_t>(para_dim),
@@ -65,7 +64,7 @@ public:
   using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
 
   /// @brief Creates Base for Bezier
-  /// @param degrees 
+  /// @param degrees
   /// @param control_points
   static Base_ CreateBase(const int* degrees, const double* control_points) {
 
@@ -110,7 +109,7 @@ public:
   }
 
   /// @brief Evaluates derivative
-  /// @param query 
+  /// @param query
   /// @param order
   constexpr auto operator()(const ParametricCoordinate_& query,
                             const Derivative_& order) const {

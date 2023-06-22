@@ -345,7 +345,8 @@ public:
   /// @brief First order fall back
   void FirstOrderFallBack() {}
 
-  /// @brief Given physical coordinate, finds closest parametric coordinate. Always takes initial guess based on kdtree.
+  /// @brief Given physical coordinate, finds closest parametric coordinate.
+  /// Always takes initial guess based on kdtree.
   ///
   /// @param[in] query
   /// @param[in] tolerance

@@ -88,7 +88,8 @@ public:
   virtual std::string SplinepyWhatAmI() const = 0;
   /// @brief Returns true iff spline has knot vectors. Bezier splines don’t.
   virtual bool SplinepyHasKnotVectors() const = 0;
-  /// @brief Returns true iff spline is rational. NURBS is rational, for example.
+  /// @brief Returns true iff spline is rational. NURBS is rational, for
+  /// example.
   virtual bool SplinepyIsRational() const = 0;
   /// @brief Get number of control points
   virtual int SplinepyNumberOfControlPoints() const = 0;
@@ -119,7 +120,6 @@ public:
   /// @param control_mesh_res
   virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const;
 
-  
   /// @brief Calculate Greville abscissae for Spline (required for e.g.
   /// collocation)
   ///
