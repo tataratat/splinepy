@@ -376,7 +376,7 @@ def show(spline, **kwargs):
     control_points: bool
     knots: bool
     fitting_queries: bool
-    return_discrete: bool
+    return_gustaf: bool
       Return dict of gustaf discrete objects, for example,
       {Vertices, Edges, Faces}, instead of opening a window
     return_showable: bool
@@ -435,7 +435,7 @@ def show(spline, **kwargs):
         p_spline = spline.create.parametric_view()
         things_to_show["parametric_spline"] = p_spline
 
-    if kwargs.get("return_discrete", False):
+    if kwargs.get("return_gustaf", False):
         return things_to_show
 
     if kwargs.get("return_showable", False):
