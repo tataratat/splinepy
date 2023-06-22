@@ -1,27 +1,22 @@
+import gustaf as gus
 import numpy as np
 
 import splinepy
 
 if __name__ == "__main__":
-    try:
-        import gustaf as gus
-
-        gustaf_available = True
-    except ImportError:
-        gustaf_available = False
-
     # 1. Curve fitting
 
     # Create a function that creates the points for approximation
     def f(x):
         return x**4 - 2 * x**2 + x + 0.2 * np.sin(10 * x)
 
-    def evaluate_approximation(spline, points, n_initial_guess=50):
+    def evaluate_approximation(spline, points, n_initial_guess=500):
         # Caluclate proximities between the spline and the given points
         prox_r = spline.proximities(
             queries=points,
             initial_guess_sample_resolutions=[n_initial_guess]
             * spline.para_dim,
+            return_verbose=True,
             nthreads=1,
         )
         # Just evaluate the distance
@@ -48,21 +43,18 @@ if __name__ == "__main__":
     interp_errs = evaluate_approximation(interpolated_curve, target_points)
     approx_errs = evaluate_approximation(approximated_curve, target_points)
 
-    if gustaf_available:
-        verts = gus.Vertices(target_points)
-        gus.show.show_vedo(
-            [
-                f"Interpolated curve \nMax. distance {interp_errs[0]:.2f}, "
-                f"mean distance {interp_errs[1]:.2f}",
-                verts,
-                gus.BSpline(**interpolated_curve.todict()),
-            ],
-            [
-                f"Approximated curve with {n_cps} CPs \nMax. distance "
-                f"{approx_errs[0]:.2f}, mean distance {approx_errs[1]:.2f}",
-                gus.BSpline(**approximated_curve.todict()),
-            ],
-        )
+    gus.show(
+        [
+            f"Interpolated curve \nMax. distance {interp_errs[0]:.2f}, "
+            f"mean distance {interp_errs[1]:.2f}",
+            interpolated_curve,
+        ],
+        [
+            f"Approximated curve with {n_cps} CPs \nMax. distance "
+            f"{approx_errs[0]:.2f}, mean distance {approx_errs[1]:.2f}",
+            approximated_curve,
+        ],
+    )
 
     approximated_curves = []
 
@@ -80,17 +72,15 @@ if __name__ == "__main__":
             [n_cps, approximated_curve, [max_error, mean_error]]
         )
 
-    if gustaf_available:
-        gus_list = [
-            [
-                f"Approximated curve with {cps} CPs \n Max. "
-                f"distance {errs[0]:.2f}, mean distance {errs[1]:.2f}",
-                gus.BSpline(**curve.todict()),
-                verts,
-            ]
-            for (cps, curve, errs) in approximated_curves
+    gus_list = [
+        [
+            f"Approximated curve with {cps} CPs \n Max. "
+            f"distance {errs[0]:.2f}, mean distance {errs[1]:.2f}",
+            curve,
         ]
-        gus.show.show_vedo(*gus_list)
+        for (cps, curve, errs) in approximated_curves
+    ]
+    gus.show(*gus_list)
 
     # 2. Surface fitting
     n_sample = [20, 20]
@@ -126,22 +116,10 @@ if __name__ == "__main__":
         degree_v=2,
     )
 
-    if gustaf_available:
-        verts = gus.Vertices(target_points)
-        bspline = gus.BSpline(**interpolated_surface.todict())
-        gus.show.show_vedo(
-            ["Target points", verts],
-            [
-                "Interpolated surface",
-                gus.BSpline(**interpolated_surface.todict()),
-                verts,
-            ],
-            [
-                f"Approximated surface with ({n_cps}) CPs",
-                gus.BSpline(**approximated_surface.todict()),
-                verts,
-            ],
-        )
+    gus.show(
+        ["Interpolated surface", interpolated_surface],
+        [f"Approximated surface with ({n_cps}) CPs", approximated_surface],
+    )
 
     approximated_surfaces = []
     # The approximation error changes with the number of control points
@@ -165,15 +143,12 @@ if __name__ == "__main__":
             [n_cps, approximated_surface, [max_error, mean_error]]
         )
 
-    if gustaf_available:
-        verts = gus.Vertices(target_points)
-        gus_list = [
-            [
-                f"Approximated surface with {cps} CPs\n Max. distance "
-                f"{errs[0]:.2f}, mean distance {errs[1]:.2f}",
-                gus.BSpline(**surface.todict()),
-                verts,
-            ]
-            for (cps, surface, errs) in approximated_surfaces
+    gus_list = [
+        [
+            f"Approximated surface with {cps} CPs\n Max. distance "
+            f"{errs[0]:.2f}, mean distance {errs[1]:.2f}",
+            surface,
         ]
-        gus.show.show_vedo(*gus_list)
+        for (cps, surface, errs) in approximated_surfaces
+    ]
+    gus.show(*gus_list)
