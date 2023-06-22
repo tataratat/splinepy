@@ -676,6 +676,10 @@ class BSpline(BSplineBase):
         return fitted
 
     @property
+    def bspline(self):
+        return settings.NAME_TO_TYPE["BSpline"](spline=self)
+
+    @property
     def nurbs(self):
         """
         Returns NURBS version of current BSpline by defining all the weights as

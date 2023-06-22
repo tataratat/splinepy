@@ -20,22 +20,27 @@ def convert_and_compare_samples(spline, conversion_list):
 
 class SplineTypeConversionTest(c.unittest.TestCase):
     def setUp(self):
-        self.z, self.r, self.b, _ = c.all2p2d()
+        self.z, self.r, self.b, self.n = c.all2p2d()
 
     def test_bezier_conversions(self):
-        test_conversions = ["rationalbezier", "bspline", "nurbs"]
+        test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
 
         convert_and_compare_samples(self.z, test_conversions)
 
     def test_rational_bezier_conversions(self):
-        test_conversions = ["nurbs"]
+        test_conversions = ["rationalbezier", "nurbs"]
 
         convert_and_compare_samples(self.r, test_conversions)
 
     def test_bspline_conversions(self):
-        test_conversions = ["nurbs"]
+        test_conversions = ["bspline", "nurbs"]
 
         convert_and_compare_samples(self.b, test_conversions)
+
+    def test_nurbs_conversions(self):
+        test_conversions = ["nurbs"]
+
+        convert_and_compare_samples(self.n, test_conversions)
 
 
 if __name__ == "__main__":
