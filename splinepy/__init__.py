@@ -22,6 +22,7 @@ from splinepy.multipatch import Multipatch
 from splinepy.nurbs import NURBS
 from splinepy.rational_bezier import RationalBezier
 from splinepy.spline import Spline
+from splinepy.utils.data import SplineDataAdaptor
 
 # set NAME_TO_TYPE
 settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
@@ -66,6 +67,7 @@ __all__ = [
     "NURBS",
     "RationalBezier",
     "Spline",
+    "SplineDataAdaptor",
     "FFD",
     "load_splines",
     "load_solution",

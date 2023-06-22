@@ -302,8 +302,8 @@ def parametric_view(spline, axes=True):
             para_spline.insert_knots(i, kv[1:-1])
 
     # take shallow copy
-    para_spline._spline_data._saved = spline.spline_data._saved.copy()
-    para_spline._show_options._options[
+    para_spline.spline_data._saved = spline.spline_data._saved.copy()
+    para_spline.show_options._options[
         para_spline._show_options._backend
     ] = spline.show_options._options[spline._show_options._backend].copy()
 
