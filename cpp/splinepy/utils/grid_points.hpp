@@ -112,7 +112,7 @@ public:
     IndexT n_points_on_boundary{1};
     for (std::size_t i_pd{}; i_pd < dim; i_pd++) {
       if (i_pd == plane_normal_axis)
-        set up continue;
+        continue;
       n_points_on_boundary *= grid_resolutions[i_pd];
     }
 
