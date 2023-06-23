@@ -287,82 +287,82 @@ public:
     switch (para_dim) {
     case 1:
       switch (dim) {
-      case 1:
-        {auto bsparser = BSplineParser<1, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 2:
-        {auto bsparser = BSplineParser<1, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 3:
-        {auto bsparser = BSplineParser<1, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 4:
-        {auto bsparser = BSplineParser<1, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
+      case 1: {
+        auto bsparser = BSplineParser<1, 1>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 2: {
+        auto bsparser = BSplineParser<1, 2>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 3: {
+        auto bsparser = BSplineParser<1, 3>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 4: {
+        auto bsparser = BSplineParser<1, 4>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
       }
       break;
     case 2:
       switch (dim) {
-      case 1:
-        {auto bsparser = BSplineParser<2, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 2:
-        {auto bsparser = BSplineParser<2, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 3:
-        {auto bsparser = BSplineParser<2, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 4:
-        {auto bsparser = BSplineParser<2, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
+      case 1: {
+        auto bsparser = BSplineParser<2, 1>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 2: {
+        auto bsparser = BSplineParser<2, 2>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 3: {
+        auto bsparser = BSplineParser<2, 3>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 4: {
+        auto bsparser = BSplineParser<2, 4>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
       }
       break;
     case 3:
       switch (dim) {
-      case 1:
-        {auto bsparser = BSplineParser<3, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 2:
-        {auto bsparser = BSplineParser<3, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 3:
-        {auto bsparser = BSplineParser<3, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 4:
-        {auto bsparser = BSplineParser<3, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
+      case 1: {
+        auto bsparser = BSplineParser<3, 1>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 2: {
+        auto bsparser = BSplineParser<3, 2>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 3: {
+        auto bsparser = BSplineParser<3, 3>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 4: {
+        auto bsparser = BSplineParser<3, 4>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
       }
       break;
     case 4:
       switch (dim) {
-      case 1:
-        {auto bsparser = BSplineParser<4, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 2:
-        {auto bsparser = BSplineParser<4, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 3:
-        {auto bsparser = BSplineParser<4, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
-      case 4:
-        {auto bsparser = BSplineParser<4, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));}
-        break;
+      case 1: {
+        auto bsparser = BSplineParser<4, 1>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 2: {
+        auto bsparser = BSplineParser<4, 2>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 3: {
+        auto bsparser = BSplineParser<4, 3>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
+      case 4: {
+        auto bsparser = BSplineParser<4, 4>();
+        p_splines.append(bsparser.BsplineToDict(bspline));
+      } break;
       }
       break;
     }
@@ -380,82 +380,82 @@ public:
     switch (para_dim) {
     case 1:
       switch (dim) {
-      case 1:
-        {auto nparser = NurbsParser<1, 1>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 2:
-        {auto nparser = NurbsParser<1, 2>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 3:
-        {auto nparser = NurbsParser<1, 3>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 4:
-        {auto nparser = NurbsParser<1, 4>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
+      case 1: {
+        auto nparser = NurbsParser<1, 1>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 2: {
+        auto nparser = NurbsParser<1, 2>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 3: {
+        auto nparser = NurbsParser<1, 3>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 4: {
+        auto nparser = NurbsParser<1, 4>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
       }
       break;
     case 2:
       switch (dim) {
-      case 1:
-        {auto nparser = NurbsParser<2, 1>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 2:
-        {auto nparser = NurbsParser<2, 2>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 3:
-        {auto nparser = NurbsParser<2, 3>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 4:
-        {auto nparser = NurbsParser<2, 4>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
+      case 1: {
+        auto nparser = NurbsParser<2, 1>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 2: {
+        auto nparser = NurbsParser<2, 2>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 3: {
+        auto nparser = NurbsParser<2, 3>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 4: {
+        auto nparser = NurbsParser<2, 4>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
       }
       break;
     case 3:
       switch (dim) {
-      case 1:
-        {auto nparser = NurbsParser<3, 1>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 2:
-        {auto nparser = NurbsParser<3, 2>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 3:
-        {auto nparser = NurbsParser<3, 3>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 4:
-        {auto nparser = NurbsParser<3, 4>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
+      case 1: {
+        auto nparser = NurbsParser<3, 1>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 2: {
+        auto nparser = NurbsParser<3, 2>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 3: {
+        auto nparser = NurbsParser<3, 3>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 4: {
+        auto nparser = NurbsParser<3, 4>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
       }
       break;
     case 4:
       switch (dim) {
-      case 1:
-        {auto nparser = NurbsParser<4, 1>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 2:
-        {auto nparser = NurbsParser<4, 2>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 3:
-        {auto nparser = NurbsParser<4, 3>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
-      case 4:
-        {auto nparser = NurbsParser<4, 4>();
-        p_splines.append(nparser.NurbsToDict(nurbs));}
-        break;
+      case 1: {
+        auto nparser = NurbsParser<4, 1>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 2: {
+        auto nparser = NurbsParser<4, 2>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 3: {
+        auto nparser = NurbsParser<4, 3>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
+      case 4: {
+        auto nparser = NurbsParser<4, 4>();
+        p_splines.append(nparser.NurbsToDict(nurbs));
+      } break;
       }
       break;
     }
