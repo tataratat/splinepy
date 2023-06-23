@@ -113,8 +113,8 @@ public:
   virtual std::shared_ptr<CoordinateReferences_> SplinepyCoordinateReferences();
 
   /// @brief Parameter space AABB
-  /// @param p_bounds
-  virtual void SplinepyParametricBounds(double* p_bounds) const;
+  /// @param para_bounds
+  virtual void SplinepyParametricBounds(double* para_bounds) const;
 
   /// Control mesh resoltuons - number of control points per para dim
   /// @param control_mesh_res

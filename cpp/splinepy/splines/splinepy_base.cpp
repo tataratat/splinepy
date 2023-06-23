@@ -424,7 +424,7 @@ SplinepyBase::SplinepyCoordinateReferences() {
   return std::make_shared<SplinepyBase::CoordinateReferences_>();
 }
 
-void SplinepyBase::SplinepyParametricBounds(double* p_bounds) const {
+void SplinepyBase::SplinepyParametricBounds(double* para_bounds) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyParametricBounds not implemented for",
       SplinepyWhatAmI());
