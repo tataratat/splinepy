@@ -15,6 +15,7 @@
 #include <Sources/InputOutput/xml.hpp>
 #include <Sources/Splines/b_spline.hpp>
 #include <Sources/Utilities/named_type.hpp>
+#include <splinepy/utils/print.hpp>
 
 namespace splinepy::py {
 
@@ -303,6 +304,12 @@ public:
         auto bsparser = BSplineParser<1, 4>();
         p_splines.append(bsparser.BsplineToDict(bspline));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseBspline() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 2:
@@ -323,6 +330,12 @@ public:
         auto bsparser = BSplineParser<2, 4>();
         p_splines.append(bsparser.BsplineToDict(bspline));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseBspline() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 3:
@@ -343,6 +356,12 @@ public:
         auto bsparser = BSplineParser<3, 4>();
         p_splines.append(bsparser.BsplineToDict(bspline));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseBspline() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 4:
@@ -363,7 +382,19 @@ public:
         auto bsparser = BSplineParser<4, 4>();
         p_splines.append(bsparser.BsplineToDict(bspline));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseBspline() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
+      break;
+    default:
+      splinepy::utils::PrintAndThrowError(
+          "ParseBspline() does not support parametric dimension of ",
+          para_dim,
+          ". Only dimensions 1 to 4 are supported.");
       break;
     }
   }
@@ -396,6 +427,12 @@ public:
         auto nparser = NurbsParser<1, 4>();
         p_splines.append(nparser.NurbsToDict(nurbs));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseNurbs() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 2:
@@ -416,6 +453,12 @@ public:
         auto nparser = NurbsParser<2, 4>();
         p_splines.append(nparser.NurbsToDict(nurbs));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseNurbs() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 3:
@@ -436,6 +479,12 @@ public:
         auto nparser = NurbsParser<3, 4>();
         p_splines.append(nparser.NurbsToDict(nurbs));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseNurbs() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
       break;
     case 4:
@@ -456,7 +505,19 @@ public:
         auto nparser = NurbsParser<4, 4>();
         p_splines.append(nparser.NurbsToDict(nurbs));
       } break;
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "ParseNurbs() does not support physical dimension of ",
+            dim,
+            ". Only dimensions 1 to 4 are supported.");
+        break;
       }
+      break;
+    default:
+      splinepy::utils::PrintAndThrowError(
+          "ParseNurbs() does not support parametric dimension of ",
+          para_dim,
+          ". Only dimensions 1 to 4 are supported.");
       break;
     }
   }
