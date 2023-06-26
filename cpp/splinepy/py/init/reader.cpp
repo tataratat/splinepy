@@ -2,6 +2,6 @@
 
 namespace splinepy::py::init {
 
-void init_reader(py::module_& m) { AddSplineReader(m); }
+void init_reader(py::module_& m) { add_spline_reader(m); }
 
 } // namespace splinepy::py::init

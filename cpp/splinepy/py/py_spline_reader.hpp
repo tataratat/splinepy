@@ -15,6 +15,7 @@
 #include <Sources/InputOutput/xml.hpp>
 #include <Sources/Splines/b_spline.hpp>
 #include <Sources/Utilities/named_type.hpp>
+
 #include <splinepy/utils/print.hpp>
 
 namespace splinepy::py {
@@ -45,7 +46,7 @@ public:
 
   /// @brief Convert BSpline to Python dictionary
   /// @param bspline BSpline object
-  py::dict BsplineToDict(SplineEntry const& bspline) {
+  py::dict BSplineToDict(SplineEntry const& bspline) {
     int i, j;
 
     py::dict spline; //  to return
@@ -278,7 +279,7 @@ public:
 
   /// @brief Parse BSpline
   /// @param bspline BSpline object
-  void ParseBspline(SplineEntry const& bspline) {
+  void ParseBSpline(SplineEntry const& bspline) {
 
     // Get paradim and dim
     int const& para_dim = bspline->parametric_dimensionality_;
@@ -290,23 +291,23 @@ public:
       switch (dim) {
       case 1: {
         auto bsparser = BSplineParser<1, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 2: {
         auto bsparser = BSplineParser<1, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 3: {
         auto bsparser = BSplineParser<1, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 4: {
         auto bsparser = BSplineParser<1, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       default:
         splinepy::utils::PrintAndThrowError(
-            "ParseBspline() does not support physical dimension of ",
+            "ParseBSpline() does not support physical dimension of ",
             dim,
             ". Only dimensions 1 to 4 are supported.");
         break;
@@ -316,23 +317,23 @@ public:
       switch (dim) {
       case 1: {
         auto bsparser = BSplineParser<2, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 2: {
         auto bsparser = BSplineParser<2, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 3: {
         auto bsparser = BSplineParser<2, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 4: {
         auto bsparser = BSplineParser<2, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       default:
         splinepy::utils::PrintAndThrowError(
-            "ParseBspline() does not support physical dimension of ",
+            "ParseBSpline() does not support physical dimension of ",
             dim,
             ". Only dimensions 1 to 4 are supported.");
         break;
@@ -342,23 +343,23 @@ public:
       switch (dim) {
       case 1: {
         auto bsparser = BSplineParser<3, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 2: {
         auto bsparser = BSplineParser<3, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 3: {
         auto bsparser = BSplineParser<3, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 4: {
         auto bsparser = BSplineParser<3, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       default:
         splinepy::utils::PrintAndThrowError(
-            "ParseBspline() does not support physical dimension of ",
+            "ParseBSpline() does not support physical dimension of ",
             dim,
             ". Only dimensions 1 to 4 are supported.");
         break;
@@ -368,23 +369,23 @@ public:
       switch (dim) {
       case 1: {
         auto bsparser = BSplineParser<4, 1>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 2: {
         auto bsparser = BSplineParser<4, 2>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 3: {
         auto bsparser = BSplineParser<4, 3>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       case 4: {
         auto bsparser = BSplineParser<4, 4>();
-        p_splines.append(bsparser.BsplineToDict(bspline));
+        p_splines.append(bsparser.BSplineToDict(bspline));
       } break;
       default:
         splinepy::utils::PrintAndThrowError(
-            "ParseBspline() does not support physical dimension of ",
+            "ParseBSpline() does not support physical dimension of ",
             dim,
             ". Only dimensions 1 to 4 are supported.");
         break;
@@ -392,7 +393,7 @@ public:
       break;
     default:
       splinepy::utils::PrintAndThrowError(
-          "ParseBspline() does not support parametric dimension of ",
+          "ParseBSpline() does not support parametric dimension of ",
           para_dim,
           ". Only dimensions 1 to 4 are supported.");
       break;
@@ -541,7 +542,7 @@ public:
         ParseNurbs(spline);
       } else {
         // BSpline
-        ParseBspline(spline);
+        ParseBSpline(spline);
       }
     }
   }
@@ -569,7 +570,7 @@ py::list ReadIrit(std::string fname) {
 ///  @brief Adds spline reader. Keys are
 /// ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
 /// @param m Python module
-inline void AddSplineReader(py::module& m) {
+inline void add_spline_reader(py::module& m) {
   m.def("read_iges", &ReadIges, py::arg("fname"))
       .def("read_xml", &ReadXml, py::arg("fname"))
       .def("read_irit", &ReadIrit, py::arg("fname"));
