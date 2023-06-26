@@ -60,6 +60,8 @@ py::tuple uffpy(py::array_t<double> points, double tolerance, bool stable) {
   return py::make_tuple(np_newpoints, np_newpointmasks, np_inverse);
 }
 
+/// @brief Adds Python uffpy
+/// @param m Python module
 inline void add_uffpy(py::module& m) {
   m.def("uffpy",
         &splinepy::py::uffpy,

@@ -25,13 +25,20 @@ using RationalBezierSplineType = bezman::RationalBezierSpline<
     std::conditional_t<(dim > 1), bezman::Point<dim>, double>,
     double>;
 
+/// @brief Rational Bezier (Spline)
+/// @tparam para_dim
+/// @tparam dim
 template<std::size_t para_dim, std::size_t dim>
 class RationalBezier : public splinepy::splines::SplinepyBase,
                        public RationalBezierSplineType<para_dim, dim> {
 public:
+  /// @brief Parametric dimension
   static constexpr int kParaDim = static_cast<int>(para_dim);
+  /// @brief Physical dimension
   static constexpr int kDim = static_cast<int>(dim);
+  /// @brief True iff it is rational Bezier
   static constexpr bool kIsRational = true;
+  /// @brief True iff it has knot vectors
   static constexpr bool kHasKnotVectors = false;
 
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
@@ -54,6 +61,11 @@ public:
   using Proximity_ =
       splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
 
+  /// @brief Create base
+  /// @param degrees
+  /// @param control_points
+  /// @param weights
+  /// @return
   static Base_ CreateBase(const int* degrees,
                           const double* control_points,
                           const double* weights) {
@@ -85,55 +97,79 @@ public:
     return Base_(bm_degrees, bm_control_points, bm_weights);
   }
 
-  // rawptr based ctor
+  /// @brief Construct a new Rational Bezier spline based on raw pointer
+  /// @param degrees
+  /// @param control_points
+  /// @param weights
   RationalBezier(const int* degrees,
                  const double* control_points,
                  const double* weights)
       : Base_(CreateBase(degrees, control_points, weights)) {}
-  // base (copy) ctor
+  /// @brief  Base (copy) constructor
+  /// @param rhs
   RationalBezier(const Base_& rhs) : Base_(rhs){};
-  // inherit ctor
+  /// @brief Inherited constructor
   using Base_::Base_;
 
-  // function wrapper, also for helper functions.
+  /// @brief Function wrapper, also for helper functions. Evaluates query
+  /// parametric coordinate
+  /// @param query
   constexpr auto operator()(const ParametricCoordinate_& query) const {
     return Base_::Evaluate(query);
   }
 
+  /// @brief Evaluates derivative of spline
+  /// @param query
+  /// @param order
   constexpr auto operator()(const ParametricCoordinate_& query,
                             const Derivative_& order) const {
     return Base_::EvaluateDerivative(query, order);
   }
 
+  /// @brief Elevate degree
+  /// @param p_dim
   constexpr auto ElevateDegree(const Dimension_ p_dim) {
     return Base_::OrderElevateAlongParametricDimension(p_dim);
   }
 
   // required implementations
+  /// @brief Parametric dimension
   virtual int SplinepyParaDim() const { return kParaDim; }
 
+  /// @brief Physical dimension
   virtual int SplinepyDim() const { return kDim; }
 
+  /// @brief Name of Bezier curve
   virtual std::string SplinepySplineName() const { return "RationalBezier"; }
 
+  /// @brief  What am I?
+  /// @return String
   virtual std::string SplinepyWhatAmI() const {
     return "RationalBezier, parametric dimension: "
            + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
+  /// @brief Returns true iff Bezier curve has knot vectors
   virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
+  /// @brief Returns true iff Bezier curve is rational
+  /// @return Bool
   virtual bool SplinepyIsRational() const { return kIsRational; }
 
+  /// @brief Number of control points
+  /// @return int
   virtual int SplinepyNumberOfControlPoints() const {
     return static_cast<int>(Base_::GetWeightedControlPoints().size());
   }
 
+  /// @brief Number of supports
+  /// @return int
   virtual int SplinepyNumberOfSupports() const {
     return splinepy::splines::helpers::GetNumberOfSupports(*this);
   }
 
+  /// @brief Current properties
   virtual void SplinepyCurrentProperties(
       int* degrees,
       std::vector<std::vector<double>>* knot_vectors /* untouched */,
@@ -208,6 +244,10 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
+  /// @brief Calculate Greville abscissae for Rational Bezier
+  ///
+  /// @param[out] greville_abscissae pointer to solution
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,
@@ -577,10 +617,13 @@ public:
     return composition_derivative;
   }
 
+  /// @brief Get proximity
   constexpr Proximity_& GetProximity() { return *proximity_; }
+  /// @brief Get proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
 protected:
+  /// @brief Shared pointer to proximity
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
 
 }; /* class RationalBezier */

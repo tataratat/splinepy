@@ -78,57 +78,85 @@ public:
                                  const std::string description = "",
                                  const bool raise = false);
 
+  /// @brief Parametric dimension of spline
   virtual int SplinepyParaDim() const = 0;
+  /// @brief Physical dimension of spline
   virtual int SplinepyDim() const = 0;
+  /// @brief Returns name of spline
   virtual std::string SplinepySplineName() const = 0;
+  /// @brief What am I?
   virtual std::string SplinepyWhatAmI() const = 0;
+  /// @brief Returns true iff spline has knot vectors. Bezier splines don’t.
   virtual bool SplinepyHasKnotVectors() const = 0;
+  /// @brief Returns true iff spline is rational. NURBS is rational, for
+  /// example.
   virtual bool SplinepyIsRational() const = 0;
+  /// @brief Get number of control points
   virtual int SplinepyNumberOfControlPoints() const = 0;
+  /// @brief Get number of supports
   virtual int SplinepyNumberOfSupports() const = 0;
+  /// @brief Returns true iff spline is null-spline
   virtual bool SplinepyIsNull() const { return false; };
-  /// Extract core spline properties. Similar to previous update_p
+  /// @brief Extract core spline properties. Similar to previous update_p
+  /// @param degrees
+  /// @param knot_vectors
+  /// @param control_points
+  /// @param weights
   virtual void
   SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
 
+  /// @brief Returns reference to weighted control points
+  /// @return Shared pointer to control points
   virtual std::shared_ptr<CoordinateReferences_> SplinepyCoordinateReferences();
 
-  /// Parameter space AABB
-  virtual void SplinepyParametricBounds(double* p_bounds) const;
+  /// @brief Parameter space AABB
+  /// @param para_bounds
+  virtual void SplinepyParametricBounds(double* para_bounds) const;
 
   /// Control mesh resoltuons - number of control points per para dim
+  /// @param control_mesh_res
   virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const;
 
-  /**
-   * @brief Calculate greville abscissae for Spline (required for e.g.
-   * collocation)
-   *
-   * @param greville_abscissae[out] pointer to solution
-   * @param i_para_dim[in] parametric dimension
-   */
+  /// @brief Calculate Greville abscissae for Spline (required for e.g.
+  /// collocation)
+  ///
+  /// @param[out] greville_abscissae pointer to solution
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const;
 
-  /// Spline evaluation
+  /// @brief Evaluate spline
+  /// @param[in] para_coord Parametric coordinates
+  /// @param[out] evaluated
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const;
 
-  /// Spline derivatives
+  /// @brief Evaluate spline derivatives
+  /// @param[in] para_coord Parametric coordinates
+  /// @param[in] orders
+  /// @param[out] derived
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const;
 
-  /// Spline evaluation
+  /// @brief Evaluate jacobians on spline
+  /// @param[in] para_coord Parametric coordinates
+  /// @param[out] jacobian
   virtual void SplinepyJacobian(const double* para_coord,
                                 double* jacobian) const;
 
-  /// Basis Function values
+  /// @brief Retrieve basis
+  /// @param[in] para_coord Parametric coordinates
+  /// @param[out] basis
   virtual void SplinepyBasis(const double* para_coord, double* basis) const;
 
-  /// Basis Function derivative values
+  /// @brief Retrieve basis function derivative
+  /// @param[in] para_coord Parametric coordinates
+  /// @param[in] order
+  /// @param[out] basis
   virtual void SplinepyBasisDerivative(const double* para_coord,
                                        const int* order,
                                        double* basis) const;

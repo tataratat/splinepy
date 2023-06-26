@@ -9,6 +9,7 @@ namespace splinepy::utils {
 template<typename T>
 struct Reference {
   using Type_ = T;
+  /// @brief Reference to the value
   T& value_;
 };
 

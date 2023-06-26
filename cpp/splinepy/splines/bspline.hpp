@@ -14,17 +14,27 @@
 
 namespace splinepy::splines {
 
+/// @class BSpline
+/// @brief BSpline class
+/// @tparam para_dim Dimension of parametric space
+/// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class BSpline : public splinepy::splines::SplinepyBase,
                 public splinelib::sources::splines::BSpline<para_dim, dim> {
 public:
+  /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
+  /// @brief Dimension of physical space
   static constexpr int kDim = dim;
+  /// @brief It is not a rational spline
   static constexpr bool kIsRational = false;
+  /// @brief It has knot vectors
   static constexpr bool kHasKnotVectors = true;
 
-  // TODO remve afterwards
+  // TODO remove afterwards
+  /// @brief Dimension of parameter space
   constexpr static int para_dim_ = para_dim;
+  /// @brief Dimension of physical space
   constexpr static int dim_ = dim;
 
   // self
@@ -39,15 +49,25 @@ public:
   template<int b_para_dim, int b_dim>
   using BaseTemplate_ = splinelib::sources::splines::BSpline<b_para_dim, b_dim>;
   // parameter space
+  /// Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
+  /// Parameter space degrees
   using Degrees_ = typename ParameterSpace_::Degrees_;
+  /// Value type of parameter space degree
   using Degree_ = typename Degrees_::value_type;
+  /// Knot vectors
   using KnotVectors_ = typename ParameterSpace_::KnotVectors_;
+  /// Element type of knot vectors
   using KnotVector_ = typename KnotVectors_::value_type::element_type;
+  /// Knots
   using Knots_ = typename Base_::Base_::Knots_;
+  /// Knot
   using Knot_ = typename Base_::Knot_;
+  /// Knot ratios
   using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
+  /// Value type of knot ratios
   using KnotRatio_ = typename KnotRatios_::value_type;
+  /// Parametric coordinate
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
   using ScalarParametricCoordinate_ =
       typename ParametricCoordinate_::value_type;
@@ -134,50 +154,65 @@ public:
     return Base_(sl_parameter_space, sl_vector_space);
   }
 
-  // rawptr based ctor
+  /// @brief Constructor based on raw pointer
+  /// @param degrees
+  /// @param knot_vectors
+  /// @param control_points
   BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
           const double* control_points)
       : Base_(CreateBase(degrees, knot_vectors, control_points)) {}
-  // inherited ctor
+  /// Inherited constructor
   using Base_::Base_;
 
+  /// @brief Get the degree of the parameter space
   constexpr const Degrees_& GetDegrees() const {
     return GetParameterSpace().GetDegrees();
   };
 
+  /// @brief Get the knot vectors
   constexpr const KnotVectors_& GetKnotVectors() const {
     return GetParameterSpace().GetKnotVectors();
   }
 
+  /// @brief Get the coordinates
   constexpr const Coordinates_& GetCoordinates() const {
     return GetVectorSpace().GetCoordinates();
   }
 
   // required implementations
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyParaDim
   virtual int SplinepyParaDim() const { return kParaDim; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyDim
   virtual int SplinepyDim() const { return kDim; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
   virtual std::string SplinepySplineName() const { return "BSpline"; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyWhatAmI
   virtual std::string SplinepyWhatAmI() const {
     return "BSpline, parametric dimension: " + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyHasKnotVectors
   virtual bool SplinepyHasKnotVectors() const { return kHasKnotVectors; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyIsRational
   virtual bool SplinepyIsRational() const { return kIsRational; }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfControlPoints
   virtual int SplinepyNumberOfControlPoints() const {
     return GetVectorSpace().GetNumberOfCoordinates();
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfSupports
   virtual int SplinepyNumberOfSupports() const {
     return splinepy::splines::helpers::GetNumberOfSupports(*this);
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCurrentProperties
   virtual void
   SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
@@ -227,6 +262,7 @@ public:
     }
   }
 
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCoordinateReferences
   virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
   SplinepyCoordinateReferences() {
     // prepare return
@@ -245,7 +281,7 @@ public:
     }
     return ref_coordinates;
   }
-
+  /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds
   virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);
     for (std::size_t i{}; i < kParaDim; ++i) {
@@ -262,6 +298,10 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
+  /// @brief Calculate Greville abscissae for BSpline
+  ///
+  /// @param[out] greville_abscissae pointer to solution
+  /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
                                          const int& i_para_dim) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,
@@ -394,18 +434,23 @@ public:
     return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
   }
 
+  /// @brief Gets parameter space
   constexpr const ParameterSpace_& GetParameterSpace() const {
     return *Base_::Base_::parameter_space_;
   }
 
+  /// @brief Gets vector space
   constexpr const VectorSpace_& GetVectorSpace() const {
     return *Base_::vector_space_;
   }
 
+  /// @brief Gets proximity
   constexpr Proximity_& GetProximity() { return *proximity_; }
+  /// @brief Gets proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
 protected:
+  /// @brief Unique pointer to proximity
   std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
 };
 

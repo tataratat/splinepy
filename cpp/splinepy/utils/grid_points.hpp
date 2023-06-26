@@ -8,13 +8,20 @@
 
 namespace splinepy::utils {
 
+/// @brief Grid points class
+/// @tparam DataT
+/// @tparam IndexT
+/// @tparam dim
 template<typename DataT, typename IndexT, int dim>
 class GridPoints {
 public:
-  // could be useful for setting searchbounds aggresively
+  /// @brief Step size, could be useful for setting searchbounds aggressively
   std::array<DataT, dim> step_size_;
 
   GridPoints() = default;
+  /// @brief Constructor
+  /// @param bounds
+  /// @param resolutions
   GridPoints(const std::array<std::array<DataT, dim>, 2>& bounds,
              const std::array<IndexT, dim>& resolutions)
       : res_(resolutions),
@@ -34,10 +41,14 @@ public:
     len_times_dim_ = len_ * dim;
   }
 
+  /// @brief Get grid point from index
   const std::array<DataT, dim> operator[](const IndexT id) {
     return IndexToGridPoint<std::array<DataT, dim>>(id);
   }
 
+  /// @brief Get grid point from index
+  /// @param id
+  /// @return Grid point
   template<typename GridPointType>
   GridPointType IndexToGridPoint(const IndexT& id) const {
 
@@ -89,6 +100,10 @@ public:
     return saved_grid_points_;
   }
 
+  /// @brief Get global IDs
+  /// @param grid_resolutions
+  /// @param plane_normal_axis
+  /// @param plane_id
   static std::vector<IndexT>
   GridPointIdsOnHyperPlane(const std::array<IndexT, dim>& grid_resolutions,
                            const IndexT& plane_normal_axis,
@@ -130,6 +145,7 @@ public:
     return return_list;
   }
 
+  /// @brief Get IDs of grid points on the boundary
   static std::vector<IndexT>
   GridPointIdsOnBoundary(const std::array<IndexT, dim>& grid_resolutions,
                          const IndexT& plane_normal_axis,
@@ -141,8 +157,10 @@ public:
                                     plane_id);
   }
 
+  /// @brief Size
   IndexT Size() const { return len_; }
 
+  /// @brief Length
   IndexT Len() const { return len_; }
 
 private:
@@ -154,7 +172,7 @@ private:
   std::vector<DataT> saved_grid_points_;
 };
 
-/// CStyleArrayPointer based dynamic grid point sampler
+/// @brief CStyleArrayPointer based dynamic grid point sampler
 /// Values are kept as int since they come as int from python
 class CStyleArrayPointerGridPoints {
 public:
@@ -165,6 +183,10 @@ public:
     SetUp(dim, bounds, resolutions);
   }
 
+  /// @brief Set up resolutions and entries
+  /// @param dim
+  /// @param bounds
+  /// @param resolutions
   void SetUp(const int dim, const double* bounds, const int* resolutions) {
     dim_ = dim;
     len_ = 1;
@@ -225,13 +247,19 @@ public:
     }
   }
 
+  /// @brief Size
   int Size() const { return len_; }
 
 protected:
+  /// @brief Vector of bounds
   std::vector<double> bounds_;
+  /// @brief Vector of resolutions
   std::vector<int> resolutions_;
+  /// @brief Vector of vectors of entries
   std::vector<std::vector<double>> entries_;
+  /// @brief Length
   int len_;
+  /// @brief Dimension
   int dim_;
 };
 

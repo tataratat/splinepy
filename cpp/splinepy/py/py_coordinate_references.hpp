@@ -20,6 +20,8 @@ namespace py = pybind11;
 using CoordinateReferences =
     splinepy::splines::SplinepyBase::CoordinateReferences_;
 
+/// @brief Add coordinate reference Pyclass
+/// @param m
 inline void add_coordinate_references_pyclass(py::module_& m) {
   py::class_<CoordinateReferences, std::shared_ptr<CoordinateReferences>>
       klasse(m, "CoordinateReferences");

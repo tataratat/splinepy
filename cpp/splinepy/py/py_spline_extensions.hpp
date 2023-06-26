@@ -246,6 +246,8 @@ static std::shared_ptr<PySpline> CreateNullSpline(const int para_dim,
       splinepy::splines::kNullSplineLookup[para_dim - 1][dim - 1]);
 }
 
+/// @brief Adds Python spline extensions
+/// @param m Python module
 inline void add_spline_extensions(py::module& m) {
   m.def("insert_knots",
         &splinepy::py::InsertKnots,

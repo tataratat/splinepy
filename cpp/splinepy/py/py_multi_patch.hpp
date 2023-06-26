@@ -89,10 +89,9 @@ ToCoreSplineVector(py::list pysplines,
   return core_splines;
 }
 
-/// @brief
+/// @brief Converts a CoreSplineVector to a Python spline list
 /// @param splist
-/// @param nthreads
-/// @return
+/// @return py::list
 inline py::list ToPySplineList(CoreSplineVector& splist) {
   // prepare return obj
   const int n_splines = static_cast<int>(splist.size());
@@ -111,6 +110,7 @@ inline py::list ToPySplineList(CoreSplineVector& splist) {
 /// @brief raises if there's any mismatch between specified properties and all
 /// the entries in the vector.
 /// @param splist
+/// @param name
 /// @param para_dim
 /// @param dim
 /// @param degrees
@@ -263,7 +263,9 @@ inline void RaiseMismatch(const CoreSplineVector& splist,
 }
 
 /// @brief raises if there's any mismatch between two given vectors of splines.
-/// @param splist
+/// @param splist0
+/// @param splist1
+/// @param name
 /// @param para_dim
 /// @param dim
 /// @param degrees
@@ -415,6 +417,11 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
   splinepy::utils::PrintAndThrowError("Found mismatches.", mismatch_info);
 }
 
+/// @brief Get interfaces from boundary centers
+/// @tparam parametric_dimension
+/// @tparam physical_dimension
+/// @param py_center_vertices
+/// @param tolerance
 template<std::size_t parametric_dimension, std::size_t physical_dimension>
 py::array_t<int>
 InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
@@ -983,21 +990,19 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
   return py::array_t<int>();
 }
 
-/**
- * @brief Orientation between two adjacent splines
- *
- * If two splines share the same boundary this function retrieves their
- * orientation, by mapping the mappings of the parametric axis onto each other.
- * This is (among others) required for Gismo and Nutils export
- *
- * @param pyspline_start Spline object from start
- * @param boundary_start Boundary ID from start spline
- * @param pyspline_end Spline object from end *to which is mapped
- * @param boundary_end Boundary ID of adjacent spline
- * @param int_mappings_ptr (output) integer mappings
- * @param bool_orientations_ptr (output) axis alignement
- * @return void
- */
+/// @brief Orientation between two adjacent splines
+///
+/// If two splines share the same boundary this function retrieves their
+/// orientation, by mapping the mappings of the parametric axis onto each other.
+/// This is (among others) required for Gismo and Nutils export
+///
+/// @param pyspline_start Spline object from start
+/// @param boundary_start Boundary ID from start spline
+/// @param pyspline_end Spline object from end///to which is mapped
+/// @param boundary_end Boundary ID of adjacent spline
+/// @param tolerance Tolerance
+/// @param int_mappings_ptr (output) integer mappings
+/// @param bool_orientations_ptr (output) axis alignement
 void GetBoundaryOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
@@ -1105,18 +1110,16 @@ void GetBoundaryOrientation(
   }
 }
 
-/**
- * @brief Get the Boundary Orientations object
- *
- * @param spline_list
- * @param base_id
- * @param base_face_id
- * @param base_id
- * @param base_face_id
- * @param tolerance
- * @param n_threads
- * @return py::tuple
- */
+/// @brief Get the Boundary Orientations object
+///
+/// @param spline_list
+/// @param base_id
+/// @param base_face_id
+/// @param neighbor_id
+/// @param neighbor_face_id
+/// @param tolerance
+/// @param n_threads
+/// @return py::tuple
 py::tuple GetBoundaryOrientations(const py::list& spline_list,
                                   const py::array_t<int>& base_id,
                                   const py::array_t<int>& base_face_id,
@@ -1428,13 +1431,12 @@ py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
   }
 }
 
-/**
- * @brief Extract all Boundary Patches and store them in a python list
- *
- * @param spline_list List of splines
- * @param interfaces interfaces, with negative values for boundary elements
- * @return py::list
- */
+/// @brief Extract all Boundary Patches and store them in a python list
+///
+/// @param spline_list List of splines
+/// @param interfaces interfaces, with negative values for boundary elements
+/// @param n_threads Number of threads
+/// @return py::list
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
                                    const py::array_t<int>& interfaces,
                                    const int& n_threads) {
@@ -1748,10 +1750,10 @@ public:
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
 
-  // fields - raw list format
+  /// @brief Fields - raw list format
   py::list field_list_;
 
-  // fields - they are saved as multi-patches
+  /// @brief Fields - they are saved as multi-patches
   std::vector<std::shared_ptr<PyMultiPatch>> field_multi_patches_;
 
   /// default number of threads for all the operations besides queries
@@ -1773,7 +1775,10 @@ public:
   /// move ctor
   PyMultiPatch(PyMultiPatch&& other) noexcept = default;
 
-  /// list (iterable) init -> pybind will cast to list for us if needed
+  /// @brief list (iterable) init -> pybind will cast to list for us if needed
+  /// @param patches
+  /// @param n_default_threads
+  /// @param same_parametric_bounds
   PyMultiPatch(py::list& patches,
                const int n_default_threads = 1,
                const bool same_parametric_bounds = false)
@@ -1783,7 +1788,7 @@ public:
   }
 
   /// @brief Internal use only. used to save field splines.
-  /// @param patchces
+  /// @param patches
   /// @param n_default_threads
   /// @param para_dim_if_none
   /// @param dim_if_none
@@ -1805,6 +1810,7 @@ public:
   PyMultiPatch(std::shared_ptr<PyMultiPatch>& other)
       : PyMultiPatch(std::move(*other)) {}
 
+  /// @brief Gets core patches
   CorePatches_& CorePatches() {
     if (core_patches_.size() == 0) {
       splinepy::utils::PrintAndThrowError("No splines/patches set");
@@ -1812,6 +1818,7 @@ public:
     return core_patches_;
   }
 
+  /// @brief Clears
   void Clear() {
     patches_ = py::list();
     core_patches_ = CorePatches_{};
@@ -1879,7 +1886,6 @@ public:
   /// @param nthreads
   /// @param para_dim_if_none
   /// @param dim_if_none
-  /// @param check_conformity
   void SetPatchesWithNullSplines(py::list& patches,
                                  const int nthreads,
                                  const int para_dim_if_none,
@@ -1903,6 +1909,7 @@ public:
                   {},
                   nthreads);
   }
+  /// @brief Gets patches
   py::list GetPatches() { return patches_; }
 
   /// @brief returns sub patches as multi patches, uses default nthreads
@@ -2056,6 +2063,7 @@ public:
     return interfaces_;
   }
 
+  /// @brief Gets IDs of boundary patch
   py::array_t<int> BoundaryPatchIds() {
     // return if it exists
     if (boundary_patch_ids_.size() != 0) {
@@ -2088,6 +2096,7 @@ public:
     return boundary_patch_ids_;
   }
 
+  /// @brief Gets boundary multi patch
   std::shared_ptr<PyMultiPatch> BoundaryMultiPatch() {
     // return early if exists
     if (boundary_multi_patch_) {
@@ -2133,6 +2142,9 @@ public:
   /// @return
   py::object PyBoundaryMultiPatch() { return ToDerived(BoundaryMultiPatch()); }
 
+  /// @brief Evaluate at query points
+  /// @param queries Query points
+  /// @param nthreads Number of threads to use
   py::array_t<double> Evaluate(py::array_t<double> queries,
                                const int nthreads) {
     // use first spline as dimension guide line
@@ -2169,6 +2181,10 @@ public:
     return evaluated;
   }
 
+  /// @brief Sample multi patch
+  /// @param resolution
+  /// @param nthreads Number of threads to use
+  /// @param same_parametric_bounds
   py::array_t<double> Sample(const int resolution,
                              const int nthreads,
                              const bool same_parametric_bounds) {
@@ -2283,6 +2299,13 @@ public:
     return sampled;
   }
 
+  /// @brief Adds fields
+  /// @param fields
+  /// @param check_name
+  /// @param check_dims
+  /// @param check_degrees
+  /// @param check_control_mesh_resolutions
+  /// @param nthreads
   void AddFields(py::list& fields,
                  const bool check_name,
                  const bool check_dims,
@@ -2347,9 +2370,13 @@ public:
     field_list_ += fields;
   }
 
+  /// @brief Gets list of fields
   py::list GetFields() { return field_list_; }
 };
 
+/// @brief Add multi patch.
+/// Returns [connectivity, vertex_ids, edge_information, boundaries]
+/// @param m
 inline void add_multi_patch(py::module& m) {
 
   // returns [connectivity, vertex_ids, edge_information, boundaries]

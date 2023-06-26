@@ -149,6 +149,8 @@ void ExportVtk(std::string fname,
   splinelib::sources::input_output::vtk::Sample(sl_io_splines, fname, sl_rps);
 }
 
+/// @brief Adds Python spline exporter
+/// @param m Python module
 inline void add_spline_exporter(py::module& m) {
 
   m.def("export_iges",

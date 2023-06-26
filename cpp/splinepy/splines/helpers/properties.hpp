@@ -60,6 +60,11 @@ GetControlMeshResolutions(const SplineType& spline) {
   return control_mesh_res;
 }
 
+/// @brief Computes Greville Abscissae
+/// @tparam SplineType
+/// @param[in] spline
+/// @param[out] greville_abscissae
+/// @param[in] i_para_dim
 template<typename SplineType>
 inline void GetGrevilleAbscissae(const SplineType& spline,
                                  double* greville_abscissae,
