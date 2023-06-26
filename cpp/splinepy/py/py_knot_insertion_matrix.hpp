@@ -5,7 +5,7 @@
 
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
-#include "splinepy/splines/helpers.hpp"
+#include "splinepy/splines/helpers/extract_bezier_patches.hpp"
 #include "splinepy/utils/print.hpp"
 
 /// @brief
@@ -457,9 +457,9 @@ py::tuple BezierExtractionMatrices(const py::list& old_kvs,
   // Lastly, compute the bezier extraction points, that correspond to the global
   // matrix.
   const auto& list_of_ids =
-      splines::ExtractBezierPatchIDs(degrees_ptr,
-                                     n_patches_per_dimension.data(),
-                                     n_para_dims);
+      splines::helpers::ExtractBezierPatchIDs(degrees_ptr,
+                                              n_patches_per_dimension.data(),
+                                              n_para_dims);
   const std::size_t n_patches = list_of_ids.size();
   const std::size_t n_ctps_per_patch = list_of_ids[0].size();
   py::array_t<int> bezier_ctps_ids(n_ctps_per_patch * n_patches);
