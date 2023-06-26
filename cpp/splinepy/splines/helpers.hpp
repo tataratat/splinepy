@@ -6,6 +6,7 @@
 #include "bezman/src/bezier_spline.hpp"
 #include "bezman/src/point.hpp"
 #include "bezman/src/rational_bezier_spline.hpp"
+#include "splinepy/splines/bspline.hpp"
 #include "splinepy/splines/type_identifier.hpp"
 
 namespace splinepy::splines {
@@ -72,7 +73,7 @@ ExtractBezierPatchIDs(const int* degrees,
   std::vector<std::size_t> bezier_index_offsets{};
   bezier_index_offsets.reserve(para_dim);
   bezier_index_offsets.push_back(1);
-  for (std::size_t i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
+  for (int i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
     n_total_patches *= n_patches_per_para_dim[i_para_dim];
     n_ctps_per_patch *= degrees[i_para_dim] + 1;
     bezier_index_offsets.push_back(bezier_index_offsets[i_para_dim - 1]
@@ -102,12 +103,11 @@ ExtractBezierPatchIDs(const int* degrees,
     ids.reserve(n_ctps_per_patch);
 
     // Extract relevant coordinates
-    for (std::size_t i_local_id{}; i_local_id < n_ctps_per_patch;
-         i_local_id++) {
+    for (int i_local_id{}; i_local_id < n_ctps_per_patch; i_local_id++) {
       int global_id{};
       int n_ctps_in_previous_layers{1};
       // Determine index of local point in global spline
-      for (std::size_t i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
+      for (int i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
         // First id in local system
         const int local_id = (i_local_id / bezier_index_offsets[i_para_dim])
                              % (degrees[i_para_dim] + 1);
@@ -205,7 +205,7 @@ auto ExtractBezierPatches(SplineType& input) {
     // Extract relevant coordinates
     for (std::size_t i_local_id{}; i_local_id < n_ctps_per_patch;
          i_local_id++) {
-      const global_id = local_ids[i_local_id];
+      const std::size_t global_id = local_ids[i_local_id];
       // Retrieve Control Point
       PointType point{};
       // Check if scalar (double instead of array)

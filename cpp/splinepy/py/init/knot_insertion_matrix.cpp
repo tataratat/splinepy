@@ -17,6 +17,11 @@ void init_knot_insertion_matrix(py::module_& m) {
         py::arg("para_dim"),
         py::arg("new_knots"),
         py::arg("tolerance"));
+  m.def("bezier_extraction_matrix",
+        &splinepy::py::BezierExtractionMatrices,
+        py::arg("old_knot_vectors"),
+        py::arg("degrees"),
+        py::arg("tolerance"));
 }
 
 } // namespace splinepy::py::init

@@ -5,6 +5,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include <splinepy/splines/helpers.hpp>
 #include <splinepy/utils/print.hpp>
 
 /// @brief
@@ -339,5 +340,111 @@ py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
   return py::make_tuple(
       py::make_tuple(values, py::make_tuple(rows, cols)),
       py::make_tuple(static_cast<int>(n_cps_new), static_cast<int>(n_cps_old)));
+}
+
+/**
+ * @brief  Helper function to provide all necessary information to assemble and
+ * compute the bezier extraction matrix, that links all control points to the
+ * set of individual bezier patches
+ *
+ */
+py::tuple BezierExtractionMatrices(const py::list& old_kvs,
+                                   const py::array_t<int>& degrees,
+                                   const double& tolerance) {
+  // Create aliases
+  const int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
+  const size_t n_para_dims = static_cast<size_t>(degrees.size());
+
+  // Given a knot vector function provides a new knot vector in python format
+  // that can represents the c^(-1) links
+  auto create_new_knot_vector = [&](const py::array_t<double>& old_kv,
+                                    const int& deg) -> py::array_t<double> {
+    // allocate maximum required space for initialization
+    const int old_kv_size = old_kv.size();
+    const int max_kv_size = (old_kv_size - (deg + 1) * 2) * deg + (deg + 1) * 2;
+    py::array_t<double> return_kv(max_kv_size);
+    double* return_kv_ptr = static_cast<double*>(return_kv.request().ptr);
+    double* old_kv_ptr = static_cast<double*>(old_kv.request().ptr);
+    int i_k_new{}, i_k_old{}, ref_count{};
+    double c_knot{old_kv_ptr[0]};
+    while (i_k_old < old_kv_size) {
+      // If a jump to a new knot vector is a valid choice, we can update our
+      // current knot reference
+      if (ref_count > deg) {
+        c_knot = old_kv_ptr[i_k_old];
+        ref_count = 1;
+      }
+
+      if (std::abs(c_knot - old_kv_ptr[i_k_old]) < tolerance) {
+        // Knot vector has not changed
+        return_kv_ptr[i_k_new] = c_knot;
+        ref_count++;
+        i_k_old++;
+        i_k_new++;
+        std::cout << "First case ! " << std::flush;
+      } else {
+        // Knot vector has changed
+        return_kv_ptr[i_k_new] = c_knot;
+        i_k_new++;
+        ref_count++;
+      }
+      std::cout << "Added knot : " << c_knot << std::endl;
+    }
+    return_kv.resize({i_k_new});
+    return return_kv;
+  };
+
+  // Initialize the return value
+  py::list list_of_tuples{};
+  // Copy list of kvs
+  py::list copy_of_old_kv{};
+
+  for (std::size_t parametric_dimension{}; parametric_dimension < n_para_dims;
+       parametric_dimension++) {
+    copy_of_old_kv.append(
+        py::cast<py::array_t<double>>(old_kvs[parametric_dimension]));
+  }
+  // Here we compute the individual components that are required to initialize
+  // the sparse matrices in the python frontend
+  std::vector<int> n_patches_per_dimension{};
+  n_patches_per_dimension.reserve(n_para_dims);
+  for (std::size_t parametric_dimension{}; parametric_dimension < n_para_dims;
+       parametric_dimension++) {
+    const auto& new_kv = create_new_knot_vector(
+        py::cast<py::array_t<double>>(copy_of_old_kv[parametric_dimension]),
+        degrees_ptr[parametric_dimension]);
+    n_patches_per_dimension.push_back(
+        (new_kv.size() - degrees_ptr[parametric_dimension] - 2)
+        / degrees_ptr[parametric_dimension]);
+
+    // Add data to list
+    list_of_tuples.append(ComputeGlobalKnotInsertionMatrix(copy_of_old_kv,
+                                                           degrees,
+                                                           parametric_dimension,
+                                                           new_kv,
+                                                           tolerance));
+    copy_of_old_kv[parametric_dimension] = new_kv;
+  }
+
+  // Lastly, compute the bezier extraction points, that correspond to the global
+  // matrix.
+  const auto& list_of_ids =
+      splines::ExtractBezierPatchIDs(degrees_ptr,
+                                     n_patches_per_dimension.data(),
+                                     n_para_dims);
+  const std::size_t n_patches = list_of_ids.size();
+  const std::size_t n_ctps_per_patch = list_of_ids[0].size();
+  py::array_t<int> bezier_ctps_ids(n_ctps_per_patch * n_patches);
+  int* bezier_ctps_ids_ptr = static_cast<int*>(bezier_ctps_ids.request().ptr);
+  for (std::size_t i_patch{}; i_patch < n_patches; i_patch++) {
+    for (std::size_t j_id{}; j_id < n_ctps_per_patch; j_id++) {
+      bezier_ctps_ids_ptr[i_patch * n_ctps_per_patch + j_id] =
+          list_of_ids[i_patch][j_id];
+    }
+  }
+
+  bezier_ctps_ids.resize(
+      {static_cast<int>(n_ctps_per_patch), static_cast<int>(n_patches)});
+  return py::make_tuple(bezier_ctps_ids, list_of_tuples);
 }
 } // namespace splinepy::py

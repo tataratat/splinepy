@@ -74,35 +74,12 @@ class BSplineBase(spline.Spline):
         """
         Inserts knots.
 
-        Matrix can be used to multiply old control points in multi-query
-        scenarios. It describes the relation between the old and new control
-        points
-
-        .. math::
-          c_{new}^i = A c_{old}^i
-
-        Usage:
-
-        .. code-block:: python
-
-            bspline_ref = bspline.copy()
-            matrix = bspline.insert_knots(0, [0.3, 0.5], return_matrix=True)
-            np.allclose(
-                bspline.control_points,
-                matrix @ bspline_ref.control_points
-            )
-
-
         Parameters
         -----------
         parametric_dimension: int
           parametric axis, wehre knots are to be inserted
         knots: list or float
           list of new knots to be inserted into the parametric domain
-        return_matrix : bool
-          Deicides if the knot insertion matrix is returned or not. If
-          available matrix will be returned in sparse scipy format, if not, the
-          a dense numpy matrix will be returned
 
         Returns
         --------
@@ -133,10 +110,81 @@ class BSplineBase(spline.Spline):
         self._logd(f"Inserted {len(knots)} knot(s).")
 
         self._data = spline._default_data()
-        if return_matrix:
-            return matrix
 
         return inserted
+
+    @spline._new_core_if_modified
+    def knot_insertion_matrix(
+        self, parametric_dimension=None, knots=None, bezier=False
+    ):
+        """
+        Returns knot insertion matrix for a given set of knots in a specific
+        parametric domain, if bezier flag is set, returns matrix, that creates
+        C^(-1) spline spaces.
+
+        Matrix can be used to multiply old control points in multi-query
+        scenarios. It describes the relation between the old and new control
+        points
+
+        .. math::
+          c_{new}^i = A c_{old}^i
+
+        Usage:
+
+        .. code-block:: python
+
+            matrix = spline.knot_insertion_matrix(0, [0.1, 0.2])
+            spline_copy = spline.copy()
+            spline_copy.insert_knots(0, [0.1, 0.2])
+            np.allclose(
+                    spline_copy.control_points,
+                    matrix @ spline.control_points
+            )
+
+        Parameters
+        ----------
+        parametric_dimension : int
+          parametric dimension along which knots are to be inserted
+        knots : array-like
+          list of new knots
+        beziers : bool (optional)
+          if set, all other arguments are ignored. Return matrix will represent
+          bezier extraction operation
+
+        Returns
+        -------
+        matrix : array-like
+          Matrix type (scipy sparse if available, else returns full matrix in
+          numpy format). Matrix that represents knot insertion. See knot
+          insertion for more details
+        """
+        if bezier:
+            indices, data = splinepy_core.bezier_extraction_matrix(
+                self.knot_vectors,
+                self.degrees,
+                settings.TOLERANCE,
+            )
+            if has_scipy:
+                matrix = scipy.sparse.csr_matrix(data[0], shape=data[1])
+            else:
+                matrix = np.zeros(data[1])
+                matrix[data[0][1][0], data[0][1][1]] = data[0][0]
+
+
+        data = splinepy_core.global_knot_insertion_matrix(
+            self.knot_vectors,
+            self.degrees,
+            parametric_dimension,
+            utils.data.enforce_contiguous(knots, dtype="float64"),
+            settings.TOLERANCE,
+        )
+        if has_scipy:
+            matrix = scipy.sparse.csr_matrix(data[0], shape=data[1])
+        else:
+            matrix = np.zeros(data[1])
+            matrix[data[0][1][0], data[0][1][1]] = data[0][0]
+
+        return matrix
 
     def remove_knots(self, parametric_dimension, knots, tolerance=None):
         """
