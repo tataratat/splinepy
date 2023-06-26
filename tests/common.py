@@ -252,12 +252,21 @@ def bspline_3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
         control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
+        knot_vectors=knot_vectors_3d,
     )
 
 
 def n3p3d():
     return dict(
+        degrees=[1, 1, 1],
+        control_points=control_points_splines_3d,
+        weights=[1.0] * len(control_points_splines_3d),
+        knot_vectors=knot_vectors_3d,
+    )
+
+
+def nurbs_3d():
+    return splinepy.NURBS(
         degrees=[1, 1, 1],
         control_points=control_points_splines_3d,
         weights=[1.0] * len(control_points_splines_3d),
@@ -453,3 +462,5 @@ class SplineBasedTestCase(unittest.TestCase):
         self.ref_rational = rational_bezier_2d()
         self.bezier_3d = bezier_3d()
         self.rational_3d = rational_bezier_3d()
+        self.bspline_3d = bspline_3d()
+        self.nurbs_3d = nurbs_3d()
