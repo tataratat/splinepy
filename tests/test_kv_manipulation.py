@@ -84,38 +84,27 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         b_spline_knots_0 = c.np.random.rand(8)
         b_spline_knots_1 = c.np.random.rand(9)
         matrix_bspline = self.bspline.knot_insertion_matrix(
-            0, b_spline_knots_0)
+            0, b_spline_knots_0
+        )
         self.bspline.insert_knots(
-            0, b_spline_knots_0, 
+            0,
+            b_spline_knots_0,
         )
         matrix_bspline = (
-            self.bspline.knot_insertion_matrix(
-                1, b_spline_knots_1
-            )
+            self.bspline.knot_insertion_matrix(1, b_spline_knots_1)
             @ matrix_bspline
         )
-        self.bspline.insert_knots(
-            1, b_spline_knots_1
-        )
+        self.bspline.insert_knots(1, b_spline_knots_1)
 
         # NURBS Data
         nurbs_knots_0 = c.np.random.rand(10)
         nurbs_knots_1 = c.np.random.rand(11)
-        matrix_nurbs = self.nurbs.knot_insertion_matrix(
-            0, nurbs_knots_0
-        )
-        self.nurbs.insert_knots(
-            0, nurbs_knots_0
-        )
+        matrix_nurbs = self.nurbs.knot_insertion_matrix(0, nurbs_knots_0)
+        self.nurbs.insert_knots(0, nurbs_knots_0)
         matrix_nurbs = (
-            self.nurbs.knot_insertion_matrix(
-                1, nurbs_knots_1
-            )
-            @ matrix_nurbs
+            self.nurbs.knot_insertion_matrix(1, nurbs_knots_1) @ matrix_nurbs
         )
-        self.nurbs.insert_knots(
-            1, nurbs_knots_1
-        )
+        self.nurbs.insert_knots(1, nurbs_knots_1)
 
         # use random query points
         q2D = c.np.random.rand(50, 2)

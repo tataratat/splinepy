@@ -115,7 +115,7 @@ class BSplineBase(spline.Spline):
 
     @spline._new_core_if_modified
     def knot_insertion_matrix(
-        self, parametric_dimension=None, knots=None, bezier=False
+        self, parametric_dimension=None, knots=None, beziers=False
     ):
         """
         Returns knot insertion matrix for a given set of knots in a specific
@@ -158,19 +158,34 @@ class BSplineBase(spline.Spline):
           numpy format). Matrix that represents knot insertion. See knot
           insertion for more details
         """
-        if bezier:
+        if beziers:
             indices, data = splinepy_core.bezier_extraction_matrix(
                 self.knot_vectors,
                 self.degrees,
                 settings.TOLERANCE,
             )
-            if has_scipy:
-                matrix = scipy.sparse.csr_matrix(data[0], shape=data[1])
-            else:
-                matrix = np.zeros(data[1])
-                matrix[data[0][1][0], data[0][1][1]] = data[0][0]
-            
 
+            # Indices represents the relevant ctps whereas data is a list of
+            # all matrix information
+            # 1. Create a list of matrices
+            matrices = []
+            for m_data in data:
+                if has_scipy:
+                    matrix = scipy.sparse.csr_matrix(
+                        m_data[0], shape=m_data[1]
+                    )
+                else:
+                    matrix = np.zeros(m_data[1])
+                    matrix[m_data[0][1][0], m_data[0][1][1]] = m_data[0][0]
+                matrices.append(matrix)
+            #  2. Create global matrix
+            matrix = matrices[0]
+            for n_mat in matrices[1:]:
+                matrix = n_mat @ matrix
+
+            # 3. Extract Bezier Extraction matrices
+            matrices = [matrix[ids, :] for ids in indices]
+            return matrices
 
         data = splinepy_core.global_knot_insertion_matrix(
             self.knot_vectors,
@@ -269,7 +284,7 @@ class BSplineBase(spline.Spline):
         extracted Beziers : list
         """
         # Extract bezier patches and create PyRationalBezier objects
-        patches = splinepy_core.extract_bezier_patches(self)
+        patches = splinepy_core.extract_bezier_patches(self.copy())
 
         # use core spline based init and name to type conversion to find
         # correct types

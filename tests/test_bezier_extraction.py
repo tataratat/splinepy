@@ -5,9 +5,9 @@ except BaseException:
 
 
 class BezierExtractionTest(c.unittest.TestCase):
-    def test_greville_points(self):
+    def test_extraction(self):
         """
-        test permute
+        test the extraction of beziers
         """
         # Define some splines
         b = c.splinepy.BSpline(
@@ -39,6 +39,25 @@ class BezierExtractionTest(c.unittest.TestCase):
                     n.evaluate(queries + offset),
                     n_beziers[offset].evaluate(queries),
                 )
+            )
+
+    def test_extraction_matrices(self):
+        """Create matrices to extract splines"""
+        # Init splines
+        bspline = c.splinepy.BSpline(**c.b3P3D)
+        bspline.elevate_degrees([0, 1, 2])
+        bspline.insert_knots(0, c.np.random.rand(3))
+        bspline.insert_knots(1, c.np.random.rand(3))
+        bspline.insert_knots(2, c.np.random.rand(3))
+        # nurbs = c.n2P2D.copy()
+
+        # Extract splines
+        beziers_b = bspline.extract_bezier_patches()
+        b_matrices = bspline.knot_insertion_matrix(beziers=True)
+        for m, b in zip(b_matrices, beziers_b):
+            # Test matrices m against spline ctps
+            self.assertTrue(
+                c.np.allclose(b.control_points, m @ bspline.control_points)
             )
 
 
