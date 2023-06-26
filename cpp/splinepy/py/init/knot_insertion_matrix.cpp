@@ -3,25 +3,7 @@
 namespace splinepy::py::init {
 
 void init_knot_insertion_matrix(py::module_& m) {
-  // Functions that return fitted bspline as dict.
-  m.def("knot_insertion_matrix",
-        &splinepy::py::ComputeKnotInsertionMatrix,
-        py::arg("old_knot_vector"),
-        py::arg("new_knot_vector"),
-        py::arg("degree"),
-        py::arg("tolerance"));
-  m.def("global_knot_insertion_matrix",
-        &splinepy::py::ComputeGlobalKnotInsertionMatrix,
-        py::arg("old_knot_vectors"),
-        py::arg("degrees"),
-        py::arg("para_dim"),
-        py::arg("new_knots"),
-        py::arg("tolerance"));
-  m.def("bezier_extraction_matrix",
-        &splinepy::py::BezierExtractionMatrices,
-        py::arg("old_knot_vectors"),
-        py::arg("degrees"),
-        py::arg("tolerance"));
+  add_knot_insertion_matrix(m);
 }
 
 } // namespace splinepy::py::init

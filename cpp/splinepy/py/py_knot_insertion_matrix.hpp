@@ -475,4 +475,26 @@ py::tuple BezierExtractionMatrices(const py::list& old_kvs,
       {static_cast<int>(n_patches), static_cast<int>(n_ctps_per_patch)});
   return py::make_tuple(bezier_ctps_ids, list_of_tuples);
 }
+
+// Provide function to add to module
+inline void add_knot_insertion_matrix(py::module& m) {
+  m.def("knot_insertion_matrix",
+        &splinepy::py::ComputeKnotInsertionMatrix,
+        py::arg("old_knot_vector"),
+        py::arg("new_knot_vector"),
+        py::arg("degree"),
+        py::arg("tolerance"));
+  m.def("global_knot_insertion_matrix",
+        &splinepy::py::ComputeGlobalKnotInsertionMatrix,
+        py::arg("old_knot_vectors"),
+        py::arg("degrees"),
+        py::arg("para_dim"),
+        py::arg("new_knots"),
+        py::arg("tolerance"));
+  m.def("bezier_extraction_matrix",
+        &splinepy::py::BezierExtractionMatrices,
+        py::arg("old_knot_vectors"),
+        py::arg("degrees"),
+        py::arg("tolerance"));
+}
 } // namespace splinepy::py
