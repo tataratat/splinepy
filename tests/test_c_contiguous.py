@@ -9,27 +9,19 @@ class ContiguousArrayInputTest(c.unittest.TestCase):
         """
         Test whether cpp sides receives contiguous array
         """
-        spl_ts = (
-            c.splinepy.Bezier,
-            c.splinepy.RationalBezier,
-            c.splinepy.BSpline,
-            c.splinepy.NURBS,
-        )
-        spl_props = (c.z2P2D, c.r2P2D, c.b2P2D, c.n2P2D)
 
-        for spline_t, props in zip(spl_ts, spl_props):
-            p = props.copy()  # create shallow copy of the dict
-
+        for spl, props in zip(
+            c.get_all_spline_typs_as_list(),
+            c.get_all_splines_as_dict_as_list(),
+        ):
             # make f contiguous
-            f_contig_orig = c.np.asarray(p["control_points"], order="F")
+            f_contig_orig = c.np.asarray(props["control_points"], order="F")
             assert not f_contig_orig.flags["C_CONTIGUOUS"]
             assert f_contig_orig.flags["F_CONTIGUOUS"]
 
             # set non contiguous array as prop
-            p["control_points"] = f_contig_orig
+            props["control_points"] = f_contig_orig
 
-            # initialize spl
-            spl = spline_t(**props)
             # check round_trip cps
             round_trip_cps = spl.cps
 
