@@ -397,14 +397,13 @@ py::tuple BezierExtractionMatrices(const py::list& old_kvs,
       if (std::abs(c_knot - old_kv_ptr[i_k_old]) < tolerance) {
         // Knot vector has not changed
         return_kv_ptr[i_k_new] = c_knot;
-        new_knots_ptr[i_k_new - i_k_old] = c_knot;
         ref_count++;
         i_k_old++;
         i_k_new++;
       } else {
         // Knot vector has changed
         return_kv_ptr[i_k_new] = c_knot;
-
+        new_knots_ptr[i_k_new - i_k_old] = c_knot;
         i_k_new++;
         ref_count++;
       }

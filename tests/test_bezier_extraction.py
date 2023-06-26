@@ -15,10 +15,11 @@ class BezierExtractionTest(c.unittest.TestCase):
             degrees=[2],
             control_points=c.np.random.rand(7, 2),
         )
-        n = c.splinepy.BSpline(
+        n = c.splinepy.NURBS(
             knot_vectors=[[0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 4, 4]],
             degrees=[3],
             control_points=c.np.random.rand(8, 2),
+            weights=c.np.random.rand(8, 1),
         )
 
         # Extract Beziers
@@ -41,23 +42,61 @@ class BezierExtractionTest(c.unittest.TestCase):
                 )
             )
 
-    def test_extraction_matrices(self):
+    def test_extraction_matrice_bspline_3D(self):
         """Create matrices to extract splines"""
-        # Init splines
+        # Init b-splines
         bspline = c.splinepy.BSpline(**c.b3P3D)
         bspline.elevate_degrees([0, 1, 2])
         bspline.insert_knots(0, c.np.random.rand(3))
         bspline.insert_knots(1, c.np.random.rand(3))
         bspline.insert_knots(2, c.np.random.rand(3))
-        # nurbs = c.n2P2D.copy()
 
         # Extract splines
+        # BSpline
         beziers_b = bspline.extract_bezier_patches()
         b_matrices = bspline.knot_insertion_matrix(beziers=True)
         for m, b in zip(b_matrices, beziers_b):
             # Test matrices m against spline ctps
             self.assertTrue(
                 c.np.allclose(b.control_points, m @ bspline.control_points)
+            )
+
+    def test_extraction_matrice_bspline_2D(self):
+        """Create matrices to extract splines"""
+
+        # Init nurbs
+        bspline = c.splinepy.BSpline(**c.b2P2D.copy())
+        bspline.elevate_degrees([0, 1])
+        bspline.insert_knots(0, c.np.random.rand(3))
+        bspline.insert_knots(1, c.np.random.rand(3))
+        # NURBS
+        n_matrices = bspline.knot_insertion_matrix(beziers=True)
+        beziers_n = bspline.extract_bezier_patches()
+        for m, b in zip(n_matrices, beziers_n):
+            # Test matrices m against spline ctps
+            self.assertTrue(
+                c.np.allclose(b.control_points, m @ bspline.control_points)
+            )
+
+    def test_extraction_matrice_nurbs_2D(self):
+        """Create matrices to extract splines"""
+
+        # Init nurbs
+        nurbs = c.splinepy.NURBS(**c.n2P2D.copy())
+        nurbs.elevate_degrees([0, 1])
+        nurbs.insert_knots(0, c.np.random.rand(3))
+        nurbs.insert_knots(1, c.np.random.rand(3))
+        # NURBS
+        n_matrices = nurbs.knot_insertion_matrix(beziers=True)
+        beziers_n = nurbs.extract_bezier_patches()
+        for m, b in zip(n_matrices, beziers_n):
+            # Test matrices m against spline ctps
+            self.assertTrue(c.np.allclose(b.weights, m @ nurbs.weights))
+            self.assertTrue(
+                c.np.allclose(
+                    b.control_points,
+                    (m @ (nurbs.control_points * nurbs.weights)) / b.weights,
+                )
             )
 
 
