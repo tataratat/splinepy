@@ -70,7 +70,7 @@ class BSplineBase(spline.Spline):
         super().__init__(*args, **kwargs)
 
     @spline._new_core_if_modified
-    def insert_knots(self, parametric_dimension, knots, return_matrix=False):
+    def insert_knots(self, parametric_dimension, knots):
         """
         Inserts knots.
 
@@ -169,6 +169,7 @@ class BSplineBase(spline.Spline):
             else:
                 matrix = np.zeros(data[1])
                 matrix[data[0][1][0], data[0][1][1]] = data[0][0]
+            
 
 
         data = splinepy_core.global_knot_insertion_matrix(

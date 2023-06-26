@@ -104,14 +104,14 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         matrix_nurbs = self.nurbs.knot_insertion_matrix(
             0, nurbs_knots_0
         )
+        self.nurbs.insert_knots(
+            0, nurbs_knots_0
+        )
         matrix_nurbs = (
             self.nurbs.knot_insertion_matrix(
                 1, nurbs_knots_1
             )
             @ matrix_nurbs
-        )
-        self.nurbs.insert_knots(
-            0, nurbs_knots_0
         )
         self.nurbs.insert_knots(
             1, nurbs_knots_1
