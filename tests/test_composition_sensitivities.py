@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class compositionSensitivitiesTest(c.unittest.TestCase):
+class ComposeSensitivitiesTest(c.unittest.TestCase):
     """
     Test composition sensitivity, i.e., the derivative concerning the
     deformation function's control points.
@@ -44,10 +44,11 @@ class compositionSensitivitiesTest(c.unittest.TestCase):
 
         def test_splines(outer, inner):
             # Determine base line
-            composed = outer.compose(inner)
-            composed_sensitivities = outer.compose_sensitivities(inner)
+            composed, composed_sensitivities = outer.compose(
+                inner, compute_sensitivities=True
+            )
 
-            #
+            # Check against FD approximation
             for i in range(outer.cps.shape[0]):
                 for j in range(outer.cps.shape[1]):
                     outer.cps[i, j] += dx
