@@ -61,7 +61,7 @@ class BezierExtractionTest(c.unittest.TestCase):
                 c.np.allclose(b.control_points, m @ bspline.control_points)
             )
 
-    def test_extraction_matrice_bspline_2D(self):
+    def test_extraction_matrices_bspline_2D(self):
         """Create matrices to extract splines"""
 
         # Init nurbs
@@ -78,7 +78,7 @@ class BezierExtractionTest(c.unittest.TestCase):
                 c.np.allclose(b.control_points, m @ bspline.control_points)
             )
 
-    def test_extraction_matrice_nurbs_2D(self):
+    def test_extraction_matrices_nurbs_2D(self):
         """Create matrices to extract splines"""
 
         # Init nurbs
