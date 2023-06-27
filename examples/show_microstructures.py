@@ -1,18 +1,19 @@
 import gustaf as gus
 import numpy as np
-from vedo import Mesh, colors
+
+import splinepy
 
 # First Test
-generator = gus.spline.microstructure.Microstructure()
-generator.deformation_function = gus.Bezier(
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
     degrees=[2, 1],
     control_points=[[0, 0], [1, 0], [2, -1], [-1, 1], [1, 1], [3, 2]],
 )
 generator.microtile = [
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3], control_points=[[0, 0.5], [0.5, 1], [0.5, 0], [1, 0.5]]
     ),
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[4],
         control_points=[
             [0.5, 0],
@@ -24,20 +25,19 @@ generator.microtile = [
     ),
 ]
 generator.tiling = [8, 8]
-# generator.show(
-#     knots=False, control_points=False, title="2D Lattice Microstructure"
-# )
+generator.show(
+    knots=False, control_points=False, title="2D Lattice Microstructure"
+)
+
 
 # Second test
-
-
 def parametrization_function(x):
     return (
         0.3 - 0.4 * np.maximum(abs(0.5 - x[:, 0]), abs(0.5 - x[:, 1]))
     ).reshape(-1, 1)
 
 
-para_s = gus.BSpline(
+para_s = splinepy.BSpline(
     knot_vectors=[
         [0, 0, 1 / 5, 2 / 5, 3 / 5, 4 / 5, 1, 1],
         [0, 0, 1 / 3, 2 / 3, 1, 1],
@@ -74,8 +74,8 @@ para_s = gus.BSpline(
 # Plot all available microtiles
 micro_tiles = []
 module_list = map(
-    gus.spline.microstructure.tiles.__dict__.get,
-    gus.spline.microstructure.tiles.__all__,
+    splinepy.microstructure.tiles.__dict__.get,
+    splinepy.microstructure.tiles.__all__,
 )
 for mt in module_list:
     if hasattr(mt, "create_tile"):
@@ -95,9 +95,9 @@ gus.show(
 )
 
 # Ellipsoid
-a = gus.spline.microstructure.tiles.Ellipsvoid().create_tile()
+a = splinepy.microstructure.tiles.Ellipsvoid().create_tile()
 for ii in range(4):
-    a, b = gus.spline.microstructure.tiles.Ellipsvoid().create_tile(
+    a, b = splinepy.microstructure.tiles.Ellipsvoid().create_tile(
         parameters=np.array([[0.5, 0.3, np.deg2rad(20), np.deg2rad(10)]]),
         parameter_sensitivities=np.eye(N=1, M=4, k=ii).reshape(1, 4, 1),
     )
@@ -108,7 +108,7 @@ for ii in range(4):
         aa.show_options["arrow_data"] = "field"
         aa.show_options[
             "arrow_data_on"
-        ] = gus.spline.splinepy.utils.data.cartesian_product(
+        ] = splinepy.utils.data.cartesian_product(
             [np.linspace(0, 1, 4) for _ in range(3)]
         )
         aa.show_options["alpha"] = 0
@@ -130,9 +130,9 @@ for ii in range(4):
 
 
 # Cubevoid
-a = gus.spline.microstructure.tiles.Cubevoid().create_tile()
+a = splinepy.microstructure.tiles.Cubevoid().create_tile()
 for ii in range(4):
-    a, b = gus.spline.microstructure.tiles.Cubevoid().create_tile(
+    a, b = splinepy.microstructure.tiles.Cubevoid().create_tile(
         parameters=np.array([[0.5, 0.3, np.deg2rad(20), np.deg2rad(10)]]),
         parameter_sensitivities=np.eye(N=1, M=4, k=ii).reshape(1, 4, 1),
     )
@@ -143,7 +143,7 @@ for ii in range(4):
         aa.show_options["arrow_data"] = "field"
         aa.show_options[
             "arrow_data_on"
-        ] = gus.spline.splinepy.utils.data.cartesian_product(
+        ] = splinepy.utils.data.cartesian_product(
             [np.linspace(0, 1, 4) for _ in range(3)]
         )
         aa.show_options["alpha"] = 0
@@ -169,11 +169,11 @@ def foo(x):
 
 
 # Cube 3D without closing face
-generator = gus.spline.microstructure.microstructure.Microstructure()
-generator.microtile = gus.spline.microstructure.tiles.Cube3D()
+generator = splinepy.microstructure.microstructure.Microstructure()
+generator.microtile = splinepy.microstructure.tiles.Cube3D()
 
 generator.parametrization_function = foo
-generator.deformation_function = gus.Bezier(
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
 generator.tiling = [3, 3, 2]
@@ -194,12 +194,12 @@ def parameter_function_double_lattice(x):
     return para_s.evaluate(x)
 
 
-generator = gus.spline.microstructure.Microstructure()
+generator = splinepy.microstructure.Microstructure()
 # outer geometry
-generator.deformation_function = gus.Bezier(
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [2, 0], [0, 1], [2, 1]]
 )
-generator.microtile = gus.spline.microstructure.tiles.DoubleLatticeTile()
+generator.microtile = splinepy.microstructure.tiles.DoubleLatticeTile()
 # how many structures should be inside the cube
 generator.tiling = [12, 6]
 generator.parametrization_function = parameter_function_double_lattice
@@ -221,12 +221,12 @@ def parametrization_function_nut(x):
 
 # Test new microstructure
 
-generator = gus.spline.microstructure.Microstructure()
+generator = splinepy.microstructure.Microstructure()
 # outer geometry
-generator.deformation_function = gus.Bezier(
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
-generator.microtile = gus.spline.microstructure.tiles.NutTile2D()
+generator.microtile = splinepy.microstructure.tiles.NutTile2D()
 # how many structures should be inside the cube
 generator.tiling = [10, 10]
 generator.parametrization_function = parametrization_function_nut
@@ -242,11 +242,11 @@ generator.show(
 
 
 # Second test
-generator = gus.spline.microstructure.Microstructure()
-generator.deformation_function = gus.Bezier(
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
-generator.microtile = gus.spline.microstructure.tiles.CrossTile2D()
+generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
 generator.tiling = [5, 5]
 generator.parametrization_function = parametrization_function
 ms = generator.create(closing_face="x", center_expansion=1.3)
@@ -258,12 +258,12 @@ generator.show(
 )
 
 # Third test
-generator = gus.spline.microstructure.Microstructure()
-generator.deformation_function = gus.Bezier(
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
 generator.microtile = [
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3],
         control_points=[
             [0, 0.5, 0.5],
@@ -272,7 +272,7 @@ generator.microtile = [
             [1, 0.5, 0.5],
         ],
     ),
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3],
         control_points=[
             [0.5, 0.5, 0.0],
@@ -281,7 +281,7 @@ generator.microtile = [
             [0.5, 0.5, 1.0],
         ],
     ),
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3],
         control_points=[
             [0.5, 0, 0.5],
@@ -297,11 +297,11 @@ generator.show(
 )
 
 # Fourth test
-generator = gus.spline.microstructure.microstructure.Microstructure()
-generator.deformation_function = gus.Bezier(
+generator = splinepy.microstructure.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
-generator.microtile = gus.spline.microstructure.tiles.CrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.CrossTile3D()
 generator.tiling = [2, 2, 3]
 generator.show(
     control_points=False, resolutions=2, title="3D Crosstile Microstructure"
@@ -309,8 +309,8 @@ generator.show(
 
 # Fifth test
 # Non-uniform tiling
-generator = gus.spline.microstructure.microstructure.Microstructure()
-generator.deformation_function = gus.BSpline(
+generator = splinepy.microstructure.microstructure.Microstructure()
+generator.deformation_function = splinepy.BSpline(
     degrees=[2, 1],
     control_points=[
         [0, 0],
@@ -325,10 +325,10 @@ generator.deformation_function = gus.BSpline(
     knot_vectors=[[0, 0, 0, 0.15, 1, 1, 1], [0, 0, 1, 1]],
 )
 generator.microtile = [
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3], control_points=[[0, 0.5], [0.5, 1], [0.5, 0], [1, 0.5]]
     ),
-    gus.Bezier(
+    splinepy.Bezier(
         degrees=[3], control_points=[[0.5, 0], [1, 0.5], [0, 0.5], [0.5, 1]]
     ),
 ]
@@ -352,11 +352,11 @@ def foo(x):
     )
 
 
-generator = gus.spline.microstructure.Microstructure()
-generator.deformation_function = gus.Bezier(
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
-generator.microtile = gus.spline.microstructure.tiles.InverseCrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.InverseCrossTile3D()
 generator.tiling = [3, 3, 5]
 generator.parametrization_function = foo
 
@@ -374,10 +374,11 @@ _, showables_inverse = generator.show(
     knots=True,
     return_showable_list=True,
     resolutions=5,
+    c="hotpink",
 )
 
 # Corresponding Structure
-generator.microtile = gus.spline.microstructure.tiles.CrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.CrossTile3D()
 microstructure = generator.create(
     closing_face="z", seperator_distance=0.4, center_expansion=1.3
 )
@@ -391,16 +392,7 @@ _, showables = generator.show(
     resolutions=5,
 )
 
-# Change the color of the inverse mesh to some blue shade
-composed_structure = []
-for item in showables:
-    if isinstance(item, Mesh):
-        composed_structure.append(item)
-for item in showables_inverse:
-    if isinstance(item, Mesh):
-        item.c(colors.getColor(rgb=(0, 102, 153)))
-        composed_structure.append(item)
-
-gus.show.show_vedo(
-    composed_structure, title="Parametrized Microstructure and its inverse"
+gus.show(
+    [*showables_inverse, *showables],
+    title="Parametrized Microstructure and its inverse",
 )
