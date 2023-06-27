@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class CrossTile2D(TileBase):
@@ -161,19 +162,19 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[2, 1], control_points=branch_ctps)
+                    Bezier(degrees=[2, 1], control_points=branch_ctps)
                 )
             elif closure == "x_max":
                 # Maximum x position
@@ -224,19 +225,19 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[2, 1], control_points=branch_ctps)
+                    Bezier(degrees=[2, 1], control_points=branch_ctps)
                 )
             elif closure == "y_min":
                 # Minimum y position
@@ -281,19 +282,19 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 2], control_points=branch_ctps)
+                    Bezier(degrees=[1, 2], control_points=branch_ctps)
                 )
             elif closure == "y_max":
                 # Maximum y position
@@ -344,19 +345,19 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    base.Bezier(degrees=[1, 2], control_points=branch_ctps)
+                    Bezier(degrees=[1, 2], control_points=branch_ctps)
                 )
             else:
                 raise NotImplementedError(
@@ -399,6 +400,7 @@ class CrossTile2D(TileBase):
           parameter itself, they evaluate as delta_ij
         center_expansion : float
             thickness of center is expanded by a factor
+
         Returns
         -------
         microtile_list : list(splines)
@@ -525,23 +527,23 @@ class CrossTile2D(TileBase):
             ) + np.array([v_one_half, v_one_half])
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1], control_points=center_points)
+                Bezier(degrees=[1, 1], control_points=center_points)
             )
 
             spline_list.append(
-                base.Bezier(degrees=[2, 1], control_points=x_min_ctps)
+                Bezier(degrees=[2, 1], control_points=x_min_ctps)
             )
 
             spline_list.append(
-                base.Bezier(degrees=[2, 1], control_points=x_max_ctps)
+                Bezier(degrees=[2, 1], control_points=x_max_ctps)
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 2], control_points=y_min_ctps)
+                Bezier(degrees=[1, 2], control_points=y_min_ctps)
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 2], control_points=y_max_ctps)
+                Bezier(degrees=[1, 2], control_points=y_max_ctps)
             )
 
             # Pass to output

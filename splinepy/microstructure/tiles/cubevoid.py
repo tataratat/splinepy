@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class Cubevoid(TileBase):
@@ -148,7 +149,7 @@ class Cubevoid(TileBase):
             ctps += [v_one_half, v_one_half, v_one_half]
             # Start the assembly
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -163,7 +164,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[4, :],
@@ -179,7 +180,7 @@ class Cubevoid(TileBase):
             )
             # Y-Axis
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -194,7 +195,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[2, :],
@@ -210,7 +211,7 @@ class Cubevoid(TileBase):
             )
             # Z-Axis
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -225,7 +226,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[1, :],

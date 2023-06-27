@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class NutTile3D(TileBase):
@@ -180,32 +181,24 @@ class NutTile3D(TileBase):
             ]
         )
 
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right))
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right_top))
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=bottom))
+
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=right)
+            Bezier(degrees=[1, 1, 1], control_points=bottom_left)
         )
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=right_top)
-        )
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=left))
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top_left))
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=bottom)
-        )
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=bottom_left)
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=left))
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=top_left)
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=top))
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=bottom_right)
+            Bezier(degrees=[1, 1, 1], control_points=bottom_right)
         )
 
         return spline_list
@@ -569,22 +562,20 @@ def closing_tile(
             ]
         )
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=right))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=right))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=right_top))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=right_top))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=bottom))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=bottom))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=bottom_left))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_left))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=left))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=left))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=top_left))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=top_left))
 
-    spline_list.append(base.Bezier(degrees=[1, 1], control_points=top))
+    spline_list.append(Bezier(degrees=[1, 1], control_points=top))
 
-    spline_list.append(
-        base.Bezier(degrees=[1, 1], control_points=bottom_right)
-    )
+    spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
 
     return spline_list

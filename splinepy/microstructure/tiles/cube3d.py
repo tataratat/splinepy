@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class Cube3D(TileBase):
@@ -52,10 +53,12 @@ class Cube3D(TileBase):
             )
 
         self.check_params(parameters)
+
         if not (
             np.all(parameters[:, :2] > 0.0) and np.all(parameters[:, :2] < 0.5)
         ):
             raise ValueError("The wall thickness must be in (0.0 and 0.5)")
+
         if not np.all(
             (parameters[:, 2:] > np.deg2rad(-30))
             and (parameters[:, 2:] < np.deg2rad(30))
@@ -100,7 +103,7 @@ class Cube3D(TileBase):
 
             # x_max_z_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -119,7 +122,7 @@ class Cube3D(TileBase):
 
             # x_min_z_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -138,7 +141,7 @@ class Cube3D(TileBase):
 
             # x_min_z_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -157,7 +160,7 @@ class Cube3D(TileBase):
 
             # x_max_z_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -176,7 +179,7 @@ class Cube3D(TileBase):
 
             # x_max_y_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -195,7 +198,7 @@ class Cube3D(TileBase):
 
             # y_max_z_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -214,7 +217,7 @@ class Cube3D(TileBase):
 
             # x_min_y_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -233,7 +236,7 @@ class Cube3D(TileBase):
 
             # y_max_z_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -252,7 +255,7 @@ class Cube3D(TileBase):
 
             # x_max_y_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -271,7 +274,7 @@ class Cube3D(TileBase):
 
             # x_min_y_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -290,7 +293,7 @@ class Cube3D(TileBase):
 
             # y_min_z_max
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
@@ -309,7 +312,7 @@ class Cube3D(TileBase):
 
             # y_min_z_min
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.array(
                         [
