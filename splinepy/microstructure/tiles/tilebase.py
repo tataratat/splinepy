@@ -1,8 +1,9 @@
 import numpy as np
-from gustaf.spline import base
+
+from splinepy._base import SplinepyBase
 
 
-class TileBase(base.GustafBase):
+class TileBase(SplinepyBase):
     """
     Base class for tile objects
     """

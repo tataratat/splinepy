@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class NutTile2D(TileBase):
@@ -370,29 +371,21 @@ class NutTile2D(TileBase):
                 ]
             )
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=right))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=right))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=right_top)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=right_top))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=bottom))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=bottom_left)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_left))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=left))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=left))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=top_left)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=top_left))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=top))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=top))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=bottom_right)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
 
         return spline_list
 
@@ -420,6 +413,7 @@ class NutTile2D(TileBase):
           parameter itself, they evaluate as delta_ij
         contact_length : float
             the length of the wall that contacts the other microstructure
+
         Returns
         -------
         microtile_list : list(splines)
@@ -529,28 +523,20 @@ class NutTile2D(TileBase):
             ]
         )
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=right))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=right))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=right_top)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=right_top))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=bottom))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=bottom_left)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_left))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=left))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=left))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=top_left)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=top_left))
 
-        spline_list.append(base.Bezier(degrees=[1, 1], control_points=top))
+        spline_list.append(Bezier(degrees=[1, 1], control_points=top))
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1], control_points=bottom_right)
-        )
+        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
 
         return spline_list

@@ -65,7 +65,7 @@ class Microstructure(SplinepyBase):
     def deformation_function(self, deformation_function):
         """Deformation function setter defining the outer geometry of the
         microstructure. Must be spline type and as such inherit from
-        gustaf.GustafSpline.
+        splinepy.Spline.
 
         Parameters
         ----------
@@ -75,10 +75,10 @@ class Microstructure(SplinepyBase):
         -------
         None
         """
-        if not issubclass(type(deformation_function), SplinepyBase):
+        if not isinstance(deformation_function, PySpline):
             raise ValueError(
-                "Deformation function must be Gustaf-Spline."
-                " e.g. gustaf.NURBS"
+                "Deformation function must be splinepy-Spline."
+                " e.g. splinepy.NURBS"
             )
         self._deformation_function = deformation_function
         self._sanity_check()
@@ -149,9 +149,7 @@ class Microstructure(SplinepyBase):
         None
         """
         # place single tiles into a list to provide common interface
-        if isinstance(microtile, list) or issubclass(
-            type(microtile), SplinepyBase
-        ):
+        if isinstance(microtile, list) or isinstance(microtile, PySpline):
             microtile = self._make_microtilable(microtile)
         # Assign Microtile object to member variable
         self._microtile = microtile
@@ -296,27 +294,6 @@ class Microstructure(SplinepyBase):
         else:
             deformation_function_copy = self._deformation_function.nurbs
 
-        # # Create empty class with spline reference
-        # class EmtpySpline():
-        #     def __init__(self, spline_reference):
-        #         self._spline_ref = spline_reference
-
-        #     @property
-        #     def para_dim(self):
-        #         return self._spline_ref.para_dim
-        #     @property
-        #     def dim(self):
-        #         return self._spline_ref.dim
-        #     @property
-        #     def control_points(self):
-        #         return self._spline_ref.control_points * 0
-        #     @property
-        #     def control_mesh_resolutions(self):
-        #         return self._spline_ref.control_mesh_resolutions
-        #     @property
-        #     def degrees(self):
-        #         return self._spline_ref.degrees
-
         # Create Spline that will be used to iterate over parametric space
         ukvs = deformation_function_copy.unique_knots
         if knot_span_wise:
@@ -376,14 +353,10 @@ class Microstructure(SplinepyBase):
         # microstructures
         is_parametrized = self.parametrization_function is not None
         if is_parametrized:
-            para_space_dimensions = [[u[0], u[-1]] for u in ukvs]
-            parametric_corners = np.reshape(
-                np.meshgrid(*para_space_dimensions),
-                (deformation_function_copy.para_dim, -1),
-            ).T
+            para_space_dimensions = [np.array([u[0], u[-1]]) for u in ukvs]
             def_fun_para_space = Bezier(
                 degrees=[1] * deformation_function_copy.para_dim,
-                control_points=np.ascontiguousarray(parametric_corners),
+                control_points=cartesian_product(para_space_dimensions),
             ).bspline
             for i_pd in range(deformation_function_copy.para_dim):
                 if len(deformation_function_copy.unique_knots[i_pd][1:-1]) > 0:
@@ -687,10 +660,10 @@ class _UserTile:
             microtile = [microtile]
 
         for m in microtile:
-            if not issubclass(type(m), SplinepyBase):
+            if not isinstance(m, PySpline):
                 raise ValueError(
                     "Microtiles must be (list of) "
-                    "gustaf.GustafSplines. e.g. gustaf.NURBS"
+                    "splinepy-Splines. e.g. splinepy.NURBS"
                 )
             # Extract beziers for every non Bezier patch else this just
             # returns itself

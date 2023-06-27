@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class CrossTile3D(TileBase):
@@ -96,11 +97,11 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 1], control_points=ctps_corner)
+                Bezier(degrees=[1, 1, 1], control_points=ctps_corner)
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner + np.array([0.0, inv_boundary_width, 0.0])
@@ -109,7 +110,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner + np.array([inv_boundary_width, 0.0, 0.0])
@@ -118,7 +119,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner
@@ -143,11 +144,11 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 1], control_points=center_ctps)
+                Bezier(degrees=[1, 1, 1], control_points=center_ctps)
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.maximum(
                         center_ctps - np.array([center_width, 0, 0]), 0
@@ -156,7 +157,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.maximum(
                         center_ctps - np.array([0, center_width, 0]), 0
@@ -165,7 +166,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.minimum(
                         center_ctps + np.array([center_width, 0, 0]), 1.0
@@ -174,7 +175,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.minimum(
                         center_ctps + np.array([0, center_width, 0]), 1.0
@@ -203,7 +204,7 @@ class CrossTile3D(TileBase):
             ) + np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
+                Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
             )
 
             return spline_list
@@ -224,11 +225,11 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 1], control_points=ctps_corner)
+                Bezier(degrees=[1, 1, 1], control_points=ctps_corner)
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner + np.array([0.0, inv_boundary_width, 0.0])
@@ -237,7 +238,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner + np.array([inv_boundary_width, 0.0, 0.0])
@@ -246,7 +247,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=(
                         ctps_corner
@@ -275,11 +276,11 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 1], control_points=center_ctps)
+                Bezier(degrees=[1, 1, 1], control_points=center_ctps)
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.maximum(
                         center_ctps - np.array([center_width, 0, 0]), 0
@@ -288,7 +289,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.maximum(
                         center_ctps - np.array([0, center_width, 0]), 0
@@ -297,7 +298,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.minimum(
                         center_ctps + np.array([center_width, 0, 0]), 1.0
@@ -306,7 +307,7 @@ class CrossTile3D(TileBase):
             )
 
             spline_list.append(
-                base.Bezier(
+                Bezier(
                     degrees=[1, 1, 1],
                     control_points=np.minimum(
                         center_ctps + np.array([0, center_width, 0]), 1.0
@@ -348,7 +349,7 @@ class CrossTile3D(TileBase):
             ) + np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                base.Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
+                Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
             )
 
             return spline_list
@@ -435,7 +436,7 @@ class CrossTile3D(TileBase):
             ]
         )
 
-        center_spline = base.Bezier(
+        center_spline = Bezier(
             degrees=[1, 1, 1], control_points=center_points + [0.5, 0.5, 0.5]
         )
 
@@ -458,7 +459,7 @@ class CrossTile3D(TileBase):
                 center_points[6, :],
             ]
         )
-        x_min_spline = base.Bezier(
+        x_min_spline = Bezier(
             degrees=[2, 1, 1], control_points=x_min_ctps + [0.5, 0.5, 0.5]
         )
         # X-Min-Branch
@@ -479,7 +480,7 @@ class CrossTile3D(TileBase):
                 [0.5, x_max_r, x_max_r],
             ]
         )
-        x_max_spline = base.Bezier(
+        x_max_spline = Bezier(
             degrees=[2, 1, 1], control_points=x_max_ctps + [0.5, 0.5, 0.5]
         )
 
@@ -502,7 +503,7 @@ class CrossTile3D(TileBase):
                 center_points[5, :],
             ]
         )
-        y_min_spline = base.Bezier(
+        y_min_spline = Bezier(
             degrees=[1, 2, 1], control_points=y_min_ctps + [0.5, 0.5, 0.5]
         )
         # Y-Min-Branch
@@ -523,7 +524,7 @@ class CrossTile3D(TileBase):
                 [y_max_r, 0.5, y_max_r],
             ]
         )
-        y_max_spline = base.Bezier(
+        y_max_spline = Bezier(
             degrees=[1, 2, 1], control_points=y_max_ctps + [0.5, 0.5, 0.5]
         )
 
@@ -546,7 +547,7 @@ class CrossTile3D(TileBase):
                 center_points[3, :],
             ]
         )
-        z_min_spline = base.Bezier(
+        z_min_spline = Bezier(
             degrees=[1, 1, 2], control_points=z_min_ctps + [0.5, 0.5, 0.5]
         )
         # Y-Min-Branch
@@ -567,7 +568,7 @@ class CrossTile3D(TileBase):
                 [z_max_r, z_max_r, 0.5],
             ]
         )
-        z_max_spline = base.Bezier(
+        z_max_spline = Bezier(
             degrees=[1, 1, 2], control_points=z_max_ctps + [0.5, 0.5, 0.5]
         )
 

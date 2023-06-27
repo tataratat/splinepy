@@ -1,6 +1,7 @@
 import numpy as np
-from gustaf.spline import base
-from gustaf.spline.microstructure.tiles.tilebase import TileBase
+
+from splinepy.bezier import Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase
 
 
 class Armadillo(TileBase):
@@ -4952,83 +4953,63 @@ class Armadillo(TileBase):
             )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_bottom_left
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_bottom_right
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_back_bottom
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_bottom
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
         )
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
         )
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
         )
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
+            Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_left
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
         )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right))
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=right)
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
         )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=back))
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_right
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
         )
 
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=back))
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=left))
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
+            Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
         )
 
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=left))
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=front))
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
         )
 
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=front)
-        )
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=bottom))
 
-        spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_back_right
-            )
-        )
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=bottom)
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=top))
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
 
         return spline_list
 
@@ -5058,6 +5039,7 @@ class Armadillo(TileBase):
           parameter itself, they evaluate as delta_ij
         contact_length : float
             the length of the wall that contacts the other microstructure
+
         Returns
         -------
         microtile_list : list(splines)
@@ -5905,83 +5887,63 @@ class Armadillo(TileBase):
             ]
         )
 
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right))
+
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=right)
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
+        )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=back))
+
+        spline_list.append(
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
+        )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=left))
+
+        spline_list.append(
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
+        )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=front))
+
+        spline_list.append(
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
+        )
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=bottom))
+
+        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
+
+        spline_list.append(
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_right
-            )
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=back))
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=left))
-
-        spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_left
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
         )
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=front)
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_back_right
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
         )
 
         spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=bottom)
-        )
-
-        spline_list.append(base.Bezier(degrees=[1, 1, 1], control_points=top))
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
+            Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_front_bottom
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
         )
 
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_back_bottom
-            )
-        )
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
-        )
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
-        )
-
-        spline_list.append(
-            base.Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
-        )
-
-        spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_bottom_left
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
         )
         spline_list.append(
-            base.Bezier(
-                degrees=[1, 1, 1], control_points=connection_bottom_right
-            )
+            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
         )
 
         return spline_list
