@@ -97,35 +97,25 @@ class BezierBase(spline.Spline):
         return type(self)(spline=added)
 
     @spline._new_core_if_modified
-    def compose(self, inner_function):
-        """
+    def compose(self, inner_function, compute_sensitivities=False):
+        r"""
         Calculates the spline that forms the composition of the inner function
         spline (function argument), using the caller spline as the outer (or
         deformation function).
 
-        The resulting spline fulfills the equation
-          spline_self(inner_function(t)) = result(t)
+        Given an outer function :math:`\mathcal{T}` and an inner function
+        (spline) :math:`\mathcal{K}`, this function returns a new spline
+        function :math:`\mathcal{M}` that represents the composition:
 
-        Parameters
-        ----------
-        inner_function : BezierBase
+        .. math:: \mathcal{M}(\mathbf{u}) =
+                  \mathcal{T}\big(\mathcal{K}(\mathbf{u})\big)
+                  \quad \forall \mathbf{u}
 
-        Returns
-        -------
-        composed : BezierBase
-        """
-        # dimension compatibility checked in cpp
-        composed = splinepy_core.compose(self, inner_function)
-
-        return settings.NAME_TO_TYPE[composed.name](spline=composed)
-
-    @spline._new_core_if_modified
-    def compose_sensitivities(self, inner_function):
-        r"""
-        Calculates the derivative of the composed spline with respect to the
-        outer function's control point positions. This corresponds to the basis
-        function representation (which is given by a scalar valued spline).
-        This function differs from :func:`.composition_derivative`, which
+        If the flag `compute_sensitivities` is set, compose also returns the
+        derivative of the composed spline with respect to the outer function's
+        control point positions. This corresponds to the basis function
+        representation (which is given by a scalar valued spline).
+        This functionality differs from :func:`.composition_derivative`, which
         computes the derivatives concerning the inner functions geometric
         parametrization.
 
@@ -133,31 +123,47 @@ class BezierBase(spline.Spline):
         :math:`C_i` and an inner function :math:`\mathcal{K}`. This function
         computes:
 
-        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial C_i} =
-                  B_i(\mathcal{K})
+        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial C_i}
+                  (\mathbf{u}) =
+                  B_i\big(\mathcal{K}\big)(\mathbf{u}) \quad \forall \mathbf{u}
 
         where :math:`B_i` represents the basis function associated to control
         point :math:`C_i`.
 
+
         Parameters
         ----------
         inner_function : BezierBase
+          Bezier-Type Spline that represents inner function
+        compute_sensitivities : bool
+          Flag for return values. If set to true returns also sensitivities,
+          default False
 
         Returns
         -------
-        composed : list
-          list of scalar valued Bezier splines, representing the basis
-          composition's basis functions
+        composed : BezierBase
+          Composed function
+        sensitivities : list (optional)
+          List all splines that represents the derivatives with respect to
+          internal control points
         """
         # dimension compatibility checked in cpp
-        composed_sensivities = splinepy_core.compose_sensitivities(
-            self, inner_function
-        )
+        composed = splinepy_core.compose(self, inner_function)
 
-        return [
-            settings.NAME_TO_TYPE[cc.name](spline=cc)
-            for cc in composed_sensivities
-        ]
+        if compute_sensitivities:
+            composed_sensivities = splinepy_core.compose_sensitivities(
+                self, inner_function
+            )
+
+            return (
+                settings.NAME_TO_TYPE[composed.name](spline=composed),
+                [
+                    settings.NAME_TO_TYPE[cc.name](spline=cc)
+                    for cc in composed_sensivities
+                ],
+            )
+        else:
+            return settings.NAME_TO_TYPE[composed.name](spline=composed)
 
     @spline._new_core_if_modified
     def composition_derivative(self, inner, inner_derivative):
