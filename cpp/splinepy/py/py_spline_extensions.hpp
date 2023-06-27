@@ -70,7 +70,14 @@ Compose(const std::shared_ptr<PySpline>& outer,
       outer->Core()->SplinepyCompose(inner->Core()));
 }
 
-/// spline composition sensitivities - currently only for bezier
+/**
+ * @brief Compute the sensitivities with respect to the control points of the
+ * outer function given a composition
+ *
+ * @param inner Inner function (Bezier type)
+ * @param outer Outer Function (Bezier type)
+ * @return py::list list of Bezier splines representing the derivatives
+ */
 inline py::list ComposeSensitivities(const std::shared_ptr<PySpline>& inner,
                                      const std::shared_ptr<PySpline>& outer) {
   // performs runtime checks and throws error

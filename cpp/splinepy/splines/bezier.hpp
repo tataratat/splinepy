@@ -385,6 +385,15 @@ public:
         this->Base_::operator+(static_cast<Bezier<para_dim, dim>&>(*a)));
   }
 
+  /**
+   * @brief Convert the composed splines into base splines for python side
+   *
+   * @tparam is_rational Flag for rational beziers
+   * @tparam inner_para_dim parametric of inner function
+   * @param inner_function inner function of composition
+   * @return std::vector<std::shared_ptr<SplinepyBase>> Vector of SplinepyBase
+   * splines
+   */
   template<bool is_rational, size_t inner_para_dim>
   std::vector<std::shared_ptr<SplinepyBase>> ConvertComposeToBase(
       const std::shared_ptr<SplinepyBase>& inner_function) const {
@@ -414,10 +423,18 @@ public:
     }
   }
 
-  /// Spline composition.
-  /// inner_function requirements:
-  ///   1. Bezier Types
-  ///   2. dim is same as outer_function's par_dim
+  /**
+   * @brief Compute sensitivities of Composed splines with respect to outer
+   * functions control points
+   *
+   *  Spline composition.
+   *  inner_function requirements:
+   *    1. Bezier Types
+   *    2. dim is same as outer_function's par_dim
+   *
+   * @param inner_function inner function of composition
+   * @return std::vector<std::shared_ptr<SplinepyBase>>
+   */
   virtual std::vector<std::shared_ptr<SplinepyBase>>
   SplinepyComposeSensitivities(
       const std::shared_ptr<SplinepyBase>& inner_function) const {
