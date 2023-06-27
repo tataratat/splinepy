@@ -5,24 +5,75 @@ on:
     branches: ["main"]
 
 jobs:
-  wheel_build_full:
-    runs-on: ${{ matrix.os }}
+  macos_wheel:
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        arch: [x86_64, arm64]
+        cw_build: ["cp36*many*", "cp37*many*", "cp38*many*", "cp39*many*", "cp310*many*", "cp311*many*"]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
-    - name:  build wheels
-      uses: pypa/cibuildwheel@v2.12.1
+    - name: build wheels
+      uses: pypa/cibuildwheel@v2.13.1
       env:
+        CIBW_ARCHS: ${{ matrix.arch }}
+        CIBW_BUILD: ${{ matrix.cw_build }}
+        CIBW_TEST_SKIP: "*-macosx_arm64"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
 
     - uses: actions/upload-artifact@v3
       with:
         path: ./wheelhouse/*.whl
+        retention-days: 2
+
+  linux_wheel:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64]
+        cw_build: ["cp36*many*", "cp37*many*", "cp38*many*", "cp39*many*", "cp310*many*", "cp311*many*"]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: build wheels
+      uses: pypa/cibuildwheel@v2.13.1
+      env:
+        CIBW_ARCHS: ${{ matrix.arch }}
+        CIBW_BUILD: ${{ matrix.cw_build }}
+        SPLINEPY_GITHUB_ACTIONS_BUILD: True
+
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./wheelhouse/*.whl
+        retention-days: 2
+
+  windows_wheel:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [x86, AMD64, ARM64]
+        cw_build: ["cp36*many*", "cp37*many*", "cp38*many*", "cp39*many*", "cp310*many*", "cp311*many*"]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: build wheels
+      uses: pypa/cibuildwheel@v2.13.1
+      env:
+        CIBW_ARCHS: ${{ matrix.arch }}
+        CIBW_BUILD: ${{ matrix.cw_build }}
+        SPLINEPY_GITHUB_ACTIONS_BUILD: True
+
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./wheelhouse/*.whl
+        retention-days: 2
 
   source_dist:
     runs-on: ubuntu-latest
@@ -37,6 +88,8 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: ./dist/*
+        retention-days: 2
+
 
   upload_test_pypi:
     needs: [wheel_build_full, source_dist]
