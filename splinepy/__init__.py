@@ -4,6 +4,7 @@ from splinepy import (
     helpme,
     io,
     load,
+    microstructure,
     multipatch,
     nurbs,
     rational_bezier,
@@ -15,11 +16,13 @@ from splinepy import (
 from splinepy._version import __version__
 from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
+from splinepy.helpme.ffd import FFD
 from splinepy.load import load_solution, load_splines
 from splinepy.multipatch import Multipatch
 from splinepy.nurbs import NURBS
 from splinepy.rational_bezier import RationalBezier
 from splinepy.spline import Spline
+from splinepy.utils.data import SplineDataAdaptor
 
 # set NAME_TO_TYPE
 settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
@@ -55,6 +58,7 @@ __all__ = [
     "spline",
     "splinepy_core",
     "utils",
+    "microstructure",
     "settings",
     "helpme",
     "Bezier",
@@ -63,6 +67,8 @@ __all__ = [
     "NURBS",
     "RationalBezier",
     "Spline",
+    "SplineDataAdaptor",
+    "FFD",
     "load_splines",
     "load_solution",
     "to_derived",

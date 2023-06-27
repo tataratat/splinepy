@@ -26,6 +26,12 @@ set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 set(namespace "${PROJECT_NAME}::")
 
 
+# default build type id debug
+if (NOT CMAKE_BUILD_TYPE)
+  message("CMAKE_BUILD_TYPE undefined. Setting Debug.")
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # global flags
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 set(SPLINEPY_DEFS $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
@@ -75,6 +81,20 @@ if(SPLINEPY_BUILD_EXPLICIT)
     set(SPLINEPY_DEFS ${SPLINEPY_DEFS}
             SPLINEPY_BUILD_EXPLICIT)
 endif(SPLINEPY_BUILD_EXPLICIT)
+
+# try to avoid re-build of splinepy if  possible
+if(SPLINEPY_COMPILE_PYTHON)
+  find_package(SplineLib QUIET)
+  find_package(bezman QUIET)
+  find_package(napf QUIET)
+  find_package(splinepy QUIET)
+  if(splinepy_FOUND)
+    message("Found installed splinepy, building only python module")
+    add_subdirectory(third_party/pybind11)
+    add_subdirectory(cpp/splinepy/py)
+    return()
+  endif()
+endif()
 
 add_subdirectory(third_party)
 add_subdirectory(cpp/splinepy)

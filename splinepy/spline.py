@@ -11,6 +11,10 @@ from splinepy import helpme, io, settings
 from splinepy import splinepy_core as core
 from splinepy import utils
 from splinepy._base import SplinepyBase
+from splinepy.helpme import visualize
+from splinepy.helpme.create import Creator
+from splinepy.helpme.extract import Extractor
+from splinepy.utils.data import SplineData
 
 
 class RequiredProperties(SplinepyBase):
@@ -580,6 +584,32 @@ def _get_property(spl, property_):
     return sync_from_core(spl)._data["properties"][property_]
 
 
+def _get_helper(spl, attr_name, helper_class):
+    """
+    Returns a helper object from given spline. If it doesn't exist, it will
+    create one first.
+
+    Parameters
+    ----------
+    spl: Spline
+    attr_name: str
+    helper_class: type
+
+    Returns
+    -------
+    helper: object
+    """
+    attr = getattr(spl, attr_name, None)
+    if attr is not None:  # hasattr
+        return attr
+
+    # don't have attr - create and set
+    helper_obj = helper_class(spl)
+    setattr(spl, attr_name, helper_obj)
+
+    return helper_obj
+
+
 class Spline(SplinepyBase, core.PySpline):
     r"""
     Spline base class. Extends :class:`.PySpline` with documentation.
@@ -622,7 +652,9 @@ class Spline(SplinepyBase, core.PySpline):
     None
     """
 
-    __slots__ = ()
+    __slots__ = ("_extractor", "_creator", "_show_options", "_spline_data")
+
+    __show_option__ = visualize.SplineShowOption
 
     def __init__(self, spline=None, **kwargs):
         # return if this is an empty init
@@ -776,6 +808,74 @@ class Spline(SplinepyBase, core.PySpline):
         is_rational: bool
         """
         return super().is_rational
+
+    @property
+    def extract(self):
+        """Returns spline extractor. Can directly perform extractions available
+        at `splinepy/helpme/extract.py`.
+
+        Examples
+        ---------
+        >>> spline_faces = spline.extract.faces()
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        extractor: Extractor
+        """
+        return _get_helper(self, "_extractor", Extractor)
+
+    @property
+    def create(self):
+        """Returns spline creator Can be used to create new splines using
+        geometric relations.
+
+        Examples
+        --------
+        >>> prism = spline.create.extrude(axis=[1,4,1])
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        creator: spline.Creator
+        """
+        return _get_helper(self, "_creator", Creator)
+
+    @property
+    def show_options(self):
+        """
+        Show option manager for splines.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        show_options: SplineShowOption
+        """
+        return _get_helper(self, "_show_options", self.__show_option__)
+
+    @property
+    def spline_data(self):
+        """
+        Spline data helper for splines.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        spline_data: SplineData
+        """
+        return _get_helper(self, "_spline_data", SplineData)
 
     def clear(self):
         """
@@ -1004,7 +1104,7 @@ class Spline(SplinepyBase, core.PySpline):
                 for k, d in zip(kv[1:], np.diff(kv)):
                     if d > settings.TOLERANCE:
                         unique_knots_per_dim.append(k)
-                unique_knots.append(unique_knots_per_dim)
+                unique_knots.append(np.array(unique_knots_per_dim))
 
             return unique_knots
 
@@ -1772,6 +1872,44 @@ class Spline(SplinepyBase, core.PySpline):
             new._data = _default_data()
 
         return new
+
+    def show(self, **kwargs):
+        """Equivalent to
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(spline, **kwargs)
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        showable_or_plotter: dict or vedo.Plotter
+        """
+        return visualize.show(self, **kwargs)
+
+    def showable(self, **kwargs):
+        """Equivalent to
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(
+               spline, return_showable=True, **kwargs
+            )
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        spline_showable: dict
+        """
+        return visualize.show(self, return_showable=True, **kwargs)
 
     # short cuts / alias
     ds = degrees

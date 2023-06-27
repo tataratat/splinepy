@@ -1,3 +1,4 @@
+from splinepy import settings, splinepy_core
 from splinepy.bezier import BezierBase
 
 
@@ -127,4 +128,14 @@ class RationalBezier(BezierBase):
             degrees=degrees,
             control_points=control_points,
             weights=weights,
+        )
+
+    @property
+    def rationalbezier(self):
+        return settings.NAME_TO_TYPE["RationalBezier"](spline=self)
+
+    @property
+    def nurbs(self):
+        return settings.NAME_TO_TYPE["NURBS"](
+            spline=splinepy_core.same_spline_with_knot_vectors(self)
         )

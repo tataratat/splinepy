@@ -260,9 +260,12 @@ setup(
         "splinepy.io",
         "splinepy.utils",
         "splinepy.helpme",
+        "splinepy.microstructure",
+        "splinepy.microstructure.tiles",
     ],
     install_requires=[
         "numpy",
+        "gustaf>=0.0.12",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
