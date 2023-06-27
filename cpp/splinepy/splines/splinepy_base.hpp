@@ -220,6 +220,12 @@ public:
   virtual std::shared_ptr<SplinepyBase>
   SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const;
 
+  /// Spline composition sensitivities with respect to the outer spline's
+  /// control point positions
+  virtual std::vector<std::shared_ptr<SplinepyBase>>
+  SplinepyComposeSensitivities(
+      const std::shared_ptr<SplinepyBase>& inner_function) const;
+
   /// Spline Split - single split
   virtual std::vector<std::shared_ptr<SplinepyBase>>
   SplinepySplit(const int& para_dim, const double& location) const;

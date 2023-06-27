@@ -572,6 +572,15 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCompose(
 }
 
 std::vector<std::shared_ptr<SplinepyBase>>
+SplinepyBase::SplinepyComposeSensitivities(
+    const std::shared_ptr<SplinepyBase>& inner_function) const {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyComposeSensitivities not implemented for",
+      SplinepyWhatAmI());
+  return std::vector<std::shared_ptr<SplinepyBase>>{};
+}
+
+std::vector<std::shared_ptr<SplinepyBase>>
 SplinepyBase::SplinepySplit(const int& para_dim, const double& location) const {
   splinepy::utils::PrintAndThrowError("SplinepySplit not implemented for",
                                       SplinepyWhatAmI());

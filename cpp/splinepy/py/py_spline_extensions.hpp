@@ -70,6 +70,28 @@ Compose(const std::shared_ptr<PySpline>& outer,
       outer->Core()->SplinepyCompose(inner->Core()));
 }
 
+/**
+ * @brief Compute the sensitivities with respect to the control points of the
+ * outer function given a composition
+ *
+ * @param inner Inner function (Bezier type)
+ * @param outer Outer Function (Bezier type)
+ * @return py::list list of Bezier splines representing the derivatives
+ */
+inline py::list ComposeSensitivities(const std::shared_ptr<PySpline>& inner,
+                                     const std::shared_ptr<PySpline>& outer) {
+  // performs runtime checks and throws error
+  py::list returnable{};
+
+  // Convert into python readable type
+  const auto temp_shared_ptr_vector =
+      inner->Core()->SplinepyComposeSensitivities(outer->Core());
+  for (size_t i{}; i < temp_shared_ptr_vector.size(); i++) {
+    returnable.append(std::make_shared<PySpline>(temp_shared_ptr_vector[i]));
+  }
+  return returnable;
+}
+
 /// spline derivative spline
 inline std::shared_ptr<PySpline>
 DerivativeSpline(const std::shared_ptr<PySpline>& spline,
@@ -263,6 +285,10 @@ inline void add_spline_extensions(py::module& m) {
   m.def("multiply", &splinepy::py::Multiply, py::arg("a"), py::arg("b"));
   m.def("add", &splinepy::py::Add, py::arg("a"), py::arg("b"));
   m.def("compose", &splinepy::py::Compose, py::arg("outer"), py::arg("inner"));
+  m.def("compose_sensitivities",
+        &splinepy::py::ComposeSensitivities,
+        py::arg("outer"),
+        py::arg("inner"));
   m.def("derivative_spline",
         &splinepy::py::DerivativeSpline,
         py::arg("spline"),
