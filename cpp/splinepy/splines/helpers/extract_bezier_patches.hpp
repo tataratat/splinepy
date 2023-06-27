@@ -9,6 +9,23 @@
 
 namespace splinepy::splines::helpers {
 
+/**
+ * @brief Extract Bezier Patch IDs
+ *
+ * This function assumed that repeated knots have been inserted, such that the
+ * continuity at each knot is C0. It returns the indices that are assiciated to
+ * the individual bezier patches and returns a vector of ID lists that can be
+ * used to create the new splines
+ *
+ * @tparam IndexingType integral type that represents the IDs - does not change
+ * return type
+ * @param degrees pointer to degrees vector
+ * @param n_patches_per_para_dim pointer to vector with same dimension that
+ * represents the number of patches within the B-Spline type along a respective
+ * parametric dimension
+ * @param para_dim parametric dimension
+ * @return std::vector<std::vector<int>>
+ */
 template<typename IndexingType>
 std::vector<std::vector<int>>
 ExtractBezierPatchIDs(const IndexingType* degrees,
@@ -77,8 +94,14 @@ ExtractBezierPatchIDs(const IndexingType* degrees,
   return list_of_id_lists;
 }
 
-/// extract patches and returns SplinepyBase.
-/// located in a separate file to avoid cirular dependency
+/**
+ * @brief Extracts Bezier patches of a B-Spline/NURBS type
+ *
+ * @tparam as_base flag to determin input type avoid circular dependency
+ * @tparam SplineType Spline-type (NURBS of BSpline)
+ * @param input spline to be seperated
+ * @return auto vector of Bezier types, either Rational or polynomial
+ */
 template<bool as_base = false, typename SplineType>
 auto ExtractBezierPatches(SplineType& input) {
   // Start by identifying types
