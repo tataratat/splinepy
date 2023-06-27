@@ -8,7 +8,6 @@ set(PYSPLINEPY_SRCS
         init/multi_patch.cpp
         init/reader.cpp
         init/spline_extensions.cpp
-        init/uffpy.cpp
         splinepy_core.cpp)
 
 # add target
