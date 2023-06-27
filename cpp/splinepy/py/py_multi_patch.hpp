@@ -13,9 +13,6 @@
 // Bezman
 #include <bezman/src/utils/algorithms/point_uniquifier.hpp>
 
-// uff
-#include <uff.hpp>
-
 //
 #include <splinepy/py/py_spline.hpp>
 #include <splinepy/splines/null_spline.hpp>
