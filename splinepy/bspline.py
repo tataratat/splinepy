@@ -270,6 +270,7 @@ class BSplineBase(spline.Spline):
         # use setter to update
         self.knot_vectors = new_kvs
 
+    @spline._new_core_if_modified
     def extract_bezier_patches(self):
         """
         Extract all knot spans as Bezier patches to perform further operations
