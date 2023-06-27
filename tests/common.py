@@ -75,6 +75,104 @@ knot_vectors_3d = [
     [0.0, 0.0, 1.0, 1.0],
 ]
 
+# query points
+q2D = [
+    [0.01, 0.01],
+    [0.01, 0.5],
+    [0.9, 0.1],
+    [0.8, 0.7],
+    [0.4, 0.99],
+]
+
+q3D = [
+    [0.1, 0.1, 0.1],
+    [0.734, 0.525, 0.143],
+    [0.9666, 0.991, 0.003],
+    [0.5623, 0.0089, 0.99],
+    [0.0431, 0.2, 0.523],
+]
+
+
+def dict_b2p2d():
+    return dict(
+        degrees=[2, 2],
+        knot_vectors=knot_vectors_2d,
+        control_points=control_points_bspline,
+    )
+
+
+def dict_n2p2d():
+    return dict(
+        degrees=[2, 1],
+        knot_vectors=[
+            [0, 0, 0, 1, 1, 1],
+            [0, 0, 1, 1],
+        ],
+        control_points=control_points_nurbs,
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
+    )
+
+
+#
+def dict_z2p2d():
+    return dict(degrees=[2, 1], control_points=control_points_nurbs)
+
+
+#
+def dict_r2p2d():
+    return dict(
+        degrees=[2, 1],
+        control_points=control_points_nurbs,
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
+    )
+
+
+# 3D
+def dict_z3p3d():
+    return dict(
+        degrees=[1, 1, 1],
+        control_points=control_points_splines_3d,
+    )
+
+
+def dict_r3p3d():
+    return dict(
+        degrees=[1, 1, 1],
+        control_points=control_points_splines_3d,
+        weights=[1.0] * len(control_points_splines_3d),
+    )
+
+
+def dict_b3p3d():
+    return dict(
+        degrees=[1, 1, 1],
+        control_points=control_points_splines_3d,
+        knot_vectors=knot_vectors_3d,
+    )
+
+
+def dict_n3p3d():
+    return dict(
+        degrees=[1, 1, 1],
+        control_points=control_points_splines_3d,
+        weights=[1.0] * len(control_points_splines_3d),
+        knot_vectors=knot_vectors_3d,
+    )
+
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
@@ -84,17 +182,6 @@ def bspline_2d():
         knot_vectors=knot_vectors_2d,
         control_points=control_points_bspline,
     )
-
-
-def b2p2d():
-    return dict(
-        degrees=[2, 2],
-        knot_vectors=knot_vectors_2d,
-        control_points=control_points_bspline,
-    )
-
-
-b2P2D = b2p2d()
 
 
 # half-half circle.
@@ -117,32 +204,10 @@ def nurbs_half_circle_2d():
     )
 
 
-def n2p2d():
-    return dict(
-        degrees=[2, 1],
-        knot_vectors=[
-            [0, 0, 0, 1, 1, 1],
-            [0, 0, 1, 1],
-        ],
-        control_points=control_points_nurbs,
-        weights=[
-            [1.0],
-            [2**-0.5],
-            [1.0],
-            [1.0],
-            [2**-0.5],
-            [1.0],
-        ],
-    )
-
-
-n2P2D = n2p2d()
-
-
 def n2p2d_quarter_circle():
     """explicit function for quarter circle
     incase n2p2d changes in the future..."""
-    return n2p2d()
+    return dict_n2p2d()
 
 
 def bezier_2d():
@@ -150,33 +215,6 @@ def bezier_2d():
         degrees=[2, 1],
         control_points=control_points_nurbs,
     )
-
-
-#
-def z2p2d():
-    return dict(degrees=[2, 1], control_points=control_points_nurbs)
-
-
-z2P2D = z2p2d()
-
-
-#
-def r2p2d():
-    return dict(
-        degrees=[2, 1],
-        control_points=control_points_nurbs,
-        weights=[
-            [1.0],
-            [2**-0.5],
-            [1.0],
-            [1.0],
-            [2**-0.5],
-            [1.0],
-        ],
-    )
-
-
-r2P2D = r2p2d()
 
 
 def rational_bezier_2d():
@@ -194,29 +232,10 @@ def rational_bezier_2d():
     )
 
 
-def all2p2d():
-    z = splinepy.Bezier(**z2p2d())
-    r = splinepy.RationalBezier(**r2p2d())
-    b = splinepy.BSpline(**b2p2d())
-    n = splinepy.NURBS(**n2p2d())
-    return [z, r, b, n]
-
-
 def bezier_3d():
     return splinepy.Bezier(
         degrees=[1, 1, 1], control_points=control_points_splines_3d
     )
-
-
-# 3D
-def z3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-    )
-
-
-z3P3D = z3p3d()
 
 
 def rational_bezier_3d():
@@ -227,40 +246,10 @@ def rational_bezier_3d():
     )
 
 
-def r3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
-    )
-
-
-r3P3D = r3p3d()
-
-
-def b3p3d():
-    return dict(
-        **z3P3D,
-        knot_vectors=knot_vectors_3d,
-    )
-
-
-b3P3D = b3p3d()
-
-
 def bspline_3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
         control_points=control_points_splines_3d,
-        knot_vectors=knot_vectors_3d,
-    )
-
-
-def n3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
         knot_vectors=knot_vectors_3d,
     )
 
@@ -272,35 +261,6 @@ def nurbs_3d():
         weights=[1.0] * len(control_points_splines_3d),
         knot_vectors=knot_vectors_3d,
     )
-
-
-n3P3D = n3p3d()
-
-
-def all3p3d():
-    z = splinepy.Bezier(**z3p3d())
-    r = splinepy.RationalBezier(**r3p3d())
-    b = splinepy.BSpline(**b3p3d())
-    n = splinepy.NURBS(**n3p3d())
-    return [z, r, b, n]
-
-
-# query points
-q2D = [
-    [0.01, 0.01],
-    [0.01, 0.5],
-    [0.9, 0.1],
-    [0.8, 0.7],
-    [0.4, 0.99],
-]
-
-q3D = [
-    [0.1, 0.1, 0.1],
-    [0.734, 0.525, 0.143],
-    [0.9666, 0.991, 0.003],
-    [0.5623, 0.0089, 0.99],
-    [0.0431, 0.2, 0.523],
-]
 
 
 def raster(bounds, resolutions):
@@ -447,7 +407,7 @@ def get_all_spline_types_empty_as_list():
 
 
 def get_all_splines_as_dict_as_list():
-    return [b2p2d(), n2p2d(), z2p2d(), r2p2d()]
+    return [dict_b2p2d(), dict_n2p2d(), dict_z2p2d(), dict_r2p2d()]
 
 
 class SplineBasedTestCase(unittest.TestCase):
