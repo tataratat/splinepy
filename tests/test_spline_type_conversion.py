@@ -18,9 +18,13 @@ def convert_and_compare_samples(spline, conversion_list):
         assert type(converted).__qualname__.lower().startswith(convert_to)
 
 
-class SplineTypeConversionTest(c.unittest.TestCase):
+class SplineTypeConversionTest(c.SplineBasedTestCase):
     def setUp(self):
-        self.z, self.r, self.b, self.n = c.all2p2d()
+        splines = c.get_all_spline_typs_as_list()
+        self.b = splines[0]
+        self.n = splines[1]
+        self.z = splines[2]
+        self.r = splines[3]
 
     def test_bezier_conversions(self):
         test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]

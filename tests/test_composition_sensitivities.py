@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class ComposeSensitivitiesTest(c.unittest.TestCase):
+class ComposeSensitivitiesTest(c.SplineBasedTestCase):
     """
     Test composition sensitivity, i.e., the derivative concerning the
     deformation function's control points.
@@ -76,7 +76,7 @@ class ComposeSensitivitiesTest(c.unittest.TestCase):
         """Combine Composition sensitivities with BSpline extraction"""
 
         # Initialize outer functions
-        bspline = c.splinepy.BSpline(**c.b2P2D)
+        bspline = self.bspline
         inner_function = c.splinepy.Bezier(
             degrees=[1, 1],
             control_points=[
