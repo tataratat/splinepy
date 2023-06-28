@@ -87,7 +87,7 @@ markdown_files = [
 
 # List of explicit link substitutions.
 link_substitutions = {
-    "docs/markdown/spline_plotting.md": "spline_intro.html#creating-and-plotting-splines"
+    "docs/markdown/spline_plotting.md": "spline_intro.html#creating-and-plotting-splines"  # noqa E501
 }
 
 
@@ -140,7 +140,7 @@ def process_file(
             else:
                 content = content.replace(
                     f"[{item[0]}]({item[1]})",
-                    f"See documentation for examples.",
+                    "See documentation for examples.",
                 )
         elif not relative_links:  # generate links to github repo
             new_path = get_github_path_from(pathlib.Path(item[1]).resolve())
