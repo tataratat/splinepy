@@ -9,31 +9,22 @@ The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and ea
 ## Install guide
 splinepy wheels are available for python3.6+ for MacOS, Linux, and Windows:
 ```bash
-pip install --upgrade pip
+pip install splinepy[all]  # this installs gustaf[all]
+
+# or
+
 pip install splinepy
 ```
+`-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
 
-It is also possible to install the current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
-1) Fast build - minimal and debug mode
-```bash
-SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/splinepy.git@main -vvv
-```
-
-2) Same build as in PyPI - full set of splines and optimized build
-```bash
-pip install git+https://github.com/tataratat/splinepy.git@main -vvv
-```
-`-vvv` is not necessary, but we suggest using it since you can see the build progress. Full build (the second option) may take a while.
-
-Of course, you can directly install it from the source.
-In addition to the aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, the easiest way to install it would be: `pip install cmake`.
+Of course, you can install directly from the source.
+In addition to aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, easiest way to install it would be: `pip install cmake`.
 ```bash
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
 git submodule update --init --recursive
-python3 setup.py install
+python3 setup.py develop
 ```
-For visualization and extended functionalities, please take a look at [gustaf](https://github.com/tataratat/gustaf)!
 
 ## Quick start
 ```python
@@ -99,9 +90,9 @@ Most of the functions are vectorized and capable of multithread executions.
 ### Splines
 __Any type of spline is capable of:__
 - computing spline mappings, derivatives, partial derivatives, jacobian, basis functions, basis function derivatives, basis function partial derivatives, and proximity (point inversion, nearest mapping search),
-- degree elevation, and
-- extracting boundary splines.
-- visualize (see [visualizing with splinepy](docs/markdown/spline_plotting.md))
+- degree elevation,
+- extracting boundary splines, and
+- visualization (see [visualizing with splinepy](docs/markdown/spline_plotting.md)).
 
 In addition to the common features, __Bezier and Rational Bezier__ can:
 - add/multiply two splines,
@@ -149,6 +140,7 @@ The following are direct dependencies for splinepy. Please feel free to check ou
 | [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
 | [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provides initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
 | [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   |
+| [gustaf](https://github.com/tataratat/gustaf) | Conversion to mesh representation, visualization, and helpers | X |  |
 | [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
 | [cmake](https://cmake.org) | Platform independent build system for c++ implementations |   | X |
 | [setuptools](https://setuptools.pypa.io/en/latest/) | Build python package  | X |  |
