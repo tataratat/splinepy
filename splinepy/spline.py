@@ -1391,9 +1391,7 @@ class Spline(SplinepyBase, core.PySpline):
         --------
         results: (math.product(resolutions), dim) np.ndarray
         """
-        self._logd(
-            f"Sampling {np.product(resolutions)} " "points from spline."
-        )
+        self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
 
         return super().sample(
             resolutions, nthreads=_default_if_none(nthreads, settings.NTHREADS)

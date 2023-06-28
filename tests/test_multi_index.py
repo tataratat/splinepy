@@ -30,19 +30,19 @@ class MultiIndexTest(c.unittest.TestCase):
 
             # test first and last slice that's orthogonal to the last dimension
             # first slice
-            ref_raveled = c.np.arange(c.np.product(resolutions[:-1]))
+            ref_raveled = c.np.arange(c.np.prod(resolutions[:-1]))
             to_test = multi[..., 0]
             assert c.np.array_equal(ref_raveled, to_test)
 
             # last slice
-            upper = c.np.product(resolutions)
-            lower = upper - c.np.product(resolutions[:-1])
+            upper = c.np.prod(resolutions)
+            lower = upper - c.np.prod(resolutions[:-1])
             ref_raveled = c.np.arange(lower, upper)
             to_test = multi[..., -1]
             assert c.np.array_equal(ref_raveled, to_test)
 
             # test first and last slice that's orthogonal to the first dim
-            full_ids = c.np.arange(c.np.product(resolutions))
+            full_ids = c.np.arange(c.np.prod(resolutions))
 
             # first slice
             ref_raveled = full_ids[0 :: resolutions[0]]

@@ -28,7 +28,7 @@ class MultiIndex:
             )
 
         # create raveled indices
-        raveled = np.arange(np.product(grid_resolutions), dtype="int32")
+        raveled = np.arange(np.prod(grid_resolutions), dtype="int32")
 
         # to allow general __getitem__ like query, turn them into
         # grid's shape
