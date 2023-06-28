@@ -17,9 +17,9 @@ import re
 # Path to this file.
 file_path = os.path.abspath(os.path.dirname(__file__))
 original_cwd = os.getcwd()
-repo_root = str(
-    pathlib.Path(__file__).resolve()).split("docs")[0]
+repo_root = str(pathlib.Path(__file__).resolve()).split("docs")[0]
 os.chdir(repo_root)
+
 
 def get_markdown_links(line: str) -> str:
     """Get the markdown links from a string.
@@ -139,8 +139,12 @@ def process_file(
         elif not relative_links:  # generate links to github repo
             new_path = get_github_path_from(pathlib.Path(item[1]).resolve())
         else:  # generate relative links
-            common_sub_path, steps_back = get_common_parent(item[1], folder_to_save_to)
-            new_path = "../"*steps_back + str(pathlib.Path(item[1]).resolve().relative_to(common_sub_path))
+            common_sub_path, steps_back = get_common_parent(
+                item[1], folder_to_save_to
+            )
+            new_path = "../" * steps_back + str(
+                pathlib.Path(item[1]).resolve().relative_to(common_sub_path)
+            )
         content = content.replace(item[1], str(new_path))
 
     os.chdir(original_cwd)
