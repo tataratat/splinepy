@@ -1732,13 +1732,27 @@ class Spline(SplinepyBase, core.PySpline):
         boundary_spline: type(self)
           boundary spline, which has one less para_dim
         """
-        if boundary_ids is None:
-            boundary_ids = np.array([], dtype=np.int32)
+        # check if boundaries were saved.
+        saved_boundaries = self._data.get("boundaries", None)
+        if saved_boundaries is not None:
+            if boundary_ids is None:
+                return saved_boundaries
+            else:
+                return [saved_boundaries[bi] for bi in boundary_ids]
 
-        return [
+        # extract boundaries
+        boundaries = [
             type(self)(spline=c)
-            for c in core.extract_boundaries(self, boundary_ids)
+            for c in core.extract_boundaries(
+                self, _default_if_none(boundary_ids, [])
+            )
         ]
+
+        # save if this was all-query
+        if boundary_ids is None:
+            self._data["boundaries"] = boundaries
+
+        return boundaries
 
     @_new_core_if_modified
     def export(self, fname):

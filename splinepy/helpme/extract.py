@@ -133,106 +133,29 @@ def faces(
         )
 
     elif spline.para_dim == 3:
-        # TODO: use spline extraction routine to first extract
-        # spline, extract faces, merge vertices.
+        # extract boundaries and sample from them
+        # alternatively, as each groups share basis and will have same
+        # resolution query, we could reuse the basis.
+        boundaries = spline.extract_boundaries()
+        grouped_boundaries = [
+            boundaries[i * 2 : (i + 1) * 2] for i in range(spline.para_dim)
+        ]
 
-        # Spline to surfaces
+        list_res = list(resolutions)
         vertices = []
         faces = []
         offset = 0
-        # accommodate bezier Splines
-        u_kvs = spline.unique_knots
+        for i, gb in enumerate(grouped_boundaries):
+            this_res = list_res.copy()  # shallow
+            this_res.pop(i)
 
-        for i in range(spline.para_dim):
-            extract = i
-            # Get extracting dimension
-            extract_along = [0, 1, 2]
-            extract_along.pop(extract)
+            tmp_faces = connec.make_quad_faces(this_res)
+            offset_size = np.prod(this_res)
 
-            # Extract range
-            extract_range = [
-                [
-                    min(u_kvs[extract_along[0]]),
-                    max(u_kvs[extract_along[0]]),
-                ],
-                [
-                    min(u_kvs[extract_along[1]]),
-                    max(u_kvs[extract_along[1]]),
-                ],
-            ]
-
-            extract_list = [
-                min(u_kvs[extract]),
-                max(u_kvs[extract]),
-            ]
-
-            # surface point queries (spq)
-            spq = np.linspace(
-                extract_range[0][0],
-                extract_range[0][1],
-                resolutions[extract_along[0]],
-            ).reshape(-1, 1)
-
-            # expand horizontally and init with 1
-            spq = np.hstack((spq, np.ones((len(spq), 1))))
-            spq = np.vstack(
-                np.linspace(
-                    spq * [1, extract_range[1][0]],
-                    spq * [1, extract_range[1][1]],
-                    resolutions[extract_along[1]],
-                )
-            )
-
-            # expand horizontally and init with 1
-            spq = np.hstack((spq, np.ones((len(spq), 1))))
-            spq = np.vstack(
-                np.linspace(
-                    spq * [1, 1, extract_list[0]],
-                    spq * [1, 1, extract_list[1]],
-                    2,
-                )
-            )
-
-            surface_point_queries = arr.make_c_contiguous(
-                spq,
-                dtype="float64",
-            )
-            sorted_ids = np.argsort(
-                [extract_along[0], extract_along[1], extract]
-            )
-            surface_point_queries = surface_point_queries[:, sorted_ids]
-
-            vertices.append(
-                spline.evaluate(
-                    surface_point_queries[
-                        : int(surface_point_queries.shape[0] / 2)
-                    ]
-                )
-            )
-
-            if len(faces) != 0:
-                offset = faces[-1].max() + 1
-
-            tmp_faces = connec.make_quad_faces(
-                [
-                    resolutions[extract_along[0]],
-                    resolutions[extract_along[1]],
-                ]
-            )
-
-            faces.append(tmp_faces + int(offset))
-
-            vertices.append(
-                spline.evaluate(
-                    surface_point_queries[
-                        int(surface_point_queries.shape[0] / 2) :
-                    ]
-                )
-            )
-
-            offset = faces[-1].max() + 1
-
-            faces.append(tmp_faces + int(offset))
+            for g in gb:  # each spline
+                vertices.append(g.sample(this_res))
+                faces.append(tmp_faces + int(offset))
+                offset += offset_size
 
         # make faces and merge vertices before returning
         f = Faces(vertices=np.vstack(vertices), faces=np.vstack(faces))
