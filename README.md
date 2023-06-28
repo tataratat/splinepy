@@ -13,7 +13,7 @@ pip install --upgrade pip
 pip install splinepy
 ```
 
-It is also possible to install current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
+It is also possible to install the current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
 1) Fast build - minimal and debug mode
 ```bash
 SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/splinepy.git@main -vvv
@@ -23,10 +23,10 @@ SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/s
 ```bash
 pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 ```
-`-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
+`-vvv` is not necessary, but we suggest using it since you can see the build progress. Full build (the second option) may take a while.
 
-Of course, you can install directly from the source.
-In addition to aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, easiest way to install it would be: `pip install cmake`.
+Of course, you can directly install it from the source.
+In addition to the aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, the easiest way to install it would be: `pip install cmake`.
 ```bash
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
@@ -99,12 +99,13 @@ Most of the functions are vectorized and capable of multithread executions.
 ### Splines
 __Any type of spline is capable of:__
 - computing spline mappings, derivatives, partial derivatives, jacobian, basis functions, basis function derivatives, basis function partial derivatives, and proximity (point inversion, nearest mapping search),
-- degree evalation, and
+- degree elevation, and
 - extracting boundary splines.
+- visualize (see [visualizing with splinepy](docs/markdown/spline_plotting.md))
 
 In addition to the common features, __Bezier and Rational Bezier__ can:
-- add / multiply two splines,
-- split itself into multiple pathces,
+- add/multiply two splines,
+- split itself into multiple patches,
 - create derivative splines, and
 - compose an inner spline into an outer spline and compute its composition derivative
 
@@ -113,15 +114,15 @@ and __BSpline and NURBS__ can:
 - insert and remove knots, and
 - extract bezier patches.
 
-Some __BSpline fitting__ routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
-- curve interpolation / approximation
-- surface interpolation / approximation
+Some __BSpline fitting__ routines from [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
+- curve interpolation/approximation
+- surface interpolation/approximation
 
 ### Multipatch
-Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is both used for complex geometries as for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
+Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is used for complex geometries and for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
  - determine patch-interfaces automatically
  - identification of boundary faces
- - boundary assignement using different techniques, relying either on the boundary position or on the continuity inbetween patches
+ - boundary assignment using different techniques, relying either on the boundary position or on the continuity in between patches
  - Boundary extraction
 
 ### IO
@@ -139,7 +140,7 @@ Available in `splinepy.io`.
 
 
 ## Dependencies
-Followings are direct dependencies for splinepy. Please feel free to check out the repositories linked in the following.
+The following are direct dependencies for splinepy. Please feel free to check out the repositories linked.
 
 | Package | Description                                             | python | c++ |
 | ------- | ------------------------------------------------------- | ------ | --- |

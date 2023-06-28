@@ -1,7 +1,7 @@
 .. toctree::
    :maxdepth: 2
 
-.. mdinclude:: ../../README.md
+.. mdinclude:: ../md/README.md
 
 Table of Contents
 -----------------
