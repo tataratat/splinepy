@@ -131,11 +131,17 @@ def process_file(
             )
             continue
         elif item[1] in link_substitutions:
-            content = content.replace(
-                f"[{item[0]}]({item[1]})",
-                f"<a href='{link_substitutions[item[1]]}'>{item[0]}</a>",
-            )
-            continue
+            if relative_links:
+                content = content.replace(
+                    f"[{item[0]}]({item[1]})",
+                    f"<a href='{link_substitutions[item[1]]}'>{item[0]}</a>",
+                )
+                continue
+            else:
+                content = content.replace(
+                    f"[{item[0]}]({item[1]})",
+                    f"See documentation for examples.",
+                )
         elif not relative_links:  # generate links to github repo
             new_path = get_github_path_from(pathlib.Path(item[1]).resolve())
         else:  # generate relative links
