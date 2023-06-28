@@ -44,10 +44,10 @@ pygments_style = "sphinx"
 
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
-    "logo": {
-        "image_light": "_static/temp_logo.png",
-        "image_dark": "_static/temp_logo.png",
-    },
+    # "logo": {
+    #     "image_light": "_static/temp_logo.png",
+    #     "image_dark": "_static/temp_logo.png",
+    # },
     "icon_links": [
         {
             "name": "GitHub",
@@ -60,9 +60,8 @@ html_theme_options = {
             "icon": "fa-solid fa-box",
         },
     ],
-    # "footer_start": ["copyright", "sphinx-version", "theme-version", "footer-free-pics"],
 }
-html_favicon = "_static/favicon.ico"
+# html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
 html_css_files = ["style.css"]
 

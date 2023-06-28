@@ -135,17 +135,12 @@ def process_file(
                 f"[{item[0]}]({item[1]})",
                 f"<a href='{link_substitutions[item[1]]}'>{item[0]}</a>",
             )
+            continue
         elif not relative_links:  # generate links to github repo
             new_path = get_github_path_from(pathlib.Path(item[1]).resolve())
         else:  # generate relative links
             common_sub_path, steps_back = get_common_parent(item[1], folder_to_save_to)
             new_path = "../"*steps_back + str(pathlib.Path(item[1]).resolve().relative_to(common_sub_path))
-            print(pathlib.Path(item[1]).resolve())
-            print(file_path)
-            print(common_sub_path)
-            print(new_path)
-            print()
-            print()
         content = content.replace(item[1], str(new_path))
 
     os.chdir(original_cwd)
@@ -165,41 +160,3 @@ if __name__ == "__main__":
     # Process all markdown files
     for file in markdown_files:
         process_file(file)
-
-
-# a = None
-# if __name__ == "__main__":
-#     os.makedirs(folder_to_save_to, exist_ok=True)
-#     # Process all markdown files
-#     for file in markdown_files:
-#         # read in the content of the markdown file
-#         with open(file) as f:
-#             content = f.read()
-#         # get all links from the markdown file
-#         links = get_markdown_links(content)
-#         # generate a set of all local links
-#         local_link_set = set()
-#         for item in links:
-#             if item[1].startswith(tuple(["http", "#"])):
-#                 content = content.replace(
-#                     f"[{item[0]}]({item[1]})",
-#                     f"<a href='{item[1]}'>{item[0]}</a>",
-#                 )
-#                 continue
-#             local_link_set.add(item[1])
-#         # replace all local links with the correct relative links
-#         for item in local_link_set:
-#             if item in link_substitutions:
-#                 rel_path = link_substitutions[item]
-#             else:
-#                 rel_path = os.path.relpath(get_abs_path_from(item), file_path)
-#             print(item, rel_path)
-#             content_ = content.replace(item, rel_path)
-#             if content == content_:
-#                 raise ValueError(f"Could not replace {item} in {file}")
-#             content = content_
-#         # save the processed markdown file into the new md folder
-#         with open(
-#             os.path.join(folder_to_save_to, os.path.basename(file)), "w"
-#         ) as f:
-#             f.write(content)
