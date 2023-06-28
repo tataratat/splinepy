@@ -134,7 +134,7 @@ auto ExtractBezierPatches(SplineType& input) {
     const auto bezier_information =
         parameter_space.DetermineBezierExtractionKnots(
             // Use SplineLib Type
-            splinelib::Dimension{i_p_dim});
+            bsplinelib::Dimension{i_p_dim});
     n_patches_per_para_dim[i_p_dim] = std::get<0>(bezier_information);
     n_ctps_per_para_dim[i_p_dim] =
         n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
@@ -143,15 +143,15 @@ auto ExtractBezierPatches(SplineType& input) {
     // Insert knot into the copy of the spline before extraction
     // this is the most costly part of the calculation
     for (std::size_t i_knot{}; i_knot < knot_vector_ref.size(); i_knot++) {
-      input.InsertKnot(splinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
+      input.InsertKnot(bsplinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
     }
   }
   // Auxiliary function
   const auto& ControlPointVector = [&](const int& id) {
     if constexpr (is_rational) {
-      return input.GetWeightedVectorSpace()[splinelib::Index{id}];
+      return input.GetWeightedVectorSpace()[bsplinelib::Index{id}];
     } else {
-      return input.GetVectorSpace()[splinelib::Index{id}];
+      return input.GetVectorSpace()[bsplinelib::Index{id}];
     }
   };
 

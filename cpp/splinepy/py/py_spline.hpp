@@ -25,7 +25,7 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
-using namespace splinelib::sources;
+using namespace bsplinelib;
 
 template<typename ValueType>
 static bool CheckPyArrayShape(const py::array_t<ValueType> arr,

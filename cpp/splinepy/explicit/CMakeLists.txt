@@ -124,7 +124,7 @@ target_include_directories(explicit
 target_link_libraries(explicit
     PRIVATE
         bezman
-        SplineLib::splines
+        BSplineLib::splines
         napf)
 
 # flags

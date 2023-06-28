@@ -1,7 +1,7 @@
 #pragma once
 
 // SplineLib
-#include <Sources/Splines/b_spline.hpp>
+#include <BSplineLib/Splines/b_spline.hpp>
 
 #include "splinepy/explicit/splinelib/b_spline_extern.hpp"
 #include "splinepy/proximity/proximity.hpp"
@@ -20,7 +20,7 @@ namespace splinepy::splines {
 /// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class BSpline : public splinepy::splines::SplinepyBase,
-                public splinelib::sources::splines::BSpline<para_dim, dim> {
+                public bsplinelib::splines::BSpline<para_dim, dim> {
 public:
   /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
@@ -45,9 +45,9 @@ public:
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
   // splinelib
-  using Base_ = splinelib::sources::splines::BSpline<para_dim, dim>;
+  using Base_ = bsplinelib::splines::BSpline<para_dim, dim>;
   template<int b_para_dim, int b_dim>
-  using BaseTemplate_ = splinelib::sources::splines::BSpline<b_para_dim, b_dim>;
+  using BaseTemplate_ = bsplinelib::splines::BSpline<b_para_dim, b_dim>;
   // parameter space
   /// Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
@@ -79,11 +79,11 @@ public:
   using ScalarCoordinate_ = typename Coordinate_::value_type;
   // frequently used types
   using Derivative_ = typename Base_::Derivative_;
-  using Dimension_ = splinelib::Dimension;
-  using Tolerance_ = splinelib::sources::splines::Tolerance;
+  using Dimension_ = bsplinelib::Dimension;
+  using Tolerance_ = bsplinelib::splines::Tolerance;
   using OutputInformation_ =
-      splinelib::Tuple<typename ParameterSpace_::OutputInformation_,
-                       typename VectorSpace_::OutputInformation_>;
+      bsplinelib::Tuple<typename ParameterSpace_::OutputInformation_,
+                        typename VectorSpace_::OutputInformation_>;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
@@ -241,7 +241,7 @@ public:
         kv.reserve(kvsize);
         // Index wants int
         for (int j{}; j < static_cast<int>(kvsize); ++j) {
-          kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
+          kv.emplace_back(static_cast<double>(core_kv[bsplinelib::Index{j}]));
         }
         knot_vectors->push_back(std::move(kv));
       }
@@ -252,8 +252,8 @@ public:
       std::size_t ncps = vector_space.GetNumberOfCoordinates();
       // fill it up, phil!
       for (std::size_t i{}; i < ncps; ++i) {
-        auto const& coord_named_phil = vector_space[splinelib::Index{
-            static_cast<splinelib::Index::Type_>(i)}];
+        auto const& coord_named_phil = vector_space[bsplinelib::Index{
+            static_cast<bsplinelib::Index::Type_>(i)}];
         for (std::size_t j{}; j < kDim; ++j) {
           control_points[i * kDim + j] =
               static_cast<double>(coord_named_phil[j]);

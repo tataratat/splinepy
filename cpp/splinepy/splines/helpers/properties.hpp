@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "Sources/Utilities/index.hpp"
+#include "BSplineLib/Utilities/index.hpp"
 
 namespace splinepy::splines::helpers {
 
@@ -92,7 +92,7 @@ inline void GetGrevilleAbscissae(const SplineType& spline,
       double factor{};
       for (int k{0}; k < degrees[i_para_dim]; ++k) {
         factor +=
-            knot_vectors->operator[](typename splinelib::Index(k + j + 1));
+            knot_vectors->operator[](typename bsplinelib::Index(k + j + 1));
       }
       greville_abscissae[j] = static_cast<double>(inv_factor * factor);
     } else {

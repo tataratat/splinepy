@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12.0)
 project(splinepy VERSION 0.0.2 LANGUAGES CXX)
 
 # build options
-option(SPLINEPY_COMPILE_SPLINELIB "Compile splinelib together." ON)
+option(SPLINEPY_COMPILE_BSPLINELIB "Compile bsplinelib together." ON)
 option(SPLINEPY_VERBOSE_MAKE
         "Verbose `make` output. Alias to CMAKE_VERBOSE_MAKEFILE" OFF)
 option(SPLINEPY_MORE "Compile a full set of splines." OFF)
