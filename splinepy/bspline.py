@@ -305,6 +305,25 @@ class BSplineBase(spline.Spline):
         # correct types
         return [settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
 
+    def volume(self):
+        """Integrate volume
+        @todo : Could be more efficient if no bezier extraction would take
+        place
+
+        Check out documentation for BezierBase.volume for more information
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        volume : float
+          Integral of dim-dimensional object
+        """
+        beziers = self.extract_bezier_patches()
+        return np.sum([b.volume() for b in beziers])
+
 
 class BSpline(BSplineBase):
     r"""
