@@ -342,12 +342,12 @@ class Bezier(BezierBase):
 
     @property
     def bezier(self):
-        return settings.NAME_TO_TYPE["Bezier"](spline=self)
+        return settings.NAME_TO_TYPE["Bezier"](**self.todict())
 
     @property
     def rationalbezier(self):
         return settings.NAME_TO_TYPE["RationalBezier"](
-            **self.todict(), weights=np.ones((len(self.cps), 1))
+            **self.todict(), weights=np.ones((self.cps.shape[0], 1))
         )
 
     @property

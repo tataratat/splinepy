@@ -148,4 +148,4 @@ class NURBS(BSplineBase):
 
     @property
     def nurbs(self):
-        return settings.NAME_TO_TYPE["NURBS"](spline=self)
+        return settings.NAME_TO_TYPE["NURBS"](**self.todict())

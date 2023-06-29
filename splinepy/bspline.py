@@ -677,7 +677,7 @@ class BSpline(BSplineBase):
 
     @property
     def bspline(self):
-        return settings.NAME_TO_TYPE["BSpline"](spline=self)
+        return settings.NAME_TO_TYPE["BSpline"](**self.todict())
 
     @property
     def nurbs(self):
