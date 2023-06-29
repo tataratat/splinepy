@@ -10,11 +10,11 @@
 #include <pybind11/pybind11.h>
 
 // SplineLib
-#include <Sources/InputOutput/iges.hpp>
-#include <Sources/InputOutput/irit.hpp>
-#include <Sources/InputOutput/operations.hpp>
-#include <Sources/InputOutput/vtk.hpp>
-#include <Sources/InputOutput/xml.hpp>
+#include <BSplineLib/InputOutput/iges.hpp>
+#include <BSplineLib/InputOutput/irit.hpp>
+#include <BSplineLib/InputOutput/operations.hpp>
+#include <BSplineLib/InputOutput/vtk.hpp>
+#include <BSplineLib/InputOutput/xml.hpp>
 
 // splinepy
 #include <splinepy/py/py_spline.hpp>
@@ -27,11 +27,9 @@ namespace splinepy::py {
 namespace py = pybind11;
 
 /// this is a shared pointer of splinelib's SplineItem
-using SplineLibIoSpline =
-    splinelib::sources::input_output::operations::SplineEntry;
+using SplineLibIoSpline = bsplinelib::input_output::operations::SplineEntry;
 // same as std::vector<SplineLibIoSpline>
-using SplineLibIoSplines =
-    splinelib::sources::input_output::operations::Splines;
+using SplineLibIoSplines = bsplinelib::input_output::operations::Splines;
 
 /// convert CoreSpline (shared_ptr of splinepybase) to splinelib io splines
 /// PySpline has the same namespace
@@ -55,21 +53,21 @@ SplineLibIoSplines ListOfPySplinesToSplineLibIoSplines(py::list pysplines) {
 
 /// IGES
 void ExportIges(std::string fname, py::list splines) {
-  splinelib::sources::input_output::iges::Write(
+  bsplinelib::input_output::iges::Write(
       ListOfPySplinesToSplineLibIoSplines(splines),
       fname);
 }
 
 /// IRIT
 void ExportIrit(std::string fname, py::list splines) {
-  splinelib::sources::input_output::irit::Write(
+  bsplinelib::input_output::irit::Write(
       ListOfPySplinesToSplineLibIoSplines(splines),
       fname);
 }
 
 /// XML
 void ExportXml(std::string fname, py::list splines) {
-  splinelib::sources::input_output::xml::Write(
+  bsplinelib::input_output::xml::Write(
       ListOfPySplinesToSplineLibIoSplines(splines),
       fname);
 }
@@ -79,7 +77,7 @@ void ExportVtk(std::string fname,
                py::list splines,
                py::list resolutions_per_spline) {
   using ResolutionsPerSpline =
-      splinelib::sources::input_output::vtk::NumbersOfParametricCoordinates;
+      bsplinelib::input_output::vtk::NumbersOfParametricCoordinates;
   using ResolutionsType = typename ResolutionsPerSpline::value_type;
   using ResolutionValueType =
       typename ResolutionsPerSpline::value_type::value_type;
@@ -146,7 +144,7 @@ void ExportVtk(std::string fname,
   }
 
   // good,
-  splinelib::sources::input_output::vtk::Sample(sl_io_splines, fname, sl_rps);
+  bsplinelib::input_output::vtk::Sample(sl_io_splines, fname, sl_rps);
 }
 
 /// @brief Adds Python spline exporter

@@ -1,5 +1,7 @@
 # Ignore build directories
 **/build/
+docs/md
+docs/source/_generated
 
 # Ignore python specific file and directories
 **/*.egg-info/

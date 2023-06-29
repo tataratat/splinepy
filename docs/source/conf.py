@@ -43,7 +43,27 @@ pygments_style = "sphinx"
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
+html_theme_options = {
+    # "logo": {
+    #     "image_light": "_static/temp_logo.png",
+    #     "image_dark": "_static/temp_logo.png",
+    # },
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/tataratat/splinepy",
+            "icon": "fa-brands fa-square-github",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/splinepy/",
+            "icon": "fa-solid fa-box",
+        },
+    ],
+}
+# html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
+html_css_files = ["style.css"]
 
 
 autodoc_default_options = {

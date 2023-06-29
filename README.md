@@ -9,19 +9,11 @@ The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and ea
 ## Install guide
 splinepy wheels are available for python3.6+ for MacOS, Linux, and Windows:
 ```bash
-pip install --upgrade pip
+pip install splinepy[all]  # this installs gustaf[all]
+
+# or
+
 pip install splinepy
-```
-
-It is also possible to install current development version using `pip`. It requires a compiler that supports C++17 or higher (C++20 for debug mode - tested with gcc-10.3 and clang-12). Here are two variants:
-1) Fast build - minimal and debug mode
-```bash
-SPLINEPY_MINIMAL_DEBUG_BUILD=True pip install git+https://github.com/tataratat/splinepy.git@main -vvv
-```
-
-2) Same build as in PyPI - full set of splines and optimized build
-```bash
-pip install git+https://github.com/tataratat/splinepy.git@main -vvv
 ```
 `-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
 
@@ -31,9 +23,8 @@ In addition to aforementioned compilers, this requires a cmake3.16+. If you don'
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
 git submodule update --init --recursive
-python3 setup.py install
+python3 setup.py develop
 ```
-For visualization and extended functionalities, please take a look at [gustaf](https://github.com/tataratat/gustaf)!
 
 ## Quick start
 ```python
@@ -99,12 +90,13 @@ Most of the functions are vectorized and capable of multithread executions.
 ### Splines
 __Any type of spline is capable of:__
 - computing spline mappings, derivatives, partial derivatives, jacobian, basis functions, basis function derivatives, basis function partial derivatives, and proximity (point inversion, nearest mapping search),
-- degree evalation, and
-- extracting boundary splines.
+- degree elevation,
+- extracting boundary splines, and
+- visualization (see [visualizing with splinepy](docs/markdown/spline_plotting.md)).
 
 In addition to the common features, __Bezier and Rational Bezier__ can:
-- add / multiply two splines,
-- split itself into multiple pathces,
+- add/multiply two splines,
+- split itself into multiple patches,
 - create derivative splines, and
 - compose an inner spline into an outer spline and compute its composition derivative
 
@@ -113,15 +105,15 @@ and __BSpline and NURBS__ can:
 - insert and remove knots, and
 - extract bezier patches.
 
-Some __BSpline fitting__ routines from the [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
-- curve interpolation / approximation
-- surface interpolation / approximation
+Some __BSpline fitting__ routines from [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
+- curve interpolation/approximation
+- surface interpolation/approximation
 
 ### Multipatch
-Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is both used for complex geometries as for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
+Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is used for complex geometries and for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
  - determine patch-interfaces automatically
  - identification of boundary faces
- - boundary assignement using different techniques, relying either on the boundary position or on the continuity inbetween patches
+ - boundary assignment using different techniques, relying either on the boundary position or on the continuity in between patches
  - Boundary extraction
 
 ### IO
@@ -139,7 +131,7 @@ Available in `splinepy.io`.
 
 
 ## Dependencies
-Followings are direct dependencies for splinepy. Please feel free to check out the repositories linked in the following.
+The following are direct dependencies for splinepy. Please feel free to check out the repositories linked.
 
 | Package | Description                                             | python | c++ |
 | ------- | ------------------------------------------------------- | ------ | --- |
@@ -148,6 +140,7 @@ Followings are direct dependencies for splinepy. Please feel free to check out t
 | [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
 | [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provides initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
 | [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   |
+| [gustaf](https://github.com/tataratat/gustaf) | Conversion to mesh representation, visualization, and helpers | X |  |
 | [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
 | [cmake](https://cmake.org) | Platform independent build system for c++ implementations |   | X |
 | [setuptools](https://setuptools.pypa.io/en/latest/) | Build python package  | X |  |

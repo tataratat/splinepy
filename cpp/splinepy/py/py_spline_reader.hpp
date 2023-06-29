@@ -10,11 +10,11 @@
 #include <pybind11/pybind11.h>
 
 // SplineLib
-#include <Sources/InputOutput/iges.hpp>
-#include <Sources/InputOutput/irit.hpp>
-#include <Sources/InputOutput/xml.hpp>
-#include <Sources/Splines/b_spline.hpp>
-#include <Sources/Utilities/named_type.hpp>
+#include <BSplineLib/InputOutput/iges.hpp>
+#include <BSplineLib/InputOutput/irit.hpp>
+#include <BSplineLib/InputOutput/xml.hpp>
+#include <BSplineLib/Splines/b_spline.hpp>
+#include <BSplineLib/Utilities/named_type.hpp>
 
 #include <splinepy/utils/print.hpp>
 
@@ -22,7 +22,7 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
-using namespace splinelib::sources;
+using namespace bsplinelib;
 
 /// @brief BSpline parser class
 /// @tparam para_dim Dimension of parametric space

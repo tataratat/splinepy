@@ -1,7 +1,7 @@
 #pragma once
 
 // SplineLib
-#include <Sources/Splines/nurbs.hpp>
+#include <BSplineLib/Splines/nurbs.hpp>
 
 #include <splinepy/explicit/splinelib/nurbs_extern.hpp>
 #include <splinepy/proximity/proximity.hpp>
@@ -18,7 +18,7 @@ namespace splinepy::splines {
 /// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
 class Nurbs : public splinepy::splines::SplinepyBase,
-              public splinelib::sources::splines::Nurbs<para_dim, dim> {
+              public bsplinelib::splines::Nurbs<para_dim, dim> {
 public:
   /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
@@ -43,7 +43,7 @@ public:
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
   // splinelib
-  using Base_ = splinelib::sources::splines::Nurbs<para_dim, dim>;
+  using Base_ = bsplinelib::splines::Nurbs<para_dim, dim>;
   // Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using Degrees_ = typename ParameterSpace_::Degrees_;
@@ -69,11 +69,11 @@ public:
   using Weight_ = typename Weights_::value_type;
   //  Frequently used types
   using Derivative_ = typename Base_::Derivative_;
-  using Dimension_ = splinelib::Dimension;
-  using Tolerance_ = splinelib::sources::splines::Tolerance;
+  using Dimension_ = bsplinelib::Dimension;
+  using Tolerance_ = bsplinelib::splines::Tolerance;
   using OutputInformation_ =
-      splinelib::Tuple<typename ParameterSpace_::OutputInformation_,
-                       typename WeightedVectorSpace_::OutputInformation_>;
+      bsplinelib::Tuple<typename ParameterSpace_::OutputInformation_,
+                        typename WeightedVectorSpace_::OutputInformation_>;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
@@ -236,7 +236,7 @@ public:
         kv.reserve(kvsize);
         // Index wants int
         for (int j{}; j < static_cast<int>(kvsize); ++j) {
-          kv.emplace_back(static_cast<double>(core_kv[splinelib::Index{j}]));
+          kv.emplace_back(static_cast<double>(core_kv[bsplinelib::Index{j}]));
         }
         knot_vectors->push_back(std::move(kv));
       }
@@ -247,8 +247,8 @@ public:
       std::size_t ncps = vector_space.GetNumberOfCoordinates();
       // fill it up, phil!
       for (std::size_t i{}; i < ncps; ++i) {
-        auto const& coord_named_phil = vector_space[splinelib::Index{
-            static_cast<splinelib::Index::Type_>(i)}];
+        auto const& coord_named_phil = vector_space[bsplinelib::Index{
+            static_cast<bsplinelib::Index::Type_>(i)}];
         // unweight - phil needs to first project before filling.
         if (control_points) {
           auto const& projected_phil =
