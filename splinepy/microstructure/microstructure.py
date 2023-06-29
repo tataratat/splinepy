@@ -289,7 +289,9 @@ class Microstructure(SplinepyBase):
 
         # Prepare the deformation function
         # Transform into a non-uniform splinetype and make sure to work on copy
-        if hasattr(self._deformation_function, "bspline"):
+        if "BSpline" in self._deformation_function.whatami:
+            deformation_function_copy = self._deformation_function.copy()
+        elif hasattr(self._deformation_function, "bspline"):
             deformation_function_copy = self._deformation_function.bspline
         else:
             deformation_function_copy = self._deformation_function.nurbs
