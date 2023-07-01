@@ -165,13 +165,6 @@ public:
         for (py::handle k : kv) {
           this_knot = k.cast<double>();
 
-          // can't be negative
-          if (this_knot < 0) {
-            splinepy::utils::PrintAndThrowError("Parametric dimension (",
-                                                kv_dim,
-                                                ")",
-                                                "includes negative knot.");
-          }
           // must be increasing
           if (prev_knot - this_knot > 0) {
             splinepy::utils::PrintAndThrowError(
@@ -204,6 +197,9 @@ public:
               nknots,
               "were given.");
         }
+
+        // Only use closed knot-vectors
+
         // multiply expected control mesh resolution
         required_ncps *= nknots - degrees_ptr[kv_dim] - 1;
 
