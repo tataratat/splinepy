@@ -249,15 +249,15 @@ class BezierBase(spline.Spline):
         return type(self)(spline=splinepy_core.extract_dim(self, dim))
 
     def volume(self):
-        """Integrates volume
+        r"""Integrates volume
 
-        Determinante has degree 
-        
+        Determinante has degree
+
         .. math::
-            p_i^{\text{det}} = n_{dim} \cdot p_i - 1        
-        
-        cf. (Mantzaflaris et al., 2017,
-        DOI:http://dx.doi.org/10.1016/j.cma.2016.11.013)
+            p_i^{det} = n_{dim} \cdot p_i - 1
+
+        cf. [Mantzaflaris et al., 2017,
+        DOI:http://dx.doi.org/10.1016/j.cma.2016.11.013]
 
         Parameters
         ----------
@@ -283,11 +283,13 @@ class BezierBase(spline.Spline):
             )
 
         # Determine integration orders
+        expected_degree = self.degrees * self.para_dim + 1
         if self.is_rational:
-            orders = self.degrees + 3
+            expected_degree += 2
             self._logw("Integration on rational spline is only approximation")
-        else:
-            orders = self.degrees + 1
+
+        # Gauss-Legendre is exact for polynomials 2*n-1
+        orders = np.ceil((expected_degree + 1) * 0.5).astype("int")
 
         for order in orders:
             # Get legendre quadratuer points
