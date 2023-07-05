@@ -251,7 +251,12 @@ class BezierBase(spline.Spline):
     def volume(self):
         """Integrates volume
 
-        Determinante has degree dim*p-1, cf. (Mantzaflaris et al., 2017,
+        Determinante has degree 
+        
+        .. math::
+            p_i^{\text{det}} = n_{dim} \cdot p_i - 1        
+        
+        cf. (Mantzaflaris et al., 2017,
         DOI:http://dx.doi.org/10.1016/j.cma.2016.11.013)
 
         Parameters
