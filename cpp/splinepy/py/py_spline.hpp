@@ -146,6 +146,10 @@ public:
     control_points_ptr = static_cast<double*>(cp_array.request().ptr);
     dim = cp_array.shape(1);
     ncps = cp_array.shape(0);
+    if (dim == 0) {
+      splinepy::utils::PrintAndThrowError(
+          "Zero dimensional data points can not constitute a spline.");
+    }
 
     // maybe, get knot_vectors
     if (kwargs.contains("knot_vectors")) {
@@ -231,13 +235,18 @@ public:
       // lgtm, set!
       knot_vectors_ptr = &knot_vectors;
     } else {
-      // Bezier here. get required ncps
-      required_ncps = std::accumulate(degrees_ptr,
-                                      degrees_ptr + para_dim,
-                                      1,
-                                      [](const int& cummulated, const int& d) {
-                                        return cummulated * (d + 1);
-                                      });
+      // Perform checks and compute required_ncps
+      required_ncps = 1;
+      for (int i_para{}; i_para < para_dim; i_para++) {
+        if (degrees_ptr[i_para] < 0) {
+          splinepy::utils::PrintAndThrowError(
+              "Invalid degree, degrees need to be positive. Detected degree",
+              degrees_ptr[i_para],
+              "along parametric dimension:",
+              i_para + 1);
+        }
+        required_ncps *= degrees_ptr[i_para] + 1;
+      }
     }
 
     // check number of control points
