@@ -248,64 +248,6 @@ class BezierBase(spline.Spline):
 
         return type(self)(spline=splinepy_core.extract_dim(self, dim))
 
-    def volume(self):
-        r"""Integrates volume
-
-        Determinante has degree
-
-        .. math::
-            p_i^{det} = n_{dim} \cdot p_i - 1
-
-        cf. [Mantzaflaris et al., 2017,
-        DOI:http://dx.doi.org/10.1016/j.cma.2016.11.013]
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        volume : float
-          Integral of dim-dimensional object
-
-        """
-        from splinepy.utils.data import cartesian_product
-
-        # Determine integration points
-        positions = []
-        weights = []
-
-        # Check dimensionality
-        if not (self.dim == self.para_dim):
-            raise ValueError(
-                "`Volume` of embedded spline depends on projection, "
-                "integration is aborted"
-            )
-
-        # Determine integration orders
-        expected_degree = self.degrees * self.para_dim + 1
-        if self.is_rational:
-            expected_degree += 2
-            self._logw("Integration on rational spline is only approximation")
-
-        # Gauss-Legendre is exact for polynomials 2*n-1
-        orders = np.ceil((expected_degree + 1) * 0.5).astype("int")
-
-        for order in orders:
-            # Get legendre quadratuer points
-            pos, ws = np.polynomial.legendre.leggauss(order)
-            # from (-1,1) to (0,1)
-            positions.append(pos * 0.5 + 0.5)
-            weights.append(ws * 0.5)
-
-        # summarize integration points
-        positions = cartesian_product(positions)
-        weights = cartesian_product(weights).prod(axis=1)
-
-        # Calculate Volume
-        volume = np.sum(np.linalg.det(self.jacobian(positions)) * weights)
-        return volume
-
 
 class Bezier(BezierBase):
     r"""
