@@ -1,5 +1,7 @@
 import numpy as np
 
+from splinepy.utils.data import cartesian_product
+
 
 def volume(spline, orders=None):
     r"""Compute volume of a given spline
@@ -25,7 +27,6 @@ def volume(spline, orders=None):
       Integral of dim-dimensional object
     """
     from splinepy.spline import Spline
-    from splinepy.utils.data import cartesian_product
 
     # Check input type
     if not isinstance(spline, Spline):
