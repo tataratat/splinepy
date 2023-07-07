@@ -156,17 +156,28 @@ public:
       // check list
       int kv_dim{0};
       double prev_knot, this_knot;
+      py::list kvs = kwargs["knot_vectors"];
 
       // loop over list of list/arrays
-      for (py::handle kv : kwargs["knot_vectors"]) {
+      for (int i_para{}; i_para < para_dim; i_para++) {
+        // Check degree
+        if (degrees_ptr[i_para] < 0) {
+          splinepy::utils::PrintAndThrowError(
+              "Invalid degree, degrees need to be positive. Detected degree",
+              degrees_ptr[i_para],
+              "along parametric dimension:",
+              i_para + 1);
+        }
+
         std::vector<double> knot_vector;
         // cast to array_t, as python side will try to use tracked array anyways
-        auto kv_array = py::cast<py::array_t<double>>(kv);
-        knot_vector.reserve(kv_array.size());
+        auto kv_array = py::cast<py::array_t<double>>(kvs[i_para]);
+        const int n_knots = kv_array.size();
+        knot_vector.reserve(n_knots);
 
         int nknots{0};
         prev_knot = -1.;
-        for (py::handle k : kv) {
+        for (py::handle k : kvs[i_para]) {
           this_knot = k.cast<double>();
 
           // must be increasing
@@ -180,7 +191,22 @@ public:
                 "are not in increasing order.");
           }
 
+          // Check for open knot-vector
+          if ((nknots > 0)
+              && ((nknots < degrees_ptr[i_para] + 1)
+                  || (nknots > n_knots - degrees_ptr[i_para] + 1))) {
+            if (std::abs(prev_knot - this_knot) > 1e-12) {
+              splinepy::utils::PrintAndThrowError(
+                  "Knot vector is not open. Expected repetition at position",
+                  nknots + 1,
+                  "Increase is:",
+                  std::abs(prev_knot - this_knot));
+            }
+          }
+
           // lgtm, add!
+          // 0 0 1 1
+          // 0 1 2 3
           knot_vector.push_back(this_knot);
 
           // prepare next
