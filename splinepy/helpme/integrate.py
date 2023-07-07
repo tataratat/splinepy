@@ -84,6 +84,22 @@ def volume(spline, orders=None):
     return volume
 
 
+def parametric_function(function, orders):
+    """Integrate a function defined within the parametric domain"""
+    raise NotImplementedError(
+        "Function not implemented yet. Please feel free to write an issue, if "
+        "you need it: github.com/tatarata/splinepy/issues"
+    )
+
+
+def physical_function(function, orders):
+    """Integrate a function defined within the physical domain"""
+    raise NotImplementedError(
+        "Function not implemented yet. Please feel free to write an issue, if "
+        "you need it: github.com/tatarata/splinepy/issues"
+    )
+
+
 class Integrator:
     """Helper class to integrate some values on a given spline geometry
 
