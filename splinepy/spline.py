@@ -14,6 +14,7 @@ from splinepy._base import SplinepyBase
 from splinepy.helpme import visualize
 from splinepy.helpme.create import Creator
 from splinepy.helpme.extract import Extractor
+from splinepy.helpme.integrate import Integrator
 from splinepy.utils.data import SplineData
 
 
@@ -652,7 +653,13 @@ class Spline(SplinepyBase, core.PySpline):
     None
     """
 
-    __slots__ = ("_extractor", "_creator", "_show_options", "_spline_data")
+    __slots__ = (
+        "_extractor",
+        "_creator",
+        "_integrator",
+        "_show_options",
+        "_spline_data",
+    )
 
     __show_option__ = visualize.SplineShowOption
 
@@ -827,6 +834,28 @@ class Spline(SplinepyBase, core.PySpline):
         extractor: Extractor
         """
         return _get_helper(self, "_extractor", Extractor)
+
+    @property
+    def integrate(self):
+        """Returns spline integrator. Can directly perform integrations
+        available at `splinepy/helpme/integrate.py`.
+
+        Examples
+        ---------
+
+        .. code-block :: python
+
+          spline_faces = spline.integrate.volume()
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        integrator: Integrator
+        """
+        return _get_helper(self, "_integrator", Integrator)
 
     @property
     def create(self):
