@@ -414,13 +414,14 @@ class CrossTile3D(TileBase):
             z_min_r,
             z_max_r,
         ] = parameters.flatten()
+
         # Check for type and consistency
         self.check_params(parameters)
-        if (np.any(parameters <= 0) or np.any(parameters < max_radius)):
-                raise ValueError(
-                    f"Radii must be in (0,{max_radius}) for "
-                    f"center_expansion {center_expansion}"
-                )
+        if np.any(parameters <= 0) or np.any(parameters > max_radius):
+            raise ValueError(
+                f"Radii must be in (0,{max_radius}) for "
+                f"center_expansion {center_expansion}"
+            )
 
         # center radius - mean of radii
         center_r = np.sum(parameters) / 6.0 * center_expansion
@@ -474,6 +475,7 @@ class CrossTile3D(TileBase):
                 degrees=[2, 1, 1], control_points=x_min_ctps + [0.5, 0.5, 0.5]
             )
         )
+
         # X-Min-Branch
         aux_x_max = min(x_max_r, center_r)
         x_max_ctps = np.array(
@@ -522,6 +524,7 @@ class CrossTile3D(TileBase):
                 degrees=[1, 2, 1], control_points=y_min_ctps + [0.5, 0.5, 0.5]
             )
         )
+
         # Y-Min-Branch
         aux_y_max = min(y_max_r, center_r)
         y_max_ctps = np.array(
@@ -570,6 +573,7 @@ class CrossTile3D(TileBase):
                 degrees=[1, 1, 2], control_points=z_min_ctps + [0.5, 0.5, 0.5]
             )
         )
+
         # Y-Min-Branch
         aux_z_max = min(z_max_r, center_r)
         z_max_ctps = np.array(
@@ -593,4 +597,5 @@ class CrossTile3D(TileBase):
                 degrees=[1, 1, 2], control_points=z_max_ctps + [0.5, 0.5, 0.5]
             )
         )
+
         return spline_list
