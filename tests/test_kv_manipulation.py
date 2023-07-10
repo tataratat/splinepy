@@ -26,7 +26,6 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
             [0, 0, 0.2, 0.5, 0.7, 1, 1],
         ]
 
-        print(self.nurbs.cps)
         # insert knots
         self.bspline.insert_knots(0, [0.2, 0.7])
         self.bspline.insert_knots(
@@ -70,8 +69,6 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         assert c.np.allclose(
             self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
         )
-
-        print(self.nurbs.cps)
 
         assert c.np.allclose(
             self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
