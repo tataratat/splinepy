@@ -50,7 +50,7 @@ def is_modified(array):
         raise TypeError(f"{array} is not trackable.")
 
 
-def enforce_contiguous(array, dtype=None):
+def enforce_contiguous(array, dtype=None, asarray=False):
     """
     If input is an instance / subclass of np.ndarray, this will check
     if they are configuous. If so, returns same object, else turns makes it
@@ -59,6 +59,11 @@ def enforce_contiguous(array, dtype=None):
     Parameters
     ----------
     array: array-like
+      data to be transformed
+    dtype : type
+      base data type (default float)
+    asarray : bool
+      also transform list or tuple to np.ndarray
 
     Returns
     -------
@@ -69,6 +74,9 @@ def enforce_contiguous(array, dtype=None):
             dtype is None or dtype is array.dtype
         ):
             return array
+        return np.ascontiguousarray(array, dtype=dtype)
+
+    if asarray and isinstance(array, (list, tuple)):
         return np.ascontiguousarray(array, dtype=dtype)
 
     return array

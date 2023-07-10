@@ -34,3 +34,9 @@ String to Type conversion. Any function that may return different types should
 use this. If you have derived classes, replace this with your own conversion
 dict. In splinepy, this is set in __init__.
 """
+
+CHECK_BOUNDS = True
+"""
+Bool to check bounds of queries if requested. Can be set to false to
+accelerate process
+"""

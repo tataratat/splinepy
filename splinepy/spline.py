@@ -12,6 +12,7 @@ from splinepy import splinepy_core as core
 from splinepy import utils
 from splinepy._base import SplinepyBase
 from splinepy.helpme import visualize
+from splinepy.helpme.check import Checker
 from splinepy.helpme.create import Creator
 from splinepy.helpme.extract import Extractor
 from splinepy.helpme.integrate import Integrator
@@ -655,6 +656,7 @@ class Spline(SplinepyBase, core.PySpline):
 
     __slots__ = (
         "_extractor",
+        "_checker",
         "_creator",
         "_integrator",
         "_show_options",
@@ -834,6 +836,25 @@ class Spline(SplinepyBase, core.PySpline):
         extractor: Extractor
         """
         return _get_helper(self, "_extractor", Extractor)
+
+    @property
+    def check(self):
+        """Returns spline checker. Can directly perform type and value checks
+        at `splinepy/helpme/check.py`.
+
+        Examples
+        ---------
+        >>> spline_faces = spline.check.valid_queries()
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        extractor: Extractor
+        """
+        return _get_helper(self, "_checker", Checker)
 
     @property
     def integrate(self):
@@ -1399,7 +1420,12 @@ class Spline(SplinepyBase, core.PySpline):
         """
         self._logd("Evaluating spline")
 
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
 
         return super().evaluate(
             queries,
@@ -1443,7 +1469,13 @@ class Spline(SplinepyBase, core.PySpline):
         """
         self._logd("Evaluating derivatives of the spline")
 
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
+
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().derivative(
@@ -1468,7 +1500,12 @@ class Spline(SplinepyBase, core.PySpline):
         """
         self._logd("Determining spline jacobians")
 
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
 
         return super().jacobian(
             queries,
@@ -1490,7 +1527,12 @@ class Spline(SplinepyBase, core.PySpline):
         support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating support ids")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
 
         return super().support(
             queries=queries,
@@ -1512,7 +1554,12 @@ class Spline(SplinepyBase, core.PySpline):
         basis: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
 
         return super().basis(
             queries=queries,
@@ -1536,7 +1583,12 @@ class Spline(SplinepyBase, core.PySpline):
         support: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis functions and support")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
 
         return super().basis_and_support(
             queries=queries,
@@ -1560,7 +1612,13 @@ class Spline(SplinepyBase, core.PySpline):
         basis_derivatives: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis function derivatives")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
+
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().basis_derivative(
@@ -1588,7 +1646,13 @@ class Spline(SplinepyBase, core.PySpline):
         supports: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis function derivatives")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = utils.data.enforce_contiguous(
+            queries, dtype="float64", asarray=settings.CHECK_BOUNDS
+        )
+
+        if settings.CHECK_BOUNDS:
+            self.check.valid_queries(queries)
+
         orders = utils.data.enforce_contiguous(orders, dtype="int32")
 
         return super().basis_derivative_and_support(
