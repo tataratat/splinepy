@@ -159,7 +159,7 @@ RationalBSplineBasis(const SplineType& spline,
   static_assert(SplineType::kIsRational && SplineType::kHasKnotVectors,
                 "RationalBSplineBasis is only applicable to NURBS.");
   const auto bspline_basis = NonRationalBSplineBasis(spline, para_coord);
-  const auto& homogeneous_coords = spline.GetCoordinates();
+  const auto& homogeneous_coords = spline.GetWeightedVectorSpace();
   const auto n_basis = support.size();
 
   // prepare output
@@ -169,7 +169,7 @@ RationalBSplineBasis(const SplineType& spline,
   double W{0.};
   for (std::size_t i{}; i < n_basis; ++i) {
     // get weight
-    const auto& w = homogeneous_coords[support[i]][SplineType::kDim].Get();
+    const auto& w = homogeneous_coords[support[i]][SplineType::kDim];
     const auto N_times_w = bspline_basis[i] * w;
 
     W += N_times_w;
@@ -255,11 +255,12 @@ RationalBSplineBasisDerivative(const SplineType& spline,
   constexpr auto para_dim = static_cast<OrderType>(SplineType::kParaDim);
 
   // prepare
+  const auto& weighted_vector_space = spline.GetWeightedVectorSpace();
   const auto& homogeneous_coords = spline.GetCoordinates();
 
   // weight getter shortcut
-  auto get_weight_ = [&homogeneous_coords](const OrderType id) -> QueryType {
-    return static_cast<QueryType>(homogeneous_coords[id][SplineType::kDim]);
+  auto get_weight_ = [&weighted_vector_space](const OrderType id) -> QueryType {
+    return static_cast<QueryType>(weighted_vector_space[id][SplineType::kDim]);
   };
 
   // Define lambdas to switch between local indexing with

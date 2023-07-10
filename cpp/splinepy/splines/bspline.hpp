@@ -137,17 +137,13 @@ public:
     auto sl_parameter_space =
         std::make_shared<ParameterSpace_>(sl_knot_vectors, sl_degrees);
 
-    // Formulate control_points and weights
-    sl_control_points.reserve(ncps);
-    for (std::size_t i{}; i < ncps; ++i) {
-      // control_points
-      Coordinate_ control_point;
-      for (std::size_t j{}; j < kDim; ++j) {
-        control_point[j] = ScalarCoordinate_{control_points[i * kDim + j]};
-      }
-      sl_control_points.push_back(std::move(control_point));
-    }
+    std::cout << "here, ncps is " << ncps << std::endl;
 
+    // Form VectorSpace
+    sl_control_points.reserve(ncps * dim_);
+    for (std::size_t i{}; i < ncps * dim_; ++i) {
+      sl_control_points.push_back(control_points[i]);
+    }
     auto sl_vector_space = std::make_shared<VectorSpace_>(sl_control_points);
 
     // return init
@@ -275,9 +271,7 @@ public:
     auto& coordinates = Base_::vector_space_->GetCoordinates();
     ref_coords.reserve(coordinates.size());
     for (auto& control_point : coordinates) {
-      for (auto& cp : control_point) {
-        ref_coords.emplace_back(RefHolder{static_cast<double&>(cp)});
-      }
+      ref_coords.emplace_back(RefHolder{static_cast<double&>(control_point)});
     }
     return ref_coordinates;
   }

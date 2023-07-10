@@ -126,16 +126,16 @@ public:
     auto sl_parameter_space =
         std::make_shared<ParameterSpace_>(sl_knot_vectors, sl_degrees);
 
+    std::cout << "here, at nurbs ncps is " << ncps << std::endl;
+    std::cout << "here, at nurbs kdim is " << kDim << std::endl;
+
     // Formulate control_points and weights
-    sl_control_points.reserve(ncps);
+    sl_control_points.reserve(ncps * dim_);
     sl_weights.reserve(ncps);
     for (std::size_t i{}; i < ncps; ++i) {
-      // control_points
-      Coordinate_ control_point;
       for (std::size_t j{}; j < kDim; ++j) {
-        control_point[j] = ScalarCoordinate_{control_points[i * kDim + j]};
+        sl_control_points.push_back(control_points[i * kDim + j]);
       }
-      sl_control_points.push_back(std::move(control_point));
 
       // weights
       sl_weights.emplace_back(weights[i]);
@@ -251,7 +251,7 @@ public:
             static_cast<bsplinelib::Index::Type_>(i)}];
         // unweight - phil needs to first project before filling.
         if (control_points) {
-          auto const& projected_phil =
+          const auto projected_phil =
               WeightedVectorSpace_::Project(coord_named_phil);
           for (std::size_t j{}; j < kDim; ++j) {
             control_points[i * kDim + j] =
@@ -276,11 +276,11 @@ public:
     // get ref
     auto& coordinates = Base_::weighted_vector_space_->GetCoordinates();
     ref_coords.reserve(coordinates.size());
-    for (auto& control_point : coordinates) {
+    for (std::size_t i{}; i < coordinates.size(); ++i) {
       // skip the last entry - control_point has kDim + 1 size.
-      for (std::size_t i{}; i < kDim; ++i) {
+      for (std::size_t j{}; j < kDim; ++j) {
         ref_coords.emplace_back(
-            RefHolder{static_cast<double&>(control_point[i])});
+            RefHolder{static_cast<double&>(coordinates[i * (kDim + 1) + j])});
       }
     }
     return ref_coordinates;
