@@ -469,6 +469,68 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
             )
         )
 
+    def test_assertions_evaluation(self):
+        """Test if the right assertions are thrown"""
+        # Test for evaluation
+        for spline in [self.bezier, self.rational, self.nurbs, self.bspline]:
+            # Check minimum with kwargs
+            self.assertRaisesRegex(
+                ValueError,
+                r"Query request out of bounds in parametric dimension 0. "
+                r"Detected query \[-0.1  0. \] at positions 0, which is out of"
+                r" bounds with minimum values \[1. 1.\].",
+                spline.evaluate,
+                queries=[[-0.1, 0.0], [0.4, 0.6]],
+            )
+            # Check maximum with args
+            self.assertRaisesRegex(
+                ValueError,
+                r"Query request out of bounds in parametric dimension 0. "
+                r"Detected query \[1.1 0. \] at positions 0, which is out of "
+                r"bounds with maximum values \[1. 1.\].",
+                spline.evaluate,
+                [[1.1, 0.0], [0.4, 0.6]],
+            )
+            # Check dimensions
+            self.assertRaisesRegex(
+                ValueError,
+                r"Dimension mismatch between parametric dimension of spline "
+                r"\(2\), and query-request \(3\)",
+                spline.evaluate,
+                [[1.0, 1.0, 1.0]],
+            )
+
+    def test_assertions_jacobian(self):
+        """Test if the right assertions are thrown"""
+        # Test for evaluation
+        for spline in [self.bezier, self.rational, self.nurbs, self.bspline]:
+            # Check minimum with kwargs
+            self.assertRaisesRegex(
+                ValueError,
+                r"Query request out of bounds in parametric dimension 0. "
+                r"Detected query \[-0.1  0. \] at positions 0, which is out of"
+                r" bounds with minimum values \[1. 1.\].",
+                spline.jacobian,
+                queries=[[-0.1, 0.0], [0.4, 0.6]],
+            )
+            # Check maximum with args
+            self.assertRaisesRegex(
+                ValueError,
+                r"Query request out of bounds in parametric dimension 0. "
+                r"Detected query \[1.1 0. \] at positions 0, which is out of "
+                r"bounds with maximum values \[1. 1.\].",
+                spline.jacobian,
+                [[1.1, 0.0], [0.4, 0.6]],
+            )
+            # Check dimensions
+            self.assertRaisesRegex(
+                ValueError,
+                r"Dimension mismatch between parametric dimension of spline "
+                r"\(2\), and query-request \(3\)",
+                spline.jacobian,
+                [[1.0, 1.0, 1.0]],
+            )
+
 
 if __name__ == "__main__":
     c.unittest.main()
