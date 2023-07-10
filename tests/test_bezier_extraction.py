@@ -29,17 +29,14 @@ class BezierExtractionTest(c.unittest.TestCase):
         # Loop over knot_spans and test at random points
         for offset in range(4):
             queries = c.np.random.rand(20, 1)
-            self.assertTrue(
-                c.np.allclose(
-                    b.evaluate(queries + offset),
-                    b_beziers[offset].evaluate(queries),
-                )
+            assert c.np.allclose(
+                b.evaluate(queries + offset),
+                b_beziers[offset].evaluate(queries),
             )
-            self.assertTrue(
-                c.np.allclose(
-                    n.evaluate(queries + offset),
-                    n_beziers[offset].evaluate(queries),
-                )
+
+            assert c.np.allclose(
+                n.evaluate(queries + offset),
+                n_beziers[offset].evaluate(queries),
             )
 
     def test_extraction_matrice_bspline_3D(self):

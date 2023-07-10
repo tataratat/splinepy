@@ -1,13 +1,9 @@
-from splinepy.io import gismo, iges, ioutils, irit, json, mfem, npz, vtk, xml
+from splinepy.io import gismo, ioutils, json, mfem, npz
 
 __all__ = [
     "gismo",
-    "iges",
     "ioutils",
-    "irit",
     "json",
     "mfem",
     "npz",
-    "vtk",
-    "xml",
 ]

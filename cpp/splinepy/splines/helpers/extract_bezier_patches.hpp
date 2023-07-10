@@ -156,7 +156,7 @@ auto ExtractBezierPatches(SplineType& input) {
   };
 
   // Retrieve id information
-  const std::vector<std::vector<int>>& ids =
+  const std::vector<std::vector<int>> ids =
       ExtractBezierPatchIDs(degrees.data(),
                             n_patches_per_para_dim.data(),
                             para_dim);

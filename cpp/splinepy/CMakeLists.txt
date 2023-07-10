@@ -86,8 +86,7 @@ target_link_libraries(splinepy
         fitting
         bezman
         napf
-        BSplineLib::splines
-        BSplineLib::input_output)
+        BSplineLib::splines)
 
 # explicit?
 if (SPLINEPY_BUILD_EXPLICIT)

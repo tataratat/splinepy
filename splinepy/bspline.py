@@ -202,6 +202,7 @@ class BSplineBase(spline.Spline):
 
         return matrix
 
+    @spline._new_core_if_modified
     def remove_knots(self, parametric_dimension, knots, tolerance=None):
         """
         Tries to removes knots.

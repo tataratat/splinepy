@@ -55,10 +55,23 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       // create (weighted) vector space
       auto vspace = std::make_shared<VSpace>();
       auto& coords = vspace->GetCoordinates();
-      coords.reserve(indices.size());
-      const auto& rhs_coordinates = spline.GetCoordinates();
+      const VSpace& from_vspace = [&spline, &indices, &coords]() {
+        // reserves and returns appropriate physical space
+        if constexpr (SplineType::kIsRational) {
+          coords.reserve(indices.size() * (SplineType::kDim + 1));
+          return spline.GetWeightedVectorSpace();
+        } else {
+          coords.reserve(indices.size() * SplineType::kDim);
+          return spline.GetVectorSpace();
+        }
+      }();
+
       for (const auto& id : indices) {
-        coords.push_back(rhs_coordinates[id]);
+        const auto coord_view = from_vspace[id];
+        const auto* current_coord = coord_view.begin();
+        for (; current_coord != coord_view.end(); ++current_coord) {
+          coords.push_back(*current_coord);
+        }
       }
 
       // assign boundary spline - uses base' ctor
