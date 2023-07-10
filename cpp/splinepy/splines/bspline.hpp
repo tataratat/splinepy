@@ -81,9 +81,6 @@ public:
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = bsplinelib::Dimension;
   using Tolerance_ = bsplinelib::splines::Tolerance;
-  using OutputInformation_ =
-      bsplinelib::Tuple<typename ParameterSpace_::OutputInformation_,
-                        typename VectorSpace_::OutputInformation_>;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
@@ -136,8 +133,6 @@ public:
     // Formulate ParameterSpace
     auto sl_parameter_space =
         std::make_shared<ParameterSpace_>(sl_knot_vectors, sl_degrees);
-
-    std::cout << "here, ncps is " << ncps << std::endl;
 
     // Form VectorSpace
     sl_control_points.reserve(ncps * dim_);
