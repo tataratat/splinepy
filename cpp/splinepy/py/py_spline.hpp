@@ -952,12 +952,6 @@ public:
     return successful;
   }
 
-  /// coordinate reference
-  std::shared_ptr<splinepy::splines::SplinepyBase::CoordinateReferences_>
-  CoordinateReferences() {
-    return Core()->SplinepyCoordinateReferences();
-  }
-
   /// @brief returns current spline as package's derived spline types based on
   /// splinepy.settings.NAME_TO_TYPE
   /// @return
@@ -1047,8 +1041,6 @@ inline void add_spline_pyclass(py::module& m) {
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
            py::arg("tolerance"))
-      .def("coordinate_references",
-           &splinepy::py::PySpline::CoordinateReferences)
       .def(py::pickle(
           [](splinepy::py::PySpline& spl) {
             return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);

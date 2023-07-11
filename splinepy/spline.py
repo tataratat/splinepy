@@ -1784,8 +1784,7 @@ class Spline(SplinepyBase, core.PySpline):
         Parameters
         -----------
         saved_data: bool
-          Default is True. calls deepcopy on saved data excluding
-          coordinate_references
+          Default is True. calls deepcopy on saved data
 
         Returns
         --------
@@ -1795,9 +1794,6 @@ class Spline(SplinepyBase, core.PySpline):
         if saved_data:
             # shallow copy
             shallow = self._data.copy()
-
-            # don't copy coordinate references
-            shallow.pop("coordinate_references", None)
 
             # call deep copy
             new._data = copy.deepcopy(shallow)

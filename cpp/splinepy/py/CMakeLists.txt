@@ -1,6 +1,5 @@
 # reader, export helper, and python module
 set(PYSPLINEPY_SRCS
-        init/coordinate_reference.cpp
         init/core_spline.cpp
         init/knot_insertion_matrix.cpp
         init/fitting.cpp
