@@ -9,16 +9,13 @@ The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and ea
 ## Install guide
 splinepy wheels are available for python3.6+ for MacOS, Linux, and Windows:
 ```bash
-pip install splinepy[all]  # this installs gustaf[all]
-
+pip install splinepy[all]  # including all optional dependencies
 # or
-
 pip install splinepy
 ```
-`-vvv` is not necessary, but we suggest using it, since you can see the build progress. Full build (the second option) may take a while.
 
-Of course, you can install directly from the source.
-In addition to aforementioned compilers, this requires a cmake3.16+. If you don't have cmake, easiest way to install it would be: `pip install cmake`.
+Of course, you can install it directly from the source.
+In addition to the aforementioned compilers, this requires a cmake3.16+. If you don't have `cmake`, the easiest way to install it would be: `pip install cmake`.
 ```bash
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
@@ -133,12 +130,12 @@ Available in `splinepy.io`.
 ## Dependencies
 The following are direct dependencies for splinepy. Please feel free to check out the repositories linked.
 
-| Package | Description                                             | python | c++ |
-| ------- | ------------------------------------------------------- | ------ | --- |
+| Package | Description                                             | Python | C++ |
+| ------- | ------------------------------------------------------- | :----: | :---: |
 | [pybind11](https://github.com/pybind/pybind11) | Binds c++ and python | X | X |
 | [SplineLib](https://github.com/tataratat/SplineLib) | Main functionalities for BSplines and NURBS |    | X |
 | [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
-| [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provides initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
+| [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provide initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
 | [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   |
 | [gustaf](https://github.com/tataratat/gustaf) | Conversion to mesh representation, visualization, and helpers | X |  |
 | [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
