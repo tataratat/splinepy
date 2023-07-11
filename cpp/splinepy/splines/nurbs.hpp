@@ -16,34 +16,27 @@ namespace splinepy::splines {
 /// @brief Non-uniform rational B-spline (NURBS) class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
-template<int para_dim, int dim>
+template<int para_dim>
 class Nurbs : public splinepy::splines::SplinepyBase,
-              public bsplinelib::splines::Nurbs<para_dim, dim> {
+              public bsplinelib::splines::Nurbs<para_dim> {
 public:
   /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
-  /// @brief Dimension of physical space
-  static constexpr int kDim = dim;
   /// @brief It is a rational spline
   static constexpr bool kIsRational = true;
   /// @brief It has knot vectors
   static constexpr bool kHasKnotVectors = true;
 
-  // TODO remove after test
-  /// @brief Dimension of parameter space
-  constexpr static int para_dim_ = para_dim;
-  /// @brief Dimension of physical space
-  constexpr static int dim_ = dim;
-
   // self
-  template<int s_para_dim, int s_dim>
-  using SelfTemplate_ = Nurbs<s_para_dim, s_dim>;
+  template<int s_para_dim>
+  using SelfTemplate_ = Nurbs<s_para_dim>;
+  using SelfBoundary_ = Nurbs<para_dim - 1>;
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
   // splinelib
-  using Base_ = bsplinelib::splines::Nurbs<para_dim, dim>;
+  using Base_ = bsplinelib::splines::Nurbs<para_dim>;
   // Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
   using Degrees_ = typename ParameterSpace_::Degrees_;
@@ -76,7 +69,9 @@ public:
   using IndexValue_ = typename Index_::Value_;
   // Advanced use
   using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
-  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>;
+  using ProximityBase_ = splinepy::proximity::ProximityBase;
+  template<int dim>
+  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim>, dim>;
 
   /// @brief raw ptr based inithelper.
   /// @param degrees should have same size as parametric dimension
@@ -87,7 +82,8 @@ public:
   static Base_ CreateBase(const int* degrees,
                           const std::vector<std::vector<double>>& knot_vectors,
                           const double* control_points,
-                          const double* weights) {
+                          const double* weights,
+                          const int dim) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -124,11 +120,11 @@ public:
         std::make_shared<ParameterSpace_>(sl_knot_vectors, sl_degrees);
 
     // Formulate control_points and weights
-    sl_control_points.reserve(ncps * dim_);
+    sl_control_points.reserve(ncps * dim);
     sl_weights.reserve(ncps);
     for (std::size_t i{}; i < ncps; ++i) {
-      for (std::size_t j{}; j < kDim; ++j) {
-        sl_control_points.push_back(control_points[i * kDim + j]);
+      for (std::size_t j{}; j < dim; ++j) {
+        sl_control_points.push_back(control_points[i * dim + j]);
       }
 
       // weights
@@ -136,7 +132,9 @@ public:
     }
 
     auto sl_weighted_space =
-        std::make_shared<WeightedVectorSpace_>(sl_control_points, sl_weights);
+        std::make_shared<WeightedVectorSpace_>(sl_control_points,
+                                               sl_weights,
+                                               dim);
 
     // return init
     return Base_(sl_parameter_space, sl_weighted_space);
@@ -150,8 +148,10 @@ public:
   Nurbs(const int* degrees,
         const std::vector<std::vector<double>>& knot_vectors,
         const double* control_points,
-        const double* weights)
-      : Base_(CreateBase(degrees, knot_vectors, control_points, weights)) {}
+        const double* weights,
+        const int dim)
+      : Base_(CreateBase(degrees, knot_vectors, control_points, weights, dim)) {
+  }
   // inherit ctor
   using Base_::Base_;
 
@@ -175,7 +175,9 @@ public:
   virtual int SplinepyParaDim() const { return kParaDim; }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyDim
-  virtual int SplinepyDim() const { return kDim; }
+  virtual int SplinepyDim() const {
+    return GetWeightedVectorSpace().GetProjectedDimensionality();
+  }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
   virtual std::string SplinepySplineName() const { return "NURBS"; }
@@ -239,16 +241,15 @@ public:
     // control_points and weights
     if (control_points || weights) {
       std::size_t ncps = vector_space.GetNumberOfCoordinates();
-      // fill it up, phil!
-      for (std::size_t i{}; i < ncps; ++i) {
-        auto const& coord_named_phil = vector_space[bsplinelib::Index{
-            static_cast<bsplinelib::Index::Type_>(i)}];
+      const int dim = SplinepyDim();
+      for (int i{}; i < ncps; ++i) {
+        auto const coord_named_phil = vector_space[i];
         // unweight - phil needs to first project before filling.
         if (control_points) {
           const auto projected_phil =
               WeightedVectorSpace_::Project(coord_named_phil);
-          for (std::size_t j{}; j < kDim; ++j) {
-            control_points[i * kDim + j] =
+          for (std::size_t j{}; j < dim; ++j) {
+            control_points[i * dim + j] =
                 static_cast<double>(projected_phil[j]);
           }
         }
@@ -347,10 +348,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
 
   /// Verbose proximity query - make sure to plant a kdtree first.
@@ -423,14 +421,49 @@ public:
     return *Base_::weighted_vector_space_;
   }
 
+  constexpr void CreateProximityIfNull() {
+    if (!proximity_) {
+      switch (SplinepyDim()) {
+      case 1:
+        proximity_ = std::make_unique<Proximity_<1>>(*this);
+      case 2:
+        proximity_ = std::make_unique<Proximity_<2>>(*this);
+      case 3:
+        proximity_ = std::make_unique<Proximity_<3>>(*this);
+      case 4:
+        proximity_ = std::make_unique<Proximity_<4>>(*this);
+      case 5:
+        proximity_ = std::make_unique<Proximity_<5>>(*this);
+      case 6:
+        proximity_ = std::make_unique<Proximity_<6>>(*this);
+      case 7:
+        proximity_ = std::make_unique<Proximity_<7>>(*this);
+      case 8:
+        proximity_ = std::make_unique<Proximity_<8>>(*this);
+      case 9:
+        proximity_ = std::make_unique<Proximity_<9>>(*this);
+      case 10:
+        proximity_ = std::make_unique<Proximity_<10>>(*this);
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "Something went wrong during Proximity. Please help us by writing "
+            "an "
+            "issue about this case at [ github.com/tataratat/splinepy ]");
+      }
+    }
+  }
+
   /// @brief Gets proximity
-  constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr ProximityBase_& GetProximity() {
+    CreateProximityIfNull();
+    return *proximity_;
+  }
   /// @brief Gets proximity
-  constexpr const Proximity_& GetProximity() const { return *proximity_; }
+  constexpr const ProximityBase_& GetProximity() const { return *proximity_; }
 
 protected:
   /// @brief Unique pointer to proximity
-  std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
+  std::unique_ptr<ProximityBase_> proximity_ = nullptr;
 
 }; /* class Nurbs */
 

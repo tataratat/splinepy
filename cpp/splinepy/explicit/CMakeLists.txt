@@ -1,26 +1,6 @@
 set(SPLINELIB_SOURCES
-        splinelib/b_spline_explicit1.cpp
-        splinelib/b_spline_explicit2.cpp
-        splinelib/b_spline_explicit3.cpp
-        splinelib/nurbs_explicit1.cpp
-        splinelib/nurbs_explicit2.cpp
-        splinelib/nurbs_explicit3.cpp
-)
-set(SPLINELIB_MORE_SOURCES
-        splinelib/b_spline_explicit4.cpp
-        splinelib/b_spline_explicit5.cpp
-        splinelib/b_spline_explicit6.cpp
-        splinelib/b_spline_explicit7.cpp
-        splinelib/b_spline_explicit8.cpp
-        splinelib/b_spline_explicit9.cpp
-        splinelib/b_spline_explicit10.cpp
-        splinelib/nurbs_explicit4.cpp
-        splinelib/nurbs_explicit5.cpp
-        splinelib/nurbs_explicit6.cpp
-        splinelib/nurbs_explicit7.cpp
-        splinelib/nurbs_explicit8.cpp
-        splinelib/nurbs_explicit9.cpp
-        splinelib/nurbs_explicit10.cpp
+        splinelib/b_spline_explicit.cpp
+        splinelib/nurbs_explicit.cpp
 )
 
 set(BEZMAN_SOURCES
@@ -55,12 +35,8 @@ set(SPLINEPY_SOURCES
         splinepy/rational_bezier_explicit1.cpp
         splinepy/rational_bezier_explicit2.cpp
         splinepy/rational_bezier_explicit3.cpp
-        splinepy/bspline_explicit1.cpp
-        splinepy/bspline_explicit2.cpp
-        splinepy/bspline_explicit3.cpp
-        splinepy/nurbs_explicit1.cpp
-        splinepy/nurbs_explicit2.cpp
-        splinepy/nurbs_explicit3.cpp
+        splinepy/bspline_explicit.cpp
+        splinepy/nurbs_explicit.cpp
 )
 set(SPLINEPY_MORE_SOURCES
         splinepy/bezier_explicit4.cpp
@@ -77,20 +53,6 @@ set(SPLINEPY_MORE_SOURCES
         splinepy/rational_bezier_explicit8.cpp
         splinepy/rational_bezier_explicit9.cpp
         splinepy/rational_bezier_explicit10.cpp
-        splinepy/bspline_explicit4.cpp
-        splinepy/bspline_explicit5.cpp
-        splinepy/bspline_explicit6.cpp
-        splinepy/bspline_explicit7.cpp
-        splinepy/bspline_explicit8.cpp
-        splinepy/bspline_explicit9.cpp
-        splinepy/bspline_explicit10.cpp
-        splinepy/nurbs_explicit4.cpp
-        splinepy/nurbs_explicit5.cpp
-        splinepy/nurbs_explicit6.cpp
-        splinepy/nurbs_explicit7.cpp
-        splinepy/nurbs_explicit8.cpp
-        splinepy/nurbs_explicit9.cpp
-        splinepy/nurbs_explicit10.cpp
 )
 
 set(EXPLICIT_SOURCES

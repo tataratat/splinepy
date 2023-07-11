@@ -106,23 +106,20 @@ template<bool as_base = false, typename SplineType>
 auto ExtractBezierPatches(SplineType& input) {
   // Start by identifying types
   constexpr int para_dim = SplineType::kParaDim;
-  constexpr int dim = SplineType::kDim;
+  const int dim = input.SplinepyDim();
   constexpr bool is_rational = SplineType::kIsRational;
 
-  using ReturnType =
-      std::conditional_t<is_rational,
-                         splinepy::splines::RationalBezier<para_dim, dim>,
-                         splinepy::splines::Bezier<para_dim, dim>>;
+  static_assert(as_base, "as_base=false has no effect.");
+
+  using ReturnType = splinepy::splines::SplinepyBase;
   using ReturnVectorValueType =
       std::conditional_t<as_base, splinepy::splines::SplinepyBase, ReturnType>;
-  using PointType = typename ReturnType::Coordinate_;
 
   // Predetermine some auxiliary values
   // Access spline degrees and determine offsets
-  std::array<std::size_t, para_dim> degrees{};
+  std::array<int, para_dim> degrees{};
   for (int i_p{}; i_p < para_dim; i_p++) {
-    degrees[i_p] = static_cast<std::size_t>(
-        input.GetParameterSpace().GetDegrees()[i_p].Get());
+    degrees[i_p] = input.GetParameterSpace().GetDegrees()[i_p].Get();
   }
   std::array<int, para_dim> n_patches_per_para_dim{};
   std::array<int, para_dim> n_ctps_per_para_dim{};
@@ -146,12 +143,12 @@ auto ExtractBezierPatches(SplineType& input) {
       input.InsertKnot(bsplinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
     }
   }
-  // Auxiliary function
+  // Auxiliary function that returns coordinate view
   const auto& ControlPointVector = [&](const int& id) {
     if constexpr (is_rational) {
-      return input.GetWeightedVectorSpace()[bsplinelib::Index{id}];
+      return input.GetWeightedVectorSpace()[id];
     } else {
-      return input.GetVectorSpace()[bsplinelib::Index{id}];
+      return input.GetVectorSpace()[id];
     }
   };
 
@@ -173,8 +170,8 @@ auto ExtractBezierPatches(SplineType& input) {
   for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
 
     // Init vectors required for initialization
-    std::vector<PointType> ctps;
-    ctps.reserve(n_ctps_per_patch);
+    std::vector<double> ctps;
+    ctps.reserve(n_ctps_per_patch * dim);
     std::vector<double> weights;
     if constexpr (is_rational) {
       weights.reserve(n_ctps_per_patch);
@@ -184,42 +181,38 @@ auto ExtractBezierPatches(SplineType& input) {
     // Extract relevant coordinates
     for (int i_local_id{}; i_local_id < n_ctps_per_patch; i_local_id++) {
       const std::size_t global_id = local_ids[i_local_id];
-      // Retrieve Control Point
-      PointType point{};
-      // Check if scalar (double instead of array)
-      if constexpr (dim == 1) {
-        point = ControlPointVector(global_id)[0];
-      } else {
-        for (int i_dim{}; i_dim < dim; i_dim++) {
-          point[i_dim] = ControlPointVector(global_id)[i_dim];
-        }
-      }
+
+      // prepare coordinate for this loop
+      const auto this_coordinate_view = ControlPointVector(global_id);
+      double unweighing_factor{1.0};
       if constexpr (is_rational) {
-        const double weight = ControlPointVector(global_id)[dim];
-        weights.push_back(weight);
-        // control points are weighted in non-rational splines to facilitate
-        // calculations. They therefore need to be divided by the weight to get
-        // the true control point positions
-        point /= weight;
+        // set weight
+        const auto& this_weight = this_coordinate_view[dim];
+        weights.push_back(this_weight);
+        // get factor
+        unweighing_factor = 1 / this_weight;
       }
-      ctps.push_back(point);
+
+      for (int i_coord{}; i_coord < dim; ++i_coord) {
+        ctps.push_back(this_coordinate_view[i_coord] * unweighing_factor);
+      }
     }
 
     // Create Spline and add it to list
     if constexpr (is_rational) {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // CTPS non-weighted
-          ctps,
-          // weights
-          weights));
+      bezier_list.push_back(
+          splinepy::splines::SplinepyBase::SplinepyCreateRationalBezier(
+              para_dim,
+              dim,
+              degrees.data(),
+              ctps.data(),
+              weights.data()));
     } else {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // ctps
-          ctps));
+      bezier_list.push_back(
+          splinepy::splines::SplinepyBase::SplinepyCreateBezier(para_dim,
+                                                                dim,
+                                                                degrees.data(),
+                                                                ctps.data()));
     }
   }
   return bezier_list;

@@ -24,14 +24,11 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
     splinepy::utils::PrintWarning(
         "Sorry, we don't support control mesh slicing"
         "of 1-Parametric Dim splines. Returning empty spline.");
-    return std::shared_ptr<
-        typename SplineType::template SelfTemplate_<SplineType::kParaDim,
-                                                    SplineType::kDim>>{};
+    return std::shared_ptr<SplineType>{};
   } else {
     // boundary spline type
-    using SelfBoundary =
-        typename SplineType::template SelfTemplate_<SplineType::kParaDim - 1,
-                                                    SplineType::kDim>;
+    using SelfBoundary = typename SplineType::SelfBoundary_;
+
     // prepare return
     std::shared_ptr<SelfBoundary> boundary_spline;
 
@@ -58,10 +55,10 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       const VSpace& from_vspace = [&spline, &indices, &coords]() {
         // reserves and returns appropriate physical space
         if constexpr (SplineType::kIsRational) {
-          coords.reserve(indices.size() * (SplineType::kDim + 1));
+          coords.reserve(indices.size() * (spline.SplinepyDim() + 1));
           return spline.GetWeightedVectorSpace();
         } else {
-          coords.reserve(indices.size() * SplineType::kDim);
+          coords.reserve(indices.size() * spline.SplinepyDim());
           return spline.GetVectorSpace();
         }
       }();
@@ -73,6 +70,9 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
           coords.push_back(*current_coord);
         }
       }
+
+      // must not forget to set dim
+      vspace->SetDimensionality(spline.SplinepyDim());
 
       // assign boundary spline - uses base' ctor
       boundary_spline = std::make_shared<SelfBoundary>(pspace, vspace);
@@ -133,9 +133,7 @@ ExtractBoundaryMeshSlice(const SplineType& spline, const int& boundary_id) {
     splinepy::utils::PrintWarning(
         "Sorry, we don't support control mesh slicing"
         "of 1-Parametric Dim splines. Returning empty spline.");
-    return std::shared_ptr<
-        typename SplineType::template SelfTemplate_<SplineType::kParaDim,
-                                                    SplineType::kDim>>{};
+    return std::shared_ptr<SplineType>{};
   } else {
 
     // get ids on boundary
@@ -167,9 +165,7 @@ ExtractControlMeshSlice(const SplineType& spline,
     splinepy::utils::PrintWarning(
         "Sorry, we don't support control mesh slicing"
         "of 1-Parametric Dim splines. Returning empty spline.");
-    return std::shared_ptr<
-        typename SplineType::template SelfTemplate_<SplineType::kParaDim,
-                                                    SplineType::kDim>>{};
+    return std::shared_ptr<SplineType>{};
   } else {
     // get ids on boundary
     const auto cmr =

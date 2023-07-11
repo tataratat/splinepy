@@ -18,36 +18,29 @@ namespace splinepy::splines {
 /// @brief BSpline class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
-template<int para_dim, int dim>
+template<int para_dim>
 class BSpline : public splinepy::splines::SplinepyBase,
-                public bsplinelib::splines::BSpline<para_dim, dim> {
+                public bsplinelib::splines::BSpline<para_dim> {
 public:
   /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
-  /// @brief Dimension of physical space
-  static constexpr int kDim = dim;
   /// @brief It is not a rational spline
   static constexpr bool kIsRational = false;
   /// @brief It has knot vectors
   static constexpr bool kHasKnotVectors = true;
 
-  // TODO remove afterwards
-  /// @brief Dimension of parameter space
-  constexpr static int para_dim_ = para_dim;
-  /// @brief Dimension of physical space
-  constexpr static int dim_ = dim;
-
   // self
-  template<int s_para_dim, int s_dim>
-  using SelfTemplate_ = BSpline<s_para_dim, s_dim>;
+  template<int s_para_dim>
+  using SelfTemplate_ = BSpline<s_para_dim>;
+  using SelfBoundary_ = BSpline<para_dim - 1>;
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
 
   // splinelib
-  using Base_ = bsplinelib::splines::BSpline<para_dim, dim>;
-  template<int b_para_dim, int b_dim>
-  using BaseTemplate_ = bsplinelib::splines::BSpline<b_para_dim, b_dim>;
+  using Base_ = bsplinelib::splines::BSpline<para_dim>;
+  template<int b_para_dim>
+  using BaseTemplate_ = bsplinelib::splines::BSpline<b_para_dim>;
   // parameter space
   /// Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
@@ -90,7 +83,9 @@ public:
   using BinomialRatios_ = typename Base_::ParameterSpace_::BinomialRatios_;
   using BinomialRatio_ = typename BinomialRatios_::value_type;
   // Advanced use
-  using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim, dim>>;
+  using ProximityBase_ = splinepy::proximity::ProximityBase;
+  template<int dim>
+  using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim>, dim>;
 
   /** raw ptr based inithelper.
    *  degrees should have same size as parametric dimension
@@ -99,7 +94,8 @@ public:
    */
   static Base_ CreateBase(const int* degrees,
                           const std::vector<std::vector<double>>& knot_vectors,
-                          const double* control_points) {
+                          const double* control_points,
+                          const int dim) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -135,11 +131,12 @@ public:
         std::make_shared<ParameterSpace_>(sl_knot_vectors, sl_degrees);
 
     // Form VectorSpace
-    sl_control_points.reserve(ncps * dim_);
-    for (std::size_t i{}; i < ncps * dim_; ++i) {
+    sl_control_points.reserve(ncps * dim);
+    for (std::size_t i{}; i < ncps * dim; ++i) {
       sl_control_points.push_back(control_points[i]);
     }
-    auto sl_vector_space = std::make_shared<VectorSpace_>(sl_control_points);
+    auto sl_vector_space =
+        std::make_shared<VectorSpace_>(sl_control_points, dim);
 
     // return init
     return Base_(sl_parameter_space, sl_vector_space);
@@ -151,8 +148,9 @@ public:
   /// @param control_points
   BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
-          const double* control_points)
-      : Base_(CreateBase(degrees, knot_vectors, control_points)) {}
+          const double* control_points,
+          const int dim)
+      : Base_(CreateBase(degrees, knot_vectors, control_points, dim)) {}
   /// Inherited constructor
   using Base_::Base_;
 
@@ -176,7 +174,9 @@ public:
   virtual int SplinepyParaDim() const { return kParaDim; }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyDim
-  virtual int SplinepyDim() const { return kDim; }
+  virtual int SplinepyDim() const {
+    return GetVectorSpace().GetDimensionality();
+  }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
   virtual std::string SplinepySplineName() const { return "BSpline"; }
@@ -242,11 +242,12 @@ public:
     if (control_points) {
       std::size_t ncps = vector_space.GetNumberOfCoordinates();
       // fill it up, phil!
+      const int dim = SplinepyDim();
       for (std::size_t i{}; i < ncps; ++i) {
         auto const& coord_named_phil = vector_space[bsplinelib::Index{
             static_cast<bsplinelib::Index::Type_>(i)}];
-        for (std::size_t j{}; j < kDim; ++j) {
-          control_points[i * kDim + j] =
+        for (std::size_t j{}; j < dim; ++j) {
+          control_points[i * dim + j] =
               static_cast<double>(coord_named_phil[j]);
         }
       }
@@ -340,10 +341,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
 
   /// Verbose proximity query - make sure to plant a kdtree first.
@@ -416,14 +414,49 @@ public:
     return *Base_::vector_space_;
   }
 
+  constexpr void CreateProximityIfNull() {
+    if (!proximity_) {
+      switch (SplinepyDim()) {
+      case 1:
+        proximity_ = std::make_unique<Proximity_<1>>(*this);
+      case 2:
+        proximity_ = std::make_unique<Proximity_<2>>(*this);
+      case 3:
+        proximity_ = std::make_unique<Proximity_<3>>(*this);
+      case 4:
+        proximity_ = std::make_unique<Proximity_<4>>(*this);
+      case 5:
+        proximity_ = std::make_unique<Proximity_<5>>(*this);
+      case 6:
+        proximity_ = std::make_unique<Proximity_<6>>(*this);
+      case 7:
+        proximity_ = std::make_unique<Proximity_<7>>(*this);
+      case 8:
+        proximity_ = std::make_unique<Proximity_<8>>(*this);
+      case 9:
+        proximity_ = std::make_unique<Proximity_<9>>(*this);
+      case 10:
+        proximity_ = std::make_unique<Proximity_<10>>(*this);
+      default:
+        splinepy::utils::PrintAndThrowError(
+            "Something went wrong during Proximity. Please help us by writing "
+            "an "
+            "issue about this case at [ github.com/tataratat/splinepy ]");
+      }
+    }
+  }
+
   /// @brief Gets proximity
-  constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr ProximityBase_& GetProximity() {
+    CreateProximityIfNull();
+    return *proximity_;
+  }
   /// @brief Gets proximity
-  constexpr const Proximity_& GetProximity() const { return *proximity_; }
+  constexpr const ProximityBase_& GetProximity() const { return *proximity_; }
 
 protected:
   /// @brief Unique pointer to proximity
-  std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
+  std::unique_ptr<ProximityBase_> proximity_ = nullptr;
 };
 
 } /* namespace splinepy::splines */
