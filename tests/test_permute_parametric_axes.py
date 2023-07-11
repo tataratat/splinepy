@@ -10,10 +10,10 @@ class PermuteParametricAxesTest(c.SplineBasedTestCase):
         test permute
         """
         # Define some splines
-        z = self.bezier_3d
-        r = self.rational_3d
-        b = self.bspline_3d
-        n = self.nurbs_3d
+        z = self.spline_z3p3d()
+        r = self.spline_r3p3d()
+        b = self.spline_b3p3d()
+        n = self.spline_n3p3d()
         originals = (z, r, b, n)
 
         # define permutation
@@ -33,7 +33,7 @@ class PermuteParametricAxesTest(c.SplineBasedTestCase):
             perm = c.splinepy.helpme.permute.parametric_axes(
                 orig, permutation, inplace=False
             )
-            queries = c.np.asarray(c.q3D)
+            queries = c.np.asarray(c.get_query_points_q3D())
 
             self.assertTrue(
                 c.np.allclose(
@@ -49,7 +49,7 @@ class PermuteParametricAxesTest(c.SplineBasedTestCase):
             c.splinepy.helpme.permute.parametric_axes(
                 perm, permutation, inplace=True
             )
-            queries = c.np.asarray(c.q3D)
+            queries = c.np.asarray(c.get_query_points_q3D())
 
             self.assertTrue(
                 c.np.allclose(

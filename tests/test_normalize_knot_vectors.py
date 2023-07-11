@@ -8,7 +8,7 @@ class NormalizeKnotVectorsTest(c.SplineBasedTestCase):
     def test_bspline_normalize_knot_vectors(self):
         """ """
         # make "iga book" bspline
-        bspline = c.bspline_2d()
+        bspline = self.spline_b2p2d()
 
         ref = [kv.numpy() for kv in bspline.knot_vectors]
 
@@ -25,7 +25,7 @@ class NormalizeKnotVectorsTest(c.SplineBasedTestCase):
 
     def test_nurbs_normalize_knot_vectors(self):
         """ """
-        nurbs = c.nurbs_half_circle_2d()
+        nurbs = self.spline_n2p2d()
 
         ref = [kv.numpy() for kv in nurbs.knot_vectors]
 

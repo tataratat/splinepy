@@ -76,7 +76,7 @@ class ComposeSensitivitiesTest(c.SplineBasedTestCase):
         """Combine Composition sensitivities with BSpline extraction"""
 
         # Initialize outer functions
-        bspline = self.bspline
+        bspline = self.spline_b2p2d()
         inner_function = c.splinepy.Bezier(
             degrees=[1, 1],
             control_points=[

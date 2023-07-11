@@ -17,87 +17,100 @@ __all__ = [
 # b: bspline
 # n: nurbs
 
-control_points_bspline = [
-    [0, 0],
-    [0, 1],
-    [1, 1.5],
-    [3, 1.5],
-    [-1, 0],
-    [-1, 2],
-    [1, 4],
-    [3, 4],
-    [-2, 0],
-    [-2, 2],
-    [1, 5],
-    [3, 5],
-]
 
-control_points_nurbs = [
-    [-1.0, 0.0],
-    [-1.0, 1.0],
-    [0.0, 1.0],
-    [-2.0, 0.0],
-    [-2.0, 2.0],
-    [0.0, 2.0],
-]
-
-control_points_bezier = [
-    [-1.0, 0.0],
-    [-1.0, 1.0],
-    [0.0, 1.0],
-    [-2.0, 0.0],
-    [-2.0, 2.0],
-    [0.0, 2.0],
-]
+def get_2d_control_points_b_spline():
+    return [
+        [0, 0],
+        [0, 1],
+        [1, 1.5],
+        [3, 1.5],
+        [-1, 0],
+        [-1, 2],
+        [1, 4],
+        [3, 4],
+        [-2, 0],
+        [-2, 2],
+        [1, 5],
+        [3, 5],
+    ]
 
 
-control_points_splines_3d = [
-    [0.0, 0.0, 0.0],
-    [1.0, 0.0, 0.0],
-    [0.0, 1.0, 0.0],
-    [1.0, 1.0, 0.0],
-    [0.0, -1.0, 1.0],
-    [1.0, 0.0, 1.0],
-    [-1.0, 1.0, 2.0],
-    [2.0, 2.0, 2.0],
-]
+def get_2d_control_points_nurbs():
+    return [
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ]
 
 
-knot_vectors_2d = [
-    [0, 0, 0, 0.5, 1, 1, 1],
-    [0, 0, 0, 1, 1, 1],
-]
+def get_2d_control_points_bezier():
+    return [
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ]
 
 
-knot_vectors_3d = [
-    [0.0, 0.0, 1.0, 1.0],
-    [0.0, 0.0, 1.0, 1.0],
-    [0.0, 0.0, 1.0, 1.0],
-]
+def get_3d_control_points():
+    return [
+        [0.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [1.0, 1.0, 0.0],
+        [0.0, -1.0, 1.0],
+        [1.0, 0.0, 1.0],
+        [-1.0, 1.0, 2.0],
+        [2.0, 2.0, 2.0],
+    ]
+
+
+def get_knotvectors_2():
+    return [
+        [0, 0, 0, 0.5, 1, 1, 1],
+        [0, 0, 0, 1, 1, 1],
+    ]
+
+
+def get_knotvectors_3():
+    return [
+        [0.0, 0.0, 1.0, 1.0],
+        [0.0, 0.0, 1.0, 1.0],
+        [0.0, 0.0, 1.0, 1.0],
+    ]
+
 
 # query points
-q2D = [
-    [0.01, 0.01],
-    [0.01, 0.5],
-    [0.9, 0.1],
-    [0.8, 0.7],
-    [0.4, 0.99],
-]
+def get_query_points_q2D():
+    return [
+        [0.01, 0.01],
+        [0.01, 0.5],
+        [0.9, 0.1],
+        [0.8, 0.7],
+        [0.4, 0.99],
+    ]
 
-q3D = [
-    [0.1, 0.1, 0.1],
-    [0.734, 0.525, 0.143],
-    [0.9666, 0.991, 0.003],
-    [0.5623, 0.0089, 0.99],
-    [0.0431, 0.2, 0.523],
-]
+
+def get_query_points_q3D():
+    return [
+        [0.1, 0.1, 0.1],
+        [0.734, 0.525, 0.143],
+        [0.9666, 0.991, 0.003],
+        [0.5623, 0.0089, 0.99],
+        [0.0431, 0.2, 0.523],
+    ]
 
 
 def dict_b2p2d():
     return dict(
         degrees=[2, 2],
-        knot_vectors=knot_vectors_2d,
-        control_points=control_points_bspline,
+        knot_vectors=get_knotvectors_2(),
+        control_points=get_2d_control_points_b_spline(),
     )
 
 
@@ -108,7 +121,7 @@ def dict_n2p2d():
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=control_points_nurbs,
+        control_points=get_2d_control_points_nurbs(),
         weights=[
             [1.0],
             [2**-0.5],
@@ -122,14 +135,14 @@ def dict_n2p2d():
 
 #
 def dict_z2p2d():
-    return dict(degrees=[2, 1], control_points=control_points_nurbs)
+    return dict(degrees=[2, 1], control_points=get_2d_control_points_nurbs())
 
 
 #
 def dict_r2p2d():
     return dict(
         degrees=[2, 1],
-        control_points=control_points_nurbs,
+        control_points=get_2d_control_points_nurbs(),
         weights=[
             [1.0],
             [2**-0.5],
@@ -145,54 +158,54 @@ def dict_r2p2d():
 def dict_z3p3d():
     return dict(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
+        control_points=get_3d_control_points(),
     )
 
 
 def dict_r3p3d():
     return dict(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
+        control_points=get_3d_control_points(),
+        weights=[1.0] * len(get_3d_control_points()),
     )
 
 
 def dict_b3p3d():
     return dict(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        knot_vectors=knot_vectors_3d,
+        control_points=get_3d_control_points(),
+        knot_vectors=get_knotvectors_3(),
     )
 
 
 def dict_n3p3d():
     return dict(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
-        knot_vectors=knot_vectors_3d,
+        control_points=get_3d_control_points(),
+        weights=[1.0] * len(get_3d_control_points()),
+        knot_vectors=get_knotvectors_2(),
     )
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
-def bspline_2d():
+def b2p2d():
     return splinepy.BSpline(
         degrees=[2, 2],
-        knot_vectors=knot_vectors_2d,
-        control_points=control_points_bspline,
+        knot_vectors=get_knotvectors_2(),
+        control_points=get_2d_control_points_b_spline(),
     )
 
 
 # half-half circle.
-def nurbs_half_circle_2d():
+def n2p2d():
     return splinepy.NURBS(
         degrees=[2, 1],
         knot_vectors=[
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=control_points_nurbs,
+        control_points=get_2d_control_points_nurbs(),
         weights=[
             [1.0],
             [2**-0.5],
@@ -210,17 +223,17 @@ def n2p2d_quarter_circle():
     return dict_n2p2d()
 
 
-def bezier_2d():
+def z2p2d():
     return splinepy.Bezier(
         degrees=[2, 1],
-        control_points=control_points_nurbs,
+        control_points=get_2d_control_points_nurbs(),
     )
 
 
-def rational_bezier_2d():
+def r2p2d():
     return splinepy.RationalBezier(
         degrees=[2, 1],
-        control_points=control_points_bezier,
+        control_points=get_2d_control_points_bezier(),
         weights=[
             [1.0],
             [2**-0.5],
@@ -232,34 +245,34 @@ def rational_bezier_2d():
     )
 
 
-def bezier_3d():
+def z3p3d():
     return splinepy.Bezier(
-        degrees=[1, 1, 1], control_points=control_points_splines_3d
+        degrees=[1, 1, 1], control_points=get_3d_control_points()
     )
 
 
-def rational_bezier_3d():
+def r3p3d():
     return splinepy.RationalBezier(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
+        control_points=get_3d_control_points(),
+        weights=[1.0] * len(get_3d_control_points()),
     )
 
 
-def bspline_3d():
+def b3p3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        knot_vectors=knot_vectors_3d,
+        control_points=get_3d_control_points(),
+        knot_vectors=get_knotvectors_3(),
     )
 
 
-def nurbs_3d():
+def n3p3d():
     return splinepy.NURBS(
         degrees=[1, 1, 1],
-        control_points=control_points_splines_3d,
-        weights=[1.0] * len(control_points_splines_3d),
-        knot_vectors=knot_vectors_3d,
+        control_points=get_3d_control_points(),
+        weights=[1.0] * len(get_3d_control_points()),
+        knot_vectors=get_knotvectors_3(),
     )
 
 
@@ -390,10 +403,10 @@ def are_stripped_lines_same(a, b, ignore_order=False):
 
 def get_all_spline_typs_as_list():
     return [
-        bspline_2d(),
-        nurbs_half_circle_2d(),
-        bezier_2d(),
-        rational_bezier_2d(),
+        b2p2d(),
+        n2p2d(),
+        z2p2d(),
+        r2p2d(),
     ]
 
 
@@ -411,16 +424,26 @@ def get_all_splines_as_dict_as_list():
 
 
 class SplineBasedTestCase(unittest.TestCase):
-    def setUp(self):
-        self.bspline = bspline_2d()
-        self.nurbs = nurbs_half_circle_2d()
-        self.bezier = bezier_2d()
-        self.rational = rational_bezier_2d()
-        self.ref_bspline = bspline_2d()
-        self.ref_nurbs = nurbs_half_circle_2d()
-        self.ref_bezier = bezier_2d()
-        self.ref_rational = rational_bezier_2d()
-        self.bezier_3d = bezier_3d()
-        self.rational_3d = rational_bezier_3d()
-        self.bspline_3d = bspline_3d()
-        self.nurbs_3d = nurbs_3d()
+    def spline_b2p2d(self):
+        return b2p2d()
+
+    def spline_n2p2d(self):
+        return n2p2d()
+
+    def spline_r2p2d(self):
+        return r2p2d()
+
+    def spline_z2p2d(self):
+        return z2p2d()
+
+    def spline_b3p3d(self):
+        return b3p3d()
+
+    def spline_n3p3d(self):
+        return n3p3d()
+
+    def spline_z3p3d(self):
+        return z3p3d()
+
+    def spline_r3p3d(self):
+        return r3p3d()

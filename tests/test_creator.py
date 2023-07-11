@@ -13,10 +13,10 @@ class CreatorTest(c.SplineBasedTestCase):
         Test extrusion for different input types and arguments
         """
         # make a couple of 2D splines
-        bspline = self.bspline
-        nurbs = self.nurbs
-        bezier = self.bezier
-        rationalbezier = self.rational
+        bspline = self.spline_b2p2d()
+        nurbs = self.spline_n2p2d()
+        bezier = self.spline_z2p2d()
+        rationalbezier = self.spline_r2p2d()
 
         # Expect Failure - not a spline
         with self.assertRaises(NotImplementedError):
@@ -66,10 +66,10 @@ class CreatorTest(c.SplineBasedTestCase):
         Test revolution routines for different input types and arguments
         """
         # make a couple of 2D splines
-        bspline = self.bspline
-        nurbs = self.nurbs
-        bezier = self.bezier
-        rationalbezier = self.rational
+        bspline = self.spline_b2p2d()
+        nurbs = self.spline_n2p2d()
+        bezier = self.spline_z2p2d()
+        rationalbezier = self.spline_r2p2d()
 
         # Make some lines
         bezier_line = c.splinepy.Bezier(

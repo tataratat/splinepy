@@ -5,6 +5,12 @@ except BaseException:
 
 
 class TestSplinepyEvaluation(c.SplineBasedTestCase):
+    def setUp(self):
+        self.bspline = self.spline_b2p2d()
+        self.nurbs = self.spline_n2p2d()
+        self.rational = self.spline_r2p2d()
+        self.bezier = self.spline_z2p2d()
+
     def test_basis_and_support(self):
         """Test the correct calculation of the basis functions.
         (.basis_and_support())"""
@@ -117,13 +123,13 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # test basis functions
         self.assertTrue(
             c.np.allclose(
-                self.bspline.basis_and_support(c.q2D)[0],
+                self.bspline.basis_and_support(c.get_query_points_q2D())[0],
                 bspline_ref_basis_functions,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.basis_and_support(c.q2D)[0],
+                self.nurbs.basis_and_support(c.get_query_points_q2D())[0],
                 nurbs_ref_basis_functions,
             )
         )
@@ -228,7 +234,7 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         q2D = c.np.random.rand(10, 2)
 
         # Rational Bezier and NURBS are equivalent but use different backends
-        rational_c = self.rational.copy()
+        rational_c = self.spline_r2p2d().copy()
         nurbs_c = self.nurbs.copy()
         # increase orders for derivatives
         for _ in range(2):
@@ -363,16 +369,28 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
 
         # test evaluation
         self.assertTrue(
-            c.np.allclose(self.bspline.evaluate(c.q2D), bspline_ref_evaluate)
+            c.np.allclose(
+                self.bspline.evaluate(c.get_query_points_q2D()),
+                bspline_ref_evaluate,
+            )
         )
         self.assertTrue(
-            c.np.allclose(self.nurbs.evaluate(c.q2D), nurbs_ref_evaluate)
+            c.np.allclose(
+                self.nurbs.evaluate(c.get_query_points_q2D()),
+                nurbs_ref_evaluate,
+            )
         )
         self.assertTrue(
-            c.np.allclose(self.bezier.evaluate(c.q2D), bezier_ref_evaluate)
+            c.np.allclose(
+                self.bezier.evaluate(c.get_query_points_q2D()),
+                bezier_ref_evaluate,
+            )
         )
         self.assertTrue(
-            c.np.allclose(self.rational.evaluate(c.q2D), rational_ref_evaluate)
+            c.np.allclose(
+                self.rational.evaluate(c.get_query_points_q2D()),
+                rational_ref_evaluate,
+            )
         )
 
     def test_derivative(self):
@@ -405,12 +423,14 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # test derivative evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.derivative(c.q2D, o1), bspline_ref_derivative
+                self.bspline.derivative(c.get_query_points_q2D(), o1),
+                bspline_ref_derivative,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.derivative(c.q2D, o1), nurbs_ref_derivative
+                self.nurbs.derivative(c.get_query_points_q2D(), o1),
+                nurbs_ref_derivative,
             )
         )
 
