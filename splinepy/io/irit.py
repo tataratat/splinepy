@@ -5,11 +5,12 @@ import re
 
 import numpy as np
 
-from splinepy import splinepy_core
 from splinepy.io import ioutils
 
 # Keywords that indicate new spline (irit is case insensitive, all lower case)
 SPLINE_KEY_WORD_REGEX = r"\s+(bspline|bezier)\s+"
+
+PARA_DIM_KEYS = {"1": "CURVE", "2": "SURFACE", "3": "TRIVAR"}
 
 
 def load(fname, expand_tabs=True, strip_comments=False):
@@ -74,7 +75,10 @@ def load(fname, expand_tabs=True, strip_comments=False):
             if len(dim_and_deg) != 3:
                 raise ValueError(
                     "Unsupported irit format, could not identify spline from "
-                    "following string data set:" + type + data
+                    "following string data set:\n"
+                    + type.capitalize()
+                    + " "
+                    + data
                 )
 
             # Dim is stored in second string written (E/P)+DIM
@@ -101,11 +105,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
             # Extract control point and kv information
             ctps_and_kvs = re.findall(r"\[(.*?)\]", dim_and_deg[2])
             ctps = " ".join(
-                [
-                    s
-                    for s in ctps_and_kvs
-                    if re.match(r"\s*\d.*", s) is not None
-                ]
+                [s for s in ctps_and_kvs if re.search(r"\s*kv.*", s) is None]
             )
 
             if is_rational:
@@ -122,7 +122,14 @@ def load(fname, expand_tabs=True, strip_comments=False):
             if spline["control_points"].shape[0] != n_ctps:
                 raise ValueError(
                     "Could not find sufficient number of control points in "
-                    "spline:" + type + data
+                    "spline:\n"
+                    + type.capitalize()
+                    + " "
+                    + data
+                    + "\nExpected "
+                    + str(n_ctps)
+                    + " got "
+                    + str(spline["control_points"].shape[0])
                 )
 
             # Extract knot-vectors
@@ -136,8 +143,13 @@ def load(fname, expand_tabs=True, strip_comments=False):
                 if len(knot_v_strings) != para_dim:
                     raise ValueError(
                         "Could not find enough knot vectors in bspline string:"
-                        + type
+                        + type.capitalize()
+                        + " "
                         + data
+                        + "\nExpected "
+                        + str(para_dim)
+                        + " got "
+                        + str(len(knot_v_strings))
                     )
                 spline["knot_vectors"] = [
                     np.fromstring(kv, dtype=float, sep=" ")
@@ -163,4 +175,84 @@ def export(fname, splines):
     --------
     None
     """
-    return splinepy_core.export_irit(fname, splines)
+    from splinepy.bezier import BezierBase
+    from splinepy.bspline import BSplineBase
+    from splinepy.multipatch import Multipatch
+    from splinepy.spline import Spline
+
+    if isinstance(splines, Multipatch):
+        splines = splines.splines
+    elif isinstance(splines, Spline):
+        splines = [splines]
+
+    # Start Export
+    with open(fname, "w") as f:
+        # Header
+        f.write("[OBJECT\n")
+
+        # Elements
+        for spline in splines:
+            # First line contains information on control point mesh dimensions
+            # and orders
+            f.write("  [")
+            # Paradim key
+            f.write(PARA_DIM_KEYS.get(str(spline.para_dim), "MULTIVAR"))
+            # Type identifier
+            if isinstance(spline, BezierBase):
+                f.write(" BEZIER ")
+            # Write orders or/and control point mesh resolutions
+            if isinstance(spline, BSplineBase):
+                f.write(" BSPLINE ")
+                f.write(
+                    " ".join(
+                        [
+                            str(s)
+                            for s in spline.control_mesh_resolutions.tolist()
+                        ]
+                    )
+                    + " "
+                )
+            # Orders
+            f.write(" ".join([str(d) for d in (spline.degrees + 1).tolist()]))
+
+            # Write dimensionality
+            if spline.is_rational:
+                f.write(" P" + str(spline.dim) + "\n")
+            else:
+                f.write(" E" + str(spline.dim) + "\n")
+
+            # Write knot vectors where required
+            if isinstance(spline, BSplineBase):
+                for kv in spline.knot_vectors:
+                    f.write(
+                        "    [KV "
+                        + " ".join([str(k) for k in kv.tolist()])
+                        + "]\n"
+                    )
+
+            # Determine weighted control points
+            if spline.is_rational:
+                control_points = np.hstack(
+                    (
+                        spline.weights.reshape(-1, 1),
+                        spline.weights.reshape(-1, 1) * spline.control_points,
+                    )
+                )
+            else:
+                control_points = spline.control_points
+
+            # Write control points
+            f.write(
+                "\n".join(
+                    [
+                        "    [" + " ".join([str(x) for x in ctp]) + "]"
+                        for ctp in control_points.tolist()
+                    ]
+                )
+            )
+
+            # SPLINE FOOTER
+            f.write("\n  ]\n")
+
+        # FILE FOOTER
+        f.write("]")
