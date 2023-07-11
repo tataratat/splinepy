@@ -51,6 +51,7 @@ public:
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
   template<std::size_t s_para_dim, std::size_t s_dim>
   using SelfTemplate_ = Bezier<s_para_dim, s_dim>;
+  using SelfBoundary_ = Bezier<para_dim - 1, dim>;
   using Base_ = BezierSplineType<para_dim, dim>;
   template<std::size_t b_para_dim, std::size_t b_dim>
   using BaseTemplate_ = BezierSplineType<b_para_dim, b_dim>;
@@ -61,7 +62,8 @@ public:
   using Coordinates_ = typename std::vector<Coordinate_>;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
-  using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
+  using ProximityBase_ = splinepy::proximity::ProximityBase;
+  using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>, dim>;
 
   /// @brief Creates Base for Bezier
   /// @param degrees
@@ -233,10 +235,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
   /// Verbose proximity query - make sure to plant a kdtree first.
   virtual void SplinepyVerboseProximity(const double* query,
@@ -713,13 +712,14 @@ public:
   }
 
   /// @brief Gets proximity
-  constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr ProximityBase_& GetProximity() { return *proximity_; }
   /// @brief Gets proximity
-  constexpr const Proximity_& GetProximity() const { return *proximity_; }
+  constexpr const ProximityBase_& GetProximity() const { return *proximity_; }
 
 protected:
   /// @brief Proximity
-  std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
+  std::shared_ptr<ProximityBase_> proximity_ =
+      std::make_shared<Proximity_>(*this);
 }; /* class Bezier */
 
 } // namespace splinepy::splines

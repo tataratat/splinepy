@@ -959,6 +959,8 @@ public:
     const auto to_derived = py::module_::import("splinepy").attr("to_derived");
     return to_derived(py::cast(this));
   }
+
+  int Dim() { return Core()->SplinepyDim(); }
 };
 
 /// @brief Add Spline Pyclass
@@ -973,7 +975,8 @@ inline void add_spline_pyclass(py::module& m) {
       .def("new_core", &splinepy::py::PySpline::NewCore)
       .def_readwrite("_data", &splinepy::py::PySpline::data_)
       .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
-      .def_readonly("dim", &splinepy::py::PySpline::dim_)
+      //.def_readonly("dim", &splinepy::py::PySpline::dim_)
+      .def_property_readonly("dim", &splinepy::py::PySpline::Dim)
       .def_property_readonly("whatami", &splinepy::py::PySpline::WhatAmI)
       .def_property_readonly("name", &splinepy::py::PySpline::Name)
       .def_property_readonly("has_knot_vectors",

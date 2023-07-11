@@ -27,7 +27,7 @@ void ScalarTypeEvaluate(const SplineType& spline,
   if constexpr (std::is_scalar<decltype(core_evaluated)>::value) {
     output[0] = static_cast<OutputType>(core_evaluated);
   } else {
-    for (std::size_t i{}; i < SplineType::kDim; ++i) {
+    for (std::size_t i{}; i < spline.SplinepyDim(); ++i) {
       output[i] = static_cast<OutputType>(core_evaluated[i]);
     }
   }
@@ -120,7 +120,7 @@ void ScalarTypeDerivative(const SplineType& spline,
   if constexpr (std::is_scalar<decltype(core_derived)>::value) {
     output[0] = static_cast<OutputType>(core_derived);
   } else {
-    for (std::size_t i{}; i < SplineType::kDim; ++i) {
+    for (std::size_t i{}; i < spline.SplinepyDim(); ++i) {
       output[i] = static_cast<OutputType>(core_derived[i]);
     }
   }
@@ -165,7 +165,7 @@ void ScalarTypeJacobian(const SplineType& spline,
     if constexpr (std::is_scalar<decltype(core_derived)>::value) {
       output[i] = static_cast<OutputType>(core_derived);
     } else {
-      for (std::size_t j{}; j < SplineType::kDim; ++j) {
+      for (std::size_t j{}; j < spline.SplinepyDim(); ++j) {
         output[j * SplineType::kParaDim + i] =
             static_cast<OutputType>(core_derived[j]);
       }

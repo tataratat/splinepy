@@ -159,73 +159,12 @@ splinepy::splines::SplinepyBase::SplinepyCreateBSpline(
     const int* degrees,
     const std::vector<std::vector<double>>* knot_vectors,
     const double* control_points) {
-  switch (para_dim) {
-  case 1:
-    return splinepy::splines::create::CreateBSpline1(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 2:
-    return splinepy::splines::create::CreateBSpline2(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 3:
-    return splinepy::splines::create::CreateBSpline3(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-#ifdef SPLINEPY_MORE
 
-  case 4:
-    return splinepy::splines::create::CreateBSpline4(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 5:
-    return splinepy::splines::create::CreateBSpline5(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 6:
-    return splinepy::splines::create::CreateBSpline6(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 7:
-    return splinepy::splines::create::CreateBSpline7(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 8:
-    return splinepy::splines::create::CreateBSpline8(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 9:
-    return splinepy::splines::create::CreateBSpline9(dim,
-                                                     degrees,
-                                                     knot_vectors,
-                                                     control_points);
-  case 10:
-    return splinepy::splines::create::CreateBSpline10(dim,
-                                                      degrees,
-                                                      knot_vectors,
-                                                      control_points);
-#endif
-
-  default:
-    splinepy::utils::PrintAndThrowError(
-        "Something went wrong during CreateBSpline. Please help us by writing "
-        "an issue about this case at [ github.com/tataratat/splinepy ]");
-    break;
-  }
-  splinepy::utils::PrintAndThrowError(
-      "Something went very wrong during CreateBSpline. Please help us by "
-      "writing "
-      "an issue about this case at [ github.com/tataratat/splinepy ]");
-  // make compiler happy
-  return std::shared_ptr<SplinepyBase>{};
+  return splinepy::splines::create::CreateBSpline(para_dim,
+                                                  dim,
+                                                  degrees,
+                                                  knot_vectors,
+                                                  control_points);
 }
 
 /// dynamic creation of templated Nurbs
@@ -237,83 +176,13 @@ splinepy::splines::SplinepyBase::SplinepyCreateNurbs(
     const std::vector<std::vector<double>>* knot_vectors,
     const double* control_points,
     const double* weights) {
-  switch (para_dim) {
-  case 1:
-    return splinepy::splines::create::CreateNurbs1(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 2:
-    return splinepy::splines::create::CreateNurbs2(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 3:
-    return splinepy::splines::create::CreateNurbs3(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-#ifdef SPLINEPY_MORE
 
-  case 4:
-    return splinepy::splines::create::CreateNurbs4(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 5:
-    return splinepy::splines::create::CreateNurbs5(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 6:
-    return splinepy::splines::create::CreateNurbs6(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 7:
-    return splinepy::splines::create::CreateNurbs7(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 8:
-    return splinepy::splines::create::CreateNurbs8(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 9:
-    return splinepy::splines::create::CreateNurbs9(dim,
-                                                   degrees,
-                                                   knot_vectors,
-                                                   control_points,
-                                                   weights);
-  case 10:
-    return splinepy::splines::create::CreateNurbs10(dim,
-                                                    degrees,
-                                                    knot_vectors,
-                                                    control_points,
-                                                    weights);
-#endif
-
-  default:
-    splinepy::utils::PrintAndThrowError(
-        "Something went wrong during CreateNurbs. Please help us by writing "
-        "an issue about this case at [ github.com/tataratat/splinepy ]");
-    break;
-  }
-  splinepy::utils::PrintAndThrowError(
-      "Something went very wrong during CreateNurbs. Please help us by "
-      "writing "
-      "an issue about this case at [ github.com/tataratat/splinepy ]");
-  // make compiler happy
-  return std::shared_ptr<SplinepyBase>{};
+  return splinepy::splines::create::CreateNurbs(para_dim,
+                                                dim,
+                                                degrees,
+                                                knot_vectors,
+                                                control_points,
+                                                weights);
 }
 
 } // namespace splinepy::splines

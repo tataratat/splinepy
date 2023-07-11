@@ -46,6 +46,7 @@ public:
   // self
   template<std::size_t s_para_dim, std::size_t s_dim>
   using SelfTemplate_ = RationalBezier<s_para_dim, s_dim>;
+  using SelfBoundary_ = RationalBezier<para_dim - 1, dim>;
 
   // bezman
   using Base_ = RationalBezierSplineType<para_dim, dim>;
@@ -58,8 +59,9 @@ public:
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
   // advanced use
+  using ProximityBase_ = splinepy::proximity::ProximityBase;
   using Proximity_ =
-      splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
+      splinepy::proximity::Proximity<RationalBezier<para_dim, dim>, dim>;
 
   /// @brief Create base
   /// @param degrees
@@ -296,10 +298,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
 
   /// Verbose proximity query - make sure to plant a kdtree first.
@@ -740,13 +739,14 @@ public:
   }
 
   /// @brief Get proximity
-  constexpr Proximity_& GetProximity() { return *proximity_; }
+  constexpr ProximityBase_& GetProximity() { return *proximity_; }
   /// @brief Get proximity
-  constexpr const Proximity_& GetProximity() const { return *proximity_; }
+  constexpr const ProximityBase_& GetProximity() const { return *proximity_; }
 
 protected:
   /// @brief Shared pointer to proximity
-  std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);
+  std::shared_ptr<ProximityBase_> proximity_ =
+      std::make_shared<Proximity_>(*this);
 
 }; /* class RationalBezier */
 

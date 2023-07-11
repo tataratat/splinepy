@@ -10,6 +10,25 @@
 
 namespace splinepy::proximity {
 
+class ProximityBase {
+public:
+  virtual ~ProximityBase() = default;
+
+  virtual void PlantNewKdTree(const int* resolutions, const int n_thread) = 0;
+  virtual void
+  VerboseQuery(const double* query,
+               const double& tolerance,
+               const int& max_iterations,
+               const bool aggressive_bounds,
+               double* final_guess,
+               double* nearest /* spline(final_guess) */,
+               double* nearest_minus_query /* difference */,
+               double& distance,
+               double& convergence_norm,
+               double* first_derivatives /* spline jacobian */,
+               double* second_derivatives /* spline hessian */) const = 0;
+};
+
 /*!
  * A helper class to perform proximity operations for splines.
  *
@@ -20,42 +39,37 @@ namespace splinepy::proximity {
  * For detailed information, please take a look at splinepy python
  * documentation.
  */
-template<typename SplineType>
-class Proximity {
+template<typename SplineType, int dim>
+class Proximity : public ProximityBase {
 public:
+  using Base_ = ProximityBase;
   /// Options for initial guess
   enum class InitialGuess : int { MidPoint = 0, KdTree = 1 };
 
   // Frequently used array alias
-  using DArrayD_ = std::array<double, SplineType::kDim>;
+  using DArrayD_ = std::array<double, dim>;
   using PArrayD_ = std::array<double, SplineType::kParaDim>;
-  using DArrayI_ = std::array<int, SplineType::kDim>;
+  using DArrayI_ = std::array<int, dim>;
   using PArrayI_ = std::array<int, SplineType::kParaDim>;
   using PxPMatrixD_ = std::array<std::array<double, SplineType::kParaDim>,
                                  SplineType::kParaDim>;
-  using PxDMatrixD_ =
-      std::array<std::array<double, SplineType::kDim>, SplineType::kParaDim>;
+  using PxDMatrixD_ = std::array<std::array<double, dim>, SplineType::kParaDim>;
   // kdtree related alias
   // C-Array instead of vector to avoid default init
   using Coordinates_ = typename SplineType::Coordinate_[];
-  using Cloud_ = typename napf::
-      CoordinatesCloud<std::unique_ptr<Coordinates_>, int, SplineType::kDim>;
+  using Cloud_ =
+      typename napf::CoordinatesCloud<std::unique_ptr<Coordinates_>, int, dim>;
   // metric is L2 and returned distance will be squared.
-  using Tree_ =
-      typename std::conditional<(SplineType::kDim < 4),
-                                napf::CoordinatesTree<double, /* DataT */
-                                                      double, /* DistT */
-                                                      int,    /* IndexT */
-                                                      SplineType::kDim, /* dim
-                                                                         */
-                                                      2,       /* metric (L2) */
-                                                      Cloud_>, /* Cloud T */
-                                napf::CoordinatesHighDimTree<double,
-                                                             double,
-                                                             int,
-                                                             SplineType::kDim,
-                                                             2,
-                                                             Cloud_>>::type;
+  using Tree_ = typename std::conditional<
+      (dim < 4),
+      napf::CoordinatesTree<double,  /* DataT */
+                            double,  /* DistT */
+                            int,     /* IndexT */
+                            dim,     /* dim
+                                      */
+                            2,       /* metric (L2) */
+                            Cloud_>, /* Cloud T */
+      napf::CoordinatesHighDimTree<double, double, int, dim, 2, Cloud_>>::type;
   using GridPoints_ =
       splinepy::utils::GridPoints<double, int, SplineType::kParaDim>;
 
@@ -88,8 +102,12 @@ public:
    * @param resolutions parameter space sampling resolution
    * @param n_thread number of threads to be used for sampling
    */
-  void PlantNewKdTree(const PArrayI_& resolutions, const int n_thread = 1) {
+  virtual void PlantNewKdTree(const int* resolutions_, const int n_thread = 1) {
     // skip early, if requested resolutions are the as existing kdtree
+    PArrayI_ resolutions;
+    for (int i{}; i < dim; ++i) {
+      resolutions[i] = resolutions_[i];
+    }
     if (kdtree_planted_ && sampled_resolutions_ == resolutions) {
       return;
     }
@@ -117,7 +135,7 @@ public:
     // plant a new tree
     coordinates_cloud_ =
         std::make_unique<Cloud_>(coordinates_, grid_points_.Size());
-    kdtree_ = std::make_unique<Tree_>(SplineType::kDim, *coordinates_cloud_);
+    kdtree_ = std::make_unique<Tree_>(dim, *coordinates_cloud_);
     kdtree_planted_ = true;
   }
 
@@ -197,7 +215,7 @@ public:
       auto const derivative = spline_(guess, derivative_query);
 
       df_dxi_i = 0.;
-      for (int j{}; j < SplineType::kDim; ++j) {
+      for (int j{}; j < dim; ++j) {
         // cast, since d may be a NamedType.
         double d_value;
         if constexpr (std::is_scalar<decltype(derivative)>::value) {
@@ -220,10 +238,10 @@ public:
    * @param[in] spline_gradient
    * @param[out] lhs
    */
-  void FillLhs(const typename SplineType::ParametricCoordinate_& guess,
-               const DArrayD_& difference,
-               const PxDMatrixD_& spline_gradient,
-               PxPMatrixD_& lhs) const {
+  virtual void FillLhs(const typename SplineType::ParametricCoordinate_& guess,
+                       const DArrayD_& difference,
+                       const PxDMatrixD_& spline_gradient,
+                       PxPMatrixD_& lhs) const {
 
     const PxPMatrixD_ spline_gradientAAt =
         splinepy::utils::AAt(spline_gradient);
@@ -343,7 +361,7 @@ public:
   }
 
   /// @brief First order fall back
-  void FirstOrderFallBack() {}
+  virtual void FirstOrderFallBack() {}
 
   /// @brief Given physical coordinate, finds closest parametric coordinate.
   /// Always takes initial guess based on kdtree.
@@ -359,17 +377,18 @@ public:
   /// @param[out] convergence_norm
   /// @param[out] first_derivatives (para_dim x dim)
   /// @param[out] second_derivatives (para_dim x para_dim x dim)
-  void VerboseQuery(const double* query,
-                    const double& tolerance,
-                    const int& max_iterations,
-                    const bool aggressive_bounds,
-                    double* final_guess,
-                    double* nearest /* spline(final_guess) */,
-                    double* nearest_minus_query /* difference */,
-                    double& distance,
-                    double& convergence_norm,
-                    double* first_derivatives /* spline jacobian */,
-                    double* second_derivatives /* spline hessian */) const {
+  virtual void
+  VerboseQuery(const double* query,
+               const double& tolerance,
+               const int& max_iterations,
+               const bool aggressive_bounds,
+               double* final_guess,
+               double* nearest /* spline(final_guess) */,
+               double* nearest_minus_query /* difference */,
+               double& distance,
+               double& convergence_norm,
+               double* first_derivatives /* spline jacobian */,
+               double* second_derivatives /* spline hessian */) const {
 
     PxPMatrixD_ lhs;
     PArrayD_ rhs;
@@ -480,25 +499,24 @@ public:
         ++derivative_query[i];
         ++derivative_query[j];
         const auto derivative = spline_(current_guess, derivative_query);
-        for (int k{}; k < SplineType::kDim; ++k) {
+        for (int k{}; k < dim; ++k) {
           if constexpr (std::is_scalar<decltype(derivative)>::value) {
             der = derivative;
           } else {
             der = static_cast<double>(derivative[k]);
           }
           // spline hessian
-          second_derivatives[(i * SplineType::kParaDim * SplineType::kDim)
-                             + (j * SplineType::kDim) + k] = der; /* 4 */
+          second_derivatives[(i * SplineType::kParaDim * dim) + (j * dim) + k] =
+              der; /* 4 */
           // symmetric part
           if (i != j) {
-            second_derivatives[(j * SplineType::kParaDim * SplineType::kDim)
-                               + (i * SplineType::kDim) + k] = der;
+            second_derivatives[(j * SplineType::kParaDim * dim) + (i * dim)
+                               + k] = der;
           }
 
           // ones that don't need extra para_dim loop
           if (i == 0 /* j starts with 0 */) {
-            first_derivatives[j * SplineType::kDim + k] =
-                spline_gradient[j][k]; /* 5 */
+            first_derivatives[j * dim + k] = spline_gradient[j][k]; /* 5 */
             // ones that don't need extra extra para_dim loop
             // => pure dim loop
             if (j == 0) {
