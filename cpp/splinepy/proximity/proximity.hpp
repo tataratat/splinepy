@@ -74,7 +74,7 @@ public:
       splinepy::utils::GridPoints<double, int, SplineType::kParaDim>;
 
   /// Constructor. As a spline helper class, always need a spline.
-  Proximity(SplineType const& spline) : spline_(spline){};
+  Proximity(SplineType const& spline) : spline_(spline) {}
 
   /*!
    * Computes difference between physical query and current parametric guess.

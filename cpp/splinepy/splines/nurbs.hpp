@@ -426,24 +426,34 @@ public:
       switch (SplinepyDim()) {
       case 1:
         proximity_ = std::make_unique<Proximity_<1>>(*this);
+        break;
       case 2:
         proximity_ = std::make_unique<Proximity_<2>>(*this);
+        break;
       case 3:
         proximity_ = std::make_unique<Proximity_<3>>(*this);
+        break;
       case 4:
         proximity_ = std::make_unique<Proximity_<4>>(*this);
+        break;
       case 5:
         proximity_ = std::make_unique<Proximity_<5>>(*this);
+        break;
       case 6:
         proximity_ = std::make_unique<Proximity_<6>>(*this);
+        break;
       case 7:
         proximity_ = std::make_unique<Proximity_<7>>(*this);
+        break;
       case 8:
         proximity_ = std::make_unique<Proximity_<8>>(*this);
+        break;
       case 9:
         proximity_ = std::make_unique<Proximity_<9>>(*this);
+        break;
       case 10:
         proximity_ = std::make_unique<Proximity_<10>>(*this);
+        break;
       default:
         splinepy::utils::PrintAndThrowError(
             "Something went wrong during Proximity. Please help us by writing "
