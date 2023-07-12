@@ -8,7 +8,9 @@ from splinepy import settings
 from splinepy.utils.log import debug, warning
 
 
-def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
+def _spline_to_ET(
+    root, multipatch, index_offset, fields_only=False, cps_keys=False
+):
     """
     Write spline data to xml element in gismo format
 
@@ -24,16 +26,24 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
       xml file)
     fields_only : bool (False)
       If set, exports only the fields associated to the multipatch data
+    cps_keys : bool
+      Uses gismo key words from version utilized at Cyber-Physical Simulation
+      institute
 
     Returns
     -------
     None
     """
-    from splinepy import NURBS, BSpline
     from splinepy.spline import Spline
 
     if fields_only and (len(multipatch.fields) == 0):
         return
+
+    def wrap_type_keys(key, paradim):
+        if cps_keys:
+            return key
+        else:
+            return "Tensor" + key + str(paradim)
 
     if fields_only:
         supports = np.array(
@@ -74,13 +84,13 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             coefs = np.hstack(
                 [multipatch.fields[j][id].control_points for j in support]
             )
-            if "weights" in spline.required_properties:
+            if spline.is_rational:
                 weights = np.hstack(
                     [multipatch.fields[j][id].weights for j in support]
                 )
         else:
             coefs = spline.control_points
-            if "weights" in spline.required_properties:
+            if spline.is_rational:
                 weights = spline.weights
 
         if not issubclass(type(spline), Spline):
@@ -92,20 +102,11 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
         # Transform bezier types, as they are not supported in gismo
         if spline.name.startswith("Bezier"):
             type_name = "BSpline"
-            spline = BSpline(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
+            spline = spline.bspline
         elif spline.name.startswith("RationalBezier"):
             type_name = "Nurbs"
-            spline = NURBS(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
+            spline = spline.nurbs
+
         elif spline.name.startswith("BSpline"):
             type_name = "BSpline"
         elif spline.name.startswith("NURBS"):
@@ -115,7 +116,7 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
         spline_element = ET.SubElement(
             root,
             "Geometry",
-            type="Tensor" + type_name + str(spline.para_dim),
+            type=wrap_type_keys(type_name, spline.para_dim),
             id=str(id + index_offset),
         )
 
@@ -124,18 +125,18 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             spline_basis_base = ET.SubElement(
                 spline_element,
                 "Basis",
-                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
+                type=wrap_type_keys(type_name + "Basis", spline.para_dim),
             )
             spline_basis = ET.SubElement(
                 spline_basis_base,
                 "Basis",
-                type="TensorBSplineBasis" + str(spline.para_dim),
+                type=wrap_type_keys("BSplineBasis", spline.para_dim),
             )
         else:
             spline_basis = ET.SubElement(
                 spline_element,
                 "Basis",
-                type="Tensor" + type_name + "Basis" + str(spline.para_dim),
+                type=wrap_type_keys(type_name + "Basis", spline.para_dim),
             )
 
         for i_para in range(spline.para_dim):
@@ -174,6 +175,7 @@ def export(
     labeled_boundaries=True,
     options=None,
     export_fields=False,
+    cps_keys=False,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -201,6 +203,9 @@ def export(
     collapse_fields : cool
       Only valid if export_fields is True, writes all fields in the same file
       by collapsing the control points, requires conformity (not checked)
+    cps_keys : bool
+      Uses gismo key words from version utilized at Cyber-Physical Simulation
+      institute
 
     Returns
     -------
@@ -382,7 +387,13 @@ def export(
     # Export fields first, as all necessary information is already available
     if export_fields:
         field_xml = copy.deepcopy(xml_data)
-        _spline_to_ET(field_xml, multipatch, index_offset, fields_only=True)
+        _spline_to_ET(
+            field_xml,
+            multipatch,
+            index_offset,
+            fields_only=True,
+            cps_keys=cps_keys,
+        )
         if int(python_version.split(".")[1]) >= 9 and indent:
             ET.indent(field_xml)
         file_content = ET.tostring(field_xml)
