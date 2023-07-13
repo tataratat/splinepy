@@ -8,10 +8,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 test-command = "python -m unittest discover {project}/tests -v"
-test-extras = ["test"]
-#test-skip = ["*universal2:arm64"]
-# Setuptools bug causes collision between pypy and cpython artifacts
-#before-build = "rm -rf {project}/build"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "arm64"]
