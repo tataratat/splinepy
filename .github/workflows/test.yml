@@ -25,7 +25,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: install dependencies
-      run: pip install numpy pytest
+      run: pip install numpy
 
     - name: build splinepy linux - gcc10
       if: matrix.os == 'ubuntu-20.04'
@@ -43,4 +43,4 @@ jobs:
         python3 setup.py develop --minimal
 
     - name: test
-      run: pytest tests
+      run: cd tests && python3 -m unittest discover . -v
