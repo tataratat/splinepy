@@ -14,22 +14,22 @@ if __name__ == "__main__":
 
         vedo.settings.screenshot_transparent_background = 1
 
-    l_eye = splinepy.helpme.create.disk(0.15)
+    l_eye = splinepy.helpme.create.disc(0.15)
     l_eye.cps += [0.6, 0.2]
     l_eye.show_options["c"] = "black"
 
-    r_eye = splinepy.helpme.create.disk(0.15)
+    r_eye = splinepy.helpme.create.disc(0.15)
     r_eye.cps += [-0.6, 0.2]
     r_eye.show_options["c"] = "black"
 
     x_offset = 0.59
     y_offset = 0.16
 
-    l_pupil = splinepy.helpme.create.disk(0.05)
+    l_pupil = splinepy.helpme.create.disc(0.05)
     l_pupil.cps += [x_offset, y_offset]
     l_pupil.show_options["c"] = "white"
 
-    r_pupil = splinepy.helpme.create.disk(0.05)
+    r_pupil = splinepy.helpme.create.disc(0.05)
     r_pupil.cps += [-x_offset, y_offset]
     r_pupil.show_options["c"] = "white"
 
@@ -104,8 +104,8 @@ if __name__ == "__main__":
             y_shift = -0.02
 
             background = [
-                splinepy.helpme.create.disk(height),
-                splinepy.helpme.create.disk(height),
+                splinepy.helpme.create.disc(height),
+                splinepy.helpme.create.disc(height),
                 splinepy.helpme.create.box(width + 2 * x_shift, 2 * height),
             ]
 

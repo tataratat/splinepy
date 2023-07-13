@@ -21,12 +21,12 @@ if __name__ == "__main__":
     )
 
     circ = splinepy.helpme.create.circle(5)
-    disk1 = splinepy.helpme.create.disk(3, angle=100, n_knot_spans=4)
-    disk2 = splinepy.helpme.create.disk(
+    disc1 = splinepy.helpme.create.disc(3, angle=100, n_knot_spans=4)
+    disc2 = splinepy.helpme.create.disc(
         5, inner_radius=1.0, angle=360, n_knot_spans=10
     )
 
-    gus.show(["Line Circle", circ], ["Disk section", disk1], ["Disk", disk2])
+    gus.show(["Line Circle", circ], ["Disk section", disc1], ["Disk", disc2])
 
     cone = splinepy.helpme.create.cone(5, 10, angle=180)
     gus.show(["Cone", cone])

@@ -257,7 +257,7 @@ if __name__ == "__main__":
         locations=locations,
         function=heights,
     )
-    disc = splinepy.helpme.create.disk(2, angle=123)
+    disc = splinepy.helpme.create.disc(2, angle=123)
     disc.normalize_knot_vectors()
     disc.spline_data["nice"] = nice_data
     disc.show_options["arrow_data"] = "nice"

@@ -502,23 +502,23 @@ def plate(radius=1.0):
     )
 
 
-def disk(
+def disc(
     outer_radius,
     inner_radius=None,
     angle=360.0,
     n_knot_spans=4,
     degree=True,
 ):
-    """Surface spline describing a potentially hollow disk with quadratic
+    """Surface spline describing a potentially hollow disc with quadratic
     degree along curved dimension and linear along thickness. The angle
-    describes the returned part of the disk.
+    describes the returned part of the disc.
 
     Parameters
     ----------
     outer_radius : float
-      Outer radius of the disk
+      Outer radius of the disc
     inner_radius : float, optional
-      Inner radius of the disk, in case of hollow disk, by default 0.
+      Inner radius of the disc, in case of hollow disc, by default 0.
     angle : float, optional
       Rotational angle, by default 360. describing a complete revolution
     n_knot_spans : int, optional
@@ -526,7 +526,7 @@ def disk(
 
     Returns
     -------
-    disk: NURBS
+    disc: NURBS
       Surface NURBS of degrees (1,2)
     """
     if inner_radius is None:
@@ -552,8 +552,8 @@ def torus(
     degree=True,
 ):
     """Creates a volumetric NURBS spline describing a torus revolved around the
-    x-axis. Possible cross-sections are plate, disk (yielding a tube) and
-    section of a disk.
+    x-axis. Possible cross-sections are plate, disc (yielding a tube) and
+    section of a disc.
 
     Parameters
     ----------
@@ -603,7 +603,7 @@ def torus(
         if abs(torus_angle) >= np.pi:
             cross_section = cross_section.nurbs
     else:
-        cross_section = disk(
+        cross_section = disc(
             outer_radius=section_outer_radius,
             inner_radius=section_inner_radius,
             n_knot_spans=section_n_knot_spans,
@@ -611,7 +611,7 @@ def torus(
             degree=degree,
         )
 
-    # Create a surface spline representing a disk and move it from the origin
+    # Create a surface spline representing a disc and move it from the origin
     cross_section.control_points[:, 1] += torus_radius
 
     return cross_section.create.revolved(
@@ -652,7 +652,7 @@ def sphere(
     if inner_radius is not None:
         inner_radius = float(inner_radius)
 
-    sphere = disk(
+    sphere = disc(
         outer_radius, inner_radius, angle=180, degree=True
     ).nurbs.create.revolved(
         axis=[1, 0, 0],
@@ -726,7 +726,7 @@ def cone(
     """
 
     if volumetric:
-        ground = disk(
+        ground = disc(
             outer_radius, inner_radius=inner_radius, angle=angle, degree=degree
         )
     else:

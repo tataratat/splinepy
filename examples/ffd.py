@@ -5,7 +5,7 @@ import splinepy as sp
 if __name__ == "__main__":
     # 1.
     # create mesh 2d - extracted from bspline
-    mesh_2d = sp.helpme.create.disk(
+    mesh_2d = sp.helpme.create.disc(
         outer_radius=3, inner_radius=2
     ).extract.faces([50, 30])
     spline_2d = sp.BSpline(
