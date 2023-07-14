@@ -4,55 +4,15 @@ set(SPLINELIB_SOURCES
 )
 
 set(BEZMAN_SOURCES
-        bezman/bezier_explicit1.cpp
-        bezman/bezier_explicit2.cpp
-        bezman/bezier_explicit3.cpp
-        bezman/rational_bezier_explicit1.cpp
-        bezman/rational_bezier_explicit2.cpp
-        bezman/rational_bezier_explicit3.cpp
-)
-set(BEZMAN_MORE_SOURCES
-        bezman/bezier_explicit4.cpp
-        bezman/bezier_explicit5.cpp
-        bezman/bezier_explicit6.cpp
-        bezman/bezier_explicit7.cpp
-        bezman/bezier_explicit8.cpp
-        bezman/bezier_explicit9.cpp
-        bezman/bezier_explicit10.cpp
-        bezman/rational_bezier_explicit4.cpp
-        bezman/rational_bezier_explicit5.cpp
-        bezman/rational_bezier_explicit6.cpp
-        bezman/rational_bezier_explicit7.cpp
-        bezman/rational_bezier_explicit8.cpp
-        bezman/rational_bezier_explicit9.cpp
-        bezman/rational_bezier_explicit10.cpp
+        bezman/bezier_explicit.cpp
+        bezman/rational_bezier_explicit.cpp
 )
 
 set(SPLINEPY_SOURCES
-        splinepy/bezier_explicit1.cpp
-        splinepy/bezier_explicit2.cpp
-        splinepy/bezier_explicit3.cpp
-        splinepy/rational_bezier_explicit1.cpp
-        splinepy/rational_bezier_explicit2.cpp
-        splinepy/rational_bezier_explicit3.cpp
+        splinepy/bezier_explicit.cpp
+        splinepy/rational_bezier_explicit.cpp
         splinepy/bspline_explicit.cpp
         splinepy/nurbs_explicit.cpp
-)
-set(SPLINEPY_MORE_SOURCES
-        splinepy/bezier_explicit4.cpp
-        splinepy/bezier_explicit5.cpp
-        splinepy/bezier_explicit6.cpp
-        splinepy/bezier_explicit7.cpp
-        splinepy/bezier_explicit8.cpp
-        splinepy/bezier_explicit9.cpp
-        splinepy/bezier_explicit10.cpp
-        splinepy/rational_bezier_explicit4.cpp
-        splinepy/rational_bezier_explicit5.cpp
-        splinepy/rational_bezier_explicit6.cpp
-        splinepy/rational_bezier_explicit7.cpp
-        splinepy/rational_bezier_explicit8.cpp
-        splinepy/rational_bezier_explicit9.cpp
-        splinepy/rational_bezier_explicit10.cpp
 )
 
 set(EXPLICIT_SOURCES

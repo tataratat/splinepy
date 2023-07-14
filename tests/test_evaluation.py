@@ -246,30 +246,25 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
             nurbs_c.elevate_degrees([0, 1])
 
         # Test different derivatives - all have global supports
-        self.assertTrue(
-            c.np.allclose(
+        assert c.np.allclose(
                 rational_c.basis_derivative_and_support(q2D, [1, 0])[0],
                 nurbs_c.basis_derivative_and_support(q2D, [1, 0])[0],
             )
-        )
-        self.assertTrue(
-            c.np.allclose(
+
+        assert c.np.allclose(
                 rational_c.basis_derivative_and_support(q2D, [1, 0])[1],
                 nurbs_c.basis_derivative_and_support(q2D, [1, 0])[1],
             )
-        )
-        self.assertTrue(
-            c.np.allclose(
+
+        assert c.np.allclose(
                 rational_c.basis_derivative_and_support(q2D, [3, 2])[0],
                 nurbs_c.basis_derivative_and_support(q2D, [3, 2])[0],
             )
-        )
-        self.assertTrue(
-            c.np.allclose(
+        
+        assert c.np.allclose(
                 rational_c.basis_derivative_and_support(q2D, [1, 3])[0],
                 nurbs_c.basis_derivative_and_support(q2D, [1, 3])[0],
             )
-        )
 
         # For polynomial splines
         bezier_c = self.bezier.copy()
@@ -456,17 +451,14 @@ class TestSplinepyEvaluation(c.unittest.TestCase):
             knot_vectors=randomized["knot_vectors"],
             weights=randomized["weights"],
         )
-        self.assertTrue(
-            c.np.allclose(
-                random_bezier.derivative(queries, derivatives),
-                random_bspline.derivative(queries, derivatives),
-            )
+        assert c.np.allclose(
+            random_bezier.derivative(queries, derivatives),
+            random_bspline.derivative(queries, derivatives),
         )
-        self.assertTrue(
-            c.np.allclose(
-                random_rational.derivative(queries, derivatives),
-                random_nurbs.derivative(queries, derivatives),
-            )
+
+        assert c.np.allclose(
+            random_rational.derivative(queries, derivatives),
+            random_nurbs.derivative(queries, derivatives),
         )
 
     def test_assertions_evaluation(self):

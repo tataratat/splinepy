@@ -5,37 +5,15 @@ add_subdirectory(fitting)
 ## create splinepy target - enables cpp standalone use
 # define srcs
 set(SPLINEPY_SRCS
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier1.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier2.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier3.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/create_bezier.cpp
 
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier1.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier2.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier3.cpp
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/create_rational_bezier.cpp
 
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/create_bspline.cpp
 
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/create_nurbs.cpp
 
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/splinepy_base.cpp
-)
-
-set(SPLINEPY_MORE_SRCS
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier4.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier5.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier6.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier7.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier8.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier9.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier10.cpp
-
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier4.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier5.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier6.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier7.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier8.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier9.cpp
-        ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/rational_bezier10.cpp
 )
 
 if(SPLINEPY_MORE)

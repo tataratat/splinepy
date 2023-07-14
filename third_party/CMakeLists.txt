@@ -5,6 +5,7 @@ endif()
 
 set(BEZMAN_GOOGLETEST OFF)
 set(BEZMAN_USE_COMPILE_OPTIONS OFF)
+set(BEZMAN_DYNAMIC ON)
 add_subdirectory(bezman)
 
 add_subdirectory(pybind11)

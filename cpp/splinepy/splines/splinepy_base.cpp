@@ -58,63 +58,10 @@ SplinepyBase::SplinepyCreateBezier(const int para_dim,
                                    const int dim,
                                    const int* degrees,
                                    const double* control_points) {
-  switch (para_dim) {
-  case 1:
-    return splinepy::splines::create::CreateBezier1(dim,
-                                                    degrees,
-                                                    control_points);
-  case 2:
-    return splinepy::splines::create::CreateBezier2(dim,
-                                                    degrees,
-                                                    control_points);
-  case 3:
-    return splinepy::splines::create::CreateBezier3(dim,
-                                                    degrees,
-                                                    control_points);
-#ifdef SPLINEPY_MORE
-
-  case 4:
-    return splinepy::splines::create::CreateBezier4(dim,
-                                                    degrees,
-                                                    control_points);
-  case 5:
-    return splinepy::splines::create::CreateBezier5(dim,
-                                                    degrees,
-                                                    control_points);
-  case 6:
-    return splinepy::splines::create::CreateBezier6(dim,
-                                                    degrees,
-                                                    control_points);
-  case 7:
-    return splinepy::splines::create::CreateBezier7(dim,
-                                                    degrees,
-                                                    control_points);
-  case 8:
-    return splinepy::splines::create::CreateBezier8(dim,
-                                                    degrees,
-                                                    control_points);
-  case 9:
-    return splinepy::splines::create::CreateBezier9(dim,
-                                                    degrees,
-                                                    control_points);
-  case 10:
-    return splinepy::splines::create::CreateBezier10(dim,
-                                                     degrees,
-                                                     control_points);
-#endif
-
-  default:
-    splinepy::utils::PrintAndThrowError(
-        "Something went wrong during CreateBezier. Please help us by writing "
-        "an issue about this case at [ github.com/tataratat/splinepy ]");
-    break;
-  }
-  splinepy::utils::PrintAndThrowError(
-      "Something went very wrong during CreateBezier. Please help us by "
-      "writing "
-      "an issue about this case at [ github.com/tataratat/splinepy ]");
-  // make compiler happy
-  return std::shared_ptr<SplinepyBase>{};
+  return splinepy::splines::create::CreateBezier(para_dim,
+                                                 dim,
+                                                 degrees,
+                                                 control_points);
 }
 
 std::shared_ptr<SplinepyBase>
@@ -123,75 +70,11 @@ SplinepyBase::SplinepyCreateRationalBezier(const int para_dim,
                                            const int* degrees,
                                            const double* control_points,
                                            const double* weights) {
-  switch (para_dim) {
-  case 1:
-    return splinepy::splines::create::CreateRationalBezier1(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 2:
-    return splinepy::splines::create::CreateRationalBezier2(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 3:
-    return splinepy::splines::create::CreateRationalBezier3(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-#ifdef SPLINEPY_MORE
-
-  case 4:
-    return splinepy::splines::create::CreateRationalBezier4(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 5:
-    return splinepy::splines::create::CreateRationalBezier5(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 6:
-    return splinepy::splines::create::CreateRationalBezier6(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 7:
-    return splinepy::splines::create::CreateRationalBezier7(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 8:
-    return splinepy::splines::create::CreateRationalBezier8(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 9:
-    return splinepy::splines::create::CreateRationalBezier9(dim,
-                                                            degrees,
-                                                            control_points,
-                                                            weights);
-  case 10:
-    return splinepy::splines::create::CreateRationalBezier10(dim,
-                                                             degrees,
-                                                             control_points,
-                                                             weights);
-#endif
-
-  default:
-    splinepy::utils::PrintAndThrowError(
-        "Something went wrong during CreateRationalBezier. Please help us by "
-        "writing "
-        "an issue about this case at [ github.com/tataratat/splinepy ]");
-    break;
-  }
-  splinepy::utils::PrintAndThrowError(
-      "Something went very wrong during CreateRationalBezier. Please help us "
-      "by "
-      "writing "
-      "an issue about this case at [ github.com/tataratat/splinepy ]");
-  // make compiler happy
-  return std::shared_ptr<SplinepyBase>{};
+  return splinepy::splines::create::CreateRationalBezier(para_dim,
+                                                         dim,
+                                                         degrees,
+                                                         control_points,
+                                                         weights);
 }
 
 std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreateBSpline(

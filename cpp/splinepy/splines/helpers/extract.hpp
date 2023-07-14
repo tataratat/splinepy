@@ -97,28 +97,26 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
       if constexpr (SplineType::kIsRational) {
         // only way to avoid unweight -> reweight is to init first with degrees
         // assign boundary spline
-        boundary_spline = std::make_shared<SelfBoundary>(b_degrees);
+        boundary_spline =
+            std::make_shared<SelfBoundary>(b_degrees, spline.SplinepyDim());
         auto& b_cps = boundary_spline->GetWeightedControlPoints();
         auto& b_ws = boundary_spline->GetWeights();
 
         // copy
         for (std::size_t i{}; i < ncps; ++i) {
           const auto& id = indices[i];
-          b_cps[i] = spline.GetWeightedControlPoints()[id];
+          b_cps[i].Replace(spline.GetWeightedControlPoints()[id]);
           b_ws[i] = spline.GetWeights()[id];
         }
       } else {
         // non-rational bezier
-        using Coordinates = typename SelfBoundary::Coordinates_;
-        Coordinates b_coords;
-        b_coords.reserve(ncps);
-        for (const auto& id : indices) {
-          // copy control points
-          b_coords.push_back(spline.GetControlPoints()[id]);
+        boundary_spline =
+            std::make_shared<SelfBoundary>(b_degrees, spline.SplinepyDim());
+        auto& b_cps = boundary_spline->GetControlPoints();
+        // copy
+        for (std::size_t i{}; i < ncps; ++i) {
+          b_cps[i].Replace(spline.GetControlPoints()[indices[i]]);
         }
-
-        // assign boundary spline
-        boundary_spline = std::make_shared<SelfBoundary>(b_degrees, b_coords);
       }
     }
     // return here, this way compiler is happy
