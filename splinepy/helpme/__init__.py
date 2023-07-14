@@ -4,6 +4,7 @@ from splinepy.helpme import (
     integrate,
     mapper,
     multi_index,
+    permute,
     visualize,
 )
 
@@ -13,5 +14,6 @@ __all__ = [
     "integrate",
     "mapper",
     "multi_index",
+    "permute",
     "visualize",
 ]
