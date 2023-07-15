@@ -10,7 +10,7 @@ from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.io.ioutils import abs_fname
 from splinepy.nurbs import NURBS
-from splinepy.splinepy_core import read_iges, read_irit, read_xml
+from splinepy.splinepy_core import read_iges
 
 
 def load_splines(fname, as_dict=False):
@@ -41,11 +41,8 @@ def load_splines(fname, as_dict=False):
     if ext == ".iges":
         loaded_splines = read_iges(fname)
 
-    elif ext == ".xml":
-        loaded_splines = read_xml(fname)
-
     elif ext == ".itd":
-        loaded_splines = read_irit(fname)
+        loaded_splines = io.load.irit(fname)
 
     elif ext == ".npz":
         # it should only have one spline, but

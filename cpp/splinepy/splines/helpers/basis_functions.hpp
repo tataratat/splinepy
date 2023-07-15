@@ -118,8 +118,7 @@ inline std::vector<int> BSplineSupport(const SplineType& spline,
       std::accumulate(n_basis_per_dim.begin(),
                       n_basis_per_dim.end(),
                       typename decltype(n_basis_per_dim)::value_type{1},
-                      std::multiplies{})
-          .Get();
+                      std::multiplies{});
 
   // prepare return
   std::vector<int> supports;
@@ -169,7 +168,7 @@ RationalBSplineBasis(const SplineType& spline,
   double W{0.};
   for (std::size_t i{}; i < n_basis; ++i) {
     // get weight
-    const auto& w = homogeneous_coords[support[i]][SplineType::kDim].Get();
+    const auto& w = homogeneous_coords[support[i]][SplineType::kDim];
     const auto N_times_w = bspline_basis[i] * w;
 
     W += N_times_w;

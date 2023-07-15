@@ -11,10 +11,7 @@
 
 // SplineLib
 #include <BSplineLib/InputOutput/iges.hpp>
-#include <BSplineLib/InputOutput/irit.hpp>
 #include <BSplineLib/InputOutput/operations.hpp>
-#include <BSplineLib/InputOutput/vtk.hpp>
-#include <BSplineLib/InputOutput/xml.hpp>
 
 // splinepy
 #include <splinepy/py/py_spline.hpp>
@@ -58,95 +55,6 @@ void ExportIges(std::string fname, py::list splines) {
       fname);
 }
 
-/// IRIT
-void ExportIrit(std::string fname, py::list splines) {
-  bsplinelib::input_output::irit::Write(
-      ListOfPySplinesToSplineLibIoSplines(splines),
-      fname);
-}
-
-/// XML
-void ExportXml(std::string fname, py::list splines) {
-  bsplinelib::input_output::xml::Write(
-      ListOfPySplinesToSplineLibIoSplines(splines),
-      fname);
-}
-
-/// VTK - sampled spline
-void ExportVtk(std::string fname,
-               py::list splines,
-               py::list resolutions_per_spline) {
-  using ResolutionsPerSpline =
-      bsplinelib::input_output::vtk::NumbersOfParametricCoordinates;
-  using ResolutionsType = typename ResolutionsPerSpline::value_type;
-  using ResolutionValueType =
-      typename ResolutionsPerSpline::value_type::value_type;
-
-  // quick check
-  if (splines.size() != resolutions_per_spline.size()) {
-    splinepy::utils::PrintAndThrowError("Number of splines (",
-                                        splines.size(),
-                                        ") and number of resolutions (",
-                                        resolutions_per_spline.size(),
-                                        ") does not match.");
-  }
-
-  // get vector of splinelib io splines
-  auto sl_io_splines = ListOfPySplinesToSplineLibIoSplines(splines);
-
-  // prepare vector of resolutions
-  ResolutionsPerSpline sl_rps;
-  sl_rps.reserve(resolutions_per_spline.size());
-
-  // loop resolutions
-  int i{};
-  for (py::handle res : resolutions_per_spline) {
-    py::array_t<int> r = py::cast<py::array_t<int>>(res);
-    int* r_ptr = static_cast<int*>(r.request().ptr);
-    const int r_len = r.size();
-
-    // check resolution len
-    if (r_len != sl_io_splines[i]->parametric_dimensionality_) {
-      splinepy::utils::PrintAndThrowError(
-          "Invalid resolutions length for spline index (",
-          i,
-          ").",
-          "Expected: ",
-          sl_io_splines[i]->parametric_dimensionality_,
-          "Given: ",
-          r_len);
-    }
-
-    // prepare resolutions
-    ResolutionsType sl_res;
-    sl_res.reserve(r_len);
-    for (int j{}; j < r_len; ++j) {
-      // check if values are at least 2
-      const int& res_value = r_ptr[j];
-      if (res_value < 2) {
-        splinepy::utils::PrintAndThrowError(
-            "Invalid resolution value at index (",
-            j,
-            ")",
-            "for spline index (",
-            i,
-            ").",
-            "Expected to be greater than 2. Given:",
-            res_value);
-      }
-      sl_res.emplace_back(ResolutionValueType{res_value});
-    }
-    // append resolutions
-    sl_rps.push_back(std::move(sl_res));
-
-    // prepare next loop
-    ++i;
-  }
-
-  // good,
-  bsplinelib::input_output::vtk::Sample(sl_io_splines, fname, sl_rps);
-}
-
 /// @brief Adds Python spline exporter
 /// @param m Python module
 inline void add_spline_exporter(py::module& m) {
@@ -155,19 +63,6 @@ inline void add_spline_exporter(py::module& m) {
         &splinepy::py::ExportIges,
         py::arg("fname"),
         py::arg("splines"));
-  m.def("export_irit",
-        &splinepy::py::ExportIrit,
-        py::arg("fname"),
-        py::arg("splines"));
-  m.def("export_xml",
-        &splinepy::py::ExportXml,
-        py::arg("fname"),
-        py::arg("splines"));
-  m.def("export_vtk",
-        &splinepy::py::ExportVtk,
-        py::arg("fname"),
-        py::arg("splines"),
-        py::arg("resolutions_per_spline"));
 }
 
 } // namespace splinepy::py
