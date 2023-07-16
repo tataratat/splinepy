@@ -11,8 +11,6 @@ namespace splinepy::splines {
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
-  using CoordinateReferences_ = std::vector<splinepy::utils::Reference<double>>;
-
   /// default ctor
   SplinepyBase() = default;
   ///
@@ -107,10 +105,6 @@ public:
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
-
-  /// @brief Returns reference to weighted control points
-  /// @return Shared pointer to control points
-  virtual std::shared_ptr<CoordinateReferences_> SplinepyCoordinateReferences();
 
   /// @brief Parameter space AABB
   /// @param para_bounds

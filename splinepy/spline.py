@@ -160,44 +160,6 @@ class RequiredProperties(SplinepyBase):
 
         return rp_intersection
 
-
-class CoordinateReferences(SplinepyBase):
-    """
-    Helper class to core.CoordinateReferences. Allows direct
-    access to cpp's control points.
-    Named `coordinate`, since cpp core splines store weighted control points
-    for rational splines.
-    Extends functionality to provide numpy's convenient __getitem__.
-    """
-
-    __slots__ = ("core", "spline", "id_lookup", "apply_weight")
-
-    def __init__(self, core_obj, spline, apply_weight=False):
-        """
-        Initialize with core.CoordinateReferences and its owner spline.
-        Also initialize id_lookup
-
-        Parameters
-        ----------
-        core_obj: splinepy_core.CoordinateReferences
-        spline: Spline
-        apply_weight: bool
-          Default is False, Applies weight before assigning
-        """
-        # hold core
-        self.core = core_obj
-
-        # remember coordinate's originating spline
-        self.spline = spline
-
-        # for __getitem__ trick
-        self.id_lookup = np.arange(len(core_obj), dtype=np.int32).reshape(
-            -1, spline.dim
-        )
-
-        # what do we do with rational splines?
-        self.apply_weight = apply_weight
-
     def __setitem__(self, key, value):
         """
         Sets items. uses key to get global ids from id_lookup.
@@ -1209,33 +1171,6 @@ class Spline(SplinepyBase, core.PySpline):
         greville_abscissae: (para_dim) np.ndarray
         """
         return super().greville_abscissae
-
-    @property
-    def coordinate_references(self):
-        """
-        Returns direct reference of underlying cpp coordinates.
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        coordinate_references: CoordinateReferences
-          See docs of CoordinateReferences.
-        """
-        # see if it is stored
-        cr = self._data.get("coordinate_references", None)
-
-        if cr is not None:
-            return cr
-
-        # not stored, create one
-        self._data["coordinate_references"] = CoordinateReferences(
-            super().coordinate_references(), self
-        )
-
-        return self._data["coordinate_references"]
 
     @property
     def multi_index(self):
