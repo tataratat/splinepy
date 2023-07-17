@@ -13,12 +13,12 @@ def edges(
     extract_knot=None,
     all_knots=False,
 ):
-    """Extract edges (lines) from a given spline. Only entity you can extract
-    without dimension limit.
+    """Extract edges (lines) from a given spline, or multipatch object. Only
+    entity you can extract without dimension limit.
 
     Parameters
     -----------
-    spline: Spline
+    spline: Spline/ Multipatch
     resolution: int
     extract_dim: int
       Parametric dimension to extract.
@@ -59,15 +59,36 @@ def edges(
             for i in range(spline.para_dim):
                 mask = np.ones(spline.para_dim, dtype=bool)
                 mask[i] = False
-                # gather knots along current knot
+                reorder_mask = (
+                    [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
+                )
+                # Create query points
                 extract_knot_queries = cartesian_product(
-                    unique_knots[mask], reverse=False
+                    [
+                        np.linspace(
+                            *spline.parametric_bounds[:, i], resolution[i]
+                        )
+                    ]
+                    + unique_knots[mask].tolist(),
+                    reverse=True,
+                )[:, reorder_mask]
+                n_knot_lines = np.prod([s.size for s in unique_knots[mask]])
+                single_line_connectivity = connec.range_to_edges(
+                    (0, resolution[i]),
+                    closed=False,
                 )
 
-                for ekq in extract_knot_queries:
-                    temp_edges.append(
-                        edges(spline, resolution[i], i, ekq, False)
+                temp_edges.append(
+                    Edges(
+                        vertices=spline.evaluate(extract_knot_queries),
+                        edges=np.vstack(
+                            [
+                                single_line_connectivity + resolution[i] * j
+                                for j in range(n_knot_lines)
+                            ]
+                        ),
                     )
+                )
 
             return Edges.concat(temp_edges)
 
@@ -414,6 +435,10 @@ class Extractor:
     """
 
     def __init__(self, spl):
+        from splinepy import Multipatch, Spline
+
+        if not isinstance(spl, (Spline, Multipatch)):
+            raise ValueError("Extractor expects a Spline or Multipatch type")
         self._spline = spl
 
     def edges(self, *args, **kwargs):
