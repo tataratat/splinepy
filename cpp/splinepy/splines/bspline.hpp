@@ -43,6 +43,7 @@ public:
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  using ControlPointPointers_ = typename SplinepyBase_::ControlPointPointers_;
 
   // splinelib
   using Base_ = bsplinelib::splines::BSpline<para_dim, dim>;
@@ -260,6 +261,17 @@ public:
         }
       }
     }
+  }
+
+  virtual std::shared_ptr<ControlPointPointers_>
+  SplinepyControlPointPointers() {
+    auto cpp = std::make_shared<ControlPointPointers_>();
+    cpp->dim_ = kDim;
+    cpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    for (auto& control_point : Base_::vector_space_->GetCoordinates()) {
+      cpp->coordinate_begins_.push_back(control_point.data());
+    }
+    return cpp;
   }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds

@@ -2,6 +2,7 @@
 set(PYSPLINEPY_SRCS
         init/exporter.cpp
         init/core_spline.cpp
+        init/coordinate_pointers.cpp
         init/knot_insertion_matrix.cpp
         init/fitting.cpp
         init/multi_patch.cpp

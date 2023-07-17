@@ -41,6 +41,9 @@ public:
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  using WeightedControlPointPointers_ =
+      typename SplinepyBase_::WeightedControlPointPointers_;
+  using WeightPointers_ = typename SplinepyBase_::WeightPointers_;
 
   // splinelib
   using Base_ = bsplinelib::splines::Nurbs<para_dim, dim>;
@@ -263,6 +266,35 @@ public:
         }
       }
     }
+  }
+
+  virtual std::shared_ptr<WeightedControlPointPointers_>
+  SplinepyWeightedControlPointPointers() {
+    // create weighted cps
+    auto wcpp = std::make_shared<WeightedControlPointPointers_>();
+    wcpp->dim_ = kDim;
+    wcpp->for_rational_ = kIsRational;
+    wcpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    // create weights
+    auto w = std::make_shared<WeightPointers_>();
+    w->weights_.reserve(SplinepyNumberOfControlPoints());
+
+    for (auto& w_control_point :
+         Base_::weighted_vector_space_->GetCoordinates()) {
+      auto* coord_begin = w_control_point.data();
+      wcpp->coordinate_begins_.push_back(coord_begin);
+      w->weights_.push_back(coord_begin + kDim);
+    }
+
+    // reference each other
+    w->control_point_pointers_ = wcpp;
+    wcpp->weight_pointers_ = w;
+
+    return wcpp;
+  }
+
+  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers() {
+    return SplinepyWeightedControlPointPointers()->weight_pointers_;
   }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds

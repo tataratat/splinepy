@@ -21,6 +21,113 @@ __all__ = [
 ]
 
 
+class MirrorArray(np.ndarray):
+    """numpy array object that keeps mirroring inplace changes to the source.
+    Meant to help control_points. Doesn't implement __array_finalize__ since
+    that should not be a mirror array.
+    """
+
+    __slots__ = ("_source", "_row_indices")
+
+    def view(self, *args, **kwargs):
+        """Set writeable flags to False for the view."""
+        v = super(self.__class__, self).view(*args, **kwargs)
+        v.flags.writeable = False
+        return v
+
+    def __iadd__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__iadd__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __isub__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__isub__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __imul__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imul__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __idiv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__idiv__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __itruediv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__itruediv__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __imatmul__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imatmul__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __ipow__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ipow__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __imod__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imod__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __ifloordiv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ifloordiv__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __ilshift__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ilshift__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __irshift__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__irshift__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __iand__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__iand__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __ixor__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ixor__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __ior__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ior__(*args, **kwargs)
+        self._source.sync(self)
+        return sr
+
+    def __setitem__(self, key, value):
+        # set first. invalid setting will cause error
+        sr = super(self.__class__, self).__setitem__(key, value)
+
+        # if set item above worked.
+        # then, mirror / copy rowwise
+        ids = np.unique(self.row_indices()[key])
+        self._source.set_rows(ids, np.ascontiguousarray(self[ids]))
+
+        return sr
+
+    def row_indices(self):
+        """
+        Returns row_indices. Same results as np.indices(arr.shape)[0]
+        """
+        if hasattr(self, "_row_indices"):
+            return self._row_indices
+
+        l, d = self._source.len(), self._source.dim()
+        self._row_indices = np.arange(l).repeat(d).reshape(l, d)
+        return self._row_indices
+
+
 def is_modified(array):
     """
     Returns true if:

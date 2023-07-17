@@ -414,6 +414,30 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
   return true;
 }
 
+std::shared_ptr<typename SplinepyBase::ControlPointPointers_>
+SplinepyBase::SplinepyControlPointPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyControlPointPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
+std::shared_ptr<typename SplinepyBase::WeightedControlPointPointers_>
+SplinepyBase::SplinepyWeightedControlPointPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyWeightedControlPointPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
+std::shared_ptr<typename SplinepyBase::WeightPointers_>
+SplinepyBase::SplinepyWeightPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyWeightPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
 void SplinepyBase::SplinepyParametricBounds(double* para_bounds) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyParametricBounds not implemented for",

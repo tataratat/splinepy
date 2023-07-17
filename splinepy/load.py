@@ -6,8 +6,6 @@ Single function file containing `load_splines`.
 import os
 
 from splinepy import io
-from splinepy.bezier import Bezier
-from splinepy.bspline import BSpline
 from splinepy.io.ioutils import abs_fname, dict_to_spline
 from splinepy.nurbs import NURBS
 from splinepy.splinepy_core import read_iges

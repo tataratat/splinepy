@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include <splinepy/utils/reference.hpp>
+#include <splinepy/utils/coordinate_pointers.hpp>
 
 namespace splinepy::splines {
 
@@ -11,6 +11,10 @@ namespace splinepy::splines {
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
+  using ControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  using WeightedControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  using WeightPointers_ = splinepy::utils::WeightPointers;
+
   /// default ctor
   SplinepyBase() = default;
   ///
@@ -105,6 +109,11 @@ public:
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
+
+  virtual std::shared_ptr<ControlPointPointers_> SplinepyControlPointPointers();
+  virtual std::shared_ptr<WeightedControlPointPointers_>
+  SplinepyWeightedControlPointPointers();
+  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers();
 
   /// @brief Parameter space AABB
   /// @param para_bounds

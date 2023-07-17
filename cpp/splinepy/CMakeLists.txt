@@ -5,6 +5,8 @@ add_subdirectory(fitting)
 ## create splinepy target - enables cpp standalone use
 # define srcs
 set(SPLINEPY_SRCS
+        ${PROJECT_SOURCE_DIR}/cpp/splinepy/utils/coordinate_pointers.cpp
+
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier1.cpp
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier2.cpp
         ${PROJECT_SOURCE_DIR}/cpp/splinepy/splines/create/bezier3.cpp
