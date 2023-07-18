@@ -267,8 +267,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
 
   // Global (scalar) indexing to local index-system
   auto local_ids_ =
-      [&order,
-       &para_dim](const OrderType req_id) -> std::array<OrderType, para_dim> {
+      [&](const OrderType req_id) -> std::array<OrderType, para_dim> {
     OrderType id{req_id};
     std::array<OrderType, para_dim> local_ids{};
     for (OrderType i_pd{}; i_pd < para_dim; ++i_pd) {
@@ -282,8 +281,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
   };
 
   // Local (coordinate-style) indexing to global
-  auto global_ids_ = [&order,
-                      &para_dim](const OrderType* req_derivs) -> OrderType {
+  auto global_ids_ = [&](const OrderType* req_derivs) -> OrderType {
     OrderType id{};
     OrderType offset{1};
     for (OrderType i_pd{}; i_pd < para_dim; ++i_pd) {
@@ -298,8 +296,8 @@ RationalBSplineBasisDerivative(const SplineType& spline,
 
   // Check if requested derivative is "subset" to current derivative
   auto is_not_subset_ =
-      [&para_dim](const std::array<OrderType, para_dim>& req_derivs_max,
-                  const std::array<OrderType, para_dim>& req_derivs) -> bool {
+      [&](const std::array<OrderType, para_dim>& req_derivs_max,
+          const std::array<OrderType, para_dim>& req_derivs) -> bool {
     for (OrderType i_pd{}; i_pd < para_dim; ++i_pd) {
       if (req_derivs[i_pd] > req_derivs_max[i_pd])
         return true;

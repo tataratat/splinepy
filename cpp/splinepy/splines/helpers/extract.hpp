@@ -38,10 +38,6 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
     // create new one
     if constexpr (SplineType::kHasKnotVectors) {
       // hola BSpline families
-      using PSpace = typename SelfBoundary::ParameterSpace_;
-      using Degrees = typename PSpace::Degrees_;
-      using KnotVectors = typename PSpace::KnotVectors_;
-      using KnotVector = typename KnotVectors::value_type::element_type;
       using VSpace = typename SelfBoundary::PhysicalSpace_;
 
       // slices splines can use parent's parameter space without

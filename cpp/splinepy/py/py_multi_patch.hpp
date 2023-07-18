@@ -286,8 +286,6 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
   }
   // for verbose output
   std::unordered_map<std::string, IntVectorVector> mismatches{};
-  bool check_para_dim{false};
-
   // parse input and allocate vector for mismatch book keeping
   if (name) {
     mismatches["name"].resize(nthreads);
@@ -302,7 +300,6 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
     mismatches["control_mesh_resolutions"].resize(nthreads);
   }
   if (para_dim || degrees || control_mesh_resolutions) {
-    check_para_dim = true;
     mismatches["para_dim"].resize(nthreads);
   }
 
