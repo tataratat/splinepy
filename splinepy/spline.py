@@ -160,99 +160,6 @@ class RequiredProperties(SplinepyBase):
 
         return rp_intersection
 
-    def __setitem__(self, key, value):
-        """
-        Sets items. uses key to get global ids from id_lookup.
-        Applies weight if needed.
-
-        Parameters
-        ----------
-        key: types allowed by numpy.ndarray.__setitem__
-        value: array-like or float
-
-        Returns
-        -------
-        None
-        """
-        ids = self.id_lookup[key].ravel()
-
-        # in case scalar, and no apply_weight, use direct version
-        call_setitem = True
-        if isinstance(value, (int, float)):
-            if not self.apply_weight:
-                self.core.broadcast_scalar(ids, value)
-                call_setitem = False
-            else:
-                value = [value] * ids.size
-
-        # currently we will only support matching size assignment
-        value = utils.data.enforce_contiguous(value, "float64")
-
-        # for rational splines, apply weight if wanted
-        if self.apply_weight and self.spline.is_rational:
-            original_value = value  # keep original here.
-            value = value.reshape(-1) * self.spline.weights[
-                ids // self.spline.dim
-            ].reshape(-1)
-
-        # __setitem__ call checks that array size matches
-        if call_setitem:
-            self.core[ids] = value
-
-        # if there's local TrackedArray copy, update it too
-        saved_cps = self.spline._data.get("properties", dict()).get(
-            "control_points", None
-        )
-
-        # if None, it doesn't have local copy, so return
-        if saved_cps is None:
-            return None
-
-        # if spline has local changes, warn!
-        if is_modified(self.spline):
-            self._logw(
-                "trying to update coordinates of a spline",
-                "that has local changes.",
-                "This may cause unexpected behavior of the spline.",
-            )
-
-        # take away the weight if weighted is on.
-        if self.apply_weight and self.spline.is_rational:
-            value = original_value
-
-        # update and set modified flag to false
-        saved_cps.reshape(-1)[ids] = value.reshape(-1)
-        saved_cps._modified = False
-
-    def set_with_global_ids(self, global_ids, values):
-        """
-        Sets values using global indices. len(values) and len(global_ids)
-        should match.
-        Skips overhead of using __getitem__ to retrieve global ids.
-        Does NOT apply any weights
-
-        Parameters
-        ----------
-        global_ids: (n,) array-like
-        values: (n,) array-like
-
-        Returns
-        -------
-        None
-        """
-        # checks size match
-        self.core[global_ids] = values
-
-    def numpy(self):
-        """
-        Returns copy of current values as numpy.ndarray
-
-        Returns
-        -------
-        as_numpy: (n, spline.dim) np.ndarray
-        """
-        return self.core.numpy().reshape(-1, self.spline.dim)
-
 
 def is_modified(spl):
     """
@@ -1804,9 +1711,6 @@ class Spline(SplinepyBase, core.PySpline):
         if saved_data:
             # shallow copy
             shallow = self._data.copy()
-
-            # don't copy coordinate references
-            shallow.pop("coordinate_references", None)
 
             # call deep copy
             new._data = copy.deepcopy(shallow)
