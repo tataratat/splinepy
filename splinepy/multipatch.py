@@ -6,6 +6,8 @@ import numpy as np
 
 from splinepy import settings
 from splinepy._base import SplinepyBase
+from splinepy.helpme.extract import Extractor
+from splinepy.spline import _default_if_none
 from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
 
 
@@ -470,3 +472,39 @@ class Multipatch(SplinepyBase, PyMultiPatch):
           List of all field representation in the form of list of splines
         """
         return super().fields()
+
+    def sample(self, resolutions, nthreads=None):
+        """
+        Uniformly sample along each parametric dimensions from spline.
+
+        Parameters
+        -----------
+        resolutions: (n,) array-like
+        nthreads: int
+
+        Returns
+        --------
+        results: (math.product(resolutions), dim) np.ndarray
+        """
+        self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
+
+        return super().sample(
+            resolutions,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            same_parametric_bounds=False,
+        )
+
+    @property
+    def extract(self):
+        """Return Extractor object to provide extract functionality for
+        multiple splines
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        extractor: Extractor
+        """
+        return Extractor(spl=self)

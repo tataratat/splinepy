@@ -9,9 +9,7 @@ from splinepy.utils.data import cartesian_product
 def edges(
     spline,
     resolution=100,
-    extract_dim=None,
-    extract_knot=None,
-    all_knots=False,
+    all_knots=True,
 ):
     """Extract edges (lines) from a given spline, or multipatch object. Only
     entity you can extract without dimension limit.
@@ -19,108 +17,86 @@ def edges(
     Parameters
     -----------
     spline: Spline/ Multipatch
-    resolution: int
-    extract_dim: int
-      Parametric dimension to extract.
-    extract_knot: list
-      (spline.para_dim - 1,) shaped knot location along extract_dim
+    resolution: array-like
     all_knots: bool
-      Switch to allow all knot-line extraction.
+      Switch to allow all knot-line extraction or just contour (para_dim>0)
 
     Returns
     --------
     edges: Edges
     """
-    if not all_knots:
-        resolution = int(resolution)
+    from splinepy import Multipatch
+
+    # Check resolution input
+    if isinstance(resolution, int):
+        resolution = [resolution] * spline.para_dim
 
     if spline.para_dim == 1:
+        vertices = spline.sample(resolution[0])
+        edges = connec.range_to_edges(
+            (0, resolution[0]),
+            closed=False,
+        )
+        if isinstance(spline, Multipatch):
+            edges = np.vstack(
+                [edges + i * resolution[0] for i in range(len(spline.splines))]
+            )
         return Edges(
-            vertices=spline.sample(resolution),
-            edges=connec.range_to_edges(
-                (0, resolution),
-                closed=False,
-            ),
+            vertices=vertices,
+            edges=edges,
         )
 
     else:
-        # This should be possible for spline of any dimension.
-        # As long as it satisfies the following condition
-        if extract_knot is not None:
-            if len(extract_knot) != spline.para_dim - 1:
-                raise ValueError(
-                    "Must satisfy len(extract_knot) == spline.para_dim -1."
-                )
+        # Fail save recursion for Multipatch splines
+        if isinstance(spline, Multipatch):
+            return Edges.concat(
+                [
+                    s.extract.edges(resolution=resolution, all_knots=all_knots)
+                    for s in spline.splines
+                ]
+            )
 
-        # This may take awhile.
+        # Single patch case
         if all_knots:
-            temp_edges = []  # edges' is not a valid syntax
-            unique_knots = np.array(spline.unique_knots, dtype=object)
-            for i in range(spline.para_dim):
-                mask = np.ones(spline.para_dim, dtype=bool)
-                mask[i] = False
-                reorder_mask = (
-                    [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
-                )
-                # Create query points
-                extract_knot_queries = cartesian_product(
-                    [
-                        np.linspace(
-                            *spline.parametric_bounds[:, i], resolution[i]
-                        )
-                    ]
-                    + unique_knots[mask].tolist(),
-                    reverse=True,
-                )[:, reorder_mask]
-                n_knot_lines = np.prod([s.size for s in unique_knots[mask]])
-                single_line_connectivity = connec.range_to_edges(
-                    (0, resolution[i]),
-                    closed=False,
-                )
+            relevant_knots = np.array(spline.unique_knots, dtype=object)
+        else:
+            relevant_knots = np.array(spline.parametric_bounds.T, dtype=object)
 
-                temp_edges.append(
-                    Edges(
-                        vertices=spline.evaluate(extract_knot_queries),
-                        edges=np.vstack(
-                            [
-                                single_line_connectivity + resolution[i] * j
-                                for j in range(n_knot_lines)
-                            ]
-                        ),
-                    )
-                )
+        temp_edges = []  # edges' is not a valid syntax
+        for i in range(spline.para_dim):
+            mask = np.ones(spline.para_dim, dtype=bool)
+            mask[i] = False
+            reorder_mask = (
+                [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
+            )
+            split_knots = [r for ii, r in enumerate(relevant_knots) if ii != i]
+            n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
+            # Create query points
+            extract_knot_queries = cartesian_product(
+                [np.linspace(*spline.parametric_bounds[:, i], resolution[i])]
+                + split_knots,
+                reverse=True,
+            )[:, reorder_mask]
 
-            return Edges.concat(temp_edges)
-
-        # Get parametric points to extract
-        queries = np.empty(
-            (resolution, spline.para_dim),
-            dtype="float64",  # hardcoded for splinelibpy
-            order="C",  # hardcoded for splinelibpy
-        )
-        # get ~extract_dim
-        not_ed = np.arange(spline.para_dim).tolist()
-        not_ed.pop(extract_dim)
-        queries[:, not_ed] = extract_knot
-
-        # get knot extrema
-        uniq_knots = spline.unique_knots[extract_dim]
-        min_knot_position = min(uniq_knots)
-        max_knot_position = max(uniq_knots)
-
-        queries[:, extract_dim] = np.linspace(
-            min_knot_position,
-            max_knot_position,
-            resolution,
-        )
-
-        return Edges(
-            vertices=spline.evaluate(queries),
-            edges=connec.range_to_edges(
-                (0, resolution),
+            # Retrieve connectivity to be repeated
+            single_line_connectivity = connec.range_to_edges(
+                (0, resolution[i]),
                 closed=False,
-            ),
-        )
+            )
+
+            temp_edges.append(
+                Edges(
+                    vertices=spline.evaluate(extract_knot_queries),
+                    edges=np.vstack(
+                        [
+                            single_line_connectivity + resolution[i] * j
+                            for j in range(n_knot_lines)
+                        ]
+                    ),
+                )
+            )
+
+        return Edges.concat(temp_edges)
 
 
 def faces(
