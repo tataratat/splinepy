@@ -123,13 +123,13 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # test basis functions
         self.assertTrue(
             c.np.allclose(
-                self.bspline.basis_and_support(c.get_query_points_q2D())[0],
+                self.bspline.basis_and_support(c.get_queries_2D())[0],
                 bspline_ref_basis_functions,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.basis_and_support(c.get_query_points_q2D())[0],
+                self.nurbs.basis_and_support(c.get_queries_2D())[0],
                 nurbs_ref_basis_functions,
             )
         )
@@ -370,25 +370,25 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(c.get_query_points_q2D()),
+                self.bspline.evaluate(c.get_queries_2D()),
                 bspline_ref_evaluate,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.evaluate(c.get_query_points_q2D()),
+                self.nurbs.evaluate(c.get_queries_2D()),
                 nurbs_ref_evaluate,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.bezier.evaluate(c.get_query_points_q2D()),
+                self.bezier.evaluate(c.get_queries_2D()),
                 bezier_ref_evaluate,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.rational.evaluate(c.get_query_points_q2D()),
+                self.rational.evaluate(c.get_queries_2D()),
                 rational_ref_evaluate,
             )
         )
@@ -423,13 +423,13 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # test derivative evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.derivative(c.get_query_points_q2D(), o1),
+                self.bspline.derivative(c.get_queries_2D(), o1),
                 bspline_ref_derivative,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.derivative(c.get_query_points_q2D(), o1),
+                self.nurbs.derivative(c.get_queries_2D(), o1),
                 nurbs_ref_derivative,
             )
         )

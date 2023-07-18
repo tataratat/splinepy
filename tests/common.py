@@ -80,7 +80,7 @@ def get_knotvectors_3():
 
 
 # query points
-def get_query_points_q2D():
+def get_queries_2D():
     return [
         [0.01, 0.01],
         [0.01, 0.5],
@@ -90,7 +90,7 @@ def get_query_points_q2D():
     ]
 
 
-def get_query_points_q3D():
+def get_queries_3D():
     return [
         [0.1, 0.1, 0.1],
         [0.734, 0.525, 0.143],

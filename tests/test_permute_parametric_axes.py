@@ -33,7 +33,7 @@ class PermuteParametricAxesTest(c.SplineBasedTestCase):
             perm = c.splinepy.helpme.permute.parametric_axes(
                 orig, permutation, inplace=False
             )
-            queries = c.np.asarray(c.get_query_points_q3D())
+            queries = c.np.asarray(c.get_queries_3D())
 
             self.assertTrue(
                 c.np.allclose(
@@ -49,7 +49,7 @@ class PermuteParametricAxesTest(c.SplineBasedTestCase):
             c.splinepy.helpme.permute.parametric_axes(
                 perm, permutation, inplace=True
             )
-            queries = c.np.asarray(c.get_query_points_q3D())
+            queries = c.np.asarray(c.get_queries_3D())
 
             self.assertTrue(
                 c.np.allclose(
