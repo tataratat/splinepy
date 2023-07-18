@@ -6,15 +6,15 @@ except BaseException:
     import common as c
 
 
-class IOTestIRIT(c.unittest.TestCase):
+class IOTestIRIT(c.SplineBasedTestCase):
     def test_export_import(self):
         """Test import export routine for irit files"""
         # Create some splines
-        bspline = c.splinepy.BSpline(**c.b2P2D)
-        bezier = c.splinepy.Bezier(**c.z3P3D)
-        nurbs = c.splinepy.NURBS(**c.n2P2D)
+        bspline = c.bspline_2p2d()
+        bezier = c.bezier_3p3d()
+        nurbs = c.nurbs_2p2d()
         # Create a line
-        rational = c.splinepy.NURBS(**c.n2P2D).extract.spline(
+        rational = c.nurbs_2p2d().extract.spline(
             splitting_plane=0, interval=0.3
         )
 
