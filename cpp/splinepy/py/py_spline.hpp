@@ -403,6 +403,16 @@ public:
     return dict_spline;
   }
 
+  py::tuple CoordinatePointers() {
+    auto& core = *Core();
+    if (core.SplinepyIsRational()) {
+      return py::make_tuple(core.SplinepyWeightedControlPointPointers(),
+                            core.SplinepyWeightPointers());
+    } else {
+      return py::make_tuple(core.SplinepyControlPointPointers());
+    }
+  }
+
   /// AABB of spline parametric space
   py::array_t<double> ParametricBounds() const {
     // prepare output - [[lower_bound], [upper_bound]]
@@ -987,6 +997,7 @@ inline void add_spline_pyclass(py::module& m) {
                              &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
+      .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),
