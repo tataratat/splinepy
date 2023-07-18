@@ -19,8 +19,8 @@ GetParametricBounds(const SplineType& spline) {
     const auto& parameter_space = spline.GetParameterSpace();
     size_t i{};
     for (const auto& knotvector : parameter_space.GetKnotVectors()) {
-      parametric_bounds[0][i] = knotvector->GetFront().Get();
-      parametric_bounds[1][i] = knotvector->GetBack().Get();
+      parametric_bounds[0][i] = knotvector->GetFront();
+      parametric_bounds[1][i] = knotvector->GetBack();
       ++i;
     }
   }
