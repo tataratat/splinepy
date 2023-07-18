@@ -21,7 +21,7 @@ __all__ = [
 ]
 
 
-class MirrorArray(np.ndarray):
+class PhysicalSpaceArray(np.ndarray):
     """numpy array object that keeps mirroring inplace changes to the source.
     Meant to help control_points. Doesn't implement __array_finalize__ since
     that should not be a mirror array.
