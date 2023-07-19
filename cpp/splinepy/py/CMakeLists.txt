@@ -1,11 +1,11 @@
 # reader, export helper, and python module
 set(PYSPLINEPY_SRCS
-        init/exporter.cpp
-        init/knot_vector.cpp
-        init/core_spline.cpp
         init/coordinate_pointers.cpp
-        init/knot_insertion_matrix.cpp
+        init/core_spline.cpp
+        init/exporter.cpp
         init/fitting.cpp
+        init/interfaces.cpp
+        init/knot_insertion_matrix.cpp
         init/multi_patch.cpp
         init/reader.cpp
         init/spline_extensions.cpp
