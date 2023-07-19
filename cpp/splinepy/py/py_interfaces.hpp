@@ -51,23 +51,30 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
 
   // -- Auxiliary data --
   const int number_of_element_faces = parametric_dimension * 2;
-  const double tolerance_squared{tolerance * tolerance};
   const int number_of_patches =
-      face_center_vertices.size() / number_of_element_faces;
-  const int physical_dimension = face_center_vertices.shape()[1];
+      face_center_vertices.shape(0) / number_of_element_faces;
+  const int physical_dimension = face_center_vertices.shape(1);
   const int number_of_center_vertices{
-      static_cast<int>(face_center_vertices.size())};
+      static_cast<int>(face_center_vertices.shape(0))};
+  const double tolerance_squared{tolerance * tolerance};
   const double* metric_ptr = static_cast<double*>(metric.request().ptr);
   const double* face_center_vertices_ptr =
       static_cast<double*>(face_center_vertices.request().ptr);
 
+  std::cout << "number_of_element_faces" << number_of_center_vertices
+            << std::endl;
+  std::cout << "number_of_patches" << number_of_patches << std::endl;
+  std::cout << "physical_dimension" << physical_dimension << std::endl;
+  std::cout << "number_of_center_vertices" << number_of_center_vertices
+            << std::endl;
+
   // Consistency check
-  if (!(face_center_vertices.shape()[0] % number_of_element_faces == 0)) {
+  if (!(face_center_vertices.shape(0) % number_of_element_faces == 0)) {
     splinepy::utils::PrintAndThrowError(
         "Number of corner vertices invalid. Must be a multiple of the number "
         "of vertices per patch");
   }
-  if (!(metric.size() == face_center_vertices.shape()[1])) {
+  if (!(metric.size() == face_center_vertices.shape(1))) {
     splinepy::utils::PrintAndThrowError(
         "Incompatible size for metric. Must match physical dimension of face "
         "center vertices");
@@ -79,16 +86,13 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
   }
 
   // Init return type
-  py::array_t<int> connectivity(number_of_patches * parametric_dimension * 2);
+  py::array_t<int> connectivity(number_of_patches * number_of_element_faces);
   int* connectivity_ptr = static_cast<int*>(connectivity.request().ptr);
   // Init connectivity and metric value
   // (-1 : boundary, -2 : untouched)
   std::fill(connectivity_ptr,
-            connectivity_ptr + number_of_patches * parametric_dimension * 2,
+            connectivity_ptr + number_of_patches * number_of_element_faces,
             -2);
-
-  // Check for Wrong number of faces and center points
-  assert(number_of_center_vertices % number_of_element_faces == 0);
 
   // Assure Metric is normed and non-zero
   const std::vector<double>& normed_metric = [&metric_ptr,
@@ -114,14 +118,16 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
   auto squared_euclidian_distance =
       [&face_center_vertices_ptr,
        &physical_dimension](const int& i_start, const int& i_end) -> double {
-    double squared_euclidian_distance{};
+    double squared_euclidian_distance_{};
     for (int i_phys{}; i_phys < physical_dimension; i_phys++) {
       const double distance_c =
           face_center_vertices_ptr[i_end * physical_dimension + i_phys]
           - face_center_vertices_ptr[i_start * physical_dimension + i_phys];
-      squared_euclidian_distance += distance_c * distance_c;
+      squared_euclidian_distance_ += distance_c * distance_c;
     }
-    return squared_euclidian_distance;
+    std::cout << "Euclidian distance is : " << squared_euclidian_distance_
+              << std::endl;
+    return squared_euclidian_distance_;
   };
 
   std::vector<double> scalar_metric{};
@@ -151,8 +157,8 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
     // Now check allowed range for duplicates
     int upper_limit = lower_limit + 1;
     while (upper_limit < number_of_center_vertices
-           && scalar_metric[metric_order_indices[upper_limit]]
-                      - scalar_metric[metric_order_indices[lower_limit]]
+           && (scalar_metric[metric_order_indices[upper_limit]]
+               - scalar_metric[metric_order_indices[lower_limit]])
                   < tolerance) {
       // Check if the two points are duplicates
       found_duplicate =
@@ -171,58 +177,34 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
     //    to has a higher index in the metric tensor. If the current point does
     //    already have a neighbor, that means that more than one point connect
     //    -> Error
-    // 2. The point it connects to must be on opposite sides on the neighboring
-    //    element, else there is an orientation problem in the mesh and the mesh
-    //    can not be exported in mfem format, this check needs to be disabled
-    //    for general connectivity
-    const std::size_t id_start_point = metric_order_indices[lower_limit];
-    const std::size_t element_id_start =
-        id_start_point / number_of_element_faces;
-    const std::size_t element_face_id_start =
-        id_start_point - element_id_start * number_of_element_faces;
-    // is that id_start_point % number_of_element_faces?
-
     if (found_duplicate) {
-      // Calculate indices
-      const std::size_t id_end_point = metric_order_indices[upper_limit];
-      const std::size_t element_id_end = id_end_point / number_of_element_faces;
-      const std::size_t element_face_id_end =
-          id_end_point - element_id_end * number_of_element_faces;
-
       // Check 1. (@todo EXCEPTION)
-      if (connectivity_ptr[element_id_start * number_of_element_faces
-                           + element_face_id_start]
-          != -2) {
+      if (connectivity_ptr[metric_order_indices[lower_limit]] != -2) {
         splinepy::utils::PrintAndThrowError(
             "Found conflicting interceptions, where more than two points are "
-            "in the same position");
+            "in the same position. Expected -2 got",
+            connectivity_ptr[metric_order_indices[lower_limit]]);
       }
 
       // If both tests passed, update connectivity
-      connectivity_ptr[element_id_start * number_of_element_faces
-                       + element_face_id_start] = element_id_end;
-      connectivity_ptr[element_id_end * number_of_element_faces
-                       + element_face_id_end] = element_id_start;
+      connectivity_ptr[metric_order_indices[lower_limit]] =
+          static_cast<int>(metric_order_indices[upper_limit])
+          / number_of_element_faces;
+      connectivity_ptr[metric_order_indices[upper_limit]] =
+          static_cast<int>(metric_order_indices[lower_limit])
+          / number_of_element_faces;
     } else {
       // set Boundary-ID
-      if (connectivity_ptr[element_id_start * number_of_element_faces
-                           + element_face_id_start]
-          == -2) {
-        connectivity_ptr[element_id_start * number_of_element_faces
-                         + element_face_id_start] = -1;
+      if (connectivity_ptr[metric_order_indices[lower_limit]] == -2) {
+        connectivity_ptr[metric_order_indices[lower_limit]] = -1;
       }
     }
   }
 
   // Treat last remaining point in scalar metric vector
-  const std::size_t last_id =
-      metric_order_indices[number_of_center_vertices - 1];
-  const std::size_t last_element = last_id / number_of_element_faces;
-  const std::size_t last_face =
-      last_id - last_element * number_of_element_faces;
-  if (connectivity_ptr[last_element * number_of_element_faces + last_face]
+  if (connectivity_ptr[metric_order_indices[number_of_center_vertices - 1]]
       == -2) {
-    connectivity_ptr[last_element * number_of_element_faces + last_face] = -1;
+    connectivity_ptr[metric_order_indices[number_of_center_vertices - 1]] = -1;
   }
 
   // Resize buffer
