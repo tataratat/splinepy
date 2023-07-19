@@ -263,6 +263,16 @@ public:
     }
   }
 
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  SplinepyKnotVector(const int p_dim) {
+    if (!(p_dim < para_dim)) {
+      splinepy::utils::PrintAndThrowError(
+          "Invalid parametric dimension. Should be smaller than",
+          para_dim);
+    }
+    return Base_::Base_::parameter_space_->GetKnotVectors()[p_dim];
+  };
+
   virtual std::shared_ptr<ControlPointPointers_>
   SplinepyControlPointPointers() {
     auto cpp = std::make_shared<ControlPointPointers_>();

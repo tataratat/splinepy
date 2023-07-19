@@ -345,6 +345,13 @@ public:
   /// for example.
   bool IsRational() const { return Core()->SplinepyIsRational(); }
 
+  py::array_t<int> CurrentCoreDegrees() const {
+    py::array_t<int> degrees(para_dim_);
+    int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
+    Core()->SplinepyCurrentProperties(degrees_ptr, nullptr, nullptr, nullptr);
+    return degrees;
+  }
+
   /// Returns currunt properties of core spline
   /// similar to update_p
   py::dict CurrentCoreProperties() const {
@@ -411,6 +418,11 @@ public:
     } else {
       return py::make_tuple(core.SplinepyControlPointPointers());
     }
+  }
+
+  std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  KnotVector(const int para_dim) {
+    return Core()->SplinepyKnotVector(para_dim);
   }
 
   /// AABB of spline parametric space
@@ -997,6 +1009,7 @@ inline void add_spline_pyclass(py::module& m) {
                              &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
+      .def("_knot_vector", &splinepy::py::PySpline::KnotVector)
       .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,

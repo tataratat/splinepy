@@ -5,6 +5,10 @@
 
 #include <splinepy/utils/coordinate_pointers.hpp>
 
+namespace bsplinelib::parameter_spaces {
+class KnotVector;
+}
+
 namespace splinepy::splines {
 
 /// Spline base to enable dynamic use of template splines.
@@ -109,6 +113,9 @@ public:
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
                             double* weights) const = 0;
+
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  SplinepyKnotVector(const int p_dim);
 
   virtual std::shared_ptr<ControlPointPointers_> SplinepyControlPointPointers();
   virtual std::shared_ptr<WeightedControlPointPointers_>
