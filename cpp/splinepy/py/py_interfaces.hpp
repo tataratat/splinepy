@@ -61,13 +61,6 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
   const double* face_center_vertices_ptr =
       static_cast<double*>(face_center_vertices.request().ptr);
 
-  std::cout << "number_of_element_faces" << number_of_center_vertices
-            << std::endl;
-  std::cout << "number_of_patches" << number_of_patches << std::endl;
-  std::cout << "physical_dimension" << physical_dimension << std::endl;
-  std::cout << "number_of_center_vertices" << number_of_center_vertices
-            << std::endl;
-
   // Consistency check
   if (!(face_center_vertices.shape(0) % number_of_element_faces == 0)) {
     splinepy::utils::PrintAndThrowError(
@@ -125,8 +118,6 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
           - face_center_vertices_ptr[i_start * physical_dimension + i_phys];
       squared_euclidian_distance_ += distance_c * distance_c;
     }
-    std::cout << "Euclidian distance is : " << squared_euclidian_distance_
-              << std::endl;
     return squared_euclidian_distance_;
   };
 
