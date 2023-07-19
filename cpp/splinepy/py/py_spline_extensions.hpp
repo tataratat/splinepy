@@ -251,7 +251,7 @@ inline int CoreRefCount(const std::shared_ptr<PySpline>& spline) {
 }
 
 /// have core? A non error raising checker
-inline bool HaveCore(const std::shared_ptr<PySpline>& spline) {
+inline bool HasCore(const std::shared_ptr<PySpline>& spline) {
   return (spline->c_spline_) ? true : false;
 }
 
@@ -322,7 +322,7 @@ inline void add_spline_extensions(py::module& m) {
         py::arg("spline"));
   m.def("core_id", &splinepy::py::CoreId, py::arg("spline"));
   m.def("core_ref_count", &splinepy::py::CoreRefCount, py::arg("spline"));
-  m.def("have_core", &splinepy::py::HaveCore, py::arg("spline"));
+  m.def("has_core", &splinepy::py::HasCore, py::arg("spline"));
   m.def("annul_core", &splinepy::py::AnnulCore, py::arg("spline"));
   m.def("null_spline",
         &splinepy::py::CreateNullSpline,

@@ -30,7 +30,7 @@ inline void add_knot_vector(py::module_& m) {
     return i;
   };
   py::class_<KnotVector, std::shared_ptr<KnotVector>> klasse(m, "KnotVector");
-  klasse
+  klasse.def("__len__", [](const KnotVector& kv) { return kv.GetSize(); })
       .def(
           "__iter__",
           [](KnotVector& kv) {
@@ -105,14 +105,24 @@ inline void add_knot_vector(py::module_& m) {
            })
       .def("scale", &KnotVector::Scale)
       .def("find_span", &KnotVector::FindSpan_)
-      .def("numpy", [](const KnotVector& kv) {
-        py::array_t<KnotType> arr(kv.GetSize());
-        KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
-        for (int i{}; i < kv.GetSize(); ++i) {
-          arr_ptr[i] = kv[i];
-        }
-        return arr;
-      });
+      .def("numpy",
+           [](const KnotVector& kv) {
+             py::array_t<KnotType> arr(kv.GetSize());
+             KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
+             for (int i{}; i < kv.GetSize(); ++i) {
+               arr_ptr[i] = kv[i];
+             }
+             return arr;
+           })
+      .def("__array__",
+           [](const KnotVector& kv, [[maybe_unused]] py::args dtype_ignored) {
+             py::array_t<KnotType> arr(kv.GetSize());
+             KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
+             for (int i{}; i < kv.GetSize(); ++i) {
+               arr_ptr[i] = kv[i];
+             }
+             return arr;
+           });
 }
 
 } // namespace splinepy::py

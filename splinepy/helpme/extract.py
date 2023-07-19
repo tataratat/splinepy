@@ -356,11 +356,11 @@ def spline(spline, para_dim, split_plane):
     cps_res = spline_copy.control_mesh_resolutions
     # start and end id. indices correspond to [first dim][first appearance]
     start_id = np.where(
-        abs(spline_copy.knot_vectors[para_dim] - split_plane[0])
+        abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[0])
         < settings.TOLERANCE
     )[0][0]
     end_id = np.where(
-        abs(spline_copy.knot_vectors[para_dim] - split_plane[-1])
+        abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[-1])
         < settings.TOLERANCE
     )[0][0]
     para_dim_ids = np.arange(np.prod(cps_res))

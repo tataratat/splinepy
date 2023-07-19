@@ -166,7 +166,8 @@ class TestGeometryMapping(c.unittest.TestCase):
         bf_reference = c.np.einsum(
             "ij,qsj->qsi", self.rotation_matrix, bf_reference
         )
-        self.assertTrue(c.np.allclose(bf_gradient, bf_reference))
+
+        assert c.np.allclose(bf_gradient, bf_reference)
 
         bf_gradient, support = mapper3D.basis_gradient_and_support(
             self.query_points3D
@@ -241,7 +242,8 @@ class TestGeometryMapping(c.unittest.TestCase):
             bf_reference,
             self.rotation_matrix.T,
         )
-        self.assertTrue(c.np.allclose(bf_hessian, bf_reference))
+
+        assert c.np.allclose(bf_hessian, bf_reference)
 
     def test_second_order_fd(self):
         "Use proximity to get points on askew geometry and approcimate hessian"

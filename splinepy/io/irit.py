@@ -225,9 +225,7 @@ def export(fname, splines):
             if isinstance(spline, BSplineBase):
                 for kv in spline.knot_vectors:
                     f.write(
-                        "    [KV "
-                        + " ".join([str(k) for k in kv.tolist()])
-                        + "]\n"
+                        "    [KV " + " ".join([str(k) for k in kv]) + "]\n"
                     )
 
             # Determine weighted control points

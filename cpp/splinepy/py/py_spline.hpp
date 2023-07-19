@@ -413,8 +413,8 @@ public:
   py::tuple CoordinatePointers() {
     auto& core = *Core();
     if (core.SplinepyIsRational()) {
-      return py::make_tuple(core.SplinepyWeightedControlPointPointers(),
-                            core.SplinepyWeightPointers());
+      auto wcpp = core.SplinepyWeightedControlPointPointers();
+      return py::make_tuple(wcpp, wcpp->weight_pointers_);
     } else {
       return py::make_tuple(core.SplinepyControlPointPointers());
     }
@@ -992,7 +992,7 @@ inline void add_spline_pyclass(py::module& m) {
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
       .def(py::init<splinepy::py::PySpline&>())
-      .def("new_core", &splinepy::py::PySpline::NewCore)
+      .def("_new_core", &splinepy::py::PySpline::NewCore)
       .def_readwrite("_data", &splinepy::py::PySpline::data_)
       .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
       .def_readonly("dim", &splinepy::py::PySpline::dim_)
@@ -1009,6 +1009,7 @@ inline void add_spline_pyclass(py::module& m) {
                              &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
+      .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)
       .def("_knot_vector", &splinepy::py::PySpline::KnotVector)
       .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
       .def("evaluate",

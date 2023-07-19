@@ -54,6 +54,12 @@ void Sync(PointersType& pointers, const py::array_t<double>& values) {
   pointers.Sync(static_cast<double*>(values.request().ptr));
 }
 
+template<typename PointersType>
+std::shared_ptr<PointersType> SubSet(PointersType& pointers,
+                                     const py::array_t<int>& ids) {
+  return pointers.SubSet(static_cast<int*>(ids.request().ptr), ids.size());
+}
+
 inline void add_coordinate_pointers(py::module& m) {
   using ControlPointPointers = splinepy::utils::ControlPointPointers;
   using WeightPointers = splinepy::utils::WeightPointers;

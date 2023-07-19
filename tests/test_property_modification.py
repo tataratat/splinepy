@@ -28,7 +28,7 @@ class InplaceModificationTest(c.unittest.TestCase):
             s.degrees += 1
 
             # this shoundn't be fine
-            s.new_core(**props)
+            s._new_core(**props)
             with self.assertRaises(ValueError):
                 s.degrees += 1
 
@@ -60,13 +60,10 @@ class InplaceModificationTest(c.unittest.TestCase):
             modified_query = raster_query.copy()
             factor = 2
             for kid in knot_insert_dims:
-                s.knot_vectors[kid] *= factor
+                s.knot_vectors[kid][:] = c.np.multiply(
+                    s.knot_vectors[kid], factor
+                ).tolist()
                 modified_query[:, kid] *= factor
-
-                # check modified flag
-                assert s.knot_vectors[kid]._modified
-                # full modified check
-                assert c.splinepy.spline.is_modified(s)
 
             # evaluation check
             assert c.np.allclose(raster_query, s.evaluate(modified_query))

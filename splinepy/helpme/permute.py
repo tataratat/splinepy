@@ -78,7 +78,7 @@ def parametric_axes(spline, permutation_list, inplace=True):
 
     if inplace:
         utils.log.debug("  applying permutation inplace")
-        spline.new_core(**dict_spline)
+        spline._new_core(**dict_spline)
 
         return None
 
