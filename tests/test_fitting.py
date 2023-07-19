@@ -89,7 +89,7 @@ class TestSplinepyFitting(c.unittest.TestCase):
             degree_u=2,
             degree_v=2,
         )
-        approximated_points = bspline.sample([sample_size])
+        approximated_points = bspline.sample(sample_size)
 
         self.assertTrue(
             c.np.allclose(

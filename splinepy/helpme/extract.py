@@ -1,6 +1,6 @@
 import numpy as np
 from gustaf import Edges, Faces, Vertices, Volumes
-from gustaf.utils import arr, connec
+from gustaf.utils import connec
 
 from splinepy import settings
 from splinepy.utils.data import cartesian_product
@@ -17,7 +17,8 @@ def edges(
     Parameters
     -----------
     spline: Spline/ Multipatch
-    resolution: array-like
+    resolution: int
+      samples per parametric dimension
     all_knots: bool
       Switch to allow all knot-line extraction or just contour (para_dim>0)
 
@@ -28,18 +29,18 @@ def edges(
     from splinepy import Multipatch
 
     # Check resolution input
-    if isinstance(resolution, int):
-        resolution = [resolution] * spline.para_dim
+    if not isinstance(resolution, int):
+        raise ValueError("Resolution must be integer-type")
 
     if spline.para_dim == 1:
-        vertices = spline.sample(resolution[0])
+        vertices = spline.sample(resolution)
         edges = connec.range_to_edges(
-            (0, resolution[0]),
+            (0, resolution),
             closed=False,
         )
         if isinstance(spline, Multipatch):
             edges = np.vstack(
-                [edges + i * resolution[0] for i in range(len(spline.splines))]
+                [edges + i * resolution for i in range(len(spline.splines))]
             )
         return Edges(
             vertices=vertices,
@@ -73,14 +74,14 @@ def edges(
             n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
             # Create query points
             extract_knot_queries = cartesian_product(
-                [np.linspace(*spline.parametric_bounds[:, i], resolution[i])]
+                [np.linspace(*spline.parametric_bounds[:, i], resolution)]
                 + split_knots,
                 reverse=True,
             )[:, reorder_mask]
 
             # Retrieve connectivity to be repeated
             single_line_connectivity = connec.range_to_edges(
-                (0, resolution[i]),
+                (0, resolution),
                 closed=False,
             )
 
@@ -89,7 +90,7 @@ def edges(
                     vertices=spline.evaluate(extract_knot_queries),
                     edges=np.vstack(
                         [
-                            single_line_connectivity + resolution[i] * j
+                            single_line_connectivity + resolution * j
                             for j in range(n_knot_lines)
                         ]
                     ),
@@ -101,7 +102,7 @@ def edges(
 
 def faces(
     spline,
-    resolutions,
+    resolution,
     watertight=True,
 ):
     """Extract faces from spline. Valid iff para_dim is one of the followings:
@@ -112,7 +113,8 @@ def faces(
     Parameters
     -----------
     spline: BSpline or NURBS
-    resolutions: int or list
+    resolution: int
+      samples per parametric dimension
     watertight: bool
       Default is True. Only related to para_dim = 3 splines. If False,
       overlapping vertices at boundary edges won't be merged.
@@ -121,49 +123,58 @@ def faces(
     --------
     faces: faces
     """
-    resolutions = arr.enforce_len(resolutions, spline.para_dim)
+    from splinepy import Multipatch
 
     if spline.para_dim == 2:
-        return Faces(
-            vertices=spline.sample(resolutions),
-            faces=connec.make_quad_faces(resolutions),
+        if isinstance(spline, Multipatch):
+            n_faces = (resolution - 1) ** spline.para_dim
+            vertices = resolution**spline.para_dim
+            f_loc = connec.make_quad_faces([resolution] * spline.para_dim)
+            face_connectivity = np.empty((n_faces * len(spline.splines), 4))
+            # Create Connectivity for Multipatches
+            for i in range(len(spline.splines)):
+                face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+                    i * vertices
+                )
+        else:
+            face_connectivity = connec.make_quad_faces(
+                [resolution] * spline.para_dim
+            )
+        faces = Faces(
+            vertices=spline.sample(resolution),
+            faces=face_connectivity,
         )
 
     elif spline.para_dim == 3:
-        # extract boundaries and sample from them
-        # alternatively, as each groups share basis and will have same
-        # resolution query, we could reuse the basis.
-        boundaries = spline.extract_boundaries()
-        grouped_boundaries = [
-            boundaries[i * 2 : (i + 1) * 2] for i in range(spline.para_dim)
-        ]
+        # Extract boundaries and sample from boundaries
+        if isinstance(spline, Multipatch):
+            boundaries = spline.boundary_patches()
+        else:
+            boundaries = Multipatch(splines=spline.extract_boundaries())
 
-        list_res = list(resolutions)
-        vertices = []
-        faces = []
-        offset = 0
-        for i, gb in enumerate(grouped_boundaries):
-            this_res = list_res.copy()  # shallow
-            this_res.pop(i)
+        n_faces = (resolution - 1) ** 2
+        vertices = resolution**2
+        f_loc = connec.make_quad_faces([resolution] * 2)
+        face_connectivity = np.empty((n_faces * len(boundaries.splines), 4))
 
-            tmp_faces = connec.make_quad_faces(this_res)
-            offset_size = np.prod(this_res)
-
-            for g in gb:  # each spline
-                vertices.append(g.sample(this_res))
-                faces.append(tmp_faces + int(offset))
-                offset += offset_size
+        # Create Connectivity for Multipatches
+        for i in range(len(boundaries.splines)):
+            face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+                i * vertices
+            )
 
         # make faces and merge vertices before returning
-        f = Faces(vertices=np.vstack(vertices), faces=np.vstack(faces))
-
-        if watertight:
-            f.merge_vertices()
-
-        return f
+        faces = Faces(
+            vertices=boundaries.sample(resolution), faces=face_connectivity
+        )
 
     else:
         raise ValueError("Invalid spline to make faces.")
+
+    if watertight:
+        faces.merge_vertices()
+
+    return faces
 
 
 def volumes(spline, resolutions):
