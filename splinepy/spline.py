@@ -1145,6 +1145,10 @@ class Spline(SplinepyBase, core.PySpline):
         --------
         results: (math.product(resolutions), dim) np.ndarray
         """
+        from gustaf.utils import arr
+
+        resolutions = arr.enforce_len(resolutions, self.para_dim)
+
         self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
 
         return super().sample(
