@@ -4,7 +4,6 @@ set(PYSPLINEPY_SRCS
         init/core_spline.cpp
         init/exporter.cpp
         init/fitting.cpp
-        init/interfaces.cpp
         init/knot_insertion_matrix.cpp
         init/multi_patch.cpp
         init/reader.cpp
