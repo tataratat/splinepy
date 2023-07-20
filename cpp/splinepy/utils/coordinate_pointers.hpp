@@ -13,6 +13,7 @@ struct ControlPointPointers {
   int dim_{-1};
   bool for_rational_{false};
   std::shared_ptr<WeightPointers> weight_pointers_ = nullptr;
+  bool invalid_{false};
 
   int Len() const;
   int Dim() const;
@@ -29,8 +30,9 @@ struct ControlPointPointers {
 
 struct WeightPointers {
   std::vector<double*> weights_;
-  std::shared_ptr<ControlPointPointers> control_point_pointers_ = nullptr;
+  std::weak_ptr<ControlPointPointers> control_point_pointers_;
   static const int dim_{1};
+  bool invalid_{false};
 
   int Len() const;
   int Dim() const;
@@ -41,13 +43,15 @@ struct WeightPointers {
   // internal use
   std::shared_ptr<WeightPointers> SubSetIncomplete(const int* ids,
                                                    const int n_ids);
-  std::shared_ptr<WeightPointers> SubSet(const int* ids, const int n_ids);
 };
 
 template<bool same_sized_values>
 void ControlPointPointers::SetRows(const int* ids,
                                    const int n_rows,
                                    const double* values) {
+  if (invalid_) {
+    return;
+  }
   const auto dim = Dim();
 
   if (for_rational_) {
@@ -96,6 +100,10 @@ template<bool same_sized_values>
 void WeightPointers::SetRows(const int* ids,
                              const int n_rows,
                              const double* values) {
+  if (invalid_) {
+    return;
+  }
+
   for (int i{}; i < n_rows; ++i) {
     if constexpr (same_sized_values) {
       SetRow(ids[i], values[ids[i]]);

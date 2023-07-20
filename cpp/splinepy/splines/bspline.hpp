@@ -275,12 +275,18 @@ public:
 
   virtual std::shared_ptr<ControlPointPointers_>
   SplinepyControlPointPointers() {
+    if (SplinepyBase_::control_point_pointers_) {
+      return SplinepyBase_::control_point_pointers_;
+    }
     auto cpp = std::make_shared<ControlPointPointers_>();
     cpp->dim_ = kDim;
     cpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
     for (auto& control_point : Base_::vector_space_->GetCoordinates()) {
       cpp->coordinate_begins_.push_back(control_point.data());
     }
+
+    SplinepyBase_::control_point_pointers_ = cpp;
+
     return cpp;
   }
 

@@ -19,10 +19,21 @@ public:
   using WeightedControlPointPointers_ = splinepy::utils::ControlPointPointers;
   using WeightPointers_ = splinepy::utils::WeightPointers;
 
+protected:
+  std::shared_ptr<ControlPointPointers_> control_point_pointers_ = nullptr;
+
+public:
   /// default ctor
   SplinepyBase() = default;
   ///
-  virtual ~SplinepyBase(){};
+  virtual ~SplinepyBase() {
+    if (control_point_pointers_) {
+      control_point_pointers_->invalid_ = true;
+      if (control_point_pointers_->weight_pointers_) {
+        control_point_pointers_->weight_pointers_->invalid_ = true;
+      }
+    }
+  };
 
   /// Dynamically create correct type of spline based on input.
   /// Returned as shared pointer of SplinepyBase

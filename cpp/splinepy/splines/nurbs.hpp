@@ -280,6 +280,9 @@ public:
 
   virtual std::shared_ptr<WeightedControlPointPointers_>
   SplinepyWeightedControlPointPointers() {
+    if (SplinepyBase_::control_point_pointers_) {
+      return SplinepyBase_::control_point_pointers_;
+    }
     // create weighted cps
     auto wcpp = std::make_shared<WeightedControlPointPointers_>();
     wcpp->dim_ = kDim;
@@ -297,8 +300,11 @@ public:
     }
 
     // reference each other
-    w->control_point_pointers_ = wcpp;
+    w->control_point_pointers_ = wcpp; // weak-ref
     wcpp->weight_pointers_ = w;
+
+    // save
+    SplinepyBase_::control_point_pointers_ = wcpp;
 
     return wcpp;
   }
