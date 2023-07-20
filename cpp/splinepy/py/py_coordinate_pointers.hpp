@@ -20,27 +20,38 @@ int Dim(const PointersType& pointers) {
   return pointers.Dim();
 }
 
-template<typename PointersType>
+template<typename PointersType, bool same_sized_values>
 void SetRows(PointersType& pointers,
              const py::array_t<int> ids,
              const py::array_t<double>& values) {
   const int n_rows = ids.size();
 
-  if (n_rows * pointers.Dim() != values.size()) {
-    splinepy::utils::PrintAndThrowError("Size mismatch. Expecting",
-                                        pointers.Dim() * ids.size(),
-                                        "but, values are ",
-                                        values.size());
+  if constexpr (same_sized_values) {
+    if (pointers.Len() * pointers.Dim() != values.size()) {
+      splinepy::utils::PrintAndThrowError("Size mismatch. Expecting",
+                                          pointers.Len() * pointers.Dim(),
+                                          "but, values are ",
+                                          values.size());
+    }
+  } else {
+    if (n_rows * pointers.Dim() != values.size()) {
+      splinepy::utils::PrintAndThrowError("Size mismatch. Expecting",
+                                          pointers.Dim() * ids.size(),
+                                          "but, values are ",
+                                          values.size());
+    }
   }
+
   if (pointers.Dim() != values.shape(1)) {
     splinepy::utils::PrintAndThrowError("Dimension mismatch. Expecing",
                                         pointers.Dim(),
                                         "but values are",
                                         values.shape(1));
   }
-  pointers.SetRows(static_cast<int*>(ids.request().ptr),
-                   n_rows,
-                   static_cast<double*>(values.request().ptr));
+  pointers.template SetRows<same_sized_values>(
+      static_cast<int*>(ids.request().ptr),
+      n_rows,
+      static_cast<double*>(values.request().ptr));
 }
 
 template<typename PointersType>
@@ -85,7 +96,11 @@ inline void add_coordinate_pointers(py::module& m) {
           py::arg("id"),
           py::arg("values"))
       .def("set_rows",
-           &SetRows<ControlPointPointers>,
+           &SetRows<ControlPointPointers, false>,
+           py::arg("id"),
+           py::arg("values"))
+      .def("sync_rows",
+           &SetRows<ControlPointPointers, true>,
            py::arg("id"),
            py::arg("values"))
       .def("sync", &Sync<ControlPointPointers>, py::arg("values"));
@@ -97,7 +112,11 @@ inline void add_coordinate_pointers(py::module& m) {
       .def("dim", &Dim<WeightPointers>)
       .def("set_row", &WeightPointers::SetRow, py::arg("id"), py::arg("values"))
       .def("set_rows",
-           &SetRows<WeightPointers>,
+           &SetRows<WeightPointers, false>,
+           py::arg("id"),
+           py::arg("values"))
+      .def("sync_rows",
+           &SetRows<WeightPointers, true>,
            py::arg("id"),
            py::arg("values"))
       .def("sync", &Sync<WeightPointers>, py::arg("values"));

@@ -120,6 +120,79 @@ class InplaceModificationTest(c.unittest.TestCase):
         assert c.np.allclose(b.sample(res), r.sample(res))
         assert c.np.allclose(z.sample(res), n.sample(res))
 
+    def test_physical_space_array(self):
+        """tests if physical space array is syncing correctly."""
+        n = c.splinepy.NURBS(**c.n2p2d_quarter_circle())
+
+        def cps_are_synced(n):
+            assert c.np.allclose(
+                n.cps, n.current_core_properties()["control_points"]
+            )
+
+        # all setitem cases
+        # 1.
+        n.cps[0] = 100.0
+        cps_are_synced(n)
+
+        n.cps[c.np.array(1)] = [0.99, 0.11]  # here, weight is not 1
+        cps_are_synced(n)
+
+        # 2.
+        n.cps[c.np.array([1, 4, 3])] = 123
+        cps_are_synced(n)
+
+        b_mask = c.np.ones(len(n.cps), dtype=bool)
+        b_mask[[0, 4]] = False
+        n.cps[b_mask] = -1235.5
+        cps_are_synced(n)
+
+        # 3.
+        n.cps[[2, 0, 5]] = 299354.0
+        cps_are_synced(n)
+
+        n.cps[b_mask.tolist()] = 975.5
+        cps_are_synced(n)
+
+        # 4.
+        n.cps[3, :2] = [-10, -20]
+        cps_are_synced(n)
+
+        n.cps[5, [1, 0]] = [1.722, 24.29]
+        cps_are_synced(n)
+
+        n.cps[c.np.array(2), 1] = 7
+        cps_are_synced(n)
+
+        # 5.
+        n.cps[[0, 5, 2], 0] = 92314.111234
+        cps_are_synced(n)
+        n.cps[b_mask, :2] = n.cps[[2, 5, 0, 1], -2:]
+        cps_are_synced(n)
+        n.cps[b_mask.tolist(), 0] = n.cps[b_mask[::-1], 1]
+        cps_are_synced(n)
+
+        # 6.
+        n.cps[:1, :2] = 160.4
+        cps_are_synced(n)
+        n.cps[2:-1, :2] = 78883.2
+        n.cps[-1:-4:-1, :1] = -1687
+        cps_are_synced(n)
+
+        # 7.
+        n.cps[...] = 1237792.4634527
+        n.cps[..., :1] = -62.5
+        cps_are_synced(n)
+
+        # 8. if you have ideas for use case not listed above, please add!
+
+        # now, child arrays
+        carr = n.cps[0]
+        assert carr.base is n.cps
+
+        carr += [1324235.1, -234.5]
+        assert c.np.allclose(carr, n.cps[0])
+        cps_are_synced(n)
+
 
 if __name__ == "__main__":
     c.unittest.main()

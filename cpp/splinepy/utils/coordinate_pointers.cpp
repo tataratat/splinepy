@@ -23,43 +23,6 @@ void ControlPointPointers::SetRow(const int id, const double* values) {
   }
 }
 
-void ControlPointPointers::SetRows(const int* ids,
-                                   const int n_rows,
-                                   const double* values) {
-  const auto dim = Dim();
-
-  if (for_rational_) {
-    const auto& weights = weight_pointers_->weights_;
-
-    for (int i{}; i < n_rows; ++i) {
-      // get id
-      const auto& current_id = ids[i];
-      // get destinations and sources
-      auto* current_coord = coordinate_begins_[current_id];
-      const auto* current_value = &values[current_id * dim];
-      const auto& current_weight = *weights[current_id];
-
-      for (int j{}; j < dim; ++j) {
-        // saves weighted control points
-        current_coord[j] = current_value[j] * current_weight;
-      }
-    }
-  } else {
-    for (int i{}; i < n_rows; ++i) {
-      // get id
-      const auto& current_id = ids[i];
-      // get destinations and sources
-      auto* current_coord = coordinate_begins_[current_id];
-      const auto* current_value = &values[current_id * dim];
-
-      for (int j{}; j < dim; ++j) {
-        // saves weighted control points
-        current_coord[j] = current_value[j];
-      }
-    }
-  }
-}
-
 void ControlPointPointers::Sync(const double* values) {
   const auto dim = Dim();
 
@@ -120,7 +83,7 @@ int WeightPointers::Dim() const {
   return dim_;
 }
 
-void WeightPointers::SetRow(const int id, const double value) {
+void WeightPointers::SetRow(const int id, double const& value) {
   // adjustment factor - new value divided by previous factor;
   auto& current_weight = *weights_[id];
   const double adjust_factor = value / current_weight;
@@ -132,14 +95,6 @@ void WeightPointers::SetRow(const int id, const double value) {
 
   // save new weight
   current_weight = value;
-}
-
-void WeightPointers::SetRows(const int* ids,
-                             const int n_rows,
-                             const double* values) {
-  for (int i{}; i < n_rows; ++i) {
-    SetRow(ids[i], values[i]);
-  }
 }
 
 void WeightPointers::Sync(const double* values) {

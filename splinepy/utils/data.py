@@ -24,7 +24,12 @@ class PhysicalSpaceArray(np.ndarray):
     Meant to help control_points.
     """
 
-    __slots__ = ("_source_ptr", "_row_indices", "_super_arr")
+    __slots__ = (
+        "_source_ptr",
+        "_row_indices",
+        "_full_row_indices",
+        "_super_arr",
+    )
 
     def __array_finalize__(self, obj):
         """Sets default flags for any arrays that maybe generated based on
@@ -38,12 +43,15 @@ class PhysicalSpaceArray(np.ndarray):
             if self.base is None:
                 return None
 
-            # first hand sub-array
+            # first child array
             if self.base is obj:
-                self._super_arr = obj
+                # make sure this is not a recursivly born child
+                # for example, `arr[[1,2]][:,2]`
+                if obj._source_ptr is not None:
+                    self._super_arr = obj
                 return None
 
-            # multiple-handed down sub array
+            # multi generation child array
             if obj._super_arr is not None and self.base is obj.base:
                 self._super_arr = obj._super_arr
                 return None
@@ -59,7 +67,7 @@ class PhysicalSpaceArray(np.ndarray):
 
         # this is a sub arr viewing super arr
         # this will perform a full sync
-        if self._super_arr is not None and self._source_ptr is not None:
+        if self._super_arr is not None and self._source_ptr is None:
             self._super_arr._source_ptr.sync(self._super_arr)
             return None
 
@@ -147,7 +155,9 @@ class PhysicalSpaceArray(np.ndarray):
         # set first. invalid setting will cause error
         sr = super(self.__class__, self).__setitem__(key, value)
 
+        # for child array, we will just sync and exit.
         if self._source_ptr is None:
+            self._sync_source_ptr()
             return sr
 
         # if set item above worked.
@@ -157,28 +167,38 @@ class PhysicalSpaceArray(np.ndarray):
         #
         # here, we will try to parse very simple, yet, quite often used
         # indexings
+        contig = np.ascontiguousarray  # frequently used
         if isinstance(key, int) or (
             isinstance(key, np.ndarray) and key.ndim == 0
         ):
+            # single get item is always contiguous
             self._source_ptr.set_row(key, self[key])
 
         elif isinstance(key, np.ndarray) and key.ndim == 1:
-            self._source_ptr.set_rows(key, self[key])
+            if key.dtype.kind.startswith("b"):
+                key = contig(self.row_indices()[key])
+
+            self._source_ptr.sync_rows(contig(key), self)
 
         elif isinstance(key, list):
-            self._source_ptr.set_rows(key, self[key])
+            if isinstance(key[0], bool):
+                key = contig(self.row_indices()[key])
+            self._source_ptr.sync_rows(key, self)
 
         # tuple is a bit tricky
         elif isinstance(key, tuple) and (
             isinstance(key[0], int)
-            or (isinstance(key[0], np.ndarray) and key.ndim == 0)
+            or (isinstance(key[0], np.ndarray) and key[0].ndim == 0)
         ):
             self._source_ptr.set_row(key[0], self[key[0]])
 
         elif isinstance(key, tuple) and (
             isinstance(key[0], list) or isinstance(key[0], np.ndarray)
         ):
-            self._source_ptr.set_rows(key, self[key[0]])
+            if isinstance(key[0][0], (np.bool_, bool)):
+                key = (contig(self.row_indices()[key[0]]),)
+
+            self._source_ptr.sync_rows(key[0], self)
 
         elif isinstance(key, slice) or (
             isinstance(key, tuple) and isinstance(key[0], slice)
@@ -186,32 +206,54 @@ class PhysicalSpaceArray(np.ndarray):
             key = key if isinstance(key, slice) else key[0]
 
             start = 0 if key.start is None else key.start
+            # flip negatives
+            start = start + len(self) if start < 0 else start
             stop = len(self) if key.stop is None else key.stop
+            # flip negatives
+            stop = stop + len(self) if stop < 0 else stop
             step = 1 if key.step is None else key.step
 
             ids = np.arange(
                 start, stop, step, dtype="int32"
             )  # should be contig
-            self._source_ptr.set_rows(ids, self[ids])
+            self._source_ptr.sync_rows(ids, self)
+
+        elif isinstance(key, type(Ellipsis)) or (
+            isinstance(key, tuple) and isinstance(key[0], type(Ellipsis))
+        ):
+            self._source_ptr.sync(self)
 
         else:
             # even more complex? then
             # TODO - just sync if this seems to take too long
-            ids = np.unique(self.row_indices()[key])
-            self._source_ptr.set_rows(ids, np.ascontiguousarray(self[ids]))
+            ids = np.unique(self.full_row_indices()[key])
+            self._source_ptr.sync_rows(contig(ids), self)
 
         return sr
 
     def row_indices(self):
         """
-        Returns row_indices. Same results as np.indices(arr.shape)[0]
+        Returns row_indices. Same results as np.arange(len(arr))
         """
         if hasattr(self, "_row_indices"):
             return self._row_indices
 
         l, d = self._source_ptr.len(), self._source_ptr.dim()
-        self._row_indices = np.arange(l).repeat(d).reshape(l, d)
+        self._row_indices = np.arange(l, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
         return self._row_indices
+
+    def full_row_indices(self):
+        """
+        Returns full_row_indices. Same results as np.indices(arr.shape)[0]
+        """
+        if hasattr(self, "_full_row_indices"):
+            return self._full_row_indices
+
+        l, d = self._source_ptr.len(), self._source_ptr.dim()
+        self._row_indices = np.arange(l, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
+        return self._full_row_indices
 
 
 def enforce_contiguous(array, dtype=None, asarray=False):
