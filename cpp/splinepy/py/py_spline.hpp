@@ -127,6 +127,12 @@ public:
   /// similar to previous update_c()
   /// Runs sanity checks on inputs
   void NewCore(const py::kwargs& kwargs) {
+
+    // early exit if this is an incomplete kwargs call
+    if (!kwargs.contains("degrees") || !kwargs.contains("control_points")) {
+      return;
+    }
+
     // parse kwargs
     int* degrees_ptr = nullptr;
     std::vector<std::vector<double>> knot_vectors;

@@ -47,9 +47,9 @@ class TestSplineConstructors(c.unittest.TestCase):
             control_points=c.np.ones((2, 1)),
         )
         self.assertRaisesRegex(
-            RuntimeError,
-            r"SPLINEPY ERROR - 0.6 0.3 Knots of parametric dimension \( 0 \) "
-            "are not in increasing order.",
+            ValueError,
+            r"len\(knot_vectors\) \(2\) should match len\(self.degrees\) "
+            r"\(1\).",
             c.splinepy.BSpline,
             degrees=[1],
             knot_vectors=[[0, 0, 0.6, 0.3, 1, 1], [0, 0, 1, 1]],
@@ -80,9 +80,8 @@ class TestSplineConstructors(c.unittest.TestCase):
         )
         # Check control points
         self.assertRaisesRegex(
-            RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 2 exepcted, "
-            "but 9 were given.",
+            ValueError,
+            r"len\(weights\) \(2\) should match len\(control_points\) \(9\).",
             c.splinepy.NURBS,
             degrees=[1],
             knot_vectors=[[0, 0, 1, 1]],
@@ -115,7 +114,7 @@ class TestSplineConstructors(c.unittest.TestCase):
             r"SPLINEPY ERROR - 0.6 0.3 Knots of parametric dimension \( 0 \) "
             "are not in increasing order.",
             c.splinepy.NURBS,
-            degrees=[1],
+            degrees=[1, 1],
             knot_vectors=[[0, 0, 0.6, 0.3, 1, 1], [0, 0, 1, 1]],
             control_points=c.np.ones((8, 2)),
             weights=c.np.ones(8),
@@ -135,9 +134,8 @@ class TestSplineConstructors(c.unittest.TestCase):
 
         # Check weights
         self.assertRaisesRegex(
-            RuntimeError,
-            r"SPLINEPY ERROR - Number of weights \( 19 \) does not match "
-            r"number of control points \( 2 \)",
+            ValueError,
+            r"len\(weights\) \(19\) should match len\(control_points\) \(2\).",
             c.splinepy.NURBS,
             degrees=[1],
             knot_vectors=[[0, 0, 1, 1]],
@@ -195,7 +193,7 @@ class TestSplineConstructors(c.unittest.TestCase):
             c.splinepy.RationalBezier,
             degrees=[-4],
             control_points=c.np.ones((2, 4)),
-            weights=c.np.random.rand(0),
+            weights=c.np.random.rand(2),
         )
         self.assertRaisesRegex(
             RuntimeError,
@@ -204,7 +202,7 @@ class TestSplineConstructors(c.unittest.TestCase):
             c.splinepy.RationalBezier,
             degrees=[2, 2],
             control_points=c.np.ones((4, 1)),
-            weights=c.np.random.rand(0),
+            weights=c.np.random.rand(4),
         )
         self.assertRaisesRegex(
             RuntimeError,
@@ -213,7 +211,7 @@ class TestSplineConstructors(c.unittest.TestCase):
             c.splinepy.RationalBezier,
             degrees=[2, 3, 1],
             control_points=c.np.ones((9, 2)),
-            weights=c.np.random.rand(0),
+            weights=c.np.random.rand(9),
         )
         self.assertRaisesRegex(
             RuntimeError,
@@ -222,12 +220,11 @@ class TestSplineConstructors(c.unittest.TestCase):
             c.splinepy.RationalBezier,
             degrees=[2, 3, 1],
             control_points=c.np.ones((24, 0)),
-            weights=c.np.random.rand(9),
+            weights=c.np.random.rand(24),
         )
         self.assertRaisesRegex(
-            RuntimeError,
-            r"SPLINEPY ERROR - Number of weights \( 9 \) does not match number"
-            r" of control points \( 24 \).",
+            ValueError,
+            r"len\(weights\) \(9\) should match len\(control_points\) \(24\).",
             c.splinepy.RationalBezier,
             degrees=[2, 3, 1],
             control_points=c.np.ones((24, 2)),

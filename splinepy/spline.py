@@ -312,18 +312,28 @@ class Spline(SplinepyBase, core.PySpline):
             return None
 
         else:
-            # do they at least contain minimal set of keywards?
-            kset = set(kwargs.keys())
-            if not RequiredProperties.intersection().issubset(kset):
-                raise RuntimeError(
-                    f"Given keyword arguments ({kwargs}) don't contain"
-                    "minimal set of keywords, "
-                    f"{RequiredProperties.intersection()}."
-                )
-            # we will call _new_core to make sure all the array values are
-            # contiguous
             super().__init__()  # alloc
-            self._new_core(**kwargs, raise_=False)
+
+            # use setters to check minimal requirements and enforce
+            # contiguous array
+            # in depth checks are done in core
+            req_properties = self.required_properties
+            if type(self).__qualname__.startswith("Spline"):
+                # for Spline class, which can take anything,
+                # we want to set it in this specific order that
+                # it won't keep creating core
+                set_order = (
+                    "weights",
+                    "control_points",
+                    "knot_vectors",
+                    "degrees",
+                )
+            else:
+                set_order = req_properties
+
+            for to_set in set_order:
+                if to_set in kwargs:
+                    setattr(self, to_set, kwargs[to_set])
 
     @property
     def required_properties(self):
@@ -756,7 +766,7 @@ class Spline(SplinepyBase, core.PySpline):
         # set - copies
         new_kvs = []
         for kv in knot_vectors:
-            if isinstance(kv, core.KnotVectors):
+            if isinstance(kv, core.KnotVector):
                 new_kvs.append(kv.numpy())
             else:
                 new_kvs.append(utils.data.enforce_contiguous(kv, "float64"))
@@ -863,12 +873,13 @@ class Spline(SplinepyBase, core.PySpline):
             if len(self.weights) != len(control_points):
                 raise ValueError(
                     f"len(control_points) ({len(control_points)}) "
-                    "should match len(weights) ({len(weights)})."
+                    f"should match len(weights) ({len(self.weights)})."
                 )
 
         # set - copies
         if isinstance(control_points, utils.data.PhysicalSpaceArray):
-            # don't want to have two
+            # don't want to have two arrays updating
+            # same cps
             self._data["control_points"] = control_points.copy(order="C")
         else:
             self._data["control_points"] = np.asarray(
@@ -1017,13 +1028,20 @@ class Spline(SplinepyBase, core.PySpline):
             if len(self.control_points) != len(weights):
                 raise ValueError(
                     f"len(weights) ({len(weights)}) should match "
-                    "len(control_points) ({len(control_points)})."
+                    f"len(control_points) ({len(self.control_points)})."
                 )
 
         # set - copies
-        self._data["weights"] = utils.data.enforce_contiguous(
-            weights, "float64"
-        ).reshape(-1, 1)
+        if isinstance(weights, utils.data.PhysicalSpaceArray):
+            # don't want to have two arrays updating
+            # same cps
+            self._data["weights"] = weights.copy(order="C").reshape(-1, 1)
+        else:
+            self._data["weights"] = (
+                np.asarray(weights, dtype="float64", order="C")
+                .copy()
+                .reshape(-1, 1)
+            )
 
         # try to sync core with current status
         self._new_core(
