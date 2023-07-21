@@ -494,6 +494,27 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             same_parametric_bounds=False,
         )
 
+    def evaluate(self, queries, nthreads=None):
+        """
+        Evaluate each individual spline at specific parametric positions. To be
+        used with caution, as there is no check if the queries are within the
+        parametric bounds if settings.CHECK_BOUNDS is set to false.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        results: (math.product(resolutions), dim) np.ndarray
+        """
+
+        return super().evaluate(
+            queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
     @property
     def extract(self):
         """Return Extractor object to provide extract functionality for

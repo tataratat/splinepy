@@ -1,6 +1,7 @@
 import os
 import unittest
 
+import gustaf as gus
 import numpy as np
 
 import splinepy
@@ -9,6 +10,7 @@ __all__ = [
     "unittest",
     "np",
     "splinepy",
+    "gus",
 ]
 
 # abbreviation

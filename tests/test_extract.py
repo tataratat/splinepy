@@ -152,36 +152,125 @@ class extractTest(c.unittest.TestCase):
             knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]],
             degrees=[1, 1, 1],
             control_points=[
-                [0, 0, 0], 
-                [2, 0, 0], 
-                [1, 1, 0], 
+                [0, 0, 0],
+                [2, 0, 0],
+                [1, 1, 0],
                 [3, 1, 0],
-                [0, 0, 3], 
-                [2, 0, 3], 
-                [1, 1, 3], 
-                [3, 1, 3]
+                [0, 0, 3],
+                [2, 0, 3],
+                [1, 1, 3],
+                [3, 1, 3],
             ],
-            weights=c.np.ones((8))
+            weights=c.np.ones(8),
         )
         faces = nurbs.extract.faces(resolution=8, watertight=False)
-        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 8*8*6))
-        
+        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 8 * 8 * 6))
+
         # Check watertighten
         faces = nurbs.extract.faces(resolution=8, watertight=True)
-        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 8*8*6 - 6*12 - 2*8))    
+        self.assertTrue(faces.vertices.shape[0] == 8 * 8 * 6 - 6 * 12 - 2 * 8)
 
         # Check multipatch
-        nurbs_2 = nurbs.copy()    
-        nurbs_2.cps += [2 ,0 ,0]
+        nurbs_2 = nurbs.copy()
+        nurbs_2.cps += [2, 0, 0]
         mp_3d = c.splinepy.Multipatch(splines=[nurbs, nurbs_2])
         faces = mp_3d.extract.faces(resolution=8, watertight=False)
-        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 2*8*8*5))
-        
-        # Check watertighten       
+        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 2 * 8 * 8 * 5))
+
+        # Check watertighten
         mp_3d = c.splinepy.Multipatch(splines=[nurbs, nurbs_2])
         faces = mp_3d.extract.faces(resolution=8, watertight=True)
-        self.assertTrue(c.np.allclose(faces.vertices.shape[0], 2*8*8*5 - 6*20 - 2*8 - 3*4)) 
+        self.assertTrue(
+            faces.vertices.shape[0] == 2 * 8 * 8 * 5 - 6 * 20 - 2 * 8 - 3 * 4
+        )
 
+        # Check if the boundary centers correspond to the expected faces
+        boundaries = nurbs.extract_boundaries(
+            [0, 2, 3, 4, 5]
+        ) + nurbs_2.extract_boundaries([1, 2, 3, 4, 5])
+        expected_faces = c.gus.Faces.concat(
+            [b.extract.faces(resolution=8) for b in boundaries]
+        )
+        self.assertTrue(
+            c.np.allclose(
+                c.np.sort(expected_faces.centers(), axis=0),
+                c.np.sort(faces.centers(), axis=0),
+            ),
+            "Wrong",
+        )
+
+    def test_extract_volumes(self):
+        """Check the extraction of volumetric meshes from splines"""
+        error_spline = c.splinepy.Bezier(
+            degrees=[1, 1], control_points=[[0, 0], [0, 0], [0, 0], [1, 1]]
+        )
+        self.assertRaisesRegex(
+            ValueError,
+            "Volume extraction from a spline is only valid for para_dim: 3 dim"
+            ": 3 splines.",
+            error_spline.extract.volumes,
+            resolution=5,
+        )
+        # Single Patch
+        nurbs = c.splinepy.NURBS(
+            knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]],
+            degrees=[1, 1, 1],
+            control_points=[
+                [0, 0, 0],
+                [2, 0, 0],
+                [1, 1, 0],
+                [3, 1, 0],
+                [0, 0, 3],
+                [2, 0, 3],
+                [1, 1, 3],
+                [3, 1, 3],
+            ],
+            weights=c.np.ones(8),
+        )
+        volumes_sp = nurbs.extract.volumes(resolution=6)
+
+        # Use linearity of spline to check against evaluations
+        queries = c.splinepy.utils.data.cartesian_product(
+            [c.np.linspace(0.1, 0.9, 5) for _ in range(3)]
+        )
+
+        # Check length and compare centers
+        self.assertTrue(volumes_sp.elements.shape[0] == 5**3)
+        self.assertTrue(
+            c.np.allclose(nurbs.evaluate(queries), volumes_sp.centers())
+        )
+
+        # Watertight flag does not have an influence on single patch geometries
+        self.assertTrue(
+            c.np.allclose(
+                nurbs.extract.volumes(resolution=6, watertight=True).vertices,
+                volumes_sp.vertices,
+            )
+        )
+
+        # Check multipatch geometries
+        nurbs_2 = nurbs.copy()
+        nurbs_2.cps += [0, 0, 3]
+        mp_nurbs = c.splinepy.Multipatch(splines=[nurbs, nurbs_2])
+
+        # Retrieve volumes from multipatch
+        volumes_mp = mp_nurbs.extract.volumes(resolution=6, watertight=False)
+
+        # Check length and compare centers
+        self.assertTrue(volumes_mp.elements.shape[0] == 2 * 5**3)
+        self.assertTrue(
+            c.np.allclose(mp_nurbs.evaluate(queries), volumes_mp.centers())
+        )
+
+        # Copy mp_nurbs because it currently has issues #198
+        mp_nurbs = c.splinepy.Multipatch(splines=[nurbs, nurbs_2])
+        volumes_mp_wt = mp_nurbs.extract.volumes(resolution=6, watertight=True)
+
+        # Watertight flag does not have an influence on single patch geometries
+        self.assertTrue(volumes_mp_wt.vertices.shape[0] == 2 * 6**3 - 6**2)
+        self.assertTrue(
+            c.np.allclose(volumes_mp.centers(), volumes_mp_wt.centers())
+        )
 
     def test_extract_boundaries_2D(self):
         """Create a Spline, extract boundaries and check validity"""

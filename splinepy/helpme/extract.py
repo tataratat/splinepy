@@ -1,6 +1,7 @@
 import numpy as np
 from gustaf import Edges, Faces, Vertices, Volumes
 from gustaf.utils import connec
+from gustaf.utils.arr import enforce_len
 
 from splinepy import settings
 from splinepy.utils.data import cartesian_product
@@ -129,7 +130,9 @@ def faces(
         if isinstance(spline, Multipatch):
             n_faces = (resolution - 1) ** spline.para_dim
             vertices = resolution**spline.para_dim
-            f_loc = connec.make_quad_faces([resolution] * spline.para_dim)
+            f_loc = connec.make_quad_faces(
+                enforce_len(resolution, spline.para_dim)
+            )
             face_connectivity = np.empty((n_faces * len(spline.splines), 4))
             # Create Connectivity for Multipatches
             for i in range(len(spline.splines)):
@@ -138,7 +141,7 @@ def faces(
                 )
         else:
             face_connectivity = connec.make_quad_faces(
-                [resolution] * spline.para_dim
+                enforce_len(resolution, spline.para_dim)
             )
         faces = Faces(
             vertices=spline.sample(resolution),
@@ -154,7 +157,7 @@ def faces(
 
         n_faces = (resolution - 1) ** 2
         vertices = resolution**2
-        f_loc = connec.make_quad_faces([resolution] * 2)
+        f_loc = connec.make_quad_faces(enforce_len(resolution, 2))
         face_connectivity = np.empty((n_faces * len(boundaries.splines), 4))
 
         # Create Connectivity for Multipatches
@@ -177,28 +180,63 @@ def faces(
     return faces
 
 
-def volumes(spline, resolutions):
+def volumes(spline, resolution, watertight=False):
     """Extract volumes from spline. Valid iff spline.para_dim == 3.
 
     Parameters
     -----------
-    spline: BSpline or NURBS
-    resolutions:
+    spline: Spline / Multipatch
+      spline to be meshed into volumes
+    resolution: int
+      Sample resolution
+    watertight : bool
+      Return watertight mesh
 
     Returns
     --------
     volumes: Volumes
     """
-    if spline.para_dim != 3:
+    from splinepy import Multipatch
+
+    if spline.para_dim != 3 or spline.dim != 3:
         raise ValueError(
             "Volume extraction from a spline is only valid for "
             "para_dim: 3 dim: 3 splines."
         )
 
-    return Volumes(
-        vertices=spline.sample(resolutions),
-        volumes=connec.make_hexa_volumes(resolutions),
+    if isinstance(spline, Multipatch):
+        if not isinstance(resolution, int):
+            raise ValueError(
+                "Resolution for sampling must be integer type for Multipatch "
+                "objects"
+            )
+        p_connect = connec.make_hexa_volumes(enforce_len(resolution, 3))
+        n_elements_per_patch = p_connect.shape[0]
+        n_vertices_per_patch = resolution**spline.para_dim
+        connectivity = np.empty(
+            (n_elements_per_patch * len(spline.splines), p_connect.shape[1])
+        )
+
+        for i in range(len(spline.splines)):
+            connectivity[
+                (n_elements_per_patch * i) : ((i + 1) * n_elements_per_patch),
+                :,
+            ] = (
+                p_connect + i * n_vertices_per_patch
+            )
+    else:
+        connectivity = connec.make_hexa_volumes(enforce_len(resolution, 3))
+
+    # Create volumes
+    volumes = Volumes(
+        vertices=spline.sample(resolution),
+        volumes=connectivity,
     )
+
+    if watertight:
+        volumes.merge_vertices()
+
+    return volumes
 
 
 def control_points(spline):
