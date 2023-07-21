@@ -69,7 +69,6 @@ class BSplineBase(spline.Spline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @spline._new_core_if_modified
     def insert_knots(self, parametric_dimension, knots):
         """
         Inserts knots.
@@ -109,11 +108,10 @@ class BSplineBase(spline.Spline):
 
         self._logd(f"Inserted {len(knots)} knot(s).")
 
-        self._data = spline._default_data()
+        self._data = dict()
 
         return inserted
 
-    @spline._new_core_if_modified
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
     ):
@@ -160,7 +158,7 @@ class BSplineBase(spline.Spline):
         """
         if beziers:
             indices, data = splinepy_core.bezier_extraction_matrix(
-                self.knot_vectors,
+                [kv.numpy() for kv in self.knot_vectors],
                 self.degrees,
                 settings.TOLERANCE,
             )
@@ -242,7 +240,7 @@ class BSplineBase(spline.Spline):
         )
 
         if any(removed):
-            self._data = spline._default_data()
+            self._data = dict()
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
@@ -261,30 +259,16 @@ class BSplineBase(spline.Spline):
         -------
         None
         """
-        # check if knot_vectors is already normalized
-        # creating new parametric space in backend can be expensive, so
-        # let's avoid it if we can.
-        para_bounds = self.parametric_bounds
-        kv_modified = utils.data.is_modified(
-            self._data.get("properties", dict()).get("knot_vectors", [])
-        )
-        lower_bounds_are_zero = np.allclose(
-            para_bounds[0], [0] * self.para_dim
-        )
-        upper_bounds_are_one = np.allclose(para_bounds[1], [1] * self.para_dim)
-        if not kv_modified and lower_bounds_are_zero and upper_bounds_are_one:
-            return None
+        if not splinepy_core.has_core(self):
+            raise ValueError(
+                "spline is not fully initialized."
+                "Please, first initalize spline before normalize_knot_vectors."
+            )
 
-        new_kvs = []
-        for i, kv in enumerate(self.knot_vectors):
-            offset = kv[0]
-            scale = 1 / (kv[-1] - offset)
-            new_kvs.append((kv - offset) * scale)
+        for kv in self.knot_vectors:
+            if isinstance(kv, splinepy_core.KnotVector):
+                kv.scale(0, 1)
 
-        # use setter to update
-        self.knot_vectors = new_kvs
-
-    @spline._new_core_if_modified
     def extract_bezier_patches(self):
         """
         Extract all knot spans as Bezier patches to perform further operations

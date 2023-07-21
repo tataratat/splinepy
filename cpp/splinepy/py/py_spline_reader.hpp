@@ -11,8 +11,6 @@
 
 // SplineLib
 #include <BSplineLib/InputOutput/iges.hpp>
-#include <BSplineLib/InputOutput/irit.hpp>
-#include <BSplineLib/InputOutput/xml.hpp>
 #include <BSplineLib/Splines/b_spline.hpp>
 #include <BSplineLib/Utilities/named_type.hpp>
 
@@ -254,24 +252,6 @@ public:
     int i, j;
 
     c_splines = input_output::iges::Read(fname);
-    Read(c_splines);
-
-    return p_splines;
-  }
-
-  /// @brief Read spline in .itd form.
-  /// @param fname File name
-  py::list ReadIrit(std::string fname) {
-    c_splines = input_output::irit::Read(fname);
-    Read(c_splines);
-
-    return p_splines;
-  }
-
-  /// @brief Read spline in .xml form. RWTH CATS spline format.
-  /// @param fname File name
-  py::list ReadXml(std::string fname) {
-    c_splines = input_output::xml::Read(fname);
     Read(c_splines);
 
     return p_splines;
@@ -555,25 +535,11 @@ py::list ReadIges(std::string fname) {
   return sr.ReadIges(fname);
 }
 
-/// Load xml
-py::list ReadXml(std::string fname) {
-  auto sr = SplineReader();
-  return sr.ReadXml(fname);
-}
-
-/// Load irit
-py::list ReadIrit(std::string fname) {
-  auto sr = SplineReader();
-  return sr.ReadIrit(fname);
-}
-
 ///  @brief Adds spline reader. Keys are
 /// ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
 /// @param m Python module
 inline void add_spline_reader(py::module& m) {
-  m.def("read_iges", &ReadIges, py::arg("fname"))
-      .def("read_xml", &ReadXml, py::arg("fname"))
-      .def("read_irit", &ReadIrit, py::arg("fname"));
+  m.def("read_iges", &ReadIges, py::arg("fname"));
 }
 
 } // namespace splinepy::py

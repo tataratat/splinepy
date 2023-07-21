@@ -41,6 +41,9 @@ public:
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  using WeightedControlPointPointers_ =
+      typename SplinepyBase_::WeightedControlPointPointers_;
+  using WeightPointers_ = typename SplinepyBase_::WeightPointers_;
 
   // splinelib
   using Base_ = bsplinelib::splines::Nurbs<para_dim, dim>;
@@ -265,25 +268,49 @@ public:
     }
   }
 
-  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCoordinateReferences
-  virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
-  SplinepyCoordinateReferences() {
-    using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
-    auto ref_coordinates =
-        std::make_shared<SplinepyBase::CoordinateReferences_>();
-    auto& ref_coords = *ref_coordinates;
-
-    // get ref
-    auto& coordinates = Base_::weighted_vector_space_->GetCoordinates();
-    ref_coords.reserve(coordinates.size());
-    for (auto& control_point : coordinates) {
-      // skip the last entry - control_point has kDim + 1 size.
-      for (std::size_t i{}; i < kDim; ++i) {
-        ref_coords.emplace_back(
-            RefHolder{static_cast<double&>(control_point[i])});
-      }
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  SplinepyKnotVector(const int p_dim) {
+    if (!(p_dim < para_dim)) {
+      splinepy::utils::PrintAndThrowError(
+          "Invalid parametric dimension. Should be smaller than",
+          para_dim);
     }
-    return ref_coordinates;
+    return Base_::Base_::parameter_space_->GetKnotVectors()[p_dim];
+  };
+
+  virtual std::shared_ptr<WeightedControlPointPointers_>
+  SplinepyWeightedControlPointPointers() {
+    if (SplinepyBase_::control_point_pointers_) {
+      return SplinepyBase_::control_point_pointers_;
+    }
+    // create weighted cps
+    auto wcpp = std::make_shared<WeightedControlPointPointers_>();
+    wcpp->dim_ = kDim;
+    wcpp->for_rational_ = kIsRational;
+    wcpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    // create weights
+    auto w = std::make_shared<WeightPointers_>();
+    w->weights_.reserve(SplinepyNumberOfControlPoints());
+
+    for (auto& w_control_point :
+         Base_::weighted_vector_space_->GetCoordinates()) {
+      auto* coord_begin = w_control_point.data();
+      wcpp->coordinate_begins_.push_back(coord_begin);
+      w->weights_.push_back(coord_begin + kDim);
+    }
+
+    // reference each other
+    w->control_point_pointers_ = wcpp; // weak-ref
+    wcpp->weight_pointers_ = w;
+
+    // save
+    SplinepyBase_::control_point_pointers_ = wcpp;
+
+    return wcpp;
+  }
+
+  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers() {
+    return SplinepyWeightedControlPointPointers()->weight_pointers_;
   }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds

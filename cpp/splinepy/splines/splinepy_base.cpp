@@ -414,14 +414,35 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
   return true;
 }
 
-std::shared_ptr<SplinepyBase::CoordinateReferences_>
-SplinepyBase::SplinepyCoordinateReferences() {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyCoordinateReferences not implemented for",
-      SplinepyWhatAmI());
+std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+SplinepyBase::SplinepyKnotVector(const int p_dim) {
+  splinepy::utils::PrintAndThrowError("SplinepyKnotVector not implemented for",
+                                      SplinepyWhatAmI());
+  return nullptr;
+};
 
-  // make compiler happy
-  return std::make_shared<SplinepyBase::CoordinateReferences_>();
+std::shared_ptr<typename SplinepyBase::ControlPointPointers_>
+SplinepyBase::SplinepyControlPointPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyControlPointPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
+std::shared_ptr<typename SplinepyBase::WeightedControlPointPointers_>
+SplinepyBase::SplinepyWeightedControlPointPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyWeightedControlPointPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
+std::shared_ptr<typename SplinepyBase::WeightPointers_>
+SplinepyBase::SplinepyWeightPointers() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyWeightPointers not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
 }
 
 void SplinepyBase::SplinepyParametricBounds(double* para_bounds) const {

@@ -30,7 +30,7 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
                 orig.insert_knots(1, [0.1, 0.2])
                 orig.insert_knots(2, [0.3, 0.5, 0.6, 0.9])
 
-            perm = c.splinepy.spline.permute_parametric_axes(
+            perm = c.splinepy.helpme.permute.parametric_axes(
                 orig, permutation, inplace=False
             )
             queries = c.np.asarray(c.q3D)
@@ -46,7 +46,7 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
         # ic.nplace
         for orig in originals:
             perm = orig.copy()
-            c.splinepy.spline.permute_parametric_axes(
+            c.splinepy.helpme.permute.parametric_axes(
                 perm, permutation, inplace=True
             )
             queries = c.np.asarray(c.q3D)

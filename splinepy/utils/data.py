@@ -5,15 +5,13 @@ Helps helpee to manage data. Some useful data structures.
 from itertools import accumulate, chain, repeat
 
 import numpy as np
-from gustaf.helpers.data import DataHolder, TrackedArray, make_tracked_array
+from gustaf.helpers.data import DataHolder
 
 from splinepy._base import SplinepyBase
 
 __all__ = [
-    "TrackedArray",
-    "make_tracked_array",
+    "PhysicalSpaceArray",
     "DataHolder",
-    "is_modified",
     "enforce_contiguous_values",
     "cartesian_product",
     "SplineDataAdaptor",
@@ -21,33 +19,242 @@ __all__ = [
 ]
 
 
-def is_modified(array):
+class PhysicalSpaceArray(np.ndarray):
+    """numpy array object that keeps mirroring inplace changes to the source.
+    Meant to help control_points.
     """
-    Returns true if:
-      1. array is list of tracked arrays and any of them is modified.
-      2. array is modified.
 
-    Parameters
-    ----------
-    array: spline or array-like
+    __slots__ = (
+        "_source_ptr",
+        "_row_indices",
+        "_full_row_indices",
+        "_super_arr",
+    )
 
-    Returns
-    --------
-    modified: bool
-    """
-    if isinstance(array, list):
-        modified = False
-        for a in array:
-            # recusively check
-            modified |= is_modified(a)
+    def __array_finalize__(self, obj):
+        """Sets default flags for any arrays that maybe generated based on
+        physical space array. For more information,
+        see https://numpy.org/doc/stable/user/basics.subclassing.html"""
+        self._source_ptr = None
+        self._super_arr = None
 
-        return modified
+        # for arrays created based on this subclass
+        if isinstance(obj, type(self)):
+            # this is copy. nothing to worry here
+            if self.base is None:
+                return None
 
-    elif isinstance(array, TrackedArray):
-        return array._modified
+            # first child array
+            if self.base is obj:
+                # make sure this is not a recursivly born child
+                # for example, `arr[[1,2]][:,2]`
+                if obj._source_ptr is not None:
+                    self._super_arr = obj
+                return None
 
-    else:
-        raise TypeError(f"{array} is not trackable.")
+            # multi generation child array
+            if obj._super_arr is not None and self.base is obj.base:
+                self._super_arr = obj._super_arr
+                return None
+
+            return None
+
+    def _sync_source_ptr(self):
+        # this is super arr. super arr only has _source_ptr becase we should've
+        # set it manually
+        if self._source_ptr is not None:  # and self._super_arr is None
+            self._source_ptr.sync(self)
+            return None
+
+        # this is a sub arr viewing super arr
+        # this will perform a full sync
+        if self._super_arr is not None and self._source_ptr is None:
+            self._super_arr._source_ptr.sync(self._super_arr)
+            return None
+
+    def copy(self, *args, **kwargs):
+        """copy creates regular numpy array"""
+        return super(self.__class__, self).copy(*args, **kwargs)
+
+    def view(self, *args, **kwargs):
+        """Set writeable flags to False for the view."""
+        v = super(self.__class__, self).view(*args, **kwargs)
+        v.flags.writeable = False
+        return v
+
+    def __iadd__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__iadd__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __isub__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__isub__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __imul__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imul__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __idiv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__idiv__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __itruediv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__itruediv__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __imatmul__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imatmul__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __ipow__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ipow__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __imod__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__imod__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __ifloordiv__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ifloordiv__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __ilshift__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ilshift__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __irshift__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__irshift__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __iand__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__iand__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __ixor__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ixor__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __ior__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__ior__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
+    def __setitem__(self, key, value):
+        # set first. invalid setting will cause error
+        sr = super(self.__class__, self).__setitem__(key, value)
+
+        # for child array, we will just sync and exit.
+        if self._source_ptr is None:
+            self._sync_source_ptr()
+            return sr
+
+        # if set item above worked.
+        # then, mirror / copy rowwise
+        # if this was called due to inplace operations of subset of entries
+        # this would be redundant
+        #
+        # here, we will try to parse very simple, yet, quite often used
+        # indexings
+        contig = np.ascontiguousarray  # frequently used
+        if isinstance(key, int) or (
+            isinstance(key, np.ndarray) and key.ndim == 0
+        ):
+            # single get item is always contiguous
+            self._source_ptr.set_row(key, self[key])
+
+        elif isinstance(key, np.ndarray) and key.ndim == 1:
+            if key.dtype.kind.startswith("b"):
+                key = contig(self.row_indices()[key])
+
+            self._source_ptr.sync_rows(contig(key), self)
+
+        elif isinstance(key, list):
+            if isinstance(key[0], bool):
+                key = contig(self.row_indices()[key])
+            self._source_ptr.sync_rows(key, self)
+
+        # tuple is a bit tricky
+        elif isinstance(key, tuple) and (
+            isinstance(key[0], int)
+            or (isinstance(key[0], np.ndarray) and key[0].ndim == 0)
+        ):
+            self._source_ptr.set_row(key[0], self[key[0]])
+
+        elif isinstance(key, tuple) and (
+            isinstance(key[0], list) or isinstance(key[0], np.ndarray)
+        ):
+            if isinstance(key[0][0], (np.bool_, bool)):
+                key = (contig(self.row_indices()[key[0]]),)
+
+            self._source_ptr.sync_rows(key[0], self)
+
+        elif isinstance(key, slice) or (
+            isinstance(key, tuple) and isinstance(key[0], slice)
+        ):
+            key = key if isinstance(key, slice) else key[0]
+
+            start = 0 if key.start is None else key.start
+            # flip negatives
+            start = start + len(self) if start < 0 else start
+            stop = len(self) if key.stop is None else key.stop
+            # flip negatives
+            stop = stop + len(self) if stop < 0 else stop
+            step = 1 if key.step is None else key.step
+
+            ids = np.arange(
+                start, stop, step, dtype="int32"
+            )  # should be contig
+            self._source_ptr.sync_rows(ids, self)
+
+        elif isinstance(key, type(Ellipsis)) or (
+            isinstance(key, tuple) and isinstance(key[0], type(Ellipsis))
+        ):
+            self._source_ptr.sync(self)
+
+        else:
+            # even more complex? then
+            # TODO - just sync if this seems to take too long
+            ids = np.unique(self.full_row_indices()[key])
+            self._source_ptr.sync_rows(contig(ids), self)
+
+        return sr
+
+    def row_indices(self):
+        """
+        Returns row_indices. Same results as np.arange(len(arr))
+        """
+        if hasattr(self, "_row_indices"):
+            return self._row_indices
+
+        l, d = self._source_ptr.len(), self._source_ptr.dim()
+        self._row_indices = np.arange(l, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
+        return self._row_indices
+
+    def full_row_indices(self):
+        """
+        Returns full_row_indices. Same results as np.indices(arr.shape)[0]
+        """
+        if hasattr(self, "_full_row_indices"):
+            return self._full_row_indices
+
+        l, d = self._source_ptr.len(), self._source_ptr.dim()
+        self._row_indices = np.arange(l, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
+        return self._full_row_indices
 
 
 def enforce_contiguous(array, dtype=None, asarray=False):
@@ -71,7 +278,7 @@ def enforce_contiguous(array, dtype=None, asarray=False):
     """
     if isinstance(array, np.ndarray):
         if array.flags["C_CONTIGUOUS"] and (
-            dtype is None or dtype is array.dtype
+            dtype is None or np.dtype(dtype) is array.dtype
         ):
             return array
         return np.ascontiguousarray(array, dtype=dtype)

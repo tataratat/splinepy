@@ -3,7 +3,11 @@
 #include <memory>
 #include <vector>
 
-#include <splinepy/utils/reference.hpp>
+#include <splinepy/utils/coordinate_pointers.hpp>
+
+namespace bsplinelib::parameter_spaces {
+class KnotVector;
+}
 
 namespace splinepy::splines {
 
@@ -11,12 +15,31 @@ namespace splinepy::splines {
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
-  using CoordinateReferences_ = std::vector<splinepy::utils::Reference<double>>;
+  /// Beginning pointers to control points.
+  using ControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  /// Same type, different alias to emphasize "Weighted"
+  using WeightedControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  /// Pointers to weights
+  using WeightPointers_ = splinepy::utils::WeightPointers;
 
+protected:
+  /// each class creates only once and returns shared_ptr second time.
+  /// not thread safe for first run.
+  std::shared_ptr<ControlPointPointers_> control_point_pointers_ = nullptr;
+
+public:
   /// default ctor
   SplinepyBase() = default;
-  ///
-  virtual ~SplinepyBase(){};
+
+  /// dtor sets invalid flag to control_point_pointers_ to prevent segfault
+  virtual ~SplinepyBase() {
+    if (control_point_pointers_) {
+      control_point_pointers_->invalid_ = true;
+      if (control_point_pointers_->weight_pointers_) {
+        control_point_pointers_->weight_pointers_->invalid_ = true;
+      }
+    }
+  };
 
   /// Dynamically create correct type of spline based on input.
   /// Returned as shared pointer of SplinepyBase
@@ -108,9 +131,13 @@ public:
                             double* control_points,
                             double* weights) const = 0;
 
-  /// @brief Returns reference to weighted control points
-  /// @return Shared pointer to control points
-  virtual std::shared_ptr<CoordinateReferences_> SplinepyCoordinateReferences();
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  SplinepyKnotVector(const int p_dim);
+
+  virtual std::shared_ptr<ControlPointPointers_> SplinepyControlPointPointers();
+  virtual std::shared_ptr<WeightedControlPointPointers_>
+  SplinepyWeightedControlPointPointers();
+  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers();
 
   /// @brief Parameter space AABB
   /// @param para_bounds

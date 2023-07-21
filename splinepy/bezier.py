@@ -36,7 +36,6 @@ class BezierBase(spline.Spline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @spline._new_core_if_modified
     def __mul__(self, factor):
         """
         Overloads multiplication between splines with different types of
@@ -74,7 +73,6 @@ class BezierBase(spline.Spline):
         # return corresponding type
         return settings.NAME_TO_TYPE[multiplied.name](spline=multiplied)
 
-    @spline._new_core_if_modified
     def __add__(self, summand):
         """
         Calculates the spline that formes the sum of the summand and the
@@ -98,7 +96,6 @@ class BezierBase(spline.Spline):
 
         return type(self)(spline=added)
 
-    @spline._new_core_if_modified
     def compose(self, inner_function, compute_sensitivities=False):
         r"""
         Calculates the spline that forms the composition of the inner function
@@ -167,7 +164,6 @@ class BezierBase(spline.Spline):
         else:
             return settings.NAME_TO_TYPE[composed.name](spline=composed)
 
-    @spline._new_core_if_modified
     def composition_derivative(self, inner, inner_derivative):
         r"""
         Derivative of composition when given the differentiated inner function
@@ -208,7 +204,6 @@ class BezierBase(spline.Spline):
             spline=composition_der
         )
 
-    @spline._new_core_if_modified
     def split(self, para_dim, locations):
         """
         Splits spline at given locations along the given para_dim.
@@ -230,7 +225,6 @@ class BezierBase(spline.Spline):
 
         return [type(self)(spline=s) for s in splitted]
 
-    @spline._new_core_if_modified
     def extract_dim(self, dim):
         """
         Extracts a single physical dimension of a spline.

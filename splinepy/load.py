@@ -6,11 +6,9 @@ Single function file containing `load_splines`.
 import os
 
 from splinepy import io
-from splinepy.bezier import Bezier
-from splinepy.bspline import BSpline
-from splinepy.io.ioutils import abs_fname
+from splinepy.io.ioutils import abs_fname, dict_to_spline
 from splinepy.nurbs import NURBS
-from splinepy.splinepy_core import read_iges, read_irit, read_xml
+from splinepy.splinepy_core import read_iges
 
 
 def load_splines(fname, as_dict=False):
@@ -38,14 +36,11 @@ def load_splines(fname, as_dict=False):
 
     ext = os.path.splitext(fname)[1]
 
-    if ext == ".iges":
+    if ext == ".iges" or ext == ".igs":
         loaded_splines = read_iges(fname)
 
-    elif ext == ".xml":
-        loaded_splines = read_xml(fname)
-
     elif ext == ".itd":
-        loaded_splines = read_irit(fname)
+        loaded_splines = io.load.irit(fname)
 
     elif ext == ".npz":
         # it should only have one spline, but
@@ -75,18 +70,7 @@ def load_splines(fname, as_dict=False):
         return loaded_splines
 
     # turn dicts into real splines
-    splines = []
-    for s in loaded_splines:
-        # are you nurbs?
-        is_bspline = s.get("knot_vectors", None)
-        is_nurbs = s.get("weights", None)
-
-        if is_nurbs is not None:
-            splines.append(NURBS(**s))
-        elif is_bspline is not None:
-            splines.append(BSpline(**s))
-        else:
-            splines.append(Bezier(**s))
+    splines = dict_to_spline(loaded_splines)
 
     return splines
 

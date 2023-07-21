@@ -236,7 +236,7 @@ def are_splines_equal(a, b):
     for req_prop in a.required_properties:
         if req_prop == "knot_vectors":
             for aa, bb in zip(a.knot_vectors, b.knot_vectors):
-                if not np.allclose(aa, bb):
+                if not np.allclose(aa.numpy(), bb.numpy()):
                     return False
         else:
             if not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):

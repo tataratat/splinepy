@@ -127,6 +127,12 @@ public:
   /// similar to previous update_c()
   /// Runs sanity checks on inputs
   void NewCore(const py::kwargs& kwargs) {
+
+    // early exit if this is an incomplete kwargs call
+    if (!kwargs.contains("degrees") || !kwargs.contains("control_points")) {
+      return;
+    }
+
     // parse kwargs
     int* degrees_ptr = nullptr;
     std::vector<std::vector<double>> knot_vectors;
@@ -189,19 +195,6 @@ public:
                 kv_dim,
                 ")",
                 "are not in increasing order.");
-          }
-
-          // Check for open knot-vector
-          if ((nknots > 0)
-              && ((nknots < degrees_ptr[i_para] + 1)
-                  || (nknots > n_knots - degrees_ptr[i_para] + 1))) {
-            if (std::abs(prev_knot - this_knot) > 1e-12) {
-              splinepy::utils::PrintAndThrowError(
-                  "Knot vector is not open. Expected repetition at position",
-                  nknots + 1,
-                  "Increase is:",
-                  std::abs(prev_knot - this_knot));
-            }
           }
 
           // lgtm, add!
@@ -345,6 +338,16 @@ public:
   /// for example.
   bool IsRational() const { return Core()->SplinepyIsRational(); }
 
+  /// As knot vectors and control points / weights has a specific intialization
+  /// routines, we provide a separate degree getter to avoid calling
+  /// CurrentCoreProperties() for a full properties copy.
+  py::array_t<int> CurrentCoreDegrees() const {
+    py::array_t<int> degrees(para_dim_);
+    int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
+    Core()->SplinepyCurrentProperties(degrees_ptr, nullptr, nullptr, nullptr);
+    return degrees;
+  }
+
   /// Returns currunt properties of core spline
   /// similar to update_p
   py::dict CurrentCoreProperties() const {
@@ -401,6 +404,26 @@ public:
     }
 
     return dict_spline;
+  }
+
+  /// Returns coordinate pointers in a tuple. For rational splines,
+  /// This will return control_point_pointers and weight_pointers
+  /// For non-rational splines, only the former.
+  py::tuple CoordinatePointers() {
+    auto& core = *Core();
+    if (core.SplinepyIsRational()) {
+      auto wcpp = core.SplinepyWeightedControlPointPointers();
+      return py::make_tuple(wcpp, wcpp->weight_pointers_);
+    } else {
+      return py::make_tuple(core.SplinepyControlPointPointers());
+    }
+  }
+
+  /// Returns knot vector of given dimension. meant to be
+  /// called library interally to prepare @property
+  std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  KnotVector(const int para_dim) {
+    return Core()->SplinepyKnotVector(para_dim);
   }
 
   /// AABB of spline parametric space
@@ -952,12 +975,6 @@ public:
     return successful;
   }
 
-  /// coordinate reference
-  std::shared_ptr<splinepy::splines::SplinepyBase::CoordinateReferences_>
-  CoordinateReferences() {
-    return Core()->SplinepyCoordinateReferences();
-  }
-
   /// @brief returns current spline as package's derived spline types based on
   /// splinepy.settings.NAME_TO_TYPE
   /// @return
@@ -976,7 +993,7 @@ inline void add_spline_pyclass(py::module& m) {
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
       .def(py::init<splinepy::py::PySpline&>())
-      .def("new_core", &splinepy::py::PySpline::NewCore)
+      .def("_new_core", &splinepy::py::PySpline::NewCore)
       .def_readwrite("_data", &splinepy::py::PySpline::data_)
       .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
       .def_readonly("dim", &splinepy::py::PySpline::dim_)
@@ -993,6 +1010,9 @@ inline void add_spline_pyclass(py::module& m) {
                              &splinepy::py::PySpline::GrevilleAbscissae)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
+      .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)
+      .def("_knot_vector", &splinepy::py::PySpline::KnotVector)
+      .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),
@@ -1047,8 +1067,6 @@ inline void add_spline_pyclass(py::module& m) {
            &splinepy::py::PySpline::ReduceDegrees,
            py::arg("para_dims"),
            py::arg("tolerance"))
-      .def("coordinate_references",
-           &splinepy::py::PySpline::CoordinateReferences)
       .def(py::pickle(
           [](splinepy::py::PySpline& spl) {
             return py::make_tuple(spl.CurrentCoreProperties(), spl.data_);

@@ -1,5 +1,3 @@
-import copy
-
 try:
     from . import common as c
 except BaseException:
@@ -12,13 +10,10 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         # make "iga book" bspline
         bspline = c.splinepy.BSpline(**c.b2P2D)
 
-        ref = copy.deepcopy(bspline.knot_vectors)
+        ref = [kv.numpy() for kv in bspline.knot_vectors]
 
-        # manipulate - this does not update cpp spline, but it doesn't matter
         for kv in bspline.knot_vectors:
-            for i in range(len(kv)):
-                kv[i] += 37  # apply some offset
-                kv[i] *= 1.7956  # apply some scaling
+            kv[:] = c.np.multiply(c.np.add(kv, 37), 1.78934).tolist()
 
         # normalize
         bspline.normalize_knot_vectors()
@@ -32,13 +27,11 @@ class NormalizeKnotVectorsTest(c.unittest.TestCase):
         """ """
         nurbs = c.splinepy.NURBS(**c.n2P2D)
 
-        ref = copy.deepcopy(nurbs.knot_vectors)
+        ref = [kv.numpy() for kv in nurbs.knot_vectors]
 
         # manipulate - this does not update cpp spline, but it doesn't matter
         for kv in nurbs.knot_vectors:
-            for i in range(len(kv)):
-                kv[i] += 37  # apply some offset
-                kv[i] *= 1.7956  # apply some scaling
+            kv[:] = c.np.multiply(c.np.add(kv, 37), 1.78934).tolist()
 
         # normalize
         nurbs.normalize_knot_vectors()

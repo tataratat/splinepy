@@ -54,6 +54,7 @@ public:
   using Base_ = BezierSplineType<para_dim, dim>;
   template<std::size_t b_para_dim, std::size_t b_dim>
   using BaseTemplate_ = BezierSplineType<b_para_dim, b_dim>;
+  using ControlPointPointers_ = typename SplinepyBase_::ControlPointPointers_;
   // alias to enable helper functions.
   using ParametricCoordinate_ = typename bezman::Point<para_dim, double>;
   using Degrees_ = typename std::array<std::size_t, para_dim>;
@@ -183,26 +184,27 @@ public:
     }
   }
 
-  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCoordinateReferences
-  virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
-  SplinepyCoordinateReferences() {
-    using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
-    auto ref_coordinates =
-        std::make_shared<SplinepyBase::CoordinateReferences_>();
-    auto& ref_coords = *ref_coordinates;
-    ref_coords.reserve(Base_::control_points.size());
-
-    for (auto& control_point : Base_::control_points) {
-      if constexpr (kDim == 1) {
-        // already scalar
-        ref_coords.emplace_back(RefHolder{control_point});
-      } else {
-        for (auto& cp : control_point) {
-          ref_coords.emplace_back(RefHolder{cp});
-        }
+  virtual std::shared_ptr<ControlPointPointers_>
+  SplinepyControlPointPointers() {
+    if (SplinepyBase_::control_point_pointers_) {
+      return SplinepyBase_::control_point_pointers_;
+    }
+    auto cpp = std::make_shared<ControlPointPointers_>();
+    cpp->dim_ = kDim;
+    cpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    if constexpr (kDim == 1) {
+      for (auto& control_point : Base_::control_points) {
+        cpp->coordinate_begins_.push_back(&control_point);
+      }
+    } else {
+      for (auto& control_point : Base_::control_points) {
+        cpp->coordinate_begins_.push_back(control_point.data());
       }
     }
-    return ref_coordinates;
+
+    SplinepyBase_::control_point_pointers_ = cpp;
+
+    return cpp;
   }
 
   virtual void SplinepyParametricBounds(double* para_bounds) const {

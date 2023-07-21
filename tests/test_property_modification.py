@@ -28,7 +28,7 @@ class InplaceModificationTest(c.unittest.TestCase):
             s.degrees += 1
 
             # this shoundn't be fine
-            s.new_core(**props)
+            s._new_core(**props)
             with self.assertRaises(ValueError):
                 s.degrees += 1
 
@@ -60,13 +60,10 @@ class InplaceModificationTest(c.unittest.TestCase):
             modified_query = raster_query.copy()
             factor = 2
             for kid in knot_insert_dims:
-                s.knot_vectors[kid] *= factor
+                s.knot_vectors[kid][:] = c.np.multiply(
+                    s.knot_vectors[kid], factor
+                ).tolist()
                 modified_query[:, kid] *= factor
-
-                # check modified flag
-                assert s.knot_vectors[kid]._modified
-                # full modified check
-                assert c.splinepy.spline.is_modified(s)
 
             # evaluation check
             assert c.np.allclose(raster_query, s.evaluate(modified_query))
@@ -123,93 +120,78 @@ class InplaceModificationTest(c.unittest.TestCase):
         assert c.np.allclose(b.sample(res), r.sample(res))
         assert c.np.allclose(z.sample(res), n.sample(res))
 
+    def test_physical_space_array(self):
+        """tests if physical space array is syncing correctly."""
+        n = c.splinepy.NURBS(**c.n2p2d_quarter_circle())
 
-class CoordinateReferencesModificationTest(c.unittest.TestCase):
-    def test_coordinate_references(self):
-        dim = 3
-        res = [3] * dim
-        box_data = c.nd_box(dim)
-
-        n = c.splinepy.NURBS(**box_data)
-        weights = box_data.pop("weights")
-        b = c.splinepy.BSpline(**box_data)
-        box_data.pop("knot_vectors")
-        z = c.splinepy.Bezier(**box_data)
-        r = c.splinepy.RationalBezier(**box_data, weights=weights)
-
-        query = c.raster([[0] * dim, [1] * dim], res)
-
-        for s in (z, r, b, n):
-            orig = s.copy()
-
-            # assign all to one value - tests broadcast_scalar
-            # should be okay for rational splines,
-            # since weights are all one
-            s.coordinate_references[:] = 1.0
-            evaluated = s.evaluate(query)
-            assert c.np.allclose(evaluated, c.np.ones_like(evaluated))
-            assert not c.splinepy.spline.is_modified(s)
-
-            s = orig.copy()
-            dim_to_modify = int(dim - 1)
-            factor = 2.3
-            # inplace modification is not supported
-            s.coordinate_references[:, dim_to_modify] = (
-                s.coordinate_references.numpy()[:, dim_to_modify] * factor
-            )
-            ref_eval = query.copy()
-            ref_eval[:, dim_to_modify] *= factor
-            assert c.np.allclose(s.evaluate(query), ref_eval)
-
-            # let's do exactly the same, but see if it also updates
-            s = orig.copy()
-            s.coordinate_references[:, dim_to_modify] = (
-                s.control_points[:, dim_to_modify] * factor
-            )
+        def cps_are_synced(n):
             assert c.np.allclose(
-                s.coordinate_references.numpy(), s.control_points
-            )
-            assert c.np.allclose(s.evaluate(query), ref_eval)
-
-    def test_coordinate_references_weight_handling(self):
-        """test if coordiante references reflect weights
-        and handles weight as expected is apply_weight is True."""
-
-        n_q_circle = c.n2p2d_quarter_circle()
-        res = [4] * 2
-        # init rational
-        n = c.splinepy.NURBS(**n_q_circle)
-        n_q_circle.pop("knot_vectors")
-        r = c.splinepy.RationalBezier(**n_q_circle)
-
-        for rs in (n, r):
-            orig_cps = c.np.array(n_q_circle["control_points"])
-            orig_ws = c.np.array(n_q_circle["weights"])
-
-            orig_rs = rs.copy()
-            # check if references are actually weighted
-            assert c.np.allclose(
-                rs.coordinate_references.numpy(), orig_cps * orig_ws
+                n.cps, n.current_core_properties()["control_points"]
             )
 
-            # explicitly set apply_weight to False
-            rs.coordinate_references.apply_weight = False
-            rs.coordinate_references[:] = orig_cps
-            # this will result in unweighted reference
-            assert c.np.allclose(rs.coordinate_references.numpy(), orig_cps)
-            # but this means it won't be halfhalf circle
-            assert not c.np.allclose(rs.sample(res), orig_rs.sample(res))
-            # explicitly set apply_weight to True
-            rs = orig_rs.copy()
-            rs.coordinate_references.apply_weight = True
-            weighted = rs.coordinate_references.numpy()
-            rs.coordinate_references[:] = orig_cps  # this should apply weight
+        # all setitem cases
+        # 1.
+        n.cps[0] = 100.0
+        cps_are_synced(n)
 
-            assert c.np.allclose(rs.coordinate_references.numpy(), weighted)
-            assert c.np.allclose(rs.control_points, orig_cps)
+        n.cps[c.np.array(1)] = [0.99, 0.11]  # here, weight is not 1
+        cps_are_synced(n)
 
-            # this will result in same eval
-            assert c.np.allclose(rs.sample(res), orig_rs.sample(res))
+        # 2.
+        n.cps[c.np.array([1, 4, 3])] = 123
+        cps_are_synced(n)
+
+        b_mask = c.np.ones(len(n.cps), dtype=bool)
+        b_mask[[0, 4]] = False
+        n.cps[b_mask] = -1235.5
+        cps_are_synced(n)
+
+        # 3.
+        n.cps[[2, 0, 5]] = 299354.0
+        cps_are_synced(n)
+
+        n.cps[b_mask.tolist()] = 975.5
+        cps_are_synced(n)
+
+        # 4.
+        n.cps[3, :2] = [-10, -20]
+        cps_are_synced(n)
+
+        n.cps[5, [1, 0]] = [1.722, 24.29]
+        cps_are_synced(n)
+
+        n.cps[c.np.array(2), 1] = 7
+        cps_are_synced(n)
+
+        # 5.
+        n.cps[[0, 5, 2], 0] = 92314.111234
+        cps_are_synced(n)
+        n.cps[b_mask, :2] = n.cps[[2, 5, 0, 1], -2:]
+        cps_are_synced(n)
+        n.cps[b_mask.tolist(), 0] = n.cps[b_mask[::-1], 1]
+        cps_are_synced(n)
+
+        # 6.
+        n.cps[:1, :2] = 160.4
+        cps_are_synced(n)
+        n.cps[2:-1, :2] = 78883.2
+        n.cps[-1:-4:-1, :1] = -1687
+        cps_are_synced(n)
+
+        # 7.
+        n.cps[...] = 1237792.4634527
+        n.cps[..., :1] = -62.5
+        cps_are_synced(n)
+
+        # 8. if you have ideas for use case not listed above, please add!
+
+        # now, child arrays
+        carr = n.cps[0]
+        assert carr.base is n.cps
+
+        carr += [1324235.1, -234.5]
+        assert c.np.allclose(carr, n.cps[0])
+        cps_are_synced(n)
 
 
 if __name__ == "__main__":

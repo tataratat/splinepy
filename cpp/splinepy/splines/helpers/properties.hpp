@@ -17,10 +17,14 @@ GetParametricBounds(const SplineType& spline) {
     parametric_bounds[1].fill(1.);
   } else {
     const auto& parameter_space = spline.GetParameterSpace();
+    const auto& degrees = parameter_space.GetDegrees();
+
     size_t i{};
     for (const auto& knotvector : parameter_space.GetKnotVectors()) {
-      parametric_bounds[0][i] = knotvector->GetFront().Get();
-      parametric_bounds[1][i] = knotvector->GetBack().Get();
+      const int& degree_value = degrees[i].Get();
+      parametric_bounds[0][i] = knotvector->operator[](degree_value);
+      parametric_bounds[1][i] =
+          knotvector->operator[](knotvector->GetSize() - degree_value - 1);
       ++i;
     }
   }

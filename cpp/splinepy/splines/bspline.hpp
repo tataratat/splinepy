@@ -43,6 +43,7 @@ public:
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
+  using ControlPointPointers_ = typename SplinepyBase_::ControlPointPointers_;
 
   // splinelib
   using Base_ = bsplinelib::splines::BSpline<para_dim, dim>;
@@ -262,25 +263,33 @@ public:
     }
   }
 
-  /// @copydoc splinepy::splines::SplinepyBase::SplinepyCoordinateReferences
-  virtual std::shared_ptr<SplinepyBase::CoordinateReferences_>
-  SplinepyCoordinateReferences() {
-    // prepare return
-    using RefHolder = typename SplinepyBase::CoordinateReferences_::value_type;
-    auto ref_coordinates =
-        std::make_shared<SplinepyBase::CoordinateReferences_>();
-    auto& ref_coords = *ref_coordinates;
-
-    // get ref
-    auto& coordinates = Base_::vector_space_->GetCoordinates();
-    ref_coords.reserve(coordinates.size());
-    for (auto& control_point : coordinates) {
-      for (auto& cp : control_point) {
-        ref_coords.emplace_back(RefHolder{static_cast<double&>(cp)});
-      }
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+  SplinepyKnotVector(const int p_dim) {
+    if (!(p_dim < para_dim)) {
+      splinepy::utils::PrintAndThrowError(
+          "Invalid parametric dimension. Should be smaller than",
+          para_dim);
     }
-    return ref_coordinates;
+    return Base_::Base_::parameter_space_->GetKnotVectors()[p_dim];
+  };
+
+  virtual std::shared_ptr<ControlPointPointers_>
+  SplinepyControlPointPointers() {
+    if (SplinepyBase_::control_point_pointers_) {
+      return SplinepyBase_::control_point_pointers_;
+    }
+    auto cpp = std::make_shared<ControlPointPointers_>();
+    cpp->dim_ = kDim;
+    cpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    for (auto& control_point : Base_::vector_space_->GetCoordinates()) {
+      cpp->coordinate_begins_.push_back(control_point.data());
+    }
+
+    SplinepyBase_::control_point_pointers_ = cpp;
+
+    return cpp;
   }
+
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds
   virtual void SplinepyParametricBounds(double* para_bounds) const {
     const auto pbounds = splinepy::splines::helpers::GetParametricBounds(*this);
