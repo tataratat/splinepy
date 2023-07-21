@@ -46,7 +46,7 @@ void SetRows(PointersType& pointers,
   }
 
   if (pointers.Dim() != values.shape(1)) {
-    splinepy::utils::PrintAndThrowError("Dimension mismatch. Expecing",
+    splinepy::utils::PrintAndThrowError("Dimension mismatch. Expecting",
                                         pointers.Dim(),
                                         "but values are",
                                         values.shape(1));
