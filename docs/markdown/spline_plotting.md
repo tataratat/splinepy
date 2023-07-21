@@ -80,4 +80,4 @@ gus.show(
 
 This does not need to be only from 2D->3D but can also be from 1D->2D etc.
 
-This is just the beginning of what you can do with the given plotting and creation capabilities in this library. Please look into the [examples folder](https://github.com/tataratat/splinepy/example) to see more capabilities.
+This is just the beginning of what you can do with the given plotting and creation capabilities in this library. Please look into the [examples folder](https://github.com/tataratat/splinepy/tree/main/examples) to see more capabilities.
