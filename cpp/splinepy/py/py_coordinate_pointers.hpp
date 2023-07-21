@@ -10,6 +10,9 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
+/// Wraps ControlPointPointers and WeightPointers for python.
+/// Before passing syncing values, this wrappers perform size checks.
+
 template<typename PointersType>
 int Len(const PointersType& pointers) {
   return pointers.Len();

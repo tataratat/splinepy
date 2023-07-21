@@ -33,7 +33,8 @@ class PhysicalSpaceArray(np.ndarray):
 
     def __array_finalize__(self, obj):
         """Sets default flags for any arrays that maybe generated based on
-        tracked array."""
+        physical space array. For more information,
+        see https://numpy.org/doc/stable/user/basics.subclassing.html"""
         self._source_ptr = None
         self._super_arr = None
 

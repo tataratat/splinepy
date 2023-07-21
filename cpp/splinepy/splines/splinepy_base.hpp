@@ -15,17 +15,23 @@ namespace splinepy::splines {
 /// Member functions are prepended with "Splinepy".
 class SplinepyBase {
 public:
+  /// Beginning pointers to control points.
   using ControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  /// Same type, different alias to emphasize "Weighted"
   using WeightedControlPointPointers_ = splinepy::utils::ControlPointPointers;
+  /// Pointers to weights
   using WeightPointers_ = splinepy::utils::WeightPointers;
 
 protected:
+  /// each class creates only once and returns shared_ptr second time.
+  /// not thread safe for first run.
   std::shared_ptr<ControlPointPointers_> control_point_pointers_ = nullptr;
 
 public:
   /// default ctor
   SplinepyBase() = default;
-  ///
+
+  /// dtor sets invalid flag to control_point_pointers_ to prevent segfault
   virtual ~SplinepyBase() {
     if (control_point_pointers_) {
       control_point_pointers_->invalid_ = true;

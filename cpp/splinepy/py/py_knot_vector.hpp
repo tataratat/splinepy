@@ -20,6 +20,7 @@ inline void add_knot_vector(py::module_& m) {
 
   // implementations adapted from pybind11/stl_bind.h
 
+  /// as python supports negative ids, this func brings negative ids to pos
   auto wrap_id = [](DiffType i, const SizeType n) {
     if (i < 0) {
       i += n;
@@ -29,8 +30,13 @@ inline void add_knot_vector(py::module_& m) {
     }
     return i;
   };
+
   py::class_<KnotVector, std::shared_ptr<KnotVector>> klasse(m, "KnotVector");
-  klasse.def("__len__", [](const KnotVector& kv) { return kv.GetSize(); })
+  klasse
+      .def(
+          "__len__",
+          [](const KnotVector& kv) { return kv.GetSize(); },
+          "Returns size if len(knot_vector) is called.")
       .def(
           "__iter__",
           [](KnotVector& kv) {
@@ -40,14 +46,16 @@ inline void add_knot_vector(py::module_& m) {
                 IterType,
                 KnotType&>(kv.GetKnots().begin(), kv.GetKnots().end());
           },
-          py::keep_alive<0, 1>())
+          py::keep_alive<0, 1>(),
+          "Support iterations of element references.")
       .def(
           "__getitem__",
           [wrap_id](KnotVector& kv, DiffType i) -> KnotType& {
             i = wrap_id(i, kv.GetKnots().size());
             return kv.GetKnots()[static_cast<SizeType>(i)];
           },
-          py::return_value_policy::reference_internal)
+          py::return_value_policy::reference_internal,
+          "int based __getitem__, which returns reference..")
       .def(
           "__getitem__",
           [](const KnotVector& kv, const py::slice& slice) -> py::list {
@@ -63,31 +71,36 @@ inline void add_knot_vector(py::module_& m) {
             }
             return items;
           },
-          py::arg("slice"))
-      .def("__setitem__",
-           [wrap_id](KnotVector& kv, DiffType i, const KnotType knot) {
-             i = wrap_id(i, kv.GetKnots().size());
-             kv.UpdateKnot(i, knot);
-           })
-      .def("__setitem__",
-           [](KnotVector& kv, const py::slice& slice, const py::list& value) {
-             std::size_t start{}, stop{}, step{}, slicelength{};
-             const auto kv_size = kv.GetKnots().size();
-             if (!slice.compute(kv_size, &start, &stop, &step, &slicelength)) {
-               throw py::error_already_set();
-             }
-             if (slicelength != value.size()) {
-               splinepy::utils::PrintAndThrowError(
-                   "Left and right hand size of slice assignment have "
-                   "different sizes.");
-             }
-             auto& knots = kv.GetKnots();
-             for (std::size_t i{}; i < slicelength; ++i) {
-               knots[start] = py::cast<KnotType>(value[i]);
-               start += step;
-             }
-             kv.ThrowIfTooSmallOrNotNonDecreasing();
-           })
+          py::arg("slice"),
+          "support slice based __getitem__.")
+      .def(
+          "__setitem__",
+          [wrap_id](KnotVector& kv, DiffType i, const KnotType knot) {
+            i = wrap_id(i, kv.GetKnots().size());
+            kv.UpdateKnot(i, knot);
+          },
+          "Single knot assignement / modification.")
+      .def(
+          "__setitem__",
+          [](KnotVector& kv, const py::slice& slice, const py::list& value) {
+            std::size_t start{}, stop{}, step{}, slicelength{};
+            const auto kv_size = kv.GetKnots().size();
+            if (!slice.compute(kv_size, &start, &stop, &step, &slicelength)) {
+              throw py::error_already_set();
+            }
+            if (slicelength != value.size()) {
+              splinepy::utils::PrintAndThrowError(
+                  "Left and right hand size of slice assignment have "
+                  "different sizes.");
+            }
+            auto& knots = kv.GetKnots();
+            for (std::size_t i{}; i < slicelength; ++i) {
+              knots[start] = py::cast<KnotType>(value[i]);
+              start += step;
+            }
+            kv.ThrowIfTooSmallOrNotNonDecreasing();
+          },
+          "Multiple slice based element assignement.")
       .def("__repr__",
            [](const KnotVector& kv) {
              std::ostringstream s;
@@ -103,26 +116,37 @@ inline void add_knot_vector(py::module_& m) {
              s << "]";
              return s.str();
            })
-      .def("scale", &KnotVector::Scale)
-      .def("find_span", &KnotVector::FindSpan_)
-      .def("numpy",
-           [](const KnotVector& kv) {
-             py::array_t<KnotType> arr(kv.GetSize());
-             KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
-             for (int i{}; i < kv.GetSize(); ++i) {
-               arr_ptr[i] = kv[i];
-             }
-             return arr;
-           })
-      .def("__array__",
-           [](const KnotVector& kv, [[maybe_unused]] py::args dtype_ignored) {
-             py::array_t<KnotType> arr(kv.GetSize());
-             KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
-             for (int i{}; i < kv.GetSize(); ++i) {
-               arr_ptr[i] = kv[i];
-             }
-             return arr;
-           });
+      .def("scale",
+           &KnotVector::Scale,
+           py::arg("min"),
+           py::arg("max"),
+           "Scales knot vector with given [min, max].")
+      .def("find_span",
+           &KnotVector::FindSpan_,
+           "Finds knot span of given parametric coordinate.")
+      .def(
+          "numpy",
+          [](const KnotVector& kv) {
+            py::array_t<KnotType> arr(kv.GetSize());
+            KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
+            for (int i{}; i < kv.GetSize(); ++i) {
+              arr_ptr[i] = kv[i];
+            }
+            return arr;
+          },
+          "Returns copy of knot vectors as numpy array.")
+      .def(
+          "__array__",
+          [](const KnotVector& kv, [[maybe_unused]] py::args dtype_ignored) {
+            py::array_t<KnotType> arr(kv.GetSize());
+            KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
+            for (int i{}; i < kv.GetSize(); ++i) {
+              arr_ptr[i] = kv[i];
+            }
+            return arr;
+          },
+          "Similar to numpy(), but supports np.array or np.asarray based "
+          "creation.");
 }
 
 } // namespace splinepy::py

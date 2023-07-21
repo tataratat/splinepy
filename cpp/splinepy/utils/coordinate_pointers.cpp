@@ -5,6 +5,7 @@
 namespace splinepy::utils {
 
 int ControlPointPointers::Len() const { return coordinate_begins_.size(); }
+
 int ControlPointPointers::Dim() const {
   assert(dim_ > 0);
   return dim_;
@@ -64,29 +65,6 @@ void ControlPointPointers::Sync(const double* values) {
   }
 }
 
-std::shared_ptr<ControlPointPointers>
-ControlPointPointers::SubSetIncomplete(const int* ids, const int n_ids) {
-  auto subset = std::make_shared<ControlPointPointers>();
-  subset->coordinate_begins_.reserve(n_ids);
-  subset->dim_ = dim_;
-  subset->for_rational_ = for_rational_;
-
-  for (int i{}; i < n_ids; ++i) {
-    subset->coordinate_begins_.push_back(coordinate_begins_[ids[i]]);
-  }
-  return subset;
-}
-
-std::shared_ptr<ControlPointPointers>
-ControlPointPointers::SubSet(const int* ids, const int n_ids) {
-  auto subset = SubSetIncomplete(ids, n_ids);
-  if (for_rational_) {
-    subset->weight_pointers_ = weight_pointers_->SubSetIncomplete(ids, n_ids);
-    weight_pointers_->control_point_pointers_ = subset;
-  }
-  return subset;
-}
-
 int WeightPointers::Len() const { return weights_.size(); }
 int WeightPointers::Dim() const {
   assert(dim_ > 0);
@@ -124,17 +102,6 @@ void WeightPointers::Sync(const double* values) {
   for (int i{}; i < Len(); ++i) {
     SetRow(i, values[i]);
   }
-}
-
-std::shared_ptr<WeightPointers>
-WeightPointers::SubSetIncomplete(const int* ids, const int n_ids) {
-  auto subset = std::make_shared<WeightPointers>();
-  subset->weights_.reserve(n_ids);
-
-  for (int i{}; i < n_ids; ++i) {
-    subset->weights_.push_back(weights_[ids[i]]);
-  }
-  return subset;
 }
 
 } // namespace splinepy::utils

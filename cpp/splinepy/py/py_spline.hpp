@@ -351,6 +351,9 @@ public:
   /// for example.
   bool IsRational() const { return Core()->SplinepyIsRational(); }
 
+  /// As knot vectors and control points / weights has a specific intialization
+  /// routines, we provide a separate degree getter to avoid calling
+  /// CurrentCoreProperties() for a full properties copy.
   py::array_t<int> CurrentCoreDegrees() const {
     py::array_t<int> degrees(para_dim_);
     int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
@@ -416,6 +419,9 @@ public:
     return dict_spline;
   }
 
+  /// Returns coordinate pointers in a tuple. For rational splines,
+  /// This will return control_point_pointers and weight_pointers
+  /// For non-rational splines, only the former.
   py::tuple CoordinatePointers() {
     auto& core = *Core();
     if (core.SplinepyIsRational()) {
@@ -426,6 +432,8 @@ public:
     }
   }
 
+  /// Returns knot vector of given dimension. meant to be
+  /// called library interally to prepare @property
   std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   KnotVector(const int para_dim) {
     return Core()->SplinepyKnotVector(para_dim);
