@@ -3,6 +3,7 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
+import funi
 import numpy as np
 
 # single function imports
@@ -378,10 +379,9 @@ def export_cartesian(
 
     # Retrieve information using bezman
     connectivity = spline_list.interfaces
-    import uffpy
 
-    (_, _, inverse_numeration) = uffpy.uffpy(
-        corner_vertices, tolerance=tolerance, stable=True
+    (_, _, inverse_numeration) = funi.unique_rows(
+        corner_vertices, tolerance, True, True, True, True, True
     )
     vertex_ids = inverse_numeration.reshape(-1, n_vertex_per_element)
     # Get boundaries from interfaces
@@ -427,7 +427,7 @@ def export_cartesian(
         )
 
         # Write Number Of vertices
-        f.write(f"\n\nvertices\n{np.max(vertex_ids)+1}\n\n")
+        f.write(f"\n\nvertices\n{int(np.max(vertex_ids)+1)}\n\n")
 
         # Export Splines
         f.write("patches\n\n")
