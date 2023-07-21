@@ -1,6 +1,5 @@
 #pragma once
 // related headers
-#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 

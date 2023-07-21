@@ -4,7 +4,6 @@
 #include <type_traits>
 
 // bezman
-#include <bezman/src/bezier_group.hpp>
 #include <bezman/src/bezier_spline.hpp>
 #include <bezman/src/point.hpp>
 
