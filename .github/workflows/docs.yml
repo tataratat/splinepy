@@ -24,7 +24,9 @@ jobs:
       run: CC=clang-12 CXX=clang++-12 python3 setup.py --minimal --debug develop
 
     - name: test
-      run: cd tests && python3 -m unittest discover . -v
+      run: |
+        pip install funi>=0.0.1
+        cd tests && python3 -m unittest discover . -v
 
     - name: build docs
       run: |
