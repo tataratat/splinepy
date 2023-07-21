@@ -875,6 +875,10 @@ class Spline(SplinepyBase, core.PySpline):
                     f"len(control_points) ({len(control_points)}) "
                     f"should match len(weights) ({len(self.weights)})."
                 )
+            # we need to remove exising weights so that pointers don't get
+            # mixed
+            if isinstance(self.weights, utils.data.PhysicalSpaceArray):
+                self._data["weights"] = self._data["weights"].copy()
 
         # set - copies
         if isinstance(control_points, utils.data.PhysicalSpaceArray):
@@ -1030,6 +1034,12 @@ class Spline(SplinepyBase, core.PySpline):
                     f"len(weights) ({len(weights)}) should match "
                     f"len(control_points) ({len(self.control_points)})."
                 )
+
+            # we need to remove exising cps so that pointers don't get mixed
+            if isinstance(self.control_points, utils.data.PhysicalSpaceArray):
+                self._data["control_points"] = self._data[
+                    "control_points"
+                ].copy()
 
         # set - copies
         if isinstance(weights, utils.data.PhysicalSpaceArray):

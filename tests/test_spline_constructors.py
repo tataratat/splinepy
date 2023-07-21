@@ -36,16 +36,6 @@ class TestSplineConstructors(c.unittest.TestCase):
             knot_vectors=[[0, 0, 1, 1]],
             control_points=c.np.ones((2, 0)),
         )
-        # Check knot-vectors
-        self.assertRaisesRegex(
-            RuntimeError,
-            "SPLINEPY ERROR - Knot vector is not open. Expected repetition at "
-            "position 2 Increase is: 0.5 ",
-            c.splinepy.BSpline,
-            degrees=[1],
-            knot_vectors=[[0, 0.5, 1, 1]],
-            control_points=c.np.ones((2, 1)),
-        )
         self.assertRaisesRegex(
             ValueError,
             r"len\(knot_vectors\) \(2\) should match len\(self.degrees\) "
@@ -96,17 +86,6 @@ class TestSplineConstructors(c.unittest.TestCase):
             degrees=[1],
             knot_vectors=[[0, 0, 1, 1]],
             control_points=c.np.ones((2, 0)),
-            weights=c.np.ones(2),
-        )
-        # Check knot-vectors
-        self.assertRaisesRegex(
-            RuntimeError,
-            "SPLINEPY ERROR - Knot vector is not open. Expected repetition at "
-            "position 2 Increase is: 0.5 ",
-            c.splinepy.NURBS,
-            degrees=[1],
-            knot_vectors=[[0, 0.5, 1, 1]],
-            control_points=c.np.ones((2, 1)),
             weights=c.np.ones(2),
         )
         self.assertRaisesRegex(

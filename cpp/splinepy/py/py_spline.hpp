@@ -197,19 +197,6 @@ public:
                 "are not in increasing order.");
           }
 
-          // Check for open knot-vector
-          if ((nknots > 0)
-              && ((nknots < degrees_ptr[i_para] + 1)
-                  || (nknots > n_knots - degrees_ptr[i_para] + 1))) {
-            if (std::abs(prev_knot - this_knot) > 1e-12) {
-              splinepy::utils::PrintAndThrowError(
-                  "Knot vector is not open. Expected repetition at position",
-                  nknots + 1,
-                  "Increase is:",
-                  std::abs(prev_knot - this_knot));
-            }
-          }
-
           // lgtm, add!
           // 0 0 1 1
           // 0 1 2 3

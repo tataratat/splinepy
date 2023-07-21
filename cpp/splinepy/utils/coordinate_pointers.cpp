@@ -17,13 +17,13 @@ void ControlPointPointers::SetRow(const int id, const double* values) {
   }
 
   if (for_rational_) {
-    const auto& weight = *(weight_pointers_->weights_[id]);
-    auto* coord = coordinate_begins_[id];
+    const double& weight = *(weight_pointers_->weights_[id]);
+    double* coord = coordinate_begins_[id];
     for (int i{}; i < Dim(); ++i) {
       coord[i] = values[i] * weight;
     }
   } else {
-    auto* coord = coordinate_begins_[id];
+    double* coord = coordinate_begins_[id];
     for (int i{}; i < Dim(); ++i) {
       coord[i] = values[i];
     }
@@ -35,16 +35,16 @@ void ControlPointPointers::Sync(const double* values) {
     return;
   }
 
-  const auto dim = Dim();
+  const int dim = Dim();
 
   if (for_rational_) {
     const auto& weights = weight_pointers_->weights_;
 
     for (int i{}; i < Len(); ++i) {
       // get destinations and sources
-      auto* current_coord = coordinate_begins_[i];
-      const auto* current_value = &values[i * dim];
-      const auto& current_weight = *weights[i];
+      double* current_coord = coordinate_begins_[i];
+      const double* current_value = &values[i * dim];
+      const double& current_weight = *weights[i];
 
       for (int j{}; j < dim; ++j) {
         // saves weighted control points
@@ -54,8 +54,8 @@ void ControlPointPointers::Sync(const double* values) {
   } else {
     for (int i{}; i < Len(); ++i) {
       // get destinations and sources
-      auto* current_coord = coordinate_begins_[i];
-      const auto* current_value = &values[i * dim];
+      double* current_coord = coordinate_begins_[i];
+      const double* current_value = &values[i * dim];
 
       for (int j{}; j < dim; ++j) {
         // saves weighted control points
@@ -78,7 +78,7 @@ void WeightPointers::SetRow(const int id, double const& value) {
 
   if (auto cpp = control_point_pointers_.lock()) {
     // adjustment factor - new value divided by previous factor;
-    auto& current_weight = *weights_[id];
+    double& current_weight = *weights_[id];
     const double adjust_factor = value / current_weight;
 
     double* current_coordinate = cpp->coordinate_begins_[id];
