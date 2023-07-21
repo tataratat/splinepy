@@ -60,7 +60,6 @@ void FitSurface(const double* points,
 
   std::vector<double> u_k, v_l, coefficient_matrix, tmp_result,
       tmp_control_points{};
-  int u, v, i;
   double* pts_u = new double[size_u * dim];
   double* pts_v = new double[size_v * dim];
 
@@ -79,9 +78,9 @@ void FitSurface(const double* points,
   knot_vector_v = ComputeKnotVector(degree_v, size_v, size_v, v_l);
 
   // u - direction global interpolation
-  for (v = 0; v < size_v; v++) {
-    for (u = 0; u < size_u; u++) {
-      for (i = 0; i < dim; i++) {
+  for (int v = 0; v < size_v; v++) {
+    for (int u = 0; u < size_u; u++) {
+      for (int i = 0; i < dim; i++) {
         pts_u[u * dim + i] = points[(u + (size_u * v)) * dim + i];
       }
     }
@@ -95,9 +94,9 @@ void FitSurface(const double* points,
 
   // v - direction global interpolation
   control_points.assign(size_u * size_v * dim, 0.0);
-  for (u = 0; u < size_u; u++) {
-    for (v = 0; v < size_v; v++) {
-      for (i = 0; i < dim; i++) {
+  for (int u = 0; u < size_u; u++) {
+    for (int v = 0; v < size_v; v++) {
+      for (int i = 0; i < dim; i++) {
         pts_v[v * dim + i] = tmp_control_points[(u + (size_u * v)) * dim + i];
       }
     }

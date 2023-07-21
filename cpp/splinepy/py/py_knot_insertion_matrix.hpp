@@ -88,7 +88,6 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
   std::vector<std::size_t> index_of_knot_span_base(new_kv.size());
 
   // As we assume closed knot-vectors (we can ignore the last entry)
-  std::size_t equal_index_count{0};
   std::size_t current_old_id{static_cast<std::size_t>(old_kv.size() - 2)};
   std::size_t current_knot_span{static_cast<std::size_t>(old_kv.size() - 1)};
 
@@ -97,7 +96,6 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
   for (size_t i{static_cast<std::size_t>(new_kv.size() - 1)}; i-- > 0;) {
     // Check knots against each other with a tolerance
     if (std::abs(old_kv_ptr[current_old_id] - new_kv_ptr[i]) < tolerance) {
-      equal_index_count++;
       // Check if we entered another non-zero knot-span
       if (old_kv_ptr[current_old_id] < old_kv_ptr[current_old_id + 1]) {
         current_knot_span = current_old_id;
@@ -108,12 +106,12 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
         // Beautify the output
         std::ostringstream old_s, new_s;
         new_s << "[" << new_kv_ptr[0];
-        for (int i{1}; i < new_kv.size(); i++) {
+        for (int i_kv{1}; i_kv < new_kv.size(); i_kv++) {
           new_s << ", " << new_kv_ptr[i];
         }
         new_s << "]";
         old_s << "[" << old_kv_ptr[0];
-        for (int i{1}; i < old_kv.size(); i++) {
+        for (int i_kv{1}; i_kv < old_kv.size(); i_kv++) {
           old_s << ", " << old_kv_ptr[i];
         }
         old_s << "]";
@@ -124,7 +122,6 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
             "\nNew knot vector : ",
             new_s.str());
       }
-      equal_index_count = 0;
     }
     if (new_kv_ptr[i] < old_kv_ptr[current_knot_span]) {
       index_of_knot_span_base[i] = current_old_id;

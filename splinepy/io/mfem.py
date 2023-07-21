@@ -3,11 +3,11 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
+import funi
 import numpy as np
 
 # single function imports
 from splinepy.io.ioutils import form_lines, make_meaningful, next_line
-from splinepy.splinepy_core import retrieve_mfem_information
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -273,8 +273,6 @@ def export_cartesian(
     fname,
     spline_list,
     tolerance=None,
-    boundary_functions=None,
-    connectivity_only=False,
 ):
     """
     Export list of bezier splines in mfem export.
@@ -287,42 +285,28 @@ def export_cartesian(
       list of bezier spline objects
     tolerance : float
       tolerance to collapse two neighboring points
-    boundary_functions : list(Callable)
-      Functions that define boundaries
-    connectivity_only : bool
-      For use in other function, only retrieve connectivity
 
     Returns
     -------
     None
     """
-    from splinepy import Spline
+    from splinepy import Multipatch
 
     # Check first spline
-    if not type(spline_list) == list:
+    if not isinstance(spline_list, (list, Multipatch)):
         raise ValueError("export_cartesian expects list for export.")
-    if not issubclass(type(spline_list[0]), Spline):
-        raise ValueError("Unsupported type in list")
+    if isinstance(spline_list, list):
+        spline_list = Multipatch(splines=spline_list)
 
     # Set Tolerance
     if tolerance is None:
         tolerance = 1e-5
-    # Set boundary list
-    if boundary_functions is None:
-        boundary_functions = []
 
     # Set Problem dimensions
-    para_dim = spline_list[0].para_dim
-    dim = spline_list[0].dim
+    para_dim = spline_list.para_dim
+    dim = spline_list.dim
     if not ((para_dim == dim) and (dim == 3 or dim == 2)):
         raise ValueError("Only 2D2D or 3D3D splines are supported")
-
-    # For use in loop
-    def _sanity_check(spline):
-        if not issubclass(type(spline), Spline):
-            raise ValueError("Unsupported type in list")
-        if not (spline.dim == dim and spline.para_dim == para_dim):
-            raise ValueError("Dimension Mismatch between splines")
 
     # Auxiliary function to identify corner vertices of the underlying spline
     #  representation. As this function requires the numeration of its
@@ -346,6 +330,11 @@ def export_cartesian(
                 dtype="int32",
             )
 
+        # Face enumeration is different from splinepy's
+        sub_element_vertices = np.array([[0, 1], [1, 2], [3, 2], [0, 3]])
+        # splinepy's face 3 corresponds to mfem's face 0
+        splinepy_face_id_2_mfem_face_id = np.array([3, 1, 0, 2])
+
     elif para_dim == 3:
         geometry_type = 5
         boundary_type = 3
@@ -368,58 +357,42 @@ def export_cartesian(
                 dtype="int32",
             )
 
-    # Create a list of all corner vertices ordered by spline patch number
-    corner_vertices = np.empty((0, dim))
-    for spline in spline_list:
-        _sanity_check(spline)
-        corner_vertex_ids = _corner_vertex_ids(spline)
-        corner_vertices = np.vstack(
-            (corner_vertices, spline.control_points[corner_vertex_ids, :])
+        sub_element_vertices = np.array(
+            [
+                [0, 1, 2, 3],
+                [1, 2, 6, 5],
+                [3, 2, 6, 7],
+                [0, 3, 7, 4],
+                [0, 1, 5, 4],
+                [4, 5, 6, 7],
+            ]
         )
+        splinepy_face_id_2_mfem_face_id = np.array([3, 1, 4, 2, 0, 5])
+
+    # Create a list of all corner vertices ordered by spline patch number
+    corner_vertices = np.vstack(
+        [
+            spline.cps[_corner_vertex_ids(spline), :]
+            for spline in spline_list.splines
+        ]
+    )
 
     # Retrieve information using bezman
-    (
-        connectivity,
-        vertex_ids,
-        edges,
-        boundaries,
-        success,
-    ) = retrieve_mfem_information(corner_vertices, tolerance)
+    connectivity = spline_list.interfaces
 
-    if connectivity_only:
-        return connectivity
-
-    boundary_ids = np.ones(boundaries.shape[0], dtype=int)
-    if not len(boundary_functions) == 0:
-        # Retrieve all boundary points (to minimize computations)
-        boundary_vertex_ids = np.unique(boundaries)
-        # Boundary_vertex_ids refer to the new enumeration
-        _, vertex_ids_unique = np.unique(vertex_ids, return_index=True)
-        boundary_corner_verts = corner_vertices[
-            vertex_ids_unique[boundary_vertex_ids], :
-        ]
-        # Loop over all boundary functions to identify boundaries
-        for i_bound, b_func in enumerate(boundary_functions):
-            try:
-                is_on_boundary = b_func(boundary_corner_verts)
-            except BaseException:
-                raise ValueError("Boundary Function Layout incompatible")
-            set_boundary = (
-                np.sum(
-                    np.isin(boundaries, boundary_vertex_ids[is_on_boundary]),
-                    axis=1,
-                )
-                == n_vertex_per_boundary
-            )
-            boundary_ids[set_boundary] = i_bound + 2
-
-    # Check if algorithm was successfull
-    if not success:
-        # todo : only connectivity stores data, see issue #33
-        # Use <SplineBase>.permute to potentially save mesh export
-        raise NotImplementedError(
-            "MFEM export not implemented for unstructured meshes"
-        )
+    (_, _, inverse_numeration) = funi.unique_rows(
+        corner_vertices, tolerance, True, True, True, True, True
+    )
+    vertex_ids = inverse_numeration.reshape(-1, n_vertex_per_element)
+    # Get boundaries from interfaces
+    boundary_elements, boundary_faces = np.where(connectivity < 0)
+    boundary_ids = -connectivity[boundary_elements, boundary_faces]
+    # Convert from splinepy enumeration to mfem enumeration
+    boundaries = np.take_along_axis(
+        vertex_ids[boundary_elements, :],
+        sub_element_vertices[splinepy_face_id_2_mfem_face_id[boundary_faces]],
+        axis=1,
+    )
 
     # Write all gathered information into a file
     with open(fname, "w") as f:
@@ -427,7 +400,7 @@ def export_cartesian(
         f.write(f"MFEM NURBS mesh v1.0\n\ndimension\n{dim}\n\n")
 
         # Elements
-        n_elements = len(spline_list)
+        n_elements = len(spline_list.splines)
         f.write(f"elements\n{n_elements}\n")
         f.write(
             "\n".join(
@@ -453,23 +426,12 @@ def export_cartesian(
             )
         )
 
-        # Edges
-        n_edges = edges.shape[0]
-        f.write(f"\n\nedges\n{n_edges}\n")
-        # Here currently all boudaries are set to 1
-        f.write(
-            "\n".join(
-                " ".join(str(id) for id in row)
-                for row in edges.reshape(-1, 3).tolist()
-            )
-        )
-
         # Write Number Of vertices
-        f.write(f"\n\nvertices\n{np.max(vertex_ids)+1}\n\n")
+        f.write(f"\n\nvertices\n{int(np.max(vertex_ids)+1)}\n\n")
 
         # Export Splines
         f.write("patches\n\n")
-        for spline in spline_list:
+        for spline in spline_list.splines:
             f.write(f"knotvectors\n{para_dim}\n")
             cmr = spline.control_mesh_resolutions
             for i_para_dim in range(para_dim):

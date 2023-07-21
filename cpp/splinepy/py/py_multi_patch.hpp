@@ -10,13 +10,10 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
-// Bezman
-#include <bezman/src/utils/algorithms/point_uniquifier.hpp>
-
 //
-#include <splinepy/py/py_spline.hpp>
-#include <splinepy/splines/null_spline.hpp>
-#include <splinepy/utils/print.hpp>
+#include "splinepy/py/py_spline.hpp"
+#include "splinepy/splines/null_spline.hpp"
+#include "splinepy/utils/print.hpp"
 
 namespace splinepy::py {
 
@@ -102,6 +99,20 @@ inline py::list ToPySplineList(CoreSplineVector& splist) {
   }
 
   return pyspline_list;
+}
+
+/*
+ * Sort Vector using lambda expressions
+ * https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
+ */
+template<typename T>
+std::vector<std::size_t> IndexListSort(const std::vector<T>& v) {
+  std::vector<size_t> idx(v.size());
+  std::iota(idx.begin(), idx.end(), 0);
+  std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {
+    return v[i1] < v[i2];
+  });
+  return idx;
 }
 
 /// @brief raises if there's any mismatch between specified properties and all
@@ -286,8 +297,6 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
   }
   // for verbose output
   std::unordered_map<std::string, IntVectorVector> mismatches{};
-  bool check_para_dim{false};
-
   // parse input and allocate vector for mismatch book keeping
   if (name) {
     mismatches["name"].resize(nthreads);
@@ -302,7 +311,6 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
     mismatches["control_mesh_resolutions"].resize(nthreads);
   }
   if (para_dim || degrees || control_mesh_resolutions) {
-    check_para_dim = true;
     mismatches["para_dim"].resize(nthreads);
   }
 
@@ -414,75 +422,183 @@ inline void RaiseMismatch(const CoreSplineVector& splist0,
   splinepy::utils::PrintAndThrowError("Found mismatches.", mismatch_info);
 }
 
-/// @brief Get interfaces from boundary centers
-/// @tparam parametric_dimension
-/// @tparam physical_dimension
-/// @param py_center_vertices
-/// @param tolerance
-template<std::size_t parametric_dimension, std::size_t physical_dimension>
+/**
+ * @brief Determine the connectivity from center-vertices, assuming nothing of
+ * the underlying grid
+ *
+ * Duplicate Points are not eliminated, assuming that a maximum of two points
+ * are equivalent. If this is not the case an exception is thrown. In theory
+ * this has complexity O(nlogn) whereas a KDTree has complexity O(n (logn)^dim).
+ *
+ * @tparam PhysicalPointType Type of Point coordinates
+ * @tparam ScalarType Type determining the precision
+ * @tparam parametric_dimension dimension of the object (e.g. surface in 3D)
+ * @tparam boolean check_orientation to check if neighboring elements match
+ *                          structured grid
+ * @param face_center_vertices vertices in the centers of spline-surfaces
+ * @param metric used for preordering the vertices along a line
+ * @param tolerance tolerance (distance between two vertices that are joined)
+
+ * @return connectivity as a std::vector<std::array<...>>
+ */
 py::array_t<int>
-InterfacesFromBoundaryCenters_(const py::array_t<double>& py_center_vertices,
-                               const double& tolerance) {
-  // Auxiliary Function to reduce total number of declarations
-  using PhysicalPointType = bezman::Point<physical_dimension, double>;
+FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
+                            const int parametric_dimension,
+                            const py::array_t<double>& metric,
+                            const double tolerance) {
 
-  // Determine data
-  double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
-  const std::size_t number_of_center_points =
-      py_center_vertices.request().shape[0];
-  const std::size_t physical_dimension_ = py_center_vertices.request().shape[1];
-  constexpr std::size_t n_faces_per_patch = parametric_dimension * 2;
+  // -- Auxiliary data --
+  const int number_of_element_faces = parametric_dimension * 2;
+  const int number_of_patches =
+      face_center_vertices.shape(0) / number_of_element_faces;
+  const int physical_dimension = face_center_vertices.shape(1);
+  const int number_of_center_vertices{
+      static_cast<int>(face_center_vertices.shape(0))};
+  const double tolerance_squared{tolerance * tolerance};
+  const double* metric_ptr = static_cast<double*>(metric.request().ptr);
+  const double* face_center_vertices_ptr =
+      static_cast<double*>(face_center_vertices.request().ptr);
 
-  // Assertions
-  assert(number_of_center_points > 0);
-  assert(physical_dimension_ > 0);
-  assert(number_of_center_points % n_faces_per_patch == 0);
-
-  // Convert points into bezman points
-  std::vector<PhysicalPointType> center_points;
-
-  PhysicalPointType minimumVertex{}, maximumVertex{};
-  // Assign first vertex to both min and max
-  for (std::size_t i_dim{}; i_dim < physical_dimension; i_dim++) {
-    minimumVertex[i_dim] = centers_ptr[i_dim];
-    maximumVertex[i_dim] = centers_ptr[i_dim];
+  // Consistency check
+  if (!(face_center_vertices.shape(0) % number_of_element_faces == 0)) {
+    splinepy::utils::PrintAndThrowError(
+        "Number of corner vertices invalid. Must be a multiple of the number "
+        "of vertices per patch");
+  }
+  if (!(metric.size() == face_center_vertices.shape(1))) {
+    splinepy::utils::PrintAndThrowError(
+        "Incompatible size for metric. Must match physical dimension of face "
+        "center vertices");
+  }
+  if (!(number_of_center_vertices % number_of_element_faces == 0)) {
+    splinepy::utils::PrintAndThrowError(
+        "Inconsistent number of Center vertices. Must be divisible by "
+        "parametric_dimension*2");
   }
 
-  center_points.reserve(number_of_center_points);
-  for (std::size_t i_point{}; i_point < number_of_center_points; i_point++) {
-    PhysicalPointType point{};
-    for (std::size_t i_dim{}; i_dim < physical_dimension; i_dim++) {
-      point[i_dim] = centers_ptr[i_point * physical_dimension_ + i_dim];
-      minimumVertex[i_dim] =
-          std::min(minimumVertex[i_dim],
-                   centers_ptr[i_point * physical_dimension_ + i_dim]);
-      maximumVertex[i_dim] =
-          std::max(maximumVertex[i_dim],
-                   centers_ptr[i_point * physical_dimension_ + i_dim]);
+  // Init return type
+  py::array_t<int> connectivity(number_of_patches * number_of_element_faces);
+  int* connectivity_ptr = static_cast<int*>(connectivity.request().ptr);
+  // Init connectivity and metric value
+  // (-1 : boundary, -2 : untouched)
+  std::fill(connectivity_ptr,
+            connectivity_ptr + number_of_patches * number_of_element_faces,
+            -2);
+
+  // Assure Metric is normed and non-zero
+  const std::vector<double>& normed_metric = [&metric_ptr,
+                                              &physical_dimension]() {
+    double euclidian_norm = 0.;
+    for (int i_phys{}; i_phys < physical_dimension; i_phys++) {
+      euclidian_norm += metric_ptr[i_phys] * metric_ptr[i_phys];
     }
-    center_points.push_back(point);
+    std::vector<double> metric(physical_dimension, 1.);
+    euclidian_norm = std::sqrt(euclidian_norm);
+    if (euclidian_norm < 1e-20) {
+      return metric;
+    } else {
+      const double inv_euclidian_norm = 1 / euclidian_norm;
+      for (int i_phys{}; i_phys < physical_dimension; i_phys++) {
+        metric[i_phys] = metric_ptr[i_phys] * inv_euclidian_norm;
+      }
+    }
+    return metric;
+  }();
+
+  // Auxiliary function to determine distance between two points in face_center
+  auto squared_euclidian_distance =
+      [&face_center_vertices_ptr,
+       &physical_dimension](const int& i_start, const int& i_end) -> double {
+    double squared_euclidian_distance_{};
+    for (int i_phys{}; i_phys < physical_dimension; i_phys++) {
+      const double distance_c =
+          face_center_vertices_ptr[i_end * physical_dimension + i_phys]
+          - face_center_vertices_ptr[i_start * physical_dimension + i_phys];
+      squared_euclidian_distance_ += distance_c * distance_c;
+    }
+    return squared_euclidian_distance_;
+  };
+
+  std::vector<double> scalar_metric{};
+  scalar_metric.reserve(number_of_center_vertices);
+
+  // Check Metric Dimension and Vector Size
+  for (int i_vertex{}; i_vertex < number_of_center_vertices; i_vertex++) {
+    double metric_v = normed_metric[0]
+                      * face_center_vertices_ptr[i_vertex * physical_dimension];
+    for (int j_phys{1}; j_phys < physical_dimension; j_phys++) {
+      metric_v =
+          normed_metric[j_phys]
+          * face_center_vertices_ptr[i_vertex * physical_dimension + j_phys];
+    }
+    scalar_metric.push_back(metric_v);
   }
 
-  // Hand to bezman for connectivity
-  const auto connectivity =
-      bezman::utils::algorithms::FindConnectivityFromCenters<
-          parametric_dimension,
-          false>(center_points, maximumVertex - minimumVertex, tolerance);
+  // Sort Metric Vector
+  const auto metric_order_indices = IndexListSort(scalar_metric);
 
-  // Transform points into an array
-  const int number_of_patches = connectivity.size();
-  py::array_t<int> py_connectivity =
-      py::array_t<int>(number_of_patches * n_faces_per_patch);
-  py_connectivity.resize({(int) number_of_patches, (int) n_faces_per_patch});
-  int* py_connectivity_ptr = static_cast<int*>(py_connectivity.request().ptr);
-  for (std::size_t i_patch{}; i_patch < connectivity.size(); i_patch++) {
-    for (std::size_t i_face{}; i_face < n_faces_per_patch; i_face++) {
-      py_connectivity_ptr[i_patch * n_faces_per_patch + i_face] =
-          static_cast<int>(connectivity[i_patch][i_face]);
+  // Loop over points
+  for (int lower_limit = 0; lower_limit < number_of_center_vertices - 1;
+       lower_limit++) {
+    // Loop over all points regardless of whether they have been touched or not,
+    // and then check the validity of the connection Point already processed
+    bool found_duplicate = false;
+    // Now check allowed range for duplicates
+    int upper_limit = lower_limit + 1;
+    while (upper_limit < number_of_center_vertices
+           && (scalar_metric[metric_order_indices[upper_limit]]
+               - scalar_metric[metric_order_indices[lower_limit]])
+                  < tolerance) {
+      // Check if the two points are duplicates
+      found_duplicate =
+          squared_euclidian_distance(metric_order_indices[lower_limit],
+                                     metric_order_indices[upper_limit])
+          < tolerance_squared;
+      if (found_duplicate) {
+        break;
+      } else {
+        upper_limit++;
+      }
+    }
+
+    // Now we have to check if the connection is valid
+    // 1. If another connection is found, that means, that the point it connects
+    //    to has a higher index in the metric tensor. If the current point does
+    //    already have a neighbor, that means that more than one point connect
+    //    -> Error
+    if (found_duplicate) {
+      // Check 1. (@todo EXCEPTION)
+      if (connectivity_ptr[metric_order_indices[lower_limit]] != -2) {
+        splinepy::utils::PrintAndThrowError(
+            "Found conflicting interceptions, where more than two points are "
+            "in the same position. Expected -2 got",
+            connectivity_ptr[metric_order_indices[lower_limit]]);
+      }
+
+      // If both tests passed, update connectivity
+      connectivity_ptr[metric_order_indices[lower_limit]] =
+          static_cast<int>(metric_order_indices[upper_limit])
+          / number_of_element_faces;
+      connectivity_ptr[metric_order_indices[upper_limit]] =
+          static_cast<int>(metric_order_indices[lower_limit])
+          / number_of_element_faces;
+    } else {
+      // set Boundary-ID
+      if (connectivity_ptr[metric_order_indices[lower_limit]] == -2) {
+        connectivity_ptr[metric_order_indices[lower_limit]] = -1;
+      }
     }
   }
 
-  return py_connectivity;
+  // Treat last remaining point in scalar metric vector
+  if (connectivity_ptr[metric_order_indices[number_of_center_vertices - 1]]
+      == -2) {
+    connectivity_ptr[metric_order_indices[number_of_center_vertices - 1]] = -1;
+  }
+
+  // Resize buffer
+  connectivity.resize({number_of_patches, number_of_element_faces});
+  return connectivity;
 }
 
 /**
@@ -498,493 +614,39 @@ py::array_t<int>
 InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
                               const double& tolerance,
                               const int& parametric_dimension) {
-  // Transform points from pyarray into bezman point vector
-  double* centers_ptr = static_cast<double*>(py_center_vertices.request().ptr);
-  const std::size_t physical_dimension_ = py_center_vertices.request().shape[1];
-  const std::size_t number_of_center_points =
-      py_center_vertices.request().shape[0];
+  // Determine Metric
+  const int physical_dimension = py_center_vertices.shape(1);
+  const int number_of_corner_points = py_center_vertices.shape(0);
+  py::array_t<double> maxvertex(physical_dimension),
+      minvertex{physical_dimension};
 
-  // Check input data
-  assert(0 == (number_of_center_points % (2 * parametric_dimension)));
+  // Get pointers
+  double* maxvertex_ptr = static_cast<double*>(maxvertex.request().ptr);
+  double* minvertex_ptr = static_cast<double*>(minvertex.request().ptr);
+  const double* py_center_vertices_ptr =
+      static_cast<double*>(py_center_vertices.request().ptr);
 
-  // Convert points into bezman type points
-  switch (physical_dimension_) {
-  case 1:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-#ifdef SPLINEPY_MORE
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 1uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 1uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-#endif
-    default:
-      break;
+  // Calculate limits of center vertices
+  for (int i_dim{}; i_dim < physical_dimension; i_dim++) {
+    minvertex_ptr[i_dim] = py_center_vertices_ptr[i_dim];
+    maxvertex_ptr[i_dim] = py_center_vertices_ptr[i_dim];
+  }
+  for (int i_c{1}; i_c < number_of_corner_points; i_c++) {
+    for (int i_dim{}; i_dim < physical_dimension; i_dim++) {
+      maxvertex_ptr[i_dim] =
+          std::max(py_center_vertices_ptr[i_c * physical_dimension + i_dim],
+                   maxvertex_ptr[i_dim]);
+      minvertex_ptr[i_dim] =
+          std::min(py_center_vertices_ptr[i_c * physical_dimension + i_dim],
+                   minvertex_ptr[i_dim]);
     }
-    break;
-  case 2:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-#ifdef SPLINEPY_MORE
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 2uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 2uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-#endif
-
-    default:
-      break;
-    }
-    break;
-  case 3:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-#ifdef SPLINEPY_MORE
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 3uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 3uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-#endif
-
-    default:
-      break;
-    }
-    break;
-#ifdef SPLINEPY_MORE
-  case 4:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 4uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 4uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 5:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 5uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 5uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 6:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 6uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 6uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 7:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 7uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 7uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 8:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 8uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 8uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 9:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 9uL>(py_center_vertices,
-                                                      tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 9uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    default:
-      break;
-    }
-  case 10:
-    switch (parametric_dimension) {
-    case 1:
-      return InterfacesFromBoundaryCenters_<1uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 2:
-      return InterfacesFromBoundaryCenters_<2uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 3:
-      return InterfacesFromBoundaryCenters_<3uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 4:
-      return InterfacesFromBoundaryCenters_<4uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 5:
-      return InterfacesFromBoundaryCenters_<5uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 6:
-      return InterfacesFromBoundaryCenters_<6uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 7:
-      return InterfacesFromBoundaryCenters_<7uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 8:
-      return InterfacesFromBoundaryCenters_<8uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 9:
-      return InterfacesFromBoundaryCenters_<9uL, 10uL>(py_center_vertices,
-                                                       tolerance);
-      break;
-    case 10:
-      return InterfacesFromBoundaryCenters_<10uL, 10uL>(py_center_vertices,
-                                                        tolerance);
-      break;
-    default:
-      break;
-    }
-#endif
-  default:
-    break;
   }
 
-#ifdef SPLINEPY_MORE
-  splinepy::utils::PrintAndThrowError(
-      "Only implemented for <2-10> : <2-10> dimensions");
-#else
-  splinepy::utils::PrintAndThrowError(
-      "Only implemented for <1-3> : <1-3> dimensions");
-#endif
-  // dummy statement for compiler
-  return py::array_t<int>();
+  // Determine Interfaces
+  return FindConnectivityFromCenters(py_center_vertices,
+                                     parametric_dimension,
+                                     maxvertex - minvertex,
+                                     tolerance);
 }
 
 /// @brief Orientation between two adjacent splines
@@ -1172,260 +834,6 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
   bool_orientations.resize({n_connections, para_dim_});
 
   return py::make_tuple(int_mapping, bool_orientations);
-}
-
-/**
- * @brief Retrieve information related to mfem export
- *
- * @param py_corner_vertices vertices at the spline-corners
- * @param tolerance tolerance to delete duplicates
- * @return py::tuple with
- *    py::array_t<int> : connectivity
- *    py::array_t<int> : vertex_ids
- *    py::array_t<int> : edges
- *    py::array_t<int> : boundaries
- *    bool             : is structured mesh
- */
-py::tuple RetrieveMfemInformation(const py::array_t<double>& py_corner_vertices,
-                                  const double& tolerance) {
-  // Unfortunatly bezman requires point-types to perform routines and does not
-  // work on py arrays All of the arguments serve as outputs except for
-  // corner_vertices
-  py::buffer_info corner_vertex_buffer = py_corner_vertices.request();
-  double* corner_ptr = static_cast<double*>(corner_vertex_buffer.ptr);
-  const std::size_t physical_dimension_ = corner_vertex_buffer.shape[1];
-  const std::size_t number_of_corner_points = corner_vertex_buffer.shape[0];
-  // Check if mesh can be used for mfem mesh
-  bool is_structured{true};
-  if (physical_dimension_ == 2) {
-    // Check if vertex size checks out
-    assert(number_of_corner_points % 4 == 0);
-    const std::size_t number_of_patches = number_of_corner_points / 4;
-
-    // Transform corner_vertex into arrays
-    using PointType = bezman::Point<2ul, double>;
-    std::vector<PointType> corner_vertices;
-    corner_vertices.reserve(number_of_corner_points);
-    // Init Max and min vertices to determine metric
-    PointType maxvertex{corner_ptr[0], corner_ptr[1]},
-        minvertex{corner_ptr[0], corner_ptr[1]};
-    for (std::size_t i_c{}; i_c < number_of_corner_points; i_c++) {
-      PointType vertex{};
-      for (std::size_t i_dim{}; i_dim < physical_dimension_; i_dim++) {
-        vertex[i_dim] = corner_ptr[i_c * physical_dimension_ + i_dim];
-        maxvertex[i_dim] = std::max(vertex[i_dim], maxvertex[i_dim]);
-        minvertex[i_dim] = std::min(vertex[i_dim], minvertex[i_dim]);
-      }
-      corner_vertices.push_back(vertex);
-    }
-
-    // Retrieve MFEM information using bezman
-    // Connectivity :     std::vector<std::array<std::size_t, 4>>
-    // Vertex_ids :       std::vector<std::size_t>
-    // edge_information : std::vector<std::array<std::size_t,3>>
-    // boundaries :       std::vector<std::array<std::size_t,2>>
-    const auto [connectivity, vertex_ids, edge_information, boundaries] =
-        [&]() {
-          try {
-            return bezman::utils::algorithms::ExtractMFEMInformation(
-                corner_vertices,
-                maxvertex - minvertex,
-                tolerance);
-          } catch (...) {
-            is_structured = false;
-            return std::make_tuple(
-                // Connectivity
-                bezman::utils::algorithms::FindConnectivityFromCorners<2>(
-                    corner_vertices,
-                    maxvertex - minvertex,
-                    tolerance,
-                    false),
-                // All others initialized empty
-                std::vector<std::size_t>{},
-                std::vector<std::array<std::size_t, 3>>{},
-                std::vector<std::array<std::size_t, 2>>{});
-          }
-        }();
-
-    // -- Transform data to python format --
-    // Connectivity
-    assert(connectivity.size() == number_of_patches);
-    py::array_t<int> py_connectivity =
-        py::array_t<int>(connectivity.size() * 4);
-    py_connectivity.resize({(int) number_of_patches, (int) 4});
-    int* py_connectivity_ptr = static_cast<int*>(py_connectivity.request().ptr);
-    for (std::size_t i_patch{}; i_patch < connectivity.size(); i_patch++) {
-      for (std::size_t i_face{}; i_face < 4ul; i_face++) {
-        py_connectivity_ptr[i_patch * 4ul + i_face] =
-            static_cast<int>(connectivity[i_patch][i_face]);
-      }
-    }
-
-    // Return only connectivity if the mesh is unstructured and can not be used
-    // for mfem export
-    if (!is_structured) {
-      return py::make_tuple(py_connectivity,
-                            py::array_t<int>{},
-                            py::array_t<int>{},
-                            py::array_t<int>{},
-                            is_structured);
-    }
-
-    // Vertex IDS
-    assert(vertex_ids.size() == corner_vertices.size());
-    py::array_t<int> py_vertex_ids = py::array_t<int>(number_of_corner_points);
-    py_vertex_ids.resize({(int) number_of_corner_points});
-    int* py_vertex_ids_ptr = static_cast<int*>(py_vertex_ids.request().ptr);
-    for (std::size_t i_ctps{}; i_ctps < number_of_corner_points; i_ctps++) {
-      py_vertex_ids_ptr[i_ctps] = static_cast<int>(vertex_ids[i_ctps]);
-    }
-
-    // Edges
-    assert(edge_information.size() > 0);
-    py::array_t<int> py_edges = py::array_t<int>(edge_information.size() * 3);
-    py_edges.resize({(int) edge_information.size(), (int) 3});
-    int* py_edges_ptr = static_cast<int*>(py_edges.request().ptr);
-    for (std::size_t i_edge{}; i_edge < edge_information.size(); i_edge++) {
-      for (std::size_t i_face{}; i_face < 3ul; i_face++) {
-        py_edges_ptr[i_edge * 3ul + i_face] =
-            static_cast<int>(edge_information[i_edge][i_face]);
-      }
-    }
-
-    // Boundaries
-    assert(boundaries.size() > 0);
-    py::array_t<int> py_boundaries = py::array_t<int>(boundaries.size() * 2);
-    py_boundaries.resize({(int) boundaries.size(), (int) 2});
-    int* py_boundaries_ptr = static_cast<int*>(py_boundaries.request().ptr);
-    for (std::size_t i_boundary{}; i_boundary < boundaries.size();
-         i_boundary++) {
-      for (std::size_t i_id{}; i_id < 2ul; i_id++) {
-        py_boundaries_ptr[i_boundary * 2ul + i_id] =
-            static_cast<int>(boundaries[i_boundary][i_id]);
-      }
-    }
-
-    return py::make_tuple(py_connectivity,
-                          py_vertex_ids,
-                          py_edges,
-                          py_boundaries,
-                          is_structured);
-
-  } else if (physical_dimension_ == 3) {
-    // Check if vertex size checks out
-    assert(number_of_corner_points % 8 == 0);
-    const std::size_t number_of_patches = number_of_corner_points / 8;
-
-    // Transform corner_vertex into arrays
-    using PointType = bezman::Point<3ul, double>;
-    std::vector<PointType> corner_vertices;
-    corner_vertices.reserve(number_of_corner_points);
-    // Init Max and min vertices to determine metric
-    PointType maxvertex{corner_ptr[0], corner_ptr[1], corner_ptr[2]},
-        minvertex{corner_ptr[0], corner_ptr[1], corner_ptr[2]};
-    for (std::size_t i_c{}; i_c < number_of_corner_points; i_c++) {
-      PointType vertex{};
-      for (std::size_t i_dim{}; i_dim < physical_dimension_; i_dim++) {
-        vertex[i_dim] = corner_ptr[i_c * physical_dimension_ + i_dim];
-        maxvertex[i_dim] = std::max(vertex[i_dim], maxvertex[i_dim]);
-        minvertex[i_dim] = std::min(vertex[i_dim], minvertex[i_dim]);
-      }
-      corner_vertices.push_back(vertex);
-    }
-    // Retrieve MFEM information using bezman
-    // Connectivity : std::vector<std::array<std::size_t, 6>>
-    // Vertex_ids : std::vector<std::std::size_t>
-    // edge_information : std::vector<std::array<std::size_t,3>
-    // boundaries : std::vector<std::array<std::size_t,4>
-    const auto [connectivity, vertex_ids, edge_information, boundaries] =
-        [&]() {
-          try {
-            return bezman::utils::algorithms::ExtractMFEMInformation(
-                corner_vertices,
-                maxvertex - minvertex,
-                tolerance);
-          } catch (...) {
-            is_structured = false;
-            return std::make_tuple(
-                // Connectivity
-                bezman::utils::algorithms::FindConnectivityFromCorners<3>(
-                    corner_vertices,
-                    maxvertex - minvertex,
-                    tolerance,
-                    false),
-                // All others initialized empty
-                std::vector<std::size_t>{},
-                std::vector<std::array<std::size_t, 3>>{},
-                std::vector<std::array<std::size_t, 4>>{});
-          }
-        }();
-
-    // -- Transform data to python format --
-    // Connectivity
-    assert(connectivity.size() == number_of_patches);
-    py::array_t<int> py_connectivity =
-        py::array_t<int>(connectivity.size() * 6);
-    py_connectivity.resize({(int) number_of_patches, (int) 6});
-    int* py_connectivity_ptr = static_cast<int*>(py_connectivity.request().ptr);
-    for (std::size_t i_patch{}; i_patch < connectivity.size(); i_patch++) {
-      for (std::size_t i_face{}; i_face < 6ul; i_face++) {
-        py_connectivity_ptr[i_patch * 6ul + i_face] =
-            static_cast<int>(connectivity[i_patch][i_face]);
-      }
-    }
-
-    // Return only connectivity if the mesh is unstructured and can not be used
-    // for mfem export
-    if (!is_structured) {
-      return py::make_tuple(py_connectivity,
-                            py::array_t<int>{},
-                            py::array_t<int>{},
-                            py::array_t<int>{},
-                            is_structured);
-    }
-
-    // Vertex IDS
-    assert(vertex_ids.size() == corner_vertices.size());
-    py::array_t<int> py_vertex_ids = py::array_t<int>(number_of_corner_points);
-    py_vertex_ids.resize({(int) number_of_corner_points});
-    int* py_vertex_ids_ptr = static_cast<int*>(py_vertex_ids.request().ptr);
-    for (std::size_t i_ctps{}; i_ctps < number_of_corner_points; i_ctps++) {
-      py_vertex_ids_ptr[i_ctps] = static_cast<int>(vertex_ids[i_ctps]);
-    }
-
-    // Edges
-    assert(edge_information.size() > 0);
-    py::array_t<int> py_edges = py::array_t<int>(edge_information.size() * 3);
-    py_edges.resize({(int) edge_information.size(), (int) 3});
-    int* py_edges_ptr = static_cast<int*>(py_edges.request().ptr);
-    for (std::size_t i_edge{}; i_edge < edge_information.size(); i_edge++) {
-      for (std::size_t i_face{}; i_face < 3ul; i_face++) {
-        py_edges_ptr[i_edge * 3ul + i_face] =
-            static_cast<int>(edge_information[i_edge][i_face]);
-      }
-    }
-
-    // Boundaries
-    assert(boundaries.size() > 0);
-    py::array_t<int> py_boundaries = py::array_t<int>(boundaries.size() * 4);
-    py_boundaries.resize({(int) boundaries.size(), (int) 4});
-    int* py_boundaries_ptr = static_cast<int*>(py_boundaries.request().ptr);
-    for (std::size_t i_boundary{}; i_boundary < boundaries.size();
-         i_boundary++) {
-      for (std::size_t i_id{}; i_id < 4ul; i_id++) {
-        py_boundaries_ptr[i_boundary * 4ul + i_id] =
-            static_cast<int>(boundaries[i_boundary][i_id]);
-      }
-    }
-
-    return py::make_tuple(py_connectivity,
-                          py_vertex_ids,
-                          py_edges,
-                          py_boundaries,
-                          is_structured);
-  } else {
-    throw std::runtime_error("Dimension mismatch");
-  }
 }
 
 /// @brief Extract all Boundary Patches and store them in a python list
@@ -2375,12 +1783,6 @@ public:
 /// Returns [connectivity, vertex_ids, edge_information, boundaries]
 /// @param m
 inline void add_multi_patch(py::module& m) {
-
-  // returns [connectivity, vertex_ids, edge_information, boundaries]
-  m.def("retrieve_mfem_information",
-        &splinepy::py::RetrieveMfemInformation,
-        py::arg("corner_vertices"),
-        py::arg("tolerance"));
   m.def("interfaces_from_boundary_centers",
         &splinepy::py::InterfacesFromBoundaryCenters,
         py::arg("face_center_vertices"),
