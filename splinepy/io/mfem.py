@@ -3,7 +3,7 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
-import funi
+import gustaf as gus
 import numpy as np
 
 # single function imports
@@ -380,8 +380,8 @@ def export_cartesian(
     # Retrieve information using bezman
     connectivity = spline_list.interfaces
 
-    (_, _, inverse_numeration) = funi.unique_rows(
-        corner_vertices, tolerance, True, True, True, True, True
+    (_, _, inverse_numeration, _) = gus.utils.arr.close_rows(
+        corner_vertices, tolerance, return_intersection=False
     )
     vertex_ids = inverse_numeration.reshape(-1, n_vertex_per_element)
     # Get boundaries from interfaces

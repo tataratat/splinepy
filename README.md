@@ -14,6 +14,7 @@ pip install splinepy[all]  # including all optional dependencies
 pip install splinepy
 ```
 
+
 Of course, you can install it directly from the source.
 In addition to the aforementioned compilers, this requires a cmake3.16+. If you don't have `cmake`, the easiest way to install it would be: `pip install cmake`.
 ```bash

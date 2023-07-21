@@ -7,6 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
+test-extras = ["test"]
 test-command = "python -m unittest discover {project}/tests -v"
 
 [tool.cibuildwheel.macos]

@@ -284,7 +284,7 @@ setup(
         CMakeExtension("splinepy.splinepy_core", extra_args=build_options)
     ],
     cmdclass=dict(build_ext=CMakeBuild),
-    extras_require={"all": ["gustaf[all]>=0.0.12"]},
+    extras_require={"all": ["gustaf[all]>=0.0.12"], "test": ["funi>=0.0.1"]},
     zip_safe=False,
     license="MIT",
 )
