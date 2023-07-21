@@ -4,85 +4,68 @@ As a new feature SplinePy now also has the ability to directly plot splines. Cur
 The following will give a brief introduction into basic spline creation and visualization.
 
 ## Creating a basic NURBS
-For example here we will be creating an arc of 120 degrees explicitly as a
+For example here we will be creating a hollow disk of 120 degrees explicitly as a
 NURBS.
 ```python
+import splinepy
 
 # create a 2D NURBS disk and visualize
-nurbs = gus.NURBS(
+nurbs = splinepy.NURBS(
     degrees=[1, 2],
-    knot_vectors=[
-        [ 1.        ,  0.59493748],
-        [ 1.        ,  0.59493748],
-        [ 0.5       ,  0.29746874],
-        [ 0.5       ,  0.29746874],
-        [ 0.47715876,  0.87881711],
-        [ 0.47715876,  0.87881711],
-        [ 0.23857938,  0.43940856],
-        [ 0.23857938,  0.43940856],
-        [-0.04568248,  1.16269674],
-        [-0.04568248,  1.16269674],
-        [-0.02284124,  0.58134837],
-        [-0.02284124,  0.58134837],
-        [-0.54463904,  0.83867057],
-        [-0.54463904,  0.83867057],
-        [-0.27231952,  0.41933528],
-        [-0.27231952,  0.41933528],
+    knot_vectors=[[0, 0, 1, 1], [0, 0, 0, 1, 1, 2, 2, 2]],
+    control_points=[
+        [5.00000000e-01, 0.00000000e00],
+        [1.00000000e00, 0.00000000e00],
+        [5.00000000e-01, 2.88675135e-01],
+        [1.00000000e00, 5.77350269e-01],
+        [2.50000000e-01, 4.33012702e-01],
+        [5.00000000e-01, 8.66025404e-01],
+        [0.00000000e00, 5.77350269e-01],
+        [0.00000000e00, 1.15470054e00],
+        [-2.50000000e-01, 4.33012702e-01],
+        [-5.00000000e-01, 8.66025404e-01],
     ],
     weights=[
-        [1.        ],
-        [1.        ],
-        [1.        ],
-        [1.        ],
-        [0.85940641],
-        [0.85940641],
-        [0.85940641],
-        [0.85940641],
-        [1.        ],
-        [1.        ],
-        [1.        ],
-        [1.        ],
-        [0.85940641],
-        [0.85940641],
-        [0.85940641],
-        [0.85940641],
-        [1.        ],
-        [1.        ],
-        [1.        ]
-        [1.        ]
-    ]
+        [1.0],
+        [1.0],
+        [0.8660254],
+        [0.8660254],
+        [1.0],
+        [1.0],
+        [0.8660254],
+        [0.8660254],
+        [1.0],
+        [1.0],
+    ],
 )
+
 nurbs.show()
 ```
 ![NURBS](../source/_static/nurbs.png)
 
-## Easier with `revolve`
+## Creation of common geometries
 
 You might think well this is a lot of code and you are right, that is
-why gustaf provides powerful functions to create splines on the fly. To show
+why splinepy provides powerful functions to create splines on the fly. To show
 this next the same geometry is created with a single command.
 ```python
-easy_arc = gus.spline.create.disk(1, 0.5, 120, 2)
+easy_disk = splinepy.helpme.create.disk(
+    outer_radius=1,
+    inner_radius=0.5,
+    angle=120,
+    n_knot_spans=2,
+)
 
 gus.show(
-    ["Hardcoded Arc", *nurbs_showable.values()],
-    ["Easy Arc", *easy_arc_showable.values()],
+    ["Handmade disk", nurbs],
+    ["Easy disk", easy_disk],
 )
 ```
-![Easy Arc creation](../source/_static/compare_disks.png)
-Is that not much better. Feel free to peruse the helpful functions in `splinepy.spline.create`.
+![Disk creation](../source/_static/compare_disks.png)
+That was much easier. Feel free to peruse the helpful functions in `splinepy.helmpe`.
 
 ## Expanding into 3D
 You can also extrude and revolve spline with the build in Creator class.
-<!--```python
-# extract / sample using Extractor helper class
-# they are all "show()"-able
-nurbs_as_faces = nurbs.extract.faces(resolutions=[100, 50])
-@@ -142,35 +218,26 @@ boundaries = nurbs.extract.boundaries()  # list of boundary splines
-subspline = nurbs.extract.spline(
-    {0: [.4, .8], 1: .7}  # define range dimension-wise
-)
-```-->
 
 ```python
 extruded = nurbs.create.extruded(extrusion_vector=[0, 0, 1])
@@ -93,7 +76,7 @@ gus.show(
     ["Revolved NURBS", revolved],
 )
 ```
-![Easy Arc creation](../source/_static/extrude_revolve.png)
+![Extruded and revolved nurbs](../source/_static/extrude_revolve.png)
 
 This does not need to be only from 2D->3D but can also be from 1D->2D etc.
 
