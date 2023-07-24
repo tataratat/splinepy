@@ -153,7 +153,7 @@ def faces(
         if isinstance(spline, Multipatch):
             boundaries = spline.boundary_patches()
         else:
-            boundaries = Multipatch(splines=spline.extract_boundaries())
+            boundaries = Multipatch(splines=spline.extract.boundaries())
 
         n_faces = (resolution - 1) ** 2
         vertices = resolution**2
@@ -469,6 +469,37 @@ def spline(spline, para_dim, split_plane):
     return type(spline)(**spline_info)
 
 
+def boundaries(spline):
+    """
+    Extracts boundary spline.
+
+    The boundaries deducted from the parametric axis which is normal to the
+    boundary (j), if the boundary is at parametric axis position x_j=x_jmin
+    the corresponding boundary is 2*j, else at parametric axis position
+    x_j=x_jmin the boundary is 2*j+1
+
+
+    Parameters
+    -----------
+    None
+
+    Returns
+    -------
+    boundary_spline: type(self)
+        boundary spline, which has one less para_dim
+    """
+    from splinepy import Multipatch
+    from splinepy import splinepy_core as core
+
+    # Pass to respective c++ implementation
+    if isinstance(spline, Multipatch):
+        return spline.boundary_patches()
+    else:
+        return [
+            type(spline)(spline=c) for c in core.extract_boundaries(spline, [])
+        ]
+
+
 class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
@@ -516,7 +547,7 @@ class Extractor:
         return self._spline.extract_bezier_patches()
 
     def boundaries(self, *args, **kwargs):
-        return self._spline.extract_boundaries(*args, **kwargs)
+        return boundaries(self._spline)
 
     def spline(self, splitting_plane=None, interval=None):
         """Extract a spline from a spline.

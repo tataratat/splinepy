@@ -3,6 +3,7 @@ import numpy as np
 
 from splinepy._base import SplinepyBase
 from splinepy.bezier import Bezier
+from splinepy.multipatch import Multipatch
 from splinepy.splinepy_core import PySpline
 from splinepy.utils.data import cartesian_product
 
@@ -519,23 +520,16 @@ class Microstructure(SplinepyBase):
         """
         if use_saved:
             if hasattr(self, "_microstructure"):
-                microstructure = self._microstructure
+                microstructure = Multipatch(self._microstructure)
             else:
                 raise ValueError("No previous microstructure saved")
         else:
             # Create on the fly
-            microstructure = self.create(**kwargs)
+            microstructure = Multipatch(splines=self.create(**kwargs))
 
         # Precompute splines
         microtile = self.microtile.create_tile(**kwargs)
         deformation_function = self.deformation_function
-
-        if return_gustaf:
-            return dict(
-                deformation_function=deformation_function,
-                microtile=microtile,
-                microstructure=microstructure,
-            )
 
         # Show in vedo
         return gus.show(

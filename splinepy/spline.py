@@ -1497,36 +1497,6 @@ class Spline(SplinepyBase, core.PySpline):
 
         return reduced
 
-    def extract_boundaries(self, boundary_ids=None):
-        """
-        Extracts boundary spline.
-
-        The boundaries deducted from the parametric axis which is normal to the
-        boundary (j), if the boundary is at parametric axis position x_j=x_jmin
-        the corresponding boundary is 2*j, else at parametric axis position
-        x_j=x_jmin the boundary is 2*j+1
-
-
-        Parameters
-        -----------
-        boundary_ids: array-like
-          Boundary IDs with the enumeration described above
-
-        Returns
-        -------
-        boundary_spline: type(self)
-          boundary spline, which has one less para_dim
-        """
-        # extract boundaries
-        boundaries = [
-            type(self)(spline=c)
-            for c in core.extract_boundaries(
-                self, _default_if_none(boundary_ids, [])
-            )
-        ]
-
-        return boundaries
-
     def export(self, fname):
         """
         Export spline. Please be aware of the limits of `.iges`.

@@ -181,7 +181,7 @@ def _vedo_showable(spline):
 
     # with color representable, scalar field data
     res = enforce_len(
-        spline.show_options.get("resolutions", 100), spline.para_dim
+        spline.show_options.get("resolutions", 10), spline.para_dim
     )
     data_name = spline.show_options.get("data_name", None)
     sampled_spline_data = spline.spline_data.as_scalar(
@@ -340,11 +340,10 @@ def _vedo_showable_para_dim_1(spline):
     gus_primitives: dict
       keys are {spline, knots}
     """
+    from splinepy.spline import Spline
+
     gus_primitives = dict()
-    res = enforce_len(
-        spline.show_options.get("resolutions", 100), spline.para_dim
-    )
-    sp = spline.extract.edges(res[0])
+    sp = spline.extract.edges(spline.show_options.get("resolutions", 100))
 
     # specify curve width
     sp.show_options["lw"] = 8
@@ -353,14 +352,17 @@ def _vedo_showable_para_dim_1(spline):
 
     # place knots
     if spline.show_options.get("knots", True):
-        uks = np.asanyarray(spline.unique_knots[0]).reshape(-1, 1)
-        knots = Vertices(spline.evaluate(uks))
-        knots.show_options["labels"] = ["x"] * len(uks)
-        knots.show_options["label_options"] = {
-            "justify": "center",
-            "c": "green",
-        }
-        gus_primitives["knots"] = knots
+        if isinstance(spline, Spline):
+            uks = np.asanyarray(spline.unique_knots[0]).reshape(-1, 1)
+            knots = Vertices(spline.evaluate(uks))
+            knots.show_options["labels"] = ["x"] * len(uks)
+            knots.show_options["label_options"] = {
+                "justify": "center",
+                "c": "green",
+            }
+            gus_primitives["knots"] = knots
+        else:
+            log.debug(f"Skipping invalid option knots for " f"{type(spline)}.")
 
     return gus_primitives
 
@@ -379,7 +381,7 @@ def _vedo_showable_para_dim_2(spline):
       keys are {spline, knots}
     """
     gus_primitives = dict()
-    res = spline.show_options.get("resolutions", 100)
+    res = spline.show_options.get("resolutions", 10)
     sp = spline.extract.faces(res, watertight=False)  # always watertight
     gus_primitives["spline"] = sp
 

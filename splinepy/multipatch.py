@@ -10,6 +10,7 @@ from splinepy.helpme import visualize
 from splinepy.helpme.extract import Extractor
 from splinepy.spline import _default_if_none, _get_helper
 from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
+from splinepy.utils.data import SplineData
 
 
 class Multipatch(SplinepyBase, PyMultiPatch):
@@ -19,8 +20,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     """
 
     __slots__ = (
-        "_show_options",
         "_extractor",
+        "_show_options",
+        "_spline_data",
     )
 
     __show_option__ = visualize.SplineShowOption
@@ -358,6 +360,22 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         self.interfaces[
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
+
+    @property
+    def spline_data(self):
+        """
+        Spline data helper for splines. @todo (does not do anything at the
+        moment)
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        spline_data: SplineData
+        """
+        return _get_helper(self, "_spline_data", SplineData)
 
     @property
     def show_options(self):
