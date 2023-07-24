@@ -185,9 +185,10 @@ class extractTest(c.unittest.TestCase):
         )
 
         # Check if the boundary centers correspond to the expected faces
-        boundaries = nurbs.extract_boundaries(
-            [0, 2, 3, 4, 5]
-        ) + nurbs_2.extract_boundaries([1, 2, 3, 4, 5])
+        boundaries = (
+            nurbs.extract.boundaries() + nurbs_2.extract.boundaries()[1:]
+        )
+        boundaries.pop(1)  # First id of first spline is duplicate
         expected_faces = c.gus.Faces.concat(
             [b.extract.faces(resolution=8) for b in boundaries]
         )
@@ -307,9 +308,9 @@ class extractTest(c.unittest.TestCase):
         boundary_3 = c.splinepy.Bezier(
             degrees=[1], control_points=[[0, 1], [1, 1]]
         )
-        list_of_boundaries = bez_el0.extract_boundaries([0, 3])
+        list_of_boundaries = bez_el0.extract.boundaries()
         self.assertTrue(c.are_splines_equal(list_of_boundaries[0], boundary_0))
-        self.assertTrue(c.are_splines_equal(list_of_boundaries[1], boundary_3))
+        self.assertTrue(c.are_splines_equal(list_of_boundaries[3], boundary_3))
 
         # non-uniform
         bez_el0 = c.splinepy.NURBS(
@@ -331,8 +332,8 @@ class extractTest(c.unittest.TestCase):
             degrees=[1],
             control_points=[[0, 0], [0.5, 0.5], [1, 0]],
         )
-        list_of_boundaries = bez_el0.extract_boundaries([2])
-        self.assertTrue(c.are_splines_equal(list_of_boundaries[0], boundary_2))
+        list_of_boundaries = bez_el0.extract.boundaries()
+        self.assertTrue(c.are_splines_equal(list_of_boundaries[2], boundary_2))
 
     def test_extract_boundaries_3D(self):
         """Create a Spline, extract boundaries and check validity"""
@@ -359,8 +360,8 @@ class extractTest(c.unittest.TestCase):
                 [0, 1, 1],
             ],
         )
-        list_of_boundaries = bez_el0.extract_boundaries([0])
-        self.assertTrue(c.are_splines_equal(list_of_boundaries[0], boundary_0))
+        list_of_boundaries = bez_el0.extract.boundaries()[0]
+        self.assertTrue(c.are_splines_equal(list_of_boundaries, boundary_0))
 
 
 if __name__ == "__main__":
