@@ -1,10 +1,10 @@
-# build fitting first - currently very independent
-add_subdirectory(fitting)
-
-
 ## create splinepy target - enables cpp standalone use
 # define srcs
 set(SPLINEPY_SRCS
+        ${PROJECT_SOURCE_DIR}/src/fitting/fitting.cpp
+        ${PROJECT_SOURCE_DIR}/src/fitting/utils.cpp
+        ${PROJECT_SOURCE_DIR}/src/fitting/lu_solve.cpp
+
         ${PROJECT_SOURCE_DIR}/src/utils/coordinate_pointers.cpp
 
         ${PROJECT_SOURCE_DIR}/src/splines/create/bezier1.cpp
@@ -85,7 +85,6 @@ target_include_directories(splinepy
 # link
 target_link_libraries(splinepy
     PUBLIC
-        fitting
         bezman
         napf
         BSplineLib::splines
