@@ -12,13 +12,6 @@ import numpy as np
 
 import splinepy as sp
 
-try:
-    import gustaf as gus
-
-    has_gus = True
-except ImportError:
-    has_gus = False
-
 # Test Case
 n_refine = 15
 
@@ -91,14 +84,11 @@ rhs[indices] = 0
 # Solve linear system
 solution_field.control_points = np.linalg.solve(-laplacian, rhs).reshape(-1, 1)
 
-if has_gus:
-    geometry = gus.spline.BSpline(spline=geometry)
-    solution_field = gus.spline.BSpline(spline=solution_field)
 
-    # Plot geometry and field
-    geometry.spline_data["field"] = solution_field
-    geometry.show_options["data_name"] = "field"
-    geometry.show_options["cmap"] = "jet"
-    geometry.show_options["lighting"] = "off"
-    geometry.show_options["scalarbar"] = True
-    gus.show(geometry, knots=True, control_points=False)
+# Plot geometry and field
+geometry.spline_data["field"] = solution_field
+geometry.show_options["data_name"] = "field"
+geometry.show_options["cmap"] = "jet"
+geometry.show_options["lighting"] = "off"
+geometry.show_options["scalarbar"] = True
+geometry.show(knots=True, control_points=False)
