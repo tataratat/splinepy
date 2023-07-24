@@ -7,7 +7,7 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 
-#include <splinepy/explicit/bezman/rational_bezier_extern.hpp>
+#include <splinepy/explicit/bezman_rational_bezier.hpp>
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/bezier.hpp>
 #include <splinepy/splines/helpers/basis_functions.hpp>
@@ -795,4 +795,4 @@ protected:
 
 } // namespace splinepy::splines
 
-#include <splinepy/explicit/splinepy/rational_bezier_extern.hpp>
+#include <splinepy/explicit/rational_bezier.hpp>

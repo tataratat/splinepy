@@ -1,26 +1,26 @@
-set(SPLINELIB_SOURCES
-        splinelib/b_spline_explicit1.cpp
-        splinelib/b_spline_explicit2.cpp
-        splinelib/b_spline_explicit3.cpp
-        splinelib/nurbs_explicit1.cpp
-        splinelib/nurbs_explicit2.cpp
-        splinelib/nurbs_explicit3.cpp
+set(BSPLINELIB_SOURCES
+        bsplinelib/b_spline_explicit1.cpp
+        bsplinelib/b_spline_explicit2.cpp
+        bsplinelib/b_spline_explicit3.cpp
+        bsplinelib/nurbs_explicit1.cpp
+        bsplinelib/nurbs_explicit2.cpp
+        bsplinelib/nurbs_explicit3.cpp
 )
-set(SPLINELIB_MORE_SOURCES
-        splinelib/b_spline_explicit4.cpp
-        splinelib/b_spline_explicit5.cpp
-        splinelib/b_spline_explicit6.cpp
-        splinelib/b_spline_explicit7.cpp
-        splinelib/b_spline_explicit8.cpp
-        splinelib/b_spline_explicit9.cpp
-        splinelib/b_spline_explicit10.cpp
-        splinelib/nurbs_explicit4.cpp
-        splinelib/nurbs_explicit5.cpp
-        splinelib/nurbs_explicit6.cpp
-        splinelib/nurbs_explicit7.cpp
-        splinelib/nurbs_explicit8.cpp
-        splinelib/nurbs_explicit9.cpp
-        splinelib/nurbs_explicit10.cpp
+set(BSPLINELIB_MORE_SOURCES
+        bsplinelib/b_spline_explicit4.cpp
+        bsplinelib/b_spline_explicit5.cpp
+        bsplinelib/b_spline_explicit6.cpp
+        bsplinelib/b_spline_explicit7.cpp
+        bsplinelib/b_spline_explicit8.cpp
+        bsplinelib/b_spline_explicit9.cpp
+        bsplinelib/b_spline_explicit10.cpp
+        bsplinelib/nurbs_explicit4.cpp
+        bsplinelib/nurbs_explicit5.cpp
+        bsplinelib/nurbs_explicit6.cpp
+        bsplinelib/nurbs_explicit7.cpp
+        bsplinelib/nurbs_explicit8.cpp
+        bsplinelib/nurbs_explicit9.cpp
+        bsplinelib/nurbs_explicit10.cpp
 )
 
 set(BEZMAN_SOURCES
@@ -94,7 +94,7 @@ set(SPLINEPY_MORE_SOURCES
 )
 
 set(EXPLICIT_SOURCES
-        ${SPLINELIB_SOURCES}
+        ${BSPLINELIB_SOURCES}
         ${BEZMAN_SOURCES}
         ${SPLINEPY_SOURCES}
 )
@@ -102,7 +102,7 @@ set(EXPLICIT_SOURCES
 if(SPLINEPY_MORE)
     set(EXPLICIT_SOURCES
             ${EXPLICIT_SOURCES}
-            ${SPLINELIB_MORE_SOURCES}
+            ${BSPLINELIB_MORE_SOURCES}
             ${BEZMAN_MORE_SOURCES}
             ${SPLINEPY_MORE_SOURCES}
     )
@@ -117,7 +117,7 @@ endif(SPLINEPY_BUILD_SHARED)
 # include
 target_include_directories(explicit
     PRIVATE
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/cpp>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${incl_dest}>)
 
 # link

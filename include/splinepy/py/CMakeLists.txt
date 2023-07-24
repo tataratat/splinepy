@@ -13,7 +13,7 @@ set(PYSPLINEPY_SRCS
 
 # add target
 pybind11_add_module(splinepy_core ${PYSPLINEPY_SRCS})
-target_include_directories(splinepy_core PRIVATE "${PROJECT_SOURCE_DIR}/cpp")
+target_include_directories(splinepy_core PRIVATE "${PROJECT_SOURCE_DIR}/include")
 target_compile_definitions(splinepy_core PRIVATE ${SPLINEPY_DEFS})
 target_compile_options(splinepy_core
     PRIVATE

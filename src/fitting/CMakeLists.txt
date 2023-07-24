@@ -5,7 +5,7 @@ if(SPLINEPY_BUILD_SHARED)
 else()
     add_library(fitting STATIC ${SRCS_FITTING})
 endif()
-target_include_directories(fitting PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(fitting PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 # 11 is enough, but 17 allows nested namespace..
 target_compile_features(fitting PUBLIC cxx_std_17)
