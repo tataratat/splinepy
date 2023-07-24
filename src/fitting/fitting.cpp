@@ -1,4 +1,4 @@
-#include "fitting.hpp"
+#include "splinepy/fitting/fitting.hpp"
 
 namespace splinepy::fitting {
 

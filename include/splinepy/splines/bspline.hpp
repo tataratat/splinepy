@@ -1,35 +1,37 @@
 #pragma once
 
 // SplineLib
-#include <BSplineLib/Splines/nurbs.hpp>
+#include <BSplineLib/Splines/b_spline.hpp>
 
-#include <splinepy/explicit/splinelib/nurbs_extern.hpp>
-#include <splinepy/proximity/proximity.hpp>
-#include <splinepy/splines/helpers/extract_bezier_patches.hpp>
-#include <splinepy/splines/helpers/properties.hpp>
-#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
-#include <splinepy/splines/splinepy_base.hpp>
+#include "splinepy/explicit/bsplinelib_bspline.hpp"
+#include "splinepy/proximity/proximity.hpp"
+#include "splinepy/splines/helpers/basis_functions.hpp"
+#include "splinepy/splines/helpers/extract.hpp"
+#include "splinepy/splines/helpers/extract_bezier_patches.hpp"
+#include "splinepy/splines/helpers/properties.hpp"
+#include "splinepy/splines/helpers/scalar_type_wrapper.hpp"
+#include "splinepy/splines/splinepy_base.hpp"
 
 namespace splinepy::splines {
 
-/// @class Nurbs
-/// @brief Non-uniform rational B-spline (NURBS) class
+/// @class BSpline
+/// @brief BSpline class
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
 template<int para_dim, int dim>
-class Nurbs : public splinepy::splines::SplinepyBase,
-              public bsplinelib::splines::Nurbs<para_dim, dim> {
+class BSpline : public splinepy::splines::SplinepyBase,
+                public bsplinelib::splines::BSpline<para_dim, dim> {
 public:
   /// @brief Dimension of parametric space
   static constexpr int kParaDim = para_dim;
   /// @brief Dimension of physical space
   static constexpr int kDim = dim;
-  /// @brief It is a rational spline
-  static constexpr bool kIsRational = true;
+  /// @brief It is not a rational spline
+  static constexpr bool kIsRational = false;
   /// @brief It has knot vectors
   static constexpr bool kHasKnotVectors = true;
 
-  // TODO remove after test
+  // TODO remove afterwards
   /// @brief Dimension of parameter space
   constexpr static int para_dim_ = para_dim;
   /// @brief Dimension of physical space
@@ -37,63 +39,71 @@ public:
 
   // self
   template<int s_para_dim, int s_dim>
-  using SelfTemplate_ = Nurbs<s_para_dim, s_dim>;
+  using SelfTemplate_ = BSpline<s_para_dim, s_dim>;
 
   // splinepy
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
-  using WeightedControlPointPointers_ =
-      typename SplinepyBase_::WeightedControlPointPointers_;
-  using WeightPointers_ = typename SplinepyBase_::WeightPointers_;
+  using ControlPointPointers_ = typename SplinepyBase_::ControlPointPointers_;
 
   // splinelib
-  using Base_ = bsplinelib::splines::Nurbs<para_dim, dim>;
-  // Parameter space
+  using Base_ = bsplinelib::splines::BSpline<para_dim, dim>;
+  template<int b_para_dim, int b_dim>
+  using BaseTemplate_ = bsplinelib::splines::BSpline<b_para_dim, b_dim>;
+  // parameter space
+  /// Parameter space
   using ParameterSpace_ = typename Base_::ParameterSpace_;
+  /// Parameter space degrees
   using Degrees_ = typename ParameterSpace_::Degrees_;
+  /// Value type of parameter space degree
   using Degree_ = typename Degrees_::value_type;
+  /// Knot vectors
   using KnotVectors_ = typename ParameterSpace_::KnotVectors_;
+  /// Element type of knot vectors
   using KnotVector_ = typename KnotVectors_::value_type::element_type;
+  /// Knots
   using Knots_ = typename Base_::Base_::Knots_;
+  /// Knot
   using Knot_ = typename Base_::Knot_;
+  /// Knot ratios
   using KnotRatios_ = typename Base_::ParameterSpace_::KnotRatios_;
+  /// Value type of knot ratios
   using KnotRatio_ = typename KnotRatios_::value_type;
+  /// Parametric coordinate
   using ParametricCoordinate_ = typename Base_::ParametricCoordinate_;
   using ScalarParametricCoordinate_ =
       typename ParametricCoordinate_::value_type;
-  // Weighted Vector Space
-  using WeightedVectorSpace_ = typename Base_::WeightedVectorSpace_;
-  using PhysicalSpace_ = WeightedVectorSpace_;
-  using Coordinates_ = typename WeightedVectorSpace_::Coordinates_;
-  using HomogeneousCoordinates_ =
-      typename WeightedVectorSpace_::Base_::Coordinates_;
+  // vector space
+  using VectorSpace_ = typename Base_::VectorSpace_;
+  using PhysicalSpace_ = VectorSpace_;
+  using Coordinates_ = typename VectorSpace_::Coordinates_;
   using Coordinate_ = typename Base_::Coordinate_;
   using ScalarCoordinate_ = typename Coordinate_::value_type;
-  using Weights_ = typename WeightedVectorSpace_::Weights_;
-  using Weight_ = typename Weights_::value_type;
-  //  Frequently used types
+  // frequently used types
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = bsplinelib::Dimension;
   using Tolerance_ = bsplinelib::splines::Tolerance;
   using OutputInformation_ =
       bsplinelib::Tuple<typename ParameterSpace_::OutputInformation_,
-                        typename WeightedVectorSpace_::OutputInformation_>;
+                        typename VectorSpace_::OutputInformation_>;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
+  // Some private ones. Here we make it public
+  using BezierInformation_ =
+      typename Base_::ParameterSpace_::BezierInformation_;
+  using BinomialRatios_ = typename Base_::ParameterSpace_::BinomialRatios_;
+  using BinomialRatio_ = typename BinomialRatios_::value_type;
   // Advanced use
-  using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
-  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>;
+  using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim, dim>>;
 
-  /// @brief raw ptr based inithelper.
-  /// @param degrees should have same size as parametric dimension
-  /// @param knot_vectors as vector of vector, we can keep track of their
-  /// length, as well as the legnth of control_points/weights.
-  /// @param control_points
-  /// @param weights
+  /** raw ptr based inithelper.
+   *  degrees should have same size as parametric dimension
+   *  having knot_vectors vector of vector, we can keep track of their length,
+   * as well as the legnth of control_points/weights.
+   */
   static Base_ CreateBase(const int* degrees,
                           const std::vector<std::vector<double>>& knot_vectors,
-                          const double* control_points,
-                          const double* weights) {
+                          const double* control_points) {
     // process all the info and turn them into SplineLib types to initialize
     // Base_.
 
@@ -102,7 +112,6 @@ public:
     Knots_ sl_knots;                // std::vector
     KnotVectors_ sl_knot_vectors;   // std::array
     Coordinates_ sl_control_points; // std::vector
-    Weights_ sl_weights;            // std::vector
     std::size_t ncps{1};
 
     // Formulate degrees and knotvectors
@@ -131,7 +140,6 @@ public:
 
     // Formulate control_points and weights
     sl_control_points.reserve(ncps);
-    sl_weights.reserve(ncps);
     for (std::size_t i{}; i < ncps; ++i) {
       // control_points
       Coordinate_ control_point;
@@ -139,44 +147,38 @@ public:
         control_point[j] = ScalarCoordinate_{control_points[i * kDim + j]};
       }
       sl_control_points.push_back(std::move(control_point));
-
-      // weights
-      sl_weights.emplace_back(weights[i]);
     }
 
-    auto sl_weighted_space =
-        std::make_shared<WeightedVectorSpace_>(sl_control_points, sl_weights);
+    auto sl_vector_space = std::make_shared<VectorSpace_>(sl_control_points);
 
     // return init
-    return Base_(sl_parameter_space, sl_weighted_space);
+    return Base_(sl_parameter_space, sl_vector_space);
   }
 
   /// @brief Constructor based on raw pointer
   /// @param degrees
   /// @param knot_vectors
   /// @param control_points
-  /// @param weights
-  Nurbs(const int* degrees,
-        const std::vector<std::vector<double>>& knot_vectors,
-        const double* control_points,
-        const double* weights)
-      : Base_(CreateBase(degrees, knot_vectors, control_points, weights)) {}
-  // inherit ctor
+  BSpline(const int* degrees,
+          const std::vector<std::vector<double>>& knot_vectors,
+          const double* control_points)
+      : Base_(CreateBase(degrees, knot_vectors, control_points)) {}
+  /// Inherited constructor
   using Base_::Base_;
 
-  /// @brief Get degrees of parameter space
+  /// @brief Get the degree of the parameter space
   constexpr const Degrees_& GetDegrees() const {
     return GetParameterSpace().GetDegrees();
   };
 
-  /// @brief Get knot vectors
+  /// @brief Get the knot vectors
   constexpr const KnotVectors_& GetKnotVectors() const {
     return GetParameterSpace().GetKnotVectors();
   }
 
-  /// @brief Get coordinates. Nurbs' coordinates are homogeneous
-  constexpr const HomogeneousCoordinates_& GetCoordinates() const {
-    return GetWeightedVectorSpace().GetCoordinates();
+  /// @brief Get the coordinates
+  constexpr const Coordinates_& GetCoordinates() const {
+    return GetVectorSpace().GetCoordinates();
   }
 
   // required implementations
@@ -187,11 +189,11 @@ public:
   virtual int SplinepyDim() const { return kDim; }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepySplineName
-  virtual std::string SplinepySplineName() const { return "NURBS"; }
+  virtual std::string SplinepySplineName() const { return "BSpline"; }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyWhatAmI
   virtual std::string SplinepyWhatAmI() const {
-    return "NURBS, parametric dimension: " + std::to_string(SplinepyParaDim())
+    return "BSpline, parametric dimension: " + std::to_string(SplinepyParaDim())
            + ", physical dimension: " + std::to_string(SplinepyDim());
   }
 
@@ -203,7 +205,7 @@ public:
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfControlPoints
   virtual int SplinepyNumberOfControlPoints() const {
-    return GetWeightedVectorSpace().GetNumberOfCoordinates();
+    return GetVectorSpace().GetNumberOfCoordinates();
   }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyNumberOfSupports
@@ -216,9 +218,10 @@ public:
   SplinepyCurrentProperties(int* degrees,
                             std::vector<std::vector<double>>* knot_vectors,
                             double* control_points,
-                            double* weights) const {
+                            double* weights /* untouched */) const {
+
     const auto& parameter_space = GetParameterSpace();
-    const auto& vector_space = GetWeightedVectorSpace();
+    const auto& vector_space = GetVectorSpace();
 
     // degrees
     if (degrees) {
@@ -245,24 +248,16 @@ public:
       }
     }
 
-    // control_points and weights
-    if (control_points || weights) {
+    // control_points
+    if (control_points) {
       std::size_t ncps = vector_space.GetNumberOfCoordinates();
       // fill it up, phil!
       for (std::size_t i{}; i < ncps; ++i) {
         auto const& coord_named_phil = vector_space[bsplinelib::Index{
             static_cast<bsplinelib::Index::Type_>(i)}];
-        // unweight - phil needs to first project before filling.
-        if (control_points) {
-          auto const& projected_phil =
-              WeightedVectorSpace_::Project(coord_named_phil);
-          for (std::size_t j{}; j < kDim; ++j) {
-            control_points[i * kDim + j] =
-                static_cast<double>(projected_phil[j]);
-          }
-        }
-        if (weights) {
-          weights[i] = static_cast<double>(coord_named_phil[dim]);
+        for (std::size_t j{}; j < kDim; ++j) {
+          control_points[i * kDim + j] =
+              static_cast<double>(coord_named_phil[j]);
         }
       }
     }
@@ -278,39 +273,21 @@ public:
     return Base_::Base_::parameter_space_->GetKnotVectors()[p_dim];
   };
 
-  virtual std::shared_ptr<WeightedControlPointPointers_>
-  SplinepyWeightedControlPointPointers() {
+  virtual std::shared_ptr<ControlPointPointers_>
+  SplinepyControlPointPointers() {
     if (SplinepyBase_::control_point_pointers_) {
       return SplinepyBase_::control_point_pointers_;
     }
-    // create weighted cps
-    auto wcpp = std::make_shared<WeightedControlPointPointers_>();
-    wcpp->dim_ = kDim;
-    wcpp->for_rational_ = kIsRational;
-    wcpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
-    // create weights
-    auto w = std::make_shared<WeightPointers_>();
-    w->weights_.reserve(SplinepyNumberOfControlPoints());
-
-    for (auto& w_control_point :
-         Base_::weighted_vector_space_->GetCoordinates()) {
-      auto* coord_begin = w_control_point.data();
-      wcpp->coordinate_begins_.push_back(coord_begin);
-      w->weights_.push_back(coord_begin + kDim);
+    auto cpp = std::make_shared<ControlPointPointers_>();
+    cpp->dim_ = kDim;
+    cpp->coordinate_begins_.reserve(SplinepyNumberOfControlPoints());
+    for (auto& control_point : Base_::vector_space_->GetCoordinates()) {
+      cpp->coordinate_begins_.push_back(control_point.data());
     }
 
-    // reference each other
-    w->control_point_pointers_ = wcpp; // weak-ref
-    wcpp->weight_pointers_ = w;
+    SplinepyBase_::control_point_pointers_ = cpp;
 
-    // save
-    SplinepyBase_::control_point_pointers_ = wcpp;
-
-    return wcpp;
-  }
-
-  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers() {
-    return SplinepyWeightedControlPointPointers()->weight_pointers_;
+    return cpp;
   }
 
   /// @copydoc splinepy::splines::SplinepyBase::SplinepyParametricBounds
@@ -330,7 +307,7 @@ public:
     std::copy_n(cm_res.begin(), para_dim, control_mesh_res);
   }
 
-  /// @brief Calculate Greville abscissae for Nurbs
+  /// @brief Calculate Greville abscissae for BSpline
   ///
   /// @param[out] greville_abscissae pointer to solution
   /// @param[in] i_para_dim parametric dimension
@@ -347,7 +324,6 @@ public:
                                                    para_coord,
                                                    evaluated);
   }
-
   virtual void SplinepyDerivative(const double* para_coord,
                                   const int* orders,
                                   double* derived) const {
@@ -472,9 +448,9 @@ public:
     return *Base_::Base_::parameter_space_;
   }
 
-  /// @brief Gets weighted vector space
-  constexpr const WeightedVectorSpace_& GetWeightedVectorSpace() const {
-    return *Base_::weighted_vector_space_;
+  /// @brief Gets vector space
+  constexpr const VectorSpace_& GetVectorSpace() const {
+    return *Base_::vector_space_;
   }
 
   /// @brief Gets proximity
@@ -485,9 +461,8 @@ public:
 protected:
   /// @brief Unique pointer to proximity
   std::unique_ptr<Proximity_> proximity_ = std::make_unique<Proximity_>(*this);
-
-}; /* class Nurbs */
+};
 
 } /* namespace splinepy::splines */
 
-#include <splinepy/explicit/splinepy/nurbs_extern.hpp>
+#include <splinepy/explicit/bspline.hpp>
