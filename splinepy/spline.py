@@ -243,6 +243,35 @@ def _get_helper(spl, attr_name, helper_class):
     return helper_obj
 
 
+def _call_required_properties(spl, exclude="?"):
+    """
+    Calls all getters of spline's required_properties.
+    This guarantees that spline's saved data (spl._data) contains local
+    copy/reference of core spline's properties, as getters properly processes
+    and saves spline properties.
+
+    This is useful to call within the setters before calling spl._new_core.
+    For example, spline manipulation calls like spl.elevate_degrees() deletes
+    all the saved data as most of the saved data is invalid afterwards.
+    If you then call a setter, it will set a new value and naturally try to
+    create a new spline using cached properties in spl._data, which is
+    incomplete at this point.
+
+    Parameters
+    ----------
+    spl: Spline
+    exclude: str
+      Default is "?" as no member name can start with a question mark.
+
+    Returns
+    -------
+    None
+    """
+    for rp in spl.required_properties:
+        if not rp.startswith(exclude):
+            _ = getattr(spl, rp, None)
+
+
 class Spline(SplinepyBase, core.PySpline):
     r"""
     Spline base class. Extends :class:`.PySpline` with documentation.
@@ -699,6 +728,10 @@ class Spline(SplinepyBase, core.PySpline):
             degrees, dtype="int32", order="C"
         ).copy()
 
+        # make sure _new_core call works
+        if core.has_core(self):
+            _call_required_properties(self, exclude="degrees")
+
         # try to sync core with current status
         self._new_core(
             keep_properties=True,
@@ -772,6 +805,10 @@ class Spline(SplinepyBase, core.PySpline):
                 new_kvs.append(utils.data.enforce_contiguous(kv, "float64"))
 
         self._data["knot_vectors"] = new_kvs
+
+        # make sure _new_core call works
+        if core.has_core(self):
+            _call_required_properties(self, exclude="knot_vectors")
 
         # try to sync core with current status
         self._new_core(
@@ -889,6 +926,10 @@ class Spline(SplinepyBase, core.PySpline):
             self._data["control_points"] = np.asarray(
                 control_points, dtype="float64", order="C"
             ).copy()
+
+        # make sure _new_core call works
+        if core.has_core(self):
+            _call_required_properties(self, exclude="control_points")
 
         # try to sync core with current status
         self._new_core(
@@ -1052,6 +1093,10 @@ class Spline(SplinepyBase, core.PySpline):
                 .copy()
                 .reshape(-1, 1)
             )
+
+        # make sure _new_core call works
+        if core.has_core(self):
+            _call_required_properties(self, exclude="weights")
 
         # try to sync core with current status
         self._new_core(
