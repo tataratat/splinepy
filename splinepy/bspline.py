@@ -514,7 +514,6 @@ class BSpline(BSplineBase):
         degree_u,
         degree_v,
         centripetal=True,
-        reorganize=False,
         save_query=True,
     ):
         """
@@ -529,9 +528,6 @@ class BSpline(BSplineBase):
         degree_v: int
         centripetal: bool
           (Optional) Default is True.
-        reorganize: bool
-          (Optional) Default is False. Reorganize control points, assuming they
-          are listed v-direction first, along u-direction.
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or
           whatever.
@@ -560,11 +556,6 @@ class BSpline(BSplineBase):
         if save_query:
             fitted._fitting_queries = query_points
 
-        # Reorganize control points.
-        if reorganize:
-            ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
-            fitted.control_points = fitted.control_points[ri]
-
         if save_query:
             fitted._fitting_queries = query_points
 
@@ -581,7 +572,6 @@ class BSpline(BSplineBase):
         degree_u,
         degree_v,
         centripetal=True,
-        reorganize=False,
         save_query=True,
     ):
         """
@@ -595,7 +585,7 @@ class BSpline(BSplineBase):
         num_points_u: int
           The number of sampling points along the first parametric direction.
           By default the first parametric direction is along the cartesian
-          x-axis, this can be adapted by reorganize.
+          x-axis.
         num_points_v: int
           The number of sampling points along the first parametric direction.
         size_u: int
@@ -606,9 +596,6 @@ class BSpline(BSplineBase):
         degree_v: int
         centripetal: bool
           (Optional) Default is True.
-        reorganize: bool
-          (Optional) Default is False. Reorganize control points, assuming they
-          are listed v-direction first, along u-direction.
         save_query: bool
           (Optional) Default is True. Saves query points for plotting, or
           whatever.
@@ -648,11 +635,6 @@ class BSpline(BSplineBase):
 
         if save_query:
             fitted._fitting_queries = query_points
-
-        # Reorganize control points.
-        if reorganize:
-            ri = [v + size_v * u for v in range(size_v) for u in range(size_u)]
-            fitted.control_points = fitted.control_points[ri]
 
         if save_query:
             fitted._fitting_queries = query_points

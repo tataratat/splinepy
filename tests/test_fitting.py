@@ -88,7 +88,6 @@ class TestSplinepyFitting(c.unittest.TestCase):
             size_v=sample_size[1],
             degree_u=2,
             degree_v=2,
-            reorganize=False,
         )
         approximated_points = bspline.sample([sample_size])
 
@@ -120,7 +119,6 @@ class TestSplinepyFitting(c.unittest.TestCase):
             num_points_v=sample_size[1],
             degree_u=3,
             degree_v=3,
-            reorganize=False,
         )
         approximated_points = bspline.sample(sample_size)
 
