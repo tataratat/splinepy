@@ -1,4 +1,3 @@
-from splinepy import settings
 from splinepy.bspline import BSplineBase
 
 
@@ -148,4 +147,4 @@ class NURBS(BSplineBase):
 
     @property
     def nurbs(self):
-        return settings.NAME_TO_TYPE["NURBS"](**self.todict())
+        return self.copy(saved_data=False)

@@ -643,7 +643,7 @@ class BSpline(BSplineBase):
 
     @property
     def bspline(self):
-        return settings.NAME_TO_TYPE["BSpline"](**self.todict())
+        return self.copy(saved_data=False)
 
     @property
     def nurbs(self):
