@@ -8,17 +8,7 @@ from splinepy import settings
 from splinepy.utils import log
 
 
-class SplineShowOption(options.ShowOption):
-    """
-    Show options for splines.
-    """
-
-    __slots__ = ()
-
-    # if we start to support more backends, most of this options should become
-    # some sort of spline common.
-    _valid_options = options.make_valid_options(
-        *options.vedo_common_options,
+_vedo_spline_common_options = tuple([
         options.Option(
             "vedo",
             "control_points",
@@ -33,12 +23,6 @@ class SplineShowOption(options.ShowOption):
             (bool,),
         ),
         options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
-        options.Option(
-            "vedo",
-            "fitting_queries",
-            "Shows fitting queries if they are locally saved in splines.",
-            (bool,),
-        ),
         options.Option(
             "vedo",
             "control_points_c",
@@ -74,6 +58,25 @@ class SplineShowOption(options.ShowOption):
             "resolutions",
             "Sampling resolution for spline.",
             (int, list, tuple, np.ndarray),
+        ),])
+
+class SplineShowOption(options.ShowOption):
+    """
+    Show options for splines.
+    """
+
+    __slots__ = ()
+
+    # if we start to support more backends, most of this options should become
+    # some sort of spline common.
+    _valid_options = options.make_valid_options(
+        *options.vedo_common_options,
+        *_vedo_spline_common_options, 
+        options.Option(
+            "vedo",
+            "fitting_queries",
+            "Shows fitting queries if they are locally saved in splines.",
+            (bool,),
         ),
         options.Option(
             "vedo",
@@ -84,6 +87,39 @@ class SplineShowOption(options.ShowOption):
     )
 
     _helps = "Spline"
+
+    def __init__(self, helpee):
+        """
+        Parameters
+        ----------
+        helpee: GustafSpline
+        """
+        self._helpee = helpee
+        # checks if helpee inherits from GustafSpline
+        if self._helps not in str(type(helpee).__mro__):
+            raise TypeError(
+                f"This show option if for {self._helps}.",
+                f"Given helpee is {type(helpee)}.",
+            )
+        self._options = dict()
+        self._backend = gus.settings.VISUALIZATION_BACKEND
+        self._options[self._backend] = dict()
+
+class MultipatchShowOption(options.ShowOption):
+    """
+    Show options for Multipatches.
+    """
+
+    __slots__ = ()
+
+    # if we start to support more backends, most of this options should become
+    # some sort of spline common.
+    _valid_options = options.make_valid_options(
+        *options.vedo_common_options,
+        *_vedo_spline_common_options, 
+    )
+
+    _helps = "Multipatch"
 
     def __init__(self, helpee):
         """
@@ -339,9 +375,7 @@ def _vedo_showable_para_dim_2(spline):
       keys are {spline, knots}
     """
     gus_primitives = dict()
-    res = enforce_len(
-        spline.show_options.get("resolutions", 100), spline.para_dim
-    )
+    res = spline.show_options.get("resolutions", 100)
     sp = spline.extract.faces(res, watertight=False)  # always watertight
     gus_primitives["spline"] = sp
 
@@ -371,7 +405,7 @@ def show(spline, **kwargs):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
     resolutions: int or (spline.para_dim,) array-like
     control_points: bool
     knots: bool
