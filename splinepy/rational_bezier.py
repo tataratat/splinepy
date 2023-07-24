@@ -132,7 +132,7 @@ class RationalBezier(BezierBase):
 
     @property
     def rationalbezier(self):
-        return settings.NAME_TO_TYPE["RationalBezier"](spline=self)
+        return self.copy(saved_data=False)
 
     @property
     def nurbs(self):

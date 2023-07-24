@@ -336,7 +336,7 @@ class Bezier(BezierBase):
 
     @property
     def bezier(self):
-        return settings.NAME_TO_TYPE["Bezier"](**self.todict())
+        return self.copy(saved_data=False)
 
     @property
     def rationalbezier(self):
