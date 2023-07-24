@@ -1139,6 +1139,9 @@ public:
   /// sub patches - similar concept to subelement / face elements
   std::shared_ptr<PyMultiPatch> sub_multi_patch_ = nullptr;
 
+  /// Casted sub multi patch
+  py::object py_sub_multi_patch_ = py::none();
+
   /// center of each sub patch.
   py::array_t<double> sub_patch_centers_;
 
@@ -1147,6 +1150,9 @@ public:
 
   /// Boundary multi patches. Should consist of one smaller parametric dim
   std::shared_ptr<PyMultiPatch> boundary_multi_patch_ = nullptr;
+
+  /// Casted boundary multi patches
+  py::object py_boundary_multi_patch_ = py::none();
 
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
@@ -1209,11 +1215,26 @@ public:
                               dim_if_none);
   }
 
-  /// @brief given other shared pointer, tries to steal the contents with move
-  /// ctor. Expected use is only for  to_derived call.
+  /// @brief given other shared pointer,  will copy references
+  /// ctor. Expected use is for  to_derived call.
+  ///
   /// @param other
-  PyMultiPatch(std::shared_ptr<PyMultiPatch>& other)
-      : PyMultiPatch(std::move(*other)) {}
+  PyMultiPatch(std::shared_ptr<PyMultiPatch>& other) {
+    patches_ = other->patches_;
+    core_patches_ = other->core_patches_;
+    sub_multi_patch_ = other->sub_multi_patch_;
+    sub_patch_centers_ = other->sub_patch_centers_;
+    boundary_patch_ids_ = other->boundary_patch_ids_;
+    boundary_multi_patch_ = other->boundary_multi_patch_;
+    interfaces_ = other->interfaces_;
+    boundary_ids_ = other->boundary_ids_;
+    field_list_ = other->field_list_;
+    field_multi_patches_ = other->field_multi_patches_;
+    n_default_threads_ = other->n_default_threads_;
+    same_parametric_bounds_ = other->same_parametric_bounds_;
+    has_null_splines_ = other->has_null_splines_;
+    tolerance_ = other->tolerance_;
+  }
 
   /// @brief Gets core patches
   CorePatches_& CorePatches() {
@@ -1362,7 +1383,12 @@ public:
 
   /// @brief returns derived class of SubMultiPatch
   /// @return
-  py::object PySubMultiPatch() { return ToDerived(SubMultiPatch()); }
+  py::object PySubMultiPatch() {
+    if (py_sub_multi_patch_.is_none()) {
+      py_sub_multi_patch_ = ToDerived(SubMultiPatch());
+    }
+    return py_sub_multi_patch_;
+  }
 
   /// @brief Computes centers of subpatches
   /// @return
@@ -1545,7 +1571,12 @@ public:
 
   /// @brief returns derived class of boundary multi patch
   /// @return
-  py::object PyBoundaryMultiPatch() { return ToDerived(BoundaryMultiPatch()); }
+  py::object PyBoundaryMultiPatch() {
+    if (py_boundary_multi_patch_.is_none()) {
+      py_boundary_multi_patch_ = ToDerived(BoundaryMultiPatch());
+    }
+    return py_boundary_multi_patch_;
+  }
 
   /// @brief Evaluate at query points
   /// @param queries Query points
