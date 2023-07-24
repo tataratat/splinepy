@@ -7,8 +7,8 @@ from gustaf.utils.arr import enforce_len
 from splinepy import settings
 from splinepy.utils import log
 
-
-_vedo_spline_common_options = tuple([
+_vedo_spline_common_options = tuple(
+    [
         options.Option(
             "vedo",
             "control_points",
@@ -58,7 +58,10 @@ _vedo_spline_common_options = tuple([
             "resolutions",
             "Sampling resolution for spline.",
             (int, list, tuple, np.ndarray),
-        ),])
+        ),
+    ]
+)
+
 
 class SplineShowOption(options.ShowOption):
     """
@@ -71,7 +74,7 @@ class SplineShowOption(options.ShowOption):
     # some sort of spline common.
     _valid_options = options.make_valid_options(
         *options.vedo_common_options,
-        *_vedo_spline_common_options, 
+        *_vedo_spline_common_options,
         options.Option(
             "vedo",
             "fitting_queries",
@@ -105,6 +108,7 @@ class SplineShowOption(options.ShowOption):
         self._backend = gus.settings.VISUALIZATION_BACKEND
         self._options[self._backend] = dict()
 
+
 class MultipatchShowOption(options.ShowOption):
     """
     Show options for Multipatches.
@@ -116,7 +120,7 @@ class MultipatchShowOption(options.ShowOption):
     # some sort of spline common.
     _valid_options = options.make_valid_options(
         *options.vedo_common_options,
-        *_vedo_spline_common_options, 
+        *_vedo_spline_common_options,
     )
 
     _helps = "Multipatch"
