@@ -18,8 +18,10 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     interfaces
     """
 
-    __slots__ = ("_show_options",
-        "_extractor",)
+    __slots__ = (
+        "_show_options",
+        "_extractor",
+    )
 
     __show_option__ = visualize.SplineShowOption
 
@@ -356,7 +358,6 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         self.interfaces[
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
-    
 
     @property
     def show_options(self):
