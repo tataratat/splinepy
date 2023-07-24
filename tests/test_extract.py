@@ -272,6 +272,29 @@ class extractTest(c.unittest.TestCase):
             c.np.allclose(volumes_mp.centers(), volumes_mp_wt.centers())
         )
 
+    def test_extract_control_points(self):
+        """Extract control points of all splines"""
+        bez_el0 = c.splinepy.Bezier(
+            degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
+        )
+        bez_el1 = c.splinepy.Bezier(
+            degrees=[1, 1], control_points=[[1, 0], [2, 0], [1, 1], [2, 1]]
+        )
+
+        # Extract ctps from single patches
+        ctps0 = bez_el0.extract.control_points()
+        ctps1 = bez_el1.extract.control_points()
+
+        # Extract from mp geometry
+        mp = c.splinepy.Multipatch(splines=[bez_el0, bez_el1])
+        ctps_mp = mp.extract.control_points()
+
+        self.assertTrue(
+            c.np.allclose(
+                c.np.vstack([ctps0.vertices, ctps1.vertices]), ctps_mp.vertices
+            )
+        )
+
     def test_extract_boundaries_2D(self):
         """Create a Spline, extract boundaries and check validity"""
         # uniform

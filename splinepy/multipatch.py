@@ -6,8 +6,9 @@ import numpy as np
 
 from splinepy import settings
 from splinepy._base import SplinepyBase
+from splinepy.helpme import visualize
 from splinepy.helpme.extract import Extractor
-from splinepy.spline import _default_if_none
+from splinepy.spline import _default_if_none, _get_helper
 from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
 
 
@@ -17,7 +18,10 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     interfaces
     """
 
-    __slots__ = ()
+    __slots__ = ("_show_options",
+        "_extractor",)
+
+    __show_option__ = visualize.SplineShowOption
 
     def __init__(self, splines=None, interfaces=None, *, spline=None):
         """
@@ -352,6 +356,42 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         self.interfaces[
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
+    
+
+    @property
+    def show_options(self):
+        """
+        Show option manager for MultiPatches.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        show_options: SplineShowOption
+        """
+        return _get_helper(self, "_show_options", self.__show_option__)
+
+    def showable(self, **kwargs):
+        """Equivalent to
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(
+               spline, return_showable=True, **kwargs
+            )
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        spline_showable: dict
+        """
+        return visualize.show(self, return_showable=True, **kwargs)
 
     def boundaries_from_continuity(
         self,
@@ -528,4 +568,4 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         --------
         extractor: Extractor
         """
-        return Extractor(spl=self)
+        return _get_helper(self, "_extractor", Extractor)

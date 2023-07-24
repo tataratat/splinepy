@@ -245,7 +245,7 @@ def control_points(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
@@ -259,19 +259,27 @@ def control_edges(spline):
 
     Parameters
     -----------
-    edges: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     edges: Edges
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 1:
         raise ValueError("Invalid spline type!")
 
-    return Edges(
-        vertices=spline.control_points,
-        edges=connec.range_to_edges(len(spline.control_points), closed=False),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        Edges.concat([s.extract.control_edges() for s in spline.splines])
+    else:
+        return Edges(
+            vertices=spline.control_points,
+            edges=connec.range_to_edges(
+                len(spline.control_points), closed=False
+            ),
+        )
 
 
 def control_faces(spline):
@@ -279,19 +287,25 @@ def control_faces(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     faces: Faces
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 2:
         raise ValueError("Invalid spline type!")
 
-    return Faces(
-        vertices=spline.control_points,
-        faces=connec.make_quad_faces(spline.control_mesh_resolutions),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        Faces.concat([s.extract.control_faces() for s in spline.splines])
+    else:
+        return Faces(
+            vertices=spline.control_points,
+            faces=connec.make_quad_faces(spline.control_mesh_resolutions),
+        )
 
 
 def control_volumes(spline):
@@ -299,19 +313,25 @@ def control_volumes(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     volumes: Volumes
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 3:
         raise ValueError("Invalid spline type!")
 
-    return Volumes(
-        vertices=spline.control_points,
-        volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        Volumes.concat([s.extract.control_volumes() for s in spline.splines])
+    else:
+        return Volumes(
+            vertices=spline.control_points,
+            volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
+        )
 
 
 def control_mesh(spline):
