@@ -86,9 +86,4 @@ public:
   static py::list ReadIges(std::string fname);
 };
 
-/// @brief Adds spline reader. Keys are
-/// ["knot_vectors", "control_points", "degrees"] (+ ["weights"])
-/// @param m Python module
-void init_spline_reader(py::module& m);
-
 } // namespace splinepy::py

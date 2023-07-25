@@ -225,8 +225,4 @@ public:
   py::object ToDerived();
 };
 
-/// @brief Add Spline Pyclass
-/// @param m
-void init_spline_pyclass(py::module& m);
-
 } // namespace splinepy::py

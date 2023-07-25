@@ -102,8 +102,4 @@ void AnnulCore(std::shared_ptr<PySpline>& spline);
 static std::shared_ptr<PySpline> CreateNullSpline(const int para_dim,
                                                   const int dim);
 
-/// @brief Adds Python spline extensions
-/// @param m Python module
-void init_spline_extensions(py::module& m);
-
 } // namespace splinepy::py
