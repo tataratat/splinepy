@@ -10,7 +10,7 @@ class ProximityTest(c.unittest.TestCase):
         Initial guess made with kdt. Mid-point as initial guess tends to fail,
         so excluded from test.
         """
-        for spline in c.get_all_spline_typs_as_list():
+        for spline in c.spline_types_as_list():
             # form parametric queries
             # -> parametric space is [0, 1], so no further manipulation
             para_q = c.np.random.random((10, spline.para_dim))

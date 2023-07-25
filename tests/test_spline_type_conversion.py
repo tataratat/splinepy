@@ -20,7 +20,7 @@ def convert_and_compare_samples(spline, conversion_list):
 
 class SplineTypeConversionTest(c.SplineBasedTestCase):
     def setUp(self):
-        splines = c.get_all_spline_typs_as_list()
+        splines = c.spline_types_as_list()
         self.b = splines[0]
         self.n = splines[1]
         self.z = splines[2]

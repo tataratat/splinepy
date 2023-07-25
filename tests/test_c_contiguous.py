@@ -11,8 +11,8 @@ class ContiguousArrayInputTest(c.unittest.TestCase):
         """
 
         for spl, props in zip(
-            c.get_all_spline_typs_as_list(),
-            c.get_all_splines_as_dict_as_list(),
+            c.spline_types_as_list(),
+            c.get_spline_dictionaries(),
         ):
             # make f contiguous
             f_contig_orig = c.np.asarray(props["control_points"], order="F")

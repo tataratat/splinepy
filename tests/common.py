@@ -395,7 +395,7 @@ def are_stripped_lines_same(a, b, ignore_order=False):
     return all_same
 
 
-def get_all_spline_typs_as_list():
+def spline_types_as_list():
     return [
         bspline_2p2d(),
         nurbs_2p2d(),
@@ -413,7 +413,7 @@ def get_all_spline_types_empty_as_list():
     ]
 
 
-def get_all_splines_as_dict_as_list():
+def get_spline_dictionaries():
     return [
         dict_bspline_2p2d(),
         dict_nurbs_2p2d(),
