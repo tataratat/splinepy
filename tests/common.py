@@ -428,6 +428,15 @@ def get_all_spline_typs_as_list():
     ]
 
 
+def get_all_spline_types_empty_as_list():
+    return [
+        splinepy.BSpline(),
+        splinepy.NURBS(),
+        splinepy.Bezier(),
+        splinepy.RationalBezier(),
+    ]
+
+
 def get_all_splines_as_dict_as_list():
     return [b2p2d(), n2p2d(), z2p2d(), r2p2d()]
 

@@ -65,6 +65,11 @@ class InplaceModificationTest(c.unittest.TestCase):
                 ).tolist()
                 modified_query[:, kid] *= factor
 
+                # check modified flag
+                assert s.knot_vectors[kid]._modified
+                # full modified check
+                assert c.splinepy.spline.is_modified(s)
+
             # evaluation check
             assert c.np.allclose(raster_query, s.evaluate(modified_query))
 
