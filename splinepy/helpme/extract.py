@@ -272,7 +272,9 @@ def control_edges(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        Edges.concat([s.extract.control_edges() for s in spline.splines])
+        return Edges.concat(
+            [s.extract.control_edges() for s in spline.splines]
+        )
     else:
         return Edges(
             vertices=spline.control_points,
@@ -300,7 +302,9 @@ def control_faces(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        Faces.concat([s.extract.control_faces() for s in spline.splines])
+        return Faces.concat(
+            [s.extract.control_faces() for s in spline.splines]
+        )
     else:
         return Faces(
             vertices=spline.control_points,
@@ -326,7 +330,9 @@ def control_volumes(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        Volumes.concat([s.extract.control_volumes() for s in spline.splines])
+        return Volumes.concat(
+            [s.extract.control_volumes() for s in spline.splines]
+        )
     else:
         return Volumes(
             vertices=spline.control_points,
