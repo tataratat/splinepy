@@ -1,5 +1,3 @@
-#include "splinepy/splines/rational_bezier.hpp"
-
 #include "splinepy/splines/bezier.hpp"
 
 #include <splinepy/splines/helpers/basis_functions.hpp>
@@ -681,5 +679,3 @@ RationalBezier<para_dim, dim>::SplinepyCompositionDerivative(
 }
 
 } // namespace splinepy::splines
-
-// #include "splinepy/explicit/rational_bezier.hpp"

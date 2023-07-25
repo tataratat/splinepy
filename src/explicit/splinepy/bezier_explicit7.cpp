@@ -1,4 +1,4 @@
-#include "splinepy/splines/bezier.inl"
+#include "splinepy/splines/bezier.hpp"
 
 #ifdef SPLINEPY_MORE
 template class splinepy::splines::Bezier<7, 1>;
