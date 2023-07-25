@@ -1,14 +1,14 @@
 # reader, export helper, and python module
 set(PYSPLINEPY_SRCS
-        init/coordinate_pointers.cpp
-        init/core_spline.cpp
-        init/exporter.cpp
-        init/fitting.cpp
-        init/knot_insertion_matrix.cpp
-        init/knot_vector.cpp
-        init/multi_patch.cpp
-        init/reader.cpp
-        init/spline_extensions.cpp
+        py_coordinate_pointers.cpp
+        py_fitting.cpp
+        py_knot_insertion_matrix.cpp
+        py_knot_vector.cpp
+        py_multi_patch.cpp
+        py_spline.cpp
+        py_spline_exporter.cpp
+        py_spline_extensions.cpp
+        py_spline_reader.cpp
         splinepy_core.cpp)
 
 # add target

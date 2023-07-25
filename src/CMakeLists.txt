@@ -115,9 +115,9 @@ target_compile_features(splinepy
         cxx_std_17)
 
 # python?
-#if(SPLINEPY_COMPILE_PYTHON)
-#    add_subdirectory(py)
-#endif()
+if(SPLINEPY_COMPILE_PYTHON)
+    add_subdirectory(py)
+endif()
 
 
 # cmake config files
