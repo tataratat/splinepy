@@ -3,10 +3,6 @@
 // SplineLib
 #include <BSplineLib/Splines/b_spline.hpp>
 
-#include "splinepy/explicit/bsplinelib_bspline.hpp"
-#include "splinepy/explicit/bsplinelib_parameter_space.hpp"
-#include "splinepy/explicit/bsplinelib_vector_space.hpp"
-
 #include "splinepy/proximity/proximity.hpp"
 #include "splinepy/splines/helpers/basis_functions.hpp"
 #include "splinepy/splines/helpers/extract.hpp"

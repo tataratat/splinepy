@@ -3,12 +3,6 @@
 // SplineLib
 #include <BSplineLib/Splines/nurbs.hpp>
 
-#include "splinepy/explicit/bsplinelib_bspline.hpp"
-#include "splinepy/explicit/bsplinelib_nurbs.hpp"
-#include "splinepy/explicit/bsplinelib_parameter_space.hpp"
-#include "splinepy/explicit/bsplinelib_vector_space.hpp"
-#include "splinepy/explicit/bsplinelib_weighted_vector_space.hpp"
-
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/basis_functions.hpp>
 #include <splinepy/splines/helpers/extract.hpp>

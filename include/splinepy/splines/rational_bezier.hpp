@@ -7,10 +7,6 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
 
-#include "splinepy/explicit/bezman_bezier.hpp"
-#include "splinepy/explicit/bezman_point.hpp"
-#include "splinepy/explicit/bezman_rational_bezier.hpp"
-
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
 
