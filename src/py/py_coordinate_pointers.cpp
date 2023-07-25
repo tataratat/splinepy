@@ -1,5 +1,3 @@
-#pragma once
-
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
@@ -74,7 +72,7 @@ std::shared_ptr<PointersType> SubSet(PointersType& pointers,
   return pointers.SubSet(static_cast<int*>(ids.request().ptr), ids.size());
 }
 
-inline void add_coordinate_pointers(py::module& m) {
+void init_coordinate_pointers(py::module& m) {
   using ControlPointPointers = splinepy::utils::ControlPointPointers;
   using WeightPointers = splinepy::utils::WeightPointers;
 

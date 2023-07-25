@@ -1,5 +1,3 @@
-#pragma once
-
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
@@ -11,7 +9,7 @@ namespace splinepy::py {
 
 namespace py = pybind11;
 
-inline void add_knot_vector(py::module_& m) {
+void init_knot_vector(py::module_& m) {
   using KnotVector = bsplinelib::parameter_spaces::KnotVector;
   using IterType = typename KnotVector::Knots_::iterator;
   using KnotType = typename KnotVector::Knots_::value_type;
