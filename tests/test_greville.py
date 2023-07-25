@@ -10,10 +10,10 @@ class GrevilleAbscissaeTest(c.SplineBasedTestCase):
         test permute
         """
         # Define some splines
-        z = self.spline_z3p3d()
-        r = self.spline_r3p3d()
-        b = self.spline_b3p3d()
-        n = self.spline_n3p3d()
+        z = self.bezier_3p3d()
+        r = self.rational_bezier_3p3d()
+        b = self.bspline_3p3d()
+        n = self.nurbs_3p3d()
 
         # Modify some splines
         b.insert_knots(0, [0.2, 0.7])

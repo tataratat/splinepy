@@ -45,7 +45,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
     def test_extraction_matrice_bspline_3D(self):
         """Create matrices to extract splines"""
         # Init b-splines
-        bspline = self.spline_b3p3d()
+        bspline = self.bspline_3p3d()
         bspline.elevate_degrees([0, 1, 2])
         bspline.insert_knots(0, c.np.random.rand(3))
         bspline.insert_knots(1, c.np.random.rand(3))
@@ -65,7 +65,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
         """Create matrices to extract splines"""
 
         # Init nurbs
-        bspline = self.spline_b2p2d()
+        bspline = self.bspline_2p2d()
         bspline.elevate_degrees([0, 1])
         bspline.insert_knots(0, c.np.random.rand(3))
         bspline.insert_knots(1, c.np.random.rand(3))
@@ -82,7 +82,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
         """Create matrices to extract splines"""
 
         # Init nurbs
-        nurbs = self.spline_n2p2d()
+        nurbs = self.nurbs_2p2d()
         nurbs.elevate_degrees([0, 1])
         nurbs.insert_knots(0, c.np.random.rand(3))
         nurbs.insert_knots(1, c.np.random.rand(3))

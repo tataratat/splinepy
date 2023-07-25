@@ -11,12 +11,6 @@ __all__ = [
     "splinepy",
 ]
 
-# abbreviation
-# z: bezier
-# r: rational bezier
-# b: bspline
-# n: nurbs
-
 
 def get_2d_control_points_b_spline():
     return [
@@ -106,7 +100,7 @@ def get_query_points_q3D():
     ]
 
 
-def dict_b2p2d():
+def dict_bspline_2p2d():
     return dict(
         degrees=[2, 2],
         knot_vectors=get_knotvectors_2(),
@@ -114,7 +108,7 @@ def dict_b2p2d():
     )
 
 
-def dict_n2p2d():
+def dict_nurbs_2p2d():
     return dict(
         degrees=[2, 1],
         knot_vectors=[
@@ -134,12 +128,12 @@ def dict_n2p2d():
 
 
 #
-def dict_z2p2d():
+def dict_bezier_2p2d():
     return dict(degrees=[2, 1], control_points=get_2d_control_points_nurbs())
 
 
 #
-def dict_r2p2d():
+def dict_rational_bezier_2p2d():
     return dict(
         degrees=[2, 1],
         control_points=get_2d_control_points_nurbs(),
@@ -155,14 +149,14 @@ def dict_r2p2d():
 
 
 # 3D
-def dict_z3p3d():
+def dict_bezier_3p3d():
     return dict(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
     )
 
 
-def dict_r3p3d():
+def dict_rational_bezier_3p3d():
     return dict(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -170,7 +164,7 @@ def dict_r3p3d():
     )
 
 
-def dict_b3p3d():
+def dict_bspline_3p3d():
     return dict(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -178,7 +172,7 @@ def dict_b3p3d():
     )
 
 
-def dict_n3p3d():
+def dict_nurbs_3p3d():
     return dict(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -189,7 +183,7 @@ def dict_n3p3d():
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
-def b2p2d():
+def bspline_2p2d():
     return splinepy.BSpline(
         degrees=[2, 2],
         knot_vectors=get_knotvectors_2(),
@@ -198,7 +192,7 @@ def b2p2d():
 
 
 # half-half circle.
-def n2p2d():
+def nurbs_2p2d():
     return splinepy.NURBS(
         degrees=[2, 1],
         knot_vectors=[
@@ -217,20 +211,20 @@ def n2p2d():
     )
 
 
-def n2p2d_quarter_circle():
+def nurbs_2p2d_quarter_circle():
     """explicit function for quarter circle
     incase n2p2d changes in the future..."""
-    return dict_n2p2d()
+    return dict_nurbs_2p2d()
 
 
-def z2p2d():
+def bezier_2p2d():
     return splinepy.Bezier(
         degrees=[2, 1],
         control_points=get_2d_control_points_nurbs(),
     )
 
 
-def r2p2d():
+def rational_bezier_2p2d():
     return splinepy.RationalBezier(
         degrees=[2, 1],
         control_points=get_2d_control_points_bezier(),
@@ -245,13 +239,13 @@ def r2p2d():
     )
 
 
-def z3p3d():
+def bezier_3p3d():
     return splinepy.Bezier(
         degrees=[1, 1, 1], control_points=get_3d_control_points()
     )
 
 
-def r3p3d():
+def rational_bezier_3p3d():
     return splinepy.RationalBezier(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -259,7 +253,7 @@ def r3p3d():
     )
 
 
-def b3p3d():
+def bspline_3p3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -267,7 +261,7 @@ def b3p3d():
     )
 
 
-def n3p3d():
+def nurbs_3p3d():
     return splinepy.NURBS(
         degrees=[1, 1, 1],
         control_points=get_3d_control_points(),
@@ -403,10 +397,10 @@ def are_stripped_lines_same(a, b, ignore_order=False):
 
 def get_all_spline_typs_as_list():
     return [
-        b2p2d(),
-        n2p2d(),
-        z2p2d(),
-        r2p2d(),
+        bspline_2p2d(),
+        nurbs_2p2d(),
+        bezier_2p2d(),
+        rational_bezier_2p2d(),
     ]
 
 
@@ -420,30 +414,35 @@ def get_all_spline_types_empty_as_list():
 
 
 def get_all_splines_as_dict_as_list():
-    return [dict_b2p2d(), dict_n2p2d(), dict_z2p2d(), dict_r2p2d()]
+    return [
+        dict_bspline_2p2d(),
+        dict_nurbs_2p2d(),
+        dict_bezier_2p2d(),
+        dict_rational_bezier_2p2d(),
+    ]
 
 
 class SplineBasedTestCase(unittest.TestCase):
-    def spline_b2p2d(self):
-        return b2p2d()
+    def bspline_2p2d(self):
+        return bspline_2p2d()
 
-    def spline_n2p2d(self):
-        return n2p2d()
+    def nurbs_2p2d(self):
+        return nurbs_2p2d()
 
-    def spline_r2p2d(self):
-        return r2p2d()
+    def rational_bezier_2p2d(self):
+        return rational_bezier_2p2d()
 
-    def spline_z2p2d(self):
-        return z2p2d()
+    def bezier_2p2d(self):
+        return bezier_2p2d()
 
-    def spline_b3p3d(self):
-        return b3p3d()
+    def bspline_3p3d(self):
+        return bspline_3p3d()
 
-    def spline_n3p3d(self):
-        return n3p3d()
+    def nurbs_3p3d(self):
+        return nurbs_3p3d()
 
-    def spline_z3p3d(self):
-        return z3p3d()
+    def bezier_3p3d(self):
+        return bezier_3p3d()
 
-    def spline_r3p3d(self):
-        return r3p3d()
+    def rational_bezier_3p3d(self):
+        return rational_bezier_3p3d()

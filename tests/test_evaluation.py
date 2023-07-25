@@ -6,10 +6,10 @@ except BaseException:
 
 class TestSplinepyEvaluation(c.SplineBasedTestCase):
     def setUp(self):
-        self.bspline = self.spline_b2p2d()
-        self.nurbs = self.spline_n2p2d()
-        self.rational = self.spline_r2p2d()
-        self.bezier = self.spline_z2p2d()
+        self.bspline = self.bspline_2p2d()
+        self.nurbs = self.nurbs_2p2d()
+        self.rational = self.rational_bezier_2p2d()
+        self.bezier = self.bezier_2p2d()
 
     def test_basis_and_support(self):
         """Test the correct calculation of the basis functions.
@@ -234,7 +234,7 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         q2D = c.np.random.rand(10, 2)
 
         # Rational Bezier and NURBS are equivalent but use different backends
-        rational_c = self.spline_r2p2d().copy()
+        rational_c = self.rational_bezier_2p2d().copy()
         nurbs_c = self.nurbs.copy()
         # increase orders for derivatives
         for _ in range(2):
