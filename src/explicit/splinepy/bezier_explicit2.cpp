@@ -1,5 +1,5 @@
-#include <splinepy/splines/bezier.hpp>
-#include <splinepy/splines/rational_bezier.hpp>
+#include "splinepy/splines/bezier.inl"
+
 template class splinepy::splines::Bezier<2, 1>;
 template class splinepy::splines::Bezier<2, 2>;
 template class splinepy::splines::Bezier<2, 3>;

@@ -1,6 +1,4 @@
 #pragma once
-#include <bezman/src/bezier_spline.hpp>
-#include <bezman/src/point.hpp>
 
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class bezman::BezierSpline<1, double, double>;

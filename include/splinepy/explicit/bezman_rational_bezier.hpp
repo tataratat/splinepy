@@ -1,7 +1,4 @@
 #pragma once
-// related headers
-#include <bezman/src/point.hpp>
-#include <bezman/src/rational_bezier_spline.hpp>
 
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class bezman::RationalBezierSpline<1, double, double>;

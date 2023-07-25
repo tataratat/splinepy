@@ -1,4 +1,9 @@
-#include "BSplineLib/Splines/nurbs.hpp"
+#include <BSplineLib/Splines/nurbs.hpp>
+
+#include "splinepy/explicit/bsplinelib_bspline.hpp"
+#include "splinepy/explicit/bsplinelib_parameter_space.hpp"
+#include "splinepy/explicit/bsplinelib_weighted_vector_space.hpp"
+
 #ifdef SPLINEPY_MORE
 template class bsplinelib::splines::Nurbs<5, 1>;
 template class bsplinelib::splines::Nurbs<5, 2>;

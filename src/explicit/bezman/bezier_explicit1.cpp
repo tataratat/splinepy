@@ -1,5 +1,8 @@
 #include <bezman/src/bezier_spline.hpp>
 #include <bezman/src/point.hpp>
+
+#include "splinepy/explicit/bezman_point.hpp"
+
 template class bezman::BezierSpline<1, double, double>;
 template class bezman::BezierSpline<1, bezman::Point<2>, double>;
 template class bezman::BezierSpline<1, bezman::Point<3>, double>;

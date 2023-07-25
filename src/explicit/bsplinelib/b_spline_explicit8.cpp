@@ -1,4 +1,8 @@
-#include "BSplineLib/Splines/b_spline.hpp"
+#include <BSplineLib/Splines/b_spline.hpp>
+
+#include "splinepy/explicit/bsplinelib_parameter_space.hpp"
+#include "splinepy/explicit/bsplinelib_vector_space.hpp"
+
 #ifdef SPLINEPY_MORE
 template class bsplinelib::splines::BSpline<8, 1>;
 template class bsplinelib::splines::BSpline<8, 2>;
