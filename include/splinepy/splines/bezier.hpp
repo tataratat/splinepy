@@ -249,6 +249,6 @@ protected:
 
 } // namespace splinepy::splines
 
-// #include "splinepy/splines/bezier.inl"
+#include "splinepy/splines/bezier.inl"
 
 #include "splinepy/explicit/bezier.hpp"

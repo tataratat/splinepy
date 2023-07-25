@@ -279,5 +279,6 @@ protected:
 
 } // namespace splinepy::splines
 
-// #include "splinepy/splines/rational_bezier.inl"
+#include "splinepy/splines/rational_bezier.inl"
+
 #include "splinepy/explicit/rational_bezier.hpp"

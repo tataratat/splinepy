@@ -1,9 +1,6 @@
 #include <array>
 #include <type_traits>
 
-// bezman
-#include "splinepy/splines/bezier.hpp"
-
 #include "splinepy/splines/rational_bezier.hpp"
 
 #include <splinepy/splines/helpers/basis_functions.hpp>
