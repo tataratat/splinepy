@@ -1823,13 +1823,14 @@ public:
   /// @brief Get summed number of all control points
   py::array_t<int> GetControlPointOffsets() {
     // Init return value
-    py::array_t<int> control_point_offsets(core_patches_.size());
+    const int n_core_patches = core_patches_.size();
+    py::array_t<int> control_point_offsets(n_core_patches);
     int* control_point_offsets_ptr =
         static_cast<int*>(control_point_offsets.request().ptr);
-    control_point_offsets_ptr[0] = 0;
-    for (std::size_t i_patch{}; i_patch < core_patches_.size() - 1; i_patch++) {
-      control_point_offsets_ptr[i_patch + 1] =
-          core_patches_[i_patch]->SplinepyNumberOfControlPoints();
+    int offset{};
+    for (int i_patch{}; i_patch < n_core_patches; i_patch++) {
+      control_point_offsets_ptr[i_patch] = offset;
+      offset += core_patches_[i_patch]->SplinepyNumberOfControlPoints();
     }
     return control_point_offsets;
   }
