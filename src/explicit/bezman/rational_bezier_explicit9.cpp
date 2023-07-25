@@ -1,5 +1,9 @@
 #include <bezman/src/point.hpp>
 #include <bezman/src/rational_bezier_spline.hpp>
+
+#include "splinepy/explicit/bezman_bezier.hpp"
+#include "splinepy/explicit/bezman_point.hpp"
+
 #ifdef SPLINEPY_MORE
 template class bezman::RationalBezierSpline<9, double, double>;
 template class bezman::RationalBezierSpline<9, bezman::Point<2>, double>;

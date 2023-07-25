@@ -1,4 +1,7 @@
 set(BSPLINELIB_SOURCES
+        bsplinelib/parameter_space.cpp
+        bsplinelib/vector_space.cpp
+        bsplinelib/weighted_vector_space.cpp
         bsplinelib/b_spline_explicit1.cpp
         bsplinelib/b_spline_explicit2.cpp
         bsplinelib/b_spline_explicit3.cpp
@@ -24,6 +27,7 @@ set(BSPLINELIB_MORE_SOURCES
 )
 
 set(BEZMAN_SOURCES
+        bezman/point.cpp
         bezman/bezier_explicit1.cpp
         bezman/bezier_explicit2.cpp
         bezman/bezier_explicit3.cpp

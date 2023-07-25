@@ -1,5 +1,4 @@
 #pragma once
-#include <splinepy/splines/bspline.hpp>
 
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class splinepy::splines::BSpline<1, 1>;

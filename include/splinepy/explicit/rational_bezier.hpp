@@ -1,5 +1,4 @@
 #pragma once
-#include <splinepy/splines/rational_bezier.hpp>
 
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class splinepy::splines::RationalBezier<1, 1>;

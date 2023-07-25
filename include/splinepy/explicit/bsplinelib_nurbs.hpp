@@ -1,5 +1,4 @@
 #pragma once
-#include "BSplineLib/Splines/nurbs.hpp"
 
 #ifdef SPLINEPY_BUILD_EXPLICIT
 extern template class bsplinelib::splines::Nurbs<1, 1>;
