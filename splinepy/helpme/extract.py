@@ -557,7 +557,7 @@ class Extractor:
         return self._spline.extract_bezier_patches()
 
     def boundaries(self, *args, **kwargs):
-        return boundaries(self._spline)
+        return boundaries(self._spline, *args, **kwargs)
 
     def spline(self, splitting_plane=None, interval=None):
         """Extract a spline from a spline.

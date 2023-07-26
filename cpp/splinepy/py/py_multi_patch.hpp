@@ -1920,8 +1920,7 @@ inline void add_multi_patch(py::module& m) {
       .def_property_readonly("name", &PyMultiPatch::Name)
       .def_property_readonly("whatami", &PyMultiPatch::WhatAmI)
       .def_property_readonly("control_points", &PyMultiPatch::GetControlPoints)
-      .def("control_point_offsets",
-                             &PyMultiPatch::GetControlPointOffsets)
+      .def("control_point_offsets", &PyMultiPatch::GetControlPointOffsets)
       .def_property("patches",
                     &PyMultiPatch::GetPatches,
                     &PyMultiPatch::SetPatchesDefault)

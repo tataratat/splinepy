@@ -548,7 +548,6 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         --------
         results: (math.product(resolutions), dim) np.ndarray
         """
-        self._logd(f"Sampling {np.prod(resolutions)} points from spline.")
 
         if not isinstance(resolutions, int) and hasattr(
             resolutions, "__getitem__"
@@ -559,6 +558,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             # for now, just take the first elem
             resolutions = int(resolutions[0])
 
+        self._logd(
+            f"Sampling {resolutions ** self.para_dim} points from spline."
+        )
         return super().sample(
             resolutions,
             nthreads=_default_if_none(nthreads, settings.NTHREADS),
