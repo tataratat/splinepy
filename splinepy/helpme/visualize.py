@@ -205,11 +205,19 @@ def _vedo_showable(spline):
 
     # with arrow representable, vector data
     adata_name = spline.show_options.get("arrow_data", None)
-    adapted_adata = spline.spline_data.get(adata_name, None)
+    if adata_name is None:
+        adapted_adata = None
+    elif spline.name.startswith("Multi"):
+        # due to storage style in multi patch, to get saved data, we need to
+        # use __getitem__
+        adapted_adata = spline.spline_data[adata_name]
+    else:
+        adapted_adata = spline.spline_data.get(adata_name)
     if adata_name is not None and adapted_adata is not None:
         # if location is specified, this will be a separate Vertices obj with
-        # configured arrow_data
-        has_locations = adapted_adata.has_locations
+        # configured arrow_data. Multipatch might just return a multipatch,
+        # so a careful step here.
+        has_locations = getattr(adapted_adata, "has_locations", False)
         adata_on = "arrow_data_on" in spline.show_options.keys()
         create_vertices = has_locations or adata_on
 
@@ -229,22 +237,23 @@ def _vedo_showable(spline):
                 queries = spline.show_options["arrow_data_on"]
                 on = queries
 
-            # bound /  dim check
-            bounds = spline.parametric_bounds
-            if queries.shape[1] != len(bounds[0]):
-                raise ValueError(
-                    "Dimension mismatch: arrow_data locations-"
-                    f"{queries.shape[1]} / para_dim-{spline.para_dim}."
-                )
-            # tolerance padding. may still cause issues in splinepy.
-            # in that case, we will have to scale queries.
-            lb_diff = queries.min(axis=0) - bounds[0] + settings.TOLERANCE
-            ub_diff = queries.max(axis=0) - bounds[1] - settings.TOLERANCE
-            if any(lb_diff < 0) or any(ub_diff > 0):
-                raise ValueError(
-                    f"Specified locations of ({adata_name}) are out side the "
-                    f"parametric bounds ({bounds}) by [{lb_diff}, {ub_diff}]."
-                )
+            # bound /  dim check - only for splines
+            if not spline.name.startswith("Multi"):
+                bounds = spline.parametric_bounds
+                if queries.shape[1] != len(bounds[0]):
+                    raise ValueError(
+                        "Dimension mismatch: arrow_data locations-"
+                        f"{queries.shape[1]} / para_dim-{spline.para_dim}."
+                    )
+                # tolerance padding. may still cause issues in splinepy.
+                # in that case, we will have to scale queries.
+                lb_diff = queries.min(axis=0) - bounds[0] + settings.TOLERANCE
+                ub_diff = queries.max(axis=0) - bounds[1] - settings.TOLERANCE
+                if any(lb_diff < 0) or any(ub_diff > 0):
+                    raise ValueError(
+                        f"Given locations for ({adata_name}) are outside the "
+                        f"parametric bounds ({bounds})."
+                    )
 
             # get arrow
             adata = spline.spline_data.as_arrow(adata_name, on=on)
