@@ -400,6 +400,8 @@ class SplineDataAdaptor(SplinepyBase):
 
     def __init__(self, data, locations=None, function=None):
         """ """
+        from splinepy import Multipatch, Spline
+
         # default
         self._user_created = True
         self.data = data
@@ -410,7 +412,7 @@ class SplineDataAdaptor(SplinepyBase):
         self.arrow_data_only = False
 
         # is spline we know?
-        if "PySpline" in str(type(data).__mro__):
+        if isinstance(data, (Spline, Multipatch)):
             self.is_spline = True
 
         # data has evaluate?
@@ -526,6 +528,8 @@ class SplineData(DataHolder):
     Data manager for splines.
     """
 
+    __slots__ = ()
+
     def __init__(self, helpee):
         """ """
         if "Spline" not in str(type(helpee).__mro__):
@@ -609,4 +613,136 @@ class SplineData(DataHolder):
 
         saved = super().__getitem__(key)
         # will raise
+        return saved.as_vertex_data(resolutions=resolutions, on=on)
+
+
+class MultipatchData(SplineData):
+    """
+    Data manager for multipatch
+    """
+
+    __slots__ = ()
+
+    def __init__(self, helpee):
+        """
+        Strictly, we don't need to inherit from SplineData and only implement
+        interfaces, since _saved equivalent is manged in multipatch.
+        However, it's an index based holder and we want to support the same
+        syntax.
+        Here, we will use _saved as key_to_id lookup
+        """
+        if "Multipatch" not in str(type(helpee).__mro__):
+            raise AttributeError("Helpee is not a multipatch")
+
+        DataHolder.__init__(self, helpee)
+
+    def __setitem__(self, key, value):
+        """
+        Parameters
+        ----------
+        key: str
+        value: object
+
+        Returns
+        -------
+        None
+        """
+        if isinstance(value, SplineDataAdaptor):
+            self._saved[key] = value
+        elif "PyMultiPatch" in str(type(value).__mro__):
+            self._saved[key] = len(self._helpee.fields)
+            self._helpee.add_fields([value])
+        else:
+            raise TypeError(
+                "MultipatchData supports SplineDataAdapter or Multipatch"
+            )
+
+    def __getitem__(self, key):
+        """
+        Returns value from __setitem__
+
+        Parameters
+        ----------
+        key: str
+
+        Returns
+        -------
+        value: object
+        """
+        # integer input refers to saved field's number
+        if isinstance(key, int):
+            return self._helpee.fields[key]
+        elif isinstance(key, str):
+            saved = DataHolder.__getitem__(self, key)  # will raise KeyError
+            if isinstance(saved, int):
+                return self._helpee.fields[saved]
+            elif isinstance(saved, SplineDataAdaptor):
+                return saved
+        raise RuntimeError(
+            "Invalid saved data / key type. Please help us by writting an "
+            "issue at github.com/tataratat/splinepy. Thank you!"
+        )
+
+    def as_scalar(self, key, resolutions, default=None):
+        """
+        Return scalar value at given resolutions
+
+        Parameters
+        ----------
+        key: str
+        resolutions: list or tuple
+        default: object
+          Default is None and will return is key doesn't exist
+
+        Returns
+        -------
+        value: np.ndarray
+        """
+        if key not in self._saved:
+            return default
+
+        saved = self.__getitem__(key)
+        if isinstance(saved, SplineDataAdaptor):
+            # explicitly checks that saved IS data adaptor
+            pass
+        else:
+            # or will create one on the fly
+            saved = SplineDataAdaptor(saved)
+
+        # this one likes to take single int value
+        if not isinstance(resolutions, int) and hasattr(
+            resolutions, "__getiem__"
+        ):
+            resolutions = int(resolutions[0])
+
+        return saved.as_vertex_data(resolutions=resolutions)
+
+    def as_arrow(self, key, resolutions=None, on=None, default=None):
+        """
+        Returns as-arrow-representable data on certain places, with given
+        resolution, or on predefined places.
+
+        Parameters
+        ----------
+        key: str
+        resolutions: list or tuple
+        on: array-like
+        """
+        if key not in self._saved:
+            return default
+
+        saved = self.__getitem__(key)
+        if isinstance(saved, SplineDataAdaptor):
+            # explicitly checks that saved IS data adaptor
+            pass
+        else:
+            # or will create one on the fly
+            saved = SplineDataAdaptor(saved)
+
+        # this one likes to take single int value
+        if not isinstance(resolutions, int) and hasattr(
+            resolutions, "__getiem__"
+        ):
+            resolutions = int(resolutions[0])
+
         return saved.as_vertex_data(resolutions=resolutions, on=on)
