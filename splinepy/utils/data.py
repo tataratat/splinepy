@@ -709,12 +709,6 @@ class MultipatchData(SplineData):
             # or will create one on the fly
             saved = SplineDataAdaptor(saved)
 
-        # this one likes to take single int value
-        if not isinstance(resolutions, int) and hasattr(
-            resolutions, "__getiem__"
-        ):
-            resolutions = int(resolutions[0])
-
         return saved.as_vertex_data(resolutions=resolutions)
 
     def as_arrow(self, key, resolutions=None, on=None, default=None):
@@ -738,11 +732,5 @@ class MultipatchData(SplineData):
         else:
             # or will create one on the fly
             saved = SplineDataAdaptor(saved)
-
-        # this one likes to take single int value
-        if not isinstance(resolutions, int) and hasattr(
-            resolutions, "__getiem__"
-        ):
-            resolutions = int(resolutions[0])
 
         return saved.as_vertex_data(resolutions=resolutions, on=on)
