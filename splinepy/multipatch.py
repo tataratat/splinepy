@@ -10,7 +10,7 @@ from splinepy.helpme import visualize
 from splinepy.helpme.extract import Extractor
 from splinepy.spline import _default_if_none, _get_helper
 from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
-from splinepy.utils.data import SplineData
+from splinepy.utils.data import MultipatchData
 
 
 class Multipatch(SplinepyBase, PyMultiPatch):
@@ -373,9 +373,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         Returns
         -------
-        spline_data: SplineData
+        spline_data: MultipatchData
         """
-        return _get_helper(self, "_spline_data", SplineData)
+        return _get_helper(self, "_spline_data", MultipatchData)
 
     @property
     def show_options(self):
@@ -411,6 +411,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         spline_showable: dict
         """
         return visualize.show(self, return_showable=True, **kwargs)
+
+    def show(self, **kwargs):
+        return visualize.show(self, **kwargs)
 
     def boundaries_from_continuity(
         self,
@@ -538,14 +541,23 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         Parameters
         -----------
-        resolutions: (n,) array-like
+        resolutions: int
         nthreads: int
 
         Returns
         --------
         results: (math.product(resolutions), dim) np.ndarray
         """
-        self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
+        self._logd(f"Sampling {np.prod(resolutions)} points from spline.")
+
+        if not isinstance(resolutions, int) and hasattr(
+            resolutions, "__getitem__"
+        ):
+            self._logd(
+                "sample() only supports uniform sample. Taking first entry."
+            )
+            # for now, just take the first elem
+            resolutions = int(resolutions[0])
 
         return super().sample(
             resolutions,
