@@ -163,7 +163,7 @@ class CATSioTest(c.unittest.TestCase):
             tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.cats.export(
                 tmpf,
-                multipatch=multipatch,
+                spline_list=multipatch,
                 indent=False,
             )
 
@@ -180,7 +180,7 @@ class CATSioTest(c.unittest.TestCase):
                 tmpf = c.to_tmpf(tmpd)
                 c.splinepy.io.cats.export(
                     tmpf,
-                    multipatch=multipatch,
+                    spline_list=multipatch,
                     indent=True,
                 )
 
@@ -243,12 +243,12 @@ class CATSioTest(c.unittest.TestCase):
         nur_el3.insert_knots(1, [0.5])
 
         # Test Output against input
-        multipatch_geometry = c.splinepy.Multipatch(splines=[bsp_el2, nur_el3])
+        multipatch_geometry = [bsp_el2, nur_el3]
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.cats.export(
                 tmpf,
-                multipatch=multipatch_geometry,
+                spline_list=multipatch_geometry,
                 indent=False,
             )
             multipatch_geometry_loaded = c.splinepy.io.cats.load(tmpf)
@@ -257,8 +257,8 @@ class CATSioTest(c.unittest.TestCase):
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            multipatch_geometry.splines,
-                            multipatch_geometry_loaded.splines,
+                            multipatch_geometry,
+                            multipatch_geometry_loaded,
                         )
                     ]
                 )

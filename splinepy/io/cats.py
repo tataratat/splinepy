@@ -8,9 +8,9 @@ from sys import version as python_version
 
 import numpy as np
 
+from splinepy.io import ioutils
 from splinepy.multipatch import Multipatch
 from splinepy.utils.log import debug, warning
-from splinepy.io import ioutils
 
 # List of spline keywords (bundled here in case they change - many unused)
 CATS_XML_KEY_WORDS = {
@@ -62,14 +62,16 @@ def load(fname):
         # Read required information from Header in xml element
 
         dim = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["dim"], -1))
-        para_dim = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["para_dim"], -1))
-        ctps_dim = int(xml_element.attrib.get(
-            CATS_XML_KEY_WORDS["field_dim"], -1
-        ))
+        para_dim = int(
+            xml_element.attrib.get(CATS_XML_KEY_WORDS["para_dim"], -1)
+        )
+        ctps_dim = int(
+            xml_element.attrib.get(CATS_XML_KEY_WORDS["field_dim"], -1)
+        )
         n_ctps = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["n_ctps"], -1))
-        is_periodic = int(xml_element.attrib.get(
-            CATS_XML_KEY_WORDS["periodic"], 0
-        )) == 1
+        is_periodic = (
+            int(xml_element.attrib.get(CATS_XML_KEY_WORDS["periodic"], 0)) == 1
+        )
         if -1 in [dim, para_dim, ctps_dim, n_ctps]:
             raise ValueError(
                 f"Not enough information provided for xml-element "
@@ -147,7 +149,9 @@ def load(fname):
                     f"Unknown SplineType "
                     f"{child.attrib[CATS_XML_KEY_WORDS['spline_type']]}"
                 )
-            n_patches = int(child.attrib.get(CATS_XML_KEY_WORDS["n_patches"], 0))
+            n_patches = int(
+                child.attrib.get(CATS_XML_KEY_WORDS["n_patches"], 0)
+            )
             for patch_element in child:
                 list_of_splines.append(_read_spline(patch_element))
         else:
@@ -158,12 +162,12 @@ def load(fname):
             f"Found {len(list_of_splines)} splines, but expected to find "
             f"{n_patches} patches"
         )
-    
+
     # Return splines
-    return Multipatch(ioutils.dict_to_spline(list_of_splines))
+    return ioutils.dict_to_spline(list_of_splines)
 
 
-def export(fname, multipatch, indent=True):
+def export(fname, spline_list, indent=True):
     """
     Save spline as `.xml`.
 
@@ -171,7 +175,7 @@ def export(fname, multipatch, indent=True):
     -----------
     fname: str
       Export file name
-    multipatch: Multipatch
+    multipatch: Multipatch / list
       Splines to be exported
     indent: bool
       Option for pretty printing
@@ -183,20 +187,18 @@ def export(fname, multipatch, indent=True):
     from splinepy.spline import Spline
 
     # First transform spline-data into a multipatch-data if required
-    if issubclass(type(multipatch), Spline):
+    if issubclass(type(spline_list), Spline):
         # Transform to list
-        multipatch = [multipatch]
+        spline_list = [spline_list]
 
-    if isinstance(multipatch, list):
+    if isinstance(spline_list, Multipatch):
+        # @todo: current implementation only exports geometry, export fields
+        if spline_list.fields:
+            warning("Fields are not supported yet")
         # Transform to multipatch
-        multipatch = Multipatch(splines=multipatch)
-        warning(
-            "No interfaces (i.e. inter-face connectivity) information is"
-            " given. Try converting list to Multipatch object. Interfaces"
-            "will be computed on the fly as a result."
-        )
+        spline_list = spline_list.splines
 
-    if not isinstance(multipatch, Multipatch):
+    if not isinstance(spline_list, list):
         raise ValueError(
             "export Function expects list for multipatch argument"
         )
@@ -209,20 +211,16 @@ def export(fname, multipatch, indent=True):
         xml_data,
         CATS_XML_KEY_WORDS["spline_list"],
         SplineType=str(1),
-        **{CATS_XML_KEY_WORDS["n_patches"]: str(len(multipatch.splines))},
+        **{CATS_XML_KEY_WORDS["n_patches"]: str(len(spline_list))},
     )
 
-    # @todo: current implementation only exports geometry, export fields
-    if multipatch.fields:
-        warning("Fields are not supported yet")
-    
     if indent:
         new_line_char = "\n"
     else:
         new_line_char = " "
 
     # All Splines (patches) are written into the spline list as entries
-    for spline in multipatch.splines:
+    for spline in spline_list:
         # Convert to non-bezier type (might make unnecessary copy)
         if spline.is_rational:
             patch = spline.nurbs
