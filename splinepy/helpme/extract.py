@@ -505,7 +505,8 @@ def boundaries(spline, boundary_ids=None):
     else:
         bids = [] if boundary_ids is None else list(boundary_ids)
         return [
-            type(spline)(spline=c) for c in core.extract_boundaries(spline, bids)
+            type(spline)(spline=c)
+            for c in core.extract_boundaries(spline, bids)
         ]
 
 
