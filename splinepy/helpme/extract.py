@@ -475,7 +475,7 @@ def spline(spline, para_dim, split_plane):
     return type(spline)(**spline_info)
 
 
-def boundaries(spline):
+def boundaries(spline, boundary_ids=None):
     """
     Extracts boundary spline.
 
@@ -487,7 +487,9 @@ def boundaries(spline):
 
     Parameters
     -----------
-    None
+    spline: Spline / Multipatch
+    boundary_ids: list
+      Only considered for Spline. Default is None and returns all boundaries.
 
     Returns
     -------
@@ -501,8 +503,9 @@ def boundaries(spline):
     if isinstance(spline, Multipatch):
         return spline.boundary_patches()
     else:
+        bids = [] if boundary_ids is None else list(boundary_ids)
         return [
-            type(spline)(spline=c) for c in core.extract_boundaries(spline, [])
+            type(spline)(spline=c) for c in core.extract_boundaries(spline, bids)
         ]
 
 
