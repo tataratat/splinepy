@@ -6,13 +6,15 @@ Possiblely will be turned into pure python io.
 import xml.etree.ElementTree as ET
 from sys import version as python_version
 
-from splinepy import splinepy_core
-from splinepy.io import ioutils
+import numpy as np
+
 from splinepy.multipatch import Multipatch
 from splinepy.utils.log import debug, warning
+from splinepy.io import ioutils
 
 # List of spline keywords (bundled here in case they change - many unused)
 CATS_XML_KEY_WORDS = {
+    "spline_type": "SplineType",  # useless keyword (always one)
     "patch": "SplineEntry",  # key for new patch in List
     "n_patches": "NumberOfSplines",  # number of patches
     "para_dim": "splDim",  # Parametric dimension
@@ -49,7 +51,116 @@ def load(fname):
     splines: Multipatch object
       Spline Type defined in NAME_TO_TYPE
     """
-    return ioutils.dict_to_spline(splinepy_core.read_xml(fname))
+
+    def _read_spline(xml_element):
+        spline_dict = {}
+        if not xml_element.tag.startswith(CATS_XML_KEY_WORDS["patch"]):
+            debug(
+                f"Found unexpected keyword {xml_element.tag}, which will be "
+                f"ignored"
+            )
+        # Read required information from Header in xml element
+
+        dim = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["dim"], -1))
+        para_dim = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["para_dim"], -1))
+        ctps_dim = int(xml_element.attrib.get(
+            CATS_XML_KEY_WORDS["field_dim"], -1
+        ))
+        n_ctps = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["n_ctps"], -1))
+        is_periodic = int(xml_element.attrib.get(
+            CATS_XML_KEY_WORDS["periodic"], 0
+        )) == 1
+        if -1 in [dim, para_dim, ctps_dim, n_ctps]:
+            raise ValueError(
+                f"Not enough information provided for xml-element "
+                f"{xml_element}"
+            )
+        if ctps_dim > dim:
+            debug(
+                "Spline seems to contain field information, but field "
+                "retrieval is not implemented. All non-geometry info will be "
+                "ignored"
+            )
+        if is_periodic:
+            raise ValueError(
+                "Periodic splines are not (yet) supported. Try saving your "
+                "spline by repeating first and last control points."
+            )
+        for info in xml_element:
+            # We ignore most keywords at the moment
+            if CATS_XML_KEY_WORDS["coeff_names"] in info.tag:
+                debug(
+                    f"Will use the following control point vars as control "
+                    f"point coordinates : {info.text.split()[:dim]}"
+                )
+            # Control points
+            elif CATS_XML_KEY_WORDS["control_points"] in info.tag:
+                spline_dict["control_points"] = np.fromstring(
+                    info.text.replace("\n", " "), sep=" "
+                ).reshape(-1, ctps_dim)[:, :dim]
+
+            # degrees
+            elif CATS_XML_KEY_WORDS["degrees"] in info.tag:
+                spline_dict["degrees"] = np.fromstring(
+                    info.text.replace("\n", " "), sep=" "
+                )
+                if spline_dict["degrees"].size != para_dim:
+                    raise ValueError(
+                        f"Conflicting information provided. Got "
+                        f"{spline_dict['degrees'].size} degrees, but "
+                        f"parametric dimension is {para_dim}"
+                    )
+
+            # weights
+            elif CATS_XML_KEY_WORDS["weights"] in info.tag:
+                spline_dict["weights"] = np.fromstring(
+                    info.text.replace("\n", " "), sep=" "
+                )
+
+            # knot vectors
+            elif CATS_XML_KEY_WORDS["knot_vectors"] in info.tag:
+                spline_dict["knot_vectors"] = []
+                for child_info in info:
+                    if not CATS_XML_KEY_WORDS["knot_vector"] in child_info.tag:
+                        debug("Redundant item in knot_vectors block of xml")
+                    spline_dict["knot_vectors"].append(
+                        np.fromstring(
+                            child_info.text.replace("\n", " "), sep=" "
+                        )
+                    )
+
+            # All other keywords will be ignored for the moment
+            else:
+                debug(f"Ignoring keyword {info.tag}")
+
+        return spline_dict
+
+    # Parse  XML file
+    debug(f"Parsing xml-file '{fname}' ...")
+    root = ET.parse(fname).getroot()
+    debug("XML-file parsed start conversion")
+    list_of_splines = []
+    for child in root:
+        if child.tag.startswith(CATS_XML_KEY_WORDS["spline_list"]):
+            if child.attrib.get(CATS_XML_KEY_WORDS["spline_type"], "1") != "1":
+                raise ValueError(
+                    f"Unknown SplineType "
+                    f"{child.attrib[CATS_XML_KEY_WORDS['spline_type']]}"
+                )
+            n_patches = int(child.attrib.get(CATS_XML_KEY_WORDS["n_patches"], 0))
+            for patch_element in child:
+                list_of_splines.append(_read_spline(patch_element))
+        else:
+            debug(f"Unused xml-keyword {child.tag}")
+    debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
+    if len(list_of_splines) != n_patches:
+        raise ValueError(
+            f"Found {len(list_of_splines)} splines, but expected to find "
+            f"{n_patches} patches"
+        )
+    
+    # Return splines
+    return Multipatch(ioutils.dict_to_spline(list_of_splines))
 
 
 def export(fname, multipatch, indent=True):
@@ -104,6 +215,11 @@ def export(fname, multipatch, indent=True):
     # @todo: current implementation only exports geometry, export fields
     if multipatch.fields:
         warning("Fields are not supported yet")
+    
+    if indent:
+        new_line_char = "\n"
+    else:
+        new_line_char = " "
 
     # All Splines (patches) are written into the spline list as entries
     for spline in multipatch.splines:
@@ -114,7 +230,6 @@ def export(fname, multipatch, indent=True):
             patch = spline.bspline
 
         # Write spline header
-
         patch_element = ET.SubElement(
             spline_list_element,
             CATS_XML_KEY_WORDS["patch"],
@@ -143,18 +258,16 @@ def export(fname, multipatch, indent=True):
             patch_element,
             CATS_XML_KEY_WORDS["control_points"],
         )
-        control_points_elements.text = "\n".join(" ".join(
-            str(xx) for xx in x
-        ) for x in patch.cps )
+        control_points_elements.text = new_line_char.join(
+            " ".join(str(xx) for xx in x) for x in patch.cps
+        )
 
         # degrees
         degrees_elements = ET.SubElement(
             patch_element,
             CATS_XML_KEY_WORDS["degrees"],
         )
-        degrees_elements.text = " ".join(
-            str(deg) for deg in patch.degrees
-        )
+        degrees_elements.text = " ".join(str(deg) for deg in patch.degrees)
 
         # knot-vectors
         knot_vectors_elements = ET.SubElement(
@@ -167,7 +280,7 @@ def export(fname, multipatch, indent=True):
                 CATS_XML_KEY_WORDS["knot_vector"],
             )
             knot_vector_element.text = " ".join(str(k) for k in kv)
-        
+
         # weights if rational
         if patch.is_rational:
             weights_elements = ET.SubElement(
@@ -177,7 +290,6 @@ def export(fname, multipatch, indent=True):
             weights_elements.text = " ".join(
                 str(w) for w in patch.weights.ravel()
             )
-            
 
     # Beautify and export
     if int(python_version.split(".")[1]) >= 9 and indent:

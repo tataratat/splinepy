@@ -1,6 +1,7 @@
-from splinepy.io import gismo, iges, ioutils, irit, json, mfem, npz, vtk, xml
+from splinepy.io import cats, gismo, iges, ioutils, irit, json, mfem, npz, vtk
 
 __all__ = [
+    "cats",
     "gismo",
     "iges",
     "ioutils",
@@ -9,5 +10,4 @@ __all__ = [
     "mfem",
     "npz",
     "vtk",
-    "xml",
 ]
