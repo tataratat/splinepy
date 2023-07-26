@@ -1938,7 +1938,7 @@ inline void add_multi_patch(py::module& m) {
            &PyMultiPatch::Sample,
            py::arg("resolution"),
            py::arg("nthreads"),
-           py::arg("same_parametric_bounds"))
+           py::arg("same_parametric_bounds") = false)
       .def("add_fields",
            &PyMultiPatch::AddFields,
            py::arg("fields"),
