@@ -9,7 +9,6 @@ from sys import version as python_version
 import numpy as np
 
 from splinepy.io import ioutils
-from splinepy.multipatch import Multipatch
 from splinepy.utils.log import debug, warning
 
 # List of spline keywords (bundled here in case they change - many unused)
@@ -183,6 +182,7 @@ def export(fname, spline_list, indent=True):
     --------
     None
     """
+    from splinepy.multipatch import Multipatch
     from splinepy.spline import Spline
 
     # First transform spline-data into a multipatch-data if required
