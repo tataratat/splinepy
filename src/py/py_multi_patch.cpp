@@ -1,4 +1,4 @@
-#include "splinepy/py/py_multi_patch.hpp"
+#include "splinepy/py/py_multipatch.hpp"
 
 #include <cstdlib>
 #include <mutex>
@@ -997,27 +997,27 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   return current_max_id;
 }
 
-typename PyMultiPatch::CorePatches_& PyMultiPatch::CorePatches() {
+typename PyMultipatch::CorePatches_& PyMultipatch::CorePatches() {
   if (core_patches_.size() == 0) {
     splinepy::utils::PrintAndThrowError("No splines/patches set");
   }
   return core_patches_;
 }
 
-void PyMultiPatch::Clear() {
+void PyMultipatch::Clear() {
   patches_ = py::list();
   core_patches_ = CorePatches_{};
-  sub_multi_patch_ = nullptr;
+  sub_multipatch_ = nullptr;
   boundary_patch_ids_ = py::array_t<int>();
-  boundary_multi_patch_ = nullptr;
+  boundary_multipatch_ = nullptr;
   interfaces_ = py::array_t<int>();
   boundary_ids_ = py::array_t<int>();
   sub_patch_centers_ = py::array_t<double>();
   field_list_ = py::list();
-  field_multi_patches_ = {};
+  field_multipatches_ = {};
 }
 
-void PyMultiPatch::SetPatchesNThreads(py::list& patches, const int nthreads) {
+void PyMultipatch::SetPatchesNThreads(py::list& patches, const int nthreads) {
   // clear first, in case this is a new setting
   Clear();
 
@@ -1037,7 +1037,7 @@ void PyMultiPatch::SetPatchesNThreads(py::list& patches, const int nthreads) {
                 nthreads);
 }
 
-void PyMultiPatch::SetPatchesWithNullSplines(py::list& patches,
+void PyMultipatch::SetPatchesWithNullSplines(py::list& patches,
                                              const int nthreads,
                                              const int para_dim_if_none,
                                              const int dim_if_none) {
@@ -1061,10 +1061,10 @@ void PyMultiPatch::SetPatchesWithNullSplines(py::list& patches,
                 nthreads);
 }
 
-std::shared_ptr<PyMultiPatch> PyMultiPatch::SubMultiPatch() {
+std::shared_ptr<PyMultipatch> PyMultipatch::SubMultipatch() {
   // quick exit if they exist.
-  if (sub_multi_patch_) {
-    return sub_multi_patch_;
+  if (sub_multipatch_) {
+    return sub_multipatch_;
   }
 
   const int n_splines = CorePatches().size();
@@ -1093,23 +1093,23 @@ std::shared_ptr<PyMultiPatch> PyMultiPatch::SubMultiPatch() {
                                     n_default_threads_);
 
   // create multi patch to return
-  sub_multi_patch_ = std::make_shared<PyMultiPatch>();
+  sub_multipatch_ = std::make_shared<PyMultipatch>();
 
   // set both core and py splines
-  sub_multi_patch_->patches_ = ToPySplineList(out_boundaries);
-  sub_multi_patch_->core_patches_ = std::move(out_boundaries);
+  sub_multipatch_->patches_ = ToPySplineList(out_boundaries);
+  sub_multipatch_->core_patches_ = std::move(out_boundaries);
 
-  return sub_multi_patch_;
+  return sub_multipatch_;
 }
 
-py::object PyMultiPatch::PySubMultiPatch() {
-  if (py_sub_multi_patch_.is_none()) {
-    py_sub_multi_patch_ = ToDerived(SubMultiPatch());
+py::object PyMultipatch::PySubMultipatch() {
+  if (py_sub_multipatch_.is_none()) {
+    py_sub_multipatch_ = ToDerived(SubMultipatch());
   }
-  return py_sub_multi_patch_;
+  return py_sub_multipatch_;
 }
 
-py::array_t<double> PyMultiPatch::SubPatchCenters() {
+py::array_t<double> PyMultipatch::SubPatchCenters() {
   // return saved
   if (sub_patch_centers_.size() > 0) {
     return sub_patch_centers_;
@@ -1184,7 +1184,7 @@ py::array_t<double> PyMultiPatch::SubPatchCenters() {
   return sub_patch_centers_;
 }
 
-py::array_t<int> PyMultiPatch::Interfaces(const py::array_t<int>& interfaces) {
+py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces) {
   // check if we should set or get
   // set
   if (interfaces.size() > 0) {
@@ -1208,7 +1208,7 @@ py::array_t<int> PyMultiPatch::Interfaces(const py::array_t<int>& interfaces) {
 }
 
 /// @brief Gets IDs of boundary patch
-py::array_t<int> PyMultiPatch::BoundaryPatchIds() {
+py::array_t<int> PyMultipatch::BoundaryPatchIds() {
   // return if it exists
   if (boundary_patch_ids_.size() != 0) {
     return boundary_patch_ids_;
@@ -1241,10 +1241,10 @@ py::array_t<int> PyMultiPatch::BoundaryPatchIds() {
 }
 
 /// @brief Gets boundary multi patch
-std::shared_ptr<PyMultiPatch> PyMultiPatch::BoundaryMultiPatch() {
+std::shared_ptr<PyMultipatch> PyMultipatch::BoundaryMultipatch() {
   // return early if exists
-  if (boundary_multi_patch_) {
-    return boundary_multi_patch_;
+  if (boundary_multipatch_) {
+    return boundary_multipatch_;
   }
 
   // get boundary_patch_ids;
@@ -1275,23 +1275,23 @@ std::shared_ptr<PyMultiPatch> PyMultiPatch::BoundaryMultiPatch() {
                                     splinepy::utils::NThreadQueryType::Step);
 
   // create return patch
-  boundary_multi_patch_ = std::make_shared<PyMultiPatch>();
-  boundary_multi_patch_->patches_ = ToPySplineList(boundary_core_patches);
-  boundary_multi_patch_->core_patches_ = std::move(boundary_core_patches);
+  boundary_multipatch_ = std::make_shared<PyMultipatch>();
+  boundary_multipatch_->patches_ = ToPySplineList(boundary_core_patches);
+  boundary_multipatch_->core_patches_ = std::move(boundary_core_patches);
 
-  return boundary_multi_patch_;
+  return boundary_multipatch_;
 }
 
 /// @brief returns derived class of boundary multi patch
 /// @return
-py::object PyMultiPatch::PyBoundaryMultiPatch() {
-  if (py_boundary_multi_patch_.is_none()) {
-    py_boundary_multi_patch_ = ToDerived(BoundaryMultiPatch());
+py::object PyMultipatch::PyBoundaryMultipatch() {
+  if (py_boundary_multipatch_.is_none()) {
+    py_boundary_multipatch_ = ToDerived(BoundaryMultipatch());
   }
-  return py_boundary_multi_patch_;
+  return py_boundary_multipatch_;
 }
 
-py::array_t<double> PyMultiPatch::Evaluate(py::array_t<double> queries,
+py::array_t<double> PyMultipatch::Evaluate(py::array_t<double> queries,
                                            const int nthreads) {
   // use first spline as dimension guide line
   const int para_dim = ParaDim();
@@ -1327,7 +1327,7 @@ py::array_t<double> PyMultiPatch::Evaluate(py::array_t<double> queries,
   return evaluated;
 }
 
-py::array_t<double> PyMultiPatch::Sample(const int resolution,
+py::array_t<double> PyMultipatch::Sample(const int resolution,
                                          const int nthreads,
                                          const bool same_parametric_bounds) {
   const int para_dim = ParaDim();
@@ -1437,7 +1437,7 @@ py::array_t<double> PyMultiPatch::Sample(const int resolution,
   return sampled;
 }
 
-void PyMultiPatch::AddFields(py::list& fields,
+void PyMultipatch::AddFields(py::list& fields,
                              const bool check_name,
                              const bool check_dims,
                              const bool check_degrees,
@@ -1445,10 +1445,10 @@ void PyMultiPatch::AddFields(py::list& fields,
                              const int nthreads) {
 
   // allocate space
-  const auto n_current_fields = static_cast<int>(field_multi_patches_.size());
+  const auto n_current_fields = static_cast<int>(field_multipatches_.size());
   const auto n_new_fields = static_cast<int>(fields.size());
   const int n_total_fields = n_current_fields + n_new_fields;
-  field_multi_patches_.resize(n_total_fields);
+  field_multipatches_.resize(n_total_fields);
 
   // some hint values for null splines
   const int para_dim = ParaDim();
@@ -1459,23 +1459,23 @@ void PyMultiPatch::AddFields(py::list& fields,
   std::mutex field_mismatch_mutex;
 
   // loop each field
-  auto field_to_multi_patch = [&](int begin, int end) {
+  auto field_to_multipatch = [&](int begin, int end) {
     // with in this nthread exe, we only use nthreads=1. This won't create
     // any threads.
     for (int i{n_current_fields + begin}, j{begin}; j < end; ++i, ++j) {
       // create multipatch
       py::list casted_list = fields[j].template cast<py::list>();
-      auto field_multi_patch =
-          std::make_shared<PyMultiPatch>(casted_list, para_dim, dim, 1);
+      auto field_multipatch =
+          std::make_shared<PyMultipatch>(casted_list, para_dim, dim, 1);
       // propagate same_parametric_bounds_ flag
-      field_multi_patch->same_parametric_bounds_ = same_parametric_bounds_;
+      field_multipatch->same_parametric_bounds_ = same_parametric_bounds_;
       // set item
-      field_multi_patches_[i] = field_multi_patch;
+      field_multipatches_[i] = field_multipatch;
 
       try {
         // check mismatch - doesn't check null splines
         RaiseMismatch(core_patches_,
-                      field_multi_patches_[i]->core_patches_,
+                      field_multipatches_[i]->core_patches_,
                       check_name,
                       check_dims,
                       check_dims,
@@ -1501,7 +1501,7 @@ void PyMultiPatch::AddFields(py::list& fields,
   field_list_ += fields;
 }
 
-int PyMultiPatch::GetNumberOfControlPoints() {
+int PyMultipatch::GetNumberOfControlPoints() {
   // Init return value
   int n_control_points{};
   for (std::size_t i_patch{}; i_patch < core_patches_.size(); i_patch++) {
@@ -1510,7 +1510,7 @@ int PyMultiPatch::GetNumberOfControlPoints() {
   return n_control_points;
 }
 
-py::array_t<int> PyMultiPatch::GetControlPointOffsets() {
+py::array_t<int> PyMultipatch::GetControlPointOffsets() {
   // Init return value
   const int n_core_patches = core_patches_.size();
   py::array_t<int> control_point_offsets(n_core_patches);
@@ -1524,7 +1524,7 @@ py::array_t<int> PyMultiPatch::GetControlPointOffsets() {
   return control_point_offsets;
 }
 
-py::array_t<double> PyMultiPatch::GetControlPoints() {
+py::array_t<double> PyMultipatch::GetControlPoints() {
   // Retrieve number of control points
   const int& n_control_points = GetNumberOfControlPoints();
   const py::array_t<int>& control_point_offsets = GetControlPointOffsets();
@@ -1559,7 +1559,7 @@ py::array_t<double> PyMultiPatch::GetControlPoints() {
   return control_points;
 }
 
-py::object ToDerived(std::shared_ptr<PyMultiPatch> core_obj) {
+py::object ToDerived(std::shared_ptr<PyMultipatch> core_obj) {
   const auto to_derived = py::module_::import("splinepy").attr("to_derived");
   return to_derived(py::cast(core_obj));
 }
@@ -1567,7 +1567,7 @@ py::object ToDerived(std::shared_ptr<PyMultiPatch> core_obj) {
 /// @brief Add multi patch.
 /// Returns [connectivity, vertex_ids, edge_information, boundaries]
 /// @param m
-void init_multi_patch(py::module_& m) {
+void init_multipatch(py::module_& m) {
   m.def("interfaces_from_boundary_centers",
         &splinepy::py::InterfacesFromBoundaryCenters,
         py::arg("face_center_vertices"),
@@ -1595,51 +1595,51 @@ void init_multi_patch(py::module_& m) {
         py::arg("tolerance"),
         py::arg("nthreads") = 1);
 
-  py::class_<splinepy::py::PyMultiPatch,
-             std::shared_ptr<splinepy::py::PyMultiPatch>>
-      klasse(m, "PyMultiPatch");
+  py::class_<splinepy::py::PyMultipatch,
+             std::shared_ptr<splinepy::py::PyMultipatch>>
+      klasse(m, "PyMultipatch");
 
   klasse.def(py::init<>())
       .def(py::init<py::list&, const int, const bool>())
-      .def(py::init<std::shared_ptr<PyMultiPatch>&>()) // for to_derived()
-      .def_readwrite("n_default_threads", &PyMultiPatch::n_default_threads_)
+      .def(py::init<std::shared_ptr<PyMultipatch>&>()) // for to_derived()
+      .def_readwrite("n_default_threads", &PyMultipatch::n_default_threads_)
       .def_readwrite("same_parametric_bounds",
-                     &PyMultiPatch::same_parametric_bounds_)
-      .def_readwrite("tolerance", &PyMultiPatch::tolerance_)
-      .def("clear", &PyMultiPatch::Clear)
-      .def_property_readonly("para_dim", &PyMultiPatch::ParaDim)
-      .def_property_readonly("dim", &PyMultiPatch::Dim)
-      .def_property_readonly("name", &PyMultiPatch::Name)
-      .def_property_readonly("whatami", &PyMultiPatch::WhatAmI)
-      .def_property_readonly("control_points", &PyMultiPatch::GetControlPoints)
-      .def("control_point_offsets", &PyMultiPatch::GetControlPointOffsets)
+                     &PyMultipatch::same_parametric_bounds_)
+      .def_readwrite("tolerance", &PyMultipatch::tolerance_)
+      .def("clear", &PyMultipatch::Clear)
+      .def_property_readonly("para_dim", &PyMultipatch::ParaDim)
+      .def_property_readonly("dim", &PyMultipatch::Dim)
+      .def_property_readonly("name", &PyMultipatch::Name)
+      .def_property_readonly("whatami", &PyMultipatch::WhatAmI)
+      .def_property_readonly("control_points", &PyMultipatch::GetControlPoints)
+      .def("control_point_offsets", &PyMultipatch::GetControlPointOffsets)
       .def_property("patches",
-                    &PyMultiPatch::GetPatches,
-                    &PyMultiPatch::SetPatchesDefault)
-      .def("sub_multi_patch", &PyMultiPatch::PySubMultiPatch)
-      .def("sub_patch_centers", &PyMultiPatch::SubPatchCenters)
-      .def("interfaces", &PyMultiPatch::Interfaces)
-      .def("boundary_patch_ids", &PyMultiPatch::BoundaryPatchIds)
-      .def("boundary_multi_patch", &PyMultiPatch::PyBoundaryMultiPatch)
+                    &PyMultipatch::GetPatches,
+                    &PyMultipatch::SetPatchesDefault)
+      .def("sub_multipatch", &PyMultipatch::PySubMultipatch)
+      .def("sub_patch_centers", &PyMultipatch::SubPatchCenters)
+      .def("interfaces", &PyMultipatch::Interfaces)
+      .def("boundary_patch_ids", &PyMultipatch::BoundaryPatchIds)
+      .def("boundary_multipatch", &PyMultipatch::PyBoundaryMultipatch)
       .def("evaluate",
-           &PyMultiPatch::Evaluate,
+           &PyMultipatch::Evaluate,
            py::arg("queries"),
            py::arg("nthreads"))
       .def("sample",
-           &PyMultiPatch::Sample,
+           &PyMultipatch::Sample,
            py::arg("resolution"),
            py::arg("nthreads"),
            py::arg("same_parametric_bounds"))
       .def("add_fields",
-           &PyMultiPatch::AddFields,
+           &PyMultipatch::AddFields,
            py::arg("fields"),
            py::arg("check_name"),
            py::arg("check_dims"),
            py::arg("check_degrees"),
            py::arg("checK_control_mesh_resolutions"),
            py::arg("nthreads"))
-      .def("fields", &PyMultiPatch::GetFields)
-      //.def("", &PyMultiPatch::)
+      .def("fields", &PyMultipatch::GetFields)
+      //.def("", &PyMultipatch::)
       ;
 }
 

@@ -373,7 +373,7 @@ def export_cartesian(
     corner_vertices = np.vstack(
         [
             spline.cps[_corner_vertex_ids(spline), :]
-            for spline in spline_list.splines
+            for spline in spline_list.patches
         ]
     )
 
@@ -400,7 +400,7 @@ def export_cartesian(
         f.write(f"MFEM NURBS mesh v1.0\n\ndimension\n{dim}\n\n")
 
         # Elements
-        n_elements = len(spline_list.splines)
+        n_elements = len(spline_list.patches)
         f.write(f"elements\n{n_elements}\n")
         f.write(
             "\n".join(
@@ -431,7 +431,7 @@ def export_cartesian(
 
         # Export Splines
         f.write("patches\n\n")
-        for spline in spline_list.splines:
+        for spline in spline_list.patches:
             f.write(f"knotvectors\n{para_dim}\n")
             cmr = spline.control_mesh_resolutions
             for i_para_dim in range(para_dim):

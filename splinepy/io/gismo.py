@@ -67,7 +67,7 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             [" ".join([str(xx) for xx in x]) for x in supports]
         )
 
-    for id, spline in enumerate(multipatch.splines):
+    for id, spline in enumerate(multipatch.patches):
         if fields_only:
             # Check supports
             support = supports[supports[:, 0] == id, 1]
@@ -243,7 +243,7 @@ def export(
     )
     patch_range = ET.SubElement(multipatch_element, "patches", type="id_range")
     patch_range.text = (
-        f"{index_offset} " f"{len(multipatch.splines) - 1 + index_offset}"
+        f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
     )
 
     interface_data = ET.SubElement(multipatch_element, "interfaces")
@@ -290,7 +290,7 @@ def export(
             axis_mapping,
             axis_orientation,
         ) = orientations(
-            multipatch.splines,
+            multipatch.patches,
             con_spline_id_start,
             con_face_id_start,
             con_spline_id_end,
@@ -359,7 +359,7 @@ def export(
             bcs_data = ET.SubElement(
                 xml_data,
                 "boundaryConditions",
-                multipatch=str(len(multipatch.splines)),
+                multipatch=str(len(multipatch.patches)),
                 id=str(1),
             )
             bcs_data.insert(

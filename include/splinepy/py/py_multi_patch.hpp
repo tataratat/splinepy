@@ -197,7 +197,7 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
 
 /// @brief Multi-patch splines. Here, use of the words
 ///        "patch" and "spline" are interchangeable
-class PyMultiPatch {
+class PyMultipatch {
 public:
   using CorePatches_ = std::vector<typename PySpline::CoreSpline_>;
 
@@ -208,10 +208,10 @@ public:
   CorePatches_ core_patches_;
 
   /// sub patches - similar concept to subelement / face elements
-  std::shared_ptr<PyMultiPatch> sub_multi_patch_ = nullptr;
+  std::shared_ptr<PyMultipatch> sub_multipatch_ = nullptr;
 
   /// Casted sub multi patch
-  py::object py_sub_multi_patch_ = py::none();
+  py::object py_sub_multipatch_ = py::none();
 
   /// center of each sub patch.
   py::array_t<double> sub_patch_centers_;
@@ -220,10 +220,10 @@ public:
   py::array_t<int> boundary_patch_ids_;
 
   /// Boundary multi patches. Should consist of one smaller parametric dim
-  std::shared_ptr<PyMultiPatch> boundary_multi_patch_ = nullptr;
+  std::shared_ptr<PyMultipatch> boundary_multipatch_ = nullptr;
 
   /// Casted boundary multi patches
-  py::object py_boundary_multi_patch_ = py::none();
+  py::object py_boundary_multipatch_ = py::none();
 
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
@@ -236,7 +236,7 @@ public:
   py::list field_list_;
 
   /// @brief Fields - they are saved as multi-patches
-  std::vector<std::shared_ptr<PyMultiPatch>> field_multi_patches_;
+  std::vector<std::shared_ptr<PyMultipatch>> field_multipatches_;
 
   /// default number of threads for all the operations besides queries
   int n_default_threads_{1};
@@ -252,16 +252,16 @@ public:
   double tolerance_{1e-11};
 
   /// ctor
-  PyMultiPatch() = default;
+  PyMultipatch() = default;
 
   /// move ctor
-  PyMultiPatch(PyMultiPatch&& other) noexcept = default;
+  PyMultipatch(PyMultipatch&& other) noexcept = default;
 
   /// @brief list (iterable) init -> pybind will cast to list for us if needed
   /// @param patches
   /// @param n_default_threads
   /// @param same_parametric_bounds
-  PyMultiPatch(py::list& patches,
+  PyMultipatch(py::list& patches,
                const int n_default_threads = 1,
                const bool same_parametric_bounds = false)
       : n_default_threads_(n_default_threads),
@@ -274,7 +274,7 @@ public:
   /// @param n_default_threads
   /// @param para_dim_if_none
   /// @param dim_if_none
-  PyMultiPatch(py::list& patches,
+  PyMultipatch(py::list& patches,
                const int n_default_threads,
                const int para_dim_if_none,
                const int dim_if_none)
@@ -290,19 +290,19 @@ public:
   /// ctor. Expected use is for  to_derived call.
   ///
   /// @param other
-  PyMultiPatch(std::shared_ptr<PyMultiPatch>& other) {
+  PyMultipatch(std::shared_ptr<PyMultipatch>& other) {
     patches_ = other->patches_;
     core_patches_ = other->core_patches_;
-    sub_multi_patch_ = other->sub_multi_patch_;
+    sub_multipatch_ = other->sub_multipatch_;
     sub_patch_centers_ = other->sub_patch_centers_;
-    py_sub_multi_patch_ = other->py_sub_multi_patch_;
+    py_sub_multipatch_ = other->py_sub_multipatch_;
     boundary_patch_ids_ = other->boundary_patch_ids_;
-    boundary_multi_patch_ = other->boundary_multi_patch_;
-    py_boundary_multi_patch_ = other->py_boundary_multi_patch_;
+    boundary_multipatch_ = other->boundary_multipatch_;
+    py_boundary_multipatch_ = other->py_boundary_multipatch_;
     interfaces_ = other->interfaces_;
     boundary_ids_ = other->boundary_ids_;
     field_list_ = other->field_list_;
-    field_multi_patches_ = other->field_multi_patches_;
+    field_multipatches_ = other->field_multipatches_;
     n_default_threads_ = other->n_default_threads_;
     same_parametric_bounds_ = other->same_parametric_bounds_;
     has_null_splines_ = other->has_null_splines_;
@@ -323,14 +323,14 @@ public:
   /// @return
   int Dim() { return CorePatches()[0]->SplinepyDim(); }
 
-  /// @brief my name is MultiPatch
+  /// @brief my name is Multipatch
   /// @return
-  std::string Name() { return "MultiPatch"; }
+  std::string Name() { return "Multipatch"; }
 
-  /// @brief MultiPatch with n patches
+  /// @brief Multipatch with n patches
   /// @return
   std::string WhatAmI() {
-    return "MultiPatch with " + std::to_string(core_patches_.size())
+    return "Multipatch with " + std::to_string(core_patches_.size())
            + " patches.";
   }
 
@@ -361,11 +361,11 @@ public:
 
   /// @brief returns sub patches as multi patches, uses default nthreads
   /// @return
-  std::shared_ptr<PyMultiPatch> SubMultiPatch();
+  std::shared_ptr<PyMultipatch> SubMultipatch();
 
-  /// @brief returns derived class of SubMultiPatch
+  /// @brief returns derived class of SubMultipatch
   /// @return
-  py::object PySubMultiPatch();
+  py::object PySubMultipatch();
 
   /// @brief Computes centers of subpatches
   /// @return
@@ -380,11 +380,11 @@ public:
   py::array_t<int> BoundaryPatchIds();
 
   /// @brief Gets boundary multi patch
-  std::shared_ptr<PyMultiPatch> BoundaryMultiPatch();
+  std::shared_ptr<PyMultipatch> BoundaryMultipatch();
 
   /// @brief returns derived class of boundary multi patch
   /// @return
-  py::object PyBoundaryMultiPatch();
+  py::object PyBoundaryMultipatch();
 
   /// @brief Evaluate at query points
   /// @param queries Query points
@@ -426,9 +426,9 @@ public:
   py::array_t<double> GetControlPoints();
 };
 
-/// @brief ToDerived for PyMultiPatches
+/// @brief ToDerived for PyMultipatches
 /// @param core_obj
 /// @return
-py::object ToDerived(std::shared_ptr<PyMultiPatch> core_obj);
+py::object ToDerived(std::shared_ptr<PyMultipatch> core_obj);
 
 } // namespace splinepy::py

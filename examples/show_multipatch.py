@@ -1,6 +1,7 @@
-import splinepy
 import gustaf as gus
 import numpy as np
+
+import splinepy
 
 if __name__ == "__main__":
     """
@@ -11,8 +12,8 @@ if __name__ == "__main__":
     | 0 | 1 |
     *---*---* -> x0
     """
-    box0 = splinepy.helpme.create.box(1,2)
-    x0_max, x1_max= box0.cps.max(axis=0)
+    box0 = splinepy.helpme.create.box(1, 2)
+    x0_max, x1_max = box0.cps.max(axis=0)
 
     box1 = box0.copy()
     box1.cps[:, 0] += x0_max
@@ -46,7 +47,7 @@ if __name__ == "__main__":
             return data.evaluate(q)
         elif on is not None:
             return data.evaluate(on)
-        
+
     def plot_jacs(data, resolutions=None, on=None):
         """
         evaluates at given location
@@ -55,10 +56,12 @@ if __name__ == "__main__":
             q = gus.create.vertices.raster(
                 box0.parametric_bounds, resolutions
             ).vertices
-            return np.linalg.det(np.vstack(d.jacobian(q) for d in data.patches))
+            return np.linalg.det(
+                np.vstack(d.jacobian(q) for d in data.patches)
+            )
         elif on is not None:
             return np.linalg.det(data.jacobians(on))
-        
+
     # use adaptor to plot values at specific places
     # this works because multipatch's evaluate() evaluates at
     # each spline. you need to make sure that your queries are within
@@ -76,18 +79,14 @@ if __name__ == "__main__":
     # Generate MS
     generator = splinepy.microstructure.Microstructure()
     generator.deformation_function = splinepy.Bezier(
-        degrees=[2,1],
-        control_points=[
-            [0,0],[2,1],[4,0],
-            [0,2],[2,4],[4,2]
-        ]
+        degrees=[2, 1],
+        control_points=[[0, 0], [2, 1], [4, 0], [0, 2], [2, 4], [4, 2]],
     )
     generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
-    generator.tiling = [3,2]
+    generator.tiling = [3, 2]
 
     m = splinepy.Multipatch(generator.create(center_expansion=1.2))
     m.spline_data["detJ"] = splinepy.SplineDataAdaptor(m, function=plot_jacs)
     m.show_options["data_name"] = "detJ"
     m.show_options["lighting"] = "off"
     m.show()
-    

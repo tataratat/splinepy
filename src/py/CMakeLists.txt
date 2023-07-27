@@ -4,7 +4,7 @@ set(PYSPLINEPY_SRCS
     py_fitting.cpp
     py_knot_insertion_matrix.cpp
     py_knot_vector.cpp
-    py_multi_patch.cpp
+    py_multipatch.cpp
     py_spline.cpp
     py_spline_exporter.cpp
     py_spline_extensions.cpp

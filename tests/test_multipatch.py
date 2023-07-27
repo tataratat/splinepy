@@ -51,11 +51,11 @@ class MultipatchTest(c.unittest.TestCase):
         """ """
         # init multipatch with multiple splines
         multipatch = c.splinepy.Multipatch()
-        multipatch.splines = self._list_of_splines
+        multipatch.patches = self._list_of_splines
 
         # init multipatch with single spline
         single_p_multipatch = c.splinepy.Multipatch()
-        single_p_multipatch.splines = [self._self_referencing_spline]
+        single_p_multipatch.patches = [self._self_referencing_spline]
 
         # Determine connectivities
         single_p_multipatch.determine_interfaces()
@@ -80,7 +80,7 @@ class MultipatchTest(c.unittest.TestCase):
         """ """
         # init multipatch with multiple splines
         multipatch = c.splinepy.Multipatch()
-        multipatch.splines = self._list_of_splines
+        multipatch.patches = self._list_of_splines
         multipatch.determine_interfaces()
 
         # Using a function

@@ -1050,8 +1050,8 @@ class gismoExportTest(c.unittest.TestCase):
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            multipatch_geometry.splines,
-                            multipatch_geometry_loaded.splines,
+                            multipatch_geometry.patches,
+                            multipatch_geometry_loaded.patches,
                         )
                     ]
                 )
@@ -1081,8 +1081,8 @@ class gismoExportTest(c.unittest.TestCase):
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            multipatch_geometry.splines,
-                            multipatch_geometry_loaded.splines,
+                            multipatch_geometry.patches,
+                            multipatch_geometry_loaded.patches,
                         )
                     ]
                 )
@@ -1165,8 +1165,8 @@ class gismoExportTest(c.unittest.TestCase):
                     [
                         c.are_splines_equal(a, b)
                         for a, b in zip(
-                            multipatch_geometry.splines,
-                            multipatch_geometry_loaded.splines,
+                            multipatch_geometry.patches,
+                            multipatch_geometry_loaded.patches,
                         )
                     ]
                 )
