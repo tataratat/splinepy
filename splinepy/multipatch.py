@@ -72,11 +72,11 @@ class Multipatch(SplinepyBase, PyMultipatch):
 
 
         """
-        return self.patches
+        return super().patches
 
     @patches.setter
     def patches(self, list_of_splines):
-        self.patches = list_of_splines
+        PyMultipatch.patches.fset(self, list_of_splines)
 
     @property
     def interfaces(self):
@@ -250,7 +250,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         spline_centers : np.ndarray
           coordinates of the patch-boundary centers
         """
-        return self.sub_patch_centers()
+        return super().sub_patch_centers()
 
     def determine_interfaces(self, tolerance=None):
         """
