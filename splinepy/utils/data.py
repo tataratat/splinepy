@@ -239,9 +239,9 @@ class PhysicalSpaceArray(np.ndarray):
         if hasattr(self, "_row_indices"):
             return self._row_indices
 
-        l, d = self._source_ptr.len(), self._source_ptr.dim()
-        self._row_indices = np.arange(l, dtype="int32")
-        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
+        len_, d = self._source_ptr.len(), self._source_ptr.dim()
+        self._row_indices = np.arange(len_, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(len_, d)
         return self._row_indices
 
     def full_row_indices(self):
@@ -251,9 +251,9 @@ class PhysicalSpaceArray(np.ndarray):
         if hasattr(self, "_full_row_indices"):
             return self._full_row_indices
 
-        l, d = self._source_ptr.len(), self._source_ptr.dim()
-        self._row_indices = np.arange(l, dtype="int32")
-        self._full_row_indices = self._row_indices.repeat(d).reshape(l, d)
+        len_, d = self._source_ptr.len(), self._source_ptr.dim()
+        self._row_indices = np.arange(len_, dtype="int32")
+        self._full_row_indices = self._row_indices.repeat(d).reshape(len_, d)
         return self._full_row_indices
 
 

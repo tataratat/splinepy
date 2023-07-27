@@ -459,8 +459,8 @@ def box(*lengths):
         degrees=[1], control_points=[[0], [lengths[0]]]
     )
     # use extrude
-    for i, l in enumerate(lengths[1:]):
-        nd_box = nd_box.create.extruded([0] * int(i + 1) + [l])
+    for i, len_ in enumerate(lengths[1:]):
+        nd_box = nd_box.create.extruded([0] * int(i + 1) + [len_])
 
     return nd_box
 
