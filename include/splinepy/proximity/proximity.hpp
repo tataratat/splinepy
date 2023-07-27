@@ -45,7 +45,7 @@ public:
       typename std::conditional<(SplineType::kDim < 4),
                                 napf::CoordinatesTree<double, /* DataT */
                                                       double, /* DistT */
-                                                      int,    /* IndexT */
+                                                      int,    /* IndexType */
                                                       SplineType::kDim, /* dim
                                                                          */
                                                       2,       /* metric (L2) */
@@ -136,7 +136,7 @@ public:
 
     } else if (initial_guess == static_cast<int>(InitialGuess::KdTree)) {
       if (!kdtree_planted_) {
-        // hate to be aggresive, but here it is.
+        // hate to be aggressive, but here it is.
         splinepy::utils::PrintAndThrowError(
             "to use InitialGuess::Kdtree option,"
             "please first plant a kdtree.",
@@ -283,12 +283,12 @@ public:
       return current_guess;
     }
 
-    // Let's try aggresive search bounds
+    // Let's try aggressive search bounds
     if (initial_guess == InitialGuess::KdTree && aggressive_bounds) {
       // you need to be sure that you have sampled your spline fine enough
       for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
         // adjust lower (0) and upper (1) bounds aggressively
-        // but of course, not so aggresive that it is out of bound.
+        // but of course, not so aggressive that it is out of bound.
         search_bounds[0][i] =
             std::max(search_bounds[0][i],
                      current_guess[i] - grid_points_.step_size_[i]);
@@ -308,7 +308,7 @@ public:
       FillLhs(current_guess, difference, spline_gradient, lhs);
 
       // solve and update
-      // 1. set solver skip mask if clipping happend twice at the same place.
+      // 1. set solver skip mask if clipping happened twice at the same place.
       if (previous_clipped == clipped && !solver_skip_mask_activated) {
         solver_skip_mask = clipped;
         solver_skip_mask_activated = true;
@@ -392,12 +392,12 @@ public:
     typename SplineType::ParametricCoordinate_ current_guess =
         MakeInitialGuess(static_cast<int>(InitialGuess::KdTree), query);
 
-    // Let's try aggresive search bounds
+    // Let's try aggressive search bounds
     if (aggressive_bounds) {
       // you need to be sure that you have sampled your spline fine enough
       for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
         // adjust lower (0) and upper (1) bounds aggressively
-        // but of course, not so aggresive that it is out of bound.
+        // but of course, not so aggressive that it is out of bound.
         search_bounds[0][i] =
             std::max(search_bounds[0][i],
                      current_guess[i] - grid_points_.step_size_[i]);
@@ -471,7 +471,7 @@ public:
     distance = current_distance;     /* 1 */
     convergence_norm = current_norm; /* 2 */
     typename SplineType::Derivative_ derivative_query;
-    double der; /* to accomodate different kind of derivative types */
+    double der; /* to accommodate different kind of derivative types */
     using DerivativeValueType = typename SplineType::Derivative_::value_type;
     for (int i{}; i < SplineType::kParaDim; ++i) {
       final_guess[i] = static_cast<double>(current_guess[i]); /* 3 */

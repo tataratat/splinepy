@@ -28,7 +28,7 @@ double FitCurve(const double* points,
 /**
  * @brief Interpolates a spline surface to points.
  *
- * @param points rectangluar points array
+ * @param points rectangular points array
  * @param num_points number of points
  * @param dim physical dimension
  * @param degree_u spline degree in u
@@ -79,7 +79,7 @@ double ApproximateCurve(const double* points,
  * @brief Approximates a spline surface to points shaped in a rectangular
  * grid along the parametric directions.
  *
- * @param points rectangluar points array
+ * @param points rectangular points array
  * @param num_points_u number of points along u-direction
  * @param num_points_v number of points along v-direction
  * @param dim physical dimension

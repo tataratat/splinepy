@@ -109,9 +109,9 @@ class Integrator:
 
     .. code-block:: python
 
-      splinepy.helpme.integrate.volume()
-      # Equivalent to
-      spline.integrate.volume()
+        splinepy.helpme.integrate.volume()
+        # Equivalent to
+        spline.integrate.volume()
 
     Parameters
     ----------

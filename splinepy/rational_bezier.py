@@ -98,12 +98,8 @@ class RationalBezier(BezierBase):
         # Rational bezier curve (quarter arc)
         rational_bezier = splinepy.RationalBezier(
             degrees=[2],
-            control_points=[
-                [0.0, 0.0],
-                [1.0, 0.0],
-                [1.0, 1.0]
-            ],
-            weights=[1.0, 2.0**-0.5, 1.0]
+            control_points=[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0]],
+            weights=[1.0, 2.0**-0.5, 1.0],
         )
 
     Parameters

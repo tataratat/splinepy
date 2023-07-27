@@ -138,7 +138,7 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
 /// @param boundary_end Boundary ID of adjacent spline
 /// @param tolerance Tolerance
 /// @param int_mappings_ptr (output) integer mappings
-/// @param bool_orientations_ptr (output) axis alignement
+/// @param bool_orientations_ptr (output) axis alignment
 void GetBoundaryOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
@@ -179,7 +179,7 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
 /**
  * @brief  Adds a Boundary using a seed and G-continuity on boundary-splines
  *
- * This function might be a slight overkill, as it assignes all functions an ID,
+ * This function might be a slight overkill, as it assigns all functions an ID,
  * even when previously assigned a different ID -> Future Project
  *
  * @param boundary_splines boundary patches

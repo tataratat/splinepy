@@ -50,7 +50,7 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
         indices = np.argsort(supports[:, 0], kind="stable")
         counter = np.arange(supports.shape[0])
         bincount = np.bincount(supports[:, 0])
-        # Get number of occurences for previous element to correct index shift
+        # Get number of occurrences for previous element to correct index shift
         index_shift = np.cumsum(np.hstack([[0], bincount[:-1]]))
         counter -= np.repeat(index_shift, bincount)
         supports[indices, 2] = counter
@@ -196,7 +196,7 @@ def export(
       'attributes'->dictionary (optional), 'children'->list in the same format
       (optional)
     export_fields : bool
-      Export fields to seperate files ending with field<id>.xml, e.g.,
+      Export fields to separate files ending with field<id>.xml, e.g.,
       filename.xml.field1.xml
     collapse_fields : cool
       Only valid if export_fields is True, writes all fields in the same file
@@ -391,7 +391,7 @@ def export(
 
     _spline_to_ET(xml_data, multipatch, index_offset)
 
-    # Add addtional options to the xml file
+    # Add additional options to the xml file
     if options is not None:
         # Verify that the list stored in the correct format
         if not isinstance(options, list):
@@ -428,7 +428,7 @@ def export(
 
     elif int(python_version.split(".")[1]) < 9 and indent:
         debug(
-            "Indented xml ouput is only supported from > python3.9.",
+            "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
             f"Current python version: {python_version}",
         )

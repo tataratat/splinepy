@@ -46,7 +46,7 @@ class PhysicalSpaceArray(np.ndarray):
 
             # first child array
             if self.base is obj:
-                # make sure this is not a recursivly born child
+                # make sure this is not a recursively born child
                 # for example, `arr[[1,2]][:,2]`
                 if obj._source_ptr is not None:
                     self._super_arr = obj
@@ -60,7 +60,7 @@ class PhysicalSpaceArray(np.ndarray):
             return None
 
     def _sync_source_ptr(self):
-        # this is super arr. super arr only has _source_ptr becase we should've
+        # this is super arr. super arr only has _source_ptr because we should've
         # set it manually
         if self._source_ptr is not None:  # and self._super_arr is None
             self._source_ptr.sync(self)
@@ -679,7 +679,7 @@ class MultipatchData(SplineData):
             elif isinstance(saved, SplineDataAdaptor):
                 return saved
         raise RuntimeError(
-            "Invalid saved data / key type. Please help us by writting an "
+            "Invalid saved data / key type. Please help us by writing an "
             "issue at github.com/tataratat/splinepy. Thank you!"
         )
 

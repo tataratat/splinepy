@@ -118,34 +118,26 @@ inline double NormL2(std::array<T, dim>& arr) {
   return std::sqrt(returnval);
 }
 
-/* reorder by copying.
- * "who cares" approach
- * maybe faster. who knows
- *
- * Parameters
- * -----------
- * arr: inout  <- altered inplace
- * order: in
- */
-template<typename T, typename IndexT, std::size_t dim>
-void CopyReorder(std::array<T, dim>& arr, std::array<IndexT, dim>& order) {
+/// @brief reorder by copying.
+/// @tparam T
+/// @tparam IndexType
+/// @tparam dim
+/// @param arr
+/// @param order
+template<typename T, typename IndexType, std::size_t dim>
+void CopyReorder(std::array<T, dim>& arr, std::array<IndexType, dim>& order) {
   const auto copyarr = arr; // should copy.
   for (std::size_t i{0}; i < dim; i++) {
     arr[order[i]] = copyarr[i];
   }
 }
 
-/* Gauss elimination with partial pivoting to find x from (A x = b)
- *
- * Parameters
- * -----------
- * A: inout
- *   please excuse us, it will be modified
- * b: inout
- *   please excuse us, it will be modified
- * skipmask: in
- * x: out
- */
+/// @brief Gauss elimination with partial pivoting to find x from (A x = b)
+/// @tparam para_dim
+/// @param A May be modified inplace
+/// @param b May be modified inplace
+/// @param skipmask May be modified inplace
+/// @param x
 template<std::size_t para_dim>
 inline void
 GaussWithPivot(std::array<std::array<double, para_dim>, para_dim>& A,

@@ -14,10 +14,10 @@ inline int ExtractBoundaryFromAxisAndExtrema(const int& axis,
   return (extreme > 0) ? 2 * axis + 1 : 2 * axis;
 }
 
-template<typename SplineType, typename IndexT>
+template<typename SplineType, typename IndexType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
 ExtractControlMeshSliceFromIDs(const SplineType& spline,
-                               const std::vector<IndexT>& indices,
+                               const std::vector<IndexType>& indices,
                                const int& plane_normal_axis) {
   // Perform sanity check
   if constexpr (SplineType::kParaDim == 1) {

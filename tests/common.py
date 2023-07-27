@@ -215,7 +215,7 @@ def nurbs_2p2d():
 
 def nurbs_2p2d_quarter_circle():
     """explicit function for quarter circle
-    incase n2p2d changes in the future..."""
+    in case n2p2d changes in the future..."""
     return dict_nurbs_2p2d()
 
 
@@ -287,7 +287,7 @@ def raster(bounds, resolutions):
 
 
 def nd_box(dim):
-    """creates simple box in nd"""
+    """creates simple box in n-d"""
     ds = [1 for _ in range(dim)]
     cps = raster(
         [[0 for _ in range(dim)], [1 for _ in range(dim)]],

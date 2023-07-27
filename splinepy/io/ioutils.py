@@ -7,7 +7,7 @@ import os
 
 def make_meaningful(line, comment="#"):
     """
-    Trys to turn a str input a meaningful line. Returns False if it is not
+    Tries to turn a str input a meaningful line. Returns False if it is not
     possible
 
     Parameters
@@ -117,7 +117,7 @@ def expand_tabs(fname, overwrite=True, tab_expand=2):
     """
     import os.path as op
 
-    # Safe guard in case an absolut path is handed to the function
+    # Safe guard in case an absolute path is handed to the function
     if overwrite:
         out_name = fname
     else:

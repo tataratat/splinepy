@@ -151,7 +151,7 @@ if __name__ == "__main__":
     )
 
     # fixed location data can't be shown in other requested locations.
-    # followings won't work
+    # following won't work
     # b.show_options["arrow_data_on"] = locations[:5]
     # b.show()
 
@@ -201,7 +201,7 @@ if __name__ == "__main__":
         ],
         [
             "Parametric view of displacements.\n"
-            "Arrows are directly transfered with automatic rescaling.\n"
+            "Arrows are directly transferred with automatic rescaling.\n"
             "(no inverse mapping)",
             p_view,
         ],
@@ -216,7 +216,7 @@ if __name__ == "__main__":
         ],
         [
             "Parametric view of displacements.\n"
-            "Arrows are directly transfered with automatic rescaling.\n"
+            "Arrows are directly transferred with automatic rescaling.\n"
             "(no inverse mapping)",
             p_view,
         ],

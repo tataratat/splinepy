@@ -146,7 +146,7 @@ void RaiseMismatch(const CoreSplineVector& splist,
   auto check_mismatch_step = [&](int begin, int total_) {
     // in step-style query, begin is i_thread
     const int thread_index = begin;
-    // alloc vectors incase we need to compare
+    // alloc vectors in case we need to compare
     IntVector spline_degree(ref_para_dim), spline_cmr(ref_para_dim);
 
     for (int i{begin}; i < total_; i += nthreads) {
@@ -172,7 +172,7 @@ void RaiseMismatch(const CoreSplineVector& splist,
       if (check_dim && (dim != spline->SplinepyDim())) {
         mismatches["dim"][thread_index].push_back(i);
       }
-      // check properties that are relevent iff para_dim matches
+      // check properties that are relevant iff para_dim matches
       if (para_dim_matches) {
         if (check_degrees) {
           spline->SplinepyCurrentProperties(spline_degree.data(),
@@ -303,7 +303,7 @@ void RaiseMismatch(const CoreSplineVector& splist0,
         mismatches["name"][thread_index].push_back(i);
       }
 
-      // check properties that are relevent iff para_dim matches
+      // check properties that are relevant iff para_dim matches
       if (para_dim_matches && (degrees || control_mesh_resolutions)) {
         // alloc some space
         int_vec0.resize(spline0->SplinepyParaDim());
@@ -608,7 +608,7 @@ void GetBoundaryOrientation(
   const int boundary_end_p_dim = static_cast<int>(boundary_end / 2);
   const bool boundary_end_orientation = (boundary_end % 2) == 0;
   int_mappings_ptr[boundary_start_p_dim] = boundary_end_p_dim;
-  // Note: Here might be a discrepency with gismo's orientation, and it needs to
+  // Note: Here might be a discrepancy with gismo's orientation, and it needs to
   // be checked in the future. I am awaiting a response from gismo developers,
   // it is poosible the orientation of the interface edge might be flipped
   // (bugfix: negate the following expression)
@@ -939,7 +939,7 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   std::vector<int> new_boundary_id(n_boundary_patches);
   std::vector<int> queued_splines{};
 
-  // Start Assignement
+  // Start Assignment
   // Loop over all patches
   int current_max_id{1};
   for (int i{}; i < n_boundary_patches; i++) {
@@ -1018,7 +1018,7 @@ void PyMultiPatch::Clear() {
 }
 
 void PyMultiPatch::SetPatchesNThreads(py::list& patches, const int nthreads) {
-  // clear first, incase this is a new setting
+  // clear first, in case this is a new setting
   Clear();
 
   // register patches

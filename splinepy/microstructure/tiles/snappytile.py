@@ -308,7 +308,7 @@ class SnappyTile(TileBase):
         # Check horizontal parameters
         if not ((r + contact_length) < 0.5):
             raise ValueError(
-                "Inconsistent parameters, must fullfil : 2*r + contact_length"
+                "Inconsistent parameters, must fulfill : 2*r + contact_length"
                 " < 0.5"
             )
 

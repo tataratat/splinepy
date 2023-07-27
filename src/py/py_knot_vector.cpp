@@ -77,7 +77,7 @@ void init_knot_vector(py::module_& m) {
             i = wrap_id(i, kv.GetKnots().size());
             kv.UpdateKnot(i, knot);
           },
-          "Single knot assignement / modification.")
+          "Single knot assignment / modification.")
       .def(
           "__setitem__",
           [](KnotVector& kv, const py::slice& slice, const py::list& value) {
@@ -98,7 +98,7 @@ void init_knot_vector(py::module_& m) {
             }
             kv.ThrowIfTooSmallOrNotNonDecreasing();
           },
-          "Multiple slice based element assignement.")
+          "Multiple slice based element assignment.")
       .def("__repr__",
            [](const KnotVector& kv) {
              std::ostringstream s;

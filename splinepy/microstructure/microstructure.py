@@ -177,7 +177,7 @@ class Microstructure(SplinepyBase):
         Returns
         -------
         parametrization_function : Callable
-          Function that descibes the local tile parameters
+          Function that describes the local tile parameters
         """
         if hasattr(self, "_parametrization_function"):
             return self._parametrization_function
@@ -215,7 +215,7 @@ class Microstructure(SplinepyBase):
         Returns
         -------
         parameter_sensitivity_function : Callable
-          Function that descibes the local tile parameters
+          Function that describes the local tile parameters
         """
         if hasattr(self, "_parameter_sensitivity_function"):
             return self._parameter_sensitivity_function

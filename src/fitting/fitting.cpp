@@ -28,7 +28,7 @@ double FitCurve(const double* points,
                                               num_points,
                                               num_control_points);
 
-  // Up until now there is no seperation between approximation and
+  // Up until now there is no separation between approximation and
   // interpolation.
   if (num_control_points == num_points) {
     control_points = LUSolve(coefficient_matrix, points, num_points, dim);

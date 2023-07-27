@@ -295,7 +295,7 @@ class Mapper(SplinepyBase):
         # directly, rather than to precompute al basis function derivatives, as
         # more efficient methods might be implemented in both SplineLib and
         # Bezman, however, for sake of simplicity, we will stick to the basis
-        # function based implemntation here, as basis function derivatives are
+        # function based implementation here, as basis function derivatives are
         # mostly required in IGA applications.
 
         # Compute required basis function values

@@ -2,7 +2,7 @@
 set(GOOGLETEST OFF)
 
 if(SPLINEPY_COMPILE_BSPLINELIB)
-    add_subdirectory(BSplineLib)
+  add_subdirectory(BSplineLib)
 endif()
 
 set(BEZMAN_GOOGLETEST OFF)

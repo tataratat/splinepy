@@ -15,13 +15,13 @@ enum class NThreadQueryType : int {
   Step = 1
 };
 
-/// N-Thread execution. Queries will be splitted into chunks and each thread
+/// N-Thread execution. Queries will be split into chunks and each thread
 /// will execute those.
-template<typename Func, typename IndexT>
+template<typename Func, typename IndexType>
 void NThreadExecution(
     const Func& f,
-    const IndexT& total,
-    IndexT nthread /* copy */,
+    const IndexType& total,
+    IndexType nthread /* copy */,
     const NThreadQueryType query_type = NThreadQueryType::Chunk) {
   // For any negative value, std::thread::hardware_concurrency() will be taken
   // If you are not satisfied with returned value, use positive value.
@@ -48,7 +48,7 @@ void NThreadExecution(
   if (query_type == NThreadQueryType::Chunk) {
     // get chunk size and prepare threads
     // make sure it rounds up
-    const IndexT chunk_size = std::div((total + nthread - 1), nthread).quot;
+    const IndexType chunk_size = std::div((total + nthread - 1), nthread).quot;
 
     for (int i{}; i < (nthread - 1); ++i) {
       thread_pool.emplace_back(

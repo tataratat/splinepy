@@ -64,7 +64,7 @@ class BezierBase(spline.Spline):
         # Supports only Bezier families
         if not isinstance(factor, BezierBase):
             raise TypeError(
-                f"Multiplication with {type(factor)}-type is not suppoted."
+                f"Multiplication with {type(factor)}-type is not supported."
             )
 
         # multiply - dimension compatibility is checked in cpp side
@@ -75,7 +75,7 @@ class BezierBase(spline.Spline):
 
     def __add__(self, summand):
         """
-        Calculates the spline that formes the sum of the summand and the
+        Calculates the spline that forms the sum of the summand and the
         current spline (function argument)
 
         The resulting spline fulfils the equation
@@ -216,14 +216,14 @@ class BezierBase(spline.Spline):
 
         Returns
         -------
-        splitted: list
-          list of splitted splines. Self stays intact.
+        split: list
+          list of split splines. Self stays intact.
         """
         if max(locations) > 1 or min(locations) < 0:
             raise ValueError("Invalid split location. Should be in (0, 1).")
-        splitted = splinepy_core.split(self, para_dim, locations)
+        split = splinepy_core.split(self, para_dim, locations)
 
-        return [type(self)(spline=s) for s in splitted]
+        return [type(self)(spline=s) for s in split]
 
     def extract_dim(self, dim):
         """
@@ -304,15 +304,15 @@ class Bezier(BezierBase):
 
         # Polynomial Bezier surface
         polynomial_bezier = splinepy.Bezier(
-            degrees=[2,1],
+            degrees=[2, 1],
             control_points=[
                 [0.0, 0.0],
                 [1.0, 0.0],
                 [2.0, 1.0],
                 [0.0, 2.0],
                 [1.0, 1.0],
-                [2.0, 2.0]
-            ]
+                [2.0, 2.0],
+            ],
         )
 
     Parameters

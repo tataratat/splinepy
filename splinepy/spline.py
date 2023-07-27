@@ -546,7 +546,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         Examples
         --------
-        >>> prism = spline.create.extrude(axis=[1,4,1])
+        >>> prism = spline.create.extrude(axis=[1, 4, 1])
 
         Parameters
         ----------
@@ -912,7 +912,7 @@ class Spline(SplinepyBase, core.PySpline):
                     f"len(control_points) ({len(control_points)}) "
                     f"should match len(weights) ({len(self.weights)})."
                 )
-            # we need to remove exising weights so that pointers don't get
+            # we need to remove existing weights so that pointers don't get
             # mixed
             if isinstance(self.weights, utils.data.PhysicalSpaceArray):
                 self._data["weights"] = self._data["weights"].copy()
@@ -1076,7 +1076,7 @@ class Spline(SplinepyBase, core.PySpline):
                     f"len(control_points) ({len(self.control_points)})."
                 )
 
-            # we need to remove exising cps so that pointers don't get mixed
+            # we need to remove existing cps so that pointers don't get mixed
             if isinstance(self.control_points, utils.data.PhysicalSpaceArray):
                 self._data["control_points"] = self._data[
                     "control_points"
@@ -1541,7 +1541,7 @@ class Spline(SplinepyBase, core.PySpline):
         else:
             raise ValueError(
                 "We can only export "
-                "< .iges | .xml | .itd | .npz | .mesh | .json> extentions"
+                "< .iges | .xml | .itd | .npz | .mesh | .json> extensions"
             )
 
         self._logi(f"Exported current spline as {fname}.")
@@ -1633,7 +1633,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         .. code-block:: python
 
-           splinepy.helpme.visualize.show(spline, **kwargs)
+            splinepy.helpme.visualize.show(spline, **kwargs)
 
         Parameters
         ----------
@@ -1651,8 +1651,8 @@ class Spline(SplinepyBase, core.PySpline):
 
         .. code-block:: python
 
-           splinepy.helpme.visualize.show(
-               spline, return_showable=True, **kwargs
+            splinepy.helpme.visualize.show(
+                spline, return_showable=True, **kwargs
             )
 
         Parameters

@@ -66,8 +66,8 @@ assert np.allclose(bspline.control_points, grid_cps)
 # Evaluate spline mapping.
 # First, let's form parametric coordinate queries
 queries = [
-    [0.1, 0.2],        # first query
-    [0.4, 0.5],        # second query
+    [0.1, 0.2],  # first query
+    [0.4, 0.5],  # second query
     [0.1156, 0.9091],  # third query
 ]
 physical_coords = bspline.evaluate(queries)
