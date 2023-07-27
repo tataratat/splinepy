@@ -4,16 +4,16 @@ except BaseException:
     import common as c
 
 
-class GrevilleAbscissaeTest(c.unittest.TestCase):
+class GrevilleAbscissaeTest(c.SplineBasedTestCase):
     def test_greville_points(self):
         """
         test permute
         """
         # Define some splines
-        z = c.splinepy.Bezier(**c.z3P3D)
-        r = c.splinepy.RationalBezier(**c.r3P3D)
-        b = c.splinepy.BSpline(**c.b3P3D)
-        n = c.splinepy.NURBS(**c.n3P3D)
+        z = self.bezier_3p3d()
+        r = self.rational_bezier_3p3d()
+        b = self.bspline_3p3d()
+        n = self.nurbs_3p3d()
 
         # Modify some splines
         b.insert_knots(0, [0.2, 0.7])

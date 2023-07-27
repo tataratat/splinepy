@@ -4,21 +4,7 @@ except BaseException:
     import common as c
 
 
-class TestSplinepyOrderManipulation(c.unittest.TestCase):
-    def setUp(self):
-        self.b2P2D = c.b2P2D.copy()
-        self.n2P2D = c.n2P2D.copy()
-        self.z2P2D = c.z2P2D.copy()
-        self.r2P2D = c.r2P2D.copy()
-        self.bspline = c.splinepy.BSpline(**self.b2P2D)
-        self.nurbs = c.splinepy.NURBS(**self.n2P2D)
-        self.bezier = c.splinepy.Bezier(**self.z2P2D)
-        self.rational = c.splinepy.RationalBezier(**self.r2P2D)
-        self.ref_bspline = c.splinepy.BSpline(**c.b2P2D)
-        self.ref_nurbs = c.splinepy.NURBS(**c.n2P2D)
-        self.ref_bezier = c.splinepy.Bezier(**c.z2P2D)
-        self.ref_rational = c.splinepy.RationalBezier(**c.r2P2D)
-
+class TestSplinepyOrderManipulation(c.SplineBasedTestCase):
     def test_elevate_degree(self):
         """Test the order elevation function (.elevate_degrees())."""
 
@@ -32,28 +18,31 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
             [0, 0, 1, 1],
         ]
 
+        bspline = self.bspline_2p2d()
+        nurbs = self.nurbs_2p2d()
+        bezier = self.bezier_2p2d()
+        rational = self.rational_bezier_2p2d()
+
         # elevate order
-        self.bspline.elevate_degrees(0)
+        bspline.elevate_degrees(0)
 
-        self.nurbs.elevate_degrees(0)
+        nurbs.elevate_degrees(0)
 
-        self.bezier.elevate_degrees(0)
+        bezier.elevate_degrees(0)
 
-        self.rational.elevate_degrees(0)
+        rational.elevate_degrees(0)
 
         # test degrees
-        self.assertTrue(c.np.allclose(self.bspline.degrees, [3, 2]))
-        self.assertTrue(c.np.allclose(self.nurbs.degrees, [3, 1]))
-        self.assertTrue(c.np.allclose(self.bezier.degrees, [3, 1]))
-        self.assertTrue(c.np.allclose(self.rational.degrees, [3, 1]))
+        self.assertTrue(c.np.allclose(bspline.degrees, [3, 2]))
+        self.assertTrue(c.np.allclose(nurbs.degrees, [3, 1]))
+        self.assertTrue(c.np.allclose(bezier.degrees, [3, 1]))
+        self.assertTrue(c.np.allclose(rational.degrees, [3, 1]))
 
         # test knot_vectors
         self.assertTrue(
-            c.are_items_close(self.bspline.knot_vectors, bspline_ref_kv)
+            c.are_items_close(bspline.knot_vectors, bspline_ref_kv)
         )
-        self.assertTrue(
-            c.are_items_close(self.nurbs.knot_vectors, nurbs_ref_kv)
-        )
+        self.assertTrue(c.are_items_close(nurbs.knot_vectors, nurbs_ref_kv))
 
         # use random query points
         q2D = c.np.random.rand(10, 2)
@@ -61,22 +50,21 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+                bspline.evaluate(q2D), self.bspline_2p2d().evaluate(q2D)
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(nurbs.evaluate(q2D), self.nurbs_2p2d().evaluate(q2D))
+        )
+        self.assertTrue(
+            c.np.allclose(
+                bezier.evaluate(q2D), self.bezier_2p2d().evaluate(q2D)
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
-            )
-        )
-        self.assertTrue(
-            c.np.allclose(
-                self.bezier.evaluate(q2D), self.ref_bezier.evaluate(q2D)
-            )
-        )
-        self.assertTrue(
-            c.np.allclose(
-                self.rational.evaluate(q2D), self.ref_rational.evaluate(q2D)
+                rational.evaluate(q2D),
+                self.rational_bezier_2p2d().evaluate(q2D),
             )
         )
 
@@ -85,29 +73,32 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
         This test also depends on the function .elevate_degrees!"""
 
         # elevate and reduce order
-        self.bspline.elevate_degrees(0)
-        self.bspline.reduce_degrees(0)
+        bspline = self.bspline_2p2d()
+        nurbs = self.nurbs_2p2d()
 
-        self.nurbs.elevate_degrees(0)
-        self.nurbs.reduce_degrees(0)
+        bspline.elevate_degrees(0)
+        bspline.reduce_degrees(0)
+
+        nurbs.elevate_degrees(0)
+        nurbs.reduce_degrees(0)
 
         # test degrees
         self.assertTrue(
-            c.np.allclose(self.bspline.degrees, self.ref_bspline.degrees)
+            c.np.allclose(bspline.degrees, self.bspline_2p2d().degrees)
         )
         self.assertTrue(
-            c.np.allclose(self.nurbs.degrees, self.ref_nurbs.degrees)
+            c.np.allclose(nurbs.degrees, self.nurbs_2p2d().degrees)
         )
 
         # test knot_vectors
         self.assertTrue(
             c.are_items_close(
-                self.bspline.knot_vectors, self.ref_bspline.knot_vectors
+                bspline.knot_vectors, self.bspline_2p2d().knot_vectors
             )
         )
         self.assertTrue(
             c.are_items_close(
-                self.nurbs.knot_vectors, self.ref_nurbs.knot_vectors
+                nurbs.knot_vectors, self.nurbs_2p2d().knot_vectors
             )
         )
 
@@ -117,13 +108,11 @@ class TestSplinepyOrderManipulation(c.unittest.TestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+                bspline.evaluate(q2D), self.bspline_2p2d().evaluate(q2D)
             )
         )
         self.assertTrue(
-            c.np.allclose(
-                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
-            )
+            c.np.allclose(nurbs.evaluate(q2D), self.nurbs_2p2d().evaluate(q2D))
         )
 
 

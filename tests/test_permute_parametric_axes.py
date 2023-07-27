@@ -4,16 +4,16 @@ except BaseException:
     import common as c
 
 
-class PermuteParametricAxesTest(c.unittest.TestCase):
+class PermuteParametricAxesTest(c.SplineBasedTestCase):
     def test_permute_parametric_axes(self):
         """
         test permute
         """
         # Define some splines
-        z = c.splinepy.Bezier(**c.z3P3D)
-        r = c.splinepy.RationalBezier(**c.r3P3D)
-        b = c.splinepy.BSpline(**c.b3P3D)
-        n = c.splinepy.NURBS(**c.n3P3D)
+        z = self.bezier_3p3d()
+        r = self.rational_bezier_3p3d()
+        b = self.bspline_3p3d()
+        n = self.nurbs_3p3d()
         originals = (z, r, b, n)
 
         # define permutation
@@ -33,7 +33,7 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
             perm = c.splinepy.helpme.permute.parametric_axes(
                 orig, permutation, inplace=False
             )
-            queries = c.np.asarray(c.q3D)
+            queries = c.np.asarray(c.get_queries_3D())
 
             self.assertTrue(
                 c.np.allclose(
@@ -49,7 +49,7 @@ class PermuteParametricAxesTest(c.unittest.TestCase):
             c.splinepy.helpme.permute.parametric_axes(
                 perm, permutation, inplace=True
             )
-            queries = c.np.asarray(c.q3D)
+            queries = c.np.asarray(c.get_queries_3D())
 
             self.assertTrue(
                 c.np.allclose(

@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class BezierExtractionTest(c.unittest.TestCase):
+class BezierExtractionTest(c.SplineBasedTestCase):
     def test_extraction(self):
         """
         test the extraction of beziers
@@ -45,7 +45,7 @@ class BezierExtractionTest(c.unittest.TestCase):
     def test_extraction_matrice_bspline_3D(self):
         """Create matrices to extract splines"""
         # Init b-splines
-        bspline = c.splinepy.BSpline(**c.b3P3D)
+        bspline = self.bspline_3p3d()
         bspline.elevate_degrees([0, 1, 2])
         bspline.insert_knots(0, c.np.random.rand(3))
         bspline.insert_knots(1, c.np.random.rand(3))
@@ -65,7 +65,7 @@ class BezierExtractionTest(c.unittest.TestCase):
         """Create matrices to extract splines"""
 
         # Init nurbs
-        bspline = c.splinepy.BSpline(**c.b2P2D.copy())
+        bspline = self.bspline_2p2d()
         bspline.elevate_degrees([0, 1])
         bspline.insert_knots(0, c.np.random.rand(3))
         bspline.insert_knots(1, c.np.random.rand(3))
@@ -82,7 +82,7 @@ class BezierExtractionTest(c.unittest.TestCase):
         """Create matrices to extract splines"""
 
         # Init nurbs
-        nurbs = c.splinepy.NURBS(**c.n2P2D.copy())
+        nurbs = self.nurbs_2p2d()
         nurbs.elevate_degrees([0, 1])
         nurbs.insert_knots(0, c.np.random.rand(3))
         nurbs.insert_knots(1, c.np.random.rand(3))

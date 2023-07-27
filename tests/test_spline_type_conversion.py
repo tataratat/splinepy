@@ -18,29 +18,34 @@ def convert_and_compare_samples(spline, conversion_list):
         assert type(converted).__qualname__.lower().startswith(convert_to)
 
 
-class SplineTypeConversionTest(c.unittest.TestCase):
+class SplineTypeConversionTest(c.SplineBasedTestCase):
     def setUp(self):
-        self.z, self.r, self.b, self.n = c.all2p2d()
+        [
+            self.bspline,
+            self.nurbs,
+            self.bezier,
+            self.rational_bezier,
+        ] = c.spline_types_as_list()
 
     def test_bezier_conversions(self):
         test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
 
-        convert_and_compare_samples(self.z, test_conversions)
+        convert_and_compare_samples(self.bezier, test_conversions)
 
     def test_rational_bezier_conversions(self):
         test_conversions = ["rationalbezier", "nurbs"]
 
-        convert_and_compare_samples(self.r, test_conversions)
+        convert_and_compare_samples(self.rational_bezier, test_conversions)
 
     def test_bspline_conversions(self):
         test_conversions = ["bspline", "nurbs"]
 
-        convert_and_compare_samples(self.b, test_conversions)
+        convert_and_compare_samples(self.bspline, test_conversions)
 
     def test_nurbs_conversions(self):
         test_conversions = ["nurbs"]
 
-        convert_and_compare_samples(self.n, test_conversions)
+        convert_and_compare_samples(self.nurbs, test_conversions)
 
 
 if __name__ == "__main__":

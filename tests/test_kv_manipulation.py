@@ -4,14 +4,10 @@ except BaseException:
     import common as c
 
 
-class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
+class TestSplinepyKnotVectorManipulation(c.SplineBasedTestCase):
     def setUp(self):
-        self.b2P2D = c.b2P2D.copy()
-        self.n2P2D = c.n2P2D.copy()
-        self.bspline = c.splinepy.BSpline(**self.b2P2D)
-        self.nurbs = c.splinepy.NURBS(**self.n2P2D)
-        self.ref_bspline = c.splinepy.BSpline(**c.b2P2D)
-        self.ref_nurbs = c.splinepy.NURBS(**c.n2P2D)
+        self.bspline = self.bspline_2p2d()
+        self.nurbs = self.nurbs_2p2d()
 
     def test_insert_knot(self):
         """Test the knot insertion function (.insert_knot())."""
@@ -68,12 +64,12 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+                self.bspline.evaluate(q2D), self.bspline_2p2d().evaluate(q2D)
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
+                self.nurbs.evaluate(q2D), self.nurbs_2p2d().evaluate(q2D)
             )
         )
 
@@ -112,12 +108,12 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+                self.bspline.evaluate(q2D), self.bspline_2p2d().evaluate(q2D)
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
+                self.nurbs.evaluate(q2D), self.nurbs_2p2d().evaluate(q2D)
             )
         )
 
@@ -125,19 +121,22 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         self.assertTrue(
             c.np.allclose(
                 self.bspline.control_points,
-                matrix_bspline @ self.ref_bspline.control_points,
+                matrix_bspline @ self.bspline_2p2d().control_points,
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.weights, matrix_nurbs @ self.ref_nurbs.weights
+                self.nurbs.weights, matrix_nurbs @ self.nurbs_2p2d().weights
             )
         )
         self.assertTrue(
             c.np.allclose(
                 self.nurbs.control_points,
                 matrix_nurbs
-                @ (self.ref_nurbs.weights * self.ref_nurbs.control_points)
+                @ (
+                    self.nurbs_2p2d().weights
+                    * self.nurbs_2p2d().control_points
+                )
                 / self.nurbs.weights,
             )
         )
@@ -208,12 +207,12 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         # test knot_vectors
         self.assertTrue(
             c.are_items_close(
-                self.bspline.knot_vectors, self.ref_bspline.knot_vectors
+                self.bspline.knot_vectors, self.bspline_2p2d().knot_vectors
             )
         )
         self.assertTrue(
             c.are_items_close(
-                self.nurbs.knot_vectors, self.ref_nurbs.knot_vectors
+                self.nurbs.knot_vectors, self.nurbs_2p2d().knot_vectors
             )
         )
 
@@ -223,12 +222,12 @@ class TestSplinepyKnotVectorManipulation(c.unittest.TestCase):
         # test evaluation
         self.assertTrue(
             c.np.allclose(
-                self.bspline.evaluate(q2D), self.ref_bspline.evaluate(q2D)
+                self.bspline.evaluate(q2D), self.bspline_2p2d().evaluate(q2D)
             )
         )
         self.assertTrue(
             c.np.allclose(
-                self.nurbs.evaluate(q2D), self.ref_nurbs.evaluate(q2D)
+                self.nurbs.evaluate(q2D), self.nurbs_2p2d().evaluate(q2D)
             )
         )
 

@@ -6,17 +6,17 @@ except BaseException:
     import common as c
 
 
-class CreatorTest(c.unittest.TestCase):
+class CreatorTest(c.SplineBasedTestCase):
     # Test Extrusion routines
     def test_create_extrude(self):
         """
         Test extrusion for different input types and arguments
         """
         # make a couple of 2D splines
-        bspline = c.splinepy.BSpline(**c.b2p2d())
-        nurbs = c.splinepy.NURBS(**c.n2p2d())
-        bezier = c.splinepy.Bezier(**c.z2p2d())
-        rationalbezier = c.splinepy.RationalBezier(**c.r2p2d())
+        bspline = self.bspline_2p2d()
+        nurbs = self.nurbs_2p2d()
+        bezier = self.bezier_2p2d()
+        rationalbezier = self.rational_bezier_2p2d()
 
         # Expect Failure - not a spline
         with self.assertRaises(NotImplementedError):
@@ -66,10 +66,10 @@ class CreatorTest(c.unittest.TestCase):
         Test revolution routines for different input types and arguments
         """
         # make a couple of 2D splines
-        bspline = c.splinepy.BSpline(**c.b2p2d())
-        nurbs = c.splinepy.NURBS(**c.n2p2d())
-        bezier = c.splinepy.Bezier(**c.z2p2d())
-        rationalbezier = c.splinepy.RationalBezier(**c.r2p2d())
+        bspline = self.bspline_2p2d()
+        nurbs = self.nurbs_2p2d()
+        bezier = self.bezier_2p2d()
+        rationalbezier = self.rational_bezier_2p2d()
 
         # Make some lines
         bezier_line = c.splinepy.Bezier(

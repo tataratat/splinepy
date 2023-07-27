@@ -8,10 +8,10 @@ class InplaceModificationTest(c.unittest.TestCase):
     def test_inplace_change_degrees(self):
         """inplace change of degrees should not be allowed if core spline is
         initialized"""
-        z = c.z2p2d()
-        r = c.r2p2d()
-        b = c.b2p2d()
-        n = c.n2p2d()
+        z = c.dict_bezier_2p2d()
+        r = c.dict_rational_bezier_2p2d()
+        b = c.dict_bspline_2p2d()
+        n = c.dict_nurbs_2p2d()
 
         Z, R, B, N = (
             c.splinepy.Bezier,
@@ -94,7 +94,7 @@ class InplaceModificationTest(c.unittest.TestCase):
 
     def test_inplace_change_weights(self):
         """test inplace change of weights by compareing quarter circle"""
-        n_q_circle = c.n2p2d_quarter_circle()
+        n_q_circle = c.nurbs_2p2d_quarter_circle()
         res = [4] * 2
         # init rational
         n = c.splinepy.NURBS(**n_q_circle)
@@ -122,7 +122,7 @@ class InplaceModificationTest(c.unittest.TestCase):
 
     def test_physical_space_array(self):
         """tests if physical space array is syncing correctly."""
-        n = c.splinepy.NURBS(**c.n2p2d_quarter_circle())
+        n = c.splinepy.NURBS(**c.nurbs_2p2d_quarter_circle())
 
         def cps_are_synced(n):
             assert c.np.allclose(
