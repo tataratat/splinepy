@@ -112,8 +112,6 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
             "were given.");
       }
 
-      // Only use closed knot-vectors
-
       // multiply expected control mesh resolution
       required_ncps *= nknots - degrees_ptr[kv_dim] - 1;
 
