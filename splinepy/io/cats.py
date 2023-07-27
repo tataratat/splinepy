@@ -123,7 +123,7 @@ def load(fname):
             elif CATS_XML_KEY_WORDS["knot_vectors"] in info.tag:
                 spline_dict["knot_vectors"] = []
                 for child_info in info:
-                    if not CATS_XML_KEY_WORDS["knot_vector"] in child_info.tag:
+                    if CATS_XML_KEY_WORDS["knot_vector"] not in child_info.tag:
                         debug("Redundant item in knot_vectors block of xml")
                     spline_dict["knot_vectors"].append(
                         np.fromstring(
