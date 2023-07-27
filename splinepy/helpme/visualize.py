@@ -180,8 +180,9 @@ def _vedo_showable(spline):
     )
 
     # with color representable, scalar field data
+    default_res = 10 if spline.name.startswith("Multi") else 100
     res = enforce_len(
-        spline.show_options.get("resolutions", 10), spline.para_dim
+        spline.show_options.get("resolutions", default_res), spline.para_dim
     )
     data_name = spline.show_options.get("data_name", None)
     sampled_spline_data = spline.spline_data.as_scalar(
@@ -282,8 +283,7 @@ def _vedo_showable(spline):
             )
 
     # double check on same obj ref
-    # merge vertices here, so that we return a watertight mesh
-    gus_primitives["spline"] = sampled_spline.merge_vertices()
+    gus_primitives["spline"] = sampled_spline
 
     # control_points & control_points_alpha
     show_cps = spline.show_options.get("control_points", True)
@@ -390,7 +390,9 @@ def _vedo_showable_para_dim_2(spline):
       keys are {spline, knots}
     """
     gus_primitives = dict()
-    res = spline.show_options.get("resolutions", 10)
+    default_res = 10 if spline.name.startswith("Multi") else 100
+
+    res = spline.show_options.get("resolutions", default_res)
     sp = spline.extract.faces(res, watertight=False)  # always watertight
     gus_primitives["spline"] = sp
 
