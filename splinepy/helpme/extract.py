@@ -35,43 +35,42 @@ def edges(
 
     if spline.para_dim == 1:
         vertices = spline.sample(resolution)
-        edges = connec.range_to_edges(
+        e = connec.range_to_edges(
             (0, resolution),
             closed=False,
         )
         if isinstance(spline, Multipatch):
-            edges = np.vstack(
-                [edges + i * resolution for i in range(len(spline.splines))]
+            e = np.vstack(
+                [e + i * resolution for i in range(len(spline.splines))]
             )
         return Edges(
             vertices=vertices,
-            edges=edges,
+            edges=e,
         )
 
     else:
-        # Fail save recursion for Multipatch splines
+        # recursion for Multipatch splines
         if isinstance(spline, Multipatch):
             return Edges.concat(
                 [
-                    s.extract.edges(resolution=resolution, all_knots=all_knots)
+                    edges(spline=s, resolution=resolution, all_knots=all_knots)
                     for s in spline.splines
                 ]
             )
 
         # Single patch case
         if all_knots:
-            relevant_knots = np.array(spline.unique_knots, dtype=object)
+            relevant_knots = spline.unique_knots
         else:
-            relevant_knots = np.array(spline.parametric_bounds.T, dtype=object)
+            relevant_knots = list(spline.parametric_bounds.T)
 
         temp_edges = []  # edges' is not a valid syntax
         for i in range(spline.para_dim):
-            mask = np.ones(spline.para_dim, dtype=bool)
-            mask[i] = False
             reorder_mask = (
                 [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
             )
-            split_knots = [r for ii, r in enumerate(relevant_knots) if ii != i]
+            split_knots = relevant_knots.copy()
+            split_knots.pop(i)
             n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
             # Create query points
             extract_knot_queries = cartesian_product(
@@ -218,12 +217,12 @@ def volumes(spline, resolution, watertight=False):
         )
 
         for i in range(len(spline.splines)):
-            connectivity[
-                (n_elements_per_patch * i) : ((i + 1) * n_elements_per_patch),
-                :,
-            ] = (
-                p_connect + i * n_vertices_per_patch
+            ids = slice(
+                i * n_elements_per_patch,
+                (i + 1) * n_elements_per_patch,
+                None,
             )
+            connectivity[ids] = p_connect + i * n_vertices_per_patch
     else:
         connectivity = connec.make_hexa_volumes(enforce_len(resolution, 3))
 
@@ -272,9 +271,7 @@ def control_edges(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Edges.concat(
-            [s.extract.control_edges() for s in spline.splines]
-        )
+        return Edges.concat([control_edges(s) for s in spline.splines])
     else:
         return Edges(
             vertices=spline.control_points,
@@ -302,9 +299,7 @@ def control_faces(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Faces.concat(
-            [s.extract.control_faces() for s in spline.splines]
-        )
+        return Faces.concat([control_faces(s) for s in spline.splines])
     else:
         return Faces(
             vertices=spline.control_points,
@@ -330,9 +325,7 @@ def control_volumes(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Volumes.concat(
-            [s.extract.control_volumes() for s in spline.splines]
-        )
+        return Volumes.concat([control_volumes(s) for s in spline.splines])
     else:
         return Volumes(
             vertices=spline.control_points,
@@ -360,7 +353,7 @@ def control_mesh(spline):
         return control_volumes(spline)
     else:
         raise ValueError(
-            "Invalid para_dim to extract control_mesh. " "Supports 1 to 3."
+            "Invalid para_dim to extract control_mesh. Supports 1 to 3."
         )
 
 
