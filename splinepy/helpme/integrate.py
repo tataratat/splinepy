@@ -109,14 +109,14 @@ class Integrator:
 
     .. code-block:: python
 
-      splinepy.helpme.integrate.volumer()
+      splinepy.helpme.integrate.volume()
       # Equivalent to
       spline.integrate.volume()
 
     Parameters
     ----------
     spline : Spline
-      Spline parend
+      Spline parent
     """
 
     def __init__(self, spl):
