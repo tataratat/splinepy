@@ -7,7 +7,7 @@ except BaseException:
     import common as c
 
 cats_no_indent_export = [
-    '<xml><SplineList SplineType="1" NumberOfSplines="4"><SplineEntry splDim="'
+    '<SplineList SplineType="1" NumberOfSplines="4"><SplineEntry splDim="'
     '2" spaceDim="2" numOfCntrlPntVars="2" numCntrlPnts="6" numOfEleVars="0" c'
     'losed="0"><cntrlPntVarNames>x0 x1</cntrlPntVarNames><cntrlPntVars>0.0 0.0'
     " 0.5 0.0 1.0 0.0 0.0 1.0 0.5 1.0 1.0 1.0</cntrlPntVars><deg>2 1</deg><knt"
@@ -27,51 +27,50 @@ cats_no_indent_export = [
     "x0 x1</cntrlPntVarNames><cntrlPntVars>1.0 1.0 2.0 1.0 1.0 1.5 2.0 1.5 1.0"
     " 2.0 2.0 2.0</cntrlPntVars><deg>1 1</deg><kntVecs><knotVec>0.0 0.0 1.0 1."
     "0</knotVec><knotVec>0.0 0.0 0.5 1.0 1.0</knotVec></kntVecs><wght>1.0 1.0 "
-    "1.0 1.0 1.0 1.0</wght></SplineEntry></SplineList></xml>"
+    "1.0 1.0 1.0 1.0</wght></SplineEntry></SplineList>"
 ]
 
 cats_indent_export = [
-    "<xml>\n",
-    '  <SplineList SplineType="1" NumberOfSplines="4">\n',
+    '<SplineList SplineType="1" NumberOfSplines="4">\n',
     (
-        '    <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
+        '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="6" numOfEleVars="0" closed="0">\n'
     ),
-    "      <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
-    "      <cntrlPntVars>0.0 0.0\n",
+    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVars>0.0 0.0\n",
     "0.5 0.0\n",
     "1.0 0.0\n",
     "0.0 1.0\n",
     "0.5 1.0\n",
     "1.0 1.0</cntrlPntVars>\n",
-    "      <deg>2 1</deg>\n",
-    "      <kntVecs>\n",
-    "        <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
-    "        <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "      </kntVecs>\n",
-    "    </SplineEntry>\n",
+    "    <deg>2 1</deg>\n",
+    "    <kntVecs>\n",
+    "      <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
+    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "    </kntVecs>\n",
+    "  </SplineEntry>\n",
     (
-        '    <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
+        '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="4" numOfEleVars="0" closed="0">\n'
     ),
-    "      <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
-    "      <cntrlPntVars>1.0 0.0\n",
+    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVars>1.0 0.0\n",
     "2.0 0.0\n",
     "1.0 1.0\n",
     "2.0 1.0</cntrlPntVars>\n",
-    "      <deg>1 1</deg>\n",
-    "      <kntVecs>\n",
-    "        <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "        <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "      </kntVecs>\n",
-    "      <wght>1.0 1.0 1.0 1.0</wght>\n",
-    "    </SplineEntry>\n",
+    "    <deg>1 1</deg>\n",
+    "    <kntVecs>\n",
+    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "    </kntVecs>\n",
+    "    <wght>1.0 1.0 1.0 1.0</wght>\n",
+    "  </SplineEntry>\n",
     (
-        '    <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
+        '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="9" numOfEleVars="0" closed="0">\n'
     ),
-    "      <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
-    "      <cntrlPntVars>0.0 1.0\n",
+    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVars>0.0 1.0\n",
     "0.5 1.0\n",
     "1.0 1.0\n",
     "0.0 1.5\n",
@@ -80,32 +79,31 @@ cats_indent_export = [
     "0.0 2.0\n",
     "0.5 2.0\n",
     "1.0 2.0</cntrlPntVars>\n",
-    "      <deg>2 1</deg>\n",
-    "      <kntVecs>\n",
-    "        <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
-    "        <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
-    "      </kntVecs>\n",
-    "    </SplineEntry>\n",
+    "    <deg>2 1</deg>\n",
+    "    <kntVecs>\n",
+    "      <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
+    "      <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
+    "    </kntVecs>\n",
+    "  </SplineEntry>\n",
     (
-        '    <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
+        '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="6" numOfEleVars="0" closed="0">\n'
     ),
-    "      <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
-    "      <cntrlPntVars>1.0 1.0\n",
+    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVars>1.0 1.0\n",
     "2.0 1.0\n",
     "1.0 1.5\n",
     "2.0 1.5\n",
     "1.0 2.0\n",
     "2.0 2.0</cntrlPntVars>\n",
-    "      <deg>1 1</deg>\n",
-    "      <kntVecs>\n",
-    "        <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "        <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
-    "      </kntVecs>\n",
-    "      <wght>1.0 1.0 1.0 1.0 1.0 1.0</wght>\n",
-    "    </SplineEntry>\n",
-    "  </SplineList>\n",
-    "</xml>",
+    "    <deg>1 1</deg>\n",
+    "    <kntVecs>\n",
+    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "      <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
+    "    </kntVecs>\n",
+    "    <wght>1.0 1.0 1.0 1.0 1.0 1.0</wght>\n",
+    "  </SplineEntry>\n",
+    "</SplineList>",
 ]
 
 

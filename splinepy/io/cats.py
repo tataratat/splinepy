@@ -104,7 +104,7 @@ def load(fname):
             # degrees
             elif CATS_XML_KEY_WORDS["degrees"] in info.tag:
                 spline_dict["degrees"] = np.fromstring(
-                    info.text.replace("\n", " "), sep=" "
+                    info.text.replace("\n", " "), sep=" ", dtype=np.int64
                 )
                 if spline_dict["degrees"].size != para_dim:
                     raise ValueError(
@@ -142,20 +142,19 @@ def load(fname):
     root = ET.parse(fname).getroot()
     debug("XML-file parsed start conversion")
     list_of_splines = []
-    for child in root:
-        if child.tag.startswith(CATS_XML_KEY_WORDS["spline_list"]):
-            if child.attrib.get(CATS_XML_KEY_WORDS["spline_type"], "1") != "1":
-                raise ValueError(
-                    f"Unknown SplineType "
-                    f"{child.attrib[CATS_XML_KEY_WORDS['spline_type']]}"
-                )
-            n_patches = int(
-                child.attrib.get(CATS_XML_KEY_WORDS["n_patches"], 0)
+    if root.tag.startswith(CATS_XML_KEY_WORDS["spline_list"]):
+        if root.attrib.get(CATS_XML_KEY_WORDS["spline_type"], "1") != "1":
+            raise ValueError(
+                f"Unknown SplineType "
+                f"{root.attrib[CATS_XML_KEY_WORDS['spline_type']]}"
             )
-            for patch_element in child:
-                list_of_splines.append(_read_spline(patch_element))
-        else:
-            debug(f"Unused xml-keyword {child.tag}")
+        n_patches = int(root.attrib.get(CATS_XML_KEY_WORDS["n_patches"], 0))
+        for patch_element in root:
+            list_of_splines.append(_read_spline(patch_element))
+    else:
+        debug(f"Unused xml-keyword {root.tag}")
+        return []
+
     debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
     if len(list_of_splines) != n_patches:
         raise ValueError(
@@ -203,12 +202,8 @@ def export(fname, spline_list, indent=True):
             "export Function expects list for multipatch argument"
         )
 
-    # All entries in gismo xml file have a unique ID
-    xml_data = ET.Element("xml")
-
     # Start a list of a list of patches
-    spline_list_element = ET.SubElement(
-        xml_data,
+    spline_list_element = ET.Element(
         CATS_XML_KEY_WORDS["spline_list"],
         SplineType=str(1),
         **{CATS_XML_KEY_WORDS["n_patches"]: str(len(spline_list))},
@@ -292,7 +287,7 @@ def export(fname, spline_list, indent=True):
     # Beautify and export
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
-        ET.indent(xml_data)
+        ET.indent(spline_list_element)
 
     elif int(python_version.split(".")[1]) < 9 and indent:
         debug(
@@ -301,6 +296,6 @@ def export(fname, spline_list, indent=True):
             f"Current python version: {python_version}",
         )
 
-    file_content = ET.tostring(xml_data)
+    file_content = ET.tostring(spline_list_element)
     with open(fname, "wb") as f:
         f.write(file_content)
