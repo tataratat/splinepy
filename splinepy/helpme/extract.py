@@ -66,13 +66,20 @@ def edges(
 
         temp_edges = []  # edges' is not a valid syntax
         for i in range(spline.para_dim):
-            reorder_mask = (
-                [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
-            )
             split_knots = relevant_knots.copy()
             split_knots.pop(i)
             n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
             # Create query points
+            # Sampling along a line can be done using cartesian product,
+            # however, to preserve the correct order we need to permute the
+            # columns, example:
+            #
+            # [y0, x, z]    [x, y0, z]
+            # [y1, x, z] -> [x, y1, z]
+            # [y2, x, z]    [x, y2, z]
+            reorder_mask = (
+                [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
+            )
             extract_knot_queries = cartesian_product(
                 [np.linspace(*spline.parametric_bounds[:, i], resolution)]
                 + split_knots,
