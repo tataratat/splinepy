@@ -6,7 +6,11 @@ import numpy as np
 
 from splinepy import settings
 from splinepy._base import SplinepyBase
+from splinepy.helpme import visualize
+from splinepy.helpme.extract import Extractor
+from splinepy.spline import _default_if_none, _get_helper
 from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
+from splinepy.utils.data import MultipatchData
 
 
 class Multipatch(SplinepyBase, PyMultiPatch):
@@ -15,7 +19,13 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     interfaces
     """
 
-    __slots__ = ()
+    __slots__ = (
+        "_extractor",
+        "_show_options",
+        "_spline_data",
+    )
+
+    __show_option__ = visualize.SplineShowOption
 
     def __init__(self, splines=None, interfaces=None, *, spline=None):
         """
@@ -351,6 +361,60 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             row_ids[new_boundary_bools], col_ids[new_boundary_bools]
         ] = new_BID
 
+    @property
+    def spline_data(self):
+        """
+        Spline data helper for splines. @todo (does not do anything at the
+        moment)
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        spline_data: MultipatchData
+        """
+        return _get_helper(self, "_spline_data", MultipatchData)
+
+    @property
+    def show_options(self):
+        """
+        Show option manager for MultiPatches.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        show_options: SplineShowOption
+        """
+        return _get_helper(self, "_show_options", self.__show_option__)
+
+    def showable(self, **kwargs):
+        """Equivalent to
+
+        .. code-block:: python
+
+           splinepy.helpme.visualize.show(
+               spline, return_showable=True, **kwargs
+            )
+
+        Parameters
+        ----------
+        kwargs: kwargs
+          see splinepy.helpme.visualize.show
+
+        Returns
+        -------
+        spline_showable: dict
+        """
+        return visualize.show(self, return_showable=True, **kwargs)
+
+    def show(self, **kwargs):
+        return visualize.show(self, **kwargs)
+
     def boundaries_from_continuity(
         self,
         nthreads=None,
@@ -470,3 +534,71 @@ class Multipatch(SplinepyBase, PyMultiPatch):
           List of all field representation in the form of list of splines
         """
         return super().fields()
+
+    def sample(self, resolutions, nthreads=None):
+        """
+        Uniformly sample along each parametric dimensions from spline.
+
+        Parameters
+        -----------
+        resolutions: int
+        nthreads: int
+
+        Returns
+        --------
+        results: (math.product(resolutions), dim) np.ndarray
+        """
+
+        if not isinstance(resolutions, int) and hasattr(
+            resolutions, "__getitem__"
+        ):
+            self._logd(
+                "sample() only supports uniform sample. Taking first entry."
+            )
+            # for now, just take the first elem
+            resolutions = int(resolutions[0])
+
+        self._logd(
+            f"Sampling {resolutions ** self.para_dim} points from spline."
+        )
+        return super().sample(
+            resolutions,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            same_parametric_bounds=False,
+        )
+
+    def evaluate(self, queries, nthreads=None):
+        """
+        Evaluate each individual spline at specific parametric positions. To be
+        used with caution, as there is no check if the queries are within the
+        parametric bounds if settings.CHECK_BOUNDS is set to false.
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        nthreads: int
+
+        Returns
+        --------
+        results: (math.product(resolutions), dim) np.ndarray
+        """
+
+        return super().evaluate(
+            queries,
+            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+        )
+
+    @property
+    def extract(self):
+        """Return Extractor object to provide extract functionality for
+        multiple splines
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        extractor: Extractor
+        """
+        return _get_helper(self, "_extractor", Extractor)

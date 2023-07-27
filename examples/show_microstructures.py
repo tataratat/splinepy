@@ -114,7 +114,7 @@ for ii in range(4):
         aa.show_options["alpha"] = 0
         aa.show_options["resolutions"] = 2
         aa.show_options["control_point_ids"] = False
-        surface = aa.extract_boundaries(s_2_extract[i])[0]
+        surface = aa.extract.boundaries([s_2_extract[i]])[0]
         surface.show_options["control_points"] = False
         surface.show_options["c"] = "grey"
         surface.show_options["resolutions"] = 20
@@ -149,7 +149,7 @@ for ii in range(4):
         aa.show_options["alpha"] = 0
         aa.show_options["resolutions"] = 2
         aa.show_options["control_point_ids"] = False
-        surface = aa.extract_boundaries(s_2_extract[i])[0]
+        surface = aa.extract.boundaries([s_2_extract[i]])[0]
         surface.show_options["control_points"] = False
         surface.show_options["c"] = "grey"
         surface.show_options["resolutions"] = 20

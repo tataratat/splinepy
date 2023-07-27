@@ -836,7 +836,7 @@ class Spline(SplinepyBase, core.PySpline):
                 "Returning parametric_bounds as "
                 "Bezier spline's unique knots."
             )
-            return self.parametric_bounds.T
+            return list(self.parametric_bounds.T)
 
         else:
             self._logd("Computing unique knots")
@@ -1145,6 +1145,10 @@ class Spline(SplinepyBase, core.PySpline):
         --------
         results: (math.product(resolutions), dim) np.ndarray
         """
+        from gustaf.utils import arr
+
+        resolutions = arr.enforce_len(resolutions, self.para_dim)
+
         self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
 
         return super().sample(
@@ -1492,36 +1496,6 @@ class Spline(SplinepyBase, core.PySpline):
             self._data = dict()
 
         return reduced
-
-    def extract_boundaries(self, boundary_ids=None):
-        """
-        Extracts boundary spline.
-
-        The boundaries deducted from the parametric axis which is normal to the
-        boundary (j), if the boundary is at parametric axis position x_j=x_jmin
-        the corresponding boundary is 2*j, else at parametric axis position
-        x_j=x_jmin the boundary is 2*j+1
-
-
-        Parameters
-        -----------
-        boundary_ids: array-like
-          Boundary IDs with the enumeration described above
-
-        Returns
-        -------
-        boundary_spline: type(self)
-          boundary spline, which has one less para_dim
-        """
-        # extract boundaries
-        boundaries = [
-            type(self)(spline=c)
-            for c in core.extract_boundaries(
-                self, _default_if_none(boundary_ids, [])
-            )
-        ]
-
-        return boundaries
 
     def export(self, fname):
         """

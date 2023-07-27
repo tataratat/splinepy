@@ -1808,6 +1808,68 @@ public:
 
   /// @brief Gets list of fields
   py::list GetFields() { return field_list_; }
+
+  /// @brief Get summed number of all control points
+  int GetNumberOfControlPoints() {
+    // Init return value
+    int n_control_points{};
+    for (std::size_t i_patch{}; i_patch < core_patches_.size(); i_patch++) {
+      n_control_points +=
+          core_patches_[i_patch]->SplinepyNumberOfControlPoints();
+    }
+    return n_control_points;
+  }
+
+  /// @brief Get summed number of all control points
+  py::array_t<int> GetControlPointOffsets() {
+    // Init return value
+    const int n_core_patches = core_patches_.size();
+    py::array_t<int> control_point_offsets(n_core_patches);
+    int* control_point_offsets_ptr =
+        static_cast<int*>(control_point_offsets.request().ptr);
+    int offset{};
+    for (int i_patch{}; i_patch < n_core_patches; i_patch++) {
+      control_point_offsets_ptr[i_patch] = offset;
+      offset += core_patches_[i_patch]->SplinepyNumberOfControlPoints();
+    }
+    return control_point_offsets;
+  }
+
+  /// @brief Create a list of all control points
+  py::array_t<double> GetControlPoints() {
+    // Retrieve number of control points
+    const int& n_control_points = GetNumberOfControlPoints();
+    const py::array_t<int>& control_point_offsets = GetControlPointOffsets();
+    int* control_point_offsets_ptr =
+        static_cast<int*>(control_point_offsets.request().ptr);
+    const int& n_splines = control_point_offsets.size();
+
+    // Init return values
+    py::array_t<double> control_points(n_control_points * Dim());
+    double* control_points_ptr =
+        static_cast<double*>(control_points.request().ptr);
+
+    // Lambda for parallelization
+    const int& dim = Dim();
+    auto copy_control_points = [&](const int i_start, const int n_total) {
+      for (int i{i_start}; i < n_total; i += n_default_threads_) {
+        core_patches_[i]->SplinepyCurrentProperties(
+            nullptr,
+            nullptr,
+            &control_points_ptr[control_point_offsets_ptr[i] * dim],
+            nullptr);
+      }
+    };
+
+    // Execute with lambda
+    splinepy::utils::NThreadExecution(copy_control_points,
+                                      n_splines,
+                                      n_default_threads_);
+
+    // Return control points
+    control_points.resize({n_control_points, dim});
+    return control_points;
+  }
 };
 
 /// @brief Add multi patch.
@@ -1857,6 +1919,8 @@ inline void add_multi_patch(py::module& m) {
       .def_property_readonly("dim", &PyMultiPatch::Dim)
       .def_property_readonly("name", &PyMultiPatch::Name)
       .def_property_readonly("whatami", &PyMultiPatch::WhatAmI)
+      .def_property_readonly("control_points", &PyMultiPatch::GetControlPoints)
+      .def("control_point_offsets", &PyMultiPatch::GetControlPointOffsets)
       .def_property("patches",
                     &PyMultiPatch::GetPatches,
                     &PyMultiPatch::SetPatchesDefault)
@@ -1873,7 +1937,7 @@ inline void add_multi_patch(py::module& m) {
            &PyMultiPatch::Sample,
            py::arg("resolution"),
            py::arg("nthreads"),
-           py::arg("same_parametric_bounds"))
+           py::arg("same_parametric_bounds") = false)
       .def("add_fields",
            &PyMultiPatch::AddFields,
            py::arg("fields"),

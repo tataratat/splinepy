@@ -1,6 +1,7 @@
 import numpy as np
 from gustaf import Edges, Faces, Vertices, Volumes
-from gustaf.utils import arr, connec
+from gustaf.utils import connec
+from gustaf.utils.arr import enforce_len
 
 from splinepy import settings
 from splinepy.utils.data import cartesian_product
@@ -9,102 +10,106 @@ from splinepy.utils.data import cartesian_product
 def edges(
     spline,
     resolution=100,
-    extract_dim=None,
-    extract_knot=None,
-    all_knots=False,
+    all_knots=True,
 ):
-    """Extract edges (lines) from a given spline. Only entity you can extract
-    without dimension limit.
+    """Extract edges (lines) from a given spline, or multipatch object. Only
+    entity you can extract without dimension limit.
 
     Parameters
     -----------
-    spline: Spline
+    spline: Spline/ Multipatch
     resolution: int
-    extract_dim: int
-      Parametric dimension to extract.
-    extract_knot: list
-      (spline.para_dim - 1,) shaped knot location along extract_dim
+      samples per parametric dimension
     all_knots: bool
-      Switch to allow all knot-line extraction.
+      Switch to allow all knot-line extraction or just contour (para_dim>0)
 
     Returns
     --------
     edges: Edges
     """
-    if not all_knots:
-        resolution = int(resolution)
+    from splinepy import Multipatch
+
+    # Check resolution input
+    if not isinstance(resolution, int):
+        raise ValueError("Resolution must be integer-type")
 
     if spline.para_dim == 1:
+        vertices = spline.sample(resolution)
+        e = connec.range_to_edges(
+            (0, resolution),
+            closed=False,
+        )
+        if isinstance(spline, Multipatch):
+            e = np.vstack(
+                [e + i * resolution for i in range(len(spline.splines))]
+            )
         return Edges(
-            vertices=spline.sample(resolution),
-            edges=connec.range_to_edges(
-                (0, resolution),
-                closed=False,
-            ),
+            vertices=vertices,
+            edges=e,
         )
 
     else:
-        # This should be possible for spline of any dimension.
-        # As long as it satisfies the following condition
-        if extract_knot is not None:
-            if len(extract_knot) != spline.para_dim - 1:
-                raise ValueError(
-                    "Must satisfy len(extract_knot) == spline.para_dim -1."
-                )
+        # recursion for Multipatch splines
+        if isinstance(spline, Multipatch):
+            return Edges.concat(
+                [
+                    edges(spline=s, resolution=resolution, all_knots=all_knots)
+                    for s in spline.splines
+                ]
+            )
 
-        # This may take awhile.
+        # Single patch case
         if all_knots:
-            temp_edges = []  # edges' is not a valid syntax
-            unique_knots = np.array(spline.unique_knots, dtype=object)
-            for i in range(spline.para_dim):
-                mask = np.ones(spline.para_dim, dtype=bool)
-                mask[i] = False
-                # gather knots along current knot
-                extract_knot_queries = cartesian_product(
-                    unique_knots[mask], reverse=False
-                )
+            relevant_knots = spline.unique_knots
+        else:
+            relevant_knots = list(spline.parametric_bounds.T)
 
-                for ekq in extract_knot_queries:
-                    temp_edges.append(
-                        edges(spline, resolution[i], i, ekq, False)
-                    )
+        temp_edges = []  # edges' is not a valid syntax
+        for i in range(spline.para_dim):
+            split_knots = relevant_knots.copy()
+            split_knots.pop(i)
+            n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
+            # Create query points
+            # Sampling along a line can be done using cartesian product,
+            # however, to preserve the correct order we need to permute the
+            # columns, example:
+            #
+            # [y0, x, z]    [x, y0, z]
+            # [y1, x, z] -> [x, y1, z]
+            # [y2, x, z]    [x, y2, z]
+            reorder_mask = (
+                [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
+            )
+            extract_knot_queries = cartesian_product(
+                [np.linspace(*spline.parametric_bounds[:, i], resolution)]
+                + split_knots,
+                reverse=True,
+            )[:, reorder_mask]
 
-            return Edges.concat(temp_edges)
-
-        # Get parametric points to extract
-        queries = np.empty(
-            (resolution, spline.para_dim),
-            dtype="float64",  # hardcoded for splinelibpy
-            order="C",  # hardcoded for splinelibpy
-        )
-        # get ~extract_dim
-        not_ed = np.arange(spline.para_dim).tolist()
-        not_ed.pop(extract_dim)
-        queries[:, not_ed] = extract_knot
-
-        # get knot extrema
-        uniq_knots = spline.unique_knots[extract_dim]
-        min_knot_position = min(uniq_knots)
-        max_knot_position = max(uniq_knots)
-
-        queries[:, extract_dim] = np.linspace(
-            min_knot_position,
-            max_knot_position,
-            resolution,
-        )
-
-        return Edges(
-            vertices=spline.evaluate(queries),
-            edges=connec.range_to_edges(
+            # Retrieve connectivity to be repeated
+            single_line_connectivity = connec.range_to_edges(
                 (0, resolution),
                 closed=False,
-            ),
-        )
+            )
+
+            temp_edges.append(
+                Edges(
+                    vertices=spline.evaluate(extract_knot_queries),
+                    edges=np.vstack(
+                        [
+                            single_line_connectivity + resolution * j
+                            for j in range(n_knot_lines)
+                        ]
+                    ),
+                )
+            )
+
+        return Edges.concat(temp_edges)
 
 
 def faces(
     spline,
-    resolutions,
+    resolution,
     watertight=True,
 ):
     """Extract faces from spline. Valid iff para_dim is one of the followings:
@@ -115,7 +120,8 @@ def faces(
     Parameters
     -----------
     spline: BSpline or NURBS
-    resolutions: int or list
+    resolution: int
+      samples per parametric dimension
     watertight: bool
       Default is True. Only related to para_dim = 3 splines. If False,
       overlapping vertices at boundary edges won't be merged.
@@ -124,73 +130,119 @@ def faces(
     --------
     faces: faces
     """
-    resolutions = arr.enforce_len(resolutions, spline.para_dim)
+    from splinepy import Multipatch
 
     if spline.para_dim == 2:
-        return Faces(
-            vertices=spline.sample(resolutions),
-            faces=connec.make_quad_faces(resolutions),
+        if isinstance(spline, Multipatch):
+            n_faces = (resolution - 1) ** spline.para_dim
+            vertices = resolution**spline.para_dim
+            f_loc = connec.make_quad_faces(
+                enforce_len(resolution, spline.para_dim)
+            )
+            face_connectivity = np.empty((n_faces * len(spline.splines), 4))
+            # Create Connectivity for Multipatches
+            for i in range(len(spline.splines)):
+                face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+                    i * vertices
+                )
+        else:
+            face_connectivity = connec.make_quad_faces(
+                enforce_len(resolution, spline.para_dim)
+            )
+        faces = Faces(
+            vertices=spline.sample(resolution),
+            faces=face_connectivity,
         )
 
     elif spline.para_dim == 3:
-        # extract boundaries and sample from them
-        # alternatively, as each groups share basis and will have same
-        # resolution query, we could reuse the basis.
-        boundaries = spline.extract_boundaries()
-        grouped_boundaries = [
-            boundaries[i * 2 : (i + 1) * 2] for i in range(spline.para_dim)
-        ]
+        # Extract boundaries and sample from boundaries
+        if isinstance(spline, Multipatch):
+            boundaries = spline.boundary_patches()
+        else:
+            boundaries = Multipatch(splines=spline.extract.boundaries())
 
-        list_res = list(resolutions)
-        vertices = []
-        faces = []
-        offset = 0
-        for i, gb in enumerate(grouped_boundaries):
-            this_res = list_res.copy()  # shallow
-            this_res.pop(i)
+        n_faces = (resolution - 1) ** 2
+        vertices = resolution**2
+        f_loc = connec.make_quad_faces(enforce_len(resolution, 2))
+        face_connectivity = np.empty((n_faces * len(boundaries.splines), 4))
 
-            tmp_faces = connec.make_quad_faces(this_res)
-            offset_size = np.prod(this_res)
-
-            for g in gb:  # each spline
-                vertices.append(g.sample(this_res))
-                faces.append(tmp_faces + int(offset))
-                offset += offset_size
+        # Create Connectivity for Multipatches
+        for i in range(len(boundaries.splines)):
+            face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+                i * vertices
+            )
 
         # make faces and merge vertices before returning
-        f = Faces(vertices=np.vstack(vertices), faces=np.vstack(faces))
-
-        if watertight:
-            f.merge_vertices()
-
-        return f
+        faces = Faces(
+            vertices=boundaries.sample(resolution), faces=face_connectivity
+        )
 
     else:
         raise ValueError("Invalid spline to make faces.")
 
+    if watertight:
+        faces.merge_vertices()
 
-def volumes(spline, resolutions):
+    return faces
+
+
+def volumes(spline, resolution, watertight=False):
     """Extract volumes from spline. Valid iff spline.para_dim == 3.
 
     Parameters
     -----------
-    spline: BSpline or NURBS
-    resolutions:
+    spline: Spline / Multipatch
+      spline to be meshed into volumes
+    resolution: int
+      Sample resolution
+    watertight : bool
+      Return watertight mesh
 
     Returns
     --------
     volumes: Volumes
     """
-    if spline.para_dim != 3:
+    from splinepy import Multipatch
+
+    if spline.para_dim != 3 or spline.dim != 3:
         raise ValueError(
             "Volume extraction from a spline is only valid for "
             "para_dim: 3 dim: 3 splines."
         )
 
-    return Volumes(
-        vertices=spline.sample(resolutions),
-        volumes=connec.make_hexa_volumes(resolutions),
+    if isinstance(spline, Multipatch):
+        if not isinstance(resolution, int):
+            raise ValueError(
+                "Resolution for sampling must be integer type for Multipatch "
+                "objects"
+            )
+        p_connect = connec.make_hexa_volumes(enforce_len(resolution, 3))
+        n_elements_per_patch = p_connect.shape[0]
+        n_vertices_per_patch = resolution**spline.para_dim
+        connectivity = np.empty(
+            (n_elements_per_patch * len(spline.splines), p_connect.shape[1])
+        )
+
+        for i in range(len(spline.splines)):
+            ids = slice(
+                i * n_elements_per_patch,
+                (i + 1) * n_elements_per_patch,
+                None,
+            )
+            connectivity[ids] = p_connect + i * n_vertices_per_patch
+    else:
+        connectivity = connec.make_hexa_volumes(enforce_len(resolution, 3))
+
+    # Create volumes
+    volumes = Volumes(
+        vertices=spline.sample(resolution),
+        volumes=connectivity,
     )
+
+    if watertight:
+        volumes.merge_vertices()
+
+    return volumes
 
 
 def control_points(spline):
@@ -199,7 +251,7 @@ def control_points(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
@@ -213,19 +265,27 @@ def control_edges(spline):
 
     Parameters
     -----------
-    edges: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     edges: Edges
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 1:
         raise ValueError("Invalid spline type!")
 
-    return Edges(
-        vertices=spline.control_points,
-        edges=connec.range_to_edges(len(spline.control_points), closed=False),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        return Edges.concat([control_edges(s) for s in spline.splines])
+    else:
+        return Edges(
+            vertices=spline.control_points,
+            edges=connec.range_to_edges(
+                len(spline.control_points), closed=False
+            ),
+        )
 
 
 def control_faces(spline):
@@ -233,19 +293,25 @@ def control_faces(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     faces: Faces
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 2:
         raise ValueError("Invalid spline type!")
 
-    return Faces(
-        vertices=spline.control_points,
-        faces=connec.make_quad_faces(spline.control_mesh_resolutions),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        return Faces.concat([control_faces(s) for s in spline.splines])
+    else:
+        return Faces(
+            vertices=spline.control_points,
+            faces=connec.make_quad_faces(spline.control_mesh_resolutions),
+        )
 
 
 def control_volumes(spline):
@@ -253,19 +319,25 @@ def control_volumes(spline):
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
 
     Returns
     --------
     volumes: Volumes
     """
+    from splinepy import Multipatch
+
     if spline.para_dim != 3:
         raise ValueError("Invalid spline type!")
 
-    return Volumes(
-        vertices=spline.control_points,
-        volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
-    )
+    if isinstance(spline, Multipatch):
+        # @todo avoid loop and transfer range_to_edges to cpp
+        return Volumes.concat([control_volumes(s) for s in spline.splines])
+    else:
+        return Volumes(
+            vertices=spline.control_points,
+            volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
+        )
 
 
 def control_mesh(spline):
@@ -288,7 +360,7 @@ def control_mesh(spline):
         return control_volumes(spline)
     else:
         raise ValueError(
-            "Invalid para_dim to extract control_mesh. " "Supports 1 to 3."
+            "Invalid para_dim to extract control_mesh. Supports 1 to 3."
         )
 
 
@@ -403,6 +475,41 @@ def spline(spline, para_dim, split_plane):
     return type(spline)(**spline_info)
 
 
+def boundaries(spline, boundary_ids=None):
+    """
+    Extracts boundary spline.
+
+    The boundaries deducted from the parametric axis which is normal to the
+    boundary (j), if the boundary is at parametric axis position x_j=x_jmin
+    the corresponding boundary is 2*j, else at parametric axis position
+    x_j=x_jmin the boundary is 2*j+1
+
+
+    Parameters
+    -----------
+    spline: Spline / Multipatch
+    boundary_ids: list
+      Only considered for Spline. Default is None and returns all boundaries.
+
+    Returns
+    -------
+    boundary_spline: type(self)
+        boundary spline, which has one less para_dim
+    """
+    from splinepy import Multipatch
+    from splinepy import splinepy_core as core
+
+    # Pass to respective c++ implementation
+    if isinstance(spline, Multipatch):
+        return spline.boundary_patches()
+    else:
+        bids = [] if boundary_ids is None else list(boundary_ids)
+        return [
+            type(spline)(spline=c)
+            for c in core.extract_boundaries(spline, bids)
+        ]
+
+
 class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
@@ -414,6 +521,10 @@ class Extractor:
     """
 
     def __init__(self, spl):
+        from splinepy import Multipatch, Spline
+
+        if not isinstance(spl, (Spline, Multipatch)):
+            raise ValueError("Extractor expects a Spline or Multipatch type")
         self._spline = spl
 
     def edges(self, *args, **kwargs):
@@ -446,7 +557,7 @@ class Extractor:
         return self._spline.extract_bezier_patches()
 
     def boundaries(self, *args, **kwargs):
-        return self._spline.extract_boundaries(*args, **kwargs)
+        return boundaries(self._spline, *args, **kwargs)
 
     def spline(self, splitting_plane=None, interval=None):
         """Extract a spline from a spline.
