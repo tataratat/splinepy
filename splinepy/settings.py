@@ -14,7 +14,7 @@ def __splinepy_name_to_type__():
         RationalBezier=RationalBezier,
         BSpline=BSpline,
         NURBS=NURBS,
-        MultiPatch=Multipatch,
+        Multipatch=Multipatch,
     )
 
 

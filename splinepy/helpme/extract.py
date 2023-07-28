@@ -41,7 +41,7 @@ def edges(
         )
         if isinstance(spline, Multipatch):
             e = np.vstack(
-                [e + i * resolution for i in range(len(spline.splines))]
+                [e + i * resolution for i in range(len(spline.patches))]
             )
         return Edges(
             vertices=vertices,
@@ -54,7 +54,7 @@ def edges(
             return Edges.concat(
                 [
                     edges(spline=s, resolution=resolution, all_knots=all_knots)
-                    for s in spline.splines
+                    for s in spline.patches
                 ]
             )
 
@@ -139,9 +139,9 @@ def faces(
             f_loc = connec.make_quad_faces(
                 enforce_len(resolution, spline.para_dim)
             )
-            face_connectivity = np.empty((n_faces * len(spline.splines), 4))
+            face_connectivity = np.empty((n_faces * len(spline.patches), 4))
             # Create Connectivity for Multipatches
-            for i in range(len(spline.splines)):
+            for i in range(len(spline.patches)):
                 face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
                     i * vertices
                 )
@@ -157,17 +157,17 @@ def faces(
     elif spline.para_dim == 3:
         # Extract boundaries and sample from boundaries
         if isinstance(spline, Multipatch):
-            boundaries = spline.boundary_patches()
+            boundaries = spline.boundary_multipatch()
         else:
             boundaries = Multipatch(splines=spline.extract.boundaries())
 
         n_faces = (resolution - 1) ** 2
         vertices = resolution**2
         f_loc = connec.make_quad_faces(enforce_len(resolution, 2))
-        face_connectivity = np.empty((n_faces * len(boundaries.splines), 4))
+        face_connectivity = np.empty((n_faces * len(boundaries.patches), 4))
 
         # Create Connectivity for Multipatches
-        for i in range(len(boundaries.splines)):
+        for i in range(len(boundaries.patches)):
             face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
                 i * vertices
             )
@@ -220,10 +220,10 @@ def volumes(spline, resolution, watertight=False):
         n_elements_per_patch = p_connect.shape[0]
         n_vertices_per_patch = resolution**spline.para_dim
         connectivity = np.empty(
-            (n_elements_per_patch * len(spline.splines), p_connect.shape[1])
+            (n_elements_per_patch * len(spline.patches), p_connect.shape[1])
         )
 
-        for i in range(len(spline.splines)):
+        for i in range(len(spline.patches)):
             ids = slice(
                 i * n_elements_per_patch,
                 (i + 1) * n_elements_per_patch,
@@ -278,7 +278,7 @@ def control_edges(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Edges.concat([control_edges(s) for s in spline.splines])
+        return Edges.concat([control_edges(s) for s in spline.patches])
     else:
         return Edges(
             vertices=spline.control_points,
@@ -306,7 +306,7 @@ def control_faces(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Faces.concat([control_faces(s) for s in spline.splines])
+        return Faces.concat([control_faces(s) for s in spline.patches])
     else:
         return Faces(
             vertices=spline.control_points,
@@ -332,7 +332,7 @@ def control_volumes(spline):
 
     if isinstance(spline, Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Volumes.concat([control_volumes(s) for s in spline.splines])
+        return Volumes.concat([control_volumes(s) for s in spline.patches])
     else:
         return Volumes(
             vertices=spline.control_points,
@@ -501,7 +501,7 @@ def boundaries(spline, boundary_ids=None):
 
     # Pass to respective c++ implementation
     if isinstance(spline, Multipatch):
-        return spline.boundary_patches()
+        return spline.boundary_multipatch()
     else:
         bids = [] if boundary_ids is None else list(boundary_ids)
         return [

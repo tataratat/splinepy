@@ -181,7 +181,7 @@ def export(fname, splines):
     from splinepy.spline import Spline
 
     if isinstance(splines, Multipatch):
-        splines = splines.splines
+        splines = splines.patches
     elif isinstance(splines, Spline):
         splines = [splines]
 

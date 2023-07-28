@@ -9,11 +9,11 @@ from splinepy._base import SplinepyBase
 from splinepy.helpme import visualize
 from splinepy.helpme.extract import Extractor
 from splinepy.spline import _default_if_none, _get_helper
-from splinepy.splinepy_core import PyMultiPatch, boundaries_from_continuity
+from splinepy.splinepy_core import PyMultipatch, boundaries_from_continuity
 from splinepy.utils.data import MultipatchData
 
 
-class Multipatch(SplinepyBase, PyMultiPatch):
+class Multipatch(SplinepyBase, PyMultipatch):
     """
     System of patches to store information such as boundaries and
     interfaces
@@ -37,7 +37,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
           List of splines to store as multipatch
         interfaces : array-like
           Defines the connectivity in between patches
-        spline : PyMultiPatch
+        spline : PyMultipatch
           keyword only argument, implemented to support to_derived() interface.
           calls move constructor.
 
@@ -47,8 +47,8 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         """
         # Init values
         if spline is not None:
-            if not isinstance(spline, PyMultiPatch):
-                raise TypeError("spline must be PyMultiPatch.")
+            if not isinstance(spline, PyMultipatch):
+                raise TypeError("spline must be PyMultipatch.")
             super().__init__(spline)
         elif splines is not None:
             super().__init__(splines, settings.NTHREADS, False)
@@ -61,22 +61,22 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             self.interfaces = interfaces
 
     @property
-    def splines(self):
+    def patches(self):
         """
         List of splines in splinepy format
 
         Returns
         -------
-        splines : list
+        patches : list
          list of splines that are stored in the multipatch system
 
 
         """
-        return self.patches
+        return super().patches
 
-    @splines.setter
-    def splines(self, list_of_splines):
-        self.patches = list_of_splines
+    @patches.setter
+    def patches(self, list_of_splines):
+        PyMultipatch.patches.fset(self, list_of_splines)
 
     @property
     def interfaces(self):
@@ -127,7 +127,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         return boundary_list
 
-    def boundary_patches(self, nthreads=None):
+    def boundary_multipatch(self, nthreads=None):
         """Extract all boundary patches of a given Multipatch system as splines
 
         Parameters
@@ -138,7 +138,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         Returns
         -------
-        boundary_patches : Multipatch
+        boundary_multipatch : Multipatch
           Embedded splines representing boundaries of system
         """
         if nthreads is None:
@@ -148,7 +148,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         previous_nthreads = self.n_default_threads
         self.n_default_threads = nthreads
 
-        b_patches = super().boundary_multi_patch()
+        b_patches = super().boundary_multipatch()
 
         self.n_default_threads = previous_nthreads
 
@@ -221,9 +221,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         para_dim : int
           Parametric dimensionality of the multipatch system
         """
-        if self.splines is None:
-            raise ValueError("No Splines provided")
-        return self.splines[0].para_dim
+        return super().para_dim
 
     @property
     def dim(self):
@@ -234,13 +232,10 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         dim : int
           Physical dimensionality of the multipatch system
         """
-        if self.splines is None:
-            raise ValueError("No Splines provided")
-
-        return self.splines[0].dim
+        return super().dim
 
     @property
-    def spline_boundary_centers(self):
+    def sub_patch_centers(self):
         """
         Evaluated centers of the individual patches, used to determine
         connectivity and identify boundaries based on position
@@ -250,7 +245,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         spline_centers : np.ndarray
           coordinates of the patch-boundary centers
         """
-        return self.sub_patch_centers()
+        return super().sub_patch_centers()
 
     def determine_interfaces(self, tolerance=None):
         """
@@ -340,7 +335,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             return None
 
         # Check all face centers
-        relevant_boundary_centers = self.spline_boundary_centers[
+        relevant_boundary_centers = self.sub_patch_centers[
             boundary_ids.flatten(), :
         ]
 
@@ -380,7 +375,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     @property
     def show_options(self):
         """
-        Show option manager for MultiPatches.
+        Show option manager for Multipatches.
 
         Parameters
         ----------
@@ -440,12 +435,12 @@ class Multipatch(SplinepyBase, PyMultiPatch):
             tolerance = settings.TOLERANCE
         if nthreads is None:
             nthreads = settings.NTHREADS
-        b_patches = self.boundary_patches(nthreads=nthreads)
+        b_patches = self.boundary_multipatch(nthreads=nthreads)
 
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
         n_new_boundaries = boundaries_from_continuity(
-            b_patches.splines,
+            b_patches.patches,
             b_patches.interfaces,
             self.interfaces,
             tolerance,

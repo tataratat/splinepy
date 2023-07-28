@@ -195,7 +195,7 @@ def export(fname, spline_list, indent=True):
         if spline_list.fields:
             warning("Fields are not supported yet")
         # Transform to multipatch
-        spline_list = spline_list.splines
+        spline_list = spline_list.patches
 
     if not isinstance(spline_list, list):
         raise ValueError(
