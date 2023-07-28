@@ -389,18 +389,22 @@ class CrossTile3D(TileBase):
             raise ValueError("Invalid Type")
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5,1.5)")
+
+        # Max radius, so there is no tanglement in the crosstile
         max_radius = min(0.5, (0.5 / center_expansion))
+
         # set to default if nothing is given
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
-            parameters = np.array(
+            parameters = (
                 np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
+                    (
+                        self._evaluation_points.shape[0],
+                        self._n_info_per_eval_point,
+                    )
                 )
                 * 0.2
             )
-
-        parameters = np.reshape(parameters, -1).tolist()
 
         [
             x_min_r,
@@ -409,23 +413,22 @@ class CrossTile3D(TileBase):
             y_max_r,
             z_min_r,
             z_max_r,
-        ] = parameters
-        for radius in [x_min_r, x_max_r, y_min_r, y_max_r, z_min_r, z_max_r]:
-            if not isinstance(radius, float):
-                raise ValueError("Invalid type")
-            if not (radius > 0 and radius < max_radius):
-                raise ValueError(
-                    f"Radii must be in (0,{max_radius}) for "
-                    f"center_expansion {center_expansion}"
-                )
+        ] = parameters.ravel()
 
-        # center radius
-        center_r = (
-            (x_min_r + x_max_r + y_min_r + y_max_r + z_min_r + z_max_r)
-            / 6.0
-            * center_expansion
-        )
+        # Check for type and consistency
+        self.check_params(parameters)
+        if np.any(parameters <= 0) or np.any(parameters > max_radius):
+            raise ValueError(
+                f"Radii must be in (0,{max_radius}) for "
+                f"center_expansion {center_expansion}"
+            )
+
+        # center radius - mean of radii
+        center_r = np.sum(parameters) / 6.0 * center_expansion
         hd_center = 0.5 * (0.5 + center_r)
+
+        # Initialize return list
+        spline_list = []
 
         # Create the center-tile
         center_points = np.array(
@@ -441,8 +444,11 @@ class CrossTile3D(TileBase):
             ]
         )
 
-        center_spline = Bezier(
-            degrees=[1, 1, 1], control_points=center_points + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[1, 1, 1],
+                control_points=center_points + [0.5, 0.5, 0.5],
+            )
         )
 
         # X-Axis branches
@@ -464,9 +470,12 @@ class CrossTile3D(TileBase):
                 center_points[6, :],
             ]
         )
-        x_min_spline = Bezier(
-            degrees=[2, 1, 1], control_points=x_min_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[2, 1, 1], control_points=x_min_ctps + [0.5, 0.5, 0.5]
+            )
         )
+
         # X-Min-Branch
         aux_x_max = min(x_max_r, center_r)
         x_max_ctps = np.array(
@@ -485,8 +494,10 @@ class CrossTile3D(TileBase):
                 [0.5, x_max_r, x_max_r],
             ]
         )
-        x_max_spline = Bezier(
-            degrees=[2, 1, 1], control_points=x_max_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[2, 1, 1], control_points=x_max_ctps + [0.5, 0.5, 0.5]
+            )
         )
 
         # Y-Axis branches
@@ -508,9 +519,12 @@ class CrossTile3D(TileBase):
                 center_points[5, :],
             ]
         )
-        y_min_spline = Bezier(
-            degrees=[1, 2, 1], control_points=y_min_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[1, 2, 1], control_points=y_min_ctps + [0.5, 0.5, 0.5]
+            )
         )
+
         # Y-Min-Branch
         aux_y_max = min(y_max_r, center_r)
         y_max_ctps = np.array(
@@ -529,8 +543,10 @@ class CrossTile3D(TileBase):
                 [y_max_r, 0.5, y_max_r],
             ]
         )
-        y_max_spline = Bezier(
-            degrees=[1, 2, 1], control_points=y_max_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[1, 2, 1], control_points=y_max_ctps + [0.5, 0.5, 0.5]
+            )
         )
 
         # Y-Axis branches
@@ -552,9 +568,12 @@ class CrossTile3D(TileBase):
                 center_points[3, :],
             ]
         )
-        z_min_spline = Bezier(
-            degrees=[1, 1, 2], control_points=z_min_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[1, 1, 2], control_points=z_min_ctps + [0.5, 0.5, 0.5]
+            )
         )
+
         # Y-Min-Branch
         aux_z_max = min(z_max_r, center_r)
         z_max_ctps = np.array(
@@ -573,16 +592,10 @@ class CrossTile3D(TileBase):
                 [z_max_r, z_max_r, 0.5],
             ]
         )
-        z_max_spline = Bezier(
-            degrees=[1, 1, 2], control_points=z_max_ctps + [0.5, 0.5, 0.5]
+        spline_list.append(
+            Bezier(
+                degrees=[1, 1, 2], control_points=z_max_ctps + [0.5, 0.5, 0.5]
+            )
         )
 
-        return [
-            center_spline,
-            x_min_spline,
-            x_max_spline,
-            y_min_spline,
-            y_max_spline,
-            z_min_spline,
-            z_max_spline,
-        ]
+        return spline_list

@@ -46,6 +46,9 @@ class InverseCrossTile3D(TileBase):
           with of the boundary surronding branch
         filling_height : float
           portion of the height that is filled in parametric domain
+        seperator_distance : float
+          Describes the position of the separator layer in the control point
+          domain
 
         Returns
         -------
@@ -55,19 +58,18 @@ class InverseCrossTile3D(TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
+        # Set default values
         if seperator_distance is None:
-            raise ValueError(
-                "Separator Distance is missing. The value is required to "
-                "create watertight connections with neighboring elements."
-                " The value should be greater than the biggest branch "
-                "radius"
-            )
+            seperator_distance = 0.3
 
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = np.array(
+            parameters = (
                 np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
+                    (
+                        self._evaluation_points.shape[0],
+                        self._n_info_per_eval_point,
+                    )
                 )
                 * 0.2
             )
@@ -870,8 +872,8 @@ class InverseCrossTile3D(TileBase):
     def create_tile(
         self,
         parameters=None,
-        seperator_distance=0.5,
-        center_expansion=1.0,
+        seperator_distance=None,
+        center_expansion=None,
         **kwargs,  # noqa ARG002
     ):
         """Create an inverse microtile based on the parameters that describe
@@ -886,9 +888,11 @@ class InverseCrossTile3D(TileBase):
           only first entry is used, defines the internal radii of the
           branches
         seperator_distance : float
-          position of the control points for higher order elements
+          Control point distance to separation layer of biquadratic degrees,
+          determines the minimum branch thickness (defaults to 0.4)
         center_expansion : float
-          thickness of center is expanded by a factor
+          thickness of center is expanded by a factor (default to 1.0), which
+          determines the maximum branch thickness
 
         Returns
         -------
@@ -900,22 +904,22 @@ class InverseCrossTile3D(TileBase):
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5, 1.5)")
 
+        # Set default values
         if seperator_distance is None:
-            raise ValueError(
-                "Separator Distance is missing. The value is required to "
-                "create watertight connections with neighboring elements."
-                " The value should be greater than the biggest branch "
-                "radius"
-            )
+            seperator_distance = 0.3
+        if center_expansion is None:
+            center_expansion = 1.0
 
         # Check if all radii are in allowed range
         max_radius = min(0.5, (0.5 / center_expansion))
         max_radius = min(max_radius, seperator_distance)
+        min_radius = max(0.5 - seperator_distance, 0)
 
         # set to default if nothing is given
+        self.check_params(parameters)
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
-            parameters = np.array(
+            parameters = (
                 np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
@@ -931,35 +935,26 @@ class InverseCrossTile3D(TileBase):
             z_max_r,
         ] = parameters.flatten()
 
-        for radius in [x_min_r, x_max_r, y_min_r, y_max_r, z_min_r, z_max_r]:
-            if not isinstance(radius.item(), float):
-                raise ValueError(f"Invalid type: {type(radius)}")
-            if not (radius > 0 and radius < max_radius):
-                raise ValueError(
-                    f"Radii must be in (0,{max_radius}) for "
-                    f"center_expansion {center_expansion}"
-                )
+        if np.any(parameters < min_radius) or np.any(parameters > max_radius):
+            raise ValueError(
+                f"Radii must be in (0,{max_radius}) for "
+                f"center_expansion {center_expansion}"
+            )
 
         # center radius
-        center_r = (
-            (x_min_r + x_max_r + y_min_r + y_max_r + z_min_r + z_max_r)
-            / 6.0
-            * center_expansion
-        ).item()
+        center_r = np.sum(parameters) / 6.0 * center_expansion
 
         # Auxiliary values for smooothing (mid-branch thickness)
-        aux_x_min = min(x_min_r, center_r)
-        aux_x_max = min(x_max_r, center_r)
-        aux_y_min = min(y_min_r, center_r)
-        aux_y_max = min(y_max_r, center_r)
-        aux_z_min = min(z_min_r, center_r)
-        aux_z_max = min(z_max_r, center_r)
+        [
+            aux_x_min,
+            aux_x_max,
+            aux_y_min,
+            aux_y_max,
+            aux_z_min,
+            aux_z_max,
+        ] = np.minimum(parameters.ravel(), center_r)
         # Branch midlength
         hd_center = 0.5 * (0.5 + center_r)
-
-        #
-        if seperator_distance is None:
-            seperator_distance = 0.45
         aux_column_width = 0.5 - 2 * (0.5 - seperator_distance)
 
         # Init return type
