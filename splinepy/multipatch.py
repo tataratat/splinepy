@@ -221,9 +221,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         para_dim : int
           Parametric dimensionality of the multipatch system
         """
-        if self.patches is None:
-            raise ValueError("No Splines provided")
-        return self.patches[0].para_dim
+        return super().para_dim
 
     @property
     def dim(self):
@@ -234,10 +232,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         dim : int
           Physical dimensionality of the multipatch system
         """
-        if self.patches is None:
-            raise ValueError("No Splines provided")
-
-        return self.patches[0].dim
+        return super().dim
 
     @property
     def sub_patch_centers(self):
