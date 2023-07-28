@@ -114,11 +114,10 @@ class Microstructure(SplinepyBase):
         -------
         None
         """
-        if not isinstance(tiling, list):
-            if not isinstance(tiling, int):
-                raise ValueError(
-                    "Tiling mus be either list of integers of integer " "value"
-                )
+        if not isinstance(tiling, list) and not isinstance(tiling, int):
+            raise ValueError(
+                "Tiling mus be either list of integers of integer " "value"
+            )
         self._tiling = tiling
         # Is defaulted to False using function arguments
         self._sanity_check()
@@ -150,7 +149,7 @@ class Microstructure(SplinepyBase):
         None
         """
         # place single tiles into a list to provide common interface
-        if isinstance(microtile, list) or isinstance(microtile, PySpline):
+        if isinstance(microtile, (PySpline, list)):
             microtile = self._make_microtilable(microtile)
         # Assign Microtile object to member variable
         self._microtile = microtile
@@ -465,7 +464,7 @@ class Microstructure(SplinepyBase):
                             empty_splines
                         )
                     for i, deris in enumerate(derivatives):
-                        for j, (tile_v, tile_deriv) in enumerate(
+                        for _j, (tile_v, tile_deriv) in enumerate(
                             zip(splines, deris)
                         ):
                             self._microstructure_derivatives[

@@ -119,13 +119,13 @@ for ii in range(4):
         surface.show_options["c"] = "grey"
         surface.show_options["resolutions"] = 20
         surfaces.append(surface)
-    camera = dict(
-        position=(1.9, 1.3, 3),
-        focal_point=(0.5, 0.5, 0.5),
-        viewup=(-0.1, 0.95, -0.3),
-        distance=3.33943,
-        clipping_range=(1.37, 5.0),
-    )
+    camera = {
+        "position": (1.9, 1.3, 3),
+        "focal_point": (0.5, 0.5, 0.5),
+        "viewup": (-0.1, 0.95, -0.3),
+        "distance": 3.33943,
+        "clipping_range": (1.37, 5.0),
+    }
     gus.show(surfaces + a, cam=camera, alpha=0.2)
 
 
@@ -154,13 +154,13 @@ for ii in range(4):
         surface.show_options["c"] = "grey"
         surface.show_options["resolutions"] = 20
         surfaces.append(surface)
-    camera = dict(
-        position=(1.9, 1.3, 3),
-        focal_point=(0.5, 0.5, 0.5),
-        viewup=(-0.1, 0.95, -0.3),
-        distance=3.33943,
-        clipping_range=(1.37, 5.0),
-    )
+    camera = {
+        "position": (1.9, 1.3, 3),
+        "focal_point": (0.5, 0.5, 0.5),
+        "viewup": (-0.1, 0.95, -0.3),
+        "distance": 3.33943,
+        "clipping_range": (1.37, 5.0),
+    }
     gus.show(surfaces + a, cam=camera)
 
 

@@ -108,7 +108,7 @@ class BSplineBase(spline.Spline):
 
         self._logd(f"Inserted {len(knots)} knot(s).")
 
-        self._data = dict()
+        self._data = {}
 
         return inserted
 
@@ -239,7 +239,7 @@ class BSplineBase(spline.Spline):
         )
 
         if any(removed):
-            self._data = dict()
+            self._data = {}
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")

@@ -21,3 +21,22 @@ build = ["cp*-many*"]
 
 [tool.cibuildwheel.windows]
 skip = "pp*"
+
+[tool.ruff]
+select = [
+  "E", "F", "W", # flake8
+  "B",           # flake8-bugbear
+  "ARG",         # flake8-unused-arguments
+  "C4",          # flake8-comprehensions
+  "PL",          # pylint
+  "SIM",         # flake8-simplify
+  "T20",         # flake8-print
+  "NPY",         # numpy specific rules
+]
+fixable = ["ALL"]
+target-version = "py37"
+
+[tool.ruff.per-file-ignores]
+"setup.py" = ["T201"]
+"examples/*.py" = ["T201"]
+"tests/common.py" = ["T201"]

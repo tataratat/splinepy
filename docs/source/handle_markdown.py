@@ -120,9 +120,7 @@ def process_file(
     links = get_markdown_links(content)
 
     for item in links:
-        if item[1].startswith(
-            tuple(["http", "#"])
-        ):  # skip http links and anchors
+        if item[1].startswith(("http", "#")):  # skip http links and anchors
             if "badge" in item[1]:
                 continue
             content = content.replace(

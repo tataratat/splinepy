@@ -252,13 +252,11 @@ class CATSioTest(c.unittest.TestCase):
             multipatch_geometry_loaded = c.splinepy.io.cats.load(tmpf)
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            multipatch_geometry,
-                            multipatch_geometry_loaded,
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(
+                        multipatch_geometry,
+                        multipatch_geometry_loaded,
+                    )
                 )
             )
 

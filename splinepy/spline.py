@@ -602,7 +602,7 @@ class Spline(SplinepyBase, core.PySpline):
         """
         # annulment of core
         core.annul_core(self)
-        self._data = dict()
+        self._data = {}
 
     def _new_core(self, *, keep_properties=False, raise_=True, **kwargs):
         """
@@ -667,7 +667,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         # clear saved data
         if not keep_properties:
-            self._data = dict()
+            self._data = {}
 
         return core.has_core(self)
 
@@ -712,16 +712,17 @@ class Spline(SplinepyBase, core.PySpline):
         # clear core and return
         if degrees is None:
             core.annul_core(self)
-            self._data = dict()
+            self._data = {}
             return None
 
         # len should match knot_vector's len
-        if self.knot_vectors is not None:
-            if len(self.knot_vectors) != len(degrees):
-                raise ValueError(
-                    f"len(degrees) ({len(degrees)}) should match "
-                    f"len(self.knot_vectors) ({len(self.knot_vectors)})."
-                )
+        if self.knot_vectors is not None and len(self.knot_vectors) != len(
+            degrees
+        ):
+            raise ValueError(
+                f"len(degrees) ({len(degrees)}) should match "
+                f"len(self.knot_vectors) ({len(self.knot_vectors)})."
+            )
 
         # set - copies
         self._data["degrees"] = np.asarray(
@@ -785,16 +786,15 @@ class Spline(SplinepyBase, core.PySpline):
         # clear core and return
         if knot_vectors is None:
             core.annul_core(self)
-            self._data = dict()
+            self._data = {}
             return None
 
         # len should match degrees's len
-        if self.degrees is not None:
-            if len(knot_vectors) != len(self.degrees):
-                raise ValueError(
-                    f"len(knot_vectors) ({len(knot_vectors)}) should "
-                    f"match len(self.degrees) ({len(self.degrees)})."
-                )
+        if self.degrees is not None and len(knot_vectors) != len(self.degrees):
+            raise ValueError(
+                f"len(knot_vectors) ({len(knot_vectors)}) should "
+                f"match len(self.degrees) ({len(self.degrees)})."
+            )
 
         # set - copies
         new_kvs = []
@@ -840,7 +840,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         else:
             self._logd("Computing unique knots")
-            unique_knots = list()
+            unique_knots = []
             for kv in self.knot_vectors:
                 unique_knots_per_dim = [kv[0]]
                 for k, d in zip(kv[1:], np.diff(kv)):
@@ -880,9 +880,10 @@ class Spline(SplinepyBase, core.PySpline):
         """
         cps = self._data.get("control_points", None)
 
-        if core.has_core(self):
-            if not isinstance(cps, utils.data.PhysicalSpaceArray):
-                _prepare_coordinates(self)
+        if core.has_core(self) and not isinstance(
+            cps, utils.data.PhysicalSpaceArray
+        ):
+            _prepare_coordinates(self)
 
         return self._data.get("control_points", None)
 
@@ -902,7 +903,7 @@ class Spline(SplinepyBase, core.PySpline):
         # clear core and return
         if control_points is None:
             core.annul_core(self)
-            self._data = dict()
+            self._data = {}
             return None
 
         # len should match weights' len
@@ -1043,9 +1044,10 @@ class Spline(SplinepyBase, core.PySpline):
         """
         ws = self._data.get("weights", None)
 
-        if core.has_core(self):
-            if not isinstance(ws, utils.data.PhysicalSpaceArray):
-                _prepare_coordinates(self)
+        if core.has_core(self) and not isinstance(
+            ws, utils.data.PhysicalSpaceArray
+        ):
+            _prepare_coordinates(self)
 
         return self._data.get("weights", None)
 
@@ -1065,7 +1067,7 @@ class Spline(SplinepyBase, core.PySpline):
         # clear core and return
         if weights is None:
             core.annul_core(self)
-            self._data = dict()
+            self._data = {}
             return None
 
         # len should match control_points' len
@@ -1462,7 +1464,7 @@ class Spline(SplinepyBase, core.PySpline):
         self._logd(
             f"Elevated {parametric_dimensions}.-dim. " "degree of the spline."
         )
-        self._data = dict()
+        self._data = {}
 
     def reduce_degrees(self, parametric_dimensions, tolerance=None):
         """
@@ -1493,7 +1495,7 @@ class Spline(SplinepyBase, core.PySpline):
         )
 
         if any(reduced):
-            self._data = dict()
+            self._data = {}
 
         return reduced
 
@@ -1574,7 +1576,7 @@ class Spline(SplinepyBase, core.PySpline):
             else:
                 return core_properties
 
-        dict_spline = dict()
+        dict_spline = {}
         # loop and copy entries.
         for p in self.required_properties:
             # no prop? no prob. default is None
@@ -1587,7 +1589,7 @@ class Spline(SplinepyBase, core.PySpline):
                     tmp_prop = tmp_prop.tolist()  # copies
                     should_copy = False
                 if p.startswith("knot_vectors"):
-                    tmp_prop = [[t for t in tp] for tp in tmp_prop]
+                    tmp_prop = [list(tp) for tp in tmp_prop]
                     should_copy = False
 
             if should_copy:
@@ -1624,7 +1626,7 @@ class Spline(SplinepyBase, core.PySpline):
             new._data = saved_copy
 
         else:
-            new._data = dict()
+            new._data = {}
 
         return new
 

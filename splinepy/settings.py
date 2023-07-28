@@ -9,13 +9,13 @@ def __splinepy_name_to_type__():
     """
     from splinepy import NURBS, Bezier, BSpline, Multipatch, RationalBezier
 
-    return dict(
-        Bezier=Bezier,
-        RationalBezier=RationalBezier,
-        BSpline=BSpline,
-        NURBS=NURBS,
-        Multipatch=Multipatch,
-    )
+    return {
+        "Bezier": Bezier,
+        "RationalBezier": RationalBezier,
+        "BSpline": BSpline,
+        "NURBS": NURBS,
+        "Multipatch": Multipatch,
+    }
 
 
 TOLERANCE = 1e-11

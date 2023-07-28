@@ -45,8 +45,6 @@ class MultipatchTest(c.unittest.TestCase):
             self._rect_arc_3,
         ]
 
-        return
-
     def test_interfaces(self):
         """ """
         # init multipatch with multiple splines

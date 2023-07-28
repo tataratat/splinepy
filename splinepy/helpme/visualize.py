@@ -7,59 +7,57 @@ from gustaf.utils.arr import enforce_len
 from splinepy import settings
 from splinepy.utils import log
 
-_vedo_spline_common_options = tuple(
-    [
-        options.Option(
-            "vedo",
-            "control_points",
-            "Show spline's control points."
-            "Options propagates to control mesh, unless it is specified.",
-            (bool,),
-        ),
-        options.Option(
-            "vedo",
-            "control_mesh",
-            "Show spline's control mesh.",
-            (bool,),
-        ),
-        options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
-        options.Option(
-            "vedo",
-            "control_points_c",
-            "Color of control_points in {rgb, RGB, str of (hex, name), int}",
-            (str, tuple, list, int),
-        ),
-        options.Option(
-            "vedo",
-            "control_mesh_c",
-            "Color of control_mesh in {rgb, RGB, str of (hex, name), int}",
-            (str, tuple, list, int),
-        ),
-        options.Option(
-            "vedo",
-            "control_mesh_lw",
-            "Transparency of control points in range [0, 1].",
-            (int),
-        ),
-        options.Option(
-            "vedo",
-            "control_points_alpha",
-            "Transparency of control points in range [0, 1].",
-            (float, int),
-        ),
-        options.Option(
-            "vedo",
-            "control_point_ids",
-            "Show ids of control_points.",
-            (bool,),
-        ),
-        options.Option(
-            "vedo",
-            "resolutions",
-            "Sampling resolution for spline.",
-            (int, list, tuple, np.ndarray),
-        ),
-    ]
+_vedo_spline_common_options = (
+    options.Option(
+        "vedo",
+        "control_points",
+        "Show spline's control points."
+        "Options propagates to control mesh, unless it is specified.",
+        (bool,),
+    ),
+    options.Option(
+        "vedo",
+        "control_mesh",
+        "Show spline's control mesh.",
+        (bool,),
+    ),
+    options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
+    options.Option(
+        "vedo",
+        "control_points_c",
+        "Color of control_points in {rgb, RGB, str of (hex, name), int}",
+        (str, tuple, list, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_mesh_c",
+        "Color of control_mesh in {rgb, RGB, str of (hex, name), int}",
+        (str, tuple, list, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_mesh_lw",
+        "Transparency of control points in range [0, 1].",
+        (int),
+    ),
+    options.Option(
+        "vedo",
+        "control_points_alpha",
+        "Transparency of control points in range [0, 1].",
+        (float, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_point_ids",
+        "Show ids of control_points.",
+        (bool,),
+    ),
+    options.Option(
+        "vedo",
+        "resolutions",
+        "Sampling resolution for spline.",
+        (int, list, tuple, np.ndarray),
+    ),
 )
 
 
@@ -104,9 +102,9 @@ class SplineShowOption(options.ShowOption):
                 f"This show option if for {self._helps}.",
                 f"Given helpee is {type(helpee)}.",
             )
-        self._options = dict()
+        self._options = {}
         self._backend = gus.settings.VISUALIZATION_BACKEND
-        self._options[self._backend] = dict()
+        self._options[self._backend] = {}
 
 
 class MultipatchShowOption(options.ShowOption):
@@ -138,9 +136,9 @@ class MultipatchShowOption(options.ShowOption):
                 f"This show option if for {self._helps}.",
                 f"Given helpee is {type(helpee)}.",
             )
-        self._options = dict()
+        self._options = {}
         self._backend = gus.settings.VISUALIZATION_BACKEND
-        self._options[self._backend] = dict()
+        self._options[self._backend] = {}
 
 
 def make_showable(spline):
@@ -219,7 +217,7 @@ def _vedo_showable(spline):
         # configured arrow_data. Multipatch might just return a multipatch,
         # so a careful step here.
         has_locations = getattr(adapted_adata, "has_locations", False)
-        adata_on = "arrow_data_on" in spline.show_options.keys()
+        adata_on = "arrow_data_on" in spline.show_options
         create_vertices = has_locations or adata_on
 
         # this case causes conflict of interest. raise
@@ -351,7 +349,7 @@ def _vedo_showable_para_dim_1(spline):
     """
     from splinepy.spline import Spline
 
-    gus_primitives = dict()
+    gus_primitives = {}
     sp = spline.extract.edges(spline.show_options.get("resolutions", 100))
 
     # specify curve width
@@ -389,7 +387,7 @@ def _vedo_showable_para_dim_2(spline):
     gus_primitives: dict
       keys are {spline, knots}
     """
-    gus_primitives = dict()
+    gus_primitives = {}
     default_res = 10 if spline.name.startswith("Multi") else 100
 
     res = spline.show_options.get("resolutions", default_res)

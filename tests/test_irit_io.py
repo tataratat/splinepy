@@ -33,12 +33,8 @@ class IOTestIRIT(c.SplineBasedTestCase):
             list_of_splines_loaded = c.splinepy.io.irit.load(tmpf)
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            list_of_splines, list_of_splines_loaded
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(list_of_splines, list_of_splines_loaded)
                 )
             )
 

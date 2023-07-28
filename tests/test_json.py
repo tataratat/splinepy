@@ -49,12 +49,8 @@ class jsonExportTest(c.unittest.TestCase):
             list_of_splines_loaded = c.splinepy.io.json.load(tmpf)
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            list_of_splines, list_of_splines_loaded
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(list_of_splines, list_of_splines_loaded)
                 )
             )
         with tempfile.TemporaryDirectory() as tmpd:
@@ -65,12 +61,8 @@ class jsonExportTest(c.unittest.TestCase):
             list_of_splines_loaded = c.splinepy.io.json.load(tmpf)
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            list_of_splines, list_of_splines_loaded
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(list_of_splines, list_of_splines_loaded)
                 )
             )
 

@@ -406,16 +406,13 @@ def spline(spline, para_dim, split_plane):
         )
     else:
         # Convert float to tuple to facilitate
-        split_plane = list([split_plane])
+        split_plane = [split_plane]
 
     # Check if is bezier-type
     is_bezier = "Bezier" in spline.whatami
     is_rational = "weights" in spline.required_properties
     if is_bezier:
-        if is_rational:
-            spline_copy = spline.nurbs
-        else:
-            spline_copy = spline.bspline
+        spline_copy = spline.nurbs if is_rational else spline.bspline
     else:
         spline_copy = spline.copy()
 

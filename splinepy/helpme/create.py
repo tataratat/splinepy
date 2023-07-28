@@ -52,7 +52,7 @@ def extruded(spline, extrusion_vector=None):
         )
 
     # Start Extrusion
-    spline_dict = dict()
+    spline_dict = {}
 
     spline_dict["degrees"] = np.concatenate((spline.degrees, [1]))
     spline_dict["control_points"] = np.vstack((cps, cps + extrusion_vector))
@@ -175,13 +175,12 @@ def revolved(
     if (n_knot_spans) is None or (n_knot_spans < minimum_n_knot_spans):
         n_knot_spans = minimum_n_knot_spans
 
-    if "Bezier" in spline.name:
-        if n_knot_spans > 1:
-            raise ValueError(
-                "Revolutions are only supported for angles up to 180 "
-                "degrees for Bezier type splines as they consist of only "
-                "one knot span"
-            )
+    if "Bezier" in spline.name and n_knot_spans > 1:
+        raise ValueError(
+            "Revolutions are only supported for angles up to 180 "
+            "degrees for Bezier type splines as they consist of only "
+            "one knot span"
+        )
 
     # Determine auxiliary values
     rot_a = angle / (2 * n_knot_spans)
@@ -195,13 +194,13 @@ def revolved(
     ).T
 
     # Start Extrusion
-    spline_dict = dict()
+    spline_dict = {}
 
     spline_dict["degrees"] = np.concatenate((spline.degrees, [2]))
 
     spline_dict["control_points"] = cps
     end_points = cps
-    for i_segment in range(n_knot_spans):
+    for _i_segment in range(n_knot_spans):
         # Rotate around axis
         mid_points = np.matmul(end_points, rotation_matrix)
         end_points = np.matmul(mid_points, rotation_matrix)
@@ -224,7 +223,7 @@ def revolved(
     if spline.is_rational:
         mid_weights = spline.weights * weight
         spline_dict["weights"] = spline.weights
-        for i_segment in range(n_knot_spans):
+        for _i_segment in range(n_knot_spans):
             spline_dict["weights"] = np.concatenate(
                 (spline_dict["weights"], mid_weights, spline.weights)
             )
@@ -313,17 +312,17 @@ def parametric_view(spline, axes=True):
         bs_diff_001 = (bs[1] - bs[0]) * 0.001
         lower_b = bs[0] - bs_diff_001
         upper_b = bs[1] + bs_diff_001
-        axes_config = dict(
-            xtitle="u",
-            ytitle="v",
-            xrange=[lower_b[0], upper_b[0]],
-            yrange=[lower_b[1], upper_b[1]],
-            tip_size=0,
-            xminor_ticks=3,
-            yminor_ticks=3,
-            xygrid=False,
-            yzgrid=False,
-        )
+        axes_config = {
+            "xtitle": "u",
+            "ytitle": "v",
+            "xrange": [lower_b[0], upper_b[0]],
+            "yrange": [lower_b[1], upper_b[1]],
+            "tip_size": 0,
+            "xminor_ticks": 3,
+            "yminor_ticks": 3,
+            "xygrid": False,
+            "yzgrid": False,
+        }
         if spline.para_dim == 3:
             axes_config.update(ztitle="w")
             axes_config.update(zrange=[lower_b[2], upper_b[2]])

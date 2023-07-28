@@ -405,7 +405,7 @@ def export(
                         "Gismo option in unsupported format, tag must be set, "
                         "please check out export documentation"
                     )
-                attributes = gismo_dictionary.get("attributes", dict())
+                attributes = gismo_dictionary.get("attributes", {})
                 option_text = gismo_dictionary.get("text", None)
                 optional_data = ET.SubElement(
                     ETelement,
@@ -514,7 +514,7 @@ def load(fname, load_options=True):
             patch_element = child.find("patches")
             if patch_element is None:
                 debug("Unsupported format")
-            if not patch_element.attrib.get("type") == "id_range":
+            if patch_element.attrib.get("type") != "id_range":
                 debug(f"Invalid patch type {patch_element.attrib.get('type')}")
             patch_range = np.fromstring(
                 patch_element.text.replace("\n", " "), sep=" ", dtype=np.int64
