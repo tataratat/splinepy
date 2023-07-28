@@ -413,7 +413,7 @@ class CrossTile3D(TileBase):
             y_max_r,
             z_min_r,
             z_max_r,
-        ] = parameters.flatten()
+        ] = parameters.ravel()
 
         # Check for type and consistency
         self.check_params(parameters)

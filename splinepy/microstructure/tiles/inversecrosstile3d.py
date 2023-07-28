@@ -952,7 +952,7 @@ class InverseCrossTile3D(TileBase):
             aux_y_max,
             aux_z_min,
             aux_z_max,
-        ] = np.minimum(parameters.flatten(), center_r)
+        ] = np.minimum(parameters.ravel(), center_r)
         # Branch midlength
         hd_center = 0.5 * (0.5 + center_r)
         aux_column_width = 0.5 - 2 * (0.5 - seperator_distance)
