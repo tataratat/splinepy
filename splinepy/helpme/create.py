@@ -443,7 +443,7 @@ def circle(radius=1.0, n_knot_spans=3):
 
 
 def box(*lengths):
-    """ND box (hyper rectangle).
+    """N-D box (hyper rectangle).
 
     Parameters
     ----------
@@ -777,8 +777,7 @@ class Creator:
 
     Examples
     ---------
-    >>> my_spline = <your-spline>
-    >>> spline_faces = my_spline.create.extrude(vector=[3,1,3])
+    >>> spline_faces = my_spline.create.extrude(vector=[3, 1, 3])
     """
 
     def __init__(self, spl):

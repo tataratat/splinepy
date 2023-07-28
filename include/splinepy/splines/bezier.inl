@@ -554,15 +554,14 @@ Bezier<para_dim, dim>::SplinepySplit(const int& p_dim,
       Base_::SplitAtPosition(location, static_cast<std::size_t>(p_dim));
 
   // make it splinepybase
-  std::vector<std::shared_ptr<SplinepyBase>> splitted;
+  std::vector<std::shared_ptr<SplinepyBase>> split;
   const std::size_t n_splitted = bm_splitted.size();
-  splitted.reserve(n_splitted); // this should be always 2
+  split.reserve(n_splitted); // this should be always 2
   for (std::size_t i{}; i < n_splitted; ++i) {
-    splitted.emplace_back(
-        std::make_shared<Bezier<para_dim, dim>>(bm_splitted[i]));
+    split.emplace_back(std::make_shared<Bezier<para_dim, dim>>(bm_splitted[i]));
   }
 
-  return splitted;
+  return split;
 }
 
 template<std::size_t para_dim, std::size_t dim>

@@ -4,7 +4,7 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
-// first four are required for Create* implmentations
+// first four are required for Create* implementations
 #include "splinepy/splines/splinepy_base.hpp"
 #include "splinepy/utils/print.hpp"
 
@@ -130,7 +130,7 @@ public:
   /// for example.
   bool IsRational() const { return Core()->SplinepyIsRational(); }
 
-  /// As knot vectors and control points / weights has a specific intialization
+  /// As knot vectors and control points / weights has a specific initialization
   /// routines, we provide a separate degree getter to avoid calling
   /// CurrentCoreProperties() for a full properties copy.
   py::array_t<int> CurrentCoreDegrees() const;
@@ -145,7 +145,7 @@ public:
   py::tuple CoordinatePointers();
 
   /// Returns knot vector of given dimension. meant to be
-  /// called library interally to prepare @property
+  /// called library internally to prepare @property
   std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   KnotVector(const int para_dim);
 

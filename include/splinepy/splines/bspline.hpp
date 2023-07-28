@@ -98,7 +98,7 @@ public:
   /** raw ptr based inithelper.
    *  degrees should have same size as parametric dimension
    *  having knot_vectors vector of vector, we can keep track of their length,
-   * as well as the legnth of control_points/weights.
+   * as well as the length of control_points/weights.
    */
   static Base_ CreateBase(const int* degrees,
                           const std::vector<std::vector<double>>& knot_vectors,

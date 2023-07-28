@@ -113,9 +113,9 @@ def prepend_log(message, log_func):
 
     Parameters
     ----------
-    messgae: str
+    message: str
     log_func: function
-      one of the followings - {info, debug, warning}
+      one of the following - {info, debug, warning}
 
     Returns
     -------

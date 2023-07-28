@@ -1,7 +1,7 @@
 """
 xml io.
 Keyword follows RWTH CATS's spline format.
-Possiblely will be turned into pure python io.
+Possibly will be turned into pure python io.
 """
 import xml.etree.ElementTree as ET
 from sys import version as python_version
@@ -291,7 +291,7 @@ def export(fname, spline_list, indent=True):
 
     elif int(python_version.split(".")[1]) < 9 and indent:
         debug(
-            "Indented xml ouput is only supported from > python3.9.",
+            "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
             f"Current python version: {python_version}",
         )

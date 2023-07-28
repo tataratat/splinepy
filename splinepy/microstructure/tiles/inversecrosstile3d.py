@@ -57,7 +57,7 @@ class InverseCrossTile3D(TileBase):
 
         if seperator_distance is None:
             raise ValueError(
-                "Seperator Distance is missing. The value is required to "
+                "Separator Distance is missing. The value is required to "
                 "create watertight connections with neighboring elements."
                 " The value should be greater than the biggest branch "
                 "radius"
@@ -902,7 +902,7 @@ class InverseCrossTile3D(TileBase):
 
         if seperator_distance is None:
             raise ValueError(
-                "Seperator Distance is missing. The value is required to "
+                "Separator Distance is missing. The value is required to "
                 "create watertight connections with neighboring elements."
                 " The value should be greater than the biggest branch "
                 "radius"

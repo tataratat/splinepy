@@ -31,7 +31,7 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
  *
  * Currently we return a list of length (para_dim) containing a tuple of numpy
  * arrays, that can be used to instantiate scipy sparse matrices. This helps
- * avoid binding eigen as a seperate library.
+ * avoid binding eigen as a separate library.
  *
  * @todo: replace calls with pybind/eigen
  *

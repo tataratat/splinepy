@@ -92,20 +92,20 @@ py::list Split(const std::shared_ptr<PySpline>& spline,
   std::sort(locs.begin(), locs.end());
 
   // split and append
-  py::list splitted;
+  py::list split;
   // very first
   auto tmp_splitted = spline->Core()->SplinepySplit(p_dim, locs[0]);
-  splitted.append(std::make_shared<PySpline>(tmp_splitted[0]));
+  split.append(std::make_shared<PySpline>(tmp_splitted[0]));
   for (std::size_t i{1}; i < locs.size(); ++i) {
     const double locs_with_offset =
         (locs[i] - locs[i - 1]) / (1. - locs[i - 1]);
     tmp_splitted = tmp_splitted[1]->SplinepySplit(p_dim, locs_with_offset);
-    splitted.append(std::make_shared<PySpline>(tmp_splitted[0]));
+    split.append(std::make_shared<PySpline>(tmp_splitted[0]));
   }
   // very last
-  splitted.append(std::make_shared<PySpline>(tmp_splitted[1]));
+  split.append(std::make_shared<PySpline>(tmp_splitted[1]));
 
-  return splitted;
+  return split;
 }
 
 /// bezier patch extraction.

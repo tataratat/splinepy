@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "splinepy/py/py_spline.hpp"
-// following four are required for Create* implmentations
+// following four are required for Create* implementations
 #include "splinepy/splines/bezier.hpp"
 #include "splinepy/splines/bspline.hpp"
 #include "splinepy/splines/nurbs.hpp"
@@ -126,14 +126,14 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
     if (ncps != required_ncps) {
       splinepy::utils::PrintAndThrowError("Invalid number of control points.",
                                           required_ncps,
-                                          "exepcted, but",
+                                          "expected, but",
                                           ncps,
                                           "were given.");
     }
     // last, dim check
     if (para_dim != kv_dim) {
       splinepy::utils::PrintAndThrowError(
-          "Dimension mis-match between `degrees` (",
+          "Dimension mismatch between `degrees` (",
           para_dim,
           ") and `knot_vectors` (",
           kv_dim,
@@ -161,7 +161,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
   if (ncps != required_ncps) {
     splinepy::utils::PrintAndThrowError("Invalid number of control points.",
                                         required_ncps,
-                                        "exepcted, but",
+                                        "expected, but",
                                         ncps,
                                         "were given.");
   }
@@ -199,7 +199,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
 PySpline::CoreSpline_& PySpline::Core() {
   if (!c_spline_) {
     splinepy::utils::PrintAndThrowError("Core spline does not exist.",
-                                        "Please first intialize core spline.");
+                                        "Please first initialize core spline.");
   }
 
   return c_spline_;
@@ -209,7 +209,7 @@ PySpline::CoreSpline_& PySpline::Core() {
 const PySpline::CoreSpline_& PySpline::Core() const {
   if (!c_spline_) {
     splinepy::utils::PrintAndThrowError("Core spline does not exist.",
-                                        "Please first intialize core spline.");
+                                        "Please first initialize core spline.");
   }
 
   return c_spline_;

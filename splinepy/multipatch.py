@@ -36,7 +36,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         splines : list-like
           List of splines to store as multipatch
         interfaces : array-like
-          Defines the connectivity inbetween patches
+          Defines the connectivity in between patches
         spline : PyMultiPatch
           keyword only argument, implemented to support to_derived() interface.
           calls move constructor.
@@ -103,9 +103,9 @@ class Multipatch(SplinepyBase, PyMultiPatch):
     @property
     def boundaries(self):
         """
-        Boundaries are stored within the interfaces array as negativ entries
+        Boundaries are stored within the interfaces array as negative entries
 
-        Negativ entries mean, that there is a boundary, the absolute value
+        Negative entries mean, that there is a boundary, the absolute value
         holds the boundary ID
 
         Returns
@@ -113,7 +113,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         boundaries : list<np.ndarray>
           list of 2D arrays, representing the patch and face ID
         """
-        # Get minimum boundary id - boundary ids are stored as negativ values
+        # Get minimum boundary id - boundary ids are stored as negative values
         max_BID = self.interfaces.min()
 
         boundary_list = []
@@ -176,7 +176,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         -------
         None
         """
-        # Get minimum boundary id - boundary ids are stored as negativ values
+        # Get minimum boundary id - boundary ids are stored as negative values
         max_BID = self.interfaces.min()
 
         if boundary_id is None:
@@ -196,7 +196,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         try:
             old_indices = self.interfaces[spline_ids, boundary_faces]
 
-            # Check if all old indices are negativ
+            # Check if all old indices are negative
             if (old_indices < 0).all():
                 self.interfaces[spline_ids, boundary_faces] = new_BID
             else:
@@ -256,7 +256,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         """
         Retrieve interfaces info
 
-        Stores new informaton as interfaces
+        Stores new information as interfaces
 
         Parameters
         ----------
@@ -308,7 +308,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
         -------
         None
         """
-        # Get minimum boundary id - boundary ids are stored as negativ values
+        # Get minimum boundary id - boundary ids are stored as negative values
         max_BID = self.interfaces.min()
 
         if boundary_id is None:
@@ -397,8 +397,8 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
         .. code-block:: python
 
-           splinepy.helpme.visualize.show(
-               spline, return_showable=True, **kwargs
+            splinepy.helpme.visualize.show(
+                spline, return_showable=True, **kwargs
             )
 
         Parameters
@@ -522,7 +522,7 @@ class Multipatch(SplinepyBase, PyMultiPatch):
 
     @property
     def fields(self):
-        """Save fields as individul splines on patches
+        """Save fields as individual splines on patches
 
         Parameters
         ----------

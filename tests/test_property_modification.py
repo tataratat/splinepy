@@ -93,7 +93,7 @@ class InplaceModificationTest(c.unittest.TestCase):
             assert c.np.allclose(orig.sample(res) / 2, s.sample(res))
 
     def test_inplace_change_weights(self):
-        """test inplace change of weights by compareing quarter circle"""
+        """test inplace change of weights by comparing quarter circle"""
         n_q_circle = c.nurbs_2p2d_quarter_circle()
         res = [4] * 2
         # init rational

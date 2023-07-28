@@ -20,7 +20,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         # Check control points
         self.assertRaisesRegex(
             RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 2 exepcted, "
+            "SPLINEPY ERROR - Invalid number of control points. 2 expected, "
             "but 9 were given.",
             c.splinepy.BSpline,
             degrees=[1],
@@ -139,7 +139,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         )
         self.assertRaisesRegex(
             RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 9 exepcted, "
+            "SPLINEPY ERROR - Invalid number of control points. 9 expected, "
             "but 4 were given.",
             c.splinepy.Bezier,
             degrees=[2, 2],
@@ -147,7 +147,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         )
         self.assertRaisesRegex(
             RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 24 exepcted, "
+            "SPLINEPY ERROR - Invalid number of control points. 24 expected, "
             "but 9 were given.",
             c.splinepy.Bezier,
             degrees=[2, 3, 1],
@@ -176,7 +176,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         )
         self.assertRaisesRegex(
             RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 9 exepcted, "
+            "SPLINEPY ERROR - Invalid number of control points. 9 expected, "
             "but 4 were given.",
             c.splinepy.RationalBezier,
             degrees=[2, 2],
@@ -185,7 +185,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         )
         self.assertRaisesRegex(
             RuntimeError,
-            "SPLINEPY ERROR - Invalid number of control points. 24 exepcted, "
+            "SPLINEPY ERROR - Invalid number of control points. 24 expected, "
             "but 9 were given.",
             c.splinepy.RationalBezier,
             degrees=[2, 3, 1],

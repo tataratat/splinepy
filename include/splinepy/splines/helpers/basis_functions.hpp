@@ -339,7 +339,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
     const auto derivative_order_indexwise_LHS = local_ids_(i_deriv);
     // Assign derivative of Numerator-function
     derivatives[i_deriv] = A_derivatives[i_deriv];
-    // Substract all weighted lower-order functions
+    // Subtract all weighted lower-order functions
     for (OrderType j_deriv{1}; j_deriv <= i_deriv; ++j_deriv) {
       // Retrieve order of current index
       const auto derivative_order_indexwise_RHS = local_ids_(j_deriv);
@@ -356,7 +356,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
             derivative_order_indexwise_LHS[i_pd],
             derivative_order_indexwise_RHS[i_pd]);
       }
-      // Substract low-order function
+      // Subtract low-order function
       for (OrderType i_basis{}; i_basis < n_basis_functions; ++i_basis) {
         derivatives[i_deriv][i_basis] -=
             static_cast<OrderType>(binom_fact) * w_derivatives[j_deriv]

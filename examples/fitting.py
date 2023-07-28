@@ -11,7 +11,7 @@ if __name__ == "__main__":
         return x**4 - 2 * x**2 + x + 0.2 * np.sin(10 * x)
 
     def evaluate_approximation(spline, points, n_initial_guess=500):
-        # Caluclate proximities between the spline and the given points
+        # Calculate proximities between the spline and the given points
         prox_r = spline.proximities(
             queries=points,
             initial_guess_sample_resolutions=[n_initial_guess]
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         target_points, degree=2
     )
 
-    # In curve approximation the number of control points must be choosen
+    # In curve approximation the number of control points must be chosen
     n_cps = 10
     approximated_curve = splinepy.BSpline.approximate_curve(
         target_points, degree=3, num_control_points=n_cps

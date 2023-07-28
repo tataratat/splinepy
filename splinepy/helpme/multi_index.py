@@ -36,14 +36,14 @@ class MultiIndex:
 
     def __getitem__(self, args):
         """
-        Retuns raveled indices.
+        Returns raveled indices.
 
         Parameters
         ----------
         args: int, slice, ellipsis, np.newaxis, array-like
           Any input np.ndarray.__getitem__ would take is valid.
 
-        Returnes
+        Returns
         --------
         raveled_indices: np.ndarray
           raveled indices, which are in a raveled array.

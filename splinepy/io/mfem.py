@@ -182,7 +182,7 @@ def mfem_index_mapping(
     """
     Returns index to properly reorganize control points/weights.
 
-    .. code-block::
+    .. code-block:: text
 
         2D:
                 <---------------------- 1.2
@@ -414,7 +414,7 @@ def export_cartesian(
         # Boundaries
         n_boundaries = boundaries.shape[0]
         f.write(f"\n\nboundary\n{n_boundaries}\n")
-        # Here currently all boudaries are set to 1
+        # Here currently all boundaries are set to 1
         f.write(
             "\n".join(
                 f"{boundary_id} {boundary_type} "
@@ -570,7 +570,7 @@ def export(fname, nurbs, precision=10):
             "",
         )
 
-        # I am not sure if mixed order is allowed, but incase not, let's
+        # I am not sure if mixed order is allowed, but in case not, let's
         # match orders
         max_degree = max(nurbs.degrees)
         for i, d in enumerate(nurbs.degrees):

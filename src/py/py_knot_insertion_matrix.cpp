@@ -142,7 +142,7 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
     matrix(i, j) = R_matrix(new_kv_ptr[i + 1], mu, 1, 0, 0);
     matrix(i, j + 1) = R_matrix(new_kv_ptr[i + 1], mu, 1, 0, 1);
 
-    // Loop over all remaining matrices, use their sparsity to avoid unecessary
+    // Loop over all remaining matrices, use their sparsity to avoid unnecessary
     // computations and increase degree to be more efficient (no double matrix
     // computations)
     for (std::size_t d{2}; d <= degree; d++) {

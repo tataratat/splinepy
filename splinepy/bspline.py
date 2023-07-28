@@ -135,8 +135,7 @@ class BSplineBase(spline.Spline):
             spline_copy = spline.copy()
             spline_copy.insert_knots(0, [0.1, 0.2])
             np.allclose(
-                    spline_copy.control_points,
-                    matrix @ spline.control_points
+                spline_copy.control_points, matrix @ spline.control_points
             )
 
         Parameters
@@ -262,7 +261,7 @@ class BSplineBase(spline.Spline):
         if not splinepy_core.has_core(self):
             raise ValueError(
                 "spline is not fully initialized."
-                "Please, first initalize spline before normalize_knot_vectors."
+                "Please, first initialize spline before normalize_knot_vectors."
             )
 
         for kv in self.knot_vectors:
@@ -351,7 +350,7 @@ class BSpline(BSplineBase):
     .. code-block:: python
 
         bspline_volume = splinepy.BSpline(
-            degrees=[1,1,1],
+            degrees=[1, 1, 1],
             knot_vectors=[
                 [0.0, 0.0, 1.0, 1.0],
                 [0.0, 0.0, 1.0, 1.0],
@@ -366,7 +365,7 @@ class BSpline(BSplineBase):
                 [1.0, 0.0, 1.0],
                 [-1.0, 1.0, 2.0],
                 [2.0, 2.0, 2.0],
-            ]
+            ],
         )
 
     Parameters
