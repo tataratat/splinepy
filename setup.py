@@ -103,12 +103,12 @@ class CMakeBuild(build_ext):
         else:
             # Single config generators are handled "normally"
             single_config = any(
-                x in cmake_generator for x in {"NMake", "Ninja"}
+                x in cmake_generator for x in ("NMake", "Ninja")
             )
 
             # CMake allows an arch-in-generator style
             # for backward compatibility
-            contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
+            contains_arch = any(x in cmake_generator for x in ("ARM", "Win64"))
 
             # Specify the arch if using MSVC generator, but only if it doesn't
             # contain a backward-compatibility arch spec already in the
@@ -263,6 +263,7 @@ setup(
         "splinepy.microstructure",
         "splinepy.microstructure.tiles",
     ],
+    python_requires=">=py36",
     install_requires=[
         "numpy",
         "gustaf>=0.0.12",
@@ -283,7 +284,7 @@ setup(
     ext_modules=[
         CMakeExtension("splinepy.splinepy_core", extra_args=build_options)
     ],
-    cmdclass=dict(build_ext=CMakeBuild),
+    cmdclass={"build_ext": CMakeBuild},
     extras_require={"all": ["gustaf[all]>=0.0.12"], "test": ["funi>=0.0.1"]},
     zip_safe=False,
     license="MIT",

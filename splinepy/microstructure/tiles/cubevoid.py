@@ -58,7 +58,7 @@ class Cubevoid(TileBase):
         self,
         parameters=None,
         parameter_sensitivities=None,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a full cuboid with a cuboidal void in the center, that has
         a rotation applied in the form

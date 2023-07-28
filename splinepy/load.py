@@ -36,7 +36,7 @@ def load_splines(fname, as_dict=False):
 
     ext = os.path.splitext(fname)[1]
 
-    if ext == ".iges" or ext == ".igs":
+    if ext in {".iges", ".igs"}:
         loaded_splines = read_iges(fname)
 
     elif ext == ".itd":

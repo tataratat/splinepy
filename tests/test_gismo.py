@@ -1047,13 +1047,11 @@ class gismoExportTest(c.unittest.TestCase):
             )
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            multipatch_geometry.patches,
-                            multipatch_geometry_loaded.patches,
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(
+                        multipatch_geometry.patches,
+                        multipatch_geometry_loaded.patches,
+                    )
                 )
             )
             self.assertTrue(
@@ -1078,13 +1076,11 @@ class gismoExportTest(c.unittest.TestCase):
             )
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            multipatch_geometry.patches,
-                            multipatch_geometry_loaded.patches,
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(
+                        multipatch_geometry.patches,
+                        multipatch_geometry_loaded.patches,
+                    )
                 )
             )
             self.assertTrue(
@@ -1162,13 +1158,11 @@ class gismoExportTest(c.unittest.TestCase):
             ) = c.splinepy.io.gismo.load(tmpf, load_options=True)
             self.assertTrue(
                 all(
-                    [
-                        c.are_splines_equal(a, b)
-                        for a, b in zip(
-                            multipatch_geometry.patches,
-                            multipatch_geometry_loaded.patches,
-                        )
-                    ]
+                    c.are_splines_equal(a, b)
+                    for a, b in zip(
+                        multipatch_geometry.patches,
+                        multipatch_geometry_loaded.patches,
+                    )
                 )
             )
             self.assertTrue(

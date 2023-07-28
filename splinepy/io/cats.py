@@ -209,18 +209,12 @@ def export(fname, spline_list, indent=True):
         **{CATS_XML_KEY_WORDS["n_patches"]: str(len(spline_list))},
     )
 
-    if indent:
-        new_line_char = "\n"
-    else:
-        new_line_char = " "
+    new_line_char = "\n" if indent else " "
 
     # All Splines (patches) are written into the spline list as entries
     for spline in spline_list:
         # Convert to non-bezier type (might make unnecessary copy)
-        if spline.is_rational:
-            patch = spline.nurbs
-        else:
-            patch = spline.bspline
+        patch = spline.nurbs if spline.is_rational else spline.bspline
 
         # Write spline header
         patch_element = ET.SubElement(

@@ -447,7 +447,6 @@ class Multipatch(SplinepyBase, PyMultipatch):
             nthreads,
         )
         self._logd(f"{n_new_boundaries} new boundaries were assigned")
-        return None
 
     def combine_boundaries(self, mask=None):
         """

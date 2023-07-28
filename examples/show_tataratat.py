@@ -193,12 +193,12 @@ if __name__ == "__main__":
         face_showables.append(faces)
         spline_showables.extend(list(showables.values()))
 
-    cam = dict(
-        pos=(-11.90193, 5.995478, 3.057389),
-        focalPoint=(-2.817062, -0.6220471, -0.3948362),
-        viewup=(0.3271027, 0.7493888, -0.5756911),
-        distance=11.75773,
-        clippingRange=(6.030973, 19.21880),
-    )
+    cam = {
+        "pos": (-11.90193, 5.995478, 3.057389),
+        "focalPoint": (-2.817062, -0.6220471, -0.3948362),
+        "viewup": (0.3271027, 0.7493888, -0.5756911),
+        "distance": 11.75773,
+        "clippingRange": (6.030973, 19.21880),
+    }
 
     gus.show(face_showables, spline_showables, cam=cam)

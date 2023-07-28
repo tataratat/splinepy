@@ -103,22 +103,22 @@ def get_queries_3D():
 
 
 def dict_bspline_2p2d():
-    return dict(
-        degrees=[2, 2],
-        knot_vectors=get_knotvectors_2(),
-        control_points=get_2d_control_points_b_spline(),
-    )
+    return {
+        "degrees": [2, 2],
+        "knot_vectors": get_knotvectors_2(),
+        "control_points": get_2d_control_points_b_spline(),
+    }
 
 
 def dict_nurbs_2p2d():
-    return dict(
-        degrees=[2, 1],
-        knot_vectors=[
+    return {
+        "degrees": [2, 1],
+        "knot_vectors": [
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=get_2d_control_points_nurbs(),
-        weights=[
+        "control_points": get_2d_control_points_nurbs(),
+        "weights": [
             [1.0],
             [2**-0.5],
             [1.0],
@@ -126,20 +126,20 @@ def dict_nurbs_2p2d():
             [2**-0.5],
             [1.0],
         ],
-    )
+    }
 
 
 #
 def dict_bezier_2p2d():
-    return dict(degrees=[2, 1], control_points=get_2d_control_points_nurbs())
+    return {"degrees": [2, 1], "control_points": get_2d_control_points_nurbs()}
 
 
 #
 def dict_rational_bezier_2p2d():
-    return dict(
-        degrees=[2, 1],
-        control_points=get_2d_control_points_nurbs(),
-        weights=[
+    return {
+        "degrees": [2, 1],
+        "control_points": get_2d_control_points_nurbs(),
+        "weights": [
             [1.0],
             [2**-0.5],
             [1.0],
@@ -147,40 +147,40 @@ def dict_rational_bezier_2p2d():
             [2**-0.5],
             [1.0],
         ],
-    )
+    }
 
 
 # 3D
 def dict_bezier_3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-    )
+    return {
+        "degrees": [1, 1, 1],
+        "control_points": get_3d_control_points(),
+    }
 
 
 def dict_rational_bezier_3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        weights=[1.0] * len(get_3d_control_points()),
-    )
+    return {
+        "degrees": [1, 1, 1],
+        "control_points": get_3d_control_points(),
+        "weights": [1.0] * len(get_3d_control_points()),
+    }
 
 
 def dict_bspline_3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        knot_vectors=get_knotvectors_3(),
-    )
+    return {
+        "degrees": [1, 1, 1],
+        "control_points": get_3d_control_points(),
+        "knot_vectors": get_knotvectors_3(),
+    }
 
 
 def dict_nurbs_3p3d():
-    return dict(
-        degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        weights=[1.0] * len(get_3d_control_points()),
-        knot_vectors=get_knotvectors_2(),
-    )
+    return {
+        "degrees": [1, 1, 1],
+        "control_points": get_3d_control_points(),
+        "weights": [1.0] * len(get_3d_control_points()),
+        "knot_vectors": get_knotvectors_2(),
+    }
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
@@ -310,16 +310,15 @@ def to_tmpf(tmpd):
 
 def are_splines_equal(a, b):
     """returns True if Splines are equivalent"""
-    if not a.whatami == b.whatami:
+    if a.whatami != b.whatami:
         return False
     for req_prop in a.required_properties:
         if req_prop == "knot_vectors":
             for aa, bb in zip(a.knot_vectors, b.knot_vectors):
                 if not np.allclose(aa.numpy(), bb.numpy()):
                     return False
-        else:
-            if not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
-                return False
+        elif not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
+            return False
     return True
 
 
@@ -386,7 +385,7 @@ def are_stripped_lines_same(a, b, ignore_order=False):
                 all_same = False
             else:
                 # word order
-                a_to_b = list()
+                a_to_b = []
                 for word_a in splitted_a:
                     try:
                         a_to_b.append(splitted_b.index(word_a))

@@ -21,7 +21,7 @@ class DoubleLatticeTile(TileBase):
         parameters=None,
         parameter_sensitivities=None,
         contact_length=0.5,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the branch
         thicknesses.

@@ -22,7 +22,10 @@ class Cube3D(TileBase):
         self._n_info_per_eval_point = 1
 
     def create_tile(
-        self, parameters=None, parameter_sensitivities=None, **kwargs
+        self,
+        parameters=None,
+        parameter_sensitivities=None,
+        **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the strut
         thicknesses.

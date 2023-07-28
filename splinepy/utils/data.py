@@ -194,7 +194,7 @@ class PhysicalSpaceArray(np.ndarray):
             self._source_ptr.set_row(key[0], self[key[0]])
 
         elif isinstance(key, tuple) and (
-            isinstance(key[0], list) or isinstance(key[0], np.ndarray)
+            isinstance(key[0], (list, np.ndarray))
         ):
             if isinstance(key[0][0], (np.bool_, bool)):
                 key = (contig(self.row_indices()[key[0]]),)
@@ -303,23 +303,25 @@ def enforce_contiguous_values(dict_):
     -------
     dict_with_contiguous: dict
     """
-    dict_with_contiguous = dict()
+    dict_with_contiguous = {}
     for key, value in dict_.items():
         # most likely will be asking about np.ndarray
         if isinstance(value, np.ndarray):
-            value = enforce_contiguous(value)
+            contig_value = enforce_contiguous(value)
 
         # or, list. only check if the first element is np.ndarray
-        elif isinstance(value, list):
-            if isinstance(value[0], np.ndarray):
-                value = [enforce_contiguous(v) for v in value]
+        elif isinstance(value, list) and isinstance(value[0], np.ndarray):
+            contig_value = [enforce_contiguous(v) for v in value]
 
         # abandon Nones
         elif value is None:
             continue
 
+        else:
+            contig_value = value
+
         # set item
-        dict_with_contiguous[key] = value
+        dict_with_contiguous[key] = contig_value
 
     return dict_with_contiguous
 
@@ -360,10 +362,7 @@ def cartesian_product(arrays, reverse=True):
 
     # reverse order the view of output array, so that reverse
     # is again in original order, but just reversed fastest iterating dim
-    if reverse:
-        _cartesian = cartesian[..., ::-1]
-    else:
-        _cartesian = cartesian
+    _cartesian = cartesian[..., ::-1] if reverse else cartesian
 
     dim_reducing_views = (
         *accumulate(

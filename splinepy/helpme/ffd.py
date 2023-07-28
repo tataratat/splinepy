@@ -330,7 +330,7 @@ class FFD(SplinepyBase):
 
         return_gustaf = kwargs.get("return_gustaf", False)
 
-        things_to_show = dict()
+        things_to_show = {}
 
         # let's show faces at most, since volumes can take awhile
         mesh = self._mesh

@@ -29,7 +29,6 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
     -------
     None
     """
-    from splinepy import NURBS, BSpline
     from splinepy.spline import Spline
 
     if fields_only and (len(multipatch.fields) == 0):
@@ -92,20 +91,10 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
         # Transform bezier types, as they are not supported in gismo
         if spline.name.startswith("Bezier"):
             type_name = "BSpline"
-            spline = BSpline(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
+            spline = spline.bspline  # noqa PLW2901
         elif spline.name.startswith("RationalBezier"):
             type_name = "Nurbs"
-            spline = NURBS(
-                **spline.todict(),
-                knot_vectors=[
-                    [0] * (a + 1) + [1] * (a + 1) for a in spline.degrees
-                ],
-            )
+            spline = spline.nurbs  # noqa PLW2901
         elif spline.name.startswith("BSpline"):
             type_name = "BSpline"
         elif spline.name.startswith("NURBS"):
@@ -405,7 +394,7 @@ def export(
                         "Gismo option in unsupported format, tag must be set, "
                         "please check out export documentation"
                     )
-                attributes = gismo_dictionary.get("attributes", dict())
+                attributes = gismo_dictionary.get("attributes", {})
                 option_text = gismo_dictionary.get("text", None)
                 optional_data = ET.SubElement(
                     ETelement,
@@ -514,7 +503,7 @@ def load(fname, load_options=True):
             patch_element = child.find("patches")
             if patch_element is None:
                 debug("Unsupported format")
-            if not patch_element.attrib.get("type") == "id_range":
+            if patch_element.attrib.get("type") != "id_range":
                 debug(f"Invalid patch type {patch_element.attrib.get('type')}")
             patch_range = np.fromstring(
                 patch_element.text.replace("\n", " "), sep=" ", dtype=np.int64
@@ -591,15 +580,14 @@ def load(fname, load_options=True):
                 list_of_splines.append(
                     settings.NAME_TO_TYPE["NURBS"](**spline_dict)
                 )
+        elif load_options:
+            list_of_options.append(make_dictionary(child))
         else:
-            if load_options:
-                list_of_options.append(make_dictionary(child))
-            else:
-                debug(
-                    f"Found unsupported keyword {child.tag}, which will be"
-                    " ignored"
-                )
-                continue
+            debug(
+                f"Found unsupported keyword {child.tag}, which will be"
+                " ignored"
+            )
+            continue
 
     debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
     multipatch = Multipatch(list_of_splines)

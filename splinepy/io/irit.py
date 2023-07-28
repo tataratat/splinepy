@@ -66,10 +66,10 @@ def load(fname, expand_tabs=True, strip_comments=False):
             spline = {}
 
             # Extract data from data
-            data = re.split(r"\]\s*\]", data)[0] + "]"
+            extracted_data = re.split(r"\]\s*\]", data)[0] + "]"
 
             # Split dimensions and degrees from data
-            dim_and_deg = re.split(r"(e\d|p\d)", data)
+            dim_and_deg = re.split(r"(e\d|p\d)", extracted_data)
 
             # must contain ctps/degs rational/poly dimension control points
             if len(dim_and_deg) != 3:
@@ -78,7 +78,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
                     "following string data set:\n"
                     + type.capitalize()
                     + " "
-                    + data
+                    + extracted_data
                 )
 
             # Dim is stored in second string written (E/P)+DIM
@@ -125,7 +125,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
                     "spline:\n"
                     + type.capitalize()
                     + " "
-                    + data
+                    + extracted_data
                     + "\nExpected "
                     + str(n_ctps)
                     + " got "
@@ -145,7 +145,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
                         "Could not find enough knot vectors in bspline string:"
                         + type.capitalize()
                         + " "
-                        + data
+                        + extracted_data
                         + "\nExpected "
                         + str(para_dim)
                         + " got "

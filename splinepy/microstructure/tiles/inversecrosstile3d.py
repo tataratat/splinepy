@@ -31,7 +31,7 @@ class InverseCrossTile3D(TileBase):
         boundary_width=0.1,
         filling_height=0.5,
         seperator_distance=None,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a closing tile to match with closed surface.
 
@@ -872,7 +872,7 @@ class InverseCrossTile3D(TileBase):
         parameters=None,
         seperator_distance=0.5,
         center_expansion=1.0,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create an inverse microtile based on the parameters that describe
         the branch thicknesses.

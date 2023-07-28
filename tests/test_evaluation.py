@@ -279,7 +279,7 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         )
 
         # increase orders for derivatives
-        for i in range(2):
+        for _i in range(2):
             bezier_c.elevate_degrees([0, 1])
             bspline_c.elevate_degrees([0, 1])
 

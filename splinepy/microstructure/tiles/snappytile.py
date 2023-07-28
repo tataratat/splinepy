@@ -16,14 +16,13 @@ class SnappyTile(TileBase):
     def closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,
+        parameter_sensitivities=None,  # noqa ARG002 # TODO
         closure=None,
         contact_length=0.1,
         a=0.1,
         b=0.2,
-        c=0.3,
         r=0.15,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a closing tile to match with closed surface.
 
@@ -43,9 +42,6 @@ class SnappyTile(TileBase):
           height/ thickness of the thinner/upper beam
         b : float
           height/ thickness of the lower/thicker beam
-        c : float
-          offset to the upper beam (for consistent snap-through must fulfill
-          2*c<1-b)
         r : float
           'radius' of the cubic bezier
 
@@ -257,13 +253,13 @@ class SnappyTile(TileBase):
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,
+        parameter_sensitivities=None,  # noqa ARG002 # TODO
         contact_length=0.1,
         a=0.1,
         b=0.2,
         c=0.3,
         r=0.15,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the wall
         thicknesses.

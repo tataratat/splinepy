@@ -50,7 +50,7 @@ def load(fname):
         "weights",
         "Ordering",
     ]
-    nurbs_dict = dict(knotvectors=[], weights=[], Ordering=[])
+    nurbs_dict = {"knotvectors": [], "weights": [], "Ordering": []}
     collect = False
     with open(fname) as f:
         for single_line in f:
@@ -58,7 +58,7 @@ def load(fname):
             if not line:
                 continue
 
-            keyword_hit = [k for k in mk.keys() if line.startswith(k)]
+            keyword_hit = [k for k in mk if line.startswith(k)]
             if len(keyword_hit) > 1:
                 raise ValueError("double keyword hit!")
 
@@ -116,12 +116,12 @@ def load(fname):
         flat_list=True,
     )
 
-    return dict(
-        degrees=degrees,
-        knot_vectors=knot_vectors,
-        control_points=np.ascontiguousarray(control_points)[reorder],
-        weights=np.ascontiguousarray(weights)[reorder],
-    )
+    return {
+        "degrees": degrees,
+        "knot_vectors": knot_vectors,
+        "control_points": np.ascontiguousarray(control_points)[reorder],
+        "weights": np.ascontiguousarray(weights)[reorder],
+    }
 
 
 def read_solution(
@@ -165,12 +165,12 @@ def read_solution(
         flat_list=True,
     )
 
-    return dict(
-        degrees=deepcopy(reference_nurbs.degrees),
-        knot_vectors=deepcopy(reference_nurbs.knot_vectors),
-        control_points=np.ascontiguousarray(solution)[reorder],
-        weights=deepcopy(reference_nurbs.weights),
-    )
+    return {
+        "degrees": deepcopy(reference_nurbs.degrees),
+        "knot_vectors": deepcopy(reference_nurbs.knot_vectors),
+        "control_points": np.ascontiguousarray(solution)[reorder],
+        "weights": deepcopy(reference_nurbs.weights),
+    }
 
 
 def mfem_index_mapping(
@@ -305,7 +305,7 @@ def export_cartesian(
     # Set Problem dimensions
     para_dim = spline_list.para_dim
     dim = spline_list.dim
-    if not ((para_dim == dim) and (dim == 3 or dim == 2)):
+    if not ((para_dim == dim) and (dim in {2, 3})):
         raise ValueError("Only 2D2D or 3D3D splines are supported")
 
     # Auxiliary function to identify corner vertices of the underlying spline
@@ -624,7 +624,7 @@ def export(fname, nurbs, precision=10):
     )
 
     with np.printoptions(
-        formatter=dict(float_kind=lambda x: f"{x:.{precision}f}")
+        formatter={"float_kind": lambda x: f"{x:.{precision}f}"}
     ):
         # weights - string operation
         weights_sec = str(nurbs.weights.flatten()[reorder_ids].tolist())
