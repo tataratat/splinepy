@@ -263,7 +263,7 @@ setup(
         "splinepy.microstructure",
         "splinepy.microstructure.tiles",
     ],
-    python_requires=">=py36",
+    python_requires=">=3.6",
     install_requires=[
         "numpy",
         "gustaf>=0.0.12",
