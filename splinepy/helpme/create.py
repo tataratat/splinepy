@@ -161,7 +161,7 @@ def revolved(
 
     # The parametric dimension is independent of the revolution but the
     # rotation-matrix is only implemented for 2D and 3D problems
-    if not (cps.shape[1] == 2 or cps.shape[1] == 3):
+    if cps.shape[1] not in {2, 3}:
         raise NotImplementedError(
             "Sorry," "revolutions only implemented for 2D and 3D splines"
         )

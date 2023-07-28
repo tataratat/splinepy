@@ -459,16 +459,14 @@ class Microstructure(SplinepyBase):
                         )
                     n_splines_per_tile = len(splines)
                     empty_splines = [None] * n_splines_per_tile
-                    for i in anti_support:
-                        self._microstructure_derivatives[i].extend(
+                    for j in anti_support:
+                        self._microstructure_derivatives[j].extend(
                             empty_splines
                         )
-                    for i, deris in enumerate(derivatives):
-                        for _j, (tile_v, tile_deriv) in enumerate(
-                            zip(splines, deris)
-                        ):
+                    for j, deris in enumerate(derivatives):
+                        for tile_v, tile_deriv in zip(splines, deris):
                             self._microstructure_derivatives[
-                                support[i]
+                                support[j]
                             ].append(
                                 def_fun.composition_derivative(
                                     tile_v, tile_deriv
@@ -498,7 +496,7 @@ class Microstructure(SplinepyBase):
                 self._microstructure_derivatives.copy(),
             )
 
-    def show(self, use_saved=False, return_gustaf=False, **kwargs):
+    def show(self, use_saved=False, **kwargs):
         """
         Shows microstructure. Consists of deformation_function, microtile, and
         microstructure. Supported only by vedo.
@@ -506,15 +504,11 @@ class Microstructure(SplinepyBase):
         Parameters
         ----------
         use_saved: bool
-        return_gustaf: bool
         **kwargs: kwargs
           Will be passed to show function
 
         Returns
         -------
-        gustaf_obj: dict
-          keys are deformation_function, microtile, and microstructure.
-          Iff return_gustaf is True.
         plt: vedo.Plotter
         """
         if use_saved:
@@ -672,6 +666,6 @@ class _UserTile:
     def dim(self):
         return self._dim
 
-    def create_tile(self, **kwargs):
+    def create_tile(self, **kwargs):  # noqa ARG002
         """Create a tile on the fly."""
         return self._user_tile.copy()

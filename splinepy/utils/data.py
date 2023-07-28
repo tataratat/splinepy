@@ -307,19 +307,21 @@ def enforce_contiguous_values(dict_):
     for key, value in dict_.items():
         # most likely will be asking about np.ndarray
         if isinstance(value, np.ndarray):
-            value = enforce_contiguous(value)
+            contig_value = enforce_contiguous(value)
 
         # or, list. only check if the first element is np.ndarray
-        elif isinstance(value, list):
-            if isinstance(value[0], np.ndarray):
-                value = [enforce_contiguous(v) for v in value]
+        elif isinstance(value, list) and isinstance(value[0], np.ndarray):
+            contig_value = [enforce_contiguous(v) for v in value]
 
         # abandon Nones
         elif value is None:
             continue
 
+        else:
+            contig_value = value
+
         # set item
-        dict_with_contiguous[key] = value
+        dict_with_contiguous[key] = contig_value
 
     return dict_with_contiguous
 

@@ -29,24 +29,24 @@ class CreatorTest(c.SplineBasedTestCase):
             bspline.create.extruded(extrusion_vector=[1])
 
         # Create a random axis
-        axis = np.random.rand(3)
-        x, y, z = np.random.rand(3).tolist()
+        axis = np.random.random(3)
+        x, y, z = np.random.random(3)
 
         # Test results
         for spline_g in (bspline, nurbs, rationalbezier, bezier):
             self.assertTrue(
                 np.allclose(
-                    bspline.create.extruded(extrusion_vector=axis).evaluate(
+                    spline_g.create.extruded(extrusion_vector=axis).evaluate(
                         [[x, y, z]]
                     ),
-                    np.hstack((bspline.evaluate([[x, y]]), np.zeros((1, 1))))
+                    np.hstack((spline_g.evaluate([[x, y]]), np.zeros((1, 1))))
                     + z * axis,
                 )
             )
 
         # Create a random axis
-        axis = np.random.rand(3)
-        x, y, z = np.random.rand(3).tolist()
+        axis = np.random.random(3)
+        x, y, z = np.random.random(3)
 
         # Test results
         for spline_g in (bspline, nurbs, rationalbezier, bezier):
@@ -107,7 +107,7 @@ class CreatorTest(c.SplineBasedTestCase):
 
         # Revolve always around z-axis
         # init rotation matrix
-        r_angle = np.random.rand()
+        r_angle = np.random.random()
         r_center = np.array([1, 0])
         cc, ss = np.cos(r_angle), np.sin(r_angle)
         R = np.array([[cc, -ss, 0], [ss, cc, 0], [0, 0, 1]])

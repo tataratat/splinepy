@@ -759,10 +759,9 @@ class Spline(SplinepyBase, core.PySpline):
             if not self.has_knot_vectors:
                 return None
 
-            if kvs is not None:
-                # check type and early exit if it is core type
-                if isinstance(kvs[0], core.KnotVector):
-                    return kvs
+            # check type and early exit if it is core type
+            if kvs is not None and isinstance(kvs[0], core.KnotVector):
+                return kvs
 
             # get one from the core
             kvs = [self._knot_vector(i) for i in range(self.para_dim)]

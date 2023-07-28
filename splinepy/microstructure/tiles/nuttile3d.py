@@ -18,9 +18,9 @@ class NutTile3D(TileBase):
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,
+        parameter_sensitivities=None,  # noqa ARG002 # TODO
         contact_length=0.2,
-        **kwargs
+        **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the wall
         thicknesses.
@@ -207,7 +207,7 @@ class NutTile3D(TileBase):
 def closing_tile(
     self,
     parameters=None,
-    parameter_sensitivities=None,
+    parameter_sensitivities=None,  # noqa ARG002 # TODO
     contact_length=0.2,
     closure=None,
 ):

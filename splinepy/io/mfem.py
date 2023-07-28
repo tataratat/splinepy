@@ -305,7 +305,7 @@ def export_cartesian(
     # Set Problem dimensions
     para_dim = spline_list.para_dim
     dim = spline_list.dim
-    if not ((para_dim == dim) and (dim == 3 or dim == 2)):
+    if not ((para_dim == dim) and (dim in {2, 3})):
         raise ValueError("Only 2D2D or 3D3D splines are supported")
 
     # Auxiliary function to identify corner vertices of the underlying spline

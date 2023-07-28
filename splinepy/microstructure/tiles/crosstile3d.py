@@ -27,7 +27,7 @@ class CrossTile3D(TileBase):
         closure=None,
         boundary_width=0.1,
         filling_height=0.5,
-        **kwargs,
+        **kwargs,  # noqa ARG002
     ):
         """Create a closing tile to match with closed surface.
 
@@ -358,7 +358,12 @@ class CrossTile3D(TileBase):
                 "Requested closing dimension is not supported"
             )
 
-    def create_tile(self, parameters=None, center_expansion=1.0, **kwargs):
+    def create_tile(
+        self,
+        parameters=None,
+        center_expansion=1.0,
+        **kwargs,  ## noqa ARG002
+    ):
         """Create a microtile based on the parameters that describe the branch
         thicknesses.
 

@@ -64,7 +64,6 @@ if __name__ == "__main__":
             target_points, degree=3, num_control_points=n_cps
         )
 
-        n_cps = approximated_curve.control_mesh_resolutions[0]
         max_error, mean_error = evaluate_approximation(
             approximated_curve, target_points
         )

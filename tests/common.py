@@ -317,9 +317,8 @@ def are_splines_equal(a, b):
             for aa, bb in zip(a.knot_vectors, b.knot_vectors):
                 if not np.allclose(aa.numpy(), bb.numpy()):
                     return False
-        else:
-            if not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
-                return False
+        elif not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
+            return False
     return True
 
 

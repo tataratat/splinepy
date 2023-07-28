@@ -381,7 +381,7 @@ class BSpline(BSplineBase):
     None
     """
 
-    __slots__ = "_fitting_queries"
+    __slots__ = ("_fitting_queries",)
 
     def __init__(
         self,
@@ -403,7 +403,7 @@ class BSpline(BSplineBase):
         query_points,
         degree,
         centripetal=True,
-        knot_vector=[],
+        knot_vector=None,
         save_query=True,
     ):
         """
@@ -427,6 +427,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
+        if knot_vector is None:
+            knot_vector = []
+
         query_points = utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )
@@ -454,7 +457,7 @@ class BSpline(BSplineBase):
         degree,
         num_control_points,
         centripetal=True,
-        knot_vector=[],
+        knot_vector=None,
         save_query=True,
     ):
         """
@@ -480,6 +483,9 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
+        if knot_vector is None:
+            knot_vector = []
+
         query_points = utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )

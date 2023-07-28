@@ -216,7 +216,7 @@ gus.show(my_ms, knots=True, control_points=False, resolution=2)
 
 
 def parametrization_function_nut(x):
-    return np.array([0.3]).reshape(-1, 1)
+    return np.ones((len(x), 1)) * 0.3
 
 
 # Test new microstructure
