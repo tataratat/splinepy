@@ -76,12 +76,19 @@ class Microstructure(SplinepyBase):
         -------
         None
         """
+        from splinepy.bspline import BSplineBase
+
         if not isinstance(deformation_function, PySpline):
             raise ValueError(
                 "Deformation function must be splinepy-Spline."
                 " e.g. splinepy.NURBS"
             )
         self._deformation_function = deformation_function
+
+        # Safeguard
+        if isinstance(deformation_function, BSplineBase):
+            self._deformation_function.normalize_knot_vectors()
+
         self._sanity_check()
 
     @property
@@ -381,7 +388,6 @@ class Microstructure(SplinepyBase):
                         i_pd,
                         deformation_function_copy.unique_knots[i_pd][1:-1],
                     )
-            def_fun_para_space = def_fun_para_space.extract.beziers()
 
         # Extract the bezier patches
         def_fun_patches = deformation_function_copy.extract.beziers()
@@ -498,8 +504,8 @@ class Microstructure(SplinepyBase):
         # provide all necessary information on the construction process
         (
             bezier_patches,
-            para_space_patches,
             knot_insertion_matrices,
+            para_space_patches,
             element_resolutions,
         ) = self._get_auxiliary_information(
             knot_span_wise=knot_span_wise,
@@ -598,8 +604,19 @@ class Microstructure(SplinepyBase):
             )
 
             # Perform the composition
-            for tile_patch in tile:
-                spline_list_ms.append(def_fun.compose(tile_patch))
+            if macro_sensitivities:
+                basis_function_compositions = []
+                for tile_patch in tile:
+                    composed, basis_function_composition = def_fun.compose(
+                        tile_patch, compute_sensitivities=True
+                    )
+                    spline_list_ms.append(composed)
+                    basis_function_compositions.append(
+                        basis_function_composition
+                    )
+            else:
+                for tile_patch in tile:
+                    spline_list_ms.append(def_fun.compose(tile_patch))
 
             # Determine the geometric sensitivities using the chain rule
             if parameter_sensitivities:
@@ -616,8 +633,33 @@ class Microstructure(SplinepyBase):
             # Compute the derivatives with respect to the deformation
             # function's ctps
             if macro_sensitivities:
-                self._logw("Do some fancy calculations here")
-                pass
+                for patch_info in basis_function_compositions:
+                    # patch_info is a list of splines all representing the
+                    # derivatives of the composed spline with respect to a
+                    # component of a control point within the bezier patch
+                    # of the deformation function.
+                    cps = np.hstack(p.cps for p in patch_info)
+                    # We use the matrices to map the contributions of the
+                    # bezier ctps to the deformation functions
+                    mapped_cps = cps @ knot_insertion_matrices[i_patch]
+
+                    # Last step: create beziers to be added to the derivative
+                    # fields
+                    for j_cc in range(n_macro_sensitivities):
+                        control_points = np.zeros(
+                            (cps.shape[0], self._deformation_function.dim)
+                        )
+                        ii_ctps, jj_dim = divmod(
+                            j_cc, self._deformation_function.dim
+                        )
+                        control_points[:, jj_dim] = mapped_cps[:, ii_ctps]
+                        spline_list_derivs[
+                            n_parameter_sensitivities + j_cc
+                        ].append(
+                            type(patch_info[0])(
+                                patch_info[0].degrees, control_points
+                            )
+                        )
 
         # Use a multipatch object to bundle all information
         self._microstructure = Multipatch(splines=spline_list_ms)
@@ -625,6 +667,8 @@ class Microstructure(SplinepyBase):
         # Add fields if requested
         if macro_sensitivities or parameter_sensitivities:
             self._microstructure.add_fields(spline_list_derivs)
+
+        return self._microstructure
 
     def show(self, use_saved=False, **kwargs):
         """
@@ -648,7 +692,7 @@ class Microstructure(SplinepyBase):
                 raise ValueError("No previous microstructure saved")
         else:
             # Create on the fly
-            microstructure = Multipatch(splines=self.create(**kwargs))
+            microstructure = self.create(**kwargs)
 
         # Precompute splines
         microtile = self.microtile.create_tile(**kwargs)
@@ -657,7 +701,7 @@ class Microstructure(SplinepyBase):
         # Show in vedo
         return gus.show(
             ["Deformation Function", deformation_function],
-            ["Microtile", microtile],
+            ["Microtile", microtile[0]],
             ["Composed Microstructure", microstructure],
             **kwargs,
         )
