@@ -217,7 +217,7 @@ def _vedo_showable(spline):
         # configured arrow_data. Multipatch might just return a multipatch,
         # so a careful step here.
         has_locations = getattr(adapted_adata, "has_locations", False)
-        adata_on = "arrow_data_on" in spline.show_options
+        adata_on = "arrow_data_on" in spline.show_options.keys()  # noqa SIM118
         create_vertices = has_locations or adata_on
 
         # this case causes conflict of interest. raise
