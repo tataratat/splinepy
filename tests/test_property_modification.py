@@ -193,6 +193,12 @@ class InplaceModificationTest(c.unittest.TestCase):
         assert c.np.allclose(carr, n.cps[0])
         cps_are_synced(n)
 
+        # copy should return a normal np.ndarray
+        ndarr = n.cps.copy()
+        assert isinstance(ndarr, c.np.ndarray)
+        assert not isinstance(ndarr, type(n.cps))
+        assert not isinstance(ndarr, c.splinepy.utils.data.PhysicalSpaceArray)
+
 
 if __name__ == "__main__":
     c.unittest.main()

@@ -74,7 +74,7 @@ class PhysicalSpaceArray(np.ndarray):
 
     def copy(self, *args, **kwargs):
         """copy creates regular numpy array"""
-        return super(self.__class__, self).copy(*args, **kwargs)
+        return np.array(self, *args, copy=True, **kwargs)
 
     def view(self, *args, **kwargs):
         """Set writeable flags to False for the view."""
@@ -648,12 +648,13 @@ class MultipatchData(SplineData):
         """
         if isinstance(value, SplineDataAdaptor):
             self._saved[key] = value
-        elif "PyMultiPatch" in str(type(value).__mro__):
+        elif "PyMultipatch" in str(type(value).__mro__):
             self._saved[key] = len(self._helpee.fields)
             self._helpee.add_fields([value])
         else:
             raise TypeError(
-                "MultipatchData supports SplineDataAdapter or Multipatch"
+                "MultipatchData supports SplineDataAdapter or Multipatch."
+                f"given type: {type(value)}"
             )
 
     def __getitem__(self, key):
