@@ -27,7 +27,7 @@ class InverseCrossTile3D(TileBase):
     def closing_tile(
         self,
         parameters=None,
-        parameter_senstitivities=None,
+        parameter_sensitivities=None,
         closure=None,
         boundary_width=0.1,
         filling_height=0.5,
@@ -931,6 +931,11 @@ class InverseCrossTile3D(TileBase):
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
+            )
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         self.check_params(parameters)

@@ -69,7 +69,7 @@ class NutTile2D(TileBase):
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
             )
-        
+
         v_h_void = parameters[0, 0]
         if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
             raise ValueError(

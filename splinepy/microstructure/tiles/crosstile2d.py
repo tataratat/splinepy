@@ -92,7 +92,7 @@ class CrossTile2D(TileBase):
         else:
             n_derivatives = 0
             derivatives = None
-        
+
         splines = []
         for i_derivative in range(n_derivatives + 1):
             # Constant auxiliary values

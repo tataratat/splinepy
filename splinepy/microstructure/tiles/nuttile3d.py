@@ -18,7 +18,7 @@ class NutTile3D(TileBase):
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,   # TODO
+        parameter_sensitivities=None,  # TODO
         contact_length=0.2,
         **kwargs,  # noqa ARG002
     ):
@@ -208,7 +208,6 @@ class NutTile3D(TileBase):
         )
 
         return (spline_list, None)
-
 
     def closing_tile(
         self,

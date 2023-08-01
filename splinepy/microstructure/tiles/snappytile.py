@@ -16,7 +16,7 @@ class SnappyTile(TileBase):
     def closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None, # TODO
+        parameter_sensitivities=None,  # TODO
         closure=None,
         contact_length=0.1,
         a=0.1,

@@ -69,7 +69,7 @@ class CrossTile3D(TileBase):
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
             )
-        
+
         if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError("Thickness out of range (0, .5)")
 

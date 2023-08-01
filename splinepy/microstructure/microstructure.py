@@ -535,7 +535,7 @@ class Microstructure(SplinepyBase):
                 # Evaluate parametrization function
                 tile_parameters = self.parametrization_function(positions)
             else:
-                tile_parameters = None  
+                tile_parameters = None
 
             # If the sensitivities are requested, evaluate the sensitivity
             # function, which must be provided by the user
@@ -788,6 +788,6 @@ class _UserTile(SplinepyBase):
         Microtile: list<Bezier>
         Derivative : None
         """
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             self._logd(f"Additional argument {k} : {v} will be ignored")
         return (self._user_tile.copy(), None)

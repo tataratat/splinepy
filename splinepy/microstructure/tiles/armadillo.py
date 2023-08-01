@@ -56,7 +56,7 @@ class Armadillo(TileBase):
 
         if not ((contact_length > 0) and (contact_length < 0.99)):
             raise ValueError("The length of a side must be in (0.01, 0.99)")
-        
+
         if parameter_sensitivities is not None:
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
@@ -5017,12 +5017,12 @@ class Armadillo(TileBase):
 
         spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
 
-        return (spline_list, None) 
+        return (spline_list, None)
 
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None, # TODO
+        parameter_sensitivities=None,  # TODO
         contact_length=0.3,
         **kwargs,  # noqa ARG002
     ):
@@ -5066,7 +5066,7 @@ class Armadillo(TileBase):
                 )
                 * 0.2
             )
-        
+
         if parameter_sensitivities is not None:
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"

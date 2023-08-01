@@ -79,10 +79,13 @@ module_list = map(
 )
 for mt in module_list:
     if hasattr(mt, "create_tile"):
+        if not isinstance(mt().create_tile(), tuple):
+            mt().create_tile()
+            raise ValueError("Must be tuple in updated version")
         micro_tiles.append(
             [
                 mt.__qualname__,
-                mt().create_tile(),
+                mt().create_tile()[0],
             ]
         )
 
@@ -95,7 +98,6 @@ gus.show(
 )
 
 # Ellipsoid
-a = splinepy.microstructure.tiles.Ellipsvoid().create_tile()
 for ii in range(4):
     a, b = splinepy.microstructure.tiles.Ellipsvoid().create_tile(
         parameters=np.array([[0.5, 0.3, np.deg2rad(20), np.deg2rad(10)]]),
