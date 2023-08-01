@@ -17,7 +17,7 @@ class Armadillo(TileBase):
     def closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # noqa ARG002  # TODO
+        parameter_sensitivities=None,  # TODO
         contact_length=0.2,
         closure=None,
         **kwargs,  # noqa ARG002
@@ -46,6 +46,7 @@ class Armadillo(TileBase):
         Results
         -------
         spline_list : list
+        derivative_list : list / None
         """
         if closure is None:
             raise ValueError("No closing direction given")
@@ -55,6 +56,11 @@ class Armadillo(TileBase):
 
         if not ((contact_length > 0) and (contact_length < 0.99)):
             raise ValueError("The length of a side must be in (0.01, 0.99)")
+        
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
+            )
 
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
@@ -5011,12 +5017,12 @@ class Armadillo(TileBase):
 
         spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
 
-        return spline_list
+        return (spline_list, None) 
 
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # noqa ARG002 # TODO
+        parameter_sensitivities=None, # TODO
         contact_length=0.3,
         **kwargs,  # noqa ARG002
     ):
@@ -5043,6 +5049,7 @@ class Armadillo(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivative_list : list / None
         """
 
         if not isinstance(contact_length, float):
@@ -5058,6 +5065,11 @@ class Armadillo(TileBase):
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
+            )
+        
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         self.check_params(parameters)
@@ -5946,4 +5958,4 @@ class Armadillo(TileBase):
             Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
         )
 
-        return spline_list
+        return (spline_list, None)

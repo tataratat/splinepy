@@ -16,7 +16,7 @@ class SnappyTile(TileBase):
     def closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # noqa ARG002 # TODO
+        parameter_sensitivities=None, # TODO
         closure=None,
         contact_length=0.1,
         a=0.1,
@@ -48,11 +48,17 @@ class SnappyTile(TileBase):
         Results
         -------
         spline_list : list
+        derivatives: list<list<splines>> / None
         """
         if closure is None:
             raise ValueError("No closing direction given")
 
         self.check_params(parameters)
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
+            )
 
         spline_list = []
         v_zero = 0.0
@@ -244,7 +250,7 @@ class SnappyTile(TileBase):
             ) + [v_one_half, v_zero]
 
             spline_list.append(Bezier(degrees=[3, 1], control_points=spline_5))
-            return spline_list
+            return (spline_list, None)
         else:
             raise ValueError(
                 "Closing tile is only implemented for y-enclosure"
@@ -253,7 +259,7 @@ class SnappyTile(TileBase):
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # noqa ARG002 # TODO
+        parameter_sensitivities=None,  # TODO
         contact_length=0.1,
         a=0.1,
         b=0.2,
@@ -290,6 +296,7 @@ class SnappyTile(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivatives: list<list<splines>> / None
         """
 
         for param in [a, b, c, r, contact_length]:
@@ -321,6 +328,11 @@ class SnappyTile(TileBase):
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
+            )
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         self.check_params(parameters)
@@ -458,4 +470,4 @@ class SnappyTile(TileBase):
 
         spline_list.append(Bezier(degrees=[3, 1], control_points=spline_10))
 
-        return spline_list
+        return (spline_list, None)

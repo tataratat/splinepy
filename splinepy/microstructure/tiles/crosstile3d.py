@@ -24,6 +24,7 @@ class CrossTile3D(TileBase):
     def closing_tile(
         self,
         parameters=None,
+        parameter_sensitivities=None,
         closure=None,
         boundary_width=0.1,
         filling_height=0.5,
@@ -49,6 +50,7 @@ class CrossTile3D(TileBase):
         Returns
         -------
         list_of_splines : list
+        derivative_list : list / None
         """
         # Check parameters
         if closure is None:
@@ -63,6 +65,11 @@ class CrossTile3D(TileBase):
                 * 0.2
             )
 
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
+            )
+        
         if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError("Thickness out of range (0, .5)")
 
@@ -352,7 +359,7 @@ class CrossTile3D(TileBase):
                 Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
             )
 
-            return spline_list
+            return (spline_list, None)
         else:
             raise NotImplementedError(
                 "Requested closing dimension is not supported"
@@ -361,6 +368,7 @@ class CrossTile3D(TileBase):
     def create_tile(
         self,
         parameters=None,
+        parameter_sensitivities=None,
         center_expansion=1.0,
         **kwargs,  ## noqa ARG002
     ):
@@ -383,6 +391,7 @@ class CrossTile3D(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivative_list : list / None
         """
 
         if not isinstance(center_expansion, float):
@@ -404,6 +413,11 @@ class CrossTile3D(TileBase):
                     )
                 )
                 * 0.2
+            )
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         [
@@ -598,4 +612,4 @@ class CrossTile3D(TileBase):
             )
         )
 
-        return spline_list
+        return (spline_list, None)

@@ -27,6 +27,7 @@ class InverseCrossTile3D(TileBase):
     def closing_tile(
         self,
         parameters=None,
+        parameter_senstitivities=None,
         closure=None,
         boundary_width=0.1,
         filling_height=0.5,
@@ -53,6 +54,7 @@ class InverseCrossTile3D(TileBase):
         Returns
         -------
         list_of_splines : list
+        derivatives: list<list<splines>> / None
         """
         # Check parameters
         if closure is None:
@@ -72,6 +74,11 @@ class InverseCrossTile3D(TileBase):
                     )
                 )
                 * 0.2
+            )
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
@@ -865,15 +872,16 @@ class InverseCrossTile3D(TileBase):
                 )
             )
 
-            return spline_list
+            return (spline_list, None)
         else:
             raise ValueError("Corner Type not supported")
 
     def create_tile(
         self,
         parameters=None,
+        parameter_sensitivities=None,
         seperator_distance=None,
-        center_expansion=None,
+        center_expansion=1.0,
         **kwargs,  # noqa ARG002
     ):
         """Create an inverse microtile based on the parameters that describe
@@ -916,7 +924,6 @@ class InverseCrossTile3D(TileBase):
         min_radius = max(0.5 - seperator_distance, 0)
 
         # set to default if nothing is given
-        self.check_params(parameters)
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
             parameters = (
@@ -925,6 +932,8 @@ class InverseCrossTile3D(TileBase):
                 )
                 * 0.2
             )
+
+        self.check_params(parameters)
 
         [
             x_min_r,
@@ -1573,4 +1582,4 @@ class InverseCrossTile3D(TileBase):
             Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
         )
 
-        return spline_list
+        return (spline_list, None)
