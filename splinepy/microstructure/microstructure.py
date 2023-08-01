@@ -512,16 +512,32 @@ class Microstructure(SplinepyBase):
             [np.arange(er) for er in element_resolutions]
         )
 
-        # Initialize return values
-        n_sensitivities = 0
-        if self.parameter_sensitivity_function is not None:
-            n_sensitivities = self.parameter_sensitivity_function(
+        # Determine the number of geometric derivatives with respect to the
+        # design variables
+        if parameter_sensitivities:
+            n_parameter_sensitivities = self.parameter_sensitivity_function(
                 self._microtile.evaluation_points
             ).shape[2]
-            self._microstructure_derivatives = [
-                [] for i in range(n_sensitivities)
+        else:
+            n_parameter_sensitivities = 0
+
+        # Determine the number of geometric derivatives with respect to the
+        # deformation function's control points
+        if macro_sensitivities:
+            n_macro_sensitivities = self.deformation_function.cps.size
+        else:
+            n_macro_sensitivities = 0
+
+        # Prepare field for derivatives
+        if macro_sensitivities or parameter_sensitivities:
+            spline_list_derivs = [
+                []
+                for i in range(
+                    n_parameter_sensitivities + n_macro_sensitivities
+                )
             ]
-        self._microstructure = []
+
+        spline_list_ms = []
 
         # Start actual composition
         for i_patch, def_fun in enumerate(bezier_patches):
@@ -583,27 +599,32 @@ class Microstructure(SplinepyBase):
 
             # Perform the composition
             for tile_patch in tile:
-                self._microstructure.append(def_fun.compose(tile_patch))
+                spline_list_ms.append(def_fun.compose(tile_patch))
 
+            # Determine the geometric sensitivities using the chain rule
             if parameter_sensitivities:
                 n_splines_per_tile = len(tile)
                 empty_splines = [None] * n_splines_per_tile
                 for j in anti_support:
-                    self._microstructure_derivatives[j].extend(empty_splines)
+                    spline_list_derivs[j].extend(empty_splines)
                 for j, deris in enumerate(derivatives):
                     for tile_v, tile_deriv in zip(tile, deris):
-                        self._microstructure_derivatives[support[j]].append(
+                        spline_list_derivs[support[j]].append(
                             def_fun.composition_derivative(tile_v, tile_deriv)
                         )
 
-        # return copy of precomputed member
-        if n_sensitivities == 0:
-            return self._microstructure.copy()
-        else:
-            return (
-                self._microstructure.copy(),
-                self._microstructure_derivatives.copy(),
-            )
+            # Compute the derivatives with respect to the deformation
+            # function's ctps
+            if macro_sensitivities:
+                self._logw("Do some fancy calculations here")
+                pass
+
+        # Use a multipatch object to bundle all information
+        self._microstructure = Multipatch(splines=spline_list_ms)
+
+        # Add fields if requested
+        if macro_sensitivities or parameter_sensitivities:
+            self._microstructure.add_fields(spline_list_derivs)
 
     def show(self, use_saved=False, **kwargs):
         """
@@ -622,7 +643,7 @@ class Microstructure(SplinepyBase):
         """
         if use_saved:
             if hasattr(self, "_microstructure"):
-                microstructure = Multipatch(self._microstructure)
+                microstructure = self._microstructure
             else:
                 raise ValueError("No previous microstructure saved")
         else:
