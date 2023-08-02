@@ -1001,8 +1001,7 @@ void PyMultipatch::Clear() {
   interfaces_ = py::array_t<int>();
   boundary_ids_ = py::array_t<int>();
   sub_patch_centers_ = py::array_t<double>();
-  field_list_ = py::list();
-  field_multipatches_ = {};
+  field_multipatches_ = py::list();
 }
 
 void PyMultipatch::SetPatchesNThreads(py::list& patches, const int nthreads) {
@@ -1426,6 +1425,7 @@ py::array_t<double> PyMultipatch::Sample(const int resolution,
 }
 
 void PyMultipatch::AddFields(py::list& fields,
+                             const int field_dim,
                              const bool check_name,
                              const bool check_dims,
                              const bool check_degrees,
@@ -1435,58 +1435,66 @@ void PyMultipatch::AddFields(py::list& fields,
   // allocate space
   const auto n_current_fields = static_cast<int>(field_multipatches_.size());
   const auto n_new_fields = static_cast<int>(fields.size());
-  const int n_total_fields = n_current_fields + n_new_fields;
-  field_multipatches_.resize(n_total_fields);
 
   // some hint values for null splines
   const int para_dim = ParaDim();
-  const int dim = Dim();
 
   // prepare error message
   std::string field_mismatch_info{};
   std::mutex field_mismatch_mutex;
 
-  // loop each field
+  std::vector<std::shared_ptr<PyMultipatch>> field_ptrs(n_new_fields);
+
+  // Multi-threading where each threads deals with a field at a time
   auto field_to_multipatch = [&](int begin, int end) {
-    // with in this nthread exe, we only use nthreads=1. This won't create
-    // any threads.
-    for (int i{n_current_fields + begin}, j{begin}; j < end; ++i, ++j) {
+    // Chunks over field ids
+    for (int i{begin}; i < end; ++i) {
       // create multipatch
-      py::list casted_list = fields[j].template cast<py::list>();
-      auto field_multipatch =
-          std::make_shared<PyMultipatch>(casted_list, para_dim, dim, 1);
+      py::list casted_list = fields[i].template cast<py::list>();
+
+      field_ptrs[i] =
+          std::make_shared<PyMultipatch>(casted_list, para_dim, field_dim, 1);
+
       // propagate same_parametric_bounds_ flag
-      field_multipatch->same_parametric_bounds_ = same_parametric_bounds_;
-      // set item
-      field_multipatches_[i] = field_multipatch;
+      field_ptrs[i]->same_parametric_bounds_ = same_parametric_bounds_;
 
       try {
         // check mismatch - doesn't check null splines
         RaiseMismatch(core_patches_,
-                      field_multipatches_[i]->core_patches_,
+                      field_ptrs[i]->core_patches_,
                       check_name,
                       check_dims,
                       check_dims,
                       check_degrees,
                       check_control_mesh_resolutions,
                       1);
-
       } catch (const std::runtime_error& e) {
         // set true, and add error message.
         std::lock_guard<std::mutex> guard(field_mismatch_mutex);
         field_mismatch_info += "[mismatch error from the field with index ("
-                               + std::to_string(j) + ")]\n" + e.what();
+                               + std::to_string(i) + ")]\n" + e.what();
       }
     }
   };
+
+  // Execute
+  splinepy::utils::NThreadExecution(field_to_multipatch,
+                                    n_new_fields,
+                                    nthreads);
 
   // raise, if there were error.
   if (field_mismatch_info.size() != 0) {
     splinepy::utils::PrintAndThrowError(field_mismatch_info);
   }
 
+  py::list local_fields(n_new_fields);
+
+  for (int i{}; i < n_new_fields; ++i) {
+    local_fields[i] = ToDerived(field_ptrs[i]);
+  }
+
   // all good, extend to list
-  field_list_ += fields;
+  field_multipatches_ += local_fields;
 }
 
 int PyMultipatch::GetNumberOfControlPoints() {
@@ -1621,6 +1629,7 @@ void init_multipatch(py::module_& m) {
       .def("add_fields",
            &PyMultipatch::AddFields,
            py::arg("fields"),
+           py::arg("field_dim"),
            py::arg("check_name"),
            py::arg("check_dims"),
            py::arg("check_degrees"),

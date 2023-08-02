@@ -221,22 +221,22 @@ class NutTile3D(TileBase):
         Parameters
         ----------
         parameters: np.ndarray(1, 1)
-        One evaluation point with one parameter is used. This parameter
-        specifies the distance from the center to the inner edge, where
-        the value must be between 0.01 and 0.49.
+          One evaluation point with one parameter is used. This parameter
+          specifies the distance from the center to the inner edge, where
+          the value must be between 0.01 and 0.49.
         parameter_sensitivities: np.ndarray
-        Describes the parameter sensitivities with respect to some design
-        variable. In case the design variables directly apply to the
-        parameter itself, they evaluate as delta_ij
+          Describes the parameter sensitivities with respect to some design
+          variable. In case the design variables directly apply to the
+          parameter itself, they evaluate as delta_ij
         closure : int
-        parametric dimension that needs to be closed. Positive values mean
-        that minimum parametric dimension is requested. That means,
-        i.e. -2 closes the tile at maximum z-coordinate.
-        (must currently be either -2 or 2)
+          parametric dimension that needs to be closed. Positive values mean
+          that minimum parametric dimension is requested. That means,
+          i.e. -2 closes the tile at maximum z-coordinate.
+          (must currently be either -2 or 2)
         contact_length: float
-        the length of the wall that contacts the other microstructure
+          the length of the wall that contacts the other microstructure
 
-        Results
+        Returns
         -------
         spline_list : list
         derivatives: list<list<splines>> / None

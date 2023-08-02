@@ -673,7 +673,6 @@ class MultipatchData(SplineData):
         -------
         value: object
         """
-        from splinepy import Multipatch
 
         # integer input refers to saved field's number
         if isinstance(key, int):
@@ -681,7 +680,7 @@ class MultipatchData(SplineData):
         elif isinstance(key, str):
             saved = DataHolder.__getitem__(self, key)  # will raise KeyError
             if isinstance(saved, int):
-                return Multipatch(splines=self._helpee.fields[saved])
+                return self._helpee.fields[saved]
             elif isinstance(saved, SplineDataAdaptor):
                 return saved
         raise RuntimeError(

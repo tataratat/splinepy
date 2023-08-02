@@ -4,71 +4,76 @@ import numpy as np
 import splinepy
 
 # First Test
-# generator = splinepy.microstructure.Microstructure()
-# generator.deformation_function = splinepy.Bezier(
-#     degrees=[2, 1],
-#     control_points=[[0, 0], [1, 0], [2, -1], [-1, 1], [1, 1], [3, 2]],
-# )
-# generator.microtile = [
-#     splinepy.Bezier(
-#         degrees=[3], control_points=[[0, 0.5], [0.5, 1], [0.5, 0], [1, 0.5]]
-#     ),
-#     splinepy.Bezier(
-#         degrees=[4],
-#         control_points=[
-#             [0.5, 0],
-#             [0.75, 0.5],
-#             [0.8, 0.8],
-#             [0.25, 0.5],
-#             [0.5, 1],
-#         ],
-#     ),
-# ]
-# generator.tiling = [8, 8]
-# generator.show(
-#     knots=False, control_points=False, title="2D Lattice Microstructure"
-# )
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.Bezier(
+    degrees=[2, 1],
+    control_points=[[0, 0], [1, 0], [2, -1], [-1, 1], [1, 1], [3, 2]],
+)
+generator.microtile = [
+    splinepy.Bezier(
+        degrees=[3], control_points=[[0, 0.5], [0.5, 1], [0.5, 0], [1, 0.5]]
+    ),
+    splinepy.Bezier(
+        degrees=[4],
+        control_points=[
+            [0.5, 0],
+            [0.75, 0.5],
+            [0.8, 0.8],
+            [0.25, 0.5],
+            [0.5, 1],
+        ],
+    ),
+]
+generator.tiling = [8, 8]
+ms = generator.create(macro_sensitivities=True)
 
+len(ms.fields)
 
-# # Second test
-# def parametrization_function(x):
-#     return (
-#         0.3 - 0.4 * np.maximum(abs(0.5 - x[:, 0]), abs(0.5 - x[:, 1]))
-#     ).reshape(-1, 1)
+# Plot the ms with its fields
+for i in range(0, len(ms.fields), 3):
+    ms.spline_data["field"] = i
+    ms.show_options["arrow_data"] = "field"
+    ms.show_options["arrow_data_on"] = np.linspace(0, 1, 5).reshape(-1, 1)
+    ms.show_options["arrow_data_scale"] = 0.1
+    ctps, dim = divmod(i, ms.dim)
+    gus.show(
+        [f"Derivative wrt C{ctps},{dim}", ms],
+        lighting="off",
+        control_points=False,
+        resolutions=100,
+    )
 
+# Plot all available microtiles
+micro_tiles = []
+module_list = map(
+    splinepy.microstructure.tiles.__dict__.get,
+    splinepy.microstructure.tiles.__all__,
+)
+for mt in module_list:
+    if hasattr(mt, "create_tile"):
+        if not isinstance(mt().create_tile(), tuple):
+            mt().create_tile()
+            raise ValueError("Must be tuple in updated version")
+        micro_tiles.append(
+            [
+                mt.__qualname__,
+                mt().create_tile()[0],
+            ]
+        )
 
-# # Plot all available microtiles
-# micro_tiles = []
-# module_list = map(
-#     splinepy.microstructure.tiles.__dict__.get,
-#     splinepy.microstructure.tiles.__all__,
-# )
-# for mt in module_list:
-#     if hasattr(mt, "create_tile"):
-#         if not isinstance(mt().create_tile(), tuple):
-#             mt().create_tile()
-#             raise ValueError("Must be tuple in updated version")
-#         micro_tiles.append(
-#             [
-#                 mt.__qualname__,
-#                 mt().create_tile()[0],
-#             ]
-#         )
-
-# gus.show(
-#     *micro_tiles,
-#     resolutions=7,
-#     control_points=False,
-#     knots=True,
-#     lighting="off"
-# )
-
-# Create a very simple micro-structure with 3x3 tiles and compute all
-# derivatives
+gus.show(
+    *micro_tiles,
+    resolutions=7,
+    control_points=False,
+    knots=True,
+    lighting="off",
+)
 
 # Parameter spline
-para_spline = splinepy.Bezier(
-    degrees=[1, 1], control_points=[[0.25], [0.3], [0.1], [0.25]]
+para_spline = splinepy.BSpline(
+    degrees=[1, 1],
+    knot_vectors=[[0, 0, 2, 2], [0, 0, 1, 1]],
+    control_points=[[0.25], [0.3], [0.1], [0.25]],
 )
 
 
@@ -89,7 +94,7 @@ def para_sens_function(x):
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.BSpline(
     degrees=[1, 1],
-    knot_vectors=[[0, 0, 0.5, 1, 1], [0, 0, 1, 1]],
+    knot_vectors=[[0, 0, 1, 2, 2], [0, 0, 1, 1]],
     control_points=[[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]],
 )
 generator.tiling = [2, 2]
@@ -100,10 +105,16 @@ ms = generator.create(macro_sensitivities=True)
 len(ms.fields)
 
 # Plot the ms with its fields
-for i in range(len(ms.fields)):
+for i in range(0, len(ms.fields), 3):
     ms.spline_data["field"] = i
     ms.show_options["arrow_data"] = "field"
-    gus.show(ms, lighting="off")
+    ctps, dim = divmod(i - 4, ms.dim)
+    title = (
+        f"Derivative with respect to Parameter-Spline Coefficient {i}"
+        if i < 4
+        else f"Derivative wrt C{ctps},{dim}"
+    )
+    gus.show([title, ms], lighting="off", control_points=False, knots=False)
 
 # Cubevoid
 a = splinepy.microstructure.tiles.Cubevoid().create_tile()
@@ -223,7 +234,7 @@ generator.show(
     contact_length=0.4,
     resolutions=2,
 )
-gus.show(my_ms, knots=True, control_points=False, resolution=2)
+gus.show(my_ms, knots=True, control_points=False, resolutions=2)
 
 
 def parametrization_function_nut(x):

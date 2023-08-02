@@ -2,7 +2,7 @@ import gustaf as gus
 import numpy as np
 
 from splinepy._base import SplinepyBase
-from splinepy.bezier import Bezier
+from splinepy.bspline import BSpline
 from splinepy.multipatch import Multipatch
 from splinepy.splinepy_core import PySpline
 from splinepy.utils.data import cartesian_product
@@ -76,7 +76,6 @@ class Microstructure(SplinepyBase):
         -------
         None
         """
-        from splinepy.bspline import BSplineBase
 
         if not isinstance(deformation_function, PySpline):
             raise ValueError(
@@ -84,10 +83,6 @@ class Microstructure(SplinepyBase):
                 " e.g. splinepy.NURBS"
             )
         self._deformation_function = deformation_function
-
-        # Safeguard
-        if isinstance(deformation_function, BSplineBase):
-            self._deformation_function.normalize_knot_vectors()
 
         self._sanity_check()
 
@@ -376,12 +371,12 @@ class Microstructure(SplinepyBase):
 
         # Second step (if MS is parametrized)
         if is_parametrized:
-            def_fun_para_space = Bezier(
+            para_bounds = self.deformation_function.parametric_bounds.T
+            def_fun_para_space = BSpline(
                 degrees=[1] * self.deformation_function.para_dim,
-                control_points=cartesian_product(
-                    self.deformation_function.parametric_bounds.T
-                ),
-            ).bspline
+                knot_vectors=para_bounds.repeat(2, 1),
+                control_points=cartesian_product(para_bounds),
+            )
             for i_pd in range(deformation_function_copy.para_dim):
                 if len(deformation_function_copy.unique_knots[i_pd][1:-1]) > 0:
                     def_fun_para_space.insert_knots(
@@ -666,7 +661,9 @@ class Microstructure(SplinepyBase):
 
         # Add fields if requested
         if macro_sensitivities or parameter_sensitivities:
-            self._microstructure.add_fields(spline_list_derivs)
+            self._microstructure.add_fields(
+                spline_list_derivs, self.deformation_function.dim
+            )
 
         return self._microstructure
 

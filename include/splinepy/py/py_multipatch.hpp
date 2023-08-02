@@ -232,11 +232,8 @@ public:
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
 
-  /// @brief Fields - raw list format
-  py::list field_list_;
-
   /// @brief Fields - they are saved as multi-patches
-  std::vector<std::shared_ptr<PyMultipatch>> field_multipatches_;
+  py::list field_multipatches_;
 
   /// default number of threads for all the operations besides queries
   int n_default_threads_{1};
@@ -301,7 +298,6 @@ public:
     py_boundary_multipatch_ = other->py_boundary_multipatch_;
     interfaces_ = other->interfaces_;
     boundary_ids_ = other->boundary_ids_;
-    field_list_ = other->field_list_;
     field_multipatches_ = other->field_multipatches_;
     n_default_threads_ = other->n_default_threads_;
     same_parametric_bounds_ = other->same_parametric_bounds_;
@@ -407,6 +403,7 @@ public:
   /// @param check_control_mesh_resolutions
   /// @param nthreads
   void AddFields(py::list& fields,
+                 const int field_dim,
                  const bool check_name,
                  const bool check_dims,
                  const bool check_degrees,
@@ -414,7 +411,7 @@ public:
                  const int nthreads);
 
   /// @brief Gets list of fields
-  py::list GetFields() { return field_list_; }
+  py::list GetFields() { return field_multipatches_; }
 
   /// @brief Get summed number of all control points
   int GetNumberOfControlPoints();
