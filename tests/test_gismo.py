@@ -367,10 +367,10 @@ _gismo_export_ref_2d_indent_labeled = [
 _gismo_export_ref_3d = [
     (
         '<xml><MultiPatch parDim="3" id="0"><patches type="id_range">100 103</'
-        "patches><interfaces>100 4 101 3 0 1 2 1 1 1\n"
+        "patches><interfaces>100 2 103 1 0 1 2 1 1 1\n"
     ),
+    "100 4 101 3 0 1 2 1 1 1\n",
     "101 2 102 1 0 1 2 1 1 1\n",
-    "100 2 103 1 0 1 2 1 1 1\n",
     "102 3 103 4 0 1 2 1 1 1</interfaces><boundary>100 1\n",
     "100 3\n",
     "100 5\n",
@@ -541,9 +541,9 @@ _gismo_export_ref_3d_indent = [
     "<xml>\n",
     '  <MultiPatch parDim="3" id="0">\n',
     '    <patches type="id_range">100 103</patches>\n',
-    "    <interfaces>100 4 101 3 0 1 2 1 1 1\n",
+    "    <interfaces>100 2 103 1 0 1 2 1 1 1\n",
+    "100 4 101 3 0 1 2 1 1 1\n",
     "101 2 102 1 0 1 2 1 1 1\n",
-    "100 2 103 1 0 1 2 1 1 1\n",
     "102 3 103 4 0 1 2 1 1 1</interfaces>\n",
     "    <boundary>100 1\n",
     "100 3\n",

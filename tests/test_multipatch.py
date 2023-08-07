@@ -61,14 +61,16 @@ class MultipatchTest(c.unittest.TestCase):
         self.assertTrue(
             (
                 single_p_multipatch.interfaces
-                == c.np.array([[0, 0, -1, -1]], dtype=int)
+                == c.np.array([[1, 0, -1, -1]], dtype=int)
             ).all()
         )
         self.assertTrue(
             (
                 multipatch.interfaces
                 == c.np.array(
-                    [[-1, 1, 2, -1], [0, -1, -1, -1], [-1, -1, -1, 0]],
+                    # Global Face IDs and their connectivity
+                    # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
+                    [[-1, 4, 11, -1], [1, -1, -1, -1], [-1, -1, -1, 2]],
                     dtype=int,
                 )
             ).all()
@@ -90,7 +92,9 @@ class MultipatchTest(c.unittest.TestCase):
             (
                 multipatch.interfaces
                 == c.np.array(
-                    [[-2, 1, 2, -1], [0, -1, -1, -1], [-2, -1, -1, 0]],
+                    # Global Face IDs and their connectivity
+                    # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
+                    [[-2, 4, 11, -1], [1, -1, -1, -1], [-2, -1, -1, 2]],
                     dtype=int,
                 )
             ).all()
@@ -102,7 +106,9 @@ class MultipatchTest(c.unittest.TestCase):
             (
                 multipatch.interfaces
                 == c.np.array(
-                    [[-2, 1, 2, -3], [0, -4, -1, -3], [-2, -1, -1, 0]],
+                    # Global Face IDs and their connectivity
+                    # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
+                    [[-2, 4, 11, -3], [1, -4, -1, -3], [-2, -1, -1, 2]],
                     dtype=int,
                 )
             ).all()
@@ -114,7 +120,9 @@ class MultipatchTest(c.unittest.TestCase):
             (
                 multipatch.interfaces
                 == c.np.array(
-                    [[-1, 1, 2, -2], [0, -3, -4, -5], [-1, -6, -7, 0]],
+                    # Global Face IDs and their connectivity
+                    # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
+                    [[-1, 4, 11, -2], [1, -3, -4, -5], [-1, -6, -7, 2]],
                     dtype=int,
                 )
             ).all()
@@ -192,10 +200,10 @@ class MultipatchTest(c.unittest.TestCase):
                 multipatch.interfaces
                 == c.np.array(
                     [
-                        [-1, 2, 1, -2, -3, -4],
-                        [3, -1, -5, 0, -4, -3],
-                        [-6, 0, -2, 3, -3, -4],
-                        [2, -5, 1, -6, -4, -3],
+                        [-1, 13, 9, -2, -3, -4],
+                        [20, -1, -5, 2, -4, -3],
+                        [-6, 1, -2, 18, -3, -4],
+                        [15, -5, 6, -6, -4, -3],
                     ],
                     dtype=int,
                 )
