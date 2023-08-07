@@ -501,7 +501,6 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
     //    already have a neighbor, that means that more than one point connect
     //    -> Error
     if (found_duplicate) {
-      // Check 1. (@todo EXCEPTION)
       if (connectivity_ptr[metric_order_indices[lower_limit]] != -2) {
         splinepy::utils::PrintAndThrowError(
             "Found conflicting interceptions, where more than two points are "
@@ -511,11 +510,9 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
 
       // If both tests passed, update connectivity
       connectivity_ptr[metric_order_indices[lower_limit]] =
-          static_cast<int>(metric_order_indices[upper_limit])
-          / number_of_element_faces;
+          static_cast<int>(metric_order_indices[upper_limit]);
       connectivity_ptr[metric_order_indices[upper_limit]] =
-          static_cast<int>(metric_order_indices[lower_limit])
-          / number_of_element_faces;
+          static_cast<int>(metric_order_indices[lower_limit]);
     } else {
       // set Boundary-ID
       if (connectivity_ptr[metric_order_indices[lower_limit]] == -2) {
