@@ -237,42 +237,28 @@ def export(
 
     interface_data = ET.SubElement(multipatch_element, "interfaces")
 
-    con_spline_id, con_face_id = np.where(multipatch.interfaces >= 0)
-    if con_spline_id.size == 0:
+    # Retrieve all interfaces (negative numbers refer to boundaries)
+    global_interface_id = np.where(multipatch.interfaces.ravel() >= 0)[0]
+    number_of_element_faces = multipatch.interfaces.shape[1]
+
+    if global_interface_id.size == 0:
         warning("No inter-face connections were found.")
     else:
         # First we identify all interfaces between patches
         is_lower_id = (
-            multipatch.interfaces[con_spline_id, con_face_id] > con_spline_id
+            multipatch.interfaces.flat[global_interface_id]
+            > global_interface_id
         )
-        # Divide them into start points of the connection and end point of the
-        # connection based on the index of the spline and the index of the
-        # spline the boundary is connected with, i.e., the connection between
-        # spline 3 and 7 will always point from spline 3 to 7 discarding the
-        # inverse connection
-        con_spline_id_start = con_spline_id[is_lower_id]
-        con_face_id_start = con_face_id[is_lower_id]
-        con_spline_id_end = con_spline_id[~is_lower_id]
-        con_face_id_end = con_face_id[~is_lower_id]
-        # Order them from start to end
-        start_order = np.lexsort(
-            (
-                con_spline_id_start,
-                multipatch.interfaces[con_spline_id_start, con_face_id_start],
-            )
-        ).reshape(-1, 1)
-        end_order = np.lexsort(
-            (
-                multipatch.interfaces[con_spline_id_end, con_face_id_end],
-                con_spline_id_end,
-            )
-        ).reshape(-1, 1)
 
-        # Reorder arrays
-        con_spline_id_start = con_spline_id_start[start_order]
-        con_face_id_start = con_face_id_start[start_order]
-        con_spline_id_end = con_spline_id_end[end_order]
-        con_face_id_end = con_face_id_end[end_order]
+        # The interfaces refer to the global face ids so now we can extract the
+        # element ID and face ID
+        patch_id_start, face_id_start = np.divmod(
+            global_interface_id[is_lower_id], number_of_element_faces
+        )
+        patch_id_end, face_id_end = np.divmod(
+            multipatch.interfaces[patch_id_start, face_id_start],
+            number_of_element_faces,
+        )
 
         # Identify Orientation
         (
@@ -280,10 +266,10 @@ def export(
             axis_orientation,
         ) = orientations(
             multipatch.patches,
-            con_spline_id_start,
-            con_face_id_start,
-            con_spline_id_end,
-            con_face_id_end,
+            patch_id_start,
+            face_id_start,
+            patch_id_end,
+            face_id_end,
             TOLERANCE,
             NTHREADS,
         )
@@ -293,10 +279,10 @@ def export(
         # offset of 1)
         interface_array = np.hstack(
             (
-                con_spline_id_start + index_offset,
-                con_face_id_start + 1,
-                con_spline_id_end + index_offset,
-                con_face_id_end + 1,
+                patch_id_start.reshape(-1, 1) + index_offset,
+                face_id_start.reshape(-1, 1) + 1,
+                patch_id_end.reshape(-1, 1) + index_offset,
+                face_id_end.reshape(-1, 1) + 1,
                 # This is the orientation:
                 axis_mapping,
                 # Convert bool into -1 and 1 for gismo
@@ -532,13 +518,17 @@ def load(fname, load_options=True):
                     interface_information[:, 0] - offset,
                     interface_information[:, 1] - 1,
                 ] = (
-                    interface_information[:, 2] - offset
+                    (interface_information[:, 2] - offset) * number_of_faces
+                    + interface_information[:, 3]
+                    - 1
                 )
                 interface_array[
                     interface_information[:, 2] - offset,
                     interface_information[:, 3] - 1,
                 ] = (
-                    interface_information[:, 0] - offset
+                    (interface_information[:, 0] - offset) * number_of_faces
+                    + interface_information[:, 1]
+                    - 1
                 )
 
             # Extract interfaces and boundaries

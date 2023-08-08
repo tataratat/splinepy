@@ -86,6 +86,31 @@ class Multipatch(SplinepyBase, PyMultipatch):
         Returns its interfaces in the form as an array of size
         n_patches x n_sides_per_patch
 
+        The interfaces are stored as indices. If the index is negative, the ID
+        is referring to a boundary (e.g. for boundary conditions). If the
+        number is positive, the ID refers to the global face-id, which is
+        composed of the element ID and the local face ID :
+        global_face = local_face + number_of_faces_per_element * element_id
+
+        Example:
+
+        .. code-block ::
+
+          O -- 3 -- O O -- 3 -- O
+          |         | |         |
+          0    0    1 0    1    1
+          |         | |         |
+          O -- 2 -- O O -- 2 -- O
+
+        would be stored as:
+
+        .. code-block ::
+
+          [
+            [-1, 4, -1, -1],
+            [1, -1, -1, -1]
+          ]
+
         Returns
         -------
         interfaces : np.ndarray

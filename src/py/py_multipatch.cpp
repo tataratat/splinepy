@@ -501,7 +501,6 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
     //    already have a neighbor, that means that more than one point connect
     //    -> Error
     if (found_duplicate) {
-      // Check 1. (@todo EXCEPTION)
       if (connectivity_ptr[metric_order_indices[lower_limit]] != -2) {
         splinepy::utils::PrintAndThrowError(
             "Found conflicting interceptions, where more than two points are "
@@ -511,11 +510,9 @@ FindConnectivityFromCenters(const py::array_t<double>& face_center_vertices,
 
       // If both tests passed, update connectivity
       connectivity_ptr[metric_order_indices[lower_limit]] =
-          static_cast<int>(metric_order_indices[upper_limit])
-          / number_of_element_faces;
+          static_cast<int>(metric_order_indices[upper_limit]);
       connectivity_ptr[metric_order_indices[upper_limit]] =
-          static_cast<int>(metric_order_indices[lower_limit])
-          / number_of_element_faces;
+          static_cast<int>(metric_order_indices[lower_limit]);
     } else {
       // set Boundary-ID
       if (connectivity_ptr[metric_order_indices[lower_limit]] == -2) {
@@ -844,25 +841,6 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
     return (tolerance > abs(1 - abs(dot_p) / std::sqrt(norm0 * norm1)));
   };
 
-  // Identify face_id in adjacent patch
-  auto face_id_in_neighbor =
-      [&boundary_interfaces_ptr,
-       &n_faces_per_boundary_patch](const int& base_patch_id,
-                                    const int& neighbor_patch_id) -> int {
-    // Loop over adjacent elements until base_patch_id is found
-    for (int i{}; i < n_faces_per_boundary_patch; i++) {
-      if (boundary_interfaces_ptr[neighbor_patch_id * n_faces_per_boundary_patch
-                                  + i]
-          == base_patch_id) {
-        return i;
-      }
-    }
-    // This part should never be reached
-    splinepy::utils::PrintAndThrowError("Interface connectivity has errors, "
-                                        "unidirectional interface detected.");
-    return -1;
-  };
-
   // Tangential Vector on boundary based on its derivative
   auto tangential_vector = [&cpp_spline_list, &para_dim_, &dim_](
                                const int& patch_id,
@@ -904,27 +882,32 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
     for (int i{start}; i < end; i++) {
       // Loop over faces
       for (int j{}; j < n_faces_per_boundary_patch; j++) {
-        const int& adjacent_id =
+        // Interface refers to the global face id (see interface documentation)
+        const int& connected_face_id =
             boundary_interfaces_ptr[i * n_faces_per_boundary_patch + j];
 
-        if (adjacent_id < i) {
-          // only compute if the adjacent neighbor has higher id to prevent
-          // double the work
+        // Retrieve patch and face ID of neighbor
+        const int adjacent_element_id =
+            connected_face_id / n_faces_per_boundary_patch;
+        const int adjacent_face_id =
+            connected_face_id % n_faces_per_boundary_patch;
+
+        // only compute if the adjacent neighbor has higher id to prevent double
+        // the work
+        if (adjacent_element_id < i) {
           continue;
         }
         // Get tangential vector of current patch
         const std::vector<double> vec0 = tangential_vector(i, j);
 
         // Get corresponding tangential vector of neighbor patch
-        const int adjacent_face_id = face_id_in_neighbor(i, adjacent_id);
         const std::vector<double> vec1 =
-            tangential_vector(adjacent_id, adjacent_face_id);
+            tangential_vector(adjacent_element_id, adjacent_face_id);
 
         // Check tolerance
         const bool is_g1 = areG1(vec0, vec1);
         faces_are_g1[i * n_faces_per_boundary_patch + j] = is_g1;
-        faces_are_g1[adjacent_id * n_faces_per_boundary_patch
-                     + adjacent_face_id] = is_g1;
+        faces_are_g1[connected_face_id] = is_g1;
       }
     }
   };
@@ -959,15 +942,20 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
             current_id * n_faces_per_boundary_patch + i_face;
         // Is the neighborface G1
         if (faces_are_g1[combined_index]) {
-          const int& adjacent_id = boundary_interfaces_ptr[combined_index];
+          // Adjacent global face id
+          const int& adjacent_global_face_id =
+              boundary_interfaces_ptr[combined_index];
+          const int adjacent_patch_id =
+              adjacent_global_face_id / n_faces_per_boundary_patch;
+
           // Check if the adjacent patch is already assigned
-          if (is_assigned[adjacent_id]) {
+          if (is_assigned[adjacent_patch_id]) {
             continue;
           } else {
             // Assign a BID and continue
-            new_boundary_id[adjacent_id] = current_max_id;
-            is_assigned[adjacent_id] = true;
-            queued_splines.push_back(adjacent_id);
+            new_boundary_id[adjacent_patch_id] = current_max_id;
+            is_assigned[adjacent_patch_id] = true;
+            queued_splines.push_back(adjacent_patch_id);
           }
         }
       }
