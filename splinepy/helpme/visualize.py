@@ -8,6 +8,7 @@ from splinepy import settings
 from splinepy.utils import log
 
 _vedo_spline_common_options = (
+    options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
     options.Option(
         "vedo",
         "control_points",
@@ -17,16 +18,33 @@ _vedo_spline_common_options = (
     ),
     options.Option(
         "vedo",
+        "control_point_r",
+        "Control point radius",
+        (float, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_point_c",
+        "Color of control_points in {rgb, RGB, str of (hex, name), int}",
+        (str, tuple, list, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_point_alpha",
+        "Transparency of control points in range [0, 1].",
+        (float, int),
+    ),
+    options.Option(
+        "vedo",
+        "control_point_ids",
+        "Show ids of control_points.",
+        (bool,),
+    ),
+    options.Option(
+        "vedo",
         "control_mesh",
         "Show spline's control mesh.",
         (bool,),
-    ),
-    options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
-    options.Option(
-        "vedo",
-        "control_points_c",
-        "Color of control_points in {rgb, RGB, str of (hex, name), int}",
-        (str, tuple, list, int),
     ),
     options.Option(
         "vedo",
@@ -39,18 +57,6 @@ _vedo_spline_common_options = (
         "control_mesh_lw",
         "Transparency of control points in range [0, 1].",
         (int),
-    ),
-    options.Option(
-        "vedo",
-        "control_points_alpha",
-        "Transparency of control points in range [0, 1].",
-        (float, int),
-    ),
-    options.Option(
-        "vedo",
-        "control_point_ids",
-        "Show ids of control_points.",
-        (bool,),
     ),
     options.Option(
         "vedo",
@@ -289,11 +295,11 @@ def _vedo_showable(spline):
         # control points (vertices)
         cps = spline.extract.control_points()
         cps.show_options["c"] = spline.show_options.get(
-            "control_points_c", "red"
+            "control_point_c", "red"
         )
-        cps.show_options["r"] = 10
+        cps.show_options["r"] = spline.show_options.get("control_point_r", 10)
         cps.show_options["alpha"] = spline.show_options.get(
-            "control_points_alpha", 1.0
+            "control_point_alpha", 1.0
         )
         # add
         gus_primitives["control_points"] = cps
