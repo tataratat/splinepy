@@ -229,7 +229,6 @@ def export(
     None
     """
     from splinepy import Multipatch
-    from splinepy.settings import NTHREADS, TOLERANCE
     from splinepy.spline import Spline
 
     # First transform spline-data into a multipatch-data if required
@@ -271,19 +270,19 @@ def export(
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
     global_interface_id = np.where(multipatch.interfaces.ravel() >= 0)[0]
-    number_of_element_faces = multipatch.interfaces.shape[1]
+    multipatch.interfaces.shape[1]
 
     if global_interface_id.size == 0:
         warning("No inter-face connections were found.")
     else:
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
-        # offset of 1) 
+        # offset of 1)
         interface_array = multipatch.orientations(
-            1e-8, 1 # @Lukas update variables to defaults
+            1e-8, 1  # @Lukas update variables to defaults
         ).copy()
         # Apply offsets
-        interface_array[:, [0,2]] += index_offset
-        interface_array[:,[1,3]] += 1 # Gismo starts counting at 1
+        interface_array[:, [0, 2]] += index_offset
+        interface_array[:, [1, 3]] += 1  # Gismo starts counting at 1
 
         interface_data.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in interface_array]
