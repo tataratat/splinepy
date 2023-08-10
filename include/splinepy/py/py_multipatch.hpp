@@ -229,6 +229,11 @@ public:
   /// shape: (n_patches, n_boundary_elements)
   py::array_t<int> interfaces_;
 
+  /// Orientations of all inter-patch connections in the following form
+  /// shape: (start_patch_id, start_face_id, end_patch_id, end_face_id,
+  /// orientation _0, .... orientation_n)
+  py::array_t<int> orientations_;
+
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
 
@@ -424,6 +429,8 @@ public:
 
   /// @brief Create a list of all control points
   py::array_t<double> GetControlPoints();
+  py::array_t<int> GetBoundaryOrientations(const double tolerance,
+                                           const int n_threads);
 };
 
 /// @brief ToDerived for PyMultipatches
