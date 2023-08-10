@@ -753,6 +753,64 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
   return orientations_;
 }
 
+bool PyMultipatch::CheckConformity(const double tolerance,
+                                   const int n_threads) {
+
+  GetBoundaryOrientations(tolerance, n_threads);
+  std::vector<py::array_t<int>> ctr_positions = {};
+  std::vector<int> ctr_index = {};
+  ctr_positions.reserve(orientations_.size());
+  ctr_index.reserve(orientations_.size());
+
+  // TODO ParaDim() -> para_dim
+
+  const int n_entries_per_line = 4 + 2 * ParaDim();
+  int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
+
+  auto face_id_to_coord_id = [&](const std::vector<int>& cmr,
+                                 const int& direction,
+                                 const int& orientation,
+                                 const int& face_id) -> std::vector<int> {
+    std::vector<int> coordinates{};
+    coordinates.reserve(ParaDim());
+    int remainder = face_id;
+    for (int i{}; i < ParaDim(); i++) {
+      if (direction == i) {
+        coordinates.push_back(orientation > 0 ? cmr[i] - 1 : 0);
+      } else {
+        coordinates.push_back(remainder % cmr[i]);
+        remainder /= cmr[i];
+      }
+    }
+    return coordinates;
+  };
+
+  auto coord_id_to_glob_id = [&](const std::vector<int>& cmr,
+                                 const std::vector<int>& coordinates) -> int {
+    int glob_id{coordinates[ParaDim() - 1]};
+    for (int i{ParaDim() - 2}; i > -1; i--) {
+      glob_id *= cmr[i + 1];
+      glob_id += coordinates[i];
+    }
+    return glob_id;
+  };
+
+  for (int i{}; i < orientations_.size(); i++) {
+    const int& start_patch_id = orientations_ptr[i * n_entries_per_line + 0];
+    const int& start_face_id = orientations_ptr[i * n_entries_per_line + 1];
+    const int& end_patch_id = orientations_ptr[i * n_entries_per_line + 2];
+    const int& end_face_id = orientations_ptr[i * n_entries_per_line + 3];
+    const int* alignment_ptr = &orientations_ptr[i * n_entries_per_line + 4];
+    const int* orientation_ptr =
+        &orientations_ptr[i * n_entries_per_line + 4 + ParaDim()];
+
+    std::vector<int> cmr(ParaDim());
+    core_patches_[start_patch_id]->SplinepyControlMeshResolutions(cmr.data());
+    const auto& [direction, orientation] = std::div(start_face_id, 2);
+    // degrees & (knotvector only BSpline) check
+  }
+}
+
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
                                    const py::array_t<int>& interfaces,
                                    const int& n_threads) {

@@ -428,6 +428,9 @@ public:
   py::array_t<double> GetControlPoints();
   py::array_t<int> GetBoundaryOrientations(const double tolerance,
                                            const int n_threads);
+
+  /// @brief check conformity of the patches
+  bool CheckConformity(const double tolerance, const int n_threads);
 };
 
 /// @brief ToDerived for PyMultipatches
