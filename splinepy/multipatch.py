@@ -234,7 +234,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
                 "One or more of the assigned boundary elements are not"
                 " on the patch surface, please check topology"
             )
-                
+
         # set boundary id
         self.interfaces[spline_ids, boundary_faces] = new_BID
 
