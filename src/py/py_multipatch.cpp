@@ -610,7 +610,7 @@ void GetBoundaryOrientation(
   // it is poosible the orientation of the interface edge might be flipped
   // (bugfix: negate the following expression)
   bool_orientations_ptr[boundary_start_p_dim] =
-      (boundary_start_orientation ^ boundary_end_orientation) ? 1 : 0;
+      (boundary_start_orientation ^ boundary_end_orientation) ? 1 : -1;
 
   /// Compare jacobians for remaining entries
   // Calculate Parametric bounds
@@ -671,7 +671,7 @@ void GetBoundaryOrientation(
       const double cos_angle = abs(dot_p / std::sqrt(norm_s * norm_e));
       if (cos_angle > (1. - tolerance)) {
         int_mappings_ptr[i_pd] = j;
-        bool_orientations_ptr[i_pd] = (dot_p > 0) ? 1 : 0;
+        bool_orientations_ptr[i_pd] = (dot_p > 0) ? 1 : -1;
         break;
       }
     }
@@ -701,7 +701,7 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
 
   // Pointer request() for interfaces
   const int n_faces_per_element = 2 * para_dim;
-  const int n_entries_per_line = 4 + para_dim;
+  const int n_entries_per_line = 4 + 2 * para_dim;
 
   const int* interfaces_ptr = Interfaces(interfaces_).data();
 
@@ -721,7 +721,7 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
   const auto cpp_spline_list = ToCoreSplineVector(patches_, n_threads);
   const int n_connections = patch_id_start.size();
 
-  py::array_t<int> orientations_(n_connections * (4 + para_dim * 2));
+  orientations_ = py::array_t<int>(n_connections * (4 + para_dim * 2));
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
   // Provide lambda for multithread execution
@@ -1595,15 +1595,6 @@ void init_multipatch(py::module_& m) {
         py::arg("splines"),
         py::arg("interfaces"),
         py::arg("nthreads") = 1);
-  m.def("orientations",
-        &splinepy::py::GetBoundaryOrientations,
-        py::arg("splines"),
-        py::arg("base_ids"),
-        py::arg("base_face_ids"),
-        py::arg("neighbor_ids"),
-        py::arg("neighbor_face_ids"),
-        py::arg("tolerance"),
-        py::arg("nthreads") = 1);
   m.def("boundaries_from_continuity",
         &splinepy::py::AddBoundariesFromContinuity,
         py::arg("boundary_splines"),
@@ -1657,8 +1648,12 @@ void init_multipatch(py::module_& m) {
            py::arg("checK_control_mesh_resolutions"),
            py::arg("nthreads"))
       .def("fields", &PyMultipatch::GetFields)
-      //.def("", &PyMultipatch::)
-      ;
+      .def("orientations",
+           &PyMultipatch::GetBoundaryOrientations,
+           py::arg("tolerance"),
+           py::arg("nthreads") = 1);
+  //.def("", &PyMultipatch::)
+  ;
 }
 
 } // namespace splinepy::py

@@ -231,7 +231,6 @@ def export(
     from splinepy import Multipatch
     from splinepy.settings import NTHREADS, TOLERANCE
     from splinepy.spline import Spline
-    from splinepy.splinepy_core import orientations
 
     # First transform spline-data into a multipatch-data if required
     if issubclass(type(multipatch), Spline):
@@ -277,51 +276,15 @@ def export(
     if global_interface_id.size == 0:
         warning("No inter-face connections were found.")
     else:
-        # First we identify all interfaces between patches
-        is_lower_id = (
-            multipatch.interfaces.flat[global_interface_id]
-            > global_interface_id
-        )
-
-        # The interfaces refer to the global face ids so now we can extract the
-        # element ID and face ID
-        patch_id_start, face_id_start = np.divmod(
-            global_interface_id[is_lower_id], number_of_element_faces
-        )
-        patch_id_end, face_id_end = np.divmod(
-            multipatch.interfaces[patch_id_start, face_id_start],
-            number_of_element_faces,
-        )
-
-        # Identify Orientation
-        (
-            axis_mapping,
-            axis_orientation,
-        ) = orientations(
-            multipatch.patches,
-            patch_id_start,
-            face_id_start,
-            patch_id_end,
-            face_id_end,
-            TOLERANCE,
-            NTHREADS,
-        )
-
-        # write to file
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
-        # offset of 1)
-        interface_array = np.hstack(
-            (
-                patch_id_start.reshape(-1, 1) + index_offset,
-                face_id_start.reshape(-1, 1) + 1,
-                patch_id_end.reshape(-1, 1) + index_offset,
-                face_id_end.reshape(-1, 1) + 1,
-                # This is the orientation:
-                axis_mapping,
-                # Convert bool into -1 and 1 for gismo
-                axis_orientation.astype(np.int32),
-            )
-        )
+        # offset of 1) 
+        interface_array = multipatch.orientations(
+            1e-8, 1 # @Lukas update variables to defaults
+        ).copy()
+        # Apply offsets
+        interface_array[:, [0,2]] += index_offset
+        interface_array[:,[1,3]] += 1 # Gismo starts counting at 1
+
         interface_data.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in interface_array]
         )
