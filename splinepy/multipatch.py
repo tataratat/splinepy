@@ -221,20 +221,22 @@ class Multipatch(SplinepyBase, PyMultipatch):
         try:
             old_indices = self.interfaces[spline_ids, boundary_faces]
 
-            # Check if all old indices are negative
-            if (old_indices < 0).all():
-                self.interfaces[spline_ids, boundary_faces] = new_BID
-            else:
-                raise ValueError(
-                    "One or more of the assigned boundary elements do not"
-                    " ly on the patch surface, please check topology"
-                )
         except BaseException:
             raise ValueError(
-                "spline_ids and boundary_faces need to be one-dimensional."
-                "\nIf this error proceeds please check if interfaces "
-                "exists by calling, \nprint(<>.interfaces)"
+                "spline_ids and boundary_faces need to be one-dimensional, "
+                "array-like objects to access 2D interface numpy array"
             )
+
+        # raise if any old indices include non-negative entries
+        # as it indicates that it's not a boundary sub-patch
+        if (old_indices > -1).any():
+            raise ValueError(
+                "One or more of the assigned boundary elements are not"
+                " on the patch surface, please check topology"
+            )
+
+        # set boundary id
+        self.interfaces[spline_ids, boundary_faces] = new_BID
 
     @property
     def para_dim(self):
