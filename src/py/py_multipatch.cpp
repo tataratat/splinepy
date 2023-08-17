@@ -1489,6 +1489,8 @@ void PyMultipatch::AddFields(py::list& fields,
 
   py::list local_fields(n_new_fields);
 
+  // turn into a list first to avoid possible runtime memory re-allocation
+  // caused by `append()`
   for (int i{}; i < n_new_fields; ++i) {
     local_fields[i] = ToDerived(field_ptrs[i]);
   }

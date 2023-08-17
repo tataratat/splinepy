@@ -234,9 +234,6 @@ class Microstructure(SplinepyBase):
         self._parameter_sensitivity_function = parameter_sensitivity_function
         self._sanity_check()
 
-    def _compute_knots(self, knot_span_wise):
-        pass
-
     def _additional_knots(self, knot_span_wise):
         """Determine all required additional knots to be inserted into the
         original spline representation of the deformation function

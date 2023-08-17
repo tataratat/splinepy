@@ -651,10 +651,9 @@ class MultipatchData(SplineData):
         elif "PyMultipatch" in str(type(value).__mro__):
             self._saved[key] = len(self._helpee.fields)
             self._helpee.add_fields([value])
-        elif self._helpee.name.startswith("Multipatch"):
+        if isinstance(value, int):
             # also accept integers as a reference to the field
-            if isinstance(value, int):
-                self._saved[key] = value
+            self._saved[key] = value
         else:
             raise TypeError(
                 "MultipatchData supports SplineDataAdapter or Multipatch."
