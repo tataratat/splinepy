@@ -198,6 +198,5 @@ class CreatorTest(c.SplineBasedTestCase):
             check_parametric_view(spl, True)
 
 
-
 if __name__ == "__main__":
     c.unittest.main()
