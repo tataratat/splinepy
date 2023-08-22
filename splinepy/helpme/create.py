@@ -265,9 +265,10 @@ def from_bounds(parametric_bounds, physical_bounds):
 
     # update parametric bounds
     new_kvs = []
+    para_size = parametric_bounds[1] - parametric_bounds[0]
     for i, kv in enumerate(bspline_box.kvs):
         # apply scale and offset
-        new_kv = (kv * parametric_bounds[1][i]) + parametric_bounds[0][i]
+        new_kv = (kv * para_size[i]) + parametric_bounds[0][i]
         new_kvs.append(new_kv)
 
     # update at once
