@@ -424,17 +424,31 @@ def get_spline_dictionaries():
 
 
 class SplineBasedTestCase(unittest.TestCase):
+    def bezier_2p2d(self):
+        return bezier_2p2d()
+
+    def rational_bezier_2p2d(self):
+        return rational_bezier_2p2d()
+
     def bspline_2p2d(self):
         return bspline_2p2d()
 
     def nurbs_2p2d(self):
         return nurbs_2p2d()
 
-    def rational_bezier_2p2d(self):
-        return rational_bezier_2p2d()
+    def all_2p2d_splines(self):
+        return (
+            self.bezier_2p2d(),
+            self.rational_bezier_2p2d(),
+            self.bspline_2p2d(),
+            self.nurbs_2p2d(),
+        )
 
-    def bezier_2p2d(self):
-        return bezier_2p2d()
+    def bezier_3p3d(self):
+        return bezier_3p3d()
+
+    def rational_bezier_3p3d(self):
+        return rational_bezier_3p3d()
 
     def bspline_3p3d(self):
         return bspline_3p3d()
@@ -442,8 +456,10 @@ class SplineBasedTestCase(unittest.TestCase):
     def nurbs_3p3d(self):
         return nurbs_3p3d()
 
-    def bezier_3p3d(self):
-        return bezier_3p3d()
-
-    def rational_bezier_3p3d(self):
-        return rational_bezier_3p3d()
+    def all_3p3d_splines(self):
+        return (
+            self.bezier_3p3d(),
+            self.rational_bezier_3p3d(),
+            self.bspline_3p3d(),
+            self.nurbs_3p3d(),
+        )
