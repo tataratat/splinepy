@@ -197,10 +197,6 @@ class CreatorTest(c.SplineBasedTestCase):
             check_parametric_view(spl, False)
             check_parametric_view(spl, True)
 
-        self.bspline_2p2d()
-        self.nurbs_2p2d()
-        self.bezier_2p2d()
-        self.rational_bezier_2p2d()
 
 
 if __name__ == "__main__":
