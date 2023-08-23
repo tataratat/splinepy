@@ -303,7 +303,7 @@ class Microstructure(SplinepyBase):
         # Return all knots
         return additional_knots
 
-    def _get_auxiliary_information(
+    def _compute_tiling_prerequisites(
         self, knot_span_wise, is_parametrized, macro_sensitivity
     ):
         """
@@ -499,7 +499,7 @@ class Microstructure(SplinepyBase):
             knot_insertion_matrices,
             para_space_patches,
             element_resolutions,
-        ) = self._get_auxiliary_information(
+        ) = self._compute_tiling_prerequisites(
             knot_span_wise=knot_span_wise,
             is_parametrized=is_parametrized,
             macro_sensitivity=macro_sensitivities,
