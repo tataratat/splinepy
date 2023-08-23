@@ -32,9 +32,11 @@ _gismo_export_ref_2d = [
     (
         '3 2</bc></boundaryConditions><Geometry type="TensorBSpline2" id="100"'
         '><Basis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="'
-        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
-        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
-        '1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 0.0\n'
+        '0"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</Kno'
+        'tVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector degr'
+        'ee="1" format="ASCII">0.0 0.0 '
+        "1.0 1.0</KnotVector></Basis></Basis><"
+        'coefs geoDim="2" format="ASCII">0.0 0.0\n'
     ),
     "0.5 0.0\n",
     "1.0 0.0\n",
@@ -43,21 +45,26 @@ _gismo_export_ref_2d = [
     (
         '1.0 1.0</coefs></Geometry><Geometry type="TensorNurbs2" id="101"><Bas'
         'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
-        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        'type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCII">0'
+        ".0 0.0 1.0 1.0<"
         '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
-        'degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis></Basis><weights>1.0\n'
+        'degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis></Basis'
+        '><weights format="ASCII">1.0\n'
     ),
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="2">1.0 0.0\n',
+    '1.0</weights></Basis><coefs geoDim="2" format="ASCII">1.0 0.0\n',
     "2.0 0.0\n",
     "1.0 1.0\n",
     (
         '2.0 1.0</coefs></Geometry><Geometry type="TensorBSpline2" id="102"><B'
         'asis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="0">'
-        '<KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><B'
-        'asis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5'
-        ' 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 1.0\n'
+        '<KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVe'
+        "ctor></Basis><B"
+        'asis type="BSplineBasis" index="1"><KnotVector degree="1" format="ASC'
+        'II">0.0 0.0 0.5'
+        ' 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2" format="ASCII"'
+        ">0.0 1.0\n"
     ),
     "0.5 1.0\n",
     "1.0 1.0\n",
@@ -69,16 +76,19 @@ _gismo_export_ref_2d = [
     (
         '1.0 2.0</coefs></Geometry><Geometry type="TensorNurbs2" id="103"><Bas'
         'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
-        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
+        'type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCII">0'
+        ".0 0.0 1.0 1.0<"
         '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
-        'degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></Basis><weights>1'
+        'degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></B'
+        "asis><weights f"
+        'ormat="ASCII">1'
         ".0\n"
     ),
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="2">1.0 1.0\n',
+    '1.0</weights></Basis><coefs geoDim="2" format="ASCII">1.0 1.0\n',
     "2.0 1.0\n",
     "1.0 1.5\n",
     "2.0 1.5\n",
@@ -117,13 +127,17 @@ _gismo_export_ref_2d_indent = [
     '  <Geometry type="TensorBSpline2" id="100">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</Kn'
+    "otVector>\n",
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVe'
+        "ctor>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">0.0 0.0\n',
+    '    <coefs geoDim="2" format="ASCII">0.0 0.0\n',
     "0.5 0.0\n",
     "1.0 0.0\n",
     "0.0 1.0\n",
@@ -134,18 +148,22 @@ _gismo_export_ref_2d_indent = [
     '    <Basis type="TensorNurbsBasis2">\n',
     '      <Basis type="TensorBSplineBasis2">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>\n'
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>\n'
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">1.0 0.0\n',
+    '    <coefs geoDim="2" format="ASCII">1.0 0.0\n',
     "2.0 0.0\n",
     "1.0 1.0\n",
     "2.0 1.0</coefs>\n",
@@ -153,13 +171,19 @@ _gismo_export_ref_2d_indent = [
     '  <Geometry type="TensorBSpline2" id="102">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</Kn'
+        "otVector>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">0.0 1.0\n',
+    '    <coefs geoDim="2" format="ASCII">0.0 1.0\n',
     "0.5 1.0\n",
     "1.0 1.0\n",
     "0.0 1.5\n",
@@ -173,20 +197,26 @@ _gismo_export_ref_2d_indent = [
     '    <Basis type="TensorNurbsBasis2">\n',
     '      <Basis type="TensorBSplineBasis2">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</Knot'
+        "Vector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</'
+        "KnotVector>\n"
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">1.0 1.0\n',
+    '    <coefs geoDim="2" format="ASCII">1.0 1.0\n',
     "2.0 1.0\n",
     "1.0 1.5\n",
     "2.0 1.5\n",
@@ -211,9 +241,11 @@ _gismo_export_ref_2d_labeled = [
     (
         '103 2</boundary></MultiPatch><Geometry type="TensorBSpline2" id="100"'
         '><Basis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="'
-        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
-        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
-        '1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 0.0\n'
+        '0"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</Kno'
+        'tVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector degr'
+        'ee="1" format="ASCII">0.0 0.0 '
+        '1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2" format="ASCII">'
+        "0.0 0.0\n"
     ),
     "0.5 0.0\n",
     "1.0 0.0\n",
@@ -222,21 +254,23 @@ _gismo_export_ref_2d_labeled = [
     (
         '1.0 1.0</coefs></Geometry><Geometry type="TensorNurbs2" id="101"><Bas'
         'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
-        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
-        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
-        'degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis></Basis><weights>1.0\n'
+        'type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCII">0'
+        '.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="'
+        '1"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>'
+        '</Basis></Basis><weights format="ASCII">1.0\n'
     ),
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="2">1.0 0.0\n',
+    '1.0</weights></Basis><coefs geoDim="2" format="ASCII">1.0 0.0\n',
     "2.0 0.0\n",
     "1.0 1.0\n",
     (
         '2.0 1.0</coefs></Geometry><Geometry type="TensorBSpline2" id="102"><B'
         'asis type="TensorBSplineBasis2"><Basis type="BSplineBasis" index="0">'
-        '<KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><B'
-        'asis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 0.5'
-        ' 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="2">0.0 1.0\n'
+        '<KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVe'
+        'ctor></Basis><Basis type="BSplineBasis" index="1"><KnotVector degree='
+        '"1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></Basis><c'
+        'oefs geoDim="2" format="ASCII">0.0 1.0\n'
     ),
     "0.5 1.0\n",
     "1.0 1.0\n",
@@ -248,16 +282,16 @@ _gismo_export_ref_2d_labeled = [
     (
         '1.0 2.0</coefs></Geometry><Geometry type="TensorNurbs2" id="103"><Bas'
         'is type="TensorNurbsBasis2"><Basis type="TensorBSplineBasis2"><Basis '
-        'type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 1.0<'
-        '/KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector '
-        'degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis></Basis><weights>1'
-        ".0\n"
+        'type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCII">0'
+        '.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="'
+        '1"><KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVec'
+        'tor></Basis></Basis><weights format="ASCII">1.0\n'
     ),
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="2">1.0 1.0\n',
+    '1.0</weights></Basis><coefs geoDim="2" format="ASCII">1.0 1.0\n',
     "2.0 1.0\n",
     "1.0 1.5\n",
     "2.0 1.5\n",
@@ -285,13 +319,19 @@ _gismo_export_ref_2d_indent_labeled = [
     '  <Geometry type="TensorBSpline2" id="100">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVe'
+        "ctor>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">0.0 0.0\n',
+    '    <coefs geoDim="2" format="ASCII">0.0 0.0\n',
     "0.5 0.0\n",
     "1.0 0.0\n",
     "0.0 1.0\n",
@@ -302,18 +342,22 @@ _gismo_export_ref_2d_indent_labeled = [
     '    <Basis type="TensorNurbsBasis2">\n',
     '      <Basis type="TensorBSplineBasis2">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>\n'
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>\n'
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">1.0 0.0\n',
+    '    <coefs geoDim="2" format="ASCII">1.0 0.0\n',
     "2.0 0.0\n",
     "1.0 1.0\n",
     "2.0 1.0</coefs>\n",
@@ -321,13 +365,19 @@ _gismo_export_ref_2d_indent_labeled = [
     '  <Geometry type="TensorBSpline2" id="102">\n',
     '    <Basis type="TensorBSplineBasis2">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</Kn'
+        "otVector>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">0.0 1.0\n',
+    '    <coefs geoDim="2" format="ASCII">0.0 1.0\n',
     "0.5 1.0\n",
     "1.0 1.0\n",
     "0.0 1.5\n",
@@ -341,20 +391,26 @@ _gismo_export_ref_2d_indent_labeled = [
     '    <Basis type="TensorNurbsBasis2">\n',
     '      <Basis type="TensorBSplineBasis2">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</Knot'
+        "Vector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</'
+        "KnotVector>\n"
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="2">1.0 1.0\n',
+    '    <coefs geoDim="2" format="ASCII">1.0 1.0\n',
     "2.0 1.0\n",
     "1.0 1.5\n",
     "2.0 1.5\n",
@@ -406,11 +462,12 @@ _gismo_export_ref_3d = [
     (
         '3 2</bc></boundaryConditions><Geometry type="TensorBSpline3" id="100"'
         '><Basis type="TensorBSplineBasis3"><Basis type="BSplineBasis" index="'
-        '0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis'
-        '><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0 '
-        '1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="2"><Kno'
-        'tVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basi'
-        's><coefs geoDim="3">0.0 0.0 0.0\n'
+        '0"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</Kno'
+        'tVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector degr'
+        'ee="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type'
+        '="BSplineBasis" index="2"><KnotVector degree="2" format="ASCII">0.0 0'
+        '.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="3" form'
+        'at="ASCII">0.0 0.0 0.0\n'
     ),
     "0.5 0.0 0.0\n",
     "1.0 0.0 0.0\n",
@@ -431,11 +488,12 @@ _gismo_export_ref_3d = [
     (
         '1.0 1.0 1.0</coefs></Geometry><Geometry type="TensorBSpline3" id="101'
         '"><Basis type="TensorBSplineBasis3"><Basis type="BSplineBasis" index='
-        '"0"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basi'
-        's><Basis type="BSplineBasis" index="1"><KnotVector degree="1">0.0 0.0'
-        ' 0.5 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" index="2"'
-        '><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><'
-        '/Basis><coefs geoDim="3">0.0 1.0 0.0\n'
+        '"0"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</Kn'
+        'otVector></Basis><Basis type="BSplineBasis" index="1"><KnotVector deg'
+        'ree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis><Basis'
+        ' type="BSplineBasis" index="2"><KnotVector degree="2" format="ASCII">'
+        '0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs geoDim="3"'
+        ' format="ASCII">0.0 1.0 0.0\n'
     ),
     "0.5 1.0 0.0\n",
     "1.0 1.0 0.0\n",
@@ -465,11 +523,12 @@ _gismo_export_ref_3d = [
     (
         '1.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" id="102">'
         '<Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Ba'
-        'sis type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 '
-        '1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVec'
-        'tor degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis><Basis type="B'
-        'SplineBasis" index="2"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0'
-        "</KnotVector></Basis></Basis><weights>1.0\n"
+        'sis type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCI'
+        'I">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" ind'
+        'ex="1"><KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</Kno'
+        'tVector></Basis><Basis type="BSplineBasis" index="2"><KnotVector degr'
+        'ee="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></B'
+        'asis><weights format="ASCII">1.0\n'
     ),
     "1.0\n",
     "1.0\n",
@@ -487,7 +546,7 @@ _gismo_export_ref_3d = [
     "1.0\n",
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="3">1.0 1.0 0.0\n',
+    '1.0</weights></Basis><coefs geoDim="3" format="ASCII">1.0 1.0 0.0\n',
     "2.0 1.0 0.0\n",
     "1.0 1.5 0.0\n",
     "2.0 1.5 0.0\n",
@@ -507,11 +566,12 @@ _gismo_export_ref_3d = [
     (
         '2.0 2.0 1.0</coefs></Geometry><Geometry type="TensorNurbs3" id="103">'
         '<Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Ba'
-        'sis type="BSplineBasis" index="0"><KnotVector degree="1">0.0 0.0 1.0 '
-        '1.0</KnotVector></Basis><Basis type="BSplineBasis" index="1"><KnotVec'
-        'tor degree="1">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSpli'
-        'neBasis" index="2"><KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</Kn'
-        "otVector></Basis></Basis><weights>1.0\n"
+        'sis type="BSplineBasis" index="0"><KnotVector degree="1" format="ASCI'
+        'I">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis type="BSplineBasis" ind'
+        'ex="1"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVec'
+        'tor></Basis><Basis type="BSplineBasis" index="2"><KnotVector degree="'
+        '2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis'
+        '><weights format="ASCII">1.0\n'
     ),
     "1.0\n",
     "1.0\n",
@@ -523,7 +583,7 @@ _gismo_export_ref_3d = [
     "1.0\n",
     "1.0\n",
     "1.0\n",
-    '1.0</weights></Basis><coefs geoDim="3">1.0 0.0 0.0\n',
+    '1.0</weights></Basis><coefs geoDim="3" format="ASCII">1.0 0.0 0.0\n',
     "2.0 0.0 0.0\n",
     "1.0 1.0 0.0\n",
     "2.0 1.0 0.0\n",
@@ -584,16 +644,24 @@ _gismo_export_ref_3d_indent = [
     '  <Geometry type="TensorBSpline3" id="100">\n',
     '    <Basis type="TensorBSplineBasis3">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>\n'
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="2">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="3">0.0 0.0 0.0\n',
+    '    <coefs geoDim="3" format="ASCII">0.0 0.0 0.0\n',
     "0.5 0.0 0.0\n",
     "1.0 0.0 0.0\n",
     "0.0 1.0 0.0\n",
@@ -615,16 +683,25 @@ _gismo_export_ref_3d_indent = [
     '  <Geometry type="TensorBSpline3" id="101">\n',
     '    <Basis type="TensorBSplineBasis3">\n',
     '      <Basis type="BSplineBasis" index="0">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="1">\n',
-    '        <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</Kn'
+        "otVector>\n"
+    ),
     "      </Basis>\n",
     '      <Basis type="BSplineBasis" index="2">\n',
-    '        <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0'
+        "</KnotVector>\n"
+    ),
     "      </Basis>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="3">0.0 1.0 0.0\n',
+    '    <coefs geoDim="3" format="ASCII">0.0 1.0 0.0\n',
     "0.5 1.0 0.0\n",
     "1.0 1.0 0.0\n",
     "0.0 1.5 0.0\n",
@@ -656,16 +733,25 @@ _gismo_export_ref_3d_indent = [
     '    <Basis type="TensorNurbsBasis3">\n',
     '      <Basis type="TensorBSplineBasis3">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</Knot'
+        "Vector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 0.5 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</'
+        "KnotVector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="2">\n',
-    '          <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1'
+        ".0</KnotVector>\n"
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0\n",
@@ -684,7 +770,7 @@ _gismo_export_ref_3d_indent = [
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="3">1.0 1.0 0.0\n',
+    '    <coefs geoDim="3" format="ASCII">1.0 1.0 0.0\n',
     "2.0 1.0 0.0\n",
     "1.0 1.5 0.0\n",
     "2.0 1.5 0.0\n",
@@ -707,16 +793,25 @@ _gismo_export_ref_3d_indent = [
     '    <Basis type="TensorNurbsBasis3">\n',
     '      <Basis type="TensorBSplineBasis3">\n',
     '        <Basis type="BSplineBasis" index="0">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</Knot'
+        "Vector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="1">\n',
-    '          <KnotVector degree="1">0.0 0.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</Knot'
+        "Vector>\n"
+    ),
     "        </Basis>\n",
     '        <Basis type="BSplineBasis" index="2">\n',
-    '          <KnotVector degree="2">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>\n',
+    (
+        '          <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1'
+        ".0</KnotVector>\n"
+    ),
     "        </Basis>\n",
     "      </Basis>\n",
-    "      <weights>1.0\n",
+    '      <weights format="ASCII">1.0\n',
     "1.0\n",
     "1.0\n",
     "1.0\n",
@@ -729,7 +824,7 @@ _gismo_export_ref_3d_indent = [
     "1.0\n",
     "1.0</weights>\n",
     "    </Basis>\n",
-    '    <coefs geoDim="3">1.0 0.0 0.0\n',
+    '    <coefs geoDim="3" format="ASCII">1.0 0.0 0.0\n',
     "2.0 0.0 0.0\n",
     "1.0 1.0 0.0\n",
     "2.0 1.0 0.0\n",

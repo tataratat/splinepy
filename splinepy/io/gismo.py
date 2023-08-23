@@ -5,10 +5,17 @@ from sys import version as python_version
 import numpy as np
 
 from splinepy import settings
+from splinepy.utils.data import enforce_contiguous
 from splinepy.utils.log import debug, warning
 
 
-def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
+def _spline_to_ET(
+    root,
+    multipatch,
+    index_offset,
+    fields_only=False,
+    base64=False,
+):
     """
     Write spline data to xml element in gismo format
 
@@ -24,6 +31,8 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
       xml file)
     fields_only : bool (False)
       If set, exports only the fields associated to the multipatch data
+    base64 : bool (False)
+      If set, coordinates, weights and knot-vectors are exported in B64
 
     Returns
     -------
@@ -33,6 +42,17 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
 
     if fields_only and (len(multipatch.fields) == 0):
         return
+
+    def _array_to_text(array, is_matrix, as_b64):
+        if as_b64:
+            array = enforce_contiguous(array, dtype=np.float64, asarray=True)
+            return base64.b64encode(array).decode("ascii")
+        elif is_matrix:
+            return "\n".join(
+                [" ".join([str(x) for x in row]) for row in array]
+            )
+        else:
+            return " ".join(str(x) for x in array)
 
     if fields_only:
         supports = np.array(
@@ -130,33 +150,41 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
                 type="Tensor" + type_name + "Basis" + str(spline.para_dim),
             )
 
+        # Set the format flag for output type
+        format_flag = "B64Float64" if base64 else "ASCII"
+
         for i_para in range(spline.para_dim):
             basis_fun = ET.SubElement(
-                spline_basis, "Basis", type="BSplineBasis", index=str(i_para)
+                spline_basis,
+                "Basis",
+                type="BSplineBasis",
+                index=str(i_para),
             )
             knot_vector = ET.SubElement(
-                basis_fun, "KnotVector", degree=str(spline.degrees[i_para])
+                basis_fun,
+                "KnotVector",
+                degree=str(spline.degrees[i_para]),
+                format=format_flag,
             )
-            knot_vector.text = " ".join(
-                [str(k) for k in spline.knot_vectors[i_para]]
+            knot_vector.text = _array_to_text(
+                spline.knot_vectors[i_para], False, base64
             )
+
         if "weights" in spline.required_properties:
             # Add weights
             weights_element = ET.SubElement(
                 spline_basis_base,
                 "weights",
+                format=format_flag,
             )
-            weights_element.text = "\n".join(
-                [" ".join([str(ww) for ww in w]) for w in weights]
-            )
+            weights_element.text = _array_to_text(weights, True, base64)
         coords = ET.SubElement(
             spline_element,
             "coefs",
             geoDim=str(coefs.shape[1]),
+            format=format_flag,
         )
-        coords.text = "\n".join(
-            [" ".join([str(xx) for xx in x]) for x in coefs]
-        )
+        coords.text = _array_to_text(coefs, True, base64)
 
 
 def export(
@@ -166,6 +194,7 @@ def export(
     labeled_boundaries=True,
     options=None,
     export_fields=False,
+    base64=False,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -360,7 +389,13 @@ def export(
     # Export fields first, as all necessary information is already available
     if export_fields:
         field_xml = copy.deepcopy(xml_data)
-        _spline_to_ET(field_xml, multipatch, index_offset, fields_only=True)
+        _spline_to_ET(
+            field_xml,
+            multipatch,
+            index_offset,
+            fields_only=True,
+            base64=base64,
+        )
         if int(python_version.split(".")[1]) >= 9 and indent:
             ET.indent(field_xml)
         file_content = ET.tostring(field_xml)
