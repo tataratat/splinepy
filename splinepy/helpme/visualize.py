@@ -235,7 +235,7 @@ def _vedo_showable(spline):
 
         if create_vertices:
             # prepare corresponding queries
-            if adapted_adata.has_locations:
+            if getattr(adapted_adata, "has_locations", False):
                 queries = adapted_adata.locations
                 on = None
             else:
@@ -356,7 +356,10 @@ def _vedo_showable_para_dim_1(spline):
     from splinepy.spline import Spline
 
     gus_primitives = {}
-    sp = spline.extract.edges(spline.show_options.get("resolutions", 100))
+    default_res = 10 if spline.name.startswith("Multi") else 100
+    sp = spline.extract.edges(
+        spline.show_options.get("resolutions", default_res)
+    )
 
     # specify curve width
     sp.show_options["lw"] = 8

@@ -65,7 +65,10 @@ class NutTile2D(TileBase):
 
         self.check_params(parameters)
 
-        self.check_param_derivatives(parameter_sensitivities)
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
+            )
 
         v_h_void = parameters[0, 0]
         if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
@@ -391,12 +394,12 @@ class NutTile2D(TileBase):
 
         spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
 
-        return spline_list
+        return (spline_list, None)
 
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # noqa ARG002 # TODO
+        parameter_sensitivities=None,  # TODO
         contact_length=0.2,
         **kwargs,  # noqa ARG002
     ):
@@ -422,6 +425,7 @@ class NutTile2D(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivatives: list<list<splines>> / None
         """
 
         if not isinstance(contact_length, float):
@@ -437,6 +441,11 @@ class NutTile2D(TileBase):
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
+            )
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
             )
 
         self.check_params(parameters)
@@ -544,4 +553,4 @@ class NutTile2D(TileBase):
 
         spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
 
-        return spline_list
+        return (spline_list, None)

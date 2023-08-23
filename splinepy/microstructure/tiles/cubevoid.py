@@ -86,6 +86,7 @@ class Cubevoid(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivatives : list<list<splines>> / None
         """  # set to default if nothing is given
         if parameters is None:
             parameters = np.array([0.5, 0.5, 0, 0]).reshape(1, 1, 4)
@@ -97,8 +98,10 @@ class Cubevoid(TileBase):
         # Check if user requests derivative splines
         if self.check_param_derivatives(parameter_sensitivities):
             n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
         else:
             n_derivatives = 0
+            derivatives = None
 
         # Prepare auxiliary matrices and values
         diag = np.diag([r_x, r_yz, r_yz])
@@ -106,7 +109,6 @@ class Cubevoid(TileBase):
         rotMy = self._rotation_matrix_y(rot_y)
 
         # Start assembly
-        derivatives = []
         splines = []
         for i_derivative in range(n_derivatives + 1):
             spline_list = []
@@ -248,7 +250,4 @@ class Cubevoid(TileBase):
                 derivatives.append(spline_list)
 
         # Return results
-        if i_derivative == 0:
-            return splines
-        else:
-            return (splines, derivatives)
+        return (splines, derivatives)

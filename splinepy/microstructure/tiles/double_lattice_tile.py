@@ -63,10 +63,11 @@ class DoubleLatticeTile(TileBase):
         # Check if user requests derivative splines
         if self.check_param_derivatives(parameter_sensitivities):
             n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
         else:
             n_derivatives = 0
+            derivatives = None
 
-        derivatives = []
         splines = []
         for i_derivative in range(n_derivatives + 1):
             # Constant auxiliary values
@@ -365,7 +366,4 @@ class DoubleLatticeTile(TileBase):
                 derivatives.append(spline_list)
 
         # Return results
-        if i_derivative == 0:
-            return splines
-        else:
-            return (splines, derivatives)
+        return (splines, derivatives)

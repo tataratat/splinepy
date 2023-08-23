@@ -504,8 +504,9 @@ class Multipatch(SplinepyBase, PyMultipatch):
     def add_fields(
         self,
         fields,
-        check_compliance=False,
-        check_conformity=False,
+        field_dim,
+        check_compliance=True,
+        check_conformity=True,
         nthreads=None,
     ):
         """
@@ -516,11 +517,13 @@ class Multipatch(SplinepyBase, PyMultipatch):
         fields : list
           Any number of list of splines to represent n-dimensional field with
           equal parametric dimensionality
-        check_compliance : bool (False)
+        field_dim: int
+          Dimensionality of the individual fields
+        check_compliance : bool (True)
           Check if field list is admissible, by comparing the parametric
           dimensionality of the field entries with the spline list, and compare
           patch sizes
-        check_conformity : bool (False)
+        check_conformity : bool (True)
           Check for conformity between patches and fields by comparing degrees
           and control-mesh-resolutions
         nthreads : int
@@ -534,6 +537,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
 
         super().add_fields(
             fields,
+            field_dim,
             check_compliance,
             check_compliance,
             check_conformity,

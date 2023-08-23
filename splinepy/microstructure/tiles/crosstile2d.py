@@ -54,6 +54,7 @@ class CrossTile2D(TileBase):
         Returns
         -------
         list_of_splines : list
+        derivative_list : list / None
         """
         # Check parameters
         if closure is None:
@@ -87,10 +88,11 @@ class CrossTile2D(TileBase):
                     "list(tuple(np.ndarray)), where each list entry "
                 )
             n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
         else:
             n_derivatives = 0
+            derivatives = None
 
-        derivatives = []
         splines = []
         for i_derivative in range(n_derivatives + 1):
             # Constant auxiliary values
@@ -369,10 +371,7 @@ class CrossTile2D(TileBase):
             else:
                 derivatives.append(spline_list)
         # Return results
-        if i_derivative == 0:
-            return splines
-        else:
-            return (splines, derivatives)
+        return (splines, derivatives)
 
     def create_tile(
         self,
@@ -404,6 +403,7 @@ class CrossTile2D(TileBase):
         Returns
         -------
         microtile_list : list(splines)
+        derivative_list : list / None
         """
 
         if not isinstance(center_expansion, float):
@@ -439,10 +439,11 @@ class CrossTile2D(TileBase):
                     "list(np.ndarray), where each list entry "
                 )
             n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
         else:
             n_derivatives = 0
+            derivatives = None
 
-        derivatives = []
         splines = []
         for i_derivative in range(n_derivatives + 1):
             # Constant auxiliary values
@@ -552,7 +553,4 @@ class CrossTile2D(TileBase):
             else:
                 derivatives.append(spline_list)
         # Return results
-        if i_derivative == 0:
-            return splines
-        else:
-            return (splines, derivatives)
+        return (splines, derivatives)

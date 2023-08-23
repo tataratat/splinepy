@@ -3,7 +3,7 @@ import numpy as np
 
 import splinepy
 
-# First Test
+# Simple Microstructure consisting Bezier-splines only
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[2, 1],
@@ -25,16 +25,116 @@ generator.microtile = [
     ),
 ]
 generator.tiling = [8, 8]
-generator.show(
-    knots=False, control_points=False, title="2D Lattice Microstructure"
+ms = generator.create(macro_sensitivities=True)
+
+
+# Plot the ms with some of its fields
+for i in range(0, len(ms.fields), 3):
+    ms.spline_data["field"] = i
+    ms.show_options["arrow_data"] = "field"
+    ms.show_options["arrow_data_on"] = np.linspace(0, 1, 5).reshape(-1, 1)
+    ms.show_options["arrow_data_scale"] = 0.1
+    ctps, dim = divmod(i, ms.dim)
+    gus.show(
+        [f"Derivative wrt C{ctps},{dim}", ms],
+        lighting="off",
+        control_points=False,
+        resolutions=100,
+    )
+
+# Visualize all available microtiles
+micro_tiles = []
+module_list = map(
+    splinepy.microstructure.tiles.__dict__.get,
+    splinepy.microstructure.tiles.__all__,
+)
+for mt in module_list:
+    if hasattr(mt, "create_tile"):
+        if not isinstance(mt().create_tile(), tuple):
+            mt().create_tile()
+            raise ValueError("Must be tuple in updated version")
+        micro_tiles.append(
+            [
+                mt.__qualname__,
+                mt().create_tile()[0],
+            ]
+        )
+gus.show(
+    *micro_tiles,
+    resolutions=7,
+    control_points=False,
+    knots=True,
+    lighting="off",
+)
+
+# Parameter spline
+para_spline = splinepy.BSpline(
+    degrees=[1, 1],
+    knot_vectors=[[0, 0, 2, 2], [0, 0, 1, 1]],
+    control_points=[[0.25], [0.3], [0.1], [0.25]],
 )
 
 
-# Second test
-def parametrization_function(x):
-    return (
-        0.3 - 0.4 * np.maximum(abs(0.5 - x[:, 0]), abs(0.5 - x[:, 1]))
-    ).reshape(-1, 1)
+def para_function(x):
+    return para_spline.evaluate(x)
+
+
+def para_sens_function(x):
+    basis_function_matrix = np.zeros((x.shape[0], para_spline.cps.shape[0]))
+    bf, supports = para_spline.basis_and_support(x)
+    np.put_along_axis(basis_function_matrix, supports, bf, axis=1)
+    return basis_function_matrix.reshape(
+        x.shape[0], 1, para_spline.cps.shape[0]
+    )
+
+
+# Parametrized microstructure inner and outer derivatives
+generator = splinepy.microstructure.Microstructure()
+generator.deformation_function = splinepy.BSpline(
+    degrees=[1, 1],
+    knot_vectors=[[0, 0, 1, 2, 2], [0, 0, 1, 1]],
+    control_points=[[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]],
+)
+generator.tiling = [2, 2]
+generator.parameter_sensitivity_function = para_sens_function
+generator.parametrization_function = para_function
+generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
+ms = generator.create(macro_sensitivities=True)
+len(ms.fields)
+
+# Plot the ms with its fields
+for i in range(0, len(ms.fields), 3):
+    ms.spline_data["field"] = i
+    ms.show_options["arrow_data"] = "field"
+    ctps, dim = divmod(i - 4, ms.dim)
+    title = (
+        f"Derivative with respect to Parameter-Spline Coefficient {i}"
+        if i < 4
+        else f"Derivative wrt C{ctps},{dim}"
+    )
+    gus.show([title, ms], lighting="off", control_points=False, knots=False)
+
+
+def foo(x):
+    return 0.1 * np.sum(x, axis=1).reshape(-1, 1)
+
+
+# Cube 3D without closing face
+generator = splinepy.microstructure.microstructure.Microstructure()
+generator.microtile = splinepy.microstructure.tiles.Cube3D()
+
+generator.parametrization_function = foo
+generator.deformation_function = splinepy.Bezier(
+    degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
+).create.extruded(extrusion_vector=[0, 0, 1])
+generator.tiling = [3, 3, 2]
+generator.show(
+    knots=True,
+    control_points=False,
+    title="3D Cube Microstructure",
+    resolutions=3,
+    alpha=0.05,
+)
 
 
 para_s = splinepy.BSpline(
@@ -71,120 +171,6 @@ para_s = splinepy.BSpline(
     ],
 )
 
-# Plot all available microtiles
-micro_tiles = []
-module_list = map(
-    splinepy.microstructure.tiles.__dict__.get,
-    splinepy.microstructure.tiles.__all__,
-)
-for mt in module_list:
-    if hasattr(mt, "create_tile"):
-        micro_tiles.append(
-            [
-                mt.__qualname__,
-                mt().create_tile(),
-            ]
-        )
-
-gus.show(
-    *micro_tiles,
-    resolutions=7,
-    control_points=False,
-    knots=True,
-    lighting="off"
-)
-
-# Ellipsoid
-a = splinepy.microstructure.tiles.Ellipsvoid().create_tile()
-for ii in range(4):
-    a, b = splinepy.microstructure.tiles.Ellipsvoid().create_tile(
-        parameters=np.array([[0.5, 0.3, np.deg2rad(20), np.deg2rad(10)]]),
-        parameter_sensitivities=np.eye(N=1, M=4, k=ii).reshape(1, 4, 1),
-    )
-    surfaces = []
-    s_2_extract = [5, 4, 3, 2, 1, 0]
-    for i, (aa, bb) in enumerate(zip(a, b[0])):
-        aa.spline_data["field"] = bb
-        aa.show_options["arrow_data"] = "field"
-        aa.show_options[
-            "arrow_data_on"
-        ] = splinepy.utils.data.cartesian_product(
-            [np.linspace(0, 1, 4) for _ in range(3)]
-        )
-        aa.show_options["alpha"] = 0
-        aa.show_options["resolutions"] = 2
-        aa.show_options["control_point_ids"] = False
-        surface = aa.extract.boundaries([s_2_extract[i]])[0]
-        surface.show_options["control_points"] = False
-        surface.show_options["c"] = "grey"
-        surface.show_options["resolutions"] = 20
-        surfaces.append(surface)
-    camera = {
-        "position": (1.9, 1.3, 3),
-        "focal_point": (0.5, 0.5, 0.5),
-        "viewup": (-0.1, 0.95, -0.3),
-        "distance": 3.33943,
-        "clipping_range": (1.37, 5.0),
-    }
-    gus.show(surfaces + a, cam=camera, alpha=0.2)
-
-
-# Cubevoid
-a = splinepy.microstructure.tiles.Cubevoid().create_tile()
-for ii in range(4):
-    a, b = splinepy.microstructure.tiles.Cubevoid().create_tile(
-        parameters=np.array([[0.5, 0.3, np.deg2rad(20), np.deg2rad(10)]]),
-        parameter_sensitivities=np.eye(N=1, M=4, k=ii).reshape(1, 4, 1),
-    )
-    surfaces = []
-    s_2_extract = [5, 4, 3, 2, 1, 0]
-    for i, (aa, bb) in enumerate(zip(a, b[0])):
-        aa.spline_data["field"] = bb
-        aa.show_options["arrow_data"] = "field"
-        aa.show_options[
-            "arrow_data_on"
-        ] = splinepy.utils.data.cartesian_product(
-            [np.linspace(0, 1, 4) for _ in range(3)]
-        )
-        aa.show_options["alpha"] = 0
-        aa.show_options["resolutions"] = 2
-        aa.show_options["control_point_ids"] = False
-        surface = aa.extract.boundaries([s_2_extract[i]])[0]
-        surface.show_options["control_points"] = False
-        surface.show_options["c"] = "grey"
-        surface.show_options["resolutions"] = 20
-        surfaces.append(surface)
-    camera = {
-        "position": (1.9, 1.3, 3),
-        "focal_point": (0.5, 0.5, 0.5),
-        "viewup": (-0.1, 0.95, -0.3),
-        "distance": 3.33943,
-        "clipping_range": (1.37, 5.0),
-    }
-    gus.show(surfaces + a, cam=camera)
-
-
-def foo(x):
-    return 0.1 * np.sum(x, axis=1).reshape(-1, 1)
-
-
-# Cube 3D without closing face
-generator = splinepy.microstructure.microstructure.Microstructure()
-generator.microtile = splinepy.microstructure.tiles.Cube3D()
-
-generator.parametrization_function = foo
-generator.deformation_function = splinepy.Bezier(
-    degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
-).create.extruded(extrusion_vector=[0, 0, 1])
-generator.tiling = [3, 3, 2]
-generator.show(
-    knots=True,
-    control_points=False,
-    title="3D Cube Microstructure",
-    resolutions=3,
-    alpha=0.05,
-)
-
 
 # Test new microstructure
 def parameter_function_double_lattice(x):
@@ -195,12 +181,10 @@ def parameter_function_double_lattice(x):
 
 
 generator = splinepy.microstructure.Microstructure()
-# outer geometry
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [2, 0], [0, 1], [2, 1]]
 )
 generator.microtile = splinepy.microstructure.tiles.DoubleLatticeTile()
-# how many structures should be inside the cube
 generator.tiling = [12, 6]
 generator.parametrization_function = parameter_function_double_lattice
 my_ms = generator.create(contact_length=0.4)
@@ -212,22 +196,19 @@ generator.show(
     contact_length=0.4,
     resolutions=2,
 )
-gus.show(my_ms, knots=True, control_points=False, resolution=2)
+gus.show(my_ms, knots=True, control_points=False, resolutions=2)
 
 
 def parametrization_function_nut(x):
     return np.ones((len(x), 1)) * 0.3
 
 
-# Test new microstructure
-
+# Structure with Nut-tile
 generator = splinepy.microstructure.Microstructure()
-# outer geometry
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
 generator.microtile = splinepy.microstructure.tiles.NutTile2D()
-# how many structures should be inside the cube
 generator.tiling = [10, 10]
 generator.parametrization_function = parametrization_function_nut
 my_ms = generator.create(closing_face="x", contact_length=0.4)
@@ -241,14 +222,14 @@ generator.show(
 )
 
 
-# Second test
+# Classical cross tile 2D
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
 generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
 generator.tiling = [5, 5]
-generator.parametrization_function = parametrization_function
+generator.parametrization_function = parameter_function_double_lattice
 ms = generator.create(closing_face="x", center_expansion=1.3)
 generator.show(
     use_saved=True,
@@ -257,7 +238,7 @@ generator.show(
     title="2D Crosstile Parametrized Microstructure",
 )
 
-# Third test
+# Micro tile with three bezier lines
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
@@ -296,7 +277,7 @@ generator.show(
     knots=False, control_points=False, title="3D Lattice Microstructure"
 )
 
-# Fourth test
+# Cross tile 3D in a microstructure
 generator = splinepy.microstructure.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
@@ -307,7 +288,6 @@ generator.show(
     control_points=False, resolutions=2, title="3D Crosstile Microstructure"
 )
 
-# Fifth test
 # Non-uniform tiling
 generator = splinepy.microstructure.microstructure.Microstructure()
 generator.deformation_function = splinepy.BSpline(
@@ -341,8 +321,6 @@ generator.show(
 )
 
 
-# Sixth test
-# A Parametrized microstructure and its respective inverse structure
 def foo(x):
     """
     Parametrization Function (determines thickness)
@@ -352,6 +330,7 @@ def foo(x):
     )
 
 
+# A Parametrized microstructure and its respective inverse structure
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]

@@ -651,6 +651,9 @@ class MultipatchData(SplineData):
         elif "PyMultipatch" in str(type(value).__mro__):
             self._saved[key] = len(self._helpee.fields)
             self._helpee.add_fields([value])
+        if isinstance(value, int):
+            # also accept integers as a reference to the field
+            self._saved[key] = value
         else:
             raise TypeError(
                 "MultipatchData supports SplineDataAdapter or Multipatch."
@@ -669,6 +672,7 @@ class MultipatchData(SplineData):
         -------
         value: object
         """
+
         # integer input refers to saved field's number
         if isinstance(key, int):
             return self._helpee.fields[key]

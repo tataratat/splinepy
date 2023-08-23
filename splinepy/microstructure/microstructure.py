@@ -2,7 +2,7 @@ import gustaf as gus
 import numpy as np
 
 from splinepy._base import SplinepyBase
-from splinepy.bezier import Bezier
+from splinepy.bspline import BSpline
 from splinepy.multipatch import Multipatch
 from splinepy.splinepy_core import PySpline
 from splinepy.utils.data import cartesian_product
@@ -76,12 +76,14 @@ class Microstructure(SplinepyBase):
         -------
         None
         """
+
         if not isinstance(deformation_function, PySpline):
             raise ValueError(
                 "Deformation function must be splinepy-Spline."
                 " e.g. splinepy.NURBS"
             )
         self._deformation_function = deformation_function
+
         self._sanity_check()
 
     @property
@@ -232,7 +234,195 @@ class Microstructure(SplinepyBase):
         self._parameter_sensitivity_function = parameter_sensitivity_function
         self._sanity_check()
 
-    def create(self, closing_face=None, knot_span_wise=None, **kwargs):
+    def _additional_knots(self, knot_span_wise):
+        """Determine all required additional knots to be inserted into the
+        original spline representation of the deformation function
+
+        Parameters
+        ----------
+        knot_span_wise: bool
+          Decicive, whether tiling is applied to all knot-spans respectively,
+          or globally
+
+        Returns
+        -------
+        additional_knots : list<list>
+          returns a list of all required additional knots as a list of list to
+          the respective parametric dimension. If no additional knot is to be
+          inserted, the list is empty
+        """
+        additional_knots = []
+        # Create Spline that will be used to iterate over parametric space
+        ukvs = self.deformation_function.bspline.unique_knots
+        if knot_span_wise:
+            for tt, ukv in zip(self.tiling, ukvs):
+                if tt == 1:
+                    continue
+                inv_t = 1 / tt
+                new_knots = [
+                    ukv[i - 1] + j * inv_t * (ukv[i] - ukv[i - 1])
+                    for i in range(1, len(ukv))
+                    for j in range(1, tt)
+                ]
+                additional_knots.append(new_knots)
+        else:
+            self._logd(
+                "New knots will be inserted one by one with the objective"
+                " to evenly distribute tiles within the parametric domain"
+            )
+            for i_pd, (tt, ukv) in enumerate(zip(self.tiling, ukvs)):
+                n_current_spans = len(ukv) - 1
+                if tt == n_current_spans:
+                    continue
+                elif tt < n_current_spans:
+                    self._logw(
+                        f"The requested tiling can not be provided, as "
+                        f"there are too many knotspans in the deformation"
+                        f" function. The tiling in parametric dimension "
+                        f"{i_pd} will be set to {n_current_spans}"
+                    )
+                    self.tiling[i_pd] = n_current_spans
+                else:
+                    # Determine new knots
+                    n_k_span = np.zeros(n_current_spans, dtype=int)
+                    span_measure = np.diff(ukv)
+                    for _ in range(tt - n_current_spans):
+                        add_knot = np.argmax(span_measure)
+                        n_k_span[add_knot] += 1
+                        span_measure[add_knot] *= n_k_span[add_knot] / (
+                            n_k_span[add_knot] + 1
+                        )
+
+                    new_knots = []
+                    for i, nks in enumerate(n_k_span):
+                        new_knots.extend(
+                            np.linspace(ukv[i], ukv[i + 1], nks + 2)[1:-1]
+                        )
+                    additional_knots.append(new_knots)
+
+        # Return all knots
+        return additional_knots
+
+    def _compute_tiling_prerequisites(
+        self, knot_span_wise, is_parametrized, macro_sensitivity
+    ):
+        """
+        Prepare all required information to start the construction process. All
+        additional properties are returned None, to avoid argument dependent
+        return values
+
+        Parameters
+        ----------
+        knot_span_wise: bool
+          Decides if the number of tiles in tiling is supposed to be
+          interpreted as the total amount or per knot span
+        is_parametrized : bool
+          Decides if the microtiles are adapted before insertion into the
+          microstructure
+        macro_sensitivity :bool
+          Provides information required for the calculation of derivatives with
+          respect to the control points of the deformation function
+
+        Returns
+        -------
+        def_fun_patches: list<BezierBasis>
+          Extracted Bezier patches, that define the position of the individual
+          microtiles
+        bezier_matrices: list<numpy/scipy.sparse>
+          (None if `macro_sensitivity` is `False`) Matrices that can be used to
+          map from the original control points to the control points of the
+          extracted bezier patches
+        para_space_patches: list<BezierBasis>
+          (None if `is_parametrized` is `False`) Linear representation of the
+          parametric space that can be used to evaluate the parametrization
+          function on the individual elements
+        element_resolutions: list<int>
+          Number of elements in the respective parametric dimension
+        """
+
+        # Prepare the deformation function
+        # Transform into a non-uniform splinetype and make sure to work on copy
+        if self._deformation_function.is_rational:
+            deformation_function_copy = self._deformation_function.nurbs
+        else:
+            deformation_function_copy = self._deformation_function.bspline
+
+        additional_knots = self._additional_knots(knot_span_wise)
+
+        # First step : insert all required knots into the deformation function
+        # spline
+        if macro_sensitivity:
+            knot_insertion_matrix = (
+                deformation_function_copy.knot_insertion_matrix(
+                    0, additional_knots[0]
+                )
+            )
+        deformation_function_copy.insert_knots(0, additional_knots[0])
+        for i_pd, akv in enumerate(additional_knots[1:], start=1):
+            if macro_sensitivity:
+                knot_insertion_matrix = (
+                    deformation_function_copy.knot_insertion_matrix(i_pd, akv)
+                    @ knot_insertion_matrix
+                )
+            deformation_function_copy.insert_knots(i_pd, akv)
+
+        # Second step (if MS is parametrized)
+        if is_parametrized:
+            para_bounds = self.deformation_function.parametric_bounds.T
+            def_fun_para_space = BSpline(
+                degrees=[1] * self.deformation_function.para_dim,
+                knot_vectors=para_bounds.repeat(2, 1),
+                control_points=cartesian_product(para_bounds),
+            )
+            for i_pd in range(deformation_function_copy.para_dim):
+                if len(deformation_function_copy.unique_knots[i_pd][1:-1]) > 0:
+                    def_fun_para_space.insert_knots(
+                        i_pd,
+                        deformation_function_copy.unique_knots[i_pd][1:-1],
+                    )
+
+        # Extract the bezier patches
+        def_fun_patches = deformation_function_copy.extract.beziers()
+
+        # Precompute the extraction matrices
+        if macro_sensitivity:
+            bezier_matrices = deformation_function_copy.knot_insertion_matrix(
+                beziers=True
+            )
+
+            # However, these refer to the macro spline that has knots already
+            # inserted into it, so we need to apply the matrix constructed
+            # earlier
+            for i_matrix in range(len(bezier_matrices)):
+                bezier_matrices[i_matrix] @= knot_insertion_matrix
+        else:
+            bezier_matrices = None
+
+        # Do the same for the parametric space representation
+        if is_parametrized:
+            para_space_patches = def_fun_para_space.extract.beziers()
+        else:
+            para_space_patches = None
+
+        # Determine element resolution
+        element_resolutions = [
+            len(c) - 1 for c in deformation_function_copy.unique_knots
+        ]
+
+        return (
+            def_fun_patches,
+            bezier_matrices,
+            para_space_patches,
+            element_resolutions,
+        )
+
+    def create(
+        self,
+        closing_face=None,
+        knot_span_wise=None,
+        macro_sensitivities=None,
+        **kwargs,
+    ):
         """Create a Microstructure.
 
         Parameters
@@ -242,6 +432,9 @@ class Microstructure(SplinepyBase):
           Represents coordinate to be a closed surface {"x", "y", "z"}
         knot_span_wise : bool
           Insertion per knotspan vs. total number per paradim
+        macro_sensitivities: bool
+          Calculate the derivatives of the structure with respect to the outer
+          control point variables
         **kwargs
           will be passed to `create_tile` function
 
@@ -257,244 +450,219 @@ class Microstructure(SplinepyBase):
         # Set default values
         if knot_span_wise is None:
             knot_span_wise = True
+        if macro_sensitivities is None:
+            macro_sensitivities = False
 
         # check if user wants closed structure
-        if (closing_face is not None) and (
-            not hasattr(self.microtile, "closing_tile")
-        ):
-            raise ValueError(
-                "Microtile does not provide closing tile definition"
-            )
-        closing_face_dim = {"x": 0, "y": 1, "z": 2}.get(closing_face)
-        is_closed = closing_face_dim is not None
-        if not is_closed and (closing_face is not None):
-            raise ValueError(
-                "Invalid format for closing_face argument, (handed: "
-                f"{closing_face}), must be one of"
-                "{'x', 'y', 'z'}"
-            )
-
-        if is_closed:
-            is_closed = True
-            if closing_face_dim >= self._deformation_function.para_dim:
+        if closing_face is not None:
+            if not hasattr(self.microtile, "closing_tile"):
                 raise ValueError(
-                    "closing face must be smaller than the deformation "
-                    "function's parametric dimension"
+                    "Microtile does not provide closing tile definition"
+                )
+            closing_face_dim = {"x": 0, "y": 1, "z": 2}.get(closing_face)
+            if closing_face is None:
+                raise ValueError(
+                    "Invalid format for closing_face argument, (handed: "
+                    f"{closing_face}), must be one of"
+                    "{'x', 'y', 'z'}"
                 )
             if self._parametrization_function is None:
                 raise ValueError(
                     "Faceclosure is currently only implemented for "
                     "parametrized microstructures"
                 )
-
-        # Prepare the deformation function
-        # Transform into a non-uniform splinetype and make sure to work on copy
-        if "BSpline" in self._deformation_function.whatami:
-            deformation_function_copy = self._deformation_function.copy()
-        elif hasattr(self._deformation_function, "bspline"):
-            deformation_function_copy = self._deformation_function.bspline
+            if closing_face_dim >= self._deformation_function.para_dim:
+                raise ValueError(
+                    "closing face must be smaller than the deformation "
+                    "function's parametric dimension"
+                )
+            is_closed = True
         else:
-            deformation_function_copy = self._deformation_function.nurbs
+            is_closed = False
 
-        # Create Spline that will be used to iterate over parametric space
-        ukvs = deformation_function_copy.unique_knots
-        if knot_span_wise:
-            for i_pd in range(deformation_function_copy.para_dim):
-                if self.tiling[i_pd] == 1:
-                    continue
-                inv_t = 1 / self.tiling[i_pd]
-                new_knots = [
-                    ukvs[i_pd][i - 1]
-                    + j * inv_t * (ukvs[i_pd][i] - ukvs[i_pd][i - 1])
-                    for i in range(1, len(ukvs[i_pd]))
-                    for j in range(1, self.tiling[i_pd])
-                ]
-                # insert knots in both the deformation function
-                deformation_function_copy.insert_knots(i_pd, new_knots)
-        else:
-            self._logd(
-                "New knots will be inserted one by one with the objective"
-                " to evenly distribute tiles within the parametric domain"
-            )
-            for i_pd in range(deformation_function_copy.para_dim):
-                n_current_spans = len(ukvs[i_pd]) - 1
-                if self.tiling[i_pd] == n_current_spans:
-                    continue
-                elif self.tiling[i_pd] < n_current_spans:
-                    self._logw(
-                        f"The requested tiling can not be provided, as "
-                        f"there are too many knotspans in the deformation"
-                        f" function. The tiling in parametric dimension "
-                        f"{i_pd} will be set to {n_current_spans}"
-                    )
-                    self.tiling[i_pd] = n_current_spans
-                else:
-                    # Determine new knots
-                    n_k_span = np.zeros(n_current_spans, dtype=int)
-                    span_measure = np.diff(ukvs[i_pd])
-                    for _ in range(self.tiling[i_pd] - n_current_spans):
-                        add_knot = np.argmax(span_measure)
-                        n_k_span[add_knot] += 1
-                        span_measure[add_knot] *= n_k_span[add_knot] / (
-                            n_k_span[add_knot] + 1
-                        )
-
-                    new_knots = []
-                    for i, nks in enumerate(n_k_span):
-                        new_knots.extend(
-                            np.linspace(
-                                ukvs[i_pd][i], ukvs[i_pd][i + 1], nks + 2
-                            )[1:-1]
-                        )
-                    deformation_function_copy.insert_knots(i_pd, new_knots)
-
-        # Bezier Extraction for composition
-        def_fun_patches = deformation_function_copy.extract.beziers()
-
-        # Calculate parametric space representation for parametrized
-        # microstructures
+        # Check if parametrized
         is_parametrized = self.parametrization_function is not None
-        if is_parametrized:
-            para_space_dimensions = [np.array([u[0], u[-1]]) for u in ukvs]
-            def_fun_para_space = Bezier(
-                degrees=[1] * deformation_function_copy.para_dim,
-                control_points=cartesian_product(para_space_dimensions),
-            ).bspline
-            for i_pd in range(deformation_function_copy.para_dim):
-                if len(deformation_function_copy.unique_knots[i_pd][1:-1]) > 0:
-                    def_fun_para_space.insert_knots(
-                        i_pd,
-                        deformation_function_copy.unique_knots[i_pd][1:-1],
-                    )
-            def_fun_para_space = def_fun_para_space.extract.beziers()
+        parameter_sensitivities = (
+            self.parameter_sensitivity_function is not None
+        )
 
-        # Determine element resolution
-        element_resolutions = [
-            len(c) - 1 for c in deformation_function_copy.unique_knots
-        ]
+        if parameter_sensitivities and not is_parametrized:
+            raise ValueError(
+                "Parameter sensitivities can not be interpreted without"
+                "parametrization function"
+            )
 
-        # Initialize return values
-        n_sensitivities = 0
-        if self.parameter_sensitivity_function is not None:
-            n_sensitivities = self.parameter_sensitivity_function(
+        # Using the additional knots and the bezier extraction operator, we can
+        # provide all necessary information on the construction process
+        (
+            bezier_patches,
+            knot_insertion_matrices,
+            para_space_patches,
+            element_resolutions,
+        ) = self._compute_tiling_prerequisites(
+            knot_span_wise=knot_span_wise,
+            is_parametrized=is_parametrized,
+            macro_sensitivity=macro_sensitivities,
+        )
+
+        # Use element_resolutions to get global indices of patches
+        local_indices = cartesian_product(
+            [np.arange(er) for er in element_resolutions]
+        )
+
+        # Determine the number of geometric derivatives with respect to the
+        # design variables
+        if parameter_sensitivities:
+            n_parameter_sensitivities = self.parameter_sensitivity_function(
                 self._microtile.evaluation_points
             ).shape[2]
-            self._microstructure_derivatives = [
-                [] for i in range(n_sensitivities)
+        else:
+            n_parameter_sensitivities = 0
+
+        # Determine the number of geometric derivatives with respect to the
+        # deformation function's control points
+        if macro_sensitivities:
+            n_macro_sensitivities = self.deformation_function.cps.size
+        else:
+            n_macro_sensitivities = 0
+
+        # Prepare field for derivatives
+        if macro_sensitivities or parameter_sensitivities:
+            spline_list_derivs = [
+                []
+                for i in range(
+                    n_parameter_sensitivities + n_macro_sensitivities
+                )
             ]
-        self._microstructure = []
+
+        spline_list_ms = []
 
         # Start actual composition
-        if is_parametrized:
-            for i, (def_fun, def_fun_para) in enumerate(
-                zip(def_fun_patches, def_fun_para_space)
-            ):
-                # Evaluate tile parameters
-                positions = def_fun_para.evaluate(
+        for i_patch, def_fun in enumerate(bezier_patches):
+            # If the structure is parametrized, provide parameters for the tile
+            # construction
+            if is_parametrized:
+                # Retrieve position from the parametric space patches
+                positions = para_space_patches[i_patch].evaluate(
                     self._microtile.evaluation_points
                 )
+                # Evaluate parametrization function
                 tile_parameters = self.parametrization_function(positions)
+            else:
+                tile_parameters = None
 
-                if self.parameter_sensitivity_function is not None:
-                    tile_sensitivities = self.parameter_sensitivity_function(
-                        positions
+            # If the sensitivities are requested, evaluate the sensitivity
+            # function, which must be provided by the user
+            if parameter_sensitivities:
+                tile_sensitivities = self.parameter_sensitivity_function(
+                    positions
+                )
+                # To avoid unnecessary constructions (if a parameter
+                # sensitivity evaluates to zero), perform only those that are
+                # in the support of a specific design variable
+                support = np.where(
+                    np.any(np.any(tile_sensitivities != 0.0, axis=0), axis=0)
+                )[0]
+                anti_support = np.where(
+                    np.any(np.all(tile_sensitivities == 0.0, axis=0), axis=0)
+                )[0]
+                tile_sens_on_support = tile_sensitivities[:, :, support]
+            else:
+                tile_sens_on_support = None
+
+            # Check if center or closing tile
+            if is_closed:
+                # check index
+                index = local_indices[i_patch, closing_face_dim]
+                face_closure = (
+                    closing_face + "_min"
+                    if (index == 0)
+                    else (
+                        closing_face + "_max"
+                        if (index + 1) == element_resolutions[closing_face_dim]
+                        else None
                     )
-                    support = np.where(
-                        np.any(
-                            np.any(tile_sensitivities != 0.0, axis=0), axis=0
-                        )
-                    )[0]
-                    anti_support = np.where(
-                        np.any(
-                            np.all(tile_sensitivities == 0.0, axis=0), axis=0
-                        )
-                    )[0]
-                    tile_sens_on_support = tile_sensitivities[:, :, support]
-                else:
-                    tile_sens_on_support = None
+                )
+            else:
+                face_closure = None
 
-                # Check if center or closing tile
-                if is_closed:
-                    # check index
-                    index = i
-                    for ipd in range(closing_face_dim):
-                        index -= index % element_resolutions[ipd]
-                        index = int(index / element_resolutions[ipd])
-                    index = index % element_resolutions[closing_face_dim]
-                    if index == 0:
-                        # Closure at minimum id
-                        tile = self._microtile.closing_tile(
-                            parameters=tile_parameters,
-                            parameter_sensitivities=tile_sens_on_support,
-                            closure=closing_face + "_min",
-                            **kwargs,
-                        )
-                    elif (index + 1) == element_resolutions[closing_face_dim]:
-                        # Closure at maximum
-                        tile = self._microtile.closing_tile(
-                            parameters=tile_parameters,
-                            parameter_sensitivities=tile_sens_on_support,
-                            closure=closing_face + "_max",
-                            **kwargs,
-                        )
-                    else:
-                        tile = self._microtile.create_tile(
-                            parameters=tile_parameters,
-                            parameter_sensitivities=tile_sens_on_support,
-                            **kwargs,
-                        )
-                else:
-                    tile = self._microtile.create_tile(
-                        parameters=tile_parameters,
-                        parameter_sensitivities=tile_sens_on_support,
-                        **kwargs,
-                    )
-
-                if isinstance(tile, tuple):
-                    # Returned tile and derivatives
-                    (splines, derivatives) = tile
-                    for tile_patch in splines:
-                        self._microstructure.append(
-                            def_fun.compose(tile_patch)
-                        )
-                    n_splines_per_tile = len(splines)
-                    empty_splines = [None] * n_splines_per_tile
-                    for j in anti_support:
-                        self._microstructure_derivatives[j].extend(
-                            empty_splines
-                        )
-                    for j, deris in enumerate(derivatives):
-                        for tile_v, tile_deriv in zip(splines, deris):
-                            self._microstructure_derivatives[
-                                support[j]
-                            ].append(
-                                def_fun.composition_derivative(
-                                    tile_v, tile_deriv
-                                )
-                            )
-                else:
-                    # Perform composition
-                    for tile_patch in tile:
-                        self._microstructure.append(
-                            def_fun.compose(tile_patch)
-                        )
-
-        # Not parametrized
-        else:
-            # Tile can be computed once (prevent to many evaluations)
-            tile = self._microtile.create_tile(**kwargs)
-            for def_fun in def_fun_patches:
-                for t in tile:
-                    self._microstructure.append(def_fun.compose(t))
-
-        # return copy of precomputed member
-        if n_sensitivities == 0:
-            return self._microstructure.copy()
-        else:
-            return (
-                self._microstructure.copy(),
-                self._microstructure_derivatives.copy(),
+            # Determine the microtile (prior to insertion) derivative is set to
+            # None if the parameter sensitivity is not requested
+            (tile, derivatives) = self._microtile.create_tile(
+                parameters=tile_parameters,
+                parameter_sensitivities=tile_sens_on_support,
+                closure=face_closure,
+                **kwargs,
             )
+
+            # Perform the composition
+            if macro_sensitivities:
+                basis_function_compositions = []
+                for tile_patch in tile:
+                    composed, basis_function_composition = def_fun.compose(
+                        tile_patch, compute_sensitivities=True
+                    )
+                    spline_list_ms.append(composed)
+                    basis_function_compositions.append(
+                        basis_function_composition
+                    )
+            else:
+                for tile_patch in tile:
+                    spline_list_ms.append(def_fun.compose(tile_patch))
+
+            # Determine the geometric sensitivities using the chain rule
+            if parameter_sensitivities:
+                n_splines_per_tile = len(tile)
+                empty_splines = [None] * n_splines_per_tile
+                for j in anti_support:
+                    spline_list_derivs[j].extend(empty_splines)
+                for j, deris in enumerate(derivatives):
+                    for tile_v, tile_deriv in zip(tile, deris):
+                        spline_list_derivs[support[j]].append(
+                            def_fun.composition_derivative(tile_v, tile_deriv)
+                        )
+
+            # Compute the derivatives with respect to the deformation
+            # function's ctps
+            if macro_sensitivities:
+                for patch_info in basis_function_compositions:
+                    # patch_info is a list of splines all representing the
+                    # derivatives of the composed spline with respect to a
+                    # component of a control point within the bezier patch
+                    # of the deformation function.
+                    cps = np.hstack(p.cps for p in patch_info)
+                    # We use the matrices to map the contributions of the
+                    # bezier ctps to the deformation functions
+                    mapped_cps = cps @ knot_insertion_matrices[i_patch]
+
+                    # Last step: create beziers to be added to the derivative
+                    # fields
+                    for j_cc in range(n_macro_sensitivities):
+                        control_points = np.zeros(
+                            (cps.shape[0], self._deformation_function.dim)
+                        )
+                        ii_ctps, jj_dim = divmod(
+                            j_cc, self._deformation_function.dim
+                        )
+                        control_points[:, jj_dim] = mapped_cps[:, ii_ctps]
+                        spline_list_derivs[
+                            n_parameter_sensitivities + j_cc
+                        ].append(
+                            type(patch_info[0])(
+                                patch_info[0].degrees, control_points
+                            )
+                        )
+
+        # Use a multipatch object to bundle all information
+        self._microstructure = Multipatch(splines=spline_list_ms)
+
+        # Add fields if requested
+        if macro_sensitivities or parameter_sensitivities:
+            self._microstructure.add_fields(
+                spline_list_derivs, self.deformation_function.dim
+            )
+
+        return self._microstructure
 
     def show(self, use_saved=False, **kwargs):
         """
@@ -513,12 +681,12 @@ class Microstructure(SplinepyBase):
         """
         if use_saved:
             if hasattr(self, "_microstructure"):
-                microstructure = Multipatch(self._microstructure)
+                microstructure = self._microstructure
             else:
                 raise ValueError("No previous microstructure saved")
         else:
             # Create on the fly
-            microstructure = Multipatch(splines=self.create(**kwargs))
+            microstructure = self.create(**kwargs)
 
         # Precompute splines
         microtile = self.microtile.create_tile(**kwargs)
@@ -527,7 +695,7 @@ class Microstructure(SplinepyBase):
         # Show in vedo
         return gus.show(
             ["Deformation Function", deformation_function],
-            ["Microtile", microtile],
+            ["Microtile", microtile[0]],
             ["Composed Microstructure", microstructure],
             **kwargs,
         )
@@ -634,7 +802,7 @@ class Microstructure(SplinepyBase):
         return _UserTile(microtile)
 
 
-class _UserTile:
+class _UserTile(SplinepyBase):
     def __init__(self, microtile):
         """
         On the fly created class of a user tile
@@ -667,5 +835,18 @@ class _UserTile:
         return self._dim
 
     def create_tile(self, **kwargs):  # noqa ARG002
-        """Create a tile on the fly."""
-        return self._user_tile.copy()
+        """Create a tile on the fly.
+        Derivative of a constant tile can not be requested, so derivative must
+        be None
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        Microtile: list<Bezier>
+        Derivative : None
+        """
+        for k, v in kwargs.items():
+            self._logd(f"Additional argument {k} : {v} will be ignored")
+        return (self._user_tile.copy(), None)
