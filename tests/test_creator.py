@@ -157,6 +157,46 @@ class CreatorTest(c.SplineBasedTestCase):
                 f"{spline_g.whatami} failed revolution around center",
             )
 
+    def test_create_parametric_view(self):
+        """test parametric view"""
+
+        def check_parametric_view(spline, conform):
+            p_spl = spline.create.parametric_view(conform=conform)
+
+            # for both conform and pure view
+            # spl's pbounds and para's physbound are same
+            assert c.np.allclose(
+                p_spl.control_point_bounds, spl.parametric_bounds
+            )
+
+            if conform:
+                # same spline type
+                assert type(p_spl) == type(spline)
+
+                # same degrees
+                assert c.np.allclose(p_spl.ds, spline.ds)
+
+                # same knot_vectors
+                if spline.has_knot_vectors:
+                    for p_kv, kv in zip(p_spl.kvs, spline.kvs):
+                        assert c.np.allclose(p_kv, kv)
+
+                # same weights
+                if spline.is_rational:
+                    assert c.np.allclose(p_spl.ws, spline.ws)
+
+            else:
+                # degrees are one - subtracting 1 should make it all zero
+                assert not any(p_spl.ds - 1)
+
+                # same unique knots - implies same p_bounds
+                for p_ukv, ukv in zip(p_spl.unique_knots, spline.unique_knots):
+                    assert c.np.allclose(p_ukv, ukv)
+
+        for spl in [*self.all_2p2d_splines(), *self.all_3p3d_splines()]:
+            check_parametric_view(spl, False)
+            check_parametric_view(spl, True)
+
 
 if __name__ == "__main__":
     c.unittest.main()

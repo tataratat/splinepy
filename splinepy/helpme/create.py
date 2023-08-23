@@ -264,27 +264,36 @@ def from_bounds(parametric_bounds, physical_bounds):
     bspline_box.cps += physical_bounds[0]  # apply offset
 
     # update parametric bounds
+    new_kvs = []
+    para_size = parametric_bounds[1] - parametric_bounds[0]
     for i, kv in enumerate(bspline_box.kvs):
         # apply scale and offset
-        new_kv = (kv * parametric_bounds[1][i]) + parametric_bounds[0][i]
-        bspline_box.kvs[i] = new_kv
+        new_kv = (kv * para_size[i]) + parametric_bounds[0][i]
+        new_kvs.append(new_kv)
+
+    # update at once
+    bspline_box.kvs = new_kvs
 
     return bspline_box
 
 
-def parametric_view(spline, axes=True):
+def parametric_view(spline, axes=True, conform=False):
     """Create parametric view of given spline. Previously called
     `naive_spline()`. Degrees are always 1 and knot multiplicity is not
     preserved. Returns BSpline, as BSpline and NURBS should look the same as
     parametric view.
     Will take shallow copy of underlying data of spline_data and show_options
     from original spline.
+    However, if conforming basis is desired, set confrom=True.
 
     Parameters
     -----------
     spline: BSpline or NURBS
     axes: bool
-     If True, will configure axes settings, it is supported.
+      If True, will configure axes settings, it is supported.
+    conform: bool
+      Default is False
+
 
     Returns
     --------
@@ -295,10 +304,47 @@ def parametric_view(spline, axes=True):
         parametric_bounds=p_bounds, physical_bounds=p_bounds
     )
 
-    # loop through knot vectors and insert missing knots
-    for i, kv in enumerate(spline.unique_knots):
-        if len(kv) > 2:
-            para_spline.insert_knots(i, kv[1:-1])
+    # process to create conforming para_view splines
+    if conform:
+        # conforming spline - rational?
+        if spline.is_rational:
+            para_spline = para_spline.nurbs
+
+        # conforming spline - bezier?
+        if not spline.has_knot_vectors:
+            dict_spline = para_spline.todict()
+            dict_spline.pop("knot_vectors")
+            para_spline = type(spline)(**dict_spline)
+
+        # conforming degrees
+        d_diff = spline.degrees - para_spline.degrees
+        if any(d_diff):
+            # turn difference in degrees into degree query
+            d_query = []
+            for i, dq in enumerate(d_diff):
+                d_query += [i] * dq
+            para_spline.elevate_degrees(d_query)
+
+        # process knots to insert
+        if spline.has_knot_vectors:
+            for i, (kv, d) in enumerate(
+                zip(spline.knot_vectors, spline.degrees)
+            ):
+                n_repeating = int(d + 1)
+                query = kv[n_repeating:-n_repeating]
+                if len(query) > 0:
+                    para_spline.insert_knots(i, query)
+
+        # conforming weights
+        if spline.is_rational:
+            para_spline.ws[:] = spline.ws
+
+    elif spline.has_knot_vectors:
+        # in non-conform case, we can just add missing unique knots
+        for i, uk in enumerate(spline.unique_knots):
+            query = uk[1:-1]
+            if len(query) > 0:
+                para_spline.insert_knots(i, query)
 
     # take shallow copy
     para_spline.spline_data._saved = spline.spline_data._saved.copy()

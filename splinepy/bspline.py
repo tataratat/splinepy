@@ -91,6 +91,9 @@ class BSplineBase(spline.Spline):
         if isinstance(knots, float):
             knots = [knots]
 
+        if len(knots) == 0:
+            raise ValueError("Empty knot query.")
+
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too big)"
@@ -103,7 +106,7 @@ class BSplineBase(spline.Spline):
             )
 
         inserted = splinepy_core.insert_knots(
-            self, parametric_dimension, knots
+            self, parametric_dimension, utils.data.enforce_contiguous(knots)
         )
 
         self._logd(f"Inserted {len(knots)} knot(s).")
@@ -220,6 +223,9 @@ class BSplineBase(spline.Spline):
         if isinstance(knots, float):
             knots = [knots]
 
+        if len(knots) == 0:
+            raise ValueError("Empty knot query.")
+
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
                 "One of the query knots not in valid knot range. (Too big)"
@@ -234,7 +240,7 @@ class BSplineBase(spline.Spline):
         removed = splinepy_core.remove_knots(
             self,
             parametric_dimension,
-            knots,
+            utils.data.enforce_contiguous(knots),
             tolerance=spline._default_if_none(tolerance, settings.TOLERANCE),
         )
 
