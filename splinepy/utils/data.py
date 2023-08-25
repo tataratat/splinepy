@@ -738,3 +738,32 @@ class MultipatchData(SplineData):
             saved = SplineDataAdaptor(saved)
 
         return saved.as_vertex_data(resolutions=resolutions, on=on)
+
+
+def flatten(iterable):
+    """
+    Flattens nested array-like structure to a flat list
+
+    Parameters
+    ----------
+    iterable: tuple, list, np.ndarray
+
+    Returns
+    -------
+    flat_list: list
+    """
+    if len(iterable) == 0:
+        return []
+
+    # turn everything into a list
+    if not isinstance(iterable, list):
+        iterable = (
+            iterable.tolist()
+            if hasattr(iterable, "tolist")
+            else list(iterable)
+        )
+
+    if hasattr(iterable[0], "__iter__"):
+        return flatten(iterable[0]) + flatten(iterable[1:])
+
+    return iterable[:1] + flatten(iterable[1:])
