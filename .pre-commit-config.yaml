@@ -65,7 +65,7 @@ repos:
   rev: v2.2.5
   hooks:
   - id: codespell
-    args: [-w]
+    args: [-w, --exclude-file=tests/test_gismo.py]
 
 - repo: https://github.com/keewis/blackdoc
   rev: v0.3.8
