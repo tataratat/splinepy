@@ -220,9 +220,8 @@ def export(
     export_fields : bool
       Export fields to separate files ending with field<id>.xml, e.g.,
       filename.xml.field1.xml
-    collapse_fields : cool
-      Only valid if export_fields is True, writes all fields in the same file
-      by collapsing the control points, requires conformity (not checked)
+    as_base64 : bool (False)
+      If set, coordinates, weights and knot-vectors are exported in B64 ecoding
 
     Returns
     -------
