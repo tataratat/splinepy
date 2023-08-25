@@ -1,3 +1,4 @@
+import base64
 import copy
 import xml.etree.ElementTree as ET
 from sys import version as python_version
@@ -14,7 +15,7 @@ def _spline_to_ET(
     multipatch,
     index_offset,
     fields_only=False,
-    base64=False,
+    as_base64=False,
 ):
     """
     Write spline data to xml element in gismo format
@@ -31,7 +32,7 @@ def _spline_to_ET(
       xml file)
     fields_only : bool (False)
       If set, exports only the fields associated to the multipatch data
-    base64 : bool (False)
+    as_base64 : bool (False)
       If set, coordinates, weights and knot-vectors are exported in B64
 
     Returns
@@ -151,7 +152,7 @@ def _spline_to_ET(
             )
 
         # Set the format flag for output type
-        format_flag = "B64Float64" if base64 else "ASCII"
+        format_flag = "B64Float64" if as_base64 else "ASCII"
 
         for i_para in range(spline.para_dim):
             basis_fun = ET.SubElement(
@@ -167,7 +168,7 @@ def _spline_to_ET(
                 format=format_flag,
             )
             knot_vector.text = _array_to_text(
-                spline.knot_vectors[i_para], False, base64
+                spline.knot_vectors[i_para], False, as_base64
             )
 
         if "weights" in spline.required_properties:
@@ -177,14 +178,14 @@ def _spline_to_ET(
                 "weights",
                 format=format_flag,
             )
-            weights_element.text = _array_to_text(weights, True, base64)
+            weights_element.text = _array_to_text(weights, True, as_base64)
         coords = ET.SubElement(
             spline_element,
             "coefs",
             geoDim=str(coefs.shape[1]),
             format=format_flag,
         )
-        coords.text = _array_to_text(coefs, True, base64)
+        coords.text = _array_to_text(coefs, True, as_base64)
 
 
 def export(
@@ -194,7 +195,7 @@ def export(
     labeled_boundaries=True,
     options=None,
     export_fields=False,
-    base64=False,
+    as_base64=False,
 ):
     """Export as gismo readable xml geometry file
     Use gismo-specific xml-keywords to export (list of) splines. All Bezier
@@ -394,7 +395,7 @@ def export(
             multipatch,
             index_offset,
             fields_only=True,
-            base64=base64,
+            as_base64=as_base64,
         )
         if int(python_version.split(".")[1]) >= 9 and indent:
             ET.indent(field_xml)
@@ -402,7 +403,12 @@ def export(
         with open(fname + ".fields.xml", "wb") as f:
             f.write(file_content)
 
-    _spline_to_ET(xml_data, multipatch, index_offset)
+    _spline_to_ET(
+        xml_data,
+        multipatch,
+        index_offset,
+        as_base64=as_base64,
+    )
 
     # Add additional options to the xml file
     if options is not None:
@@ -470,15 +476,52 @@ def load(fname, load_options=True):
     """
     from splinepy.multipatch import Multipatch
 
+    def _matrix_from_node(xml_node):
+        """
+        Parameters
+        ----------
+        xml_node : XMLElementTree
+
+        Returns
+        -------
+        array : np.array
+          numpy array in unspecified type, one-dimensional
+        """
+        type_from_keyword = {
+            "b64float64": np.float64,
+            "b64float32": np.float32,
+            "b64uint16": np.uint16,
+            "b64uint32": np.uint32,
+            "b64uint64": np.uint64,
+            "b64int16": np.int16,
+            "b64int32": np.int32,
+            "b64int64": np.int64,
+        }
+
+        # Check format
+        format_flag = xml_node.attrib.get("format", "ASCII")
+        if format_flag.lower() == "ascii":
+            return np.fromstring(xml_node.text.replace("\n", " "), sep=" ")
+        # Check for all excepted binary flags
+        format = type_from_keyword.get(format_flag.lower(), None)
+
+        if format is None:
+            raise ValueError(
+                "Unknown format in xml file: " + format_flag.lower()
+            )
+
+        return np.frombuffer(
+            base64.b64decode(xml_node.text.strip().encode("ascii")),
+            dtype=np.float64,
+        )
+
     # Auxiliary function to unravel
     def retrieve_from_basis_(ETelement, SPdict):
         if "nurbs" in ETelement.attrib["type"].lower():
             # Recursive call for knot_vector
             for child in ETelement:
                 if "weights" in child.tag:
-                    SPdict["weights"] = np.fromstring(
-                        child.text.replace("\n", " "), sep=" "
-                    )
+                    SPdict["weights"] = _matrix_from_node(child)
                 if "basis" in child.tag.lower():
                     retrieve_from_basis_(child, SPdict)
         elif "bspline" in ETelement.attrib["type"].lower():
@@ -490,9 +533,7 @@ def load(fname, load_options=True):
                     raise ValueError("Something went wrong")
                 if "knotvector" in child[0].tag.lower():
                     id = int(child.attrib["index"])
-                    kv = np.fromstring(
-                        child[0].text.replace("\n", " "), sep=" "
-                    )
+                    kv = _matrix_from_node(child[0])
                     knotvector[id] = kv
                     degrees[id] = int(child[0].attrib["degree"])
             SPdict["knot_vectors"] = knotvector
@@ -529,9 +570,7 @@ def load(fname, load_options=True):
                 debug("Unsupported format")
             if patch_element.attrib.get("type") != "id_range":
                 debug(f"Invalid patch type {patch_element.attrib.get('type')}")
-            patch_range = np.fromstring(
-                patch_element.text.replace("\n", " "), sep=" ", dtype=np.int64
-            )
+            patch_range = _matrix_from_node(patch_element).astype(np.int64)
             offset = patch_range[0]
             n_splines = patch_range[1] - patch_range[0] + 1
             number_of_faces = parametric_dimension * 2
@@ -546,11 +585,13 @@ def load(fname, load_options=True):
                 # This can occur if only one patch is in a Multipatch
                 debug("No connectivity found")
             else:
-                interface_information = np.fromstring(
-                    interfaces_element.text.replace("\n", " "),
-                    sep=" ",
-                    dtype=np.int64,
-                ).reshape(-1, number_of_faces + 4)
+                interface_information = (
+                    _matrix_from_node(interfaces_element)
+                    .astype(
+                        dtype=np.int64,
+                    )
+                    .reshape(-1, number_of_faces + 4)
+                )
                 # Assign interfaces
                 interface_array[
                     interface_information[:, 0] - offset,
@@ -579,11 +620,13 @@ def load(fname, load_options=True):
                 ):
                     if boundary_element.text is None:
                         continue
-                    boundary_information = np.fromstring(
-                        boundary_element.text.replace("\n", " "),
-                        sep=" ",
-                        dtype=np.int64,
-                    ).reshape(-1, 2)
+                    boundary_information = (
+                        _matrix_from_node(boundary_element)
+                        .astype(
+                            dtype=np.int64,
+                        )
+                        .reshape(-1, 2)
+                    )
                     interface_array[
                         boundary_information[:, 0] - offset,
                         boundary_information[:, 1] - 1,
@@ -597,8 +640,8 @@ def load(fname, load_options=True):
                     retrieve_from_basis_(info, spline_dict)
                 elif info.tag.startswith("coef"):
                     dim = int(info.attrib.get("geoDim"))
-                    spline_dict["control_points"] = np.fromstring(
-                        info.text.replace("\n", " "), sep=" "
+                    spline_dict["control_points"] = _matrix_from_node(
+                        info
                     ).reshape(-1, dim)
             if spline_dict.get("weights") is None:
                 list_of_splines.append(

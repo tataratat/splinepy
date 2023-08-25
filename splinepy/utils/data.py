@@ -7,6 +7,7 @@ from itertools import accumulate, chain, repeat
 import numpy as np
 from gustaf.helpers.data import DataHolder
 
+from splinepy import splinepy_core
 from splinepy._base import SplinepyBase
 
 __all__ = [
@@ -283,7 +284,7 @@ def enforce_contiguous(array, dtype=None, asarray=False):
             return array
         return np.ascontiguousarray(array, dtype=dtype)
 
-    if asarray and isinstance(array, (list, tuple)):
+    if asarray and isinstance(array, (list, tuple, splinepy_core.KnotVector)):
         return np.ascontiguousarray(array, dtype=dtype)
 
     return array
