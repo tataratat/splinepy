@@ -691,7 +691,6 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
   int n_patches = patches_.size();
 
   // get para dim of the first patch
-  // TODO this parameter is the same for every patch?
   int para_dim = ParaDim();
 
   patch_id_end.reserve(para_dim * n_patches);
@@ -761,10 +760,9 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   std::vector<int> ctr_index = {};
   ctr_positions.reserve(orientations_.size());
   ctr_index.reserve(orientations_.size());
+  int param_dim = ParaDim();
 
-  // TODO ParaDim() -> para_dim
-
-  const int n_entries_per_line = 4 + 2 * ParaDim();
+  const int n_entries_per_line = 4 + 2 * param_dim;
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
   auto face_id_to_coord_id = [&](const std::vector<int>& cmr,
@@ -772,9 +770,9 @@ bool PyMultipatch::CheckConformity(const double tolerance,
                                  const int& orientation,
                                  const int& face_id) -> std::vector<int> {
     std::vector<int> coordinates{};
-    coordinates.reserve(ParaDim());
+    coordinates.reserve(param_dim);
     int remainder = face_id;
-    for (int i{}; i < ParaDim(); i++) {
+    for (int i{}; i < param_dim; i++) {
       if (direction == i) {
         coordinates.push_back(orientation > 0 ? cmr[i] - 1 : 0);
       } else {
@@ -787,8 +785,8 @@ bool PyMultipatch::CheckConformity(const double tolerance,
 
   auto coord_id_to_glob_id = [&](const std::vector<int>& cmr,
                                  const std::vector<int>& coordinates) -> int {
-    int glob_id{coordinates[ParaDim() - 1]};
-    for (int i{ParaDim() - 2}; i > -1; i--) {
+    int glob_id{coordinates[param_dim - 1]};
+    for (int i{param_dim - 2}; i > -1; i--) {
       glob_id *= cmr[i + 1];
       glob_id += coordinates[i];
     }
@@ -802,9 +800,9 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     const int& end_face_id = orientations_ptr[i * n_entries_per_line + 3];
     const int* alignment_ptr = &orientations_ptr[i * n_entries_per_line + 4];
     const int* orientation_ptr =
-        &orientations_ptr[i * n_entries_per_line + 4 + ParaDim()];
+        &orientations_ptr[i * n_entries_per_line + 4 + param_dim];
 
-    std::vector<int> cmr(ParaDim());
+    std::vector<int> cmr(param_dim);
     core_patches_[start_patch_id]->SplinepyControlMeshResolutions(cmr.data());
     const auto& [direction, orientation] = std::div(start_face_id, 2);
     // degrees & (knotvector only BSpline) check
