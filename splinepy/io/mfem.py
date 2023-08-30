@@ -7,7 +7,12 @@ import gustaf as gus
 import numpy as np
 
 # single function imports
-from splinepy.io.ioutils import form_lines, make_meaningful, next_line
+from splinepy.io.ioutils import (
+    dict_to_spline,
+    form_lines,
+    make_meaningful,
+    next_line,
+)
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -109,19 +114,21 @@ def load(fname):
     ):
         raise ValueError("Inconsistent spline info in " + fname)
 
-    _, reorder = dof_mapping(
-        len(knot_vectors),
-        degrees,
-        knot_vectors,
-        flat_list=True,
-    )
-
-    return {
+    mfem_dict_spline = {
         "degrees": degrees,
         "knot_vectors": knot_vectors,
-        "control_points": np.ascontiguousarray(control_points)[reorder],
-        "weights": np.ascontiguousarray(weights)[reorder],
+        "control_points": np.ascontiguousarray(control_points),
+        "weights": np.ascontiguousarray(weights),
     }
+
+    spline = dict_to_spline([mfem_dict_spline])[0]
+
+    _, reorder = dof_mapping(spline)
+
+    spline.cps[:] = spline.cps[reorder]
+    spline.ws[:] = spline.ws[reorder]
+
+    return spline
 
 
 def read_solution(
@@ -140,7 +147,6 @@ def read_solution(
     --------
     solution_nurbs: dict
     """
-    from copy import deepcopy
 
     with open(fname) as f:
         hotkey = "Ordering"
@@ -158,19 +164,16 @@ def read_solution(
     if len(reference_nurbs.control_points) != len(solution):
         raise ValueError("Solution length does not match reference nurbs")
 
-    _, reorder = dof_mapping(
-        reference_nurbs.para_dim,
-        reference_nurbs.degrees,
-        reference_nurbs.knot_vectors,
-        flat_list=True,
-    )
+    mfem_dict_spline = reference_nurbs.todict()
 
-    return {
-        "degrees": deepcopy(reference_nurbs.degrees),
-        "knot_vectors": deepcopy(reference_nurbs.knot_vectors),
-        "control_points": np.ascontiguousarray(solution)[reorder],
-        "weights": deepcopy(reference_nurbs.weights),
-    }
+    spline = dict_to_spline([mfem_dict_spline])[0]
+
+    _, reorder = dof_mapping(spline)
+
+    spline.cps = np.ascontiguousarray(solution)[reorder]
+    spline.ws[:] = spline.ws[reorder]
+
+    return spline
 
 
 def _mfem_dof_map_2d(spline):
@@ -519,10 +522,8 @@ def export(fname, nurbs, precision=10):
     """
     if nurbs.whatami.startswith("NURBS"):
         pass
-    elif nurbs.whatami.startswith("BSpline"):
-        nurbs = nurbs.nurbs  # if bspline, turn it into nurbs
     else:
-        raise TypeError("Sorry, invalid spline object.")
+        nurbs = nurbs.nurbs  # turns it into nurbs
 
     intro_sec = form_lines(
         "MFEM NURBS mesh v1.0",
@@ -625,12 +626,7 @@ def export(fname, nurbs, precision=10):
         raise NotImplementedError
 
     # disregard inverse
-    reorder_ids, _ = dof_mapping(
-        para_dim=nurbs.para_dim,
-        degrees=nurbs.degrees,
-        knot_vectors=nurbs.knot_vectors,
-        flat_list=True,
-    )
+    reorder_ids, _ = dof_mapping(nurbs)
 
     with np.printoptions(
         formatter={"float_kind": lambda x: f"{x:.{precision}f}"}
