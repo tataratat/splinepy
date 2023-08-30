@@ -555,7 +555,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
 
         Returns
         -------
-        fields : list<list>
+        fields : list<Multipatch>
           List of all field representation in the form of list of splines
         """
         return super().fields()
