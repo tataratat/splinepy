@@ -70,10 +70,12 @@ else()
                   "splinepy is tested with GNU and Clang.")
 endif()
 
+# for warning we extend flags
 if(SPLINEPY_ENABLE_WARNINGS)
   set(SPLINEPY_FLAGS ${SPLINEPY_FLAGS} ${SPLINEPY_WARNING_FLAGS})
 endif()
 
+# release mode includes optimization flags
 if(CMAKE_BUILD_TYPE MATCHES Release)
   set(SPLINEPY_FLAGS ${SPLINEPY_FLAGS} ${SPLINEPY_OPTIMIZATION_FLAGS})
 endif()
@@ -82,6 +84,7 @@ if(SPLINEPY_VERBOSE_MAKE)
   set(CMAKE_VERBOSE_MAKEFILE ON)
 endif()
 
+# extend defs
 if(SPLINEPY_MORE)
   set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_MORE)
 endif(SPLINEPY_MORE)
@@ -90,11 +93,15 @@ if(SPLINEPY_BUILD_EXPLICIT)
   set(SPLINEPY_DEFS ${SPLINEPY_DEFS} SPLINEPY_BUILD_EXPLICIT)
 endif(SPLINEPY_BUILD_EXPLICIT)
 
+# determines library type
+if(SPLINEPY_BUILD_SHARED)
+  set(SPLINEPY_LIB_TYPE SHARED)
+else()
+  set(SPLINEPY_LIB_TYPE STATIC)
+endif()
+
 # try to avoid re-build of splinepy if  possible
 if(SPLINEPY_COMPILE_PYTHON)
-  find_package(SplineLib QUIET)
-  find_package(bezman QUIET)
-  find_package(napf QUIET)
   find_package(splinepy QUIET)
   if(splinepy_FOUND)
     message("Found installed splinepy, building only python module")

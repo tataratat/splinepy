@@ -48,16 +48,13 @@ set(SPLINEPY_MORE_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs9.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs10.cpp)
 
+# extend src for high dim splines
 if(SPLINEPY_MORE)
   set(SPLINEPY_SRCS ${SPLINEPY_SRCS} ${SPLINEPY_MORE_SRCS})
 endif(SPLINEPY_MORE)
 
 # target
-if(SPLINEPY_BUILD_SHARED)
-  add_library(splinepy SHARED ${SPLINEPY_SRCS})
-else()
-  add_library(splinepy STATIC ${SPLINEPY_SRCS})
-endif(SPLINEPY_BUILD_SHARED)
+add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
 # alias for convenience
 add_library(splinepy::splinepy ALIAS splinepy)
 
@@ -65,6 +62,11 @@ add_library(splinepy::splinepy ALIAS splinepy)
 target_include_directories(
   splinepy PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                   $<INSTALL_INTERFACE:${incl_dest}>)
+
+# make sure BSplineLib is available
+if(NOT TARGET BSplineLib::splines OR NOT TARGET BSplineLib::input_output)
+  find_package(BSplineLib REQUIRED)
+endif()
 
 # link
 target_link_libraries(splinepy PUBLIC bezman napf BSplineLib::splines
@@ -98,7 +100,7 @@ configure_package_config_file(
   "${PROJECT_SOURCE_DIR}/cmake/config.cmake.in" "${project_config}"
   INSTALL_DESTINATION "${cfg_dest}")
 
-# install
+# install main target
 install(
   TARGETS splinepy
   EXPORT "${TARGETS_EXPORT_NAME}"
@@ -106,14 +108,24 @@ install(
   ARCHIVE DESTINATION ${lib_dest}
   INCLUDES
   DESTINATION "${incl_dest}")
+
+# config files
 install(FILES "${project_config}" "${version_config}" DESTINATION "${cfg_dest}")
 install(
   EXPORT "${TARGETS_EXPORT_NAME}"
   NAMESPACE "${namespace}"
   DESTINATION "${cfg_dest}")
-# .hpp files - keep tree
+
+# header files - keep tree
 install(
   DIRECTORY "${PROJECT_SOURCE_DIR}/include/splinepy"
   DESTINATION ${incl_dest} # target directory
   FILES_MATCHING
   PATTERN "*.hpp")
+
+# inline files - keep tree
+install(
+  DIRECTORY "${PROJECT_SOURCE_DIR}/include/splinepy"
+  DESTINATION ${incl_dest} # target directory
+  FILES_MATCHING
+  PATTERN "*.inl")
