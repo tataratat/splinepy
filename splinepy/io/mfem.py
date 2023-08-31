@@ -611,7 +611,7 @@ def export(fname, nurbs, precision=10):
                     + " "
                     + str(cnr[i])
                     + " "
-                    + str(spline.knot_vectors[i])[1:-1].replace(",", "")
+                    + str(list(spline.knot_vectors[i]))[1:-1].replace(",", "")
                 )
 
             kvs = kvs + kvs2
