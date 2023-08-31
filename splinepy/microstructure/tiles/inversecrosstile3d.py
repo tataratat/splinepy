@@ -24,7 +24,7 @@ class InverseCrossTile3D(TileBase):
         )
         self._n_info_per_eval_point = 1
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,
@@ -40,9 +40,6 @@ class InverseCrossTile3D(TileBase):
         ----------
         parameters : tuple(np.ndarray)
           radii of fitting cylinder at evaluation points
-        closure : str
-          parametric dimension that needs to be closed.
-          Must be one of {"z_min", "z_max"}
         boundary_width : float
           with of the boundary surronding branch
         filling_height : float
@@ -50,6 +47,9 @@ class InverseCrossTile3D(TileBase):
         seperator_distance : float
           Describes the position of the separator layer in the control point
           domain
+        closure : str
+          parametric dimension that needs to be closed.
+          Must be one of {"z_min", "z_max"}
 
         Returns
         -------
@@ -76,6 +76,8 @@ class InverseCrossTile3D(TileBase):
                 * 0.2
             )
 
+        self.check_params(parameters)
+
         if parameter_sensitivities is not None:
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
@@ -89,8 +91,6 @@ class InverseCrossTile3D(TileBase):
 
         if not (0.0 < float(filling_height) < 1.0):
             raise ValueError("Filling must  be in (0,1)")
-
-        self.check_params(parameters)
 
         # Precompute auxiliary values
         inv_filling_height = 1.0 - filling_height
@@ -882,6 +882,7 @@ class InverseCrossTile3D(TileBase):
         parameter_sensitivities=None,
         seperator_distance=None,
         center_expansion=1.0,
+        closure=None,
         **kwargs,  # noqa ARG002
     ):
         """Create an inverse microtile based on the parameters that describe
@@ -901,6 +902,9 @@ class InverseCrossTile3D(TileBase):
         center_expansion : float
           thickness of center is expanded by a factor (default to 1.0), which
           determines the maximum branch thickness
+        closure : str
+          parametric dimension that needs to be closed.
+          Must be one of {"z_min", "z_max"}
 
         Returns
         -------
@@ -909,12 +913,14 @@ class InverseCrossTile3D(TileBase):
 
         if not isinstance(center_expansion, float):
             raise ValueError("Invalid Type")
+
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5, 1.5)")
 
         # Set default values
         if seperator_distance is None:
             seperator_distance = 0.3
+
         if center_expansion is None:
             center_expansion = 1.0
 
@@ -940,6 +946,21 @@ class InverseCrossTile3D(TileBase):
 
         self.check_params(parameters)
 
+        if np.any(parameters < min_radius) or np.any(parameters > max_radius):
+            raise ValueError(
+                f"Radii must be in (0,{max_radius}) for "
+                f"center_expansion {center_expansion}"
+            )
+
+        if closure is not None:
+            return self._closing_tile(
+                parameters=parameters,
+                parameter_sensitivities=parameter_sensitivities,
+                seperator_distance=seperator_distance,
+                closure=closure,
+                **kwargs,
+            )
+
         [
             x_min_r,
             x_max_r,
@@ -948,12 +969,6 @@ class InverseCrossTile3D(TileBase):
             z_min_r,
             z_max_r,
         ] = parameters.flatten()
-
-        if np.any(parameters < min_radius) or np.any(parameters > max_radius):
-            raise ValueError(
-                f"Radii must be in (0,{max_radius}) for "
-                f"center_expansion {center_expansion}"
-            )
 
         # center radius
         center_r = np.sum(parameters) / 6.0 * center_expansion

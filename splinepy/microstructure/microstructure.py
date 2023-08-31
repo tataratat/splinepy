@@ -453,7 +453,7 @@ class Microstructure(SplinepyBase):
 
         # check if user wants closed structure
         if closing_face is not None:
-            if not hasattr(self.microtile, "closing_tile"):
+            if not hasattr(self.microtile, "_closing_tile"):
                 raise ValueError(
                     "Microtile does not provide closing tile definition"
                 )
@@ -463,11 +463,6 @@ class Microstructure(SplinepyBase):
                     "Invalid format for closing_face argument, (handed: "
                     f"{closing_face}), must be one of"
                     "{'x', 'y', 'z'}"
-                )
-            if self._parametrization_function is None:
-                raise ValueError(
-                    "Faceclosure is currently only implemented for "
-                    "parametrized microstructures"
                 )
             if closing_face_dim >= self._deformation_function.para_dim:
                 raise ValueError(

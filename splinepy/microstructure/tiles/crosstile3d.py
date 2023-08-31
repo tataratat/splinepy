@@ -21,7 +21,7 @@ class CrossTile3D(TileBase):
         )
         self._n_info_per_eval_point = 1
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,
@@ -39,13 +39,13 @@ class CrossTile3D(TileBase):
           describes the radius of the cylinder at the evaluation point.
           The parameters must be a two-dimensional np.array, where the
           value must be between 0.01 and 0.49
-        closure : str
-          parametric dimension that needs to be closed.
-          Must be {"z_min", "z_max"}
         boundary_width : float
           with of the boundary surronding branch
         filling_height : float
           portion of the height that is filled in parametric domain
+        closure : str
+          parametric dimension that needs to be closed.
+          Must be {"z_min", "z_max"}
 
         Returns
         -------
@@ -370,6 +370,7 @@ class CrossTile3D(TileBase):
         parameters=None,
         parameter_sensitivities=None,
         center_expansion=1.0,
+        closure=None,
         **kwargs,  ## noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the branch
@@ -387,6 +388,11 @@ class CrossTile3D(TileBase):
           value must be between 0.01 and 0.49
         center_expansion : float
           thickness of center is expanded by a factor
+        closure : str
+          parametric dimension that needs to be closed.
+          Must be {"z_min", "z_max"}
+        **kwargs
+          Will be passed to _closing_tile if given
 
         Returns
         -------
@@ -396,6 +402,7 @@ class CrossTile3D(TileBase):
 
         if not isinstance(center_expansion, float):
             raise ValueError("Invalid Type")
+
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5,1.5)")
 
@@ -418,6 +425,14 @@ class CrossTile3D(TileBase):
         if parameter_sensitivities is not None:
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
+            )
+
+        if closure is not None:
+            return self._closing_tile(
+                parameters=parameters,
+                parameter_sensitivities=parameter_sensitivities,  # TODO
+                closure=closure,
+                **kwargs,
             )
 
         [

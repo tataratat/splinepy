@@ -15,10 +15,10 @@ class NutTile2D(TileBase):
         )
         self._n_info_per_eval_point = 1
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,
+        parameter_sensitivities=None,  # TODO
         contact_length=0.2,
         closure=None,
     ):
@@ -34,13 +34,11 @@ class NutTile2D(TileBase):
           Describes the parameter sensitivities with respect to some design
           variable. In case the design variables directly apply to the
           parameter itself, they evaluate as delta_ij
-        closure : int
-          parametric dimension that needs to be closed. Positive values mean
-          that minimum parametric dimension is requested. That means,
-          i.e. -2 closes the tile at maximum z-coordinate.
-          (must currently be either -2 or 2)
         contact_length: float
           the length of the wall that contacts the other microstructure
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Results
         -------
@@ -401,6 +399,7 @@ class NutTile2D(TileBase):
         parameters=None,
         parameter_sensitivities=None,  # TODO
         contact_length=0.2,
+        closure=None,
         **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the wall
@@ -414,13 +413,16 @@ class NutTile2D(TileBase):
         parameters : np.array(1, 1)
           One evaluation point with one parameter is used. This parameter
           specifies the distance from the center to the inner edge, where
-          the value must be between 0.01 and 0.49.
+          the value must be between non-inclusive (0, 0.5).
         parameter_sensitivities: np.ndarray
           Describes the parameter sensitivities with respect to some design
           variable. In case the design variables directly apply to the
           parameter itself, they evaluate as delta_ij
         contact_length : float
             the length of the wall that contacts the other microstructure
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Returns
         -------
@@ -451,9 +453,17 @@ class NutTile2D(TileBase):
         self.check_params(parameters)
 
         v_h_void = parameters[0, 0]
-        if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
+        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
+            )
+
+        if closure is not None:
+            return self._closing_tile(
+                parameters=parameters,
+                parameter_sensitivities=parameter_sensitivities,  # TODO
+                contact_length=contact_length,
+                closure=closure,
             )
 
         v_zero = 0.0

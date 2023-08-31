@@ -18,7 +18,7 @@ class Armadillo(TileBase):
         self,
         parameters=None,
         parameter_sensitivities=None,  # TODO
-        contact_length=0.2,
+        contact_length=0.3,
         closure=None,
         **kwargs,  # noqa ARG002
     ):
@@ -35,13 +35,11 @@ class Armadillo(TileBase):
           Describes the parameter sensitivities with respect to some design
           variable. In case the design variables directly apply to the
           parameter itself, they evaluate as delta_ij
-        closure : int
-          parametric dimension that needs to be closed. Positive values mean
-          that minimum parametric dimension is requested. That means,
-          i.e. -2 closes the tile at maximum z-coordinate.
-          (must currently be either -2 or 2)
         contact_length: float
           the length of the wall that contacts the other microstructure
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Results
         -------
@@ -57,11 +55,6 @@ class Armadillo(TileBase):
         if not ((contact_length > 0) and (contact_length < 0.99)):
             raise ValueError("The length of a side must be in (0.01, 0.99)")
 
-        if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
-
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
             parameters = np.array(
@@ -71,12 +64,19 @@ class Armadillo(TileBase):
                 * 0.2
             )
 
-        v_wall_thickness = parameters[0, 0]
-        if not ((v_wall_thickness > 0.01) and (v_wall_thickness < 0.5)):
+        self.check_params(parameters)
+
+        if parameter_sensitivities is not None:
+            raise NotImplementedError(
+                "Derivatives are not implemented for this tile yet"
+            )
+
+        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
 
+        v_wall_thickness = parameters[0, 0]
         spline_list = []
         v_zero = 0.0
         v_one_half = 0.5
@@ -5024,6 +5024,7 @@ class Armadillo(TileBase):
         parameters=None,
         parameter_sensitivities=None,  # TODO
         contact_length=0.3,
+        closure=None,
         **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the wall
@@ -5045,6 +5046,9 @@ class Armadillo(TileBase):
           parameter itself, they evaluate as delta_ij
         contact_length : float
             the length of the wall that contacts the other microstructure
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Returns
         -------
@@ -5067,18 +5071,28 @@ class Armadillo(TileBase):
                 * 0.2
             )
 
+        self.check_params(parameters)
+
         if parameter_sensitivities is not None:
             raise NotImplementedError(
                 "Derivatives are not implemented for this tile yet"
             )
 
-        self.check_params(parameters)
-        v_wall_thickness = parameters[0, 0]
-        if not ((v_wall_thickness > 0.01) and (v_wall_thickness < 0.5)):
+        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
 
+        if closure is not None:
+            return self._closing_tile(
+                parameters=parameters,
+                parameter_sensitivities=parameter_sensitivities,
+                contact_length=contact_length,
+                closure=closure,
+                **kwargs,
+            )
+
+        v_wall_thickness = parameters[0, 0]
         v_zero = 0.0
         v_one_half = 0.5
         v_one = 1.0

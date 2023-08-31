@@ -19,7 +19,7 @@ class CrossTile2D(TileBase):
         )
         self._n_info_per_eval_point = 1
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,
@@ -41,15 +41,13 @@ class CrossTile2D(TileBase):
           Describes the parameter sensitivities with respect to some design
           variable. In case the design variables directly apply to the
           parameter itself, they evaluate as delta_ij
-        closure : int
-          parametric dimension that needs to be closed. Positive values mean
-          that minimum parametric dimension is requested. That means,
-          i.e. -2 closes the tile at maximum z-coordinate.
-          (must currently be either -2 or 2)
         boundary_width : float
           with of the boundary surrounding branch
         filling_height : float
           portion of the height that is filled in parametric domain
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Returns
         -------
@@ -69,6 +67,8 @@ class CrossTile2D(TileBase):
                 * 0.2
             )
 
+        self.check_params(parameters)
+
         if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
             raise ValueError("Thickness out of range (0, .5)")
 
@@ -81,12 +81,8 @@ class CrossTile2D(TileBase):
         # Check if user requests derivative splines
         if parameter_sensitivities is not None:
             # Check format
-            if not self.check_param_derivatives(parameter_sensitivities):
-                raise TypeError(
-                    "The parameter_sensitivities passed have the wrong "
-                    "format. The expected format is "
-                    "list(tuple(np.ndarray)), where each list entry "
-                )
+            self.check_param_derivatives(parameter_sensitivities)
+
             n_derivatives = parameter_sensitivities.shape[2]
             derivatives = []
         else:
@@ -378,6 +374,7 @@ class CrossTile2D(TileBase):
         parameters=None,
         parameter_sensitivities=None,
         center_expansion=1.0,
+        closure=None,
         **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the branch
@@ -399,6 +396,9 @@ class CrossTile2D(TileBase):
           parameter itself, they evaluate as delta_ij
         center_expansion : float
             thickness of center is expanded by a factor
+        closure : str
+          parametric dimension that needs to be closed, given in the form
+          "x_min", "x_max", etc.
 
         Returns
         -------
@@ -408,9 +408,12 @@ class CrossTile2D(TileBase):
 
         if not isinstance(center_expansion, float):
             raise ValueError("Invalid Type")
+
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5,1.5)")
+
         max_radius = min(0.5, (0.5 / center_expansion))
+
         # set to default if nothing is given
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
@@ -422,27 +425,31 @@ class CrossTile2D(TileBase):
             )
 
         self.check_params(parameters)
-        if not np.all(parameters > 0):
-            raise ValueError(
-                f"Radii must be in (0,{max_radius}) for "
-                f"center_expansion {center_expansion}"
-            )
+
+        if not (np.all(parameters > 0) and np.all(parameters < max_radius)):
+            raise ValueError(f"Thickness out of range (0, {center_expansion})")
 
         self.check_param_derivatives(parameter_sensitivities)
+
         # Check if user requests derivative splines
         if parameter_sensitivities is not None:
             # Check format
-            if not self.check_param_derivatives(parameter_sensitivities):
-                raise TypeError(
-                    "The parameter_sensitivities passed have the wrong "
-                    "format. The expected format is "
-                    "list(np.ndarray), where each list entry "
-                )
+            self.check_param_derivatives(parameter_sensitivities)
+
             n_derivatives = parameter_sensitivities.shape[2]
             derivatives = []
         else:
             n_derivatives = 0
             derivatives = None
+
+        # Closure requested, pass to function
+        if closure is not None:
+            return self._closing_tile(
+                parameters=parameters,
+                parameter_sensitivities=parameter_sensitivities,
+                closure=closure,
+                **kwargs,
+            )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):
