@@ -92,7 +92,8 @@ class BSplineBase(spline.Spline):
             knots = [knots]
 
         if len(knots) == 0:
-            raise ValueError("Empty knot query.")
+            self._logd("Requesting knot insertion for 0 knots, no computation")
+            return []
 
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(
@@ -224,7 +225,8 @@ class BSplineBase(spline.Spline):
             knots = [knots]
 
         if len(knots) == 0:
-            raise ValueError("Empty knot query.")
+            self._logd("Requesting knot removal of 0 knots, no computation")
+            return []
 
         if max(knots) > max(self.knot_vectors[parametric_dimension]):
             raise ValueError(

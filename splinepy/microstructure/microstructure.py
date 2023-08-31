@@ -84,6 +84,9 @@ class Microstructure(SplinepyBase):
             )
         self._deformation_function = deformation_function
 
+        if self._deformation_function.has_knot_vectors:
+            self._deformation_function.normalize_knot_vectors()
+
         self._sanity_check()
 
     @property
@@ -253,11 +256,9 @@ class Microstructure(SplinepyBase):
         """
         additional_knots = []
         # Create Spline that will be used to iterate over parametric space
-        ukvs = self.deformation_function.bspline.unique_knots
+        ukvs = self.deformation_function.unique_knots
         if knot_span_wise:
             for tt, ukv in zip(self.tiling, ukvs):
-                if tt == 1:
-                    continue
                 inv_t = 1 / tt
                 new_knots = [
                     ukv[i - 1] + j * inv_t * (ukv[i] - ukv[i - 1])
@@ -455,7 +456,7 @@ class Microstructure(SplinepyBase):
 
         # check if user wants closed structure
         if closing_face is not None:
-            if not hasattr(self.microtile, "closing_tile"):
+            if not hasattr(self.microtile, "_closing_tile"):
                 raise ValueError(
                     "Microtile does not provide closing tile definition"
                 )
@@ -465,11 +466,6 @@ class Microstructure(SplinepyBase):
                     "Invalid format for closing_face argument, (handed: "
                     f"{closing_face}), must be one of"
                     "{'x', 'y', 'z'}"
-                )
-            if self._parametrization_function is None:
-                raise ValueError(
-                    "Faceclosure is currently only implemented for "
-                    "parametrized microstructures"
                 )
             if closing_face_dim >= self._deformation_function.para_dim:
                 raise ValueError(

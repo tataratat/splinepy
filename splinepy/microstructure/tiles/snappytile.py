@@ -13,7 +13,7 @@ class SnappyTile(TileBase):
         self._evaluation_points = np.array([[0.5, 0.5]])
         self._n_info_per_eval_point = 1
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,  # TODO
@@ -265,6 +265,7 @@ class SnappyTile(TileBase):
         b=0.2,
         c=0.3,
         r=0.15,
+        closure=None,
         **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the wall
@@ -292,6 +293,8 @@ class SnappyTile(TileBase):
           2*c<1-b)
         r : float
           'radius' of the cubic bezier
+        closure : str
+          string specifying the closing dimensions (e.g., x_min)
 
         Returns
         -------
@@ -321,13 +324,9 @@ class SnappyTile(TileBase):
                 "Inconsistent parameters, must be 2*c<1-c and a<c"
             )
 
-        if parameters is None:
-            self._logd("Setting parameters to default values (0.2)")
-            parameters = np.array(
-                np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
+        if parameters is not None:
+            raise NotImplementedError(
+                "Parametriazation is not implemented for this tile yet"
             )
 
         if parameter_sensitivities is not None:
@@ -335,7 +334,17 @@ class SnappyTile(TileBase):
                 "Derivatives are not implemented for this tile yet"
             )
 
-        self.check_params(parameters)
+        if closure is not None:
+            return self._closing_tile(
+                parameters=None,
+                parameter_sensitivities=parameter_sensitivities,
+                closure=closure,
+                contact_length=contact_length,
+                a=a,
+                b=b,
+                r=r,
+                **kwargs,
+            )
 
         v_zero = 0.0
         v_one_half = 0.5
