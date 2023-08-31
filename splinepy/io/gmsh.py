@@ -3,6 +3,26 @@ import numpy as np
 
 
 def spline_to_gmsh(spline, model=None, startid=1):
+    """Add a spline as an entity to a gmsh model.
+
+    Parameters
+    ----------
+    spline : splinepy.spline
+        Input spline
+    model : gmsh.model, optional
+    startid : int, optional
+        Start id of gmsh points, by default 1
+
+    Returns
+    -------
+    int, np.ndarray(int)
+        tag of gmsh object and of point ids
+
+    Raises
+    ------
+    ValueError
+        Raises exception if spline dimension is not supported.
+    """
     if model is None:
         model = gmsh.model
 
@@ -30,6 +50,24 @@ def spline_to_gmsh(spline, model=None, startid=1):
 
 
 def gmsh_data(splines):
+    """Create gmsh data for splines lies
+
+    Parameters
+    ----------
+    splines : list
+        Input splines
+
+    Returns
+    -------
+    iterable
+        Iterable of points and gmsh dict
+
+    Raises
+    ------
+    ValueError
+        Raises exception if spline dimension is not supported.
+    """
+
     gmsh_data = []
     for spline in splines:
         # Line
@@ -47,6 +85,24 @@ def gmsh_data(splines):
 
 
 def gmsh_line(spline):
+    """Create gmsh data for lines pline
+
+    Parameters
+    ----------
+    spline : splinepy.spline
+
+    Returns
+    -------
+    np.ndarray, dict
+        points, gmsh arguments
+
+    Raises
+    ------
+    ValueError
+        Spline dimension is wrong.
+    ValueError
+        Control point coordinates are larger than three.
+    """
     if spline.para_dim != 1:
         raise ValueError(
             f"Spline has parametric dimension {spline.para_dim} and is not supported."
@@ -83,6 +139,25 @@ def gmsh_line(spline):
 
 
 def gmsh_surface(spline):
+    """Create gmsh data for surface spline
+
+    Parameters
+    ----------
+    spline : splinepy.spline
+
+    Returns
+    -------
+    np.ndarray, dict
+        points, gmsh arguments
+
+    Raises
+    ------
+    ValueError
+        Spline dimension is wrong.
+    ValueError
+        Control point coordinates are larger than three.
+    """
+
     if spline.para_dim != 2:
         raise ValueError(
             f"Spline has parametric dimension {spline.para_dim} and is not supported."
