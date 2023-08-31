@@ -84,6 +84,9 @@ class Microstructure(SplinepyBase):
             )
         self._deformation_function = deformation_function
 
+        if self._deformation_function.has_knot_vectors:
+            self._deformation_function.normalize_knot_vectors()
+
         self._sanity_check()
 
     @property
@@ -253,7 +256,7 @@ class Microstructure(SplinepyBase):
         """
         additional_knots = []
         # Create Spline that will be used to iterate over parametric space
-        ukvs = self.deformation_function.bspline.unique_knots
+        ukvs = self.deformation_function.unique_knots
         if knot_span_wise:
             for tt, ukv in zip(self.tiling, ukvs):
                 inv_t = 1 / tt
