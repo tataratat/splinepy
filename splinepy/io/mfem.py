@@ -7,7 +7,12 @@ import gustaf as gus
 import numpy as np
 
 # single function imports
-from splinepy.io.ioutils import form_lines, make_meaningful, next_line
+from splinepy.io.ioutils import (
+    dict_to_spline,
+    form_lines,
+    make_meaningful,
+    next_line,
+)
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -109,19 +114,21 @@ def load(fname):
     ):
         raise ValueError("Inconsistent spline info in " + fname)
 
-    _, reorder = mfem_index_mapping(
-        len(knot_vectors),
-        degrees,
-        knot_vectors,
-        flat_list=True,
-    )
-
-    return {
+    mfem_dict_spline = {
         "degrees": degrees,
         "knot_vectors": knot_vectors,
-        "control_points": np.ascontiguousarray(control_points)[reorder],
-        "weights": np.ascontiguousarray(weights)[reorder],
+        "control_points": np.ascontiguousarray(control_points),
+        "weights": np.ascontiguousarray(weights),
     }
+
+    spline = dict_to_spline([mfem_dict_spline])[0]
+
+    _, reorder = dof_mapping(spline)
+
+    spline.cps[:] = spline.cps[reorder]
+    spline.ws[:] = spline.ws[reorder]
+
+    return spline
 
 
 def read_solution(
@@ -140,7 +147,6 @@ def read_solution(
     --------
     solution_nurbs: dict
     """
-    from copy import deepcopy
 
     with open(fname) as f:
         hotkey = "Ordering"
@@ -158,115 +164,121 @@ def read_solution(
     if len(reference_nurbs.control_points) != len(solution):
         raise ValueError("Solution length does not match reference nurbs")
 
-    _, reorder = mfem_index_mapping(
-        reference_nurbs.para_dim,
-        reference_nurbs.degrees,
-        reference_nurbs.knot_vectors,
-        flat_list=True,
-    )
+    mfem_dict_spline = reference_nurbs.todict()
 
-    return {
-        "degrees": deepcopy(reference_nurbs.degrees),
-        "knot_vectors": deepcopy(reference_nurbs.knot_vectors),
-        "control_points": np.ascontiguousarray(solution)[reorder],
-        "weights": deepcopy(reference_nurbs.weights),
-    }
+    spline = dict_to_spline([mfem_dict_spline])[0]
+
+    _, reorder = dof_mapping(spline)
+
+    spline.cps = np.ascontiguousarray(solution)[reorder]
+    spline.ws[:] = spline.ws[reorder]
+
+    return spline
 
 
-def mfem_index_mapping(
-    para_dim,
-    degrees,
-    knot_vectors,
-    flat_list=True,
-):
+def _mfem_dof_map_2d(spline):
     """
-    Returns index to properly reorganize control points/weights.
+    Dof mapping for 2D splines
+    """
+    mi = spline.multi_index
 
-    .. code-block:: text
+    to_m = []
 
-        2D:
-                <---------------------- 1.2
-        0.3 *-------------------------------* 0.2
-            |                               |
-        2.1 |   --------------------> 3.... | 2.2
-         ^  |   --------------------> 3.8   |  ^
-         |  |   --------------------> 3.7   |  |
-         |  |   --------------------> 3.6   |  |
-         |  |   --------------------> 3.5   |  |
-         |  |   --------------------> 3.4   |  |
-         |  |   --------------------> 3.3   |  |
-         |  |   --------------------> 3.2   |  |
-         |  |   --------------------> 3.1   |  |
-            |                               |
-        0.0 *-------------------------------* 0.1
-               -----------------------> 1.1
+    # corner vertices
+    x_ids = [0, -1, -1, 0]
+    y_ids = [0, 0, -1, -1]
+    vertices = mi[x_ids, y_ids].tolist()
+
+    # edge vertices
+    edges = []
+    edges.extend(mi[1:-1:, 0].tolist())  # bottom
+    edges.extend(mi[1:-1, -1].tolist()[::-1])  # top
+    edges.extend(mi[0, 1:-1].tolist())  # left
+    edges.extend(mi[-1, 1:-1].tolist())  # right
+
+    # internal
+    internal = mi[1:-1, 1:-1].tolist()
+
+    to_m.extend(vertices)
+    to_m.extend(edges)
+    to_m.extend(internal)
+
+    return to_m, np.argsort(to_m).tolist()
+
+
+def _mfem_dof_map_3d(spline):
+    """
+    Dof mapping for 3D splines
+    """
+    mi = spline.multi_index
+
+    to_m = []
+
+    # corner vertices
+    x_ids = [0, -1, -1, 0, 0, -1, -1, 0]
+    y_ids = [0, 0, -1, -1, 0, 0, -1, -1]
+    z_ids = [0, 0, 0, 0, -1, -1, -1, -1]
+
+    vertices = mi[x_ids, y_ids, z_ids].tolist()
+
+    # edges
+    edges = []
+    edges.extend(mi[1:-1, 0, 0].tolist())  # 1
+    edges.extend(mi[1:-1, -1, 0].tolist()[::-1])  # 2
+    edges.extend(mi[1:-1, 0, -1].tolist())  # 3
+    edges.extend(mi[1:-1, -1, -1].tolist()[::-1])  # 4
+
+    edges.extend(mi[0, 1:-1, 0].tolist())  # 5
+    edges.extend(mi[-1, 1:-1, 0].tolist())  # 6
+    edges.extend(mi[0, 1:-1, -1].tolist())  # 7
+    edges.extend(mi[-1, 1:-1, -1].tolist())  # 8
+
+    edges.extend(mi[0, 0, 1:-1].tolist())  # 9
+    edges.extend(mi[-1, 0, 1:-1].tolist())  # 10
+    edges.extend(mi[-1, -1, 1:-1].tolist())  # 11
+    edges.extend(mi[0, -1, 1:-1].tolist())  # 12
+
+    # faces - this one is extra funky
+    faces = []
+    faces.extend(mi[1:-1, -2:0:-1, 0].tolist())  # 1
+    faces.extend(mi[1:-1, 0, 1:-1].tolist())  # 2
+    faces.extend(mi[-1, 1:-1, 1:-1].tolist())  # 3
+    faces.extend(mi[-2:0:-1, -1, 1:-1].tolist())  # 4
+    faces.extend(mi[0, -2:0:-1, 1:-1].tolist())  # 5
+    faces.extend(mi[1:-1, 1:-1, -1].tolist())  # 6
+
+    # internal - thank you for being so friendly
+    internal = mi[1:-1, 1:-1, 1:-1].tolist()
+
+    # merge them
+    to_m.extend(vertices)
+    to_m.extend(edges)
+    to_m.extend(faces)
+    to_m.extend(internal)
+
+    return to_m, np.argsort(to_m).tolist()
+
+
+def dof_mapping(spline):
+    """
+    MFEM stores vertices in a special order. This function gives dof index
+    mapping between splinepy and mfem
 
     Parameters
-    -----------
-    para_dim: int
-    degrees: (1D) array-like
-    knot_vectors: list
-    flat_list: bool
-      If false, each sections are returned in a separate list
+    ----------
+    spline: Spline
 
     Returns
-    --------
-    to_mfem: (n,) np.ndarray
-    inverse: (n,) np.ndarray
+    -------
+    to_mfem: list
+    from_mfem: array
     """
-
-    def flatten(list_):
-        """unrolls any nested list"""
-        if len(list_) == 0:
-            return list_
-        if isinstance(list_[0], list):
-            return flatten(list_[0]) + flatten(list_[1:])
-        return list_[:1] + flatten(list_[1:])
-
-    if int(para_dim) == 2:
-        cps_per_dim = [
-            len(knot_vectors[i]) - degrees[i] - 1 for i in range(para_dim)
-        ]  # degrees = order - 1
-        cp_ids = np.arange(np.prod(cps_per_dim)).tolist()
-
-        # group0 - list of int
-        group0 = [
-            cp_ids[0],
-            cp_ids[cps_per_dim[0] - 1],
-            cp_ids[-1],
-            cp_ids[-cps_per_dim[0]],
-        ]
-
-        # group1 - list of list
-        group1 = [
-            cp_ids[group0[0] + 1 : group0[1]],
-            cp_ids[group0[3] + 1 : group0[2]][::-1],
-        ]
-
-        # group2 - list of list
-        group2 = [
-            cp_ids[cps_per_dim[0] :: cps_per_dim[0]][:-1],
-            cp_ids[group0[1] + cps_per_dim[0] :: cps_per_dim[0]][:-1],
-        ]
-
-        # group3 - list of list
-        group3 = [cp_ids[i + 1 : j] for i, j in zip(group2[0], group2[1])]
-
-        groups = [group0, group1, group2, group3]
-        flat_groups = flatten(groups)
-
-        # Quick check
-        assert len(flat_groups) == len(
-            np.unique(flat_groups)
-        ), "Something went wrong during reorganizing indices for MFEM."
-
-        return (
-            flat_groups if flat_list else groups,  # to_mfem
-            np.argsort(flat_groups),  # inverse
-        )
-
+    if spline.para_dim == 2:
+        return _mfem_dof_map_2d(spline)
+    elif spline.para_dim == 3:
+        return _mfem_dof_map_3d(spline)
     else:
-        raise NotImplementedError
+        raise ValueError("supports para_dim of 2 and 3")
 
 
 def export_cartesian(
@@ -510,10 +522,8 @@ def export(fname, nurbs, precision=10):
     """
     if nurbs.whatami.startswith("NURBS"):
         pass
-    elif nurbs.whatami.startswith("BSpline"):
-        nurbs = nurbs.nurbs  # if bspline, turn it into nurbs
     else:
-        raise TypeError("Sorry, invalid spline object.")
+        nurbs = nurbs.nurbs  # turns it into nurbs
 
     intro_sec = form_lines(
         "MFEM NURBS mesh v1.0",
@@ -616,12 +626,7 @@ def export(fname, nurbs, precision=10):
         raise NotImplementedError
 
     # disregard inverse
-    reorder_ids, _ = mfem_index_mapping(
-        para_dim=nurbs.para_dim,
-        degrees=nurbs.degrees,
-        knot_vectors=nurbs.knot_vectors,
-        flat_list=True,
-    )
+    reorder_ids, _ = dof_mapping(nurbs)
 
     with np.printoptions(
         formatter={"float_kind": lambda x: f"{x:.{precision}f}"}
