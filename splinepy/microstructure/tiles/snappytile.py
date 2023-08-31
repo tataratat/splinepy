@@ -324,7 +324,10 @@ class SnappyTile(TileBase):
                 "Inconsistent parameters, must be 2*c<1-c and a<c"
             )
 
-        self.check_params(parameters)
+        if parameters is not None:
+            raise NotImplementedError(
+                "Parametriazation is not implemented for this tile yet"
+            )
 
         if parameter_sensitivities is not None:
             raise NotImplementedError(
