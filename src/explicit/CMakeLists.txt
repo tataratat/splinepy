@@ -1,4 +1,4 @@
-set(SPLINEPY_SOURCES
+set(SPLINEPY_EXPLICIT_SRCS
     splinepy/bezier_explicit1.cpp
     splinepy/bezier_explicit2.cpp
     splinepy/bezier_explicit3.cpp
@@ -11,7 +11,8 @@ set(SPLINEPY_SOURCES
     splinepy/nurbs_explicit1.cpp
     splinepy/nurbs_explicit2.cpp
     splinepy/nurbs_explicit3.cpp)
-set(SPLINEPY_MORE_SOURCES
+
+set(SPLINEPY_MORE_EXPLICIT_SRCS
     splinepy/bezier_explicit4.cpp
     splinepy/bezier_explicit5.cpp
     splinepy/bezier_explicit6.cpp
@@ -41,17 +42,12 @@ set(SPLINEPY_MORE_SOURCES
     splinepy/nurbs_explicit9.cpp
     splinepy/nurbs_explicit10.cpp)
 
-set(EXPLICIT_SOURCES ${SPLINEPY_SOURCES})
-
 if(SPLINEPY_MORE)
-  set(EXPLICIT_SOURCES ${EXPLICIT_SOURCES} ${SPLINEPY_MORE_SOURCES})
+  set(SPLINEPY_EXPLICIT_SRCS ${SPLINEPY_EXPLICIT_SRCS}
+                             ${SPLINEPY_MORE_EXPLICIT_SRCS})
 endif(SPLINEPY_MORE)
 
-if(SPLINEPY_BUILD_SHARED)
-  add_library(explicit SHARED ${EXPLICIT_SOURCES})
-else()
-  add_library(explicit STATIC ${EXPLICIT_SOURCES})
-endif(SPLINEPY_BUILD_SHARED)
+add_library(explicit ${SPLINEPY_LIB_TYPE} ${SPLINEPY_EXPLICIT_SRCS})
 
 # include
 target_include_directories(
