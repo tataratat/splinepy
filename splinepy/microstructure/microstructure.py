@@ -630,7 +630,7 @@ class Microstructure(SplinepyBase):
                     # derivatives of the composed spline with respect to a
                     # component of a control point within the bezier patch
                     # of the deformation function.
-                    cps = np.hstack(p.cps for p in patch_info)
+                    cps = np.hstack([p.cps for p in patch_info])
                     # We use the matrices to map the contributions of the
                     # bezier ctps to the deformation functions
                     mapped_cps = cps @ knot_insertion_matrices[i_patch]
