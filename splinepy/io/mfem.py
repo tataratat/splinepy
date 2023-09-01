@@ -438,8 +438,11 @@ def export_cartesian(
             )
         )
 
+        # Write number of edges 0, for auto knot2edge
+        f.write(f"\n\nedges\n{0}\n")
+
         # Write Number Of vertices
-        f.write(f"\n\nvertices\n{int(np.max(vertex_ids)+1)}\n\n")
+        f.write(f"\nvertices\n{int(np.max(vertex_ids)+1)}\n\n")
 
         # Export Splines
         f.write("patches\n\n")
