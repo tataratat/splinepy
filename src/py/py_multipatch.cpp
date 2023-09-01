@@ -1537,8 +1537,8 @@ py::array_t<double> PyMultipatch::GetControlPoints() {
 
   // Lambda for parallelization
   const int& dim = Dim();
-  auto copy_control_points = [&](const int i_start, const int n_total) {
-    for (int i{i_start}; i < n_total; i += n_default_threads_) {
+  auto copy_control_points = [&](const int start, const int end) {
+    for (int i{start}; i < end; ++i) {
       core_patches_[i]->SplinepyCurrentProperties(
           nullptr,
           nullptr,
