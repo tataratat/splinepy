@@ -1376,19 +1376,20 @@ class Spline(SplinepyBase, core.PySpline):
         With `initial_guess_sample_resolutions` value,
         physical points will be sampled to plant a kd-tree.
 
-        Probably useful if you have a lot of queries. The planted
-        kd-tree is saved in c_spline internally and will re-plant only if
-        `initial_guess_sample_resolutions` differ from previous function call.
+        The planted kd-tree is saved in cpp object internally
+        and will re-plant if `initial_guess_sample_resolutions` are positive.
+        Default behavior is to re-plant the tree each query.
+        If you know that spline doesn't have any inplace changes, and would
+        like to avoid it, set negative values.
 
-        Setting any entry in `initial_guess_sample_resolutions` will make sure
-        no trees are planted.
-
-        If there's no tree, this will raise runtime error from c++ side.
+        If there's no tree, this will raise runtime error.
 
         Parameters
         -----------
         queries: (n, dim) array-like
         initial_guess_sample_resolutions: (para_dim) array-like
+          Default is 2 * control_mesh_resolutions. For complex shapes, we
+          recommend setting large values.
         tolerance: float
           Convergence criteria. Currently for both distance and residual
         max_iterations: int
@@ -1437,12 +1438,12 @@ class Spline(SplinepyBase, core.PySpline):
             return verbose_info
         else:
             if np.any(
-                verbose_info[3]
+                verbose_info[4]
                 > _default_if_none(tolerance, settings.TOLERANCE)
             ):
                 self._logw(
-                    "Remaining distance of some of the points is larger than "
-                    "tolerance, please rerun proximity search with "
+                    "Proximity search did not converge within the tolerance "
+                    "for some queries. Try to rerun proximity search with "
                     "return_verbose=True to get more information."
                 )
             return verbose_info[0]
