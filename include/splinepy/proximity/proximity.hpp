@@ -109,6 +109,12 @@ public:
                                       grid_points_.Size(),
                                       n_thread);
 
+    // nanoflann supports concurrent build
+    nanoflann::KDTreeSingleIndexAdaptorParams params{};
+    params.n_thread_build = static_cast<
+        decltype(nanoflann::KDTreeSingleIndexAdaptorParams::n_thread_build)>(
+        (n_thread < 0) ? 0 : n_thread);
+
     // plant a new tree
     coordinates_cloud_ =
         std::make_unique<Cloud_>(coordinates_, grid_points_.Size());
