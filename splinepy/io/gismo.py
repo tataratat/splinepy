@@ -79,9 +79,9 @@ def _spline_to_ET(
         design_v_support = ET.SubElement(
             root,
             "Matrix",
-            rows=str(supports.shape[0]),
             cols=str(supports.shape[1]),
             id=str(10),
+            rows=str(supports.shape[0]),
         )
         design_v_support.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in supports]
@@ -128,8 +128,8 @@ def _spline_to_ET(
         spline_element = ET.SubElement(
             root,
             "Geometry",
-            type="Tensor" + type_name + str(spline.para_dim),
             id=str(id + index_offset),
+            type="Tensor" + type_name + str(spline.para_dim),
         )
 
         # Define Basis functions
@@ -158,8 +158,8 @@ def _spline_to_ET(
             basis_fun = ET.SubElement(
                 spline_basis,
                 "Basis",
-                type="BSplineBasis",
                 index=str(i_para),
+                type="BSplineBasis",
             )
             knot_vector = ET.SubElement(
                 basis_fun,
@@ -182,8 +182,8 @@ def _spline_to_ET(
         coords = ET.SubElement(
             spline_element,
             "coefs",
-            geoDim=str(coefs.shape[1]),
             format=format_flag,
+            geoDim=str(coefs.shape[1]),
         )
         coords.text = _array_to_text(coefs, True, as_base64)
 
@@ -260,7 +260,7 @@ def export(
 
     # First export Multipatch information
     multipatch_element = ET.SubElement(
-        xml_data, "MultiPatch", parDim=str(multipatch.para_dim), id=str(0)
+        xml_data, "MultiPatch", id=str(0), parDim=str(multipatch.para_dim)
     )
     patch_range = ET.SubElement(multipatch_element, "patches", type="id_range")
     patch_range.text = (
@@ -366,8 +366,8 @@ def export(
             bcs_data = ET.SubElement(
                 xml_data,
                 "boundaryConditions",
-                multipatch=str(len(multipatch.patches)),
                 id=str(1),
+                multipatch=str(len(multipatch.patches)),
             )
             bcs_data.insert(
                 0, ET.Comment(text="Please fill boundary conditions here")

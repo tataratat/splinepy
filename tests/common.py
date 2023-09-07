@@ -1,4 +1,5 @@
 import os
+import re
 import unittest
 
 import gustaf as gus
@@ -376,8 +377,10 @@ def are_stripped_lines_same(a, b, ignore_order=False):
         if not this_is_same and ignore_order:
             print("  checking again, while ignoring word order:")
 
-            splitted_a, splitted_b = stripped_a.split(), stripped_b.split()
-
+            # This is meant for attributes
+            delimiters = r" |\>|\<|\t"
+            splitted_a = list(filter(None, re.split(delimiters, stripped_a)))
+            splitted_b = list(filter(None, re.split(delimiters, stripped_b)))
             # first, len check
             len_a, len_b = len(splitted_a), len(splitted_b)
             if len(splitted_a) != len(splitted_b):
