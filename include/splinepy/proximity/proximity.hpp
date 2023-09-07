@@ -89,11 +89,6 @@ public:
    * @param n_thread number of threads to be used for sampling
    */
   void PlantNewKdTree(const PArrayI_& resolutions, const int n_thread = 1) {
-    // skip early, if requested resolutions are the as existing kdtree
-    if (kdtree_planted_ && sampled_resolutions_ == resolutions) {
-      return;
-    }
-
     // create fresh grid_points_ and coordinates_
     const auto parametric_bounds =
         splinepy::splines::helpers::GetParametricBounds(spline_);
@@ -113,6 +108,12 @@ public:
     splinepy::utils::NThreadExecution(sample_coordinates,
                                       grid_points_.Size(),
                                       n_thread);
+
+    // nanoflann supports concurrent build
+    nanoflann::KDTreeSingleIndexAdaptorParams params{};
+    params.n_thread_build = static_cast<
+        decltype(nanoflann::KDTreeSingleIndexAdaptorParams::n_thread_build)>(
+        (n_thread < 0) ? 0 : n_thread);
 
     // plant a new tree
     coordinates_cloud_ =
@@ -352,7 +353,7 @@ public:
   /// @param[in] tolerance
   /// @param[in] max_iterations
   /// @param[in] aggressive_bounds
-  /// @param[out] final_guess (dim)
+  /// @param[out] final_guess (para_dim)
   /// @param[out] nearest (dim)
   /// @param[out] nearest_minus_query (dim)
   /// @param[out] distance
