@@ -1,0 +1,131 @@
+<xml><MultiPatch id="0" parDim="3"><patches type="id_range">100 103</patches><interfaces>100 2 103 1 0 1 2 1 1 1
+100 4 101 3 0 1 2 1 1 1
+101 2 102 1 0 1 2 1 1 1
+102 3 103 4 0 1 2 1 1 1</interfaces><boundary>100 1
+100 3
+100 5
+100 6
+101 1
+101 4
+101 5
+101 6
+102 2
+102 4
+102 5
+102 6
+103 2
+103 3
+103 5
+103 6</boundary></MultiPatch><boundaryConditions id="1" multipatch="4"><!--Please fill boundary conditions here--><bc type="Dirichlet" unknown="0">0 3
+0 5
+0 6
+1 4
+1 5
+1 6
+2 4
+2 5
+2 6
+3 3
+3 5
+3 6</bc><bc type="Dirichlet" unknown="0">0 1
+1 1</bc><bc type="Dirichlet" unknown="0">2 2
+3 2</bc></boundaryConditions><Geometry id="100" type="TensorBSpline3"><Basis type="TensorBSplineBasis3"><Basis index="0" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><Basis index="1" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis index="2" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs format="ASCII" geoDim="3">0.0 0.0 0.0
+0.5 0.0 0.0
+1.0 0.0 0.0
+0.0 1.0 0.0
+0.5 1.0 0.0
+1.0 1.0 0.0
+0.0 0.0 0.5
+0.5 0.0 0.5
+1.0 0.0 0.5
+0.0 1.0 0.5
+0.5 1.0 0.5
+1.0 1.0 0.5
+0.0 0.0 1.0
+0.5 0.0 1.0
+1.0 0.0 1.0
+0.0 1.0 1.0
+0.5 1.0 1.0
+1.0 1.0 1.0</coefs></Geometry><Geometry id="101" type="TensorBSpline3"><Basis type="TensorBSplineBasis3"><Basis index="0" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis><Basis index="1" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis><Basis index="2" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><coefs format="ASCII" geoDim="3">0.0 1.0 0.0
+0.5 1.0 0.0
+1.0 1.0 0.0
+0.0 1.5 0.0
+0.5 1.5 0.0
+1.0 1.5 0.0
+0.0 2.0 0.0
+0.5 2.0 0.0
+1.0 2.0 0.0
+0.0 1.0 0.5
+0.5 1.0 0.5
+1.0 1.0 0.5
+0.0 1.5 0.5
+0.5 1.5 0.5
+1.0 1.5 0.5
+0.0 2.0 0.5
+0.5 2.0 0.5
+1.0 2.0 0.5
+0.0 1.0 1.0
+0.5 1.0 1.0
+1.0 1.0 1.0
+0.0 1.5 1.0
+0.5 1.5 1.0
+1.0 1.5 1.0
+0.0 2.0 1.0
+0.5 2.0 1.0
+1.0 2.0 1.0</coefs></Geometry><Geometry id="102" type="TensorNurbs3"><Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Basis index="0" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis index="1" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector></Basis><Basis index="2" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><weights format="ASCII">1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0</weights></Basis><coefs format="ASCII" geoDim="3">1.0 1.0 0.0
+2.0 1.0 0.0
+1.0 1.5 0.0
+2.0 1.5 0.0
+1.0 2.0 0.0
+2.0 2.0 0.0
+1.0 1.0 0.5
+2.0 1.0 0.5
+1.0 1.5 0.5
+2.0 1.5 0.5
+1.0 2.0 0.5
+2.0 2.0 0.5
+1.0 1.0 1.0
+2.0 1.0 1.0
+1.0 1.5 1.0
+2.0 1.5 1.0
+1.0 2.0 1.0
+2.0 2.0 1.0</coefs></Geometry><Geometry id="103" type="TensorNurbs3"><Basis type="TensorNurbsBasis3"><Basis type="TensorBSplineBasis3"><Basis index="0" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis index="1" type="BSplineBasis"><KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector></Basis><Basis index="2" type="BSplineBasis"><KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector></Basis></Basis><weights format="ASCII">1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0</weights></Basis><coefs format="ASCII" geoDim="3">1.0 0.0 0.0
+2.0 0.0 0.0
+1.0 1.0 0.0
+2.0 1.0 0.0
+1.0 0.0 0.5
+2.0 0.0 0.5
+1.0 1.0 0.5
+2.0 1.0 0.5
+1.0 0.0 1.0
+2.0 0.0 1.0
+1.0 1.0 1.0
+2.0 1.0 1.0</coefs></Geometry></xml>
