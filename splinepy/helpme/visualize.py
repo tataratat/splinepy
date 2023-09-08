@@ -299,7 +299,6 @@ def _process_spline_color(spline, sampled_spline, res):
     default_lighting = "glossy" if spline.dim > 2 else "off"
     default_color = "green" if spline.para_dim > 1 else "black"
 
-
     # apply basic color
     sampled_spline.show_options["c"] = spline.show_options.get(
         "c", default_color
