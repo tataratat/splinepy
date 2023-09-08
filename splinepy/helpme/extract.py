@@ -120,8 +120,8 @@ def faces(
     Parameters
     -----------
     spline: BSpline or NURBS
-    resolution: int
-      samples per parametric dimension
+    resolution: int or list
+      samples per parametric dimension.
     watertight: bool
       Default is True. Only related to para_dim = 3 splines. If False,
       overlapping vertices at boundary edges won't be merged.

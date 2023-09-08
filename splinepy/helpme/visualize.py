@@ -9,6 +9,20 @@ from splinepy.utils import log
 
 _vedo_spline_common_options = (
     options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
+    options.Option("vedo", "knot_c", "Knot color.", (str, tuple, list, int)),
+    options.Option(
+        "vedo",
+        "knot_lw",
+        "Line width of knots. Number of pixels. "
+        "Applicable to para_dim > 1.",
+        (int),
+    ),
+    options.Option(
+        "vedo",
+        "knot_alpha",
+        "Transparency of knots in range [0, 1]. Applicable to para_dim > 1",
+        (float, int),
+    ),
     options.Option(
         "vedo",
         "control_points",
@@ -55,7 +69,7 @@ _vedo_spline_common_options = (
     options.Option(
         "vedo",
         "control_mesh_lw",
-        "Transparency of control points in range [0, 1].",
+        "Line width of control mesh. Number of pixels",
         (int),
     ),
     options.Option(
@@ -151,6 +165,297 @@ def make_showable(spline):
     return eval(f"_{spline.show_options._backend}_showable(spline)")
 
 
+def _sample_knots_1d(spline):
+    """
+    Samples knots for splines of para_dim=1.
+    Assumes this is one of the showable splines.
+    """
+
+    def sample_uks(s):
+        """samples unique knots from single patch spline"""
+        return s.evaluate(np.asanyarray(s.unique_knots[0]).reshape(-1, 1))
+
+    # sample unique knots in physical space and create vertices
+    # for multi-patch, we will call this function for its patches
+    if spline.name.startswith("Multi"):
+        evaluated_knots = np.vstack([sample_uks(p) for p in spline.patches])
+    else:
+        evaluated_knots = sample_uks(spline)
+
+    # create vertices - for multipatch, we could remove duplicating vertices
+    # it gets annoying
+    knots = Vertices(evaluated_knots)
+
+    # apply show options to show this vertices as 'x'
+    knots.show_options["labels"] = ["x"] * len(knots.vertices)
+    knots.show_options["label_options"] = {
+        "justify": "center",
+        "c": spline.show_options.get("knot_c", "green"),
+    }
+
+    return knots
+
+
+def _sample_knots_2d(spline, res):
+    """
+    Samples knots for splines of para_dim=2.
+    Assumes this is one of the showable splines.
+    """
+    # extract knot lines as edges
+    knot_lines = spline.extract.edges(res, all_knots=True)
+
+    # apply show options
+    knot_lines.show_options["c"] = spline.show_options.get("knot_c", "black")
+    knot_lines.show_options["lw"] = spline.show_options.get("knot_lw", 3)
+    knot_lines.show_options["alpha"] = spline.show_options.get("knot_alpha", 1)
+
+    return knot_lines
+
+
+def _sample_knots(spline, res=None):
+    """
+    Samples knots for splines.
+    Assumes this is one of the showable splines
+    """
+    # call sample functions for corresponding para_dim
+    para_dim = spline.para_dim
+    if para_dim > 1:
+        if res is None:
+            raise ValueError("sample resolution not given.")
+        # 2d and 3d splines has same knot sampling routine
+        return _sample_knots_2d(spline, res)
+    else:
+        return _sample_knots_1d(spline)
+
+
+def _sample_spline(spline, res):
+    """
+    Sample splines.
+    Assumes this is one of the showable splines
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    gus_dict: dict
+      dict of sampled spline and knots.
+    """
+    # sampling spline is quite simple, so we don't split functions here
+    para_dim = spline.para_dim
+    if para_dim == 1:
+        sp = spline.extract.edges(res)
+        sp.show_options["lw"] = 8
+    elif para_dim > 1:
+        # we don't return water tight meshes here
+        # see (gustaf #120)
+        sp = spline.extract.faces(res, watertight=False)
+
+    return sp
+
+
+def _process_scalar_field(spline, data_name, sampled_spline, res):
+    """
+    Assuming field data is defined, extracts field value and applies
+    to sampled spline.
+    """
+    # get data name and try to sample scalar field
+    sampled_spline_data = spline.spline_data.as_scalar(
+        data_name, res, default=None
+    )
+
+    # apply sampled data as vertex data to sampled_spline
+    if sampled_spline_data is not None:
+        # transfer data
+        sampled_spline.vertex_data[data_name] = sampled_spline_data
+
+        # transfer options - maybe vectorized query?
+        keys = (
+            "vmin",
+            "vmax",
+            "scalarbar",
+            "scalarbar3d",
+            "cmap",
+            "cmap_alpha",
+        )
+        spline.show_options.copy_valid_options(
+            sampled_spline.show_options, keys
+        )
+
+        # mark that we want to see this data
+        sampled_spline.show_options["data_name"] = data_name
+
+    else:
+        raise ValueError(f"No spline_data named ({data_name}) for {spline}.")
+
+
+def _process_spline_color(spline, sampled_spline, res):
+    """
+    Processes color and scalar field.
+    If both are defined, you will see the color of the scalar field.
+    """
+    # first, get defaults
+    default_lighting = "glossy" if spline.dim > 2 else "off"
+    default_color = "green" if spline.para_dim > 1 else "black"
+
+    # apply basic color
+    sampled_spline.show_options["c"] = spline.show_options.get(
+        "c", default_color
+    )
+
+    # apply alpha and lighting
+    sampled_spline.show_options["alpha"] = spline.show_options.get("alpha", 1)
+    sampled_spline.show_options["lighting"] = spline.show_options.get(
+        "lighting", default_lighting
+    )
+
+    # process scalar field if data_name is defined
+    data_name = spline.show_options.get("data_name", None)
+    if data_name is not None:
+        _process_scalar_field(spline, data_name, sampled_spline, res)
+
+
+def _sample_arrow_data(spline, adata_name, sampled_spline, res):
+    """
+    Process arrow_data. Also known as vector_data.
+    """
+    # early exit?
+    if adata_name is None:
+        return None
+
+    # use getitem to retrieve adapted_adata. this will raise key error if
+    # it doesn't exist
+    adapted_adata = spline.spline_data[adata_name]
+
+    # if location is specified, this will be a separate Vertices obj with
+    # configured arrow_data. Multipatch might just return a multipatch,
+    # so a careful step here.
+    has_locations = getattr(adapted_adata, "has_locations", False)
+    adata_on = "arrow_data_on" in spline.show_options.keys()  # noqa SIM118
+    create_vertices = has_locations or adata_on
+
+    # this case causes conflict of interest. raise
+    if has_locations and adata_on:
+        raise ValueError(
+            f"arrow_data-({adata_name}) has fixed location, "
+            "but and `arrow_data_on` is set.",
+        )
+
+    # two cases of arrow data sampling
+    # 1 - same as sampled spline
+    #      -> add arrow as vertex_data
+    # 2 - at specified locations
+    #      -> create vertices at specified locations
+    #         then, add arrow as vertex_data to them
+    if not create_vertices:
+        # sample arrows and append to sampled spline.
+        sampled_spline.vertex_data[adata_name] = spline.spline_data.as_arrow(
+            adata_name, resolutions=res
+        )
+
+        # transfer options to sampled_spline
+        keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
+        spline.show_options.copy_valid_options(
+            sampled_spline.show_options, keys
+        )
+
+    else:
+        # prepare corresponding queries
+        if getattr(adapted_adata, "has_locations", False):
+            queries = adapted_adata.locations
+            on = None
+        else:
+            queries = spline.show_options["arrow_data_on"]
+            on = queries
+
+        # bound /  dim check - only for splines
+        if not spline.name.startswith("Multi"):
+            bounds = spline.parametric_bounds
+            if queries.shape[1] != len(bounds[0]):
+                raise ValueError(
+                    "Dimension mismatch: arrow_data locations-"
+                    f"{queries.shape[1]} / para_dim-{spline.para_dim}."
+                )
+            # tolerance padding. may still cause issues in splinepy.
+            # in that case, we will have to scale queries.
+            lb_diff = queries.min(axis=0) - bounds[0] + settings.TOLERANCE
+            ub_diff = queries.max(axis=0) - bounds[1] - settings.TOLERANCE
+            if any(lb_diff < 0) or any(ub_diff > 0):
+                raise ValueError(
+                    f"Given locations for ({adata_name}) are outside the "
+                    f"parametric bounds ({bounds})."
+                )
+
+        # get arrow
+        adata = spline.spline_data.as_arrow(adata_name, on=on)
+
+        # create vertices that can be shown as arrows
+        loc_vertices = Vertices(spline.evaluate(queries), copy=False)
+        loc_vertices.vertex_data[adata_name] = adata
+
+        # transfer options
+        keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
+        spline.show_options.copy_valid_options(loc_vertices.show_options, keys)
+
+        return loc_vertices
+
+
+def _create_control_points(spline):
+    """
+    Creates control points.
+    """
+    # control points (vertices)
+    cps = spline.extract.control_points()
+    cps.show_options["c"] = spline.show_options.get("control_point_c", "red")
+    cps.show_options["r"] = spline.show_options.get("control_point_r", 10)
+    cps.show_options["alpha"] = spline.show_options.get(
+        "control_point_alpha", 1.0
+    )
+    return cps
+
+
+def _create_control_point_ids(spline):
+    """
+    Creates control point ids.
+    """
+    # a bit redundant, but nicely separable
+    cp_ids = spline.extract.control_points()
+    cp_ids.show_options["labels"] = np.arange(len(cp_ids.vertices))
+    cp_ids.show_options["label_options"] = {"font": "VTK"}
+
+    return cp_ids
+
+
+def _create_control_mesh(spline):
+    """
+    Creates control mesh.
+    """
+    # pure control mesh
+    c_mesh = spline.extract.control_mesh()  # either edges or faces
+    if spline.para_dim != 1:
+        c_mesh = c_mesh.to_edges(unique=True)
+
+    c_mesh.show_options["c"] = spline.show_options.get("control_mesh_c", "red")
+    c_mesh.show_options["lw"] = spline.show_options.get("control_mesh_lw", 4)
+    c_mesh.show_options["alpha"] = spline.show_options.get(
+        "control_points_alpha", 0.8
+    )
+
+    return c_mesh
+
+
+def _create_fitting_queries(spline):
+    """
+    Create fitting queries. This will raise if spline is not BSpline or
+    fitting queries does not exist.
+    """
+    fqs = Vertices(spline._fitting_queries)
+    fqs.show_options["c"] = "blue"
+    fqs.show_options["r"] = 10
+    return fqs
+
+
 def _vedo_showable(spline):
     """
     Goes through common procedures for preparing showable splines.
@@ -164,262 +469,57 @@ def _vedo_showable(spline):
     gus_dict: dict
       dict of sampled spline as gustaf objects
     """
-    # get spline and knots
-    gus_primitives = eval(f"_vedo_showable_para_dim_{spline.para_dim}(spline)")
+    # get sampling resolution
+    default_res = 10 if spline.name.startswith("Multi") else 100
+    res = spline.show_options.get(
+        "resolutions", default_res
+    )  # , spline.para_dim)
 
-    # apply spline color
-    sampled_spline = gus_primitives["spline"]
-    default_color = "green" if spline.para_dim > 1 else "black"
-    sampled_spline.show_options["c"] = spline.show_options.get(
-        "c", default_color
-    )
-    sampled_spline.show_options["alpha"] = spline.show_options.get("alpha", 1)
-    sampled_spline.show_options["lighting"] = spline.show_options.get(
-        "lighting", "glossy"
-    )
+    # get spline and knots
+    sampled_gus = {}
+    sampled_spline = _sample_spline(spline, res)
+    sampled_gus["spline"] = sampled_spline  # save to dict
+    if spline.show_options.get("knot_vectors", True):
+        sampled_gus["knots"] = _sample_knots(spline, res)
+
+    # apply spline color - this includes scalar field
+    _process_spline_color(spline, sampled_spline, res)
 
     # axis?
     sampled_spline.show_options["axes"] = spline.show_options.get(
         "axes", False
     )
 
-    # with color representable, scalar field data
-    default_res = 10 if spline.name.startswith("Multi") else 100
-    res = enforce_len(
-        spline.show_options.get("resolutions", default_res), spline.para_dim
+    # process arrow data, this may return something if arrow_data_on is defined
+    arrow_data = _sample_arrow_data(
+        spline,
+        spline.show_options.get("arrow_data", None),
+        sampled_spline,
+        enforce_len(res, spline.para_dim),
     )
-    data_name = spline.show_options.get("data_name", None)
-    sampled_spline_data = spline.spline_data.as_scalar(
-        data_name, res, default=None
-    )
-    if data_name is not None and sampled_spline_data is not None:
-        # transfer data
-        sampled_spline.vertex_data[data_name] = sampled_spline_data
+    if arrow_data is not None:
+        sampled_gus["arrow_data"] = arrow_data
 
-        # transfer options - maybe vectorized query?
-        keys = ("vmin", "vmax", "scalarbar", "cmap", "cmap_alpha")
-        spline.show_options.copy_valid_options(
-            sampled_spline.show_options, keys
-        )
-
-        # mark that we want to see this data
-        sampled_spline.show_options["data_name"] = data_name
-
-    elif data_name is not None and sampled_spline_data is None:
-        log.debug(f"No spline_data named ({data_name}) for {spline}. Skipping")
-
-    # with arrow representable, vector data
-    adata_name = spline.show_options.get("arrow_data", None)
-    if adata_name is None:
-        adapted_adata = None
-    elif spline.name.startswith("Multi"):
-        # due to storage style in multi patch, to get saved data, we need to
-        # use __getitem__
-        adapted_adata = spline.spline_data[adata_name]
-    else:
-        adapted_adata = spline.spline_data.get(adata_name)
-    if adata_name is not None and adapted_adata is not None:
-        # if location is specified, this will be a separate Vertices obj with
-        # configured arrow_data. Multipatch might just return a multipatch,
-        # so a careful step here.
-        has_locations = getattr(adapted_adata, "has_locations", False)
-        adata_on = "arrow_data_on" in spline.show_options.keys()  # noqa SIM118
-        create_vertices = has_locations or adata_on
-
-        # this case causes conflict of interest. raise
-        if has_locations and adata_on:
-            raise ValueError(
-                f"arrow_data-({adata_name}) has fixed location, "
-                "but and `arrow_data_on` is set.",
-            )
-
-        if create_vertices:
-            # prepare corresponding queries
-            if getattr(adapted_adata, "has_locations", False):
-                queries = adapted_adata.locations
-                on = None
-            else:
-                queries = spline.show_options["arrow_data_on"]
-                on = queries
-
-            # bound /  dim check - only for splines
-            if not spline.name.startswith("Multi"):
-                bounds = spline.parametric_bounds
-                if queries.shape[1] != len(bounds[0]):
-                    raise ValueError(
-                        "Dimension mismatch: arrow_data locations-"
-                        f"{queries.shape[1]} / para_dim-{spline.para_dim}."
-                    )
-                # tolerance padding. may still cause issues in splinepy.
-                # in that case, we will have to scale queries.
-                lb_diff = queries.min(axis=0) - bounds[0] + settings.TOLERANCE
-                ub_diff = queries.max(axis=0) - bounds[1] - settings.TOLERANCE
-                if any(lb_diff < 0) or any(ub_diff > 0):
-                    raise ValueError(
-                        f"Given locations for ({adata_name}) are outside the "
-                        f"parametric bounds ({bounds})."
-                    )
-
-            # get arrow
-            adata = spline.spline_data.as_arrow(adata_name, on=on)
-
-            # create vertices that can be shown as arrows
-            loc_vertices = Vertices(spline.evaluate(queries), copy=False)
-            loc_vertices.vertex_data[adata_name] = adata
-
-            # transfer options
-            keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
-            spline.show_options.copy_valid_options(
-                loc_vertices.show_options, keys
-            )
-
-            # add to primitives
-            gus_primitives["arrow_data"] = loc_vertices
-
-        else:  # sample arrows and append to sampled spline.
-            sampled_spline.vertex_data[
-                adata_name
-            ] = spline.spline_data.as_arrow(adata_name, resolutions=res)
-            # transfer options
-            keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
-            spline.show_options.copy_valid_options(
-                sampled_spline.show_options, keys
-            )
-
-    # double check on same obj ref
-    gus_primitives["spline"] = sampled_spline
-
-    # control_points & control_points_alpha
+    # process control_points
     show_cps = spline.show_options.get("control_points", True)
     if show_cps:
-        # control points (vertices)
-        cps = spline.extract.control_points()
-        cps.show_options["c"] = spline.show_options.get(
-            "control_point_c", "red"
-        )
-        cps.show_options["r"] = spline.show_options.get("control_point_r", 10)
-        cps.show_options["alpha"] = spline.show_options.get(
-            "control_point_alpha", 1.0
-        )
-        # add
-        gus_primitives["control_points"] = cps
+        sampled_gus["control_points"] = _create_control_points(spline)
 
-        if spline.show_options.get("control_point_ids", True):
-            # a bit redundant, but nicely separable
-            cp_ids = spline.extract.control_points()
-            cp_ids.show_options["labels"] = np.arange(len(cp_ids.vertices))
-            cp_ids.show_options["label_options"] = {"font": "VTK"}
-            gus_primitives["control_point_ids"] = cp_ids
+    # control_point_ids
+    if spline.show_options.get("control_point_ids", show_cps):
+        sampled_gus["control_point_ids"] = _create_control_point_ids(spline)
 
+    # control_mesh
     if spline.show_options.get("control_mesh", show_cps):
-        # pure control mesh
-        c_mesh = spline.extract.control_mesh()  # either edges or faces
-        if spline.para_dim != 1:
-            c_mesh = c_mesh.to_edges(unique=True)
-
-        c_mesh.show_options["c"] = spline.show_options.get(
-            "control_mesh_c", "red"
-        )
-        c_mesh.show_options["lw"] = spline.show_options.get(
-            "control_mesh_lw", 4
-        )
-        c_mesh.show_options["alpha"] = spline.show_options.get(
-            "control_points_alpha", 0.8
-        )
-        # add
-        gus_primitives["control_mesh"] = c_mesh
+        sampled_gus["control_mesh"] = _create_control_mesh(spline)
 
     # fitting queries
     if hasattr(spline, "_fitting_queries") and spline.show_options.get(
         "fitting_queries", True
     ):
-        fqs = Vertices(spline._fitting_queries)
-        fqs.show_options["c"] = "blue"
-        fqs.show_options["r"] = 10
-        gus_primitives["fitting_queries"] = fqs
+        sampled_gus["fitting_queries"] = _create_fitting_queries(spline)
 
-    return gus_primitives
-
-
-def _vedo_showable_para_dim_1(spline):
-    """Assumes showability check has been already performed.
-
-    Parameters
-    ----------
-    spline: GustafSpline
-
-    Returns
-    -------
-    gus_primitives: dict
-      keys are {spline, knots}
-    """
-    from splinepy.spline import Spline
-
-    gus_primitives = {}
-    default_res = 10 if spline.name.startswith("Multi") else 100
-    sp = spline.extract.edges(
-        spline.show_options.get("resolutions", default_res)
-    )
-
-    # specify curve width
-    sp.show_options["lw"] = 8
-    # add spline
-    gus_primitives["spline"] = sp
-
-    # place knots
-    if spline.show_options.get("knots", True):
-        if isinstance(spline, Spline):
-            uks = np.asanyarray(spline.unique_knots[0]).reshape(-1, 1)
-            knots = Vertices(spline.evaluate(uks))
-            knots.show_options["labels"] = ["x"] * len(uks)
-            knots.show_options["label_options"] = {
-                "justify": "center",
-                "c": "green",
-            }
-            gus_primitives["knots"] = knots
-        else:
-            log.debug(f"Skipping invalid option knots for " f"{type(spline)}.")
-
-    return gus_primitives
-
-
-def _vedo_showable_para_dim_2(spline):
-    """
-    Assumes showability check has been already performed
-
-    Parameters
-    ----------
-    spline: GustafSpline
-
-    Returns
-    -------
-    gus_primitives: dict
-      keys are {spline, knots}
-    """
-    gus_primitives = {}
-    default_res = 10 if spline.name.startswith("Multi") else 100
-
-    res = spline.show_options.get("resolutions", default_res)
-    sp = spline.extract.faces(res, watertight=False)  # always watertight
-    gus_primitives["spline"] = sp
-
-    # knots
-    if spline.show_options.get("knots", True):
-        knot_lines = spline.extract.edges(res, all_knots=True)
-        knot_lines.show_options["c"] = "black"
-        knot_lines.show_options["lw"] = 3
-        gus_primitives["knots"] = knot_lines
-
-    return gus_primitives
-
-
-def _vedo_showable_para_dim_3(spline):
-    """
-    Currently same as _vedo_showable_para_dim_2
-    """
-    # we keep the watertight to False, since we may wanna plot some data with
-    # same values. (issue #120)
-    return _vedo_showable_para_dim_2(spline)
+    return sampled_gus
 
 
 def show(spline, **kwargs):
