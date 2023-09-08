@@ -296,13 +296,9 @@ def _process_spline_color(spline, sampled_spline, res):
     If both are defined, you will see the color of the scalar field.
     """
     # first, get defaults
-    default_lighting = "glossy"
-    if spline.para_dim > 1:
-        default_color = "green"
-        if spline.para_dim == 2 == spline.dim:
-            default_lighting = "off"  # smoothness is obvious for 2P2D
-    else:
-        default_color = "black"
+    default_lighting = "glossy" if spline.dim > 2 else "off"
+    default_color = "green" if spline.para_dim > 1 else "black"
+
 
     # apply basic color
     sampled_spline.show_options["c"] = spline.show_options.get(
