@@ -221,7 +221,8 @@ def export(
       Export fields to separate files ending with field<id>.xml, e.g.,
       filename.xml.field1.xml
     as_base64 : bool (False)
-      If set, coordinates, weights and knot-vectors are exported in B64 ecoding
+      If set, coordinates, weights and knot-vectors are exported in B64 encoding.
+      Available in gismo, once gismo/gismo#634 merges.
 
     Returns
     -------
