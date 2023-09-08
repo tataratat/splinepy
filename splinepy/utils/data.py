@@ -650,9 +650,12 @@ class MultipatchData(SplineData):
         if isinstance(value, SplineDataAdaptor):
             self._saved[key] = value
         elif "PyMultipatch" in str(type(value).__mro__):
+            # get id of this field that's about to be added
             self._saved[key] = len(self._helpee.fields)
-            self._helpee.add_fields([value])
-        if isinstance(value, int):
+            # add fields expects list of list
+            # TODO @jzwar add type check to except both?
+            self._helpee.add_fields([value.patches], value.dim)
+        elif isinstance(value, int):
             # also accept integers as a reference to the field
             self._saved[key] = value
         else:
