@@ -39,7 +39,7 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             [
                 (i, j, 0)
                 for j, field in enumerate(multipatch.fields)
-                for i, v in enumerate(field)
+                for i, v in enumerate(field.patches)
                 if v is not None
             ],
             dtype=np.int64,
@@ -71,7 +71,7 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             # Check supports
             support = supports[supports[:, 0] == id, 1]
             coefs = np.hstack(
-                [multipatch.fields[j][id].control_points for j in support]
+                [multipatch.fields[j].patches[id].control_points for j in support]
             )
             if "weights" in spline.required_properties:
                 weights = np.hstack(

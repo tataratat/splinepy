@@ -1453,7 +1453,7 @@ void PyMultipatch::AddFields(py::list& fields,
       py::list casted_list = fields[i].template cast<py::list>();
 
       field_ptrs[i] =
-          std::make_shared<PyMultipatch>(casted_list, para_dim, field_dim, 1);
+          std::make_shared<PyMultipatch>(casted_list, 1, para_dim, field_dim);
 
       // propagate same_parametric_bounds_ flag
       field_ptrs[i]->same_parametric_bounds_ = same_parametric_bounds_;
