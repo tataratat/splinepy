@@ -479,7 +479,7 @@ def _vedo_showable(spline):
     sampled_gus = {}
     sampled_spline = _sample_spline(spline, res)
     sampled_gus["spline"] = sampled_spline  # save to dict
-    if spline.show_options.get("knot_vectors", True):
+    if spline.show_options.get("knots", True):
         sampled_gus["knots"] = _sample_knots(spline, res)
 
     # apply spline color - this includes scalar field
