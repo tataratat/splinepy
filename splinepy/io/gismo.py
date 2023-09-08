@@ -71,7 +71,10 @@ def _spline_to_ET(root, multipatch, index_offset, fields_only=False):
             # Check supports
             support = supports[supports[:, 0] == id, 1]
             coefs = np.hstack(
-                [multipatch.fields[j].patches[id].control_points for j in support]
+                [
+                    multipatch.fields[j].patches[id].control_points
+                    for j in support
+                ]
             )
             if "weights" in spline.required_properties:
                 weights = np.hstack(
