@@ -1,3 +1,5 @@
+from gustaf import show  # shortcut for frequently used module / func
+
 from splinepy import (
     bezier,
     bspline,
@@ -72,4 +74,5 @@ __all__ = [
     "load_splines",
     "load_solution",
     "to_derived",
+    "show",
 ]
