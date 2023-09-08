@@ -9,7 +9,20 @@ from splinepy.utils import log
 
 _vedo_spline_common_options = (
     options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
-
+    options.Option("vedo", "knot_c", "Knot color.", (str, tuple, list, int)),
+    options.Option(
+        "vedo",
+        "knot_lw",
+        "Line width of knots. Number of pixels. "
+        "Applicable to para_dim > 1.",
+        (int),
+    ),
+    options.Option(
+        "vedo",
+        "knot_alpha",
+        "Transparency of knots in range [0, 1]. Applicable to para_dim > 1",
+        (float, int),
+    ),
     options.Option(
         "vedo",
         "control_points",
@@ -177,7 +190,7 @@ def _sample_knots_1d(spline):
     knots.show_options["labels"] = ["x"] * len(knots.vertices)
     knots.show_options["label_options"] = {
         "justify": "center",
-        "c": "green",
+        "c": spline.show_options.get("knot_c", "green"),
     }
 
     return knots
@@ -192,8 +205,9 @@ def _sample_knots_2d(spline, res):
     knot_lines = spline.extract.edges(res, all_knots=True)
 
     # apply show options
-    knot_lines.show_options["c"] = "black"
-    knot_lines.show_options["lw"] = 3
+    knot_lines.show_options["c"] = spline.show_options.get("knot_c", "black")
+    knot_lines.show_options["lw"] = spline.show_options.get("knot_lw", 3)
+    knot_lines.show_options["alpha"] = spline.show_options.get("knot_alpha", 1)
 
     return knot_lines
 
