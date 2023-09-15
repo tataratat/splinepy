@@ -375,6 +375,7 @@ public:
     PxPMatrixD_ lhs;
     PArrayD_ rhs;
     PArrayD_ delta_guess;
+    typename SplineType::ParametricCoordinate_ tmp_guess; // for line search
     DArrayD_ difference;
     PxDMatrixD_ spline_gradient;
     PArrayI_ clipped{}; /* clip status after most recent update */
@@ -434,18 +435,65 @@ public:
       // -> can't use lhs and rhs afterwards, and we don't need them.
       // -> solver_skip_mask and delta_guess is reordered to rewind swaps
       splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
-      // Update
-      splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
-      // Clip
+
+      // In practice, newton iteration often seems to have hard time converging.
+      // Here, we try
+      // "Quadratic Variation of the Norm of the Residual Line Search"
+      // presented in https://doi.org/10.1007/978-3-642-01970-8_46
+      // we need residual norm from the previous advance, current half advance,
+      // and current full advance
+      const double q1 = previous_norm;
+
+      // half advance
+      tmp_guess = current_guess;
+      splinepy::utils::Add(0.5, delta_guess, tmp_guess);
+      splinepy::utils::Clip(search_bounds, tmp_guess, clipped);
+      current_phys = spline_(tmp_guess);
+      splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
+                                                   query,
+                                                   difference);
+      FillSplineGradientAndRhs(tmp_guess,
+                               difference,
+                               spline_gradient,
+                               rhs); // don't really need gradient
+      const double q2 = splinepy::utils::NormL2(rhs);
+
+      // full advance
+      tmp_guess = current_guess;
+      splinepy::utils::AddSecondToFirst(tmp_guess, delta_guess);
+      splinepy::utils::Clip(search_bounds, tmp_guess, clipped);
+      current_phys = spline_(tmp_guess);
+      splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
+                                                   query,
+                                                   difference);
+      FillSplineGradientAndRhs(tmp_guess,
+                               difference,
+                               spline_gradient,
+                               rhs); // don't really need gradient
+      const double q3 = splinepy::utils::NormL2(rhs);
+
+      // determine step size
+      double scale{};
+      const double eps =
+          (3.0 * q1 - 4.0 * q2 + q3) / (4.0 * (q1 - 2.0 * q2 + q3));
+      if ((q1 - 2.0 * q2 + q3) > 0 && eps > 0 && eps < 1) {
+        scale = eps;
+      } else if (q3 < q1) {
+        scale = 1.0;
+      } else {
+        scale = 0.05;
+      }
+
+      // True update
+      splinepy::utils::Add(scale, delta_guess, current_guess);
       splinepy::utils::Clip(search_bounds, current_guess, clipped);
-      // check distance
       current_phys = spline_(current_guess);
       splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
                                                    query,
                                                    difference);
-      current_distance = splinepy::utils::NormL2(difference);
       // assemble rhs, check norm
       FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
+      current_distance = splinepy::utils::NormL2(difference);
       current_norm = splinepy::utils::NormL2(rhs);
 
       // convergence check

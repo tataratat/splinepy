@@ -80,6 +80,15 @@ inline void AddSecondToFirst(std::array<T1, dim>& arr1,
   }
 }
 
+/// arr2 = a * arr1
+template<typename Type, std::size_t dim>
+inline void
+Add(const double& a, std::array<Type, dim>& arr1, std::array<Type, dim>& arr2) {
+  for (std::size_t i{}; i < dim; ++i) {
+    arr2[i] += a * arr1[i];
+  }
+}
+
 /*!
  * Inplace operation for para coord clipping and saving clip info
  *
