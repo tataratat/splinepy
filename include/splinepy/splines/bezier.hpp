@@ -160,6 +160,30 @@ public:
                                         double* first_derivatives,
                                         double* second_derivatives) const;
 
+  virtual void
+  SplinepyVRDMUMQuery(const double* query,
+                      const double& tolerance,
+                      const int& max_iterations,
+                      const bool aggressive_bounds,
+                      double* final_guess,
+                      double* nearest /* spline(final_guess) */,
+                      double* nearest_minus_query /* difference */,
+                      double& distance,
+                      double& convergence_norm,
+                      double* first_derivatives /* spline jacobian */) const {
+
+    GetProximity().VRDMUMQuery(query,
+                               tolerance,
+                               max_iterations,
+                               aggressive_bounds,
+                               final_guess,
+                               nearest,
+                               nearest_minus_query,
+                               distance,
+                               convergence_norm,
+                               first_derivatives);
+  }
+
   virtual void SplinepyElevateDegree(const int& p_dim);
 
   virtual void SplinepyBasis(const double* para_coord, double* basis) const;

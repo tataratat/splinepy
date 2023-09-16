@@ -228,6 +228,18 @@ public:
                                         double* first_derivatives,
                                         double* second_derivatives) const;
 
+  virtual void
+  SplinepyVRDMUMQuery(const double* query,
+                      const double& tolerance,
+                      const int& max_iterations,
+                      const bool aggressive_bounds,
+                      double* final_guess,
+                      double* nearest /* spline(final_guess) */,
+                      double* nearest_minus_query /* difference */,
+                      double& distance,
+                      double& convergence_norm,
+                      double* first_derivatives /* spline jacobian */) const;
+
   /// Spline degree elevation
   virtual void SplinepyElevateDegree(const int& para_dims);
 

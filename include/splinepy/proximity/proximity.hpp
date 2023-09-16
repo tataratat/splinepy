@@ -379,6 +379,137 @@ public:
       }
     }
   }
+
+  void VRDMUMQuery(const double* query,
+                   const double& tolerance,
+                   const int& max_iterations,
+                   const bool aggressive_bounds,
+                   double* final_guess,
+                   double* nearest /* spline(final_guess) */,
+                   double* nearest_minus_query /* difference */,
+                   double& distance,
+                   double& convergence_norm,
+                   double* first_derivatives /* spline jacobian */) const {
+
+    PxPMatrixD_ lhs;
+    PArrayD_ rhs;
+    PArrayD_ delta_guess;
+    DArrayD_ difference;
+    PxDMatrixD_ spline_gradient;
+    PArrayI_ clipped{}; /* clip status after most recent update */
+    PArrayI_ previous_clipped{};
+    PArrayI_ solver_skip_mask{}; /* tell solver to skip certain entry */
+    typename SplineType::Coordinate_ current_phys{};
+    double current_distance{};
+    double previous_norm{}, current_norm{};
+
+    // search_bounds is parametric bounds here
+    auto search_bounds =
+        splinepy::splines::helpers::GetParametricBounds(spline_);
+
+    // for verbose, we don't return right away even this is the best guess
+    // already, so that we can fill out all the other infos.
+    typename SplineType::ParametricCoordinate_ current_guess =
+        MakeInitialGuess(static_cast<int>(InitialGuess::KdTree), query);
+
+    // Let's try aggressive search bounds
+    if (aggressive_bounds) {
+      // you need to be sure that you have sampled your spline fine enough
+      for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
+        // adjust lower (0) and upper (1) bounds aggressively
+        // but of course, not so aggressive that it is out of bound.
+        search_bounds[0][i] =
+            std::max(search_bounds[0][i],
+                     current_guess[i] - grid_points_.step_size_[i]);
+        search_bounds[1][i] =
+            std::min(search_bounds[1][i],
+                     current_guess[i] + grid_points_.step_size_[i]);
+      }
+    }
+    const int max_iter =
+        max_iterations < 0 ? SplineType::kParaDim * 20 : max_iterations;
+
+    // build systems to solve
+    GuessMinusQuery(current_guess, query, difference);
+    FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
+
+    // 0 iteration returns initial guess.
+    // compute rest of verbose info here.
+    if (max_iterations == 0) {
+      current_phys = spline_(current_guess);
+      splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
+                                                   query,
+                                                   difference);
+      current_distance = splinepy::utils::NormL2(difference);
+      current_norm = std::abs(splinepy::utils::NormL2(rhs));
+    }
+
+    // newton iterations
+    for (int i{}; i < max_iter; ++i) {
+      // lhs
+      FillLhs(current_guess, difference, spline_gradient, lhs);
+
+      // GaussWithPivot may swap and modify enties of all the input
+      // -> can't use lhs and rhs afterwards, and we don't need them.
+      // -> solver_skip_mask and delta_guess is reordered to rewind swaps
+      splinepy::utils::GaussWithPivot(lhs, rhs, solver_skip_mask, delta_guess);
+      // Update
+      splinepy::utils::AddSecondToFirst(current_guess, delta_guess);
+      // Clip
+      splinepy::utils::Clip(search_bounds, current_guess, clipped);
+      // check distance
+      current_phys = spline_(current_guess);
+      splinepy::utils::FirstMinusSecondEqualsThird(current_phys,
+                                                   query,
+                                                   difference);
+      current_distance = splinepy::utils::NormL2(difference);
+      // assemble rhs, check norm
+      FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
+      current_norm = splinepy::utils::NormL2(rhs);
+
+      // convergence check
+      if (std::abs(previous_norm - current_norm) < tolerance
+          || current_distance < tolerance) {
+        break;
+      }
+      // set solver skip mask if clipping happened twice at the same place.
+      if (previous_clipped == clipped) {
+        solver_skip_mask = clipped;
+        // if skip mask is on for all entries, return now.
+        if (splinepy::utils::NonZeros(solver_skip_mask)
+            == SplineType::kParaDim) {
+          // current_guess should be clipped at this point.
+          break;
+        }
+      }
+
+      // we are here because it didn't converge. prepare next round
+      previous_norm = current_norm;
+      std::swap(previous_clipped, clipped);
+    }
+    // write return values - 7 args
+    distance = current_distance;     /* 1 */
+    convergence_norm = current_norm; /* 2 */
+    typename SplineType::Derivative_ derivative_query;
+    for (int i{}; i < SplineType::kParaDim; ++i) {
+      final_guess[i] = static_cast<double>(current_guess[i]); /* 3 */
+      for (int k{}; k < SplineType::kDim; ++k) {
+        first_derivatives[i * SplineType::kDim + k] =
+            spline_gradient[i][k]; /* 5 */
+
+        // ones that don't need extra extra para_dim loop
+        // => pure dim loop
+        if (i == 0) {
+          double cur_phys;
+          if constexpr (std::is_scalar_v<decltype(current_phys)>) {
+            nearest[k] = current_phys;
+          } else {
+            nearest[k] = static_cast<double>(current_phys[k]); /* 6 */
+          }
+          nearest_minus_query[k] = difference[k]; /* 7 */
+        }
+      }
+    }
 };
 
 } // namespace splinepy::proximity

@@ -73,6 +73,8 @@ if(SPLINEPY_COMPILE_PYTHON)
   add_subdirectory(py)
 endif()
 
+add_subdirectory(xns)
+
 # cmake config files
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file("${version_config}"

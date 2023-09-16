@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12.0)
 project(
   splinepy
   VERSION 0.0.2
-  LANGUAGES CXX)
+  LANGUAGES CXX Fortran)
 
 # build options
 option(SPLINEPY_COMPILE_BSPLINELIB "Compile bsplinelib together." ON)

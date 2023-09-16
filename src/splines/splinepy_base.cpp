@@ -538,6 +538,21 @@ void SplinepyBase::SplinepyVerboseProximity(const double* query,
       SplinepyWhatAmI());
 }
 
+void SplinepyBase::SplinepyVRDMUMQuery(
+    const double* query,
+    const double& tolerance,
+    const int& max_iterations,
+    const bool aggressive_bounds,
+    double* final_guess,
+    double* nearest /* spline(final_guess) */,
+    double* nearest_minus_query /* difference */,
+    double& distance,
+    double& convergence_norm,
+    double* first_derivatives /* spline jacobian */) const {
+  splinepy::utils::PrintAndThrowError("SplinepyVRDMUMQuery not implemented for",
+                                      SplinepyWhatAmI());
+}
+
 void SplinepyBase::SplinepyElevateDegree(const int& para_dims) {
   splinepy::utils::PrintAndThrowError(
       "SplinepyElevateDegree not implemented for",
