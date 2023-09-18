@@ -101,14 +101,14 @@ jobs:
   upload_test_pypi:
     needs: [macos_wheel, linux_wheel, windows_wheel, source_dist]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.6.1
+      - uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          skip_existing: true
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
+          skip-existing: true
