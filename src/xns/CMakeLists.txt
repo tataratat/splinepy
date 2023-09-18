@@ -19,16 +19,16 @@ install(
   LIBRARY DESTINATION ${lib_dest}
   ARCHIVE DESTINATION ${lib_dest}
   INCLUDES
-  DESTINATION ${include_dest})
+  DESTINATION ${incl_dest})
 install(
   TARGETS xns_helper_f
   EXPORT "${TARGETS_EXPORT_NAME}"
   LIBRARY DESTINATION ${lib_dest}
   ARCHIVE DESTINATION ${lib_dest}
   INCLUDES
-  DESTINATION ${include_dest})
+  DESTINATION ${incl_dest})
 file(GLOB_RECURSE SPLINEPY_F_MOD "${CMAKE_Fortran_MODULE_DIRECTORY}/*.mod")
-install(FILES ${SPLINEPY_F_MOD} DESTINATION ${include_dest})
+install(FILES ${SPLINEPY_F_MOD} DESTINATION ${incl_dest})
 install(
   EXPORT "${TARGETS_EXPORT_NAME}"
   NAMESPACE ${namespace}

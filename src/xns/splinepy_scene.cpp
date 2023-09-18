@@ -21,6 +21,7 @@ static int DIM{};
 static int BOUNDARY_PARA_DIM{};
 static std::shared_ptr<PySpline> SPLINE{};
 static std::shared_ptr<PySpline> BOUNDARY_SPLINE{};
+static std::shared_ptr<PySpline> PREVIOUS_BOUNDARY_SPLINE{};
 static std::array<double, 3> LOWER_BOUND;
 static std::array<double, 3> UPPER_BOUND;
 
@@ -280,17 +281,11 @@ static void SetSpline(const std::shared_ptr<PySpline>& spline) {
   SPLINE = spline;
   // set dim
   DIM = SPLINE->Core()->SplinepyDim();
-  // find aabb
-  // typename splinepy::splines::SplinepyBase::ControlPointPointers_ cp_ptrs;
-  // if (SPLINE->Core()->SplinepyIsRational()) {
-  //  cp_ptrs = SPLINE->Core()->SplinepyWControlPointPointers
-  //} else {
-
-  //}
 }
 
 static void SetBoundary(const std::shared_ptr<PySpline>& spline) {
   splinepy::utils::PrintInfo("setting bdr spline");
+  PREVIOUS_BOUNDARY_SPLINE = BOUNDARY_SPLINE; // we need to keep p
   BOUNDARY_SPLINE = spline;
   BOUNDARY_PARA_DIM = BOUNDARY_SPLINE->Core()->SplinepyParaDim();
 }
@@ -428,6 +423,41 @@ static void NearestBoundaryPoint(const double* queries,
   splinepy::utils::NThreadExe(nearest_query, n_queries, nthreads);
 }
 
+static void NearestBoundaryPointPrevious(const double* queries,
+                                         const int& n_queries,
+                                         const int& nthreads,
+                                         double* results) {
+  splinepy::utils::PrintInfo("nearest boundary point");
+
+  auto nearest_query = [&](const int begin, const int end, const int i_thread) {
+    Data<double> parametric(BOUNDARY_PARA_DIM);
+    Data<double> physical_minus_query(DIM);
+    double distance{};
+    double convergence{};
+    double tolerance{1e-12};
+    int max_iter{20 * BOUNDARY_PARA_DIM};
+    Data<double, 2> first_derivatives(BOUNDARY_PARA_DIM * DIM); // umsonst
+
+    for (int i{begin}; i < end; ++i) {
+
+      // query - we really just need physical
+      PREVIOUS_BOUNDARY_SPLINE->Core()->SplinepyVRDMUMQuery(
+          &queries[i * DIM],
+          tolerance,
+          max_iter,
+          false,
+          parametric.data(),
+          &results[i * DIM],
+          physical_minus_query.data(),
+          distance,
+          convergence,
+          first_derivatives.data());
+    }
+  };
+
+  splinepy::utils::NThreadExe(nearest_query, n_queries, nthreads);
+}
+
 } // namespace splinepy::xns
 
 // export for fortran
@@ -445,5 +475,14 @@ void nearest_boundary_point(double* queries,
                             int* nthreads,
                             double* results) {
   splinepy::xns::NearestBoundaryPoint(queries, *n_queries, *nthreads, results);
+};
+void nearest_boundary_point_previous(double* queries,
+                                     int* n_queries,
+                                     int* nthreads,
+                                     double* results) {
+  splinepy::xns::NearestBoundaryPointPrevious(queries,
+                                              *n_queries,
+                                              *nthreads,
+                                              results);
 };
 }
