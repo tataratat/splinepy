@@ -9,7 +9,7 @@ The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and ea
 ## Install guide
 splinepy wheels are available for python3.6+ for MacOS, Linux, and Windows:
 ```bash
-pip install splinepy[all]  # including all optional dependencies
+pip install "splinepy[all]"  # including all optional dependencies
 # or
 pip install splinepy
 ```
