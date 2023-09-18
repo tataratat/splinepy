@@ -30,17 +30,17 @@ jobs:
     - name: build splinepy linux - gcc10
       if: matrix.os == 'ubuntu-20.04'
       run: |
-        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal --debug
+        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal --debug --enable_warning
 
     - name: build splinepy macos
       if: matrix.os == 'macos-latest'
       run: |
-        python3 setup.py develop --minimal --debug
+        python3 setup.py develop --minimal --debug --enable_warning
 
     - name: build splinepy windows
       if: matrix.os == 'windows-latest'
       run: |
-        python3 setup.py develop --minimal
+        python3 setup.py develop --minimal --enable_warning
 
     - name: test
       run: |
