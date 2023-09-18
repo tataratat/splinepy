@@ -9,13 +9,6 @@
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
 
-extern "C" {
-
-void is_in_spline(double* queries, int* true_false, int nthreads){};
-
-void nearest_boundary_point(double* queries, double* results, int nthreads){};
-}
-
 namespace splinepy::xns {
 
 namespace py = pybind11;
@@ -436,3 +429,21 @@ static void NearestBoundaryPoint(const double* queries,
 }
 
 } // namespace splinepy::xns
+
+// export for fortran
+extern "C" {
+
+void is_in_spline(double* queries,
+                  int* true_false,
+                  int* n_queries,
+                  int* nthreads) {
+  splinepy::xns::IsInSpline(queries, true_false, *n_queries, *nthreads);
+};
+
+void nearest_boundary_point(double* queries,
+                            int* n_queries,
+                            int* nthreads,
+                            double* results) {
+  splinepy::xns::NearestBoundaryPoint(queries, *n_queries, *nthreads, results);
+};
+}
