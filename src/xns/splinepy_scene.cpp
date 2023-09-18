@@ -296,9 +296,9 @@ static void SetBoundary(const std::shared_ptr<PySpline>& spline) {
 }
 
 static void IsInSpline(const double* queries,
-                       int* true_false,
                        const int& n_queries,
-                       const int& nthreads) {
+                       const int& nthreads,
+                       int* true_false) {
   splinepy::utils::PrintInfo("is in spline");
 
   DVector<DVector<int>> in_aabb_per_thread(nthreads);
@@ -434,10 +434,10 @@ static void NearestBoundaryPoint(const double* queries,
 extern "C" {
 
 void is_in_spline(double* queries,
-                  int* true_false,
                   int* n_queries,
-                  int* nthreads) {
-  splinepy::xns::IsInSpline(queries, true_false, *n_queries, *nthreads);
+                  int* nthreads,
+                  int* true_false) {
+  splinepy::xns::IsInSpline(queries, *n_queries, *nthreads, true_false);
 };
 
 void nearest_boundary_point(double* queries,
