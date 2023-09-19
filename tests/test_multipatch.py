@@ -131,6 +131,37 @@ class MultipatchTest(c.unittest.TestCase):
 
         self.assertTrue(multipatch.check_conformity(0.1))
 
+    def test_checkConformityThreePatches_2d_fail(self):
+        rect_arc_1 = c.splinepy.Bezier(
+            [2, 1], [[0, 2], [1, 2], [3, 2], [0, 3], [1, 4], [3, 3]]
+        )
+        c.splinepy.Bezier([1, 1], [[3, 2], [4, 2], [3, 3], [4, 3]])
+        rect_arc_3 = c.splinepy.Bezier(
+            [2, 2],
+            [
+                [0, 0],
+                [1, 0],
+                [3, 0],
+                [0, 1],
+                [1, 1],
+                [3, 1],
+                [0, 2],
+                [2, 2],
+                [3, 2],
+            ],
+        )
+        list_of_splines = [
+            rect_arc_1,
+            #  rect_arc_2,
+            rect_arc_3,
+        ]
+
+        multipatch = c.splinepy.Multipatch()
+        multipatch.patches = list_of_splines
+        #    multipatch.determine_interfaces()
+
+        self.assertFalse(multipatch.check_conformity(0.1))
+
     def test_boundaries(self):
         """ """
         # init multipatch with multiple splines
