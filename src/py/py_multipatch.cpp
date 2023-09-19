@@ -674,12 +674,14 @@ void GetBoundaryOrientation(
 
 py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
                                                        const int n_threads) {
-
+  std::cout << "check if orientations already exists?" << std::endl;
   // Check if already exists
   if (orientations_.size() != 0) {
+    std::cout << "YES" << std::endl;
     return orientations_;
   }
 
+  std::cout << "NO" << std::endl;
   std::vector<int> patch_id_start{}, patch_id_end{}, face_id_start{},
       face_id_end{};
   int n_patches = patches_.size();
@@ -697,11 +699,14 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
   const int n_entries_per_line = 4 + 2 * para_dim;
 
   const int* interfaces_ptr = Interfaces(interfaces_).data();
-
+  std::cout << "INTERFACES = " << interfaces_.size() << std::endl;
   for (int i_conn{}; i_conn < interfaces_.size(); i_conn++) {
+    std::cout << "interface = " << interfaces_ptr[i_conn] << std::endl;
     if (interfaces_ptr[i_conn] >= 0) {
       // interface found
       if (interfaces_ptr[i_conn] > i_conn) {
+        std::cout << " calculate id start: " << i_conn / n_faces_per_element
+                  << std::endl;
         patch_id_start.push_back(i_conn / n_faces_per_element);
         face_id_start.push_back(i_conn % n_faces_per_element); // std::div
         patch_id_end.push_back(interfaces_ptr[i_conn] / n_faces_per_element);
@@ -709,6 +714,10 @@ py::array_t<int> PyMultipatch::GetBoundaryOrientations(const double tolerance,
                               % n_faces_per_element); // std::div
       }
     }
+  }
+
+  for (const auto& element : patch_id_start) {
+    std::cout << "element : " << element << std::endl;
   }
 
   const auto cpp_spline_list = ToCoreSplineVector(patches_, n_threads);
@@ -814,7 +823,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     return coordinate_id_start_patch;
   };
 
-  for (int i{}; i < (core_patches_.size() - 1); i++) {
+  for (int i{}; i < (interfaces_.size() - 1); i++) {
     const int& start_patch_id = orientations_ptr[i * n_entries_per_line + 0];
     const int& start_face_id = orientations_ptr[i * n_entries_per_line + 1];
     const int& end_patch_id = orientations_ptr[i * n_entries_per_line + 2];
@@ -822,6 +831,21 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     const int* alignment_ptr = &orientations_ptr[i * n_entries_per_line + 4];
     const int* orientation_ptr =
         &orientations_ptr[i * n_entries_per_line + 4 + param_dim];
+
+    std::cout << "\n\nstart patch id : " << start_patch_id
+              << " start face id: " << start_face_id
+              << " end patch id : " << end_patch_id
+              << " end face id : " << end_face_id
+              << " alignement_ptr: " << alignment_ptr[0] << "/"
+              << alignment_ptr[1]
+              << " | orientation ptr: " << orientation_ptr[0] << "/"
+              << orientation_ptr[1] << std::endl;
+    return false;
+
+    // utils::PrintAndThrowError("DEBUGGING -> " +
+    // std::to_string(core_patches_[end_patch_id]->SplinepyIsRational()) + "
+    // stop here " + std::to_string(orientation_ptr[0]) + " - " +
+    // std::to_string(orientation_ptr[1]));
 
     // get coordinates pointer from control point
     const auto start_control_points =
@@ -882,7 +906,6 @@ bool PyMultipatch::CheckConformity(const double tolerance,
                                          orientation_ptr[p_dim])
                 : cmr_end[p_axis_end] - (coordinate_id_start_patch[p_dim] - 1);
       }
-
       const int ctps_id_end_patch =
           coord_id_to_glob_id(cmr_end, coordinate_id_end_patch, end_face_id);
 
