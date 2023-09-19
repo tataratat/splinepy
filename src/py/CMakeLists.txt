@@ -8,7 +8,8 @@ set(PYSPLINEPY_SRCS
     py_spline.cpp
     py_spline_exporter.cpp
     py_spline_extensions.cpp
-    py_spline_reader.cpp)
+    py_spline_reader.cpp
+    py_spline_scene.cpp)
 
 set(PYSPLINEPY_MODULE_SRCS splinepy_core.cpp)
 

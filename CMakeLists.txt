@@ -10,7 +10,7 @@ option(SPLINEPY_COMPILE_BSPLINELIB "Compile bsplinelib together." ON)
 option(SPLINEPY_VERBOSE_MAKE
        "Verbose `make` output. Alias to CMAKE_VERBOSE_MAKEFILE" OFF)
 option(SPLINEPY_MORE "Compile a full set of splines." OFF)
-option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
+option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" ON)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
 option(SPLINEPY_BUILD_EXPLICIT
