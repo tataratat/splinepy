@@ -277,9 +277,7 @@ def export(
     else:
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
         # offset of 1)
-        interface_array = multipatch.orientations(
-            1e-8, 1  # @Lukas update variables to defaults
-        ).copy()
+        interface_array = multipatch.interface_orientations().copy()
         # Apply offsets
         interface_array[:, [0, 2]] += index_offset
         interface_array[:, [1, 3]] += 1  # Gismo starts counting at 1
