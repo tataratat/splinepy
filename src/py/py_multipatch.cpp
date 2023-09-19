@@ -604,7 +604,7 @@ void GetBoundaryOrientation(
   // it is poosible the orientation of the interface edge might be flipped
   // (bugfix: negate the following expression)
   bool_orientations_ptr[boundary_start_p_dim] =
-      (boundary_start_orientation ^ boundary_end_orientation) ? 1 : -1;
+      (boundary_start_orientation ^ boundary_end_orientation) ? 1 : 0;
 
   /// Compare jacobians for remaining entries
   // Calculate Parametric bounds
@@ -665,7 +665,7 @@ void GetBoundaryOrientation(
       const double cos_angle = abs(dot_p / std::sqrt(norm_s * norm_e));
       if (cos_angle > (1. - tolerance)) {
         int_mappings_ptr[i_pd] = j;
-        bool_orientations_ptr[i_pd] = (dot_p > 0) ? 1 : -1;
+        bool_orientations_ptr[i_pd] = (dot_p > 0) ? 1 : 0;
         break;
       }
     }
@@ -804,19 +804,6 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     return sum;
   };
 
-  auto get_end_ctp_coordinate = [&](const int face_id,
-                                    const std::vector<int> cmr,
-                                    const int coordinate_id_start_patch,
-                                    const int direction) -> int {
-    if (face_id > 1) {
-      return cmr[direction % 2] - 1;
-    }
-    return coordinate_id_start_patch;
-  };
-
-  for (int i{}; i < (interfaces_.size() - 1); i++) {
-  }
-
   auto check_conformity_of_interface = [&](const int begin,
                                            const int end) -> bool {
     for (int i{begin}; i < end; i++) {
@@ -870,6 +857,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
             coord_id_to_glob_id(cmr_start,
                                 coordinate_id_start_patch,
                                 start_face_id);
+
         // transformation start -> end
         std::vector<int> coordinate_id_end_patch(param_dim);
         for (int p_dim{}; p_dim < param_dim; p_dim++) {
@@ -882,10 +870,11 @@ bool PyMultipatch::CheckConformity(const double tolerance,
 
           coordinate_id_end_patch[p_axis_end] =
               orientation_ptr[p_dim] > 0
-                  ? cmr_end[p_axis_end]
+                  ? coordinate_id_start_patch[p_dim]
                   : cmr_end[p_axis_end]
                         - (coordinate_id_start_patch[p_dim] - 1);
         }
+
         const int ctps_id_end_patch =
             coord_id_to_glob_id(cmr_end, coordinate_id_end_patch, end_face_id);
 
