@@ -754,18 +754,23 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   std::vector<int> ctr_index = {};
   ctr_positions.reserve(orientations_.size());
   ctr_index.reserve(orientations_.size());
-  int param_dim = ParaDim();
+  const int param_dim = ParaDim();
+  const int dim = Dim();
 
   const int n_entries_per_line = 4 + 2 * param_dim;
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
-  auto face_id_to_coord_id = [&](const std::vector<int>& cmr,
-                                 const int& direction,
-                                 const int& orientation,
-                                 const int& face_id) -> std::vector<int> {
+  // get from the face id the position of the control points of the face (step
+  // 1)
+  auto face_id_to_coord_id =
+      [&](const std::vector<int>& cmr,
+          const int& direction,
+          const int& orientation,
+          const int& face_ctr_ptr_id) -> std::vector<int> {
     std::vector<int> coordinates{};
     coordinates.reserve(param_dim);
-    int remainder = face_id;
+    int remainder = face_ctr_ptr_id;
+
     for (int i{}; i < param_dim; i++) {
       if (direction == i) {
         coordinates.push_back(orientation > 0 ? cmr[i] - 1 : 0);
@@ -774,20 +779,42 @@ bool PyMultipatch::CheckConformity(const double tolerance,
         remainder /= cmr[i];
       }
     }
-    return coordinates;
+    return coordinates; // control points coordinates -> matrix of ctrs
   };
 
+  // get the global id from the coordinate id (step 2)
   auto coord_id_to_glob_id = [&](const std::vector<int>& cmr,
-                                 const std::vector<int>& coordinates) -> int {
+                                 const std::vector<int>& coordinates,
+                                 const int face_id) -> int {
     int glob_id{coordinates[param_dim - 1]};
     for (int i{param_dim - 2}; i > -1; i--) {
-      glob_id *= cmr[i + 1];
+      glob_id *= cmr[i];
       glob_id += coordinates[i];
     }
     return glob_id;
   };
 
-  for (int i{}; i < orientations_.size(); i++) {
+  auto calculate_squared_euclidean_distance =
+      [&dim](const double* start_values, const double* end_values) -> double {
+    double sum = 0.0;
+    for (int i{}; i < dim; i++) {
+      const double diff = start_values[i] - end_values[i];
+      sum += diff * diff;
+    }
+    return sum;
+  };
+
+  auto get_end_ctp_coordinate = [&](const int face_id,
+                                    const std::vector<int> cmr,
+                                    const int coordinate_id_start_patch,
+                                    const int direction) -> int {
+    if (face_id > 1) {
+      return cmr[direction % 2] - 1;
+    }
+    return coordinate_id_start_patch;
+  };
+
+  for (int i{}; i < (core_patches_.size() - 1); i++) {
     const int& start_patch_id = orientations_ptr[i * n_entries_per_line + 0];
     const int& start_face_id = orientations_ptr[i * n_entries_per_line + 1];
     const int& end_patch_id = orientations_ptr[i * n_entries_per_line + 2];
@@ -796,11 +823,84 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     const int* orientation_ptr =
         &orientations_ptr[i * n_entries_per_line + 4 + param_dim];
 
-    std::vector<int> cmr(param_dim);
-    core_patches_[start_patch_id]->SplinepyControlMeshResolutions(cmr.data());
-    const auto& [direction, orientation] = std::div(start_face_id, 2);
-    // degrees & (knotvector only BSpline) check
+    // get coordinates pointer from control point
+    const auto start_control_points =
+        core_patches_[start_patch_id]->SplinepyControlPointPointers();
+    const auto end_control_points =
+        core_patches_[end_patch_id]->SplinepyControlPointPointers();
+
+    // Retrieve control mesh resolutions for start and end patch id
+    std::vector<int> cmr_start(param_dim);
+    core_patches_[start_patch_id]->SplinepyControlMeshResolutions(
+        cmr_start.data());
+    std::vector<int> cmr_end(param_dim);
+    core_patches_[end_patch_id]->SplinepyControlMeshResolutions(cmr_end.data());
+
+    // First Check (Do CMRs match) and calculate number of face_control_points
+    // at the same time
+    int n_face_control_points{1};
+    for (int p_dim{}; p_dim < param_dim; p_dim++) {
+      if (start_face_id != p_dim) {
+        continue;
+      }
+      if (cmr_start[p_dim] != cmr_end[alignment_ptr[p_dim]]) {
+        utils::PrintAndThrowError(
+            "Meaningful error!: " + std::to_string(cmr_start[p_dim]) + " - "
+            + std::to_string(cmr_end[alignment_ptr[p_dim]]));
+      }
+      n_face_control_points *= cmr_start[p_dim];
+    }
+
+    // Second check - 1:1 comparison of control_points using  the square of the
+    // euclidean distance
+    for (int i_face_ctp{}; i_face_ctp < n_face_control_points; i_face_ctp++) {
+      // CHECK ME
+      const std::vector<int>& coordinate_id_start_patch =
+          face_id_to_coord_id(cmr_start,
+                              *alignment_ptr,
+                              *orientation_ptr,
+                              i_face_ctp);
+      const int ctps_id_start_patch =
+          coord_id_to_glob_id(cmr_start,
+                              coordinate_id_start_patch,
+                              start_face_id);
+      // transformation start -> end
+      std::vector<int> coordinate_id_end_patch(param_dim);
+      for (int p_dim{}; p_dim < param_dim; p_dim++) {
+        const int& p_axis_end = alignment_ptr[p_dim];
+        if (end_face_id == p_dim) {
+          coordinate_id_end_patch[p_axis_end] =
+              end_face_id % 2 == 0 ? 0 : cmr_end[p_axis_end] - 1;
+          continue;
+        }
+
+        coordinate_id_end_patch[p_axis_end] =
+            alignment_ptr[p_dim] > 0
+                ? get_end_ctp_coordinate(end_face_id,
+                                         cmr_end,
+                                         coordinate_id_start_patch[p_dim],
+                                         orientation_ptr[p_dim])
+                : cmr_end[p_axis_end] - (coordinate_id_start_patch[p_dim] - 1);
+      }
+
+      const int ctps_id_end_patch =
+          coord_id_to_glob_id(cmr_end, coordinate_id_end_patch, end_face_id);
+
+      const double* start_control_point =
+          start_control_points->coordinate_begins_[ctps_id_start_patch];
+      const double* end_control_point =
+          end_control_points->coordinate_begins_[ctps_id_end_patch];
+
+      const double distance =
+          calculate_squared_euclidean_distance(start_control_point,
+                                               end_control_point);
+
+      if (distance > (tolerance * tolerance)) {
+        return false;
+      }
+    }
   }
+  return true;
 }
 
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
@@ -1725,6 +1825,10 @@ void init_multipatch(py::module_& m) {
       .def("fields", &PyMultipatch::GetFields)
       .def("orientations",
            &PyMultipatch::GetBoundaryOrientations,
+           py::arg("tolerance"),
+           py::arg("nthreads") = 1)
+      .def("check_conformity",
+           &PyMultipatch::CheckConformity,
            py::arg("tolerance"),
            py::arg("nthreads") = 1);
   //.def("", &PyMultipatch::)
