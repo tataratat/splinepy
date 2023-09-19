@@ -874,7 +874,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
         std::vector<int> coordinate_id_end_patch(param_dim);
         for (int p_dim{}; p_dim < param_dim; p_dim++) {
           const int& p_axis_end = alignment_ptr[p_dim];
-          if (end_face_id == p_axis_end) {
+          if (end_face_id / 2 == p_axis_end) {
             coordinate_id_end_patch[p_axis_end] =
                 end_face_id % 2 == 0 ? 0 : cmr_end[p_axis_end] - 1;
             continue;
@@ -907,8 +907,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   };
 
   // @Lukas NThreadExecution please
-  check_conformity_of_interface(0, orientations_.shape(0));
-  return true;
+  return check_conformity_of_interface(0, orientations_.shape(0));
 }
 
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
