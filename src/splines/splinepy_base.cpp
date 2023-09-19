@@ -419,7 +419,7 @@ SplinepyBase::SplinepyKnotVector(const int p_dim) {
   splinepy::utils::PrintAndThrowError("SplinepyKnotVector not implemented for",
                                       SplinepyWhatAmI());
   return nullptr;
-};
+}
 
 std::shared_ptr<typename SplinepyBase::ControlPointPointers_>
 SplinepyBase::SplinepyControlPointPointers() {

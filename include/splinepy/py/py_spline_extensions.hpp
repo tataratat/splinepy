@@ -10,6 +10,7 @@
 #include <pybind11/pybind11.h>
 
 #include "splinepy/py/py_spline.hpp"
+#include "splinepy/splines/null_spline.hpp"
 
 namespace splinepy::py {
 
@@ -99,7 +100,10 @@ bool HasCore(const std::shared_ptr<PySpline>& spline);
 void AnnulCore(std::shared_ptr<PySpline>& spline);
 
 /// null spline creator
-static std::shared_ptr<PySpline> CreateNullSpline(const int para_dim,
-                                                  const int dim);
+static inline std::shared_ptr<PySpline> CreateNullSpline(const int para_dim,
+                                                         const int dim) {
+  return std::make_shared<PySpline>(
+      splinepy::splines::kNullSplineLookup[para_dim - 1][dim - 1]);
+}
 
 } // namespace splinepy::py

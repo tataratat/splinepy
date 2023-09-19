@@ -49,12 +49,12 @@ endif()
 
 # compiler specific flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set(SPLINEPY_WARNING_FLAGS -Wall -Wextra -Wpedantic
+  set(SPLINEPY_WARNING_FLAGS -Werror -Wall -Wextra -Wpedantic
                              -Wzero-as-null-pointer-constant -Wno-unused)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(SPLINEPY_WARNING_FLAGS
+      -Werror
       -Wall
-      -Wextra
       -Wmost
       -Wextra
       -Wpedantic
