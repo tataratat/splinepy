@@ -28,7 +28,7 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: "v3.10.1"
+  rev: "v3.11.0"
   hooks:
   - id: pyupgrade
     args: [--py36-plus]
@@ -45,7 +45,7 @@ repos:
     args: [--line-length=79]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.288
+  rev: v0.0.290
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
