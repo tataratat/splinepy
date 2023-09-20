@@ -932,6 +932,19 @@ bool PyMultipatch::CheckConformity(const double tolerance,
         // both start_spline and end_spline are rational
         if (start_spline->SplinepyIsRational()
             && end_spline->SplinepyIsRational()) {
+
+          // splines have different "Rationality" -> weights must be equal for
+          // the entire splines. Only check start spline, end spline will be
+          // checked when compare weights
+          if (start_spline->SplinepyWhatAmI()
+              != end_spline->SplinepyWhatAmI()) {
+            if (check_if_weights_are_equal(
+                    start_spline->SplinepyWeightPointers()->weights_)) {
+              std::lock_guard<std::mutex> guard(conformity_mutex);
+              conformity_result = false;
+            }
+          }
+
           const double start_control_point_weight =
               *start_control_points->weight_pointers_
                    ->weights_[ctps_id_start_patch];
