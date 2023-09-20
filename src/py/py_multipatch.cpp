@@ -756,6 +756,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   const int param_dim = ParaDim();
   const int entries_per_interface = orientations_.shape(1);
   const int dim = Dim();
+  const double square_tolerance = tolerance * tolerance;
 
   const int n_entries_per_line = 4 + 2 * param_dim;
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
@@ -890,7 +891,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
             calculate_squared_euclidean_distance(start_control_point,
                                                  end_control_point);
 
-        if (distance > (tolerance * tolerance)) {
+        if (distance > square_tolerance) {
           std::lock_guard<std::mutex> guard(conformity_mutex);
           conformity_result = false;
         }
