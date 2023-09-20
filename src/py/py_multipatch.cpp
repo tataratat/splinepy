@@ -761,6 +761,16 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   const int n_entries_per_line = 4 + 2 * param_dim;
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
+  auto check_if_weights_are_equal =
+      [&](const std::vector<double*>& weights) -> bool {
+    for (const auto& element : weights) {
+      if (weights[0] != element) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   // get from the face id the position of the control points of the face (step
   // 1)
   auto face_id_to_coord_id =
@@ -818,6 +828,31 @@ bool PyMultipatch::CheckConformity(const double tolerance,
       const int* alignment_ptr = &orientations_ptr[i * n_entries_per_line + 4];
       const int* orientation_ptr =
           &orientations_ptr[i * n_entries_per_line + 4 + param_dim];
+
+      const auto start_spline = core_patches_[start_patch_id];
+      const auto end_spline = core_patches_[end_patch_id];
+
+      // check if all weights of the start spline have the same value / end
+      // spline is non-rational
+      if (start_spline->SplinepyIsRational()
+          && end_spline->SplinepyIsRational()) {
+        if (!check_if_weights_are_equal(
+                start_spline->SplinepyWeightPointers()->weights_)) {
+          std::lock_guard<std::mutex> guard(conformity_mutex);
+          conformity_result = false;
+        }
+      }
+
+      // check if all weights of the end spline have the same value / start
+      // spline is non-rational
+      if (!start_spline->SplinepyIsRational()
+          && end_spline->SplinepyIsRational()) {
+        if (!check_if_weights_are_equal(
+                end_spline->SplinepyWeightPointers()->weights_)) {
+          std::lock_guard<std::mutex> guard(conformity_mutex);
+          conformity_result = false;
+        }
+      }
 
       // get coordinates pointer from control point
       const auto start_control_points =
@@ -886,6 +921,22 @@ bool PyMultipatch::CheckConformity(const double tolerance,
             start_control_points->coordinate_begins_[ctps_id_start_patch];
         const double* end_control_point =
             end_control_points->coordinate_begins_[ctps_id_end_patch];
+
+        // check if the weights of the control points are equal.
+        // both start_spline and end_spline are rational
+        if (start_spline->SplinepyIsRational()
+            && end_spline->SplinepyIsRational()) {
+          const double start_control_point_weight =
+              *start_control_points->weight_pointers_
+                   ->weights_[ctps_id_start_patch];
+          const double end_control_point_weight =
+              *end_control_points->weight_pointers_
+                   ->weights_[ctps_id_end_patch];
+          if (start_control_point_weight != end_control_point_weight) {
+            std::lock_guard<std::mutex> guard(conformity_mutex);
+            conformity_result = false;
+          }
+        }
 
         const double distance =
             calculate_squared_euclidean_distance(start_control_point,
