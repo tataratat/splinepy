@@ -810,8 +810,11 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     return sum;
   };
 
+  bool conformity_result = true;
+  std::mutex conformity_mutex;
+
   auto check_conformity_of_interface = [&](const int begin,
-                                           const int end) -> bool {
+                                           const int end) -> void {
     for (int i{begin}; i < end; i++) {
       const int& start_patch_id = orientations_ptr[i * n_entries_per_line + 0];
       const int& start_face_id = orientations_ptr[i * n_entries_per_line + 1];
@@ -894,15 +897,17 @@ bool PyMultipatch::CheckConformity(const double tolerance,
                                                  end_control_point);
 
         if (distance > (tolerance * tolerance)) {
-          return false;
+          std::lock_guard<std::mutex> guard(conformity_mutex);
+          conformity_result = false;
         }
       }
     }
-    return true;
   };
 
-  // @Lukas NThreadExecution please
-  return check_conformity_of_interface(0, orientations_.shape(0));
+  splinepy::utils::NThreadExecution(check_conformity_of_interface,
+                                    static_cast<int>(orientations_.shape(0)),
+                                    n_threads);
+  return conformity_result;
 }
 
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
