@@ -47,7 +47,7 @@ if(SPLINEPY_MORE)
                              ${SPLINEPY_MORE_EXPLICIT_SRCS})
 endif(SPLINEPY_MORE)
 
-add_library(explicit ${SPLINEPY_LIB_TYPE} ${SPLINEPY_EXPLICIT_SRCS})
+add_library(explicit OBJECT ${SPLINEPY_EXPLICIT_SRCS})
 
 # include
 target_include_directories(
