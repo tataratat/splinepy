@@ -17,6 +17,7 @@ def _spline_to_ET(
     index_offset,
     fields_only=False,
     as_base64=False,
+    field_mask=True,
 ):
     """
     Write spline data to xml element in gismo format
@@ -35,6 +36,8 @@ def _spline_to_ET(
       If set, exports only the fields associated to the multipatch data
     as_base64 : bool (False)
       If set, coordinates, weights and knot-vectors are exported in B64
+    field_mask : array-like
+      Selection of active fields to be exported into the fields file
 
     Returns
     -------
@@ -44,6 +47,22 @@ def _spline_to_ET(
 
     if fields_only and (len(multipatch.fields) == 0):
         return
+
+    if fields_only and fields_only is not None:
+        if not isinstance(fields_only, (list, np.ndarray)):
+            raise ValueError("field_mask must be list of integers")
+        field_mask = np.unique(
+            enforce_contiguous(field_mask, dtype=np.int64, asarray=True)
+        )
+
+        # Check if range is valid
+        if (field_mask.min() < 0) or (
+            field_mask.max() >= len(multipatch.fields)
+        ):
+            raise ValueError(
+                "field_mask contains unsupported range, must be within "
+                f"(0, {len(multipatch.fields)})"
+            )
 
     def _array_to_text(array, is_matrix, as_b64):
         if as_b64:
@@ -57,11 +76,13 @@ def _spline_to_ET(
             return " ".join(str(x) for x in array)
 
     if fields_only:
+        if field_mask is None:
+            field_mask = _np.arange(len(multipatch.fields))
         supports = _np.array(
             [
                 (i, j, 0)
-                for j, field in enumerate(multipatch.fields)
-                for i, v in enumerate(field.patches)
+                for j, k in enumerate(field_mask)
+                for i, v in enumerate(multipatch.fields[k].patches)
                 if v is not None
             ],
             dtype=_np.int64,
@@ -196,6 +217,7 @@ def export(
     labeled_boundaries=True,
     options=None,
     export_fields=False,
+    field_mask=None,
     as_base64=False,
 ):
     """Export as gismo readable xml geometry file
@@ -220,10 +242,13 @@ def export(
       (optional)
     export_fields : bool
       Export fields to separate files ending with field<id>.xml, e.g.,
-      filename.xml.field1.xml
+      filename.xml.field.xml
+    field_mask : list
+      Selection of active fields that are exported (to save memory and speed up
+      export)
     as_base64 : bool (False)
-      If set, coordinates, weights and knot-vectors are exported in B64 encoding.
-      Available in gismo, once gismo/gismo#634 merges.
+      If set, coordinates, weights and knot-vectors are exported in B64
+      encoding. Available in gismo, once gismo/gismo#634 merges.
 
     Returns
     -------
@@ -400,6 +425,7 @@ def export(
             index_offset,
             fields_only=True,
             as_base64=as_base64,
+            field_mask=field_mask,
         )
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
