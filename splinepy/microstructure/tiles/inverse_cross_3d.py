@@ -958,12 +958,15 @@ class InverseCross3D(_TileBase):
             )
 
         if closure is not None:
-            return self._closing_tile(
-                parameters=parameters,
-                parameter_sensitivities=parameter_sensitivities,
-                seperator_distance=seperator_distance,
-                closure=closure,
-                **kwargs,
+            return (
+                self._closing_tile(
+                    parameters=parameters,
+                    parameter_sensitivities=parameter_sensitivities,
+                    seperator_distance=seperator_distance,
+                    closure=closure,
+                    **kwargs,
+                ),
+                None,
             )
 
         [
@@ -1606,5 +1609,4 @@ class InverseCross3D(_TileBase):
         spline_list.append(
             _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
         )
-
-        return (spline_list, None)
+        return spline_list, None
