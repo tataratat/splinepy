@@ -160,10 +160,15 @@ def faces(
             boundaries = spline.boundary_multipatch()
         else:
             boundaries = Multipatch(splines=spline.extract.boundaries())
-
-        n_faces = (resolution - 1) ** 2
-        vertices = resolution**2
-        f_loc = connec.make_quad_faces(enforce_len(resolution, 2))
+        # The following block assumes a integer resolution but might get a list
+        # as input. In that case, we take the max of the list and use it as
+        # resolution.
+        # I am not sure if this is correct or if we should instead rework the
+        # following lines so that list resolution is supported.
+        res = resolution if isinstance(resolution, int) else max(resolution)
+        n_faces = (res - 1) ** 2
+        vertices = res**2
+        f_loc = connec.make_quad_faces(enforce_len(res, 2))
         face_connectivity = np.empty((n_faces * len(boundaries.patches), 4))
 
         # Create Connectivity for Multipatches
