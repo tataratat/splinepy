@@ -584,7 +584,7 @@ class Microstructure(SplinepyBase):
 
             # Determine the microtile (prior to insertion) derivative is set to
             # None if the parameter sensitivity is not requested
-            (tile, derivatives) = self._microtile.create_tile(
+            tile, derivatives = self._microtile.create_tile(
                 parameters=tile_parameters,
                 parameter_sensitivities=tile_sens_on_support,
                 closure=face_closure,
