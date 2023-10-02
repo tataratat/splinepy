@@ -1,14 +1,19 @@
 import argparse
 
+import splinepy
 from splinepy._version import __version__
 
 
-def convert(input_file_name, input_type, output_file_name, output_type):
-    pass
+def show(args):
+    fname = args.input_file
+    print(fname)
+    from splinepy import io
 
+    loaded = io.load(fname)
 
-def convert_cli(args):
-    pass
+    show_vedo = splinepy.show(loaded, interactive=not args.non_interactive)
+    if args.output_file:
+        show_vedo.screenshot(args.output_file)
 
 
 def entry():
@@ -21,7 +26,7 @@ def entry():
         help="Show version of splinepy.",
     )
 
-    parser_plot = subparsers.add_parser("plot", help="Plot the given spline.")
+    parser_plot = subparsers.add_parser("show", help="Show the given spline.")
     parser_plot.add_argument(
         "-i", "--input-file", type=str, help="Input file name."
     )
@@ -29,32 +34,14 @@ def entry():
         "-o",
         "--output-file",
         type=str,
-        help="Input file name.",
+        help="Export graphic to file.",
         required=False,
     )
-
-    parser_convert = subparsers.add_parser(
-        "convert", help="Convert the given spline."
-    )
-    parser_convert.add_argument(
-        "-i", "--input-file", type=str, help="Input file name."
-    )
-    parser_convert.add_argument(
-        "-o", "--output-file", type=str, help="Input file name."
-    )
-    parser_convert.add_argument(
-        "-it",
-        "--input-type",
-        type=str,
-        help="Input file type.",
-        required=False,
-    )
-    parser_convert.add_argument(
-        "-ot",
-        "--output-type",
-        type=str,
-        help="Output file type.",
-        required=False,
+    parser_plot.add_argument(
+        "-e",
+        "--non-interactive",
+        action="store_false",
+        help="Show graphic in interactive window.",
     )
 
     args = parser.parse_args()
@@ -63,10 +50,10 @@ def entry():
         print(f"splinepy version {__version__}")
         return
 
-    if args.command == "plot":
-        print("Plotting:", args)
-    elif args.command == "convert":
-        print("Converting:", args)
+    if args.command == "show":
+        show(args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
