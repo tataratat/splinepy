@@ -76,7 +76,7 @@ class BSplineBase(spline.Spline):
         Parameters
         -----------
         parametric_dimension: int
-          parametric axis, wehre knots are to be inserted
+          parametric axis, where knots are to be inserted
         knots: list or float
           list of new knots to be inserted into the parametric domain
 

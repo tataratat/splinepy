@@ -40,7 +40,7 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
  * @param degrees degrees along all parametric dimensions
  * @param parametric_dimension where knots are to be inserted
  * @param new_kvs new knots
- * @param tolerance tolerance for idenifying individual knots
+ * @param tolerance tolerance for identifying individual knots
  * @return py::tuple to create new matrix
  */
 py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,

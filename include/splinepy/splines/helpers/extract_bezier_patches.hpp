@@ -52,7 +52,7 @@ ExtractBezierPatchIDs(const IndexingType* degrees,
   // Init return values
   std::vector<std::vector<int>> list_of_id_lists(n_total_patches);
   for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
-    // Determine internal postitions in local coord system
+    // Determine internal positions in local coord system
     std::vector<std::size_t> patch_ctp_id_offsets{};
     patch_ctp_id_offsets.reserve(para_dim);
     int ii{i_patch};

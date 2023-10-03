@@ -626,7 +626,7 @@ class MultipatchData(SplineData):
     def __init__(self, helpee):
         """
         Strictly, we don't need to inherit from SplineData and only implement
-        interfaces, since _saved equivalent is manged in multipatch.
+        interfaces, since _saved equivalent is managed in multipatch.
         However, it's an index based holder and we want to support the same
         syntax.
         Here, we will use _saved as key_to_id lookup
