@@ -780,22 +780,29 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   // get from the face id the position of the control points of the face (step
   // 1)
   auto face_id_to_coord_id =
-      [&](const std::vector<int>& cmr,
+      [&](std::vector<int>& cmr,
           const int& direction,
           const int& orientation,
+          const int& face_id,
           const int& face_ctr_ptr_id) -> std::vector<int> {
     std::vector<int> coordinates{};
     coordinates.reserve(param_dim);
     int remainder = face_ctr_ptr_id;
 
     for (int i{}; i < param_dim; i++) {
-      if (direction == i) {
-        coordinates.push_back(orientation > 0 ? cmr[i] - 1 : 0);
+      if (direction != i) {
+        std::cout << "-> Calculate coordinates: - orientation: " << direction
+                  << " CMR = " << cmr[0] << " - " << cmr[1] << " _ " << i
+                  << std::endl;
+        coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
+
       } else {
         coordinates.push_back(remainder % cmr[i]);
         remainder /= cmr[i];
       }
     }
+    std::cout << "Coordinates of the control points: " << coordinates[0]
+              << " / " << coordinates[1] << std::endl;
     return coordinates; // control points coordinates -> matrix of ctrs
   };
 
@@ -804,10 +811,16 @@ bool PyMultipatch::CheckConformity(const double tolerance,
                                  const std::vector<int>& coordinates,
                                  const int face_id) -> int {
     int glob_id{coordinates[param_dim - 1]};
+    std::cout << " starting glob id: " << glob_id << "  == " << param_dim
+              << std::endl;
+    std::cout << "coordinates = " << coordinates[0] << "/" << coordinates[1]
+              << std::endl;
     for (int i{param_dim - 2}; i > -1; i--) {
       glob_id *= cmr[i];
       glob_id += coordinates[i];
+      std::cout << "current glob id : " << glob_id << std::endl;
     }
+    std::cout << "Global id of the control point: " << glob_id << std::endl;
     return glob_id;
   };
 
@@ -837,6 +850,11 @@ bool PyMultipatch::CheckConformity(const double tolerance,
 
       const auto start_spline = core_patches_[start_patch_id];
       const auto end_spline = core_patches_[end_patch_id];
+
+      std::cout << "\n orientation: " << start_patch_id << start_face_id
+                << end_patch_id << end_face_id << alignment_ptr[0]
+                << alignment_ptr[1] << orientation_ptr[0] << orientation_ptr[1]
+                << std::endl;
 
       // check if all weights of the start spline have the same value / end
       // spline is non-rational
@@ -897,7 +915,9 @@ bool PyMultipatch::CheckConformity(const double tolerance,
             face_id_to_coord_id(cmr_start,
                                 *alignment_ptr,
                                 *orientation_ptr,
+                                start_face_id,
                                 i_face_ctp);
+
         const int ctps_id_start_patch =
             coord_id_to_glob_id(cmr_start,
                                 coordinate_id_start_patch,
@@ -912,7 +932,6 @@ bool PyMultipatch::CheckConformity(const double tolerance,
                 end_face_id % 2 == 0 ? 0 : cmr_end[p_axis_end] - 1;
             continue;
           }
-
           coordinate_id_end_patch[p_axis_end] =
               orientation_ptr[p_dim] > 0
                   ? coordinate_id_start_patch[p_dim]
@@ -956,7 +975,9 @@ bool PyMultipatch::CheckConformity(const double tolerance,
             conformity_result = false;
           }
         }
-
+        std::cout << "Compare: " << start_control_point[0] << " / "
+                  << start_control_point[1] << " == " << end_control_point[0]
+                  << " / " << end_control_point[1] << std::endl;
         const double distance =
             calculate_squared_euclidean_distance(start_control_point,
                                                  end_control_point);
@@ -968,10 +989,10 @@ bool PyMultipatch::CheckConformity(const double tolerance,
       }
     }
   };
-
   splinepy::utils::NThreadExecution(check_conformity_of_interface,
                                     static_cast<int>(orientations_.shape(0)),
                                     n_threads);
+
   return conformity_result;
 }
 
