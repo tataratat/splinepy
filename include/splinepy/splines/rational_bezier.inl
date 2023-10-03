@@ -110,7 +110,9 @@ template<std::size_t para_dim, std::size_t dim>
 std::shared_ptr<
     typename RationalBezier<para_dim, dim>::WeightedControlPointPointers_>
 RationalBezier<para_dim, dim>::SplinepyWeightedControlPointPointers() {
-  if (SplinepyBase_::control_point_pointers_) {
+  if (SplinepyBase_::control_point_pointers_
+      && SplinepyBase_::control_point_pointers_->Len()
+             == SplinepyNumberOfControlPoints()) {
     return SplinepyBase_::control_point_pointers_;
   }
 

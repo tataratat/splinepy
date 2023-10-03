@@ -281,7 +281,9 @@ public:
 
   virtual std::shared_ptr<WeightedControlPointPointers_>
   SplinepyWeightedControlPointPointers() {
-    if (SplinepyBase_::control_point_pointers_) {
+    if (SplinepyBase_::control_point_pointers_
+        && SplinepyBase_::control_point_pointers_->Len()
+               == SplinepyNumberOfControlPoints()) {
       return SplinepyBase_::control_point_pointers_;
     }
     // create weighted cps

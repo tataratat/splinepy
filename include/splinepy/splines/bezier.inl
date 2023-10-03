@@ -98,7 +98,9 @@ void Bezier<para_dim, dim>::SplinepyCurrentProperties(
 template<std::size_t para_dim, std::size_t dim>
 std::shared_ptr<typename Bezier<para_dim, dim>::ControlPointPointers_>
 Bezier<para_dim, dim>::SplinepyControlPointPointers() {
-  if (SplinepyBase_::control_point_pointers_) {
+  if (SplinepyBase_::control_point_pointers_
+      && SplinepyBase_::control_point_pointers_->Len()
+             == SplinepyNumberOfControlPoints()) {
     return SplinepyBase_::control_point_pointers_;
   }
   auto cpp = std::make_shared<ControlPointPointers_>();
