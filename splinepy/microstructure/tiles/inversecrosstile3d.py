@@ -41,7 +41,7 @@ class InverseCrossTile3D(TileBase):
         parameters : tuple(np.ndarray)
           radii of fitting cylinder at evaluation points
         boundary_width : float
-          with of the boundary surronding branch
+          with of the boundary surrounding branch
         filling_height : float
           portion of the height that is filled in parametric domain
         seperator_distance : float

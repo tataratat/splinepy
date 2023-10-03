@@ -40,7 +40,7 @@ class CrossTile3D(TileBase):
           The parameters must be a two-dimensional np.array, where the
           value must be between 0.01 and 0.49
         boundary_width : float
-          with of the boundary surronding branch
+          with of the boundary surrounding branch
         filling_height : float
           portion of the height that is filled in parametric domain
         closure : str
