@@ -935,10 +935,11 @@ bool PyMultipatch::CheckConformity(const double tolerance,
           coordinate_id_end_patch[p_axis_end] =
               orientation_ptr[p_dim] > 0
                   ? coordinate_id_start_patch[p_dim]
-                  : cmr_end[p_axis_end]
-                        - (coordinate_id_start_patch[p_dim] - 1);
+                  : cmr_end[p_axis_end] - coordinate_id_start_patch[p_dim] - 1;
         }
-
+        std::cout << "End patch id -> coordinate: "
+                  << coordinate_id_end_patch[0] << "/"
+                  << coordinate_id_end_patch[1] << std::endl;
         const int ctps_id_end_patch =
             coord_id_to_glob_id(cmr_end, coordinate_id_end_patch, end_face_id);
 

@@ -217,6 +217,14 @@ class MultipatchTest(c.unittest.TestCase):
         ]
         self.assertTrue(multipatch_2.check_conformity(1e-8))
 
+        rect_arc_2 = c.splinepy.Bezier(
+            [1, 1], [[4, 2], [4, 3], [3, 2], [3, 3]]
+        )
+        list_of_splines = [
+            rect_arc_1,
+            rect_arc_2,
+        ]
+
         multipatch_3 = c.splinepy.Multipatch(list_of_splines)
         multipatch_3.interfaces = [
             [-1, 7, -1, -1],
@@ -224,12 +232,28 @@ class MultipatchTest(c.unittest.TestCase):
         ]
         self.assertTrue(multipatch_3.check_conformity(1e-8))
 
+        rect_arc_2 = c.splinepy.Bezier(
+            [1, 1], [[3, 3], [3, 2], [4, 3], [4, 2]]
+        )
+        list_of_splines = [
+            rect_arc_1,
+            rect_arc_2,
+        ]
+
         multipatch_4 = c.splinepy.Multipatch(list_of_splines)
         multipatch_4.interfaces = [
             [-1, 6, -1, -1],
             [-1, -1, 1, -1],
         ]
-        # self.assertTrue(multipatch_4.check_conformity(1e-8))
+        self.assertTrue(multipatch_4.check_conformity(1e-8))
+
+        rect_arc_2 = c.splinepy.Bezier(
+            [1, 1], [[4, 3], [4, 2], [3, 3], [3, 2]]
+        )
+        list_of_splines = [
+            rect_arc_1,
+            rect_arc_2,
+        ]
 
         multipatch_5 = c.splinepy.Multipatch(list_of_splines)
         multipatch_5.interfaces = [
