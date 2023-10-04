@@ -899,7 +899,6 @@ bool PyMultipatch::CheckConformity(const double tolerance,
               "Meaningful error!: " + std::to_string(cmr_start[p_dim]) + " - "
               + std::to_string(cmr_end[alignment_ptr[p_dim]]));
         }
-        n_face_control_points *= cmr_start[p_dim];
       }
 
       // Second check - 1:1 comparison of control_points using  the square of
