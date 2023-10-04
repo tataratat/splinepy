@@ -247,6 +247,70 @@ class MultipatchTest(c.unittest.TestCase):
         ]
         self.assertTrue(multipatch_4.check_conformity(1e-8))
 
+    def test_check_conformity_3d_top_same_direction(self):
+        cube_1 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+            ],
+        )
+        cube_2 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+                [0, 0, 2],
+                [1, 0, 2],
+                [0, 1, 2],
+                [1, 1, 2],
+            ],
+        )
+
+        multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2])
+        multipatch_3d_cube.determine_interfaces()
+        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+
+    def test_check_conformity_3d_top_dif_2_direction(self):
+        cube_1 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+            ],
+        )
+        cube_2 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 2],
+                [1, 0, 2],
+                [0, 1, 2],
+                [1, 1, 2],
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+            ],
+        )
+
+        multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2])
+        multipatch_3d_cube.determine_interfaces()
+        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+
     def test_boundaries(self):
         """ """
         # init multipatch with multiple splines

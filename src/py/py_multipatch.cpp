@@ -790,11 +790,20 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     int remainder = face_ctr_ptr_id;
 
     for (int i{}; i < param_dim; i++) {
-      if (direction != i) {
-        coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
+      if (cmr.size() < 3) {
+        if (direction != i) {
+          coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
+        } else {
+          coordinates.push_back(remainder % cmr[i]);
+          remainder /= cmr[i];
+        }
       } else {
-        coordinates.push_back(remainder % cmr[i]);
-        remainder /= cmr[i];
+        if (direction == i) {
+          coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
+        } else {
+          coordinates.push_back(remainder % cmr[i]);
+          remainder /= cmr[i];
+        }
       }
     }
     return coordinates; // control points coordinates -> matrix of ctrs
@@ -907,7 +916,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
         // CHECK ME
         const std::vector<int>& coordinate_id_start_patch =
             face_id_to_coord_id(cmr_start,
-                                *alignment_ptr,
+                                alignment_ptr[start_face_id / 2],
                                 *orientation_ptr,
                                 start_face_id,
                                 i_face_ctp);
