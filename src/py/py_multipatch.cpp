@@ -790,8 +790,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     int remainder = face_ctr_ptr_id;
 
     for (int i{}; i < param_dim; i++) {
-      if ((direction > 0 && direction != i)
-          || (direction == 0 && direction == i)) {
+      if (direction != i) {
         coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
       } else {
         coordinates.push_back(remainder % cmr[i]);
@@ -880,9 +879,21 @@ bool PyMultipatch::CheckConformity(const double tolerance,
       // at the same time
       int n_face_control_points{1};
       for (int p_dim{}; p_dim < param_dim; p_dim++) {
-        if (start_face_id != p_dim) {
-          continue;
+        if (param_dim < 3) {
+          if (start_face_id != p_dim) {
+            continue;
+          }
+          n_face_control_points *= cmr_start[p_dim];
+        } else {
+          if (start_face_id / 2 == p_dim) {
+            for (int edge{}; edge < param_dim; edge++) {
+              if (edge != p_dim) {
+                n_face_control_points *= cmr_start[edge];
+              }
+            }
+          }
         }
+
         if (cmr_start[p_dim] != cmr_end[alignment_ptr[p_dim]]) {
           utils::PrintAndThrowError(
               "Meaningful error!: " + std::to_string(cmr_start[p_dim]) + " - "
