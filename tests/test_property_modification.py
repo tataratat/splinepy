@@ -201,17 +201,36 @@ class InplaceModificationTest(c.SplineBasedTestCase):
         assert not isinstance(ndarr, c.splinepy.utils.data.PhysicalSpaceArray)
 
     def test_new_control_point_pointers_creation(self):
+        """Test cp pointers are newly created if they change.
+        _sync_source_ptr compares len of cp pointers and PhysicalSpaceArray
+        before syncing.
+        """
         for s in self.all_2p2d_splines():
+            # initial check
             s.cps._sync_source_ptr()
             cps_are_synced(s)
+
+            # check after degree elevation
             s.elevate_degrees([0, 1])
             s.cps._sync_source_ptr()
             cps_are_synced(s)
+
+            # and after knot vectors and reduce degree
             if s.has_knot_vectors:
                 s.insert_knots(0, [0.2, 0.5, 0.7])
                 s.cps._sync_source_ptr()
                 cps_are_synced(s)
-                s.insert_knots(0, [0.2, 0.5, 0.7])
+
+                s.insert_knots(1, [0.2, 0.5, 0.7])
+                s.cps._sync_source_ptr()
+                cps_are_synced(s)
+
+                s.remove_knots(0, [0.7])
+                s.cps._sync_source_ptr()
+                cps_are_synced(s)
+
+                # reduce degree only available for bsplines
+                s.reduce_degrees([0])
                 s.cps._sync_source_ptr()
                 cps_are_synced(s)
 
