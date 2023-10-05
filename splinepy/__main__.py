@@ -6,7 +6,6 @@ from splinepy._version import __version__
 
 def show(args):
     fname = args.input_file
-    print(fname)
     from splinepy import io
 
     loaded = io.load(fname)
