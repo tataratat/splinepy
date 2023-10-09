@@ -41,6 +41,6 @@ def export(fname, splines):
                 f"Volumetric {type(spline)} found at splines[{ispl}]"
                 "which cannot be handled by the .iges file format \n"
                 "Use a boundary representation instead by calling e.g."
-                "multipatch.boundary_multipatch()"
+                "spline.extract.boundaries()"
             )
     return splinepy_core.export_iges(fname, splines)
