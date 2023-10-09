@@ -176,6 +176,8 @@ private:
 /// Values are kept as int since they come as int from python
 class CStyleArrayPointerGridPoints {
 public:
+  std::vector<double> step_size_;
+
   CStyleArrayPointerGridPoints() = default;
   CStyleArrayPointerGridPoints(const int dim,
                                const double* bounds,
@@ -195,6 +197,8 @@ public:
     entries_.assign(dim, std::vector<double>{});
     resolutions_.clear();
     resolutions_.reserve(dim);
+    step_size_.clear();
+    step_size_.reserve(dim);
     for (int i{}; i < dim; ++i) {
       const int& res = resolutions[i];
       if (res < 2) {
@@ -208,7 +212,8 @@ public:
       std::vector<double>& entryvec = entries_[i];
       entryvec.reserve(res);
 
-      const double step_size = (bounds[dim + i] - bounds[i]) / (res - 1);
+      double& step_size = step_size_[i];
+      step_size = (bounds[dim + i] - bounds[i]) / (res - 1);
       for (int j{}; j < resolutions[i]; ++j) {
         entryvec.emplace_back(bounds[i] + step_size * j);
       }
