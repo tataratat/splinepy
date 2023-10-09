@@ -36,7 +36,7 @@ def export(fname, splines):
     """
     # check if any spline contains volume elements
     for ispl, spline in enumerate(splines):
-        if spline.para_dim == 3:
+        if spline.para_dim > 2 or spline.dim > 3:
             raise ValueError(
                 f"Volumetric {type(spline)} found at splines[{ispl}], which cannot be handled by the .iges file format \n"
                 "Use a boundary representation instead by calling e.g. multipatch.boundary_multipatch()"
