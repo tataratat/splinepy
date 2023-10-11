@@ -184,10 +184,11 @@ class MultipatchTest(c.unittest.TestCase):
 
     def test_check_conformity_different_orientations_2d(self):
         rect_arc_1 = c.splinepy.Bezier(
-            [2, 1], [[0, 2], [1, 2], [3, 2], [0, 3], [1, 4], [3, 3]]
+            [3, 1],
+            [[0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 4], [2, 3], [3, 3]],
         )
         rect_arc_2 = c.splinepy.Bezier(
-            [1, 1], [[4, 2], [4, 3], [3, 2], [3, 3]]
+            [1, 1], [[4, 2], [3, 2], [4, 3], [3, 3]]
         )
         list_of_splines = [
             rect_arc_1,
@@ -195,9 +196,10 @@ class MultipatchTest(c.unittest.TestCase):
         ]
 
         multipatch_1 = c.splinepy.Multipatch(list_of_splines)
+        multipatch_1.determine_interfaces()
         multipatch_1.interfaces = [
-            [-1, 7, -1, -1],
-            [-1, -1, 1, -1],
+            [-1, 5, -1, -1],
+            [-1, 1, -1, -1],
         ]
         self.assertTrue(multipatch_1.check_conformity(1e-8))
 
@@ -211,6 +213,8 @@ class MultipatchTest(c.unittest.TestCase):
         ]
 
         multipatch_2 = c.splinepy.Multipatch(list_of_splines)
+
+        multipatch_2.determine_interfaces()
         multipatch_2.interfaces = [
             [-1, 6, -1, -1],
             [-1, -1, 1, -1],

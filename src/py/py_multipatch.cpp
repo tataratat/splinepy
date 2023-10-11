@@ -777,6 +777,23 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     return true;
   };
 
+  auto order_cmr = [&](std::vector<int>& cmr, const int* direction) -> void {
+    for (int i{}; i < (param_dim - 1); i++) {
+      if (direction[i] > direction[i + 1]) {
+        std::swap(cmr[i], cmr[i + 1]);
+      }
+    }
+  };
+
+  auto order_coordinates = [&](std::vector<int>& coordinates,
+                               const int* direction) -> void {
+    for (int i{}; i < (param_dim - 1); i++) {
+      if (direction[i] > direction[i + 1]) {
+        std::swap(coordinates[0], coordinates[1]);
+      }
+    }
+  };
+
   // get from the face id the position of the control points of the face (step
   // 1)
   auto face_id_to_coord_id =
@@ -790,20 +807,11 @@ bool PyMultipatch::CheckConformity(const double tolerance,
     int remainder = face_ctr_ptr_id;
 
     for (int i{}; i < param_dim; i++) {
-      if (cmr.size() < 3) {
-        if (direction != i) {
-          coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
-        } else {
-          coordinates.push_back(remainder % cmr[i]);
-          remainder /= cmr[i];
-        }
+      if (direction == i) {
+        coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
       } else {
-        if (direction == i) {
-          coordinates.push_back(face_id % 2 > 0 ? cmr[i] - 1 : 0);
-        } else {
-          coordinates.push_back(remainder % cmr[i]);
-          remainder /= cmr[i];
-        }
+        coordinates.push_back(remainder % cmr[i]);
+        remainder /= cmr[i];
       }
     }
     return coordinates; // control points coordinates -> matrix of ctrs
@@ -913,14 +921,25 @@ bool PyMultipatch::CheckConformity(const double tolerance,
       // Second check - 1:1 comparison of control_points using  the square of
       // the euclidean distance
       for (int i_face_ctp{}; i_face_ctp < n_face_control_points; i_face_ctp++) {
-        // CHECK ME
-        const std::vector<int>& coordinate_id_start_patch =
+
+        // reorder cmr if alignment pointer is not in order
+        // e.g. 10 -> switch cmr vector entries
+        order_cmr(cmr_start, alignment_ptr);
+
+        // calculate (abstract)-coordinates of start patch
+        std::vector<int> coordinate_id_start_patch =
             face_id_to_coord_id(cmr_start,
                                 alignment_ptr[start_face_id / 2],
                                 *orientation_ptr,
                                 start_face_id,
                                 i_face_ctp);
+        order_coordinates(coordinate_id_start_patch, alignment_ptr);
 
+        // reorder cmr_start patch again, to get the correct global id of the
+        // control point
+        order_cmr(cmr_start, alignment_ptr);
+
+        // calculate the global id of the start patch control point
         const int ctps_id_start_patch =
             coord_id_to_glob_id(cmr_start,
                                 coordinate_id_start_patch,
@@ -944,6 +963,7 @@ bool PyMultipatch::CheckConformity(const double tolerance,
         const int ctps_id_end_patch =
             coord_id_to_glob_id(cmr_end, coordinate_id_end_patch, end_face_id);
 
+        // get the coordinates of the control points from the global id
         const double* start_control_point =
             start_control_points->coordinate_begins_[ctps_id_start_patch];
         const double* end_control_point =
