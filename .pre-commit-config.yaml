@@ -42,7 +42,7 @@ repos:
   rev: "23.9.1"
   hooks:
   - id: black
-    args: [--line-length=79]
+    additional_dependencies: [tomli]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.0.292
@@ -65,10 +65,11 @@ repos:
   rev: v2.2.6
   hooks:
   - id: codespell
-    args: [-w, "-L connec"]
+    args: [-w]
+    additional_dependencies: [tomli]
 
 - repo: https://github.com/keewis/blackdoc
   rev: v0.3.8
   hooks:
   - id: blackdoc
-    args: [--line-length=75]
+    additional_dependencies: [tomli]

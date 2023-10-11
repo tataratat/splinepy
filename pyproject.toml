@@ -48,3 +48,14 @@ ignore = [
 "setup.py" = ["T201"]
 "examples/*.py" = ["T201"]
 "tests/common.py" = ["T201"]
+
+[tool.codespell]
+ignore-words-list = "connec"
+skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*"
+
+[tool.black]
+line-length = 79
+exclude = "third_party"
+
+[tool.blackdoc]
+line-length = 75
