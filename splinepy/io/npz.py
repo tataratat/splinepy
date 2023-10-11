@@ -48,7 +48,7 @@ def export(fname, spline):
     Parameters
     -----------
     fname: str
-    spline: BSpline or NURBS
+    spline: Bezier or BSpline or NURBS
 
     Returns
     --------
@@ -56,7 +56,7 @@ def export(fname, spline):
     """
     property_dicts = {
         "degrees": spline.degrees,
-        "knot_vectors": np.array([str(spline.knot_vectors)]),
+            
         "control_points": spline.control_points,
         "whatami": np.array([spline.whatami]),
     }
