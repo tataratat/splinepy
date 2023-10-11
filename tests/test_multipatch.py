@@ -315,6 +315,89 @@ class MultipatchTest(c.unittest.TestCase):
         multipatch_3d_cube.determine_interfaces()
         self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
 
+    def test_check_conformity_3d_dif_direction_3_cubes(self):
+        cube_1 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+            ],
+        )
+        cube_2 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [0, 0, 2],
+                [1, 0, 2],
+                [0, 1, 2],
+                [1, 1, 2],
+                [0, 0, 1],
+                [1, 0, 1],
+                [0, 1, 1],
+                [1, 1, 1],
+            ],
+        )
+        cube_3 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [1, 0, 0],
+                [2, 0, 0],
+                [1, 1, 0],
+                [2, 1, 0],
+                [1, 0, 1],
+                [2, 0, 1],
+                [1, 1, 1],
+                [2, 1, 1],
+            ],
+        )
+
+        multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
+        multipatch_3d_cube.determine_interfaces()
+        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+
+        # turn cube -> different orientations
+        cube_3 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [2, 1, 0],
+                [1, 1, 0],
+                [2, 0, 0],
+                [1, 0, 0],
+                [2, 1, 1],
+                [1, 1, 1],
+                [2, 0, 1],
+                [1, 0, 1],
+            ],
+        )
+
+        multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
+        multipatch_3d_cube.determine_interfaces()
+        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+
+        # turn cube -> change alignment
+        cube_3 = c.splinepy.Bezier(
+            [1, 1, 1],
+            [
+                [1, 1, 1],
+                [1, 0, 1],
+                [2, 1, 1],
+                [2, 0, 1],
+                [1, 1, 0],
+                [1, 0, 0],
+                [2, 1, 0],
+                [2, 0, 0],
+            ],
+        )
+
+        multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
+        multipatch_3d_cube.determine_interfaces()
+        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+
     def test_boundaries(self):
         """ """
         # init multipatch with multiple splines
