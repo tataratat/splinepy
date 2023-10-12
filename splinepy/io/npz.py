@@ -58,7 +58,7 @@ def export(fname, spline):
         "degrees": spline.degrees,
         "knot_vectors": np.array(spline.knot_vectors),
         "control_points": spline.control_points,
-        "whatami": np.array([spline.whatami]),
+        "whatami": np.array(spline.whatami),
     }
 
     if spline.whatami.startswith("NURBS"):
