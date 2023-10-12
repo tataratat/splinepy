@@ -6,9 +6,8 @@ import os
 
 import numpy as np
 
-from splinepy import helpme, io, settings
+from splinepy import helpme, io, settings, utils
 from splinepy import splinepy_core as core
-from splinepy import utils
 from splinepy._base import SplinepyBase
 from splinepy.helpme import visualize
 from splinepy.helpme.check import Checker

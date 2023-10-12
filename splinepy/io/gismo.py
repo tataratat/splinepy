@@ -257,7 +257,7 @@ def export(
 
     # All entries in gismo xml file have a unique ID
     xml_data = ET.Element("xml")
-    index_offset = int(100)
+    index_offset = 100
 
     # First export Multipatch information
     multipatch_element = ET.SubElement(
