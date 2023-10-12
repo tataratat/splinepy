@@ -1917,7 +1917,7 @@ void init_multipatch(py::module_& m) {
            py::arg("nthreads") = 1)
       .def("check_conformity",
            &PyMultipatch::CheckConformity,
-           py::arg("tolerance"),
+           py::arg("tolerance") = 1e-8,
            py::arg("nthreads") = 1);
   //.def("", &PyMultipatch::)
   ;

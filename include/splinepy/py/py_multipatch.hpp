@@ -430,6 +430,8 @@ public:
                                            const int n_threads);
 
   /// @brief check conformity of the patches
+  /// @param tolerance Tolerance
+  /// @param n_threads Number of threads to use
   bool CheckConformity(const double tolerance, const int n_threads);
 };
 

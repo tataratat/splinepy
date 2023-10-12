@@ -180,7 +180,7 @@ class MultipatchTest(c.unittest.TestCase):
             [-1, -1, -1, 2],
         ]
 
-        self.assertFalse(multipatch_1.check_conformity(1e-8))
+        self.assertFalse(multipatch_1.check_conformity())
 
     def test_check_conformity_different_orientations_2d(self):
         rect_arc_1 = c.splinepy.Bezier(
@@ -249,7 +249,7 @@ class MultipatchTest(c.unittest.TestCase):
             [-1, 6, -1, -1],
             [-1, -1, 1, -1],
         ]
-        self.assertTrue(multipatch_4.check_conformity(1e-8))
+        self.assertTrue(multipatch_4.check_conformity())
 
     def test_check_conformity_3d_top_same_direction(self):
         cube_1 = c.splinepy.Bezier(
@@ -281,7 +281,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2])
         multipatch_3d_cube.determine_interfaces()
-        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+        self.assertTrue(multipatch_3d_cube.check_conformity())
 
     def test_check_conformity_3d_top_dif_2_direction(self):
         cube_1 = c.splinepy.Bezier(
@@ -313,7 +313,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2])
         multipatch_3d_cube.determine_interfaces()
-        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+        self.assertTrue(multipatch_3d_cube.check_conformity())
 
     def test_check_conformity_3d_dif_direction_3_cubes(self):
         cube_1 = c.splinepy.Bezier(
@@ -358,7 +358,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
         multipatch_3d_cube.determine_interfaces()
-        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+        self.assertTrue(multipatch_3d_cube.check_conformity())
 
         # turn cube -> different orientations
         cube_3 = c.splinepy.Bezier(
@@ -377,7 +377,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
         multipatch_3d_cube.determine_interfaces()
-        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+        self.assertTrue(multipatch_3d_cube.check_conformity())
 
         # turn cube -> change alignment
         cube_3 = c.splinepy.Bezier(
@@ -396,7 +396,7 @@ class MultipatchTest(c.unittest.TestCase):
 
         multipatch_3d_cube = c.splinepy.Multipatch([cube_1, cube_2, cube_3])
         multipatch_3d_cube.determine_interfaces()
-        self.assertTrue(multipatch_3d_cube.check_conformity(1e-8))
+        self.assertTrue(multipatch_3d_cube.check_conformity())
 
     def test_boundaries(self):
         """ """
