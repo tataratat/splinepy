@@ -36,7 +36,7 @@ def load(
     # update the rest
     dict_spline.update(control_points=loaded["control_points"])
     dict_spline.update(degrees=loaded["degrees"])
-    dict_spline.update(knot_vectors=eval(loaded["knot_vectors"][0]))
+    dict_spline.update(knot_vectors=loaded["knot_vectors"])
 
     return dict_spline
 
@@ -56,7 +56,7 @@ def export(fname, spline):
     """
     property_dicts = {
         "degrees": spline.degrees,
-            
+        "knot_vectors": np.array(spline.knot_vectors),
         "control_points": spline.control_points,
         "whatami": np.array([spline.whatami]),
     }
