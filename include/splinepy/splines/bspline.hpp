@@ -93,7 +93,7 @@ public:
   using BinomialRatios_ = typename Base_::ParameterSpace_::BinomialRatios_;
   using BinomialRatio_ = typename BinomialRatios_::value_type;
   // Advanced use
-  using Proximity_ = splinepy::proximity::Proximity<BSpline<para_dim, dim>>;
+  using Proximity_ = splinepy::proximity::Proximity;
 
   /** raw ptr based inithelper.
    *  degrees should have same size as parametric dimension
@@ -378,10 +378,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
 
   /// Verbose proximity query - make sure to plant a kdtree first.

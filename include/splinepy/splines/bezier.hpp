@@ -48,7 +48,7 @@ public:
   using Coordinates_ = typename std::vector<Coordinate_>;
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
-  using Proximity_ = splinepy::proximity::Proximity<Bezier<para_dim, dim>>;
+  using Proximity_ = splinepy::proximity::Proximity;
 
   /// @brief Creates Base for Bezier
   /// @param degrees

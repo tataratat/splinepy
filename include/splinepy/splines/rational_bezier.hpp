@@ -54,8 +54,7 @@ public:
   using Derivative_ = typename std::array<std::size_t, para_dim>;
   using Dimension_ = std::size_t;
   // advanced use
-  using Proximity_ =
-      splinepy::proximity::Proximity<RationalBezier<para_dim, dim>>;
+  using Proximity_ = splinepy::proximity::Proximity;
 
   /// @brief Create base
   /// @param degrees

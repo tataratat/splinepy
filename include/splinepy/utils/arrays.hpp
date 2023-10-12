@@ -15,9 +15,10 @@ template<typename DataType, int dim = 1, typename IndexType = int>
 class Array {
   static_assert(dim > 0, "dim needs to be positive value bigger than zero.");
   static_assert(std::is_integral_v<IndexType>,
-                "IndexType should be an integral type")
+                "IndexType should be an integral type");
 
-      public : using ShapeType_ = std::array<IndexType, dim>;
+public:
+  using ShapeType_ = std::array<IndexType, dim>;
   using StridesType_ = std::array<IndexType, dim - 1>;
   static constexpr const IndexType kDim = static_cast<IndexType>(dim);
 
@@ -45,7 +46,7 @@ protected:
   constexpr void ComputeRemainingOffset(IndexType& index,
                                         IndexType& counter,
                                         const IndexType& id0,
-                                        const Ts&... id) {
+                                        const Ts&... id) const {
     // last element should be just added
     if constexpr (sizeof...(Ts) == 0) {
       index += id0;
@@ -58,7 +59,9 @@ protected:
     index += strides_[counter++] * id0;
 
     // do the rest
-    ComputeRemainingOffset(index, counter, id...);
+    if constexpr (sizeof...(Ts) > 0) {
+      ComputeRemainingOffset(index, counter, id...);
+    }
   }
 
 public:
@@ -121,7 +124,7 @@ public:
   }
 
   template<typename... Ts>
-  void SetShape(const IndexType& shape0, Ts&&... shape) {
+  void SetShape(const IndexType& shape0, const Ts&... shape) {
     static_assert(sizeof...(Ts) == static_cast<std::size_t>(dim - 1),
                   "shape should match the dim");
 
@@ -136,12 +139,11 @@ public:
     shape_ = {shape0, shape...};
 
     // (re)initialize  strides_
-    strides_ = {std::forward<IndexType>(shape)...};
+    strides_ = {shape...};
 
     // reverse iter and accumulate
     IndexType sub_total{1};
-    constexpr typename StridesType_::reverse_iterator r_stride_iter =
-        strides_.rbegin();
+    typename StridesType_::reverse_iterator r_stride_iter = strides_.rbegin();
     for (; r_stride_iter != strides_.rend(); ++r_stride_iter) {
       // accumulate
       sub_total *= *r_stride_iter;
@@ -161,7 +163,7 @@ public:
   /// @tparam ...Ts
   /// @param ...shape
   template<typename... Ts>
-  Array(Ts&&... shape) {
+  Array(const Ts&... shape) {
     SetShape(shape...);
     Reallocate(size_);
   }
@@ -171,7 +173,7 @@ public:
   /// @param data_pointer
   /// @param ...shape
   template<typename... Ts>
-  Array(DataType* data_pointer, Ts&&... shape) {
+  Array(DataType* data_pointer, const Ts&... shape) {
     SetData(data_pointer);
     SetShape(shape...);
   }
@@ -217,7 +219,9 @@ public:
     }
 
     IndexType final_id{id0 * strides_[0]}, i{1};
-    ComputeRemainingOffset(final_id, i, id...);
+    if constexpr (sizeof...(Ts) > 0) {
+      ComputeRemainingOffset(final_id, i, id...);
+    }
 
     assert(final_id > -1 && final_id < size_);
 
@@ -240,7 +244,10 @@ public:
     }
 
     IndexType final_id{id0 * strides_[0]}, i{1};
-    ComputeRemainingOffset(final_id, i, id...);
+    if constexpr (sizeof...(Ts) > 0) {
+
+      ComputeRemainingOffset(final_id, i, id...);
+    }
 
     assert(final_id > -1 && final_id < size_);
 
@@ -294,7 +301,7 @@ public:
 
     DataType dot{};
     for (IndexType i{}; i < size_; ++i) {
-      dot += a[i] + data_[i];
+      dot += a[i] * data_[i];
     }
 
     return dot;
@@ -315,8 +322,8 @@ public:
         // init
         ij = 0.0;
         // get beginning of i and j row
-        DataType* i_ptr = &operator()(i, 0);
-        DataType* j_ptr = &operator()(j, 0);
+        const DataType* i_ptr = &operator()(i, 0);
+        const DataType* j_ptr = &operator()(j, 0);
 
         // inner product
         for (int k{}; k < width; ++k) {
@@ -373,7 +380,8 @@ public:
   constexpr DataType NormL2() {
     DataType norm{};
     for (IndexType i{}; i < size_; ++i) {
-      norm += data_[i];
+      const DataType& data_i = data_[i];
+      norm += data_i * data_i;
     }
     return std::sqrt(norm);
   }
@@ -404,7 +412,7 @@ inline void Subtract(const IterableA& a, const IterableB& b, IterableC& c) {
 
   const auto len = c.size();
 
-  for (decltype(len) i{}; i < len; ++i) {
+  for (std::remove_const_t<decltype(len)> i{}; i < len; ++i) {
     c[i] = a[i] - b[i];
   }
 }
@@ -425,7 +433,7 @@ protected:
   RowOrderArray_ row_order_;
 
 public:
-  Matrix(DataArray& array) : array_(array) {
+  Matrix(DataArray_& array) : array_(array) {
     const IndexType& height = array.Shape()[0];
     // alloc n_rows
     row_order_.Reallocate(height);
@@ -441,10 +449,10 @@ public:
     std::swap(row_order_[i], row_order_[j]);
   }
 
-  constexpr const RowIndexArray_& RowOrder() const { return row_order_; }
+  constexpr const RowOrderArray_& RowOrder() const { return row_order_; }
 
   template<typename IterableB, typename IterableX>
-  constexpr void Solve(const IterableB& b, const IterableX& x) {
+  constexpr void Solve(IterableB& b, IterableX& x) {
 
     // get length of the array/matrix
     const IndexType& len = array_.Shape()[0];
@@ -456,7 +464,7 @@ public:
 
     // partial pivoting and forward reduction
     // since we reorder indices only, we append *_r to reordered ids
-    for (std::size_t i{0}; i < para_dim; i++) {
+    for (IndexType i{0}; i < len; i++) {
       // sneak in x initialization here.
       // it doesn't matter if this is i or i_r
       x[i] = 0.;

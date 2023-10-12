@@ -253,9 +253,8 @@ template<std::size_t para_dim, std::size_t dim>
 void RationalBezier<para_dim, dim>::SplinepyPlantNewKdTreeForProximity(
     const int* resolutions,
     const int& nthreads) {
-  splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(*this,
-                                                                   resolutions,
-                                                                   nthreads);
+
+  GetProximity().PlantNewKdTree(resolutions, nthreads);
 }
 
 template<std::size_t para_dim, std::size_t dim>

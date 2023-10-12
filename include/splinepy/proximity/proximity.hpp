@@ -33,6 +33,9 @@ public:
   using RealArray3D_ = splinepy::utils::Array<double, 3>;
   using IndexArray_ = splinepy::utils::Array<int>;
 
+  // for non-writable views
+  using ConstRealArray_ = splinepy::utils::Array<const double>;
+
   using SystemMatrix = splinepy::utils::Matrix<double, int>;
 
 protected:
@@ -108,7 +111,7 @@ public:
   /// @param query
   /// @param difference
   void GuessMinusQuery(const RealArray_& guess,
-                       const RealArray_& query,
+                       const ConstRealArray_& query,
                        RealArray_& difference) const {
     // evaluate guess and sett to difference
     spline_.SplinepyEvaluate(guess.data(), difference.data());
@@ -123,14 +126,14 @@ public:
   /// @param guess_phys
   /// @param difference
   void GuessMinusQuery(const RealArray_& guess,
-                       const RealArray_& query,
+                       const ConstRealArray_& query,
                        RealArray_& guess_phys,
                        RealArray_& difference) const {
     spline_.SplinepyEvaluate(guess.data(), guess_phys.data());
     splinepy::utils::Subtract(guess_phys, query, difference);
   }
 
-  void MakeInitialGuess(const RealArray_& goal, RealArray_& guess) const {
+  void MakeInitialGuess(const ConstRealArray_& goal, RealArray_& guess) const {
     if (!kdtree_) {
       // hate to be aggressive, but here it is.
       splinepy::utils::PrintAndThrowError("to use InitialGuess::Kdtree option,"
@@ -274,7 +277,8 @@ public:
     // view arrays - we will use this memory for IO
     // this avoid unnecessary copy, but if it slows down the process
     // significantly we will just alloc and copy at the end
-    RealArray_ phys_query(query, dim);
+    // RealArray_ phys_query(query, dim);
+    ConstRealArray_ phys_query(query, dim);
     RealArray_ current_guess(final_guess, para_dim);
     RealArray_ current_phys(nearest, dim);
     RealArray_ difference(nearest_minus_query, dim);
@@ -319,7 +323,7 @@ public:
     }
 
     // get initial status - call both rhs and lhs to fill gradients
-    GuessMinusQuery(current_guess, phys_query, difference);
+    GuessMinusQuery(current_guess, phys_query, current_phys, difference);
     FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
     spline_gradient.AAt(spline_gradient_AAt);
     FillLhs(current_guess,
