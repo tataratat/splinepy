@@ -408,7 +408,8 @@ public:
 /// @param c
 template<typename IterableA, typename IterableB, typename IterableC>
 inline void Subtract(const IterableA& a, const IterableB& b, IterableC& c) {
-  assert(a.size() == b.size() == c.size());
+  assert(a.size() == b.size());
+  assert(b.size() == c.size());
 
   const auto len = c.size();
 
@@ -460,7 +461,8 @@ public:
     // array_ should be a square matrix
     assert(len == array_.Shape()[1]);
     // len should match the size of b and x
-    assert(len == b.size() == x.size());
+    assert(len == b.size());
+    assert(len == x.size());
 
     // partial pivoting and forward reduction
     // since we reorder indices only, we append *_r to reordered ids
