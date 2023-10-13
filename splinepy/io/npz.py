@@ -24,7 +24,7 @@ def load(
 
     Returns
     --------
-    dict_spline: dict
+    loaded_spline: NURBS | BSpline | Bezier | RationalBezier
     """
     loaded = np.load(fname)
     whatami = loaded["whatami"][0]
