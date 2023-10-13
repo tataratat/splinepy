@@ -9,6 +9,7 @@ keys in raw files are:
 """
 
 import numpy as np
+import splinepy as sp
 
 
 def load(
@@ -28,17 +29,42 @@ def load(
     loaded = np.load(fname)
     whatami = loaded["whatami"][0]
 
-    dict_spline = {}
-    # update weights
+    # create NURBS
     if whatami.startswith("NURBS"):
-        dict_spline.update(weights=loaded["weights"])
+        loaded_spline = sp.NURBS(
+        degrees=loaded["degrees"],
+        knot_vectors=loaded["knot_vectors"],
+        control_points=loaded["control_points"],
+        weights=loaded["weights"],
+        )
 
-    # update the rest
-    dict_spline.update(control_points=loaded["control_points"])
-    dict_spline.update(degrees=loaded["degrees"])
-    dict_spline.update(knot_vectors=loaded["knot_vectors"])
+    # create BSpline
+    elif whatami.startswith("BSpline"):
+        loaded_spline = sp.BSpline(
+        degrees=loaded["degrees"],
+        knot_vectors=loaded["knot_vectors"],
+        control_points=loaded["control_points"],
+        )
 
-    return dict_spline
+    # create Bezier
+    elif whatami.startswith("Bezier"):
+        loaded_spline = sp.Bezier(
+        degrees=loaded["degrees"],
+        control_points=loaded["control_points"],
+        )
+
+    # create Rational Bezier
+    elif whatami.startswith("RationalBezier"):
+        loaded_spline = sp.RationalBezier(
+        degrees=loaded["degrees"],
+        control_points=loaded["control_points"],
+        weights=loaded["weights"],
+        )
+
+    else:
+        raise TypeError("No proper spline type detected.")
+
+    return loaded_spline
 
 
 def export(fname, spline):
@@ -58,7 +84,7 @@ def export(fname, spline):
         "degrees": spline.degrees,
         "knot_vectors": np.array(spline.knot_vectors),
         "control_points": spline.control_points,
-        "whatami": np.array(spline.whatami),
+        "whatami": np.array([spline.whatami]),
     }
 
     if spline.whatami.startswith("NURBS"):
