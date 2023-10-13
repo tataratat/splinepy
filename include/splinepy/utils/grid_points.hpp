@@ -4,6 +4,7 @@
 #include <numeric>
 #include <utility>
 
+#include <splinepy/utils/default_initialization_allocator.hpp>
 #include <splinepy/utils/print.hpp>
 
 namespace splinepy::utils {
@@ -173,10 +174,23 @@ private:
 };
 
 /// @brief CStyleArrayPointer based dynamic grid point sampler
-/// Values are kept as int since they come as int from python
 class CStyleArrayPointerGridPoints {
 public:
-  std::vector<double> step_size_;
+  template<typename T>
+  using Vector_ = splinepy::utils::DefaultInitializationVector<T>;
+
+  /// @brief Vector of bounds
+  Vector_<double> bounds_;
+  /// @brief Vector of resolutions
+  Vector_<int> resolutions_;
+  /// @brief Vector of vectors of entries
+  Vector_<Vector_<double>> entries_;
+  /// @brief each dimension's interval
+  Vector_<double> step_size_;
+  /// @brief Length
+  int len_;
+  /// @brief Dimension
+  int dim_;
 
   CStyleArrayPointerGridPoints() = default;
   CStyleArrayPointerGridPoints(const int dim,
@@ -193,12 +207,9 @@ public:
     dim_ = dim;
     len_ = 1;
     // linspace and prepare possible entries */
-    entries_.clear();
-    entries_.assign(dim, std::vector<double>{});
-    resolutions_.clear();
-    resolutions_.reserve(dim);
-    step_size_.clear();
-    step_size_.reserve(dim);
+    entries_.resize(dim);
+    resolutions_.resize(dim);
+    step_size_.resize(dim);
     for (int i{}; i < dim; ++i) {
       const int& res = resolutions[i];
       if (res < 2) {
@@ -207,15 +218,20 @@ public:
             "2.");
       }
       len_ *= res;
-      resolutions_.push_back(res);
+      resolutions_[i] = res;
 
-      std::vector<double>& entryvec = entries_[i];
-      entryvec.reserve(res);
+      Vector_<double>& entryvec = entries_[i];
+      entryvec.resize(res);
 
       double& step_size = step_size_[i];
-      step_size = (bounds[dim + i] - bounds[i]) / (res - 1);
-      for (int j{}; j < resolutions[i]; ++j) {
-        entryvec.emplace_back(bounds[i] + step_size * j);
+      // get current lower and upper bounds
+      const double& lower = bounds[i];
+      const double& upper = bounds[i + dim];
+      // get step size
+      step_size = (upper - lower) / static_cast<double>(res - 1);
+      // linspace
+      for (int j{}; j < res; ++j) {
+        entryvec[j] = lower + (step_size * j);
       }
     }
   }
@@ -254,18 +270,6 @@ public:
 
   /// @brief Size
   int Size() const { return len_; }
-
-protected:
-  /// @brief Vector of bounds
-  std::vector<double> bounds_;
-  /// @brief Vector of resolutions
-  std::vector<int> resolutions_;
-  /// @brief Vector of vectors of entries
-  std::vector<std::vector<double>> entries_;
-  /// @brief Length
-  int len_;
-  /// @brief Dimension
-  int dim_;
 };
 
 } /* namespace splinepy::utils */
