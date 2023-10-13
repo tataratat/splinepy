@@ -43,7 +43,7 @@ protected:
   const splinepy::splines::SplinepyBase& spline_;
 
   // kdtree related variables
-  splinepy::utils::CStyleArrayPointerGridPoints grid_points_;
+  splinepy::utils::GridPoints grid_points_;
   RealArray_ sampled_spline_;
   std::unique_ptr<Cloud_> cloud_;
   std::unique_ptr<Tree_> kdtree_;
