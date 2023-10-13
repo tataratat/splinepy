@@ -14,10 +14,10 @@ inline int ExtractBoundaryFromAxisAndExtrema(const int& axis,
   return (extreme > 0) ? 2 * axis + 1 : 2 * axis;
 }
 
-template<typename SplineType, typename IndexType>
+template<typename SplineType, typename VectorType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
 ExtractControlMeshSliceFromIDs(const SplineType& spline,
-                               const std::vector<IndexType>& indices,
+                               const VectorType& indices,
                                const int& plane_normal_axis) {
   // Perform sanity check
   if constexpr (SplineType::kParaDim == 1) {
@@ -123,17 +123,16 @@ ExtractBoundaryMeshSlice(const SplineType& spline, const int& boundary_id) {
 
     // get ids on boundary
     const auto cmr =
-        splinepy::splines::helpers::template GetControlMeshResolutions<
-            std::size_t>(spline);
+        splinepy::splines::helpers::template GetControlMeshResolutions<int>(
+            spline);
     const int plane_normal_axis = static_cast<int>(boundary_id / 2);
     const int plane_id =
         ((boundary_id % 2) == 0) ? 0 : cmr[plane_normal_axis] - 1;
-    const auto ids_on_boundary = splinepy::utils::GridPoints<
-        std::size_t,
-        std::size_t,
-        SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
-                                                        plane_normal_axis,
-                                                        plane_id);
+    const auto ids_on_boundary = splinepy::utils::GridPoints::IdsOnHyperPlane(
+        cmr.data(),
+        static_cast<int>(cmr.size()),
+        plane_normal_axis,
+        plane_id);
     return ExtractControlMeshSliceFromIDs(spline,
                                           ids_on_boundary,
                                           plane_normal_axis);
@@ -158,12 +157,11 @@ ExtractControlMeshSlice(const SplineType& spline,
     const auto cmr =
         splinepy::splines::helpers::template GetControlMeshResolutions<
             std::size_t>(spline);
-    const auto ids_on_boundary = splinepy::utils::GridPoints<
-        std::size_t,
-        std::size_t,
-        SplineType::kParaDim>::GridPointIdsOnHyperPlane(cmr,
-                                                        plane_normal_axis,
-                                                        plane_id);
+    const auto ids_on_boundary = splinepy::utils::GridPoints::IdsOnHyperPlane(
+        cmr.data(),
+        static_cast<int>(cmr.size()),
+        plane_normal_axis,
+        plane_id);
     return ExtractControlMeshSliceFromIDs(spline,
                                           ids_on_boundary,
                                           plane_normal_axis);
