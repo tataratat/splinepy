@@ -64,13 +64,12 @@ target_include_directories(
                   $<INSTALL_INTERFACE:${incl_dest}>)
 
 # make sure BSplineLib is available
-if(NOT TARGET BSplineLib::splines OR NOT TARGET BSplineLib::input_output)
+if(NOT TARGET BSplineLib::splines)
   find_package(BSplineLib REQUIRED)
 endif()
 
 # link
-target_link_libraries(splinepy PUBLIC bezman napf BSplineLib::splines
-                                      BSplineLib::input_output)
+target_link_libraries(splinepy PUBLIC bezman napf BSplineLib::splines)
 
 # explicit?
 if(SPLINEPY_BUILD_EXPLICIT)

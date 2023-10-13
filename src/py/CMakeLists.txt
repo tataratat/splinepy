@@ -6,9 +6,9 @@ set(PYSPLINEPY_SRCS
     py_knot_vector.cpp
     py_multipatch.cpp
     py_spline.cpp
-    py_spline_exporter.cpp
-    py_spline_extensions.cpp
-    py_spline_reader.cpp)
+    # py_spline_exporter.cpp
+    py_spline_extensions.cpp)
+# py_spline_reader.cpp)
 
 set(PYSPLINEPY_MODULE_SRCS splinepy_core.cpp)
 

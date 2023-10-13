@@ -8,7 +8,8 @@ import os
 from splinepy import io
 from splinepy.io.ioutils import abs_fname, dict_to_spline
 from splinepy.nurbs import NURBS
-from splinepy.splinepy_core import read_iges
+
+# from splinepy.splinepy_core import read_iges
 
 
 def load_splines(fname, as_dict=False):

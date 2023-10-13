@@ -75,9 +75,6 @@ public:
   using Derivative_ = typename Base_::Derivative_;
   using Dimension_ = bsplinelib::Dimension;
   using Tolerance_ = bsplinelib::splines::Tolerance;
-  using OutputInformation_ =
-      bsplinelib::Tuple<typename ParameterSpace_::OutputInformation_,
-                        typename WeightedVectorSpace_::OutputInformation_>;
   using Index_ = typename Base_::Base_::Index_;
   using IndexLength_ = typename Index_::Length_;
   using IndexValue_ = typename Index_::Value_;
