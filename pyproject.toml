@@ -32,6 +32,9 @@ select = [
   "SIM",         # flake8-simplify
   "T20",         # flake8-print
   "NPY",         # numpy specific rules
+  "I",           # isort specific rules
+  "UP",          # pyupdate specific rules
+  "C400","C401","C402","C403","C404","C405" # additional pyupgrade rules
 ]
 fixable = ["ALL"]
 target-version = "py37"
@@ -48,3 +51,14 @@ ignore = [
 "setup.py" = ["T201"]
 "examples/*.py" = ["T201"]
 "tests/common.py" = ["T201"]
+
+[tool.codespell]
+ignore-words-list = "connec"
+skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*"
+
+[tool.black]
+line-length = 79
+exclude = "third_party"
+
+[tool.blackdoc]
+line-length = 75
