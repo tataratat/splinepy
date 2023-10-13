@@ -6,6 +6,8 @@
 #include <numeric>
 #include <type_traits>
 
+#include "splinepy/utils/print.hpp"
+
 namespace splinepy::utils {
 
 /// @brief fully dynamic array
@@ -21,6 +23,13 @@ public:
   using ShapeType_ = std::array<IndexType, dim>;
   using StridesType_ = std::array<IndexType, dim - 1>;
   static constexpr const IndexType kDim = static_cast<IndexType>(dim);
+
+  using DataType_ = DataType;
+  using IndexType_ = IndexType;
+
+  // std container like types
+  using value_type = DataType;
+  using size_type = IndexType;
 
 protected:
   bool own_data_{false};
@@ -88,7 +97,7 @@ public:
 
   constexpr IndexType size() const { return size_; }
 
-  void DestroyData() {
+  constexpr void DestroyData() {
     if (own_data_ && data_) {
       delete[] data_;
     }
@@ -97,34 +106,40 @@ public:
     own_data_ = false;
   }
 
-  void SetData(DataType* data_pointer) {
+  constexpr void SetData(DataType* data_pointer) {
     DestroyData();
     data_ = data_pointer;
   }
 
-  DataType* GetData() {
+  constexpr DataType* GetData() {
     assert(data_);
     return data_;
   }
 
-  const DataType* GetData() const {
+  constexpr const DataType* GetData() const {
     assert(data_);
     return data_;
   }
 
-  void Reallocate(const IndexType& size) {
+  /// @brief reallocates space. After this call, own_data_ should be true
+  /// @param size
+  constexpr void Reallocate(const IndexType& size) {
+    // destroy and reallocate space
     DestroyData();
     data_ = new DataType[size];
-    size_ = size; // preferred way is to actually set shape
+    own_data_ = true;
+
+    // set size - don't forget to set shape in case this is multi-dim array
+    size_ = size;
+
     // set shape if this is a 1d array
     if constexpr (dim == 1) {
       shape_[0] = size;
     }
-    own_data_ = true;
   }
 
   template<typename... Ts>
-  void SetShape(const IndexType& shape0, const Ts&... shape) {
+  constexpr void SetShape(const IndexType& shape0, const Ts&... shape) {
     static_assert(sizeof...(Ts) == static_cast<std::size_t>(dim - 1),
                   "shape should match the dim");
 
@@ -178,13 +193,71 @@ public:
     SetShape(shape...);
   }
 
+  /// @brief copy ctor
+  /// @param other
+  Array(const Array& other) {
+    // memory alloc
+    Reallocate(other.size_);
+    // copy data
+    std::copy_n(other.data(), other.size_, data_);
+    // copy shape
+    shape_ = other.shape_;
+    // copy strides
+    strides_ = other.strides_;
+  }
+
+  /// @brief move ctor
+  /// @param other
+  Array(Array&& other) {
+    own_data_ = true;
+    data_ = std::move(other.data_);
+    size_ = std::move(other.size_);
+    strides_ = std::move(other.strides_);
+    shape_ = std::move(other.shape_);
+    other.own_data_ = false;
+  }
+
+  /// @brief copy assignment - need to make sure that you have enough space
+  /// @param rhs
+  /// @return
+  constexpr Array& operator=(const Array& rhs) {
+    // size check is crucial, so runtime check
+    if (size_ != rhs.size_) {
+      splinepy::utils::PrintAndThrowError("Array::operator=(const Array&)",
+                                          "size mismatch between rhs");
+    }
+    std::copy_n(rhs.data(), rhs.size(), data_);
+
+    // copy shape and stride info
+    shape_ = rhs.Shape();
+    strides_ = rhs.Strides();
+
+    return *this;
+  }
+
+  /// @brief move assignment. currently same as ctor.
+  /// @param rhs
+  /// @return
+  constexpr Array& operator=(Array&& rhs) {
+    own_data_ = true;
+    data_ = std::move(rhs.data_);
+    size_ = std::move(rhs.size_);
+    strides_ = std::move(rhs.strides_);
+    shape_ = std::move(rhs.shape_);
+    rhs.own_data_ = false;
+    return *this;
+  }
+
   /// @brief
   ~Array() { DestroyData(); }
 
   /// @brief Returns const shape object
-  /// @param index
   /// @return
   constexpr const ShapeType_& Shape() const { return shape_; }
+
+  /// @brief Returns const strides object
+  /// @return
+  constexpr const StridesType_& Strides() const { return strides_; }
 
   /// @brief flat indexed array access
   /// @param index
