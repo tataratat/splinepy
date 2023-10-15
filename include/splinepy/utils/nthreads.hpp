@@ -54,9 +54,7 @@ void NThreadExecution(
     const IndexType chunk_size = std::div((total + nthread - 1), nthread).quot;
     
     for (int i{}; i < (nthread - 1); ++i) {
-      IndexType begin = i*chunk_size;
-      IndexType end = (i+1)*chunk_size;
-      threaden(f, begin, end, thread_pool);
+      threaden(f, i*chunk_size, (i+1)*chunk_size, thread_pool);
     }
  
     // last one
@@ -80,4 +78,5 @@ void threaden(const Func& f, IndexType begin, IndexType end, std::vector<std::th
 { 
   thread_pool.emplace_back(std::thread{f, begin, end});
 } 
+}
 /* namespace splinepy::utils */
