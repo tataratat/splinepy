@@ -15,6 +15,9 @@ enum class NThreadQueryType : int {
   Step = 1
 };
 
+template<typename Func, typename IndexType>
+void threaden(const Func& f, IndexType begin, IndexType end, std::vector<std::thread>& thread_pool);
+
 /// N-Thread execution. Queries will be split into chunks and each thread
 /// will execute those.
 template<typename Func, typename IndexType>
@@ -44,27 +47,26 @@ void NThreadExecution(
   // reserve thread pool
   std::vector<std::thread> thread_pool;
   thread_pool.reserve(nthread);
-
-  if (query_type == NThreadQueryType::Chunk) {
+  
+    if (query_type == NThreadQueryType::Chunk) {
     // get chunk size and prepare threads
     // make sure it rounds up
     const IndexType chunk_size = std::div((total + nthread - 1), nthread).quot;
-
+    
     for (int i{}; i < (nthread - 1); ++i) {
-      thread_pool.emplace_back(
-          std::thread{f, i * chunk_size, (i + 1) * chunk_size});
+      IndexType begin = i*chunk_size;
+      IndexType end = (i+1)*chunk_size;
+      threaden(f, begin, end, thread_pool);
     }
-    {
-      // last one
-      thread_pool.emplace_back(
-          std::thread{f, (nthread - 1) * chunk_size, total});
-    }
-
+ 
+    // last one
+    threaden(f, (nthread - 1) * chunk_size, total);
+  
   } else if (query_type == NThreadQueryType::Step) {
     for (int i{}; i < nthread; ++i) {
       // strictly, (most of the time) we don't need total for lambda funcs
       // keep it for conformity
-      thread_pool.emplace_back(std::thread{f, i, total});
+      threaden(f, i, total, thread_pool);
     }
   }
 
@@ -73,4 +75,9 @@ void NThreadExecution(
   }
 }
 
-} /* namespace splinepy::utils */
+template<typename Func, typename IndexType>
+void threaden(const Func& f, IndexType begin, IndexType end, std::vector<std::thread>& thread_pool)
+{ 
+  thread_pool.emplace_back(std::thread{f, begin, end});
+} 
+/* namespace splinepy::utils */
