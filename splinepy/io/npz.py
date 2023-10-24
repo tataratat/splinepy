@@ -24,47 +24,25 @@ def load(
 
     Returns
     --------
-    loaded_spline: NURBS | BSpline | Bezier | RationalBezier
+    list_spline: list
     """
     loaded = np.load(fname)
-    whatami = loaded["whatami"][0]
 
-    # create NURBS
-    if whatami.startswith("NURBS"):
-        loaded_spline = sp.NURBS(
-        degrees=loaded["degrees"],
-        knot_vectors=loaded["knot_vectors"],
-        control_points=loaded["control_points"],
-        weights=loaded["weights"],
-        )
+    dict_spline = {}
+    dict_spline.update(control_points = loaded["control_points"], degrees = loaded["degrees"])
 
-    # create BSpline
-    elif whatami.startswith("BSpline"):
-        loaded_spline = sp.BSpline(
-        degrees=loaded["degrees"],
-        knot_vectors=loaded["knot_vectors"],
-        control_points=loaded["control_points"],
-        )
+    if "knot_vectors_0" in loaded:
+        kvs = []
+        for i in range(dict_spline["degrees"].size):
+            kvs.append(loaded[f"knot_vectors_{i}"])
+        dict_spline["knot_vectors"] = kvs
 
-    # create Bezier
-    elif whatami.startswith("Bezier"):
-        loaded_spline = sp.Bezier(
-        degrees=loaded["degrees"],
-        control_points=loaded["control_points"],
-        )
+    if "weights" in loaded:
+        dict_spline.update(weights=loaded["weights"])
 
-    # create Rational Bezier
-    elif whatami.startswith("RationalBezier"):
-        loaded_spline = sp.RationalBezier(
-        degrees=loaded["degrees"],
-        control_points=loaded["control_points"],
-        weights=loaded["weights"],
-        )
+    list_spline = [dict_spline]
 
-    else:
-        raise TypeError("No proper spline type detected.")
-
-    return loaded_spline
+    return sp.io.ioutils.dict_to_spline(list_spline)
 
 
 def export(fname, spline):
@@ -74,7 +52,7 @@ def export(fname, spline):
     Parameters
     -----------
     fname: str
-    spline: Bezier or BSpline or NURBS
+    spline: NURBS or BSpline or Bezier or Rational Bezier
 
     Returns
     --------
@@ -82,13 +60,16 @@ def export(fname, spline):
     """
     property_dicts = {
         "degrees": spline.degrees,
-        "knot_vectors": np.array(spline.knot_vectors),
         "control_points": spline.control_points,
-        "whatami": np.array([spline.whatami]),
+        "whatami": np.array([spline.whatami])
     }
 
-    if spline.whatami.startswith("NURBS"):
+    if spline.is_rational:
         property_dicts.update(weights=spline.weights)
+
+    if spline.has_knot_vectors:
+        for i in range(spline.degrees.size):
+            property_dicts.update({f"knot_vectors_{i}": spline.knot_vectors[i]})
 
     np.savez(
         fname,
