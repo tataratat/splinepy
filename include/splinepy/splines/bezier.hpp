@@ -37,6 +37,7 @@ public:
   using SplinepyBase_ = splinepy::splines::SplinepyBase;
   template<std::size_t s_para_dim, std::size_t s_dim>
   using SelfTemplate_ = Bezier<s_para_dim, s_dim>;
+  using BoundaryType_ = Bezier<para_dim - 1, dim>;
   using Base_ = BezierSplineType<para_dim, dim>;
   template<std::size_t b_para_dim, std::size_t b_dim>
   using BaseTemplate_ = BezierSplineType<b_para_dim, b_dim>;

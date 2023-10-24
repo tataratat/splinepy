@@ -5,12 +5,8 @@ set(SPLINEPY_EXPLICIT_SRCS
     splinepy/rational_bezier_explicit1.cpp
     splinepy/rational_bezier_explicit2.cpp
     splinepy/rational_bezier_explicit3.cpp
-    splinepy/bspline_explicit1.cpp
-    splinepy/bspline_explicit2.cpp
-    splinepy/bspline_explicit3.cpp
-    splinepy/nurbs_explicit1.cpp
-    splinepy/nurbs_explicit2.cpp
-    splinepy/nurbs_explicit3.cpp)
+    splinepy/bspline_explicit.cpp
+    splinepy/nurbs_explicit.cpp)
 
 set(SPLINEPY_MORE_EXPLICIT_SRCS
     splinepy/bezier_explicit4.cpp
@@ -26,21 +22,7 @@ set(SPLINEPY_MORE_EXPLICIT_SRCS
     splinepy/rational_bezier_explicit7.cpp
     splinepy/rational_bezier_explicit8.cpp
     splinepy/rational_bezier_explicit9.cpp
-    splinepy/rational_bezier_explicit10.cpp
-    splinepy/bspline_explicit4.cpp
-    splinepy/bspline_explicit5.cpp
-    splinepy/bspline_explicit6.cpp
-    splinepy/bspline_explicit7.cpp
-    splinepy/bspline_explicit8.cpp
-    splinepy/bspline_explicit9.cpp
-    splinepy/bspline_explicit10.cpp
-    splinepy/nurbs_explicit4.cpp
-    splinepy/nurbs_explicit5.cpp
-    splinepy/nurbs_explicit6.cpp
-    splinepy/nurbs_explicit7.cpp
-    splinepy/nurbs_explicit8.cpp
-    splinepy/nurbs_explicit9.cpp
-    splinepy/nurbs_explicit10.cpp)
+    splinepy/rational_bezier_explicit10.cpp)
 
 if(SPLINEPY_MORE)
   set(SPLINEPY_EXPLICIT_SRCS ${SPLINEPY_EXPLICIT_SRCS}

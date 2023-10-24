@@ -3,10 +3,11 @@
 #include <algorithm>
 #include <type_traits>
 
+#include <splinepy/utils/arrays.hpp>
 #include <splinepy/utils/default_initialization_allocator.hpp>
 
 namespace splinepy::splines::helpers {
-/// SplineLib spline evaluation (single query).
+/// bezman spline evaluation (single query).
 template<typename SplineType, typename QueryType, typename OutputType>
 void ScalarTypeEvaluate(const SplineType& spline,
                         const QueryType* query,
@@ -91,7 +92,7 @@ void ScalarTypeEvaluateBoundaryCenters(const SplineType& spline,
   }
 }
 
-/// SplineLib spline derivatives (single query).
+/// bezman spline derivatives (single query).
 template<typename SplineType,
          typename QueryType,
          typename OrderType,
@@ -140,38 +141,32 @@ template<typename SplineType, typename QueryType, typename OutputType>
 void ScalarTypeJacobian(const SplineType& spline,
                         const QueryType* query,
                         OutputType* output) {
-  // Retrieve types from splinetype
-  using Query = typename SplineType::ParametricCoordinate_;
-  using QueryValueType = typename Query::value_type;
-  using Order = typename SplineType::Derivative_;
-  using OrderValueType = typename Order::value_type;
-  Query core_query{};
-  Order core_order{};
+  using RealArray = splinepy::utils::Array<double>;
+  using IntArray = splinepy::utils::Array<int>;
+  using RealArray2D = splinepy::utils::Array<double, 2>;
 
-  // Copy query and requested order to core-type
-  for (std::size_t i{}; i < SplineType::kParaDim; ++i) {
-    core_query[i] = QueryValueType{query[i]};
-    core_order[i] = static_cast<OrderValueType>(0);
-  }
+  const int dim = spline.SplinepyDim();
+  // create derivative query, temp result holder, view on output
+  IntArray der_query(SplineType::kParaDim);
+  der_query.Fill(0);
+  RealArray der_result(dim);
+  RealArray2D output_view(output, dim, SplineType::kParaDim);
 
+  // para_dim loop
   for (int i{}; i < SplineType::kParaDim; ++i) {
-    // requested order
-    core_order[i] = static_cast<OrderValueType>(1);
+    // prepare eye query
+    ++der_query[i];
 
-    // Perform actual computation
-    const auto core_derived = spline(core_query, core_order);
+    // derivative query
+    spline.SplinepyDerivative(query, der_query.data(), der_result.data());
 
-    // Fill output accordingly
-    if constexpr (std::is_scalar<decltype(core_derived)>::value) {
-      output[i] = static_cast<OutputType>(core_derived);
-    } else {
-      for (std::size_t j{}; j < SplineType::kDim; ++j) {
-        output[j * SplineType::kParaDim + i] =
-            static_cast<OutputType>(core_derived[j]);
-      }
+    // transposed fill
+    for (int j{}; j < dim; ++j) {
+      output_view(j, i) = der_result[j];
     }
 
-    core_order[i] = static_cast<OrderValueType>(0);
+    // reset eye query to zero
+    --der_query[i];
   }
 }
 

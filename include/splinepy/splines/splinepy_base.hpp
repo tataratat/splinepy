@@ -48,8 +48,8 @@ public:
                  const int dim = 0,
                  const int* degrees = nullptr,
                  const std::vector<std::vector<double>>* knot_vectors = nullptr,
-                 const double* control_points = nullptr,
-                 const double* weights = nullptr);
+                 double* control_points = nullptr,
+                 double* weights = nullptr);
 
   /// Dynamic creation of templated bezier
   static std::shared_ptr<SplinepyBase>
@@ -72,7 +72,7 @@ public:
                         const int dim,
                         const int* degrees,
                         const std::vector<std::vector<double>>* knot_vectors,
-                        const double* control_points);
+                        double* control_points);
 
   /// Dynamic creation of templated nurbs
   static std::shared_ptr<SplinepyBase>
@@ -80,8 +80,8 @@ public:
                       const int dim,
                       const int* degrees,
                       const std::vector<std::vector<double>>* knot_vectors,
-                      const double* control_points,
-                      const double* weights);
+                      double* control_points,
+                      double* weights);
 
   /// Check if name matches and throw(=raise) if desired
   static bool SplinepySplineNameMatches(const SplinepyBase& a,
