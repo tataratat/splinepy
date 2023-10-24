@@ -9,6 +9,7 @@ keys in raw files are:
 """
 
 import numpy as np
+
 import splinepy as sp
 
 
@@ -29,7 +30,9 @@ def load(
     loaded = np.load(fname)
 
     dict_spline = {}
-    dict_spline.update(control_points = loaded["control_points"], degrees = loaded["degrees"])
+    dict_spline.update(
+        control_points=loaded["control_points"], degrees=loaded["degrees"]
+    )
 
     if "knot_vectors_0" in loaded:
         kvs = []
@@ -61,7 +64,7 @@ def export(fname, spline):
     property_dicts = {
         "degrees": spline.degrees,
         "control_points": spline.control_points,
-        "whatami": np.array([spline.whatami])
+        "whatami": np.array([spline.whatami]),
     }
 
     if spline.is_rational:
@@ -69,7 +72,9 @@ def export(fname, spline):
 
     if spline.has_knot_vectors:
         for i in range(spline.degrees.size):
-            property_dicts.update({f"knot_vectors_{i}": spline.knot_vectors[i]})
+            property_dicts.update(
+                {f"knot_vectors_{i}": spline.knot_vectors[i]}
+            )
 
     np.savez(
         fname,
