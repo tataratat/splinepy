@@ -10,12 +10,6 @@ set(SPLINEPY_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier1.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier2.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier3.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline1.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline2.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline3.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs1.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs2.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs3.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/splinepy_base.cpp)
 
 set(SPLINEPY_MORE_SRCS
@@ -32,21 +26,7 @@ set(SPLINEPY_MORE_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier7.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier8.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier9.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier10.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline4.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline5.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline6.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline7.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline8.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline9.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/bspline10.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs4.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs5.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs6.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs7.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs8.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs9.cpp
-    ${PROJECT_SOURCE_DIR}/src/splines/create/nurbs10.cpp)
+    ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier10.cpp)
 
 # extend src for high dim splines
 if(SPLINEPY_MORE)
