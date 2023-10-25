@@ -141,7 +141,8 @@ public:
     sl_control_points.SetData(control_points);
     sl_control_points.SetShape(ncps, dim);
 
-    auto sl_vector_space = std::make_shared<VectorSpace_>(sl_control_points);
+    auto sl_vector_space =
+        std::make_shared<VectorSpace_>(std::move(sl_control_points));
 
     // return init
     return Base_(sl_parameter_space, sl_vector_space);
