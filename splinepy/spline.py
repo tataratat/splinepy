@@ -1156,7 +1156,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         resolutions = arr.enforce_len(resolutions, self.para_dim)
 
-        self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
+        self._logd(f"Sampling {np.prod(resolutions)} points from spline.")
 
         return super().sample(
             resolutions, nthreads=_default_if_none(nthreads, settings.NTHREADS)
