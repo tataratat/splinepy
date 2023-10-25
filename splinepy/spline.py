@@ -909,7 +909,7 @@ class Spline(SplinepyBase, core.PySpline):
             if len(self.weights) != len(control_points):
                 raise ValueError(
                     f"len(control_points) ({len(control_points)}) "
-                    f"should match len(weights) ({len(self.weights)})."
+                    f"should match len(weights) ({len(self.weights)})"
                 )
             # we need to remove existing weights so that pointers don't get
             # mixed
@@ -925,7 +925,6 @@ class Spline(SplinepyBase, core.PySpline):
             self._data["control_points"] = np.asarray(
                 control_points, dtype="float64", order="C"
             ).copy()
-
         # make sure _new_core call works
         if core.has_core(self):
             _call_required_properties(self, exclude="control_points")
@@ -1621,18 +1620,15 @@ class Spline(SplinepyBase, core.PySpline):
         new_spline: type(self)
         """
         new = type(self)(**self.current_core_properties())
+
+        # new's _data is populated with current_core_properties(), which they
+        # own. So we will add to that
         if saved_data:
             required_properties = self.required_properties
-            saved_copy = {}
             for k, v in self._data.items():
                 if k in required_properties:
                     continue
-                saved_copy[k] = copy.deepcopy(v)
-
-            new._data = saved_copy
-
-        else:
-            new._data = {}
+                new._data[k] = copy.deepcopy(v)
 
         return new
 
