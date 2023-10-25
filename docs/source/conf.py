@@ -60,6 +60,7 @@ html_theme_options = {
             "icon": "fa-solid fa-box",
         },
     ],
+    "navigation_with_keys": True,
 }
 # html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
