@@ -65,6 +65,9 @@ html_theme_options = {
 html_static_path = ["_static"]
 html_css_files = ["style.css"]
 
+tml_theme_options = {
+    "navigation_with_keys": True,
+}
 
 autodoc_default_options = {
     "autosummary": True,
