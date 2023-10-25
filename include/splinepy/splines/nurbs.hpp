@@ -136,7 +136,8 @@ public:
     sl_weights.SetShape(ncps);
 
     auto sl_weighted_space =
-        std::make_shared<WeightedVectorSpace_>(sl_control_points, sl_weights);
+        std::make_shared<WeightedVectorSpace_>(std::move(sl_control_points),
+                                               std::move(sl_weights));
 
     // return init
     return Base_(sl_parameter_space, sl_weighted_space);

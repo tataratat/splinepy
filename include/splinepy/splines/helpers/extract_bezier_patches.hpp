@@ -161,8 +161,10 @@ ExtractBezierPatches(SplineType& input) {
   // prepare temporary space to copy control point values
   splinepy::utils::Array<double, 2> extracted_cps(n_ctps_per_patch, dim);
   splinepy::utils::Array<double> extracted_weights;
+  double* extracted_weights_data{nullptr};
   if constexpr (is_rational) {
     extracted_weights.Reallocate(n_ctps_per_patch);
+    extracted_weights_data = extracted_weights.data();
   }
 
   // Loop over the individual patches
@@ -196,7 +198,7 @@ ExtractBezierPatches(SplineType& input) {
     }
 
     // use dynamic spline creator to create beziers.
-    // weights's data will be nullptr if it is
+    // weights's data will be nullptr if it is non rational.
     // all the values are copied by bezier and rational bezier
     bezier_list.push_back(splinepy::splines::SplinepyBase::SplinepyCreate(
         para_dim,
@@ -204,7 +206,7 @@ ExtractBezierPatches(SplineType& input) {
         degrees.data(),
         nullptr,
         extracted_cps.data(),
-        extracted_weights.data()));
+        extracted_weights_data));
   }
 
   return bezier_list;
