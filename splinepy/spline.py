@@ -666,7 +666,19 @@ class Spline(SplinepyBase, core.PySpline):
 
         # clear saved data
         if not keep_properties:
-            self._data = {}
+            # BSpline supports viewing-control-points for contiguous arrays
+            # such as np.ndarray, so we need to keep it alive.
+            if self.name.startswith("BSpline"):
+                saved_cps = self._data.get("control_points", None)
+                if saved_cps is not None:
+                    self._logw(
+                        "_new_core(keep_properties=False) -",
+                        "BSplines need to keep control_points.",
+                        "Properties excluding control_points will be cleared.",
+                    )
+                    self._data["control_points"] = saved_cps
+            else:
+                self._data = {}
 
         return core.has_core(self)
 
