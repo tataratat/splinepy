@@ -48,8 +48,8 @@ def _spline_to_ET(
     if fields_only and (len(multipatch.fields) == 0):
         return
 
-    if fields_only and fields_only is not None:
-        if not isinstance(fields_only, (list, np.ndarray)):
+    if fields_only and field_mask is not None:
+        if not isinstance(field_mask, (list, np.ndarray)):
             raise ValueError("field_mask must be list of integers")
         field_mask = np.unique(
             enforce_contiguous(field_mask, dtype=np.int64, asarray=True)
