@@ -220,7 +220,7 @@ BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
 
 /// BSpline Basis functions der
 template<typename SplineType, typename QueryType, typename OrderType>
-constexpr inline typename bsplinelib::parameter_spaces::BasisValues
+inline typename bsplinelib::parameter_spaces::BasisValues
 NonRationalBSplineBasisDerivative(const SplineType& spline,
                                   const QueryType* para_coord,
                                   const OrderType* order) {
@@ -234,7 +234,7 @@ NonRationalBSplineBasisDerivative(const SplineType& spline,
 
 /// adapted from bezman
 template<typename SplineType, typename QueryType, typename OrderType>
-constexpr inline typename bsplinelib::parameter_spaces::BasisValues
+inline typename bsplinelib::parameter_spaces::BasisValues
 RationalBSplineBasisDerivative(const SplineType& spline,
                                const QueryType* para_coord,
                                const OrderType* order) {

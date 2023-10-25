@@ -106,24 +106,24 @@ public:
     // Base_.
 
     // Prepare temporary containers
-    Degrees_ sl_degrees;            // std::array
-    Knots_ sl_knots;                // std::vector
-    KnotVectors_ sl_knot_vectors;   // std::array
-    Coordinates_ sl_control_points; // std::vector
-    std::size_t ncps{1};
+    Degrees_ sl_degrees;          // std::array
+    Knots_ sl_knots;              // std::vector
+    KnotVectors_ sl_knot_vectors; // std::array
+    Coordinates_ sl_control_points;
+    int ncps{1};
 
     // Formulate degrees and knotvectors
-    for (std::size_t i{}; i < kParaDim; ++i) {
+    for (int i{}; i < kParaDim; ++i) {
       // degrees
       sl_degrees[i] = Degree_(degrees[i]);
       // knot vectors
       const auto& knot_vector = knot_vectors[i];
-      std::size_t nkv = knot_vector.size();
+      const int nkv = knot_vector.size();
       sl_knots.clear();
       sl_knots.reserve(nkv);
       // try if this works after namedtype ext
       // sl_knots = knot_vector;
-      for (std::size_t j{}; j < nkv; ++j) {
+      for (int j{}; j < nkv; ++j) {
         sl_knots.emplace_back(Knot_{knot_vector[j]});
       }
       std::shared_ptr sl_knot_vector{std::make_shared<KnotVector_>(sl_knots)};
@@ -244,17 +244,9 @@ public:
 
     // control_points
     if (control_points) {
-      std::size_t ncps = vector_space.GetNumberOfCoordinates();
-      const int dim = vector_space.Dim();
-      // fill it up, phil!
-      for (std::size_t i{}; i < ncps; ++i) {
-        auto const& coord_named_phil = vector_space[bsplinelib::Index{
-            static_cast<bsplinelib::Index::Type_>(i)}];
-        for (std::size_t j{}; j < dim; ++j) {
-          control_points[i * dim + j] =
-              static_cast<double>(coord_named_phil[j]);
-        }
-      }
+      // contiguous!
+      const auto& coords = GetCoordinates();
+      std::copy(coords.begin(), coords.end(), control_points);
     }
   }
 

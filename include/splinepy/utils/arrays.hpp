@@ -84,12 +84,12 @@ public:
     return data_;
   }
 
-  constexpr DataType* begin() {
+  constexpr DataType* begin() const {
     assert(data_);
     return data_;
   }
 
-  constexpr DataType* end() {
+  constexpr DataType* end() const {
     assert(data_);
     assert(size_ > 0);
     return data_ + size_;

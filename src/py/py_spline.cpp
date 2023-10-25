@@ -15,9 +15,11 @@
 
 namespace splinepy::py {
 
-/// Creates a corresponding spline based on kwargs
+/// @brief  Creates a corresponding spline based on kwargs
 /// similar to previous update_c()
 /// Runs sanity checks on inputs
+/// this will keep the reference of the kwargs that were used for init.
+/// @param kwargs
 void PySpline::NewCore(const py::kwargs& kwargs) {
 
   // early exit if this is an incomplete kwargs call
@@ -35,12 +37,14 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
 
   // get degrees and set para_dim
   auto d_array = py::cast<py::array_t<int>>(kwargs["degrees"]);
+  data_["degrees"] = d_array; // keep reference
   degrees_ptr = static_cast<int*>(d_array.request().ptr);
   para_dim = d_array.size();
   knot_vectors.reserve(para_dim);
 
   // get cps and set dim. set ncps for checks later
   auto cp_array = py::cast<py::array_t<double>>(kwargs["control_points"]);
+  data_["control_points"] = cp_array;
   control_points_ptr = static_cast<double*>(cp_array.request().ptr);
   dim = cp_array.shape(1);
   ncps = cp_array.shape(0);
@@ -54,6 +58,8 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
     // check list
     int kv_dim{0};
     double prev_knot, this_knot;
+    // we don't keep the reference of the knot vectors as we need a specific
+    // type that doesn't duplicate.
     py::list kvs = kwargs["knot_vectors"];
 
     // loop over list of list/arrays
@@ -64,7 +70,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
             "Invalid degree, degrees need to be positive. Detected degree",
             degrees_ptr[i_para],
             "along parametric dimension:",
-            i_para + 1);
+            i_para);
       }
 
       std::vector<double> knot_vector;
@@ -151,7 +157,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
             "Invalid degree, degrees need to be positive. Detected degree",
             degrees_ptr[i_para],
             "along parametric dimension:",
-            i_para + 1);
+            i_para);
       }
       required_ncps *= degrees_ptr[i_para] + 1;
     }
@@ -169,6 +175,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
   // maybe, get weights
   if (kwargs.contains("weights")) {
     auto w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
+    data_["weights"] = w_array;
     weights_ptr = static_cast<double*>(w_array.request().ptr);
 
     // check if size matches with ncps
@@ -230,7 +237,7 @@ py::dict PySpline::CurrentCoreProperties() const {
   py::array_t<int> degrees(para_dim_);
   int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
   const int ncps = Core()->SplinepyNumberOfControlPoints();
-  py::array_t<double> control_points(ncps * dim_);
+  py::array_t<double> control_points({ncps, dim_});
   double* control_points_ptr =
       static_cast<double*>(control_points.request().ptr);
 
@@ -255,7 +262,6 @@ py::dict PySpline::CurrentCoreProperties() const {
 
   // process
   dict_spline["degrees"] = degrees;
-  control_points.resize({ncps, dim_});
   dict_spline["control_points"] = control_points;
 
   // process maybes
