@@ -764,6 +764,10 @@ bool PyMultipatch::CheckConformity(const double tolerance,
   const int dim = Dim();
   const double square_tolerance = tolerance * tolerance;
 
+  // Due to the precision of floating point in cpp, an epsilon (tolerance)
+  // is used to compare two floating points
+  const double epsilon = std::numeric_limits<double>::epsilon();
+
   const int n_entries_per_line = 4 + 2 * param_dim;
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
@@ -992,7 +996,13 @@ bool PyMultipatch::CheckConformity(const double tolerance,
           const double end_control_point_weight =
               *end_control_points->weight_pointers_
                    ->weights_[ctps_id_end_patch];
-          if (start_control_point_weight != end_control_point_weight) {
+
+          // compare the weights of the start- and end control point with
+          // epsilon
+          if (std::abs(start_control_point_weight - end_control_point_weight)
+              < epsilon
+                    * std::max(std::abs(start_control_point_weight),
+                               std::abs(end_control_point_weight))) {
             std::lock_guard<std::mutex> guard(conformity_mutex);
             conformity_result = false;
           }
