@@ -153,7 +153,7 @@ public:
   py::array_t<double> ParametricBounds() const;
 
   /// @brief Calculate Greville abscissae for Spline
-  py::array_t<double> GrevilleAbscissae() const;
+  py::list GrevilleAbscissae(const bool) const;
 
   /// @brief Returns control mesh resolutions
   py::array_t<int> ControlMeshResolutions() const;

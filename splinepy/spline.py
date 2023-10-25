@@ -14,7 +14,7 @@ from splinepy.helpme.check import Checker
 from splinepy.helpme.create import Creator
 from splinepy.helpme.extract import Extractor
 from splinepy.helpme.integrate import Integrator
-from splinepy.utils.data import SplineData
+from splinepy.utils.data import SplineData, cartesian_product
 
 
 class RequiredProperties(SplinepyBase):
@@ -985,20 +985,21 @@ class Spline(SplinepyBase, core.PySpline):
         """
         return helpme.mapper.Mapper(self, reference=reference)
 
-    @property
-    def greville_abscissae(self):
+    def greville_abscissae(self, allow_duplicates=True):
         """
         Returns greville abscissae.
 
         Parameters
         -----------
-        None
+        allow_dupliactes : bool (True)
+          Allows for duplicates in C^(-1) splines, otherwise they are filtered
+          out using adjacent abscissae
 
         Returns
         --------
         greville_abscissae: (para_dim) np.ndarray
         """
-        return super().greville_abscissae
+        return cartesian_product(super()._greville_abscissae(allow_duplicates))
 
     @property
     def multi_index(self):

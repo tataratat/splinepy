@@ -338,10 +338,12 @@ public:
   /// @param[out] greville_abscissae pointer to solution
   /// @param[in] i_para_dim parametric dimension
   virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
-                                         const int& i_para_dim) const {
+                                         const int& i_para_dim,
+                                         const bool& allow_duplicates) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,
                                                      greville_abscissae,
-                                                     i_para_dim);
+                                                     i_para_dim,
+                                                     allow_duplicates);
   }
 
   virtual void SplinepyEvaluate(const double* para_coord,

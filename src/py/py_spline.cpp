@@ -304,42 +304,27 @@ py::array_t<double> PySpline::ParametricBounds() const {
   return pbounds;
 }
 
-py::array_t<double> PySpline::GrevilleAbscissae() const {
+py::list PySpline::GrevilleAbscissae(const bool allow_duplicates) const {
   // prepare output
   std::vector<int> cmr(para_dim_);
   Core()->SplinepyControlMeshResolutions(cmr.data());
-  const auto n_positions = [&]() {
-    int prod{cmr[0]};
-    for (std::size_t i{1}; i < cmr.size(); i++) {
-      prod *= cmr[i];
-    }
-    return prod;
-  }();
 
-  // Calculate Abscissae
-  py::array_t<double> greville_abscissae(n_positions * para_dim_);
-  double* greville_abscissae_ptr =
-      static_cast<double*>(greville_abscissae.request().ptr);
+  // Initialize return values
+  py::list list_of_greville_knots(para_dim_);
 
-  int offset{1};
-  int repetitions{n_positions};
   for (int i{}; i < para_dim_; i++) {
-    repetitions /= cmr[i];
-    std::vector<double> abscissae(cmr[i]);
-    Core()->SplinepyGrevilleAbscissae(abscissae.data(), i);
-    int ii{i};
-    for (int j{}; j < repetitions; j++) {
-      for (int l{}; l < cmr[i]; l++) {
-        for (int k{}; k < offset; k++) {
-          greville_abscissae_ptr[ii] = abscissae[l];
-          ii += para_dim_;
-        }
-      }
-    }
-    offset *= cmr[i];
+    // Calculate Abscissae
+    py::array_t<double> greville_abscissae(cmr[i]);
+    double* greville_abscissae_ptr =
+        static_cast<double*>(greville_abscissae.request().ptr);
+    Core()->SplinepyGrevilleAbscissae(greville_abscissae_ptr,
+                                      i,
+                                      allow_duplicates);
+    greville_abscissae.resize({cmr[i]});
+    list_of_greville_knots[i] = (greville_abscissae);
   }
-  greville_abscissae.resize({n_positions, para_dim_});
-  return greville_abscissae;
+
+  return list_of_greville_knots;
 }
 
 py::array_t<int> PySpline::ControlMeshResolutions() const {
@@ -844,8 +829,9 @@ void init_pyspline(py::module& m) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-      .def_property_readonly("greville_abscissae",
-                             &splinepy::py::PySpline::GrevilleAbscissae)
+      .def("_greville_abscissae",
+           &splinepy::py::PySpline::GrevilleAbscissae,
+           py::arg("allow_duplicates") = true)
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)

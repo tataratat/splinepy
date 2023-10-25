@@ -72,7 +72,8 @@ GetControlMeshResolutions(const SplineType& spline) {
 template<typename SplineType>
 inline void GetGrevilleAbscissae(const SplineType& spline,
                                  double* greville_abscissae,
-                                 const int& i_para_dim) {
+                                 const int& i_para_dim,
+                                 const bool& allow_duplicates) {
   // Precompute values
   const auto& degrees = spline.GetDegrees();
   // Determine size using control point resolution
@@ -101,6 +102,26 @@ inline void GetGrevilleAbscissae(const SplineType& spline,
       greville_abscissae[j] = static_cast<double>(inv_factor * factor);
     } else {
       greville_abscissae[j] = static_cast<double>(inv_factor * j);
+    }
+  }
+
+  // There can be no duplicates for bezier types, but if C^(-1), duplicates in
+  // the knot vector result in duplicate greville abscissae which can lead to
+  // problems in further computations, solved by mean filtering with neighbors
+  if constexpr (SplineType::kHasKnotVectors) {
+    if (!allow_duplicates) {
+      double previous_knot{greville_abscissae[1]};
+      for (int j{2}; j < cmr - 1; ++j) {
+        if (std::abs(previous_knot - greville_abscissae[j]) < 1e-9) {
+          // @todo make a dynamic tolerance
+          greville_abscissae[j - 1] =
+              0.5 * (greville_abscissae[j - 2] + greville_abscissae[j - 1]);
+          greville_abscissae[j] =
+              0.5 * (greville_abscissae[j] + greville_abscissae[j + 1]);
+        } else {
+          previous_knot = greville_abscissae[j];
+        }
+      }
     }
   }
 }

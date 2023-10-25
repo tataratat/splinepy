@@ -143,10 +143,12 @@ void Bezier<para_dim, dim>::SplinepyControlMeshResolutions(
 template<std::size_t para_dim, std::size_t dim>
 void Bezier<para_dim, dim>::SplinepyGrevilleAbscissae(
     double* greville_abscissae,
-    const int& i_para_dim) const {
+    const int& i_para_dim,
+    const bool& allow_duplicates) const {
   splinepy::splines::helpers::GetGrevilleAbscissae(*this,
                                                    greville_abscissae,
-                                                   i_para_dim);
+                                                   i_para_dim,
+                                                   allow_duplicates);
 }
 template<std::size_t para_dim, std::size_t dim>
 void Bezier<para_dim, dim>::SplinepyEvaluate(const double* para_coord,
