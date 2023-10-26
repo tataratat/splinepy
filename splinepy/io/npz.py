@@ -9,7 +9,9 @@ keys in raw files are:
 """
 
 import numpy as np
-from splinepy import spline, io
+
+from splinepy import io
+
 
 def load(
     fname,
@@ -34,16 +36,18 @@ def load(
 
     # Loop through the keys in the loaded dictionary and find the ones that start with 'spline_'
     for key in loaded.keys():
-        if key.startswith('spline_') and key not in processed_keys:
+        if key.startswith("spline_") and key not in processed_keys:
             # Extract the index of the spline from the key
-            i = int(key.split('_')[1])
+            i = int(key.split("_")[1])
 
             # Initialize an empty dictionary to store the properties of the spline
             dict_spline = {}
 
             # Add the common properties of all splines
-            dict_spline["control_points"] = loaded[f"spline_{i}_control_points"] 
-            dict_spline["degrees"] = loaded[f"spline_{i}_degrees"] 
+            dict_spline["control_points"] = loaded[
+                f"spline_{i}_control_points"
+            ]
+            dict_spline["degrees"] = loaded[f"spline_{i}_degrees"]
 
             # Add the weights if the spline is rational
             if f"spline_{i}_weights" in loaded:
@@ -68,6 +72,7 @@ def load(
                 processed_keys.add(f"spline_{i}_knot_vectors_{j}")
 
     return io.ioutils.dict_to_spline(list_of_spline_dicts)
+
 
 def export(fname, list_of_splines):
     """
@@ -102,7 +107,9 @@ def export(fname, list_of_splines):
         # Add the knot vectors if the spline has them
         if spline.has_knot_vectors:
             for j in range(spline.degrees.size):
-                property_dicts[f"{prefix}knot_vectors_{j}"] = spline.knot_vectors[j]
+                property_dicts[
+                    f"{prefix}knot_vectors_{j}"
+                ] = spline.knot_vectors[j]
 
     # Save the dictionary as `.npz`
     np.savez(
