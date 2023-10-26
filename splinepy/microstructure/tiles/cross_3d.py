@@ -215,7 +215,7 @@ class Cross3D(_TileBase):
                 _Bezier(degrees=[1, 1, 2], control_points=branch_ctps)
             )
 
-            return spline_list
+            return (spline_list, None)
         elif closure == "z_max":
             # The branch is located at zmax of current tile
             branch_thickness = parameters[4, 0]
