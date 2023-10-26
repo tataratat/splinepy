@@ -9,15 +9,13 @@ keys in raw files are:
 """
 
 import numpy as np
-
-import splinepy as sp
-
+from splinepy import spline, io
 
 def load(
     fname,
 ):
     """
-    Read spline in `.npz` form.
+    Read a list of splines in `.npz` form.
 
     Parameters
     -----------
@@ -25,57 +23,88 @@ def load(
 
     Returns
     --------
-    list_spline: list
+    list_spline: list of NURBS / BSpline / Bezier / Rational Bezier
     """
     loaded = np.load(fname)
 
-    dict_spline = {}
-    dict_spline.update(
-        control_points=loaded["control_points"], degrees=loaded["degrees"]
-    )
+    # Initialize an empty list to store the splines
+    list_of_spline_dicts = []
 
-    if "knot_vectors_0" in loaded:
-        kvs = []
-        for i in range(dict_spline["degrees"].size):
-            kvs.append(loaded[f"knot_vectors_{i}"])
-        dict_spline["knot_vectors"] = kvs
+    processed_keys = set()
 
-    if "weights" in loaded:
-        dict_spline.update(weights=loaded["weights"])
+    # Loop through the keys in the loaded dictionary and find the ones that start with 'spline_'
+    for key in loaded.keys():
+        if key.startswith('spline_') and key not in processed_keys:
+            # Extract the index of the spline from the key
+            i = int(key.split('_')[1])
 
-    list_spline = [dict_spline]
+            # Initialize an empty dictionary to store the properties of the spline
+            dict_spline = {}
 
-    return sp.io.ioutils.dict_to_spline(list_spline)
+            # Add the common properties of all splines
+            dict_spline["control_points"] = loaded[f"spline_{i}_control_points"] 
+            dict_spline["degrees"] = loaded[f"spline_{i}_degrees"] 
 
+            # Add the weights if the spline is rational
+            if f"spline_{i}_weights" in loaded:
+                dict_spline["weights"] = loaded[f"spline_{i}_weights"]
 
-def export(fname, spline):
+            # Add the knot vectors if the spline has them
+            if f"spline_{i}_knot_vectors_0" in loaded:
+                kvs = []
+                for j in range(dict_spline["degrees"].size):
+                    kvs.append(loaded[f"spline_{i}_knot_vectors_{j}"])
+                dict_spline["knot_vectors"] = kvs
+
+            # Append dictionary of spline to the list
+            list_of_spline_dicts.append(dict_spline)
+
+            # Add keys to processed_keys set
+            processed_keys.add(f"spline_{i}_control_points")
+            processed_keys.add(f"spline_{i}_degrees")
+            processed_keys.add(f"spline_{i}_weights")
+            processed_keys.add(f"spline_{i}_whatami")
+            for j in range(dict_spline["degrees"].size):
+                processed_keys.add(f"spline_{i}_knot_vectors_{j}")
+
+    return io.ioutils.dict_to_spline(list_of_spline_dicts)
+
+def export(fname, list_of_splines):
     """
-    Save spline as `.npz`.
+    Save a list of splines as `.npz`.
 
     Parameters
     -----------
     fname: str
-    spline: NURBS or BSpline or Bezier or Rational Bezier
+    splines: list of NURBS / BSpline / Bezier / Rational Bezier
 
     Returns
     --------
     None
     """
-    property_dicts = {
-        "degrees": spline.degrees,
-        "control_points": spline.control_points,
-        "whatami": np.array([spline.whatami]),
-    }
+    # Initialize an empty dictionary to store the properties of each spline
+    property_dicts = {}
 
-    if spline.is_rational:
-        property_dicts.update(weights=spline.weights)
+    # Loop through the list of splines and add their properties to the dictionary
+    for i, spline in enumerate(list_of_splines):
+        # Use a prefix to distinguish different splines
+        prefix = f"spline_{i}_"
 
-    if spline.has_knot_vectors:
-        for i in range(spline.degrees.size):
-            property_dicts.update(
-                {f"knot_vectors_{i}": spline.knot_vectors[i]}
-            )
+        # Add the common properties of all splines
+        property_dicts[f"{prefix}degrees"] = spline.degrees
+        property_dicts[f"{prefix}control_points"] = spline.control_points
+        property_dicts[f"{prefix}whatami"] = np.array([spline.whatami])
 
+        # Add the weights if the spline is rational
+        if spline.is_rational:
+            property_dicts[f"{prefix}weights"] = spline.weights
+
+        # Add the knot vectors if the spline has them
+        if spline.has_knot_vectors:
+            for j in range(spline.degrees.size):
+                property_dicts[f"{prefix}knot_vectors_{j}"] = spline.knot_vectors[j]
+
+    # Save the dictionary as `.npz`
     np.savez(
         fname,
         **property_dicts,
