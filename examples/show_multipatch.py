@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 box0.parametric_bounds, resolutions
             ).vertices
             return np.linalg.det(
-                np.vstack(d.jacobian(q) for d in data.patches)
+                np.vstack([d.jacobian(q) for d in data.patches])
             )
         elif on is not None:
             return np.linalg.det(data.jacobians(on))

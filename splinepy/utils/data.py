@@ -6,6 +6,7 @@ from itertools import accumulate, chain, repeat
 
 import numpy as np
 from gustaf.helpers.data import DataHolder
+from gustaf.utils.arr import enforce_len
 
 from splinepy import splinepy_core
 from splinepy._base import SplinepyBase
@@ -485,7 +486,10 @@ class SplineDataAdaptor(SplinepyBase):
         # if resolutions is specified, this is not a location query
         if resolutions is not None:
             if self.has_function:
-                return self.function(self.data, resolutions=resolutions)
+                return self.function(
+                    self.data,
+                    resolutions=enforce_len(resolutions, self.data.para_dim),
+                )
             elif self.is_spline and self.data.para_dim > 2:
                 # TODO: replace this with generalized query helpers.
                 return self.data.extract.faces(
