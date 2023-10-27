@@ -356,8 +356,8 @@ RationalBSplineBasisDerivative(const SplineType& spline,
       derivatives[i_deriv][i_basis] *= inv_w_fact;
     }
   }
-  // Return last value
-  return derivatives[number_of_derivs - 1];
+  // Return last value - this version needs an explicit move call to move.
+  return std::move(derivatives[number_of_derivs - 1]);
 }
 
 template<typename SplineType,
