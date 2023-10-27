@@ -60,11 +60,11 @@ html_theme_options = {
             "icon": "fa-solid fa-box",
         },
     ],
+    "navigation_with_keys": False,
 }
 # html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
 html_css_files = ["style.css"]
-
 
 autodoc_default_options = {
     "autosummary": True,
