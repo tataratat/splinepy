@@ -176,11 +176,13 @@ template<std::size_t para_dim, std::size_t dim>
 void RationalBezier<para_dim, dim>::SplinepyGrevilleAbscissae(
     double* greville_abscissae,
     const int& i_para_dim,
-    const bool& allow_duplicates) const {
+    const bool& allow_duplicates,
+    const double& duplicate_tolerance) const {
   splinepy::splines::helpers::GetGrevilleAbscissae(*this,
                                                    greville_abscissae,
                                                    i_para_dim,
-                                                   allow_duplicates);
+                                                   allow_duplicates,
+                                                   duplicate_tolerance);
 }
 
 template<std::size_t para_dim, std::size_t dim>

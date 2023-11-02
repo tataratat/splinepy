@@ -337,13 +337,20 @@ public:
   ///
   /// @param[out] greville_abscissae pointer to solution
   /// @param[in] i_para_dim parametric dimension
-  virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
-                                         const int& i_para_dim,
-                                         const bool& allow_duplicates) const {
+  /// @param[in] allow_duplicate  if true, two greville abscissae can be equal,
+  ///                             made to comply with C^(-1) splines
+  /// @param[in] duplicate_tolerance difference between two greville abscissae
+  ///                                to be considered equal
+  virtual void
+  SplinepyGrevilleAbscissae(double* greville_abscissae,
+                            const int& i_para_dim,
+                            const bool& allow_duplicates,
+                            const double& duplicate_tolerance) const {
     splinepy::splines::helpers::GetGrevilleAbscissae(*this,
                                                      greville_abscissae,
                                                      i_para_dim,
-                                                     allow_duplicates);
+                                                     allow_duplicates,
+                                                     duplicate_tolerance);
   }
 
   virtual void SplinepyEvaluate(const double* para_coord,

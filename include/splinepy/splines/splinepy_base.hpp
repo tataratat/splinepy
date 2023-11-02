@@ -154,9 +154,13 @@ public:
   /// @param[in] i_para_dim parametric dimension
   /// @param[in] allow_duplicates in order to interpolate bounding knots for
   ///            C^(-1) splines
-  virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
-                                         const int& i_para_dim,
-                                         const bool& allow_duplicates) const;
+  /// @param[in] duplicate_tolerance Tolerance, to consider two greville
+  ///            abscissae as equal
+  virtual void
+  SplinepyGrevilleAbscissae(double* greville_abscissae,
+                            const int& i_para_dim,
+                            const bool& allow_duplicates,
+                            const double& duplicate_tolerance) const;
 
   /// @brief Evaluate spline
   /// @param[in] para_coord Parametric coordinates

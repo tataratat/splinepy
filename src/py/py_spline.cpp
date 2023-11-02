@@ -304,7 +304,8 @@ py::array_t<double> PySpline::ParametricBounds() const {
   return pbounds;
 }
 
-py::list PySpline::GrevilleAbscissae(const bool allow_duplicates) const {
+py::list PySpline::GrevilleAbscissae(const bool allow_duplicates,
+                                     const double duplicate_tolerance) const {
   // prepare output
   std::vector<int> cmr(para_dim_);
   Core()->SplinepyControlMeshResolutions(cmr.data());
@@ -319,7 +320,8 @@ py::list PySpline::GrevilleAbscissae(const bool allow_duplicates) const {
         static_cast<double*>(greville_abscissae.request().ptr);
     Core()->SplinepyGrevilleAbscissae(greville_abscissae_ptr,
                                       i,
-                                      allow_duplicates);
+                                      allow_duplicates,
+                                      duplicate_tolerance);
     greville_abscissae.resize({cmr[i]});
     list_of_greville_knots[i] = (greville_abscissae);
   }
@@ -831,7 +833,8 @@ void init_pyspline(py::module& m) {
                              &splinepy::py::PySpline::ControlMeshResolutions)
       .def("_greville_abscissae",
            &splinepy::py::PySpline::GrevilleAbscissae,
-           py::arg("allow_duplicates") = true)
+           py::arg("allow_duplicates"),
+           py::arg("duplicate_tolerance"))
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)

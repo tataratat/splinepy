@@ -985,7 +985,9 @@ class Spline(SplinepyBase, core.PySpline):
         """
         return helpme.mapper.Mapper(self, reference=reference)
 
-    def greville_abscissae(self, allow_duplicates=True):
+    def greville_abscissae(
+        self, allow_duplicates=None, duplicate_tolerance=None
+    ):
         """
         Returns greville abscissae.
 
@@ -994,12 +996,19 @@ class Spline(SplinepyBase, core.PySpline):
         allow_dupliactes : bool (True)
           Allows for duplicates in C^(-1) splines, otherwise they are filtered
           out using adjacent abscissae
+        duplicate_tolerance : float
+          Tolerance between two greville abscissae, to be considered as equal
 
         Returns
         --------
         greville_abscissae: (para_dim) np.ndarray
         """
-        return cartesian_product(super()._greville_abscissae(allow_duplicates))
+        return cartesian_product(
+            super()._greville_abscissae(
+                _default_if_none(allow_duplicates, True),
+                _default_if_none(duplicate_tolerance, settings.TOLERANCE),
+            )
+        )
 
     @property
     def multi_index(self):
