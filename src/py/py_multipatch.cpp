@@ -144,7 +144,6 @@ void RaiseMismatch(const CoreSplineVector& splist,
 
   // lambda for nthread comparison
   auto check_mismatch_step = [&](int, int, const int i_thread) {
-    
     // alloc vectors in case we need to compare
     IntVector spline_degree(ref_para_dim), spline_cmr(ref_para_dim);
     int total_ = static_cast<int>(splist.size());
@@ -267,7 +266,6 @@ void RaiseMismatch(const CoreSplineVector& splist0,
 
   // lambda for nthread comparison
   auto check_mismatch_step = [&](int, int, const int i_thread) {
-    
     // alloc some tmp vector if needed
     IntVector int_vec0, int_vec1;
     const int total_ = static_cast<int>(splist0.size());
@@ -1128,7 +1126,7 @@ py::array_t<double> PyMultipatch::SubPatchCenters() {
                                       n_default_threads_);
   }
 
-  auto calc_sub_patch_centers_step = [&](int, int , const int i_thread) {
+  auto calc_sub_patch_centers_step = [&](int, int, const int i_thread) {
     // each thread needs one query
     DoubleVector queries_vector; /* unused if same_parametric_bounds=true*/
     double* queries;
@@ -1297,9 +1295,7 @@ py::array_t<double> PyMultipatch::Evaluate(py::array_t<double> queries,
   };
 
   // exe
-  splinepy::utils::NThreadExecution(evaluate_step,
-                                    n_total,
-                                    nthreads);
+  splinepy::utils::NThreadExecution(evaluate_step, n_total, nthreads);
 
   return evaluated;
 }
@@ -1403,9 +1399,7 @@ py::array_t<double> PyMultipatch::Sample(const int resolution,
     };
 
     // exe - this one is step
-    splinepy::utils::NThreadExecution(sample_step,
-                                      n_total,
-                                      nthreads);
+    splinepy::utils::NThreadExecution(sample_step, n_total, nthreads);
   }
 
   return sampled;
