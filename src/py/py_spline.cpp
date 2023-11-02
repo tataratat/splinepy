@@ -322,7 +322,6 @@ py::list PySpline::GrevilleAbscissae(const bool allow_duplicates,
                                       i,
                                       allow_duplicates,
                                       duplicate_tolerance);
-    greville_abscissae.resize({cmr[i]});
     list_of_greville_knots[i] = (greville_abscissae);
   }
 
