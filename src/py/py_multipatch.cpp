@@ -20,7 +20,7 @@ std::vector<PySpline::CoreSpline_> ToCoreSplineVector(py::list pysplines,
   const int n_splines = static_cast<int>(pysplines.size());
   std::vector<PySpline::CoreSpline_> core_splines(n_splines);
 
-  auto to_core = [&](int begin, int end, int) {
+  auto to_core = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       core_splines[i] =
           pysplines[i].template cast<std::shared_ptr<PySpline>>()->Core();
@@ -40,7 +40,7 @@ ToCoreSplineVector(py::list pysplines,
   const int n_splines = static_cast<int>(pysplines.size());
   std::vector<PySpline::CoreSpline_> core_splines(n_splines);
 
-  auto to_core = [&](int begin, int end, int) {
+  auto to_core = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       // get accessor
       auto spline = pysplines[i];
@@ -270,7 +270,7 @@ void RaiseMismatch(const CoreSplineVector& splist0,
     
     // alloc some tmp vector if needed
     IntVector int_vec0, int_vec1;
-    const int total = static_cast<int>(splist0.size());
+    const int total_ = static_cast<int>(splist0.size());
 
     for (int i{i_thread}; i < total_; i += nthreads) {
       // get spline to check
@@ -709,7 +709,7 @@ py::tuple GetBoundaryOrientations(const py::list& spline_list,
       static_cast<bool*>(bool_orientations.request().ptr);
 
   // Provide lambda for multithread execution
-  auto get_orientation = [&](int start, int end, int) {
+  auto get_orientation = [&](const int start, const int end, int) {
     for (int i{start}; i < end; ++i) {
       GetBoundaryOrientation(cpp_spline_list[base_id_ptr[i]],
                              base_face_id_ptr[i],
@@ -763,12 +763,9 @@ py::list ExtractAllBoundarySplines(const py::list& spline_list,
     // start : process-ID
     // end : unused hence no referencing
 
-    // Auxiliary variables
-    //const int start_index = start * chunk_size;
-    //const int end_index = (start + 1) * chunk_size;
     auto& boundaries_local = lists_to_concatenate[start];
     // Start extraction (remaining order)
-    for (int i{start_index}; i < end_index; i++) {
+    for (int i{start}; i < end; i++) {
       for (int j{}; j < n_faces; j++) {
         if (interface_ptr[i * n_faces + j] < 0) {
           boundaries_local.append(
@@ -1059,7 +1056,7 @@ std::shared_ptr<PyMultipatch> PyMultipatch::SubMultipatch() {
   CoreSplineVector out_boundaries(n_boundaries);
 
   // prepare lambda
-  auto boundary_extract = [&](int begin, int end, int) {
+  auto boundary_extract = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       // start of the offset
       const int offset = i * n_boundary;
@@ -1117,7 +1114,7 @@ py::array_t<double> PyMultipatch::SubPatchCenters() {
     para_bounds_ptr = para_bounds.data();
     const int stride = n_queries * para_dim;
 
-    auto calc_para_bounds = [&](int begin, int end, int) {
+    auto calc_para_bounds = [&](const int begin, const int end, int) {
       for (int i{begin}; i < end; ++i) {
         splinepy::splines::helpers::ScalarTypeBoundaryCenters(
             *core_patches_[i],
@@ -1373,7 +1370,7 @@ py::array_t<double> PyMultipatch::Sample(const int resolution,
         grid_points(n_splines);
 
     // create grid_points
-    auto create_grid_points = [&](int begin, int end, int) {
+    auto create_grid_points = [&](const int begin, const int end, int) {
       DoubleVector para_bounds_vector(2 * para_dim);
       double* para_bounds = para_bounds_vector.data();
 
@@ -1436,7 +1433,7 @@ void PyMultipatch::AddFields(py::list& fields,
   std::vector<std::shared_ptr<PyMultipatch>> field_ptrs(n_new_fields);
 
   // Multi-threading where each threads deals with a field at a time
-  auto field_to_multipatch = [&](int begin, int end, int) {
+  auto field_to_multipatch = [&](const int begin, const int end, int) {
     // Chunks over field ids
     for (int i{begin}; i < end; ++i) {
       // create multipatch

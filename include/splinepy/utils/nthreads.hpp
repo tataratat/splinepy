@@ -42,7 +42,7 @@ namespace splinepy::utils
     // make sure it rounds up
     const IndexType chunk_size = std::div((total + nthread - 1), nthread).quot;
       
-    for (int i{}; i < (nthread - 1); ++i) 
+    for (int i{}; i < (nthread - 1); i++) 
     {
       thread_pool.emplace_back(std::thread{f, i*chunk_size, (i+1)*chunk_size, i});
     }
