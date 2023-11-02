@@ -353,14 +353,14 @@ py::array_t<double> PySpline::Evaluate(py::array_t<double> queries,
 
   // prepare vectorized evaluate queries
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
-  auto evaluate = [&](int begin, int end) {
+  auto evaluate = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyEvaluate(&queries_ptr[i * para_dim_],
                                &evaluated_ptr[i * dim_]);
     }
   };
 
-  splinepy::utils::ecution(evaluate, n_queries, nthreads);
+  splinepy::utils::NThreadExecution(evaluate, n_queries, nthreads);
 
   evaluated.resize({n_queries, dim_});
   return evaluated;
@@ -415,7 +415,7 @@ py::array_t<double> PySpline::Jacobian(const py::array_t<double> queries,
   // prepare lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   const int stride = para_dim_ * dim_;
-  auto derive = [&](int begin, int end) {
+  auto derive = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyJacobian(&queries_ptr[i * para_dim_],
                                &jacobians_ptr[i * stride]);
