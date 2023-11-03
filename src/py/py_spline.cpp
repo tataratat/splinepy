@@ -830,7 +830,7 @@ void init_pyspline(py::module& m) {
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-      .def("_greville_abscissae",
+      .def("_greville_abscissae_list",
            &splinepy::py::PySpline::GrevilleAbscissae,
            py::arg("allow_duplicates"),
            py::arg("duplicate_tolerance"))

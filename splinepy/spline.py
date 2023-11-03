@@ -1004,7 +1004,7 @@ class Spline(SplinepyBase, core.PySpline):
         greville_abscissae: (para_dim) np.ndarray
         """
         return cartesian_product(
-            super()._greville_abscissae(
+            super()._greville_abscissae_list(
                 _default_if_none(allow_duplicates, True),
                 _default_if_none(duplicate_tolerance, settings.TOLERANCE),
             )
