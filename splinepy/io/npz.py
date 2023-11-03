@@ -36,7 +36,7 @@ def load(
 
     # Loop through keys in loaded dictionary and find the ones starting with 'spline_'
     for key in loaded:
-        if key.startswith('spline_') and key not in processed_keys:
+        if key.startswith("spline_") and key not in processed_keys:
             # Extract the index of the spline from the key
             i = int(key.split("_")[1])
 
