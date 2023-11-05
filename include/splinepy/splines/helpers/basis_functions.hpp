@@ -3,13 +3,9 @@
 #include <numeric>
 
 #include <BSplineLib/ParameterSpaces/parameter_space.hpp>
-
-#include <bezman/src/utils/algorithms/recursive_combine.hpp>
-#include <bezman/src/utils/fastbinomialcoefficient.hpp>
+#include <BSplineLib/Utilities/math_operations.hpp>
 
 namespace splinepy::splines::helpers {
-
-using bezman::utils::algorithms::RecursiveCombine;
 
 /// Bezier basis - scalar io here
 template<typename SplineType, typename QueryType, typename BasisValueType>
@@ -300,6 +296,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
   std::vector<BasisValues> derivatives(number_of_derivs);
   std::vector<BasisValues> A_derivatives(number_of_derivs);
   BasisValues w_derivatives(number_of_derivs);
+  w_derivatives.Fill(0.);
 
   // Fill all polynomial spline derivatives (and values for id=0)
   for (OrderType i_deriv{}; i_deriv < number_of_derivs; ++i_deriv) {
@@ -338,16 +335,18 @@ RationalBSplineBasisDerivative(const SplineType& spline,
         continue;
       // Precompute Product of binomial coefficients
       // for now, use bezman's implementation - TODO: use SplineLib
-      std::size_t binom_fact{1};
+      int binom_fact{1};
       for (OrderType i_pd{}; i_pd < para_dim; ++i_pd) {
-        binom_fact *= bezman::utils::FastBinomialCoefficient::choose(
-            derivative_order_indexwise_LHS[i_pd],
-            derivative_order_indexwise_RHS[i_pd]);
+        binom_fact *=
+            bsplinelib::utilities::math_operations::ComputeBinomialCoefficient(
+                derivative_order_indexwise_LHS[i_pd],
+                derivative_order_indexwise_RHS[i_pd]);
       }
+      const QueryType binom = static_cast<QueryType>(binom_fact);
       // Subtract low-order function
       for (OrderType i_basis{}; i_basis < n_basis_functions; ++i_basis) {
         derivatives[i_deriv][i_basis] -=
-            static_cast<OrderType>(binom_fact) * w_derivatives[j_deriv]
+            binom * w_derivatives[j_deriv]
             * derivatives[i_deriv - j_deriv][i_basis];
       }
     }
