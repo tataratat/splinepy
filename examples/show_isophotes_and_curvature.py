@@ -138,4 +138,4 @@ a.show(n_colors=2, resolutions=100, title="Gaussian Curvature")
 # Show Curvature
 a.show_options["data_name"] = "mean_curvature"
 a.show_options["scalarbar"] = True
-a.show(n_colors=2, resolutions=100, title="Gaussian Curvature")
+a.show(n_colors=2, resolutions=100, title="Mean Curvature")
