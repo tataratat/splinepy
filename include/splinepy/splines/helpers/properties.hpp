@@ -116,7 +116,7 @@ inline void GetGrevilleAbscissae(const SplineType& spline,
   // the knot vector result in duplicate greville abscissae which can lead to
   // problems in further computations, solved by mean filtering with neighbors
   if constexpr (SplineType::kHasKnotVectors) {
-    if (duplicate_tolerance > 0) {
+    if (duplicate_tolerance > 0.0) {
       double previous_knot{greville_abscissae[1]};
       for (int j{2}; j < cmr - 1; ++j) {
         if (std::abs(previous_knot - greville_abscissae[j])
