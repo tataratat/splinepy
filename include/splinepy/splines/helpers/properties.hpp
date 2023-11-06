@@ -70,15 +70,16 @@ GetControlMeshResolutions(const SplineType& spline) {
 /// @param[out] greville_abscissae Output 1D array
 /// @param[in] i_para_dim parametric dimension along which greville abscissaes
 ///                       are computed
-/// @param[in] allow_dupliactes C^(-1) splines have duplicate points which can
-///                             be filtered out
-/// @param[in] duplicate_tolerance difference two consider two abscissae as
-///                                equal
+/// @param[in] duplicate_tolerance if negative two greville abscissae can be
+///                                equal, positive tolerance to avoid
+///                                duplication of greville abscissae. Made to
+///                                comply with C^(-1) splines. Tolerance
+///                                represents difference between two greville
+///                                abscissae for them to be considered equal
 template<typename SplineType>
 inline void GetGrevilleAbscissae(const SplineType& spline,
                                  double* greville_abscissae,
                                  const int& i_para_dim,
-                                 const bool& allow_duplicates,
                                  const double& duplicate_tolerance) {
   // Precompute values
   const auto& degrees = spline.GetDegrees();
@@ -115,7 +116,7 @@ inline void GetGrevilleAbscissae(const SplineType& spline,
   // the knot vector result in duplicate greville abscissae which can lead to
   // problems in further computations, solved by mean filtering with neighbors
   if constexpr (SplineType::kHasKnotVectors) {
-    if (!allow_duplicates) {
+    if (duplicate_tolerance > 0) {
       double previous_knot{greville_abscissae[1]};
       for (int j{2}; j < cmr - 1; ++j) {
         if (std::abs(previous_knot - greville_abscissae[j])

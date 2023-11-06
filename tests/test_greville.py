@@ -64,13 +64,15 @@ class GrevilleAbscissaeTest(c.SplineBasedTestCase):
 
         self.assertTrue(
             c.np.allclose(
-                a.greville_abscissae(allow_duplicates=True).ravel(),
+                a.greville_abscissae(duplicate_tolerance=-1.0).ravel(),
                 [0, 0.125, 0.375, 0.5, 0.5, 0.625, 0.875, 1.0],
             )
         )
         self.assertTrue(
             c.np.allclose(
-                a.greville_abscissae(allow_duplicates=False).ravel(),
+                a.greville_abscissae(
+                    duplicate_tolerance=c.splinepy.settings.TOLERANCE
+                ).ravel(),
                 [0, 0.125, 0.375, 0.4375, 0.5625, 0.625, 0.875, 1.0],
             )
         )

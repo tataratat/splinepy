@@ -985,19 +985,17 @@ class Spline(SplinepyBase, core.PySpline):
         """
         return helpme.mapper.Mapper(self, reference=reference)
 
-    def greville_abscissae(
-        self, allow_duplicates=None, duplicate_tolerance=None
-    ):
+    def greville_abscissae(self, duplicate_tolerance=None):
         """
         Returns greville abscissae.
 
         Parameters
         -----------
-        allow_dupliactes : bool (True)
-          Allows for duplicates in C^(-1) splines, otherwise they are filtered
-          out using adjacent abscissae
         duplicate_tolerance : float
-          Tolerance between two greville abscissae, to be considered as equal
+          If negative, duplicates are possible for C^(-1) splines (B-Spline
+          family). Otherwise they are filtered out using adjacent abscissae.
+          Value represents tolerance between two greville abscissae, to be
+          considered as equal
 
         Returns
         --------
@@ -1005,8 +1003,7 @@ class Spline(SplinepyBase, core.PySpline):
         """
         return cartesian_product(
             super()._greville_abscissae_list(
-                _default_if_none(allow_duplicates, True),
-                _default_if_none(duplicate_tolerance, settings.TOLERANCE),
+                _default_if_none(duplicate_tolerance, -1.0),
             )
         )
 
