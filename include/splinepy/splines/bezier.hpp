@@ -124,8 +124,16 @@ public:
   ///
   /// @param[out] greville_abscissae pointer to solution
   /// @param[in] i_para_dim parametric dimension
-  virtual void SplinepyGrevilleAbscissae(double* greville_abscissae,
-                                         const int& i_para_dim) const;
+  /// @param[in] duplicate_tolerance if negative two greville abscissae can be
+  ///                                equal, positive tolerance to avoid
+  ///                                duplication of greville abscissae. Made to
+  ///                                comply with C^(-1) splines. Tolerance
+  ///                                represents difference between two greville
+  ///                                abscissae for them to be considered equal
+  virtual void
+  SplinepyGrevilleAbscissae(double* greville_abscissae,
+                            const int& i_para_dim,
+                            const double& duplicate_tolerance) const;
 
   virtual void SplinepyEvaluate(const double* para_coord,
                                 double* evaluated) const;

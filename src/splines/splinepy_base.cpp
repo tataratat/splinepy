@@ -457,8 +457,10 @@ void SplinepyBase::SplinepyControlMeshResolutions(int* control_mesh_res) const {
       SplinepyWhatAmI());
 }
 
-void SplinepyBase::SplinepyGrevilleAbscissae(double* greville_abscissae,
-                                             const int& i_para_dim) const {
+void SplinepyBase::SplinepyGrevilleAbscissae(
+    double* greville_abscissae,
+    const int& i_para_dim,
+    const double& duplicate_tolerance) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyGrevilleAbscissae not implemented for",
       SplinepyWhatAmI());

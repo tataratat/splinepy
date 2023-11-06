@@ -55,7 +55,7 @@ solution_field.insert_knots(1, new_knots)
 
 
 # Get greville points and geometric values
-evaluation_points = solution_field.greville_abscissae
+evaluation_points = solution_field.greville_abscissae()
 mapper = solution_field.mapper(reference=geometry)
 bf_laplacian, support = mapper.basis_laplacian_and_support(evaluation_points)
 
