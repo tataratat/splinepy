@@ -21,7 +21,7 @@ jobs:
       run: pip install numpy
 
     - name: build splinepy linux
-      run: CC=clang-14 CXX=clang++-14 pip install -e. -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
+      run: CC=clang-14 CXX=clang++-14 pip install . -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
 
     - name: test
       run: |
