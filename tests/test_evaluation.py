@@ -275,7 +275,7 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
                 [0] * (self.bezier.degrees[i] + 1)
                 + [1] * (self.bezier.degrees[i] + 1)
                 for i in range(self.bezier.para_dim)
-            ]
+            ],
         )
 
         # increase orders for derivatives

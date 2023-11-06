@@ -8,7 +8,7 @@ authors = [
     {name="Jaewook Lee", email="jaewooklee042@gmail.com"},
 ]
 license = {file = "LICENSE"}
-description = "Process, ananlyze and visualize N-dim, N-degree splines"
+description = "Process, analyze and visualize N-dim, N-degree splines"
 keywords = ["bezier", "rational bezier", "bspline", "nurbs", "multi patch"]
 urls = {Homepage = "https://github.com/tataratat/splinepy"}
 classifiers=[
@@ -47,7 +47,7 @@ wheel.packages = [
 
 [tool.scikit-build.metadata.version]
 provider = "scikit_build_core.metadata.regex"
-input = "src/mypackage/__init__.py"
+input = "splinepy/_version.py"
 
 
 [tool.cibuildwheel]
