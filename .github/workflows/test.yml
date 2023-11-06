@@ -27,20 +27,9 @@ jobs:
     - name: install dependencies
       run: pip install numpy
 
-    - name: build splinepy linux - gcc10
-      if: matrix.os == 'ubuntu-20.04'
+    - name: build splinepy minimal/debug/warning
       run: |
-        CC=gcc-10 CXX=g++-10 python3 setup.py install --minimal --debug --enable_warning
-
-    - name: build splinepy macos
-      if: matrix.os == 'macos-latest'
-      run: |
-        python3 setup.py develop --minimal --debug --enable_warning
-
-    - name: build splinepy windows
-      if: matrix.os == 'windows-latest'
-      run: |
-        python3 setup.py develop --minimal --enable_warning
+        pip install . -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF;-DSPLINEPY_ENABLE_WARNINGS=ON --config-settings=cmake.build-type="Debug"
 
     - name: test
       run: |
