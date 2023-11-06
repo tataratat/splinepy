@@ -2,7 +2,6 @@
 iges io.
 """
 from splinepy import splinepy_core
-from splinepy.io import ioutils
 
 
 def load(fname):
@@ -18,7 +17,7 @@ def load(fname):
     splines: list
       Spline Type defined in NAME_TO_TYPE
     """
-    return ioutils.dict_to_spline(splinepy_core.read_iges(fname))
+    return splinepy_core.read_iges(fname)
 
 
 def export(fname, splines):
