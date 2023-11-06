@@ -128,14 +128,14 @@ a.show_options["knots"] = False
 
 # Show Isophotes
 a.show_options["data_name"] = "isophotes"
-a.show(n_colors=2, resolutions=1000, title="Isophotes")
+a.show(resolutions=1000, title="Isophotes")
 
 # Show Gaussian Curvature
 a.show_options["data_name"] = "gaussian_curvature"
 a.show_options["scalarbar"] = True
-a.show(n_colors=2, resolutions=100, title="Gaussian Curvature")
+a.show(resolutions=100, title="Gaussian Curvature")
 
 # Show Curvature
 a.show_options["data_name"] = "mean_curvature"
 a.show_options["scalarbar"] = True
-a.show(n_colors=2, resolutions=100, title="Mean Curvature")
+a.show(resolutions=100, title="Mean Curvature")
