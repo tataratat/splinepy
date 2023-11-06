@@ -43,7 +43,5 @@ install(
   EXPORT "${TARGETS_EXPORT_NAME}"
   NAMESPACE "${namespace}"
   DESTINATION "${cfg_dest}")
-install(
-    TARGETS splinepy_core
-    LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/splinepy
-)
+install(TARGETS splinepy_core
+        LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/splinepy)
