@@ -61,3 +61,5 @@ def export(fname, splines):
 
         if len(valid_splines) == 0:
             raise ValueError("No valid splines found in the given input")
+
+        return splinepy_core.export_iges(fname, valid_splines)
