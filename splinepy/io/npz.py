@@ -88,7 +88,7 @@ def export(fname, list_of_splines):
     """
 
     # Checking for proper type of input
-    if type(list_of_splines) != list:
+    if not isinstance(list_of_splines, list):
         if isinstance(list_of_splines, splinepy_core.PySpline):
             list_of_splines = [list_of_splines]
         else:
