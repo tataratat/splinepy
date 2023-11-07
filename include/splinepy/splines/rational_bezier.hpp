@@ -42,6 +42,8 @@ public:
   // self
   template<std::size_t s_para_dim, std::size_t s_dim>
   using SelfTemplate_ = RationalBezier<s_para_dim, s_dim>;
+  // boundary
+  using BoundaryType_ = RationalBezier<para_dim - 1, dim>;
 
   // bezman
   using Base_ = RationalBezierSplineType<para_dim, dim>;

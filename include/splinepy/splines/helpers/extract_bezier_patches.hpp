@@ -103,26 +103,19 @@ ExtractBezierPatchIDs(const IndexingType* degrees,
  * @return auto vector of Bezier types, either Rational or polynomial
  */
 template<bool as_base = false, typename SplineType>
-auto ExtractBezierPatches(SplineType& input) {
+std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>
+ExtractBezierPatches(SplineType& input) {
   // Start by identifying types
   constexpr int para_dim = SplineType::kParaDim;
-  constexpr int dim = SplineType::kDim;
   constexpr bool is_rational = SplineType::kIsRational;
-
-  using ReturnType =
-      std::conditional_t<is_rational,
-                         splinepy::splines::RationalBezier<para_dim, dim>,
-                         splinepy::splines::Bezier<para_dim, dim>>;
-  using ReturnVectorValueType =
-      std::conditional_t<as_base, splinepy::splines::SplinepyBase, ReturnType>;
-  using PointType = typename ReturnType::Coordinate_;
+  const int dim = input.SplinepyDim();
 
   // Predetermine some auxiliary values
   // Access spline degrees and determine offsets
-  std::array<std::size_t, para_dim> degrees{};
+  std::array<int, para_dim> degrees{};
   for (int i_p{}; i_p < para_dim; i_p++) {
-    degrees[i_p] = static_cast<std::size_t>(
-        input.GetParameterSpace().GetDegrees()[i_p].Get());
+    degrees[i_p] =
+        static_cast<int>(input.GetParameterSpace().GetDegrees()[i_p]);
   }
   std::array<int, para_dim> n_patches_per_para_dim{};
   std::array<int, para_dim> n_ctps_per_para_dim{};
@@ -146,14 +139,6 @@ auto ExtractBezierPatches(SplineType& input) {
       input.InsertKnot(bsplinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
     }
   }
-  // Auxiliary function
-  const auto& ControlPointVector = [&](const int& id) {
-    if constexpr (is_rational) {
-      return input.GetWeightedVectorSpace()[bsplinelib::Index{id}];
-    } else {
-      return input.GetVectorSpace()[bsplinelib::Index{id}];
-    }
-  };
 
   // Retrieve id information
   const std::vector<std::vector<int>>& ids =
@@ -166,62 +151,64 @@ auto ExtractBezierPatches(SplineType& input) {
   const int n_ctps_per_patch = ids[0].size();
 
   // Init return value
-  std::vector<std::shared_ptr<ReturnVectorValueType>> bezier_list{};
+  std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>> bezier_list{};
   bezier_list.reserve(n_total_patches);
 
-  // Loop over the individual patches
-  for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
+  // get base control points to copy - in case of NURBS, this will be weighted
+  // coordinates with the weights at the last column
+  const auto& bspline_cps = input.GetCoordinates();
 
-    // Init vectors required for initialization
-    std::vector<PointType> ctps;
-    ctps.reserve(n_ctps_per_patch);
-    std::vector<double> weights;
-    if constexpr (is_rational) {
-      weights.reserve(n_ctps_per_patch);
-    }
-    const auto& local_ids = ids[i_patch];
-
-    // Extract relevant coordinates
-    for (int i_local_id{}; i_local_id < n_ctps_per_patch; i_local_id++) {
-      const std::size_t global_id = local_ids[i_local_id];
-      // Retrieve Control Point
-      PointType point{};
-      // Check if scalar (double instead of array)
-      if constexpr (dim == 1) {
-        point = ControlPointVector(global_id)[0];
-      } else {
-        for (int i_dim{}; i_dim < dim; i_dim++) {
-          point[i_dim] = ControlPointVector(global_id)[i_dim];
-        }
-      }
-      if constexpr (is_rational) {
-        const double weight = ControlPointVector(global_id)[dim];
-        weights.push_back(weight);
-        // control points are weighted in non-rational splines to facilitate
-        // calculations. They therefore need to be divided by the weight to get
-        // the true control point positions
-        point /= weight;
-      }
-      ctps.push_back(point);
-    }
-
-    // Create Spline and add it to list
-    if constexpr (is_rational) {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // CTPS non-weighted
-          ctps,
-          // weights
-          weights));
-    } else {
-      bezier_list.push_back(std::make_shared<ReturnType>(
-          // degrees
-          degrees,
-          // ctps
-          ctps));
-    }
+  // prepare temporary space to copy control point values
+  splinepy::utils::Array<double, 2> extracted_cps(n_ctps_per_patch, dim);
+  splinepy::utils::Array<double> extracted_weights;
+  double* extracted_weights_data{nullptr};
+  if constexpr (is_rational) {
+    extracted_weights.Reallocate(n_ctps_per_patch);
+    extracted_weights_data = extracted_weights.data();
   }
+
+  // Loop over the individual patches
+  for (const std::vector<int>& cp_ids : ids) {
+
+    // loop over cp ids to extract
+    int local_counter{};
+    for (const int& cp_id : cp_ids) {
+      if constexpr (is_rational) {
+        // we have to un-weight
+        // get beginning of from and to row
+        const double* from_ptr = &bspline_cps(cp_id, 0);
+        double* to_ptr = &extracted_cps(local_counter, 0);
+        // invert weight
+        const double w_inv = 1. / from_ptr[dim];
+
+        // apply inverted weight and save to temporary
+        for (int i{}; i < dim; ++i) {
+          to_ptr[i] = from_ptr[i] * w_inv;
+        }
+        // copy weight
+        extracted_weights[local_counter] = from_ptr[dim];
+
+        ++local_counter;
+      } else {
+        // for non-rational bspline, we can just copy values
+        std::copy_n(&bspline_cps(cp_id, 0),
+                    dim,
+                    &extracted_cps(local_counter++, 0));
+      }
+    }
+
+    // use dynamic spline creator to create beziers.
+    // weights's data will be nullptr if it is non rational.
+    // all the values are copied by bezier and rational bezier
+    bezier_list.push_back(splinepy::splines::SplinepyBase::SplinepyCreate(
+        para_dim,
+        dim,
+        degrees.data(),
+        nullptr,
+        extracted_cps.data(),
+        extracted_weights_data));
+  }
+
   return bezier_list;
 }
 

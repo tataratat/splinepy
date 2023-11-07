@@ -50,7 +50,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         self.assertRaisesRegex(
             RuntimeError,
             "SPLINEPY ERROR - Invalid degree, degrees need to be positive. "
-            "Detected degree -4 along parametric dimension: 1",
+            "Detected degree -4 along parametric dimension: 0",
             c.splinepy.BSpline,
             degrees=[-4],
             knot_vectors=[[0, 0, 1, 1]],
@@ -103,7 +103,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         self.assertRaisesRegex(
             RuntimeError,
             "SPLINEPY ERROR - Invalid degree, degrees need to be positive. "
-            "Detected degree -4 along parametric dimension: 1",
+            "Detected degree -4 along parametric dimension: 0",
             c.splinepy.NURBS,
             degrees=[-4],
             knot_vectors=[[0, 0, 1, 1]],
@@ -132,7 +132,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         self.assertRaisesRegex(
             RuntimeError,
             "SPLINEPY ERROR - Invalid degree, degrees need to be positive. "
-            "Detected degree -4 along parametric dimension: 1",
+            "Detected degree -4 along parametric dimension: 0",
             c.splinepy.Bezier,
             degrees=[-4],
             control_points=c.np.ones((1, 1)),
@@ -168,7 +168,7 @@ class TestSplineConstructors(c.unittest.TestCase):
         self.assertRaisesRegex(
             RuntimeError,
             "SPLINEPY ERROR - Invalid degree, degrees need to be positive. "
-            "Detected degree -4 along parametric dimension: 1",
+            "Detected degree -4 along parametric dimension: 0",
             c.splinepy.RationalBezier,
             degrees=[-4],
             control_points=c.np.ones((2, 4)),

@@ -15,9 +15,11 @@
 
 namespace splinepy::py {
 
-/// Creates a corresponding spline based on kwargs
+/// @brief  Creates a corresponding spline based on kwargs
 /// similar to previous update_c()
 /// Runs sanity checks on inputs
+/// this will keep the reference of the kwargs that were used for init.
+/// @param kwargs
 void PySpline::NewCore(const py::kwargs& kwargs) {
 
   // early exit if this is an incomplete kwargs call
@@ -35,12 +37,14 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
 
   // get degrees and set para_dim
   auto d_array = py::cast<py::array_t<int>>(kwargs["degrees"]);
+  data_["degrees"] = d_array; // keep reference
   degrees_ptr = static_cast<int*>(d_array.request().ptr);
   para_dim = d_array.size();
   knot_vectors.reserve(para_dim);
 
   // get cps and set dim. set ncps for checks later
   auto cp_array = py::cast<py::array_t<double>>(kwargs["control_points"]);
+  data_["control_points"] = cp_array;
   control_points_ptr = static_cast<double*>(cp_array.request().ptr);
   dim = cp_array.shape(1);
   ncps = cp_array.shape(0);
@@ -54,6 +58,8 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
     // check list
     int kv_dim{0};
     double prev_knot, this_knot;
+    // we don't keep the reference of the knot vectors as we need a specific
+    // type that doesn't duplicate.
     py::list kvs = kwargs["knot_vectors"];
 
     // loop over list of list/arrays
@@ -64,7 +70,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
             "Invalid degree, degrees need to be positive. Detected degree",
             degrees_ptr[i_para],
             "along parametric dimension:",
-            i_para + 1);
+            i_para);
       }
 
       std::vector<double> knot_vector;
@@ -151,7 +157,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
             "Invalid degree, degrees need to be positive. Detected degree",
             degrees_ptr[i_para],
             "along parametric dimension:",
-            i_para + 1);
+            i_para);
       }
       required_ncps *= degrees_ptr[i_para] + 1;
     }
@@ -169,6 +175,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
   // maybe, get weights
   if (kwargs.contains("weights")) {
     auto w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
+    data_["weights"] = w_array;
     weights_ptr = static_cast<double*>(w_array.request().ptr);
 
     // check if size matches with ncps
@@ -230,7 +237,7 @@ py::dict PySpline::CurrentCoreProperties() const {
   py::array_t<int> degrees(para_dim_);
   int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
   const int ncps = Core()->SplinepyNumberOfControlPoints();
-  py::array_t<double> control_points(ncps * dim_);
+  py::array_t<double> control_points({ncps, dim_});
   double* control_points_ptr =
       static_cast<double*>(control_points.request().ptr);
 
@@ -255,7 +262,6 @@ py::dict PySpline::CurrentCoreProperties() const {
 
   // process
   dict_spline["degrees"] = degrees;
-  control_points.resize({ncps, dim_});
   dict_spline["control_points"] = control_points;
 
   // process maybes
@@ -347,7 +353,7 @@ py::array_t<double> PySpline::Evaluate(py::array_t<double> queries,
 
   // prepare vectorized evaluate queries
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
-  auto evaluate = [&](int begin, int end) {
+  auto evaluate = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyEvaluate(&queries_ptr[i * para_dim_],
                                &evaluated_ptr[i * dim_]);
@@ -379,7 +385,7 @@ py::array_t<double> PySpline::Sample(py::array_t<int> resolutions,
   double* sampled_ptr = static_cast<double*>(sampled.request().ptr);
 
   // wrap evaluate
-  auto sample = [&](int begin, int end) {
+  auto sample = [&](const int begin, const int end, int) {
     std::vector<double> query(para_dim_);
     double* query_ptr = query.data();
     for (int i{begin}; i < end; ++i) {
@@ -409,7 +415,7 @@ py::array_t<double> PySpline::Jacobian(const py::array_t<double> queries,
   // prepare lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   const int stride = para_dim_ * dim_;
-  auto derive = [&](int begin, int end) {
+  auto derive = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyJacobian(&queries_ptr[i * para_dim_],
                                &jacobians_ptr[i * stride]);
@@ -461,7 +467,7 @@ py::array_t<double> PySpline::Derivative(py::array_t<double> queries,
   // prepare lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
-  auto derive = [&](int begin, int end) {
+  auto derive = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyDerivative(
           &queries_ptr[i * para_dim_],
@@ -488,7 +494,7 @@ py::array_t<int> PySpline::Support(py::array_t<double> queries,
   // prepare_lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* supports_ptr = static_cast<int*>(supports.request().ptr);
-  auto support = [&](int begin, int end) {
+  auto support = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepySupport(&queries_ptr[i * para_dim_],
                               &supports_ptr[i * n_support]);
@@ -512,7 +518,7 @@ py::array_t<double> PySpline::Basis(py::array_t<double> queries,
   // prepare_lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   double* bases_ptr = static_cast<double*>(bases.request().ptr);
-  auto basis = [&](int begin, int end) {
+  auto basis = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyBasis(&queries_ptr[i * para_dim_],
                             &bases_ptr[i * n_support]);
@@ -538,7 +544,7 @@ py::tuple PySpline::BasisAndSupport(py::array_t<double> queries,
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   double* basis_ptr = static_cast<double*>(basis.request().ptr);
   int* support_ptr = static_cast<int*>(support.request().ptr);
-  auto basis_support = [&](int begin, int end) {
+  auto basis_support = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyBasisAndSupport(&queries_ptr[i * para_dim_],
                                       &basis_ptr[i * n_support],
@@ -593,7 +599,7 @@ py::array_t<double> PySpline::BasisDerivative(py::array_t<double> queries,
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
   double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
-  auto basis_derivative = [&](int begin, int end) {
+  auto basis_derivative = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyBasisDerivative(
           &queries_ptr[i * para_dim_],
@@ -648,7 +654,7 @@ py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
   double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
   int* support_ptr = static_cast<int*>(support.request().ptr);
-  auto basis_der_support = [&](int begin, int end) {
+  auto basis_der_support = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyBasisDerivativeAndSupport(
           &queries_ptr[i * para_dim_],
@@ -701,7 +707,7 @@ PySpline::Proximities(py::array_t<double> queries,
       static_cast<double*>(first_derivatives.request().ptr);
   double* second_derivatives_ptr =
       static_cast<double*>(second_derivatives.request().ptr);
-  auto proximities = [&](int begin, int end) {
+  auto proximities = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
       Core()->SplinepyVerboseProximity(&queries_ptr[i * dim_],
                                        tolerance,

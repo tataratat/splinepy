@@ -2,12 +2,10 @@
 
 #include <numeric>
 
-#include <bezman/src/utils/algorithms/recursive_combine.hpp>
-#include <bezman/src/utils/fastbinomialcoefficient.hpp>
+#include <BSplineLib/ParameterSpaces/parameter_space.hpp>
+#include <BSplineLib/Utilities/math_operations.hpp>
 
 namespace splinepy::splines::helpers {
-
-using bezman::utils::algorithms::RecursiveCombine;
 
 /// Bezier basis - scalar io here
 template<typename SplineType, typename QueryType, typename BasisValueType>
@@ -73,8 +71,8 @@ constexpr inline void BezierSupport(const SplineType& spline,
 }
 
 /// BSpline Basis functions per dimension
-template<typename SplineType, typename QueryType>
-constexpr inline std::array<std::vector<double>, SplineType::kParaDim>
+template<typename SplineType, typename QueryType, typename ContainerType>
+constexpr inline std::array<ContainerType, SplineType::kParaDim>
 BSplineBasisPerParametricDimension(const SplineType& spline,
                                    const QueryType* para_coord) {
 
@@ -84,14 +82,7 @@ BSplineBasisPerParametricDimension(const SplineType& spline,
   // prepare unique evals
   const auto& parameter_space = spline.GetParameterSpace();
 
-  // prepare query
-  typename SplineType::ParametricCoordinate_ sl_query;
-  for (int i{}; i < SplineType::kParaDim; ++i) {
-    sl_query[i] =
-        typename SplineType::ScalarParametricCoordinate_{para_coord[i]};
-  }
-
-  return parameter_space.EvaluateBasisValuesPerDimension(sl_query);
+  return parameter_space.EvaluateBasisValuesPerDimension(para_coord);
 }
 
 /// BSpline Basis support
@@ -100,19 +91,13 @@ inline std::vector<int> BSplineSupport(const SplineType& spline,
                                        const QueryType* para_coord) {
   static_assert(SplineType::kHasKnotVectors,
                 "BSplineBasis is only for bspline families.");
-  // prepare query
-  typename SplineType::ParametricCoordinate_ sl_query;
-  for (int i{}; i < SplineType::kParaDim; ++i) {
-    sl_query[i] =
-        typename SplineType::ScalarParametricCoordinate_{para_coord[i]};
-  }
 
   // prepare properties for the loop
   const auto& parameter_space = spline.GetParameterSpace();
   const auto n_basis_per_dim =
       parameter_space.GetNumberOfNonZeroBasisFunctions();
   const auto support_start =
-      parameter_space.FindFirstNonZeroBasisFunction(sl_query);
+      parameter_space.FindFirstNonZeroBasisFunction(para_coord);
   auto support_offset = parameter_space.First();
   const int n_total_basis =
       std::accumulate(n_basis_per_dim.begin(),
@@ -143,10 +128,16 @@ inline void BSplineSupport(const SplineType& spline,
 
 /// pure bspline basis. We recommend using BSplineBasis() instead of this
 template<typename SplineType, typename QueryType>
-constexpr inline std::vector<QueryType>
-NonRationalBSplineBasis(const SplineType& spline, const QueryType* para_coord) {
-  return RecursiveCombine(
-      BSplineBasisPerParametricDimension(spline, para_coord));
+constexpr inline auto NonRationalBSplineBasis(const SplineType& spline,
+                                              const QueryType* para_coord) {
+
+  static_assert(SplineType::kHasKnotVectors,
+                "BSplineBasis is only for bspline families.");
+
+  // prepare unique evals
+  const auto& parameter_space = spline.GetParameterSpace();
+
+  return parameter_space.EvaluateBasisValues(para_coord);
 }
 
 /// nurbs basis. We recommend using BSplineBasis() instead of this
@@ -160,7 +151,7 @@ RationalBSplineBasis(const SplineType& spline,
   const auto bspline_basis = NonRationalBSplineBasis(spline, para_coord);
   const auto& homogeneous_coords = spline.GetCoordinates();
   const auto n_basis = support.size();
-
+  const int dim = spline.SplinepyDim();
   // prepare output
   std::vector<QueryType> rational_basis;
   rational_basis.reserve(n_basis);
@@ -168,7 +159,7 @@ RationalBSplineBasis(const SplineType& spline,
   double W{0.};
   for (std::size_t i{}; i < n_basis; ++i) {
     // get weight
-    const auto& w = homogeneous_coords[support[i]][SplineType::kDim];
+    const auto& w = homogeneous_coords(support[i], dim);
     const auto N_times_w = bspline_basis[i] * w;
 
     W += N_times_w;
@@ -209,7 +200,7 @@ constexpr inline void BSplineBasis(const SplineType& spline,
 
 /// BSpline Basis functions derivative per dimension
 template<typename SplineType, typename QueryType, typename OrderType>
-constexpr inline std::array<std::vector<double>, SplineType::kParaDim>
+constexpr inline auto
 BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
                                              const QueryType* para_coord,
                                              const OrderType* order) {
@@ -219,47 +210,38 @@ BSplineBasisDerivativePerParametricDimension(const SplineType& spline,
   // prepare unique eval buckets
   const auto& parameter_space = spline.GetParameterSpace();
 
-  // prepare query
-  typename SplineType::ParametricCoordinate_ sl_query;
-  typename SplineType::Derivative_ sl_order;
-  for (int i{}; i < SplineType::kParaDim; ++i) {
-    sl_query[i] =
-        typename SplineType::ScalarParametricCoordinate_{para_coord[i]};
-    sl_order[i] = typename SplineType::Derivative_::value_type{order[i]};
-  }
-
-  return parameter_space.EvaluateBasisDerivativeValuesPerDimension(sl_query,
-                                                                   sl_order);
+  return parameter_space.EvaluateBasisDerivativeValuesPerDimension(para_coord,
+                                                                   order);
 }
 
 /// BSpline Basis functions der
 template<typename SplineType, typename QueryType, typename OrderType>
-constexpr inline std::vector<QueryType>
+inline bsplinelib::parameter_spaces::BasisValues
 NonRationalBSplineBasisDerivative(const SplineType& spline,
                                   const QueryType* para_coord,
                                   const OrderType* order) {
+  static_assert(SplineType::kHasKnotVectors,
+                "BSplineBasisDerivative is only for bspline families.");
+  // prepare unique eval buckets
+  const auto& parameter_space = spline.GetParameterSpace();
 
-  return RecursiveCombine(
-      BSplineBasisDerivativePerParametricDimension(spline, para_coord, order));
+  return parameter_space.EvaluateBasisDerivativeValues(para_coord, order);
 }
 
 /// adapted from bezman
 template<typename SplineType, typename QueryType, typename OrderType>
-constexpr inline std::vector<QueryType>
+inline bsplinelib::parameter_spaces::BasisValues
 RationalBSplineBasisDerivative(const SplineType& spline,
                                const QueryType* para_coord,
                                const OrderType* order) {
+  using BasisValues = bsplinelib::parameter_spaces::BasisValues;
 
   // we will do everything with OrderType
   constexpr auto para_dim = static_cast<OrderType>(SplineType::kParaDim);
 
   // prepare
   const auto& homogeneous_coords = spline.GetCoordinates();
-
-  // weight getter shortcut
-  auto get_weight_ = [&homogeneous_coords](const OrderType id) -> QueryType {
-    return static_cast<QueryType>(homogeneous_coords[id][SplineType::kDim]);
-  };
+  const int dim = homogeneous_coords.Shape()[1] - 1;
 
   // Define lambdas to switch between local indexing with
   // coordinate style indexing to global, scalar indexing
@@ -311,21 +293,24 @@ RationalBSplineBasisDerivative(const SplineType& spline,
   const OrderType number_of_derivs{global_ids_(order) + 1};
   const OrderType n_basis_functions{spline.SplinepyNumberOfSupports()};
   // Please remember that the first derivative is not used
-  std::vector<std::vector<QueryType>> derivatives(number_of_derivs);
-  std::vector<std::vector<QueryType>> A_derivatives(number_of_derivs);
-  std::vector<QueryType> w_derivatives(number_of_derivs);
+  std::vector<BasisValues> derivatives(number_of_derivs);
+  std::vector<BasisValues> A_derivatives(number_of_derivs);
+  BasisValues w_derivatives(number_of_derivs);
+  w_derivatives.Fill(0.);
 
   // Fill all polynomial spline derivatives (and values for id=0)
   for (OrderType i_deriv{}; i_deriv < number_of_derivs; ++i_deriv) {
     const auto req_derivs = local_ids_(i_deriv);
-    A_derivatives[i_deriv] =
-        NonRationalBSplineBasisDerivative(spline,
-                                          para_coord,
-                                          req_derivs.data());
+    auto& A_derivatives_i = A_derivatives[i_deriv];
+    A_derivatives_i =
+        std::move(NonRationalBSplineBasisDerivative(spline,
+                                                    para_coord,
+                                                    req_derivs.data()));
+    auto& w_derivatives_i = w_derivatives[i_deriv];
     for (OrderType i_basis{}; i_basis < n_basis_functions; ++i_basis) {
-      const QueryType weight = get_weight_(supports[i_basis]);
-      w_derivatives[i_deriv] += weight * A_derivatives[i_deriv][i_basis];
-      A_derivatives[i_deriv][i_basis] *= weight;
+      const QueryType weight = homogeneous_coords(supports[i_basis], dim);
+      w_derivatives_i += weight * A_derivatives_i[i_basis];
+      A_derivatives_i[i_basis] *= weight;
     }
   }
 
@@ -338,7 +323,7 @@ RationalBSplineBasisDerivative(const SplineType& spline,
     // Retrieve index-wise order of the derivative for current ID
     const auto derivative_order_indexwise_LHS = local_ids_(i_deriv);
     // Assign derivative of Numerator-function
-    derivatives[i_deriv] = A_derivatives[i_deriv];
+    derivatives[i_deriv].OwnCopy(A_derivatives[i_deriv]);
     // Subtract all weighted lower-order functions
     for (OrderType j_deriv{1}; j_deriv <= i_deriv; ++j_deriv) {
       // Retrieve order of current index
@@ -350,16 +335,18 @@ RationalBSplineBasisDerivative(const SplineType& spline,
         continue;
       // Precompute Product of binomial coefficients
       // for now, use bezman's implementation - TODO: use SplineLib
-      std::size_t binom_fact{1};
+      int binom_fact{1};
       for (OrderType i_pd{}; i_pd < para_dim; ++i_pd) {
-        binom_fact *= bezman::utils::FastBinomialCoefficient::choose(
-            derivative_order_indexwise_LHS[i_pd],
-            derivative_order_indexwise_RHS[i_pd]);
+        binom_fact *=
+            bsplinelib::utilities::math_operations::ComputeBinomialCoefficient(
+                derivative_order_indexwise_LHS[i_pd],
+                derivative_order_indexwise_RHS[i_pd]);
       }
+      const QueryType binom = static_cast<QueryType>(binom_fact);
       // Subtract low-order function
       for (OrderType i_basis{}; i_basis < n_basis_functions; ++i_basis) {
         derivatives[i_deriv][i_basis] -=
-            static_cast<OrderType>(binom_fact) * w_derivatives[j_deriv]
+            binom * w_derivatives[j_deriv]
             * derivatives[i_deriv - j_deriv][i_basis];
       }
     }
@@ -368,8 +355,8 @@ RationalBSplineBasisDerivative(const SplineType& spline,
       derivatives[i_deriv][i_basis] *= inv_w_fact;
     }
   }
-  // Return last value
-  return derivatives[number_of_derivs - 1];
+  // Return last value - this version needs an explicit move call to move.
+  return std::move(derivatives[number_of_derivs - 1]);
 }
 
 template<typename SplineType,

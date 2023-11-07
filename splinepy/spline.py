@@ -666,7 +666,19 @@ class Spline(SplinepyBase, core.PySpline):
 
         # clear saved data
         if not keep_properties:
-            self._data = {}
+            # BSpline supports viewing-control-points for contiguous arrays
+            # such as np.ndarray, so we need to keep it alive.
+            if self.name.startswith("BSpline"):
+                saved_cps = self._data.get("control_points", None)
+                if saved_cps is not None:
+                    self._logw(
+                        "_new_core(keep_properties=False) -",
+                        "BSplines need to keep control_points.",
+                        "Properties excluding control_points will be cleared.",
+                    )
+                    self._data["control_points"] = saved_cps
+            else:
+                self._data = {}
 
         return core.has_core(self)
 
@@ -909,7 +921,7 @@ class Spline(SplinepyBase, core.PySpline):
             if len(self.weights) != len(control_points):
                 raise ValueError(
                     f"len(control_points) ({len(control_points)}) "
-                    f"should match len(weights) ({len(self.weights)})."
+                    f"should match len(weights) ({len(self.weights)})"
                 )
             # we need to remove existing weights so that pointers don't get
             # mixed
@@ -925,7 +937,6 @@ class Spline(SplinepyBase, core.PySpline):
             self._data["control_points"] = np.asarray(
                 control_points, dtype="float64", order="C"
             ).copy()
-
         # make sure _new_core call works
         if core.has_core(self):
             _call_required_properties(self, exclude="control_points")
@@ -1156,7 +1167,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         resolutions = arr.enforce_len(resolutions, self.para_dim)
 
-        self._logd(f"Sampling {np.prod(resolutions)} " "points from spline.")
+        self._logd(f"Sampling {np.prod(resolutions)} points from spline.")
 
         return super().sample(
             resolutions, nthreads=_default_if_none(nthreads, settings.NTHREADS)
@@ -1621,18 +1632,15 @@ class Spline(SplinepyBase, core.PySpline):
         new_spline: type(self)
         """
         new = type(self)(**self.current_core_properties())
+
+        # new's _data is populated with current_core_properties(), which they
+        # own. So we will add to that
         if saved_data:
             required_properties = self.required_properties
-            saved_copy = {}
             for k, v in self._data.items():
                 if k in required_properties:
                     continue
-                saved_copy[k] = copy.deepcopy(v)
-
-            new._data = saved_copy
-
-        else:
-            new._data = {}
+                new._data[k] = copy.deepcopy(v)
 
         return new
 

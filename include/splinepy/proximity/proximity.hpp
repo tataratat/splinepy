@@ -79,7 +79,7 @@ public:
     sampled_spline_.Reallocate(n_queries * dim);
 
     // lambda function to allow n-thread execution
-    auto sample_coordinates = [&](int begin, int end) {
+    auto sample_coordinates = [&](const int begin, const int end, int) {
       RealArray_ query(para_dim);
       double* query_data = query.data();
 
