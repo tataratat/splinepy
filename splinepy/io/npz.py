@@ -32,43 +32,31 @@ def load(
     # Initialize an empty list to store the splines
     list_of_spline_dicts = []
 
-    processed_keys = set()
-
     # Loop through keys in loaded dictionary and find the ones starting with 'spline_'
-    for key in loaded:
-        if key.startswith("spline_") and key not in processed_keys:
-            # Extract the index of the spline from the key
-            i = int(key.split("_")[1])
+    for i in range(loaded["num_of_splines"]):
 
-            # Initialize an empty dictionary to store the properties of the spline
-            dict_spline = {}
+        # Initialize an empty dictionary to store the properties of the spline
+        dict_spline = {}
 
-            # Add the common properties of all splines
-            dict_spline["control_points"] = loaded[
-                f"spline_{i}_control_points"
-            ]
-            dict_spline["degrees"] = loaded[f"spline_{i}_degrees"]
+        # Add the common properties of all splines
+        dict_spline["control_points"] = loaded[
+            f"spline_{i}_control_points"
+        ]
+        dict_spline["degrees"] = loaded[f"spline_{i}_degrees"]
 
-            # Add the weights if the spline is rational
-            if f"spline_{i}_weights" in loaded:
-                dict_spline["weights"] = loaded[f"spline_{i}_weights"]
+        # Add the weights if the spline is rational
+        if f"spline_{i}_weights" in loaded:
+            dict_spline["weights"] = loaded[f"spline_{i}_weights"]
 
-            # Add the knot vectors if the spline has them
-            if f"spline_{i}_knot_vectors_0" in loaded:
-                kvs = []
-                for j in range(dict_spline["degrees"].size):
-                    kvs.append(loaded[f"spline_{i}_knot_vectors_{j}"])
-                dict_spline["knot_vectors"] = kvs
-
-            # Append dictionary of spline to the list
-            list_of_spline_dicts.append(dict_spline)
-
-            # Add keys to processed_keys set
-            processed_keys.add(f"spline_{i}_control_points")
-            processed_keys.add(f"spline_{i}_degrees")
-            processed_keys.add(f"spline_{i}_weights")
+        # Add the knot vectors if the spline has them
+        if f"spline_{i}_knot_vectors_0" in loaded:
+            kvs = []
             for j in range(dict_spline["degrees"].size):
-                processed_keys.add(f"spline_{i}_knot_vectors_{j}")
+                kvs.append(loaded[f"spline_{i}_knot_vectors_{j}"])
+            dict_spline["knot_vectors"] = kvs
+
+        # Append dictionary of spline to the list
+        list_of_spline_dicts.append(dict_spline)
 
     return io.ioutils.dict_to_spline(list_of_spline_dicts)
 
@@ -96,6 +84,9 @@ def export(fname, list_of_splines):
 
     # Initialize an empty dictionary to store the properties of each spline
     property_dicts = {}
+
+    # Add number of splines in list to dict
+    property_dicts["num_of_splines"] = len(list_of_splines)
 
     # Loop through the list of splines and add their properties to the dictionary
     for i, spline in enumerate(list_of_splines):
