@@ -22,7 +22,7 @@ In addition to the aforementioned compilers, this requires a cmake3.16+. If you 
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
 git submodule update --init --recursive
-python3 setup.py develop
+pip install -e.
 ```
 
 ## Quick start
