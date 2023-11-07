@@ -34,14 +34,11 @@ def load(
 
     # Loop through keys in loaded dictionary and find the ones starting with 'spline_'
     for i in range(loaded["num_of_splines"]):
-
         # Initialize an empty dictionary to store the properties of the spline
         dict_spline = {}
 
         # Add the common properties of all splines
-        dict_spline["control_points"] = loaded[
-            f"spline_{i}_control_points"
-        ]
+        dict_spline["control_points"] = loaded[f"spline_{i}_control_points"]
         dict_spline["degrees"] = loaded[f"spline_{i}_degrees"]
 
         # Add the weights if the spline is rational
