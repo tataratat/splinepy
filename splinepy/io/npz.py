@@ -67,7 +67,6 @@ def load(
             processed_keys.add(f"spline_{i}_control_points")
             processed_keys.add(f"spline_{i}_degrees")
             processed_keys.add(f"spline_{i}_weights")
-            processed_keys.add(f"spline_{i}_whatami")
             for j in range(dict_spline["degrees"].size):
                 processed_keys.add(f"spline_{i}_knot_vectors_{j}")
 
@@ -98,7 +97,6 @@ def export(fname, list_of_splines):
         # Add the common properties of all splines
         property_dicts[f"{prefix}degrees"] = spline.degrees
         property_dicts[f"{prefix}control_points"] = spline.control_points
-        property_dicts[f"{prefix}whatami"] = np.array([spline.whatami])
 
         # Add the weights if the spline is rational
         if spline.is_rational:
