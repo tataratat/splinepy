@@ -35,29 +35,29 @@ def export(fname, splines):
     --------
     None
     """
-    # create empty valid spline array
-    valid_splines = []
-    # check if any spline contains volume elements
-    for ispl, spline in enumerate(splines):
-        if spline.para_dim > 2 or spline.dim > 3:
-            log.warning(
-                f"Skipping volumetric {type(spline)} found at splines[{ispl}]"
-                "which cannot be handled by the .iges file format \n"
-                "To include this spline, use a boundary representation "
-                "instead, by calling e.g. spline.extract.boundaries()"
-            )
-        elif spline.para_dim > spline.dim:
-            log.warning(
-                f"Skipping {type(spline)} at splines[{ispl}]\n"
-                f"Parametric dimension ({spline.para_dim}) is higher than the"
-                f" physical dimension ({spline.dim}) at splines[{ispl}]\n"
-                " Parametric dimension must be smaller or equal to the"
-                " physical dimension."
-            )
-        else:
-            valid_splines.append(spline)
+    try:
+        return splinepy_core.export_iges(fname, splines)
 
-    if len(valid_splines) == 0:
-        raise ValueError("No valid splines found in the given input")
+    except RuntimeError:
+        # create empty valid spline array
+        valid_splines = []
+        # check if any spline contains volume elements
+        for ispl, spline in enumerate(splines):
+            if spline.para_dim > 2:
+                log.warning(
+                    f"Skipping volumetric {type(spline)} at splines[{ispl}]"
+                    "which cannot be handled by the .iges file format \n"
+                    "To include this spline, use a boundary representation "
+                    "instead, by calling e.g. spline.extract.boundaries()"
+                )
+            elif spline.dim > 3:
+                log.warning(
+                    f"Skipping high dim {type(spline)} at splines[{ispl}]"
+                    "which cannot be handled by the .iges file format."
+                    "iges supports up to dim=3."
+                )
+            else:
+                valid_splines.append(spline)
 
-    return splinepy_core.export_iges(fname, valid_splines)
+        if len(valid_splines) == 0:
+            raise ValueError("No valid splines found in the given input")
