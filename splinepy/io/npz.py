@@ -104,7 +104,7 @@ def export(fname, list_of_splines):
 
         # Add the knot vectors if the spline has them
         if spline.has_knot_vectors:
-            for j in range(spline.degrees.size):
+            for j in range(spline.para_dim):
                 property_dicts[
                     f"{prefix}knot_vectors_{j}"
                 ] = spline.knot_vectors[j]
