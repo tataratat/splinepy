@@ -83,7 +83,7 @@ public:
   using IndexValue_ = typename Index_::Value_;
   // Advanced use
   using HomogeneousBSpline_ = typename Base_::HomogeneousBSpline_;
-  using Proximity_ = splinepy::proximity::Proximity<Nurbs<para_dim, dim>>;
+  using Proximity_ = splinepy::proximity::Proximity;
 
   /// @brief raw ptr based inithelper.
   /// @param degrees should have same size as parametric dimension
@@ -413,10 +413,7 @@ public:
 
   virtual void SplinepyPlantNewKdTreeForProximity(const int* resolutions,
                                                   const int& nthreads) {
-    splinepy::splines::helpers::ScalarTypePlantNewKdTreeForProximity(
-        *this,
-        resolutions,
-        nthreads);
+    GetProximity().PlantNewKdTree(resolutions, nthreads);
   }
 
   /// Verbose proximity query - make sure to plant a kdtree first.

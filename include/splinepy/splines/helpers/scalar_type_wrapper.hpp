@@ -175,15 +175,6 @@ void ScalarTypeJacobian(const SplineType& spline,
   }
 }
 
-template<typename SplineType, typename ResolutionType, typename NThreadsType>
-void ScalarTypePlantNewKdTreeForProximity(SplineType& spline,
-                                          const ResolutionType* resolutions,
-                                          const NThreadsType& nthreads) {
-  std::array<int, SplineType::kParaDim> core_res;
-  std::copy_n(resolutions, SplineType::kParaDim, core_res.begin());
-  spline.GetProximity().PlantNewKdTree(core_res, nthreads);
-}
-
 /// single degree elevation.
 template<typename SplineType, typename QueryType>
 void ScalarTypeElevateDegree(SplineType& spline, const QueryType query) {
