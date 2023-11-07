@@ -1351,9 +1351,9 @@ py::array_t<double> PyMultipatch::Sample(const int resolution,
     double* queries = queries_vector.data();
 
     // use grid point generator to fill queries
-    splinepy::utils::CStyleArrayPointerGridPoints gp_generator(para_dim,
-                                                               para_bounds,
-                                                               resolutions);
+    splinepy::utils::GridPoints gp_generator(para_dim,
+                                             para_bounds,
+                                             resolutions);
     gp_generator.Fill(queries);
 
     // create lambda for nthread exe
@@ -1377,8 +1377,7 @@ py::array_t<double> PyMultipatch::Sample(const int resolution,
     //   second, to sample
 
     // create a container to hold grid point helper.
-    splinepy::utils::DefaultInitializationVector<
-        splinepy::utils::CStyleArrayPointerGridPoints>
+    splinepy::utils::DefaultInitializationVector<splinepy::utils::GridPoints>
         grid_points(n_splines);
 
     // create grid_points

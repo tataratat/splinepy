@@ -369,10 +369,10 @@ py::array_t<double> PySpline::Sample(py::array_t<int> resolutions,
   double* bounds_ptr = bounds.data();
   Core()->SplinepyParametricBounds(bounds_ptr);
   // prepare sampler
-  auto grid = splinepy::utils::CStyleArrayPointerGridPoints(
-      para_dim_,
-      bounds_ptr,
-      static_cast<int*>(resolutions.request().ptr));
+  auto grid =
+      splinepy::utils::GridPoints(para_dim_,
+                                  bounds_ptr,
+                                  static_cast<int*>(resolutions.request().ptr));
   // prepare output
   const int n_sampled = grid.Size();
   py::array_t<double> sampled(n_sampled * dim_);
