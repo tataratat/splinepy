@@ -10,12 +10,14 @@ keys in raw files are:
 
 import numpy as np
 
+from splinepy import io, splinepy_core
+
 
 def load(
     fname,
 ):
     """
-    Read spline in `.npz` form.
+    Read a list of splines in `.npz` form.
 
     Parameters
     -----------
@@ -23,47 +25,87 @@ def load(
 
     Returns
     --------
-    dict_spline: dict
+    list_spline: list of NURBS / BSpline / Bezier / Rational Bezier
     """
     loaded = np.load(fname)
-    whatami = loaded["whatami"][0]
 
-    dict_spline = {}
-    # update weights
-    if whatami.startswith("NURBS"):
-        dict_spline.update(weights=loaded["weights"])
+    # Initialize an empty list to store the splines
+    list_of_spline_dicts = []
 
-    # update the rest
-    dict_spline.update(control_points=loaded["control_points"])
-    dict_spline.update(degrees=loaded["degrees"])
-    dict_spline.update(knot_vectors=eval(loaded["knot_vectors"][0]))
+    # Loop through keys in loaded dictionary and find the ones starting with 'spline_'
+    for i in range(loaded["number_of_splines"]):
+        # Initialize an empty dictionary to store the properties of the spline
+        dict_spline = {}
 
-    return dict_spline
+        # Add the common properties of all splines
+        dict_spline["control_points"] = loaded[f"spline_{i}_control_points"]
+        dict_spline["degrees"] = loaded[f"spline_{i}_degrees"]
+
+        # Add the weights if the spline is rational
+        if f"spline_{i}_weights" in loaded:
+            dict_spline["weights"] = loaded[f"spline_{i}_weights"]
+
+        # Add the knot vectors if the spline has them
+        if f"spline_{i}_knot_vectors_0" in loaded:
+            kvs = []
+            for j in range(dict_spline["degrees"].size):
+                kvs.append(loaded[f"spline_{i}_knot_vectors_{j}"])
+            dict_spline["knot_vectors"] = kvs
+
+        # Append dictionary of spline to the list
+        list_of_spline_dicts.append(dict_spline)
+
+    return io.ioutils.dict_to_spline(list_of_spline_dicts)
 
 
-def export(fname, spline):
+def export(fname, list_of_splines):
     """
-    Save spline as `.npz`.
+    Save a list of splines as `.npz`.
 
     Parameters
     -----------
     fname: str
-    spline: BSpline or NURBS
+    splines: list of NURBS / BSpline / Bezier / Rational Bezier
 
     Returns
     --------
     None
     """
-    property_dicts = {
-        "degrees": spline.degrees,
-        "knot_vectors": np.array([str(spline.knot_vectors)]),
-        "control_points": spline.control_points,
-        "whatami": np.array([spline.whatami]),
-    }
 
-    if spline.whatami.startswith("NURBS"):
-        property_dicts.update(weights=spline.weights)
+    # Checking for proper type of input
+    if not isinstance(list_of_splines, list):
+        if isinstance(list_of_splines, splinepy_core.PySpline):
+            list_of_splines = [list_of_splines]
+        else:
+            raise TypeError("Only a list of splines or a spline can be saved.")
 
+    # Initialize an empty dictionary to store the properties of each spline
+    property_dicts = {}
+
+    # Add number of splines in list to dict
+    property_dicts["number_of_splines"] = len(list_of_splines)
+
+    # Loop through the list of splines and add their properties to the dictionary
+    for i, spline in enumerate(list_of_splines):
+        # Use a prefix to distinguish different splines
+        prefix = f"spline_{i}_"
+
+        # Add the common properties of all splines
+        property_dicts[f"{prefix}degrees"] = spline.degrees
+        property_dicts[f"{prefix}control_points"] = spline.control_points
+
+        # Add the weights if the spline is rational
+        if spline.is_rational:
+            property_dicts[f"{prefix}weights"] = spline.weights
+
+        # Add the knot vectors if the spline has them
+        if spline.has_knot_vectors:
+            for j in range(spline.para_dim):
+                property_dicts[
+                    f"{prefix}knot_vectors_{j}"
+                ] = spline.knot_vectors[j]
+
+    # Save the dictionary as `.npz`
     np.savez(
         fname,
         **property_dicts,
