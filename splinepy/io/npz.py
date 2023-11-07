@@ -10,8 +10,7 @@ keys in raw files are:
 
 import numpy as np
 
-from splinepy import io
-from splinepy import splinepy_core
+from splinepy import io, splinepy_core
 
 
 def load(
