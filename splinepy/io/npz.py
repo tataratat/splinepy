@@ -33,7 +33,7 @@ def load(
     list_of_spline_dicts = []
 
     # Loop through keys in loaded dictionary and find the ones starting with 'spline_'
-    for i in range(loaded["num_of_splines"]):
+    for i in range(loaded["number_of_splines"]):
         # Initialize an empty dictionary to store the properties of the spline
         dict_spline = {}
 
@@ -83,7 +83,7 @@ def export(fname, list_of_splines):
     property_dicts = {}
 
     # Add number of splines in list to dict
-    property_dicts["num_of_splines"] = len(list_of_splines)
+    property_dicts["number_of_splines"] = len(list_of_splines)
 
     # Loop through the list of splines and add their properties to the dictionary
     for i, spline in enumerate(list_of_splines):
