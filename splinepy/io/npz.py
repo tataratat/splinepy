@@ -11,6 +11,7 @@ keys in raw files are:
 import numpy as np
 
 from splinepy import io
+from splinepy import splinepy_core
 
 
 def load(
@@ -86,6 +87,14 @@ def export(fname, list_of_splines):
     --------
     None
     """
+
+    # Checking for proper type of input
+    if type(list_of_splines) != list:
+        if isinstance(list_of_splines, splinepy_core.PySpline):
+            list_of_splines = [list_of_splines]
+        else:
+            raise TypeError("Only a list of splines or a spline can be saved.")
+
     # Initialize an empty dictionary to store the properties of each spline
     property_dicts = {}
 
