@@ -341,11 +341,11 @@ class CreatorTest(c.SplineBasedTestCase):
             self.bspline_2p2d(),
             *self.all_3p3d_splines(),
         ):
-            rng  = np.random.default_rng(12345)
+            rng = np.random.default_rng(12345)
             detSp, d_min = c.splinepy.helpme.create.determinant_spline(
                 sp_i, dmin=True, show=False
             )
-            rnd_queries = rng.random((10,sp_i.dim),"float32")
+            rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
                     detSp.evaluate(queries=rnd_queries)[:, 0],
@@ -359,7 +359,7 @@ class CreatorTest(c.SplineBasedTestCase):
             detSp, d_min = c.splinepy.helpme.create.determinant_spline(
                 sp_i, dmin=True, show=False
             )
-            rnd_queries = rng.random((10,sp_i.dim),"float32")
+            rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
                     detSp.evaluate(queries=rnd_queries)[:, 0],
