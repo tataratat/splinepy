@@ -197,6 +197,192 @@ class CreatorTest(c.SplineBasedTestCase):
             check_parametric_view(spl, False)
             check_parametric_view(spl, True)
 
+    def test_determinant_spline(self):
+        # Bezier splines
+        # arbitrary
+        Bez1 = c.splinepy.Bezier(
+            degrees=[2], control_points=[[0, 0], [1.0, 0.5], [1, 0]]
+        )
+        Bez1 = c.splinepy.helpme.create.extruded(Bez1, [0, 2])
+        Bez1 = c.splinepy.helpme.create.extruded(Bez1, [0, 0, 3])
+
+        # box
+        Bez2 = c.splinepy.helpme.create.box(3, 3, 3)
+
+        # BSplines
+        # C^0 continuous
+        BSpC0 = c.splinepy.BSpline(
+            degrees=[1, 1],
+            knot_vectors=[
+                [0.0, 0.0, 1.0, 5.0, 5.0],
+                [0.0, 0.0, 1.0, 3.0, 3.0],
+            ],
+            control_points=[
+                [0.0, 0.0],
+                [0.5, 0.0],
+                [1.0, 0.0],
+                [0.5, 0.5],
+                [1.0, 0.5],
+                [1.5, 0.5],
+                [0.0, 1.0],
+                [0.5, 1.0],
+                [1.0, 1.0],
+            ],
+        )
+
+        # C^1 Continuous
+        BSpC1 = c.splinepy.BSpline(
+            degrees=[3, 1],
+            knot_vectors=[
+                [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
+                [0.0, 0.0, 1.0, 1.0],
+            ],
+            control_points=[
+                [0.0, 0.0],
+                [0.5, 0.0],
+                [1.0, -1.0],
+                [2.0, -3.0],
+                [2.5, -3.0],
+                [3.0, -3],
+                [5.0, 5.0],
+                [6.0, 5.0],
+                [7.0, 5.0],
+                [8.0, 5.0],
+                [9.0, 5.0],
+                [10.0, 5.0],
+            ],
+        )
+        BSpC1 = c.splinepy.helpme.create.extruded(BSpC1, [0, 0, 3])
+
+        # CPTS Manipulation for almost tangled spline
+        BSpC1.control_points[17] = [3, -3, 1.51]
+        BSpC1.control_points[5] = [3, -3, 1.49]
+
+        BSpC1_tang = BSpC1.copy()
+
+        # CPTS Manipulation for slightly tangled spline
+        BSpC1_tang.control_points[5] = [3, -3, 1.51]
+        BSpC1_tang.control_points[17] = [3, -3, 1.49]
+
+        # After degree elevation det(J) < 0??
+        BSpC1.elevate_degrees([0, 1, 1, 2])
+
+        # NURBS
+        NURBS_eqW = c.splinepy.NURBS(
+            degrees=[3, 1],
+            knot_vectors=[
+                [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
+                [0.0, 0.0, 1.0, 1.0],
+            ],
+            control_points=[
+                [0.0, 0.0],
+                [0.5, 0.0],
+                [1.0, -1.0],
+                [2.0, -3.0],
+                [2.5, -3.0],
+                [3.0, -3],
+                [5.0, 5.0],
+                [6.0, 5.0],
+                [7.0, 5.0],
+                [8.0, 5.0],
+                [9.0, 5.0],
+                [10.0, 5.0],
+            ],
+            weights=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        )
+
+        NURBS_eqW = c.splinepy.helpme.create.extruded(NURBS_eqW, [0, 0, 3])
+
+        # CPTS Manipulation for almost tangled spline
+        NURBS_eqW.control_points[5] = [3, -3, 1.49]
+        NURBS_eqW.control_points[17] = [3, -3, 1.51]
+
+        NURBS_eqW_tang = NURBS_eqW.copy()
+        # CPTS Manipulation for slightly tangled spline
+        NURBS_eqW_tang.control_points[5] = [3, -3, 1.51]
+        NURBS_eqW_tang.control_points[17] = [3, -3, 1.49]
+
+        # After degree elevation det(J) < 0??
+        NURBS_eqW.elevate_degrees([0, 0, 1, 2])
+
+        # unequal weights:
+        NURBS_uneqW = c.splinepy.NURBS(
+            degrees=[3, 1],
+            knot_vectors=[
+                [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
+                [0.0, 0.0, 1.0, 1.0],
+            ],
+            control_points=[
+                [0.0, 0.0],
+                [0.5, 0.0],
+                [1.0, -1.0],
+                [2.0, -3.0],
+                [2.5, -3.0],
+                [3.0, -3],
+                [5.0, 5.0],
+                [6.0, 5.0],
+                [7.0, 5.0],
+                [8.0, 5.0],
+                [9.0, 5.0],
+                [10.0, 5.0],
+            ],
+            weights=[1, 1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1, 1],
+        )
+        NURBS_uneqW = c.splinepy.helpme.create.extruded(NURBS_uneqW, [0, 0, 3])
+
+        # Splines which are not tangled
+
+        for sp_i in (
+            Bez2,
+            BSpC0,
+            BSpC1,
+            NURBS_eqW,
+            self.bezier_2p2d(),
+            self.bspline_2p2d(),
+            *self.all_3p3d_splines(),
+        ):
+            rng  = np.random.default_rng(12345)
+            detSp, d_min = c.splinepy.helpme.create.determinant_spline(
+                sp_i, dmin=True, show=False
+            )
+            rnd_queries = rng.random((10,sp_i.dim),"float32")
+            self.assertTrue(
+                np.allclose(
+                    detSp.evaluate(queries=rnd_queries)[:, 0],
+                    np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+                )
+            )
+            self.assertTrue(d_min > 0)
+
+        # Splines which are tangled or singular
+        for sp_i in (Bez1, BSpC1_tang, NURBS_eqW_tang):
+            detSp, d_min = c.splinepy.helpme.create.determinant_spline(
+                sp_i, dmin=True, show=False
+            )
+            rnd_queries = rng.random((10,sp_i.dim),"float32")
+            self.assertTrue(
+                np.allclose(
+                    detSp.evaluate(queries=rnd_queries)[:, 0],
+                    np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+                )
+            )
+            self.assertTrue(d_min <= 0)
+
+        # Expect Failure: rational splines with unequal weights:
+
+        with self.assertRaises(TypeError):
+            detSp = c.splinepy.helpme.create.determinant_spline(NURBS_uneqW)
+
+        with self.assertRaises(TypeError):
+            detSp = c.splinepy.helpme.create.determinant_spline(
+                self.rational_bezier_2p2d()
+            )
+
+        with self.assertRaises(TypeError):
+            detSp = c.splinepy.helpme.create.determinant_spline(
+                self.nurbs_2p2d()
+            )
+
 
 if __name__ == "__main__":
     c.unittest.main()
