@@ -309,7 +309,7 @@ def to_tmpf(tmpd):
     return os.path.join(tmpd, "nqv248p90")
 
 
-def are_splines_equal(a, b):
+def are_splines_equal(a, b, print_=True):
     """returns True if Splines are equivalent"""
     if a.whatami != b.whatami:
         return False
@@ -317,8 +317,14 @@ def are_splines_equal(a, b):
         if req_prop == "knot_vectors":
             for aa, bb in zip(a.knot_vectors, b.knot_vectors):
                 if not np.allclose(aa.numpy(), bb.numpy()):
+                    if print_:
+                        print("a.kvs", a.kvs)
+                        print("b.kvs", b.kvs)
                     return False
         elif not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
+            if print_:
+                print(f"a.{req_prop}", getattr(a, req_prop))
+                print(f"b.{req_prop}", getattr(b, req_prop))
             return False
     return True
 
