@@ -9,7 +9,7 @@ except BaseException:
 class IGESExportTest(c.unittest.TestCase):
     def test_iges_round_trip_bsplines(self):
         """
-        Test npz export-import routine
+        Test iges export-import routine
         """
         bsp_el2 = c.splinepy.BSpline(
             degrees=[1, 1],
