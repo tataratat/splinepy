@@ -16,6 +16,10 @@ class IGESExportTest(c.unittest.TestCase):
         if platform.system().startswith(
             "Win"
         ) and c.splinepy.splinepy_core.build_type().startswith("debug"):
+            c.splinepy.utils.log.warning(
+                "Skipping io.iges test.",
+                "Try release mode, if you need to use io.iges",
+            )
             return None
 
         bsp_el2 = c.splinepy.BSpline(
