@@ -23,9 +23,6 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCreate(
   }
 
   if (!knot_vectors) {
-    // at least we need degrees and cps.
-    // @jzwar this would be a good place to check valid input
-
     if (!weights) {
       return SplinepyCreateBezier(para_dim, dim, degrees, control_points);
     } else {
@@ -569,6 +566,13 @@ bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,
   return false;
 }
 
+std::vector<std::vector<int>> SplinepyBase::SplinepyKnotMultiplicities() const {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyKnotMultiplicities not implemented for",
+      SplinepyWhatAmI());
+  return std::vector<std::vector<int>>{};
+};
+
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
   splinepy::utils::PrintAndThrowError("SplinepyMultiply not implemented for",
@@ -646,5 +650,11 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCompositionDerivative(
       SplinepyWhatAmI());
   return {std::shared_ptr<SplinepyBase>{}};
 }
+
+std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyDeepCopy() const {
+  splinepy::utils::PrintAndThrowError("SplinepyDeepCopy is not implemented for",
+                                      SplinepyWhatAmI());
+  return {std::shared_ptr<SplinepyBase>{}};
+};
 
 } // namespace splinepy::splines

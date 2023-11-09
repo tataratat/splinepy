@@ -161,8 +161,7 @@ class BSplineBase(spline.Spline):
         """
         if beziers:
             indices, data = splinepy_core.bezier_extraction_matrix(
-                [kv.numpy() for kv in self.knot_vectors],
-                self.degrees,
+                self,
                 settings.TOLERANCE,
             )
 
@@ -189,8 +188,7 @@ class BSplineBase(spline.Spline):
             return matrices
 
         data = splinepy_core.global_knot_insertion_matrix(
-            self.knot_vectors,
-            self.degrees,
+            self,
             parametric_dimension,
             utils.data.enforce_contiguous(knots, dtype="float64"),
             settings.TOLERANCE,
