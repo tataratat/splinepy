@@ -4,9 +4,9 @@ from splinepy.bezier import Bezier
 from splinepy.microstructure.tiles.tilebase import TileBase
 
 
-class drilled_cross_tile_1D(TileBase):
+class DrilledCrossTile1D(TileBase):
     def __init__(self):
-        """drilled_cross_tile_1D"""
+        """drilledcrosstile1d"""
         self._dim = 2
         self._evaluation_points = np.array(
             [
