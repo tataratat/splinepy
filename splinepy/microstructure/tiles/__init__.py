@@ -16,7 +16,7 @@ from splinepy.microstructure.tiles import (
     nuttile2d,
     nuttile3d,
     snappytile,
-    tilebase
+    tilebase,
 )
 from splinepy.microstructure.tiles.armadillo import Armadillo
 from splinepy.microstructure.tiles.crosstile2d import CrossTile2D
