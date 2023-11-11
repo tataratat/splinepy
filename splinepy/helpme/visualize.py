@@ -1,87 +1,87 @@
-import gustaf as gus
-import numpy as np
-from gustaf import Vertices
-from gustaf.helpers import options
-from gustaf.utils.arr import enforce_len
+import gustaf as _gus
+import numpy as _np
+from gustaf import Vertices as _Vertices
+from gustaf.helpers import options as _options
+from gustaf.utils.arr import enforce_len as _enforce_len
 
-from splinepy import settings
-from splinepy.utils import log
+from splinepy import settings as _settings
+from splinepy.utils import log as _log
 
 _vedo_spline_common_options = (
-    options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
-    options.Option("vedo", "knot_c", "Knot color.", (str, tuple, list, int)),
-    options.Option(
+    _options.Option("vedo", "knots", "Show spline's knots.", (bool,)),
+    _options.Option("vedo", "knot_c", "Knot color.", (str, tuple, list, int)),
+    _options.Option(
         "vedo",
         "knot_lw",
         "Line width of knots. Number of pixels. "
         "Applicable to para_dim > 1.",
         (int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "knot_alpha",
         "Transparency of knots in range [0, 1]. Applicable to para_dim > 1",
         (float, int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_points",
         "Show spline's control points."
         "Options propagates to control mesh, unless it is specified.",
         (bool,),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_point_r",
         "Control point radius",
         (float, int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_point_c",
         "Color of control_points in {rgb, RGB, str of (hex, name), int}",
         (str, tuple, list, int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_point_alpha",
         "Transparency of control points in range [0, 1].",
         (float, int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_point_ids",
         "Show ids of control_points.",
         (bool,),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_mesh",
         "Show spline's control mesh.",
         (bool,),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_mesh_c",
         "Color of control_mesh in {rgb, RGB, str of (hex, name), int}",
         (str, tuple, list, int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "control_mesh_lw",
         "Line width of control mesh. Number of pixels",
         (int),
     ),
-    options.Option(
+    _options.Option(
         "vedo",
         "resolutions",
         "Sampling resolution for spline.",
-        (int, list, tuple, np.ndarray),
+        (int, list, tuple, _np.ndarray),
     ),
 )
 
 
-class SplineShowOption(options.ShowOption):
+class SplineShowOption(_options.ShowOption):
     """
     Show options for splines.
     """
@@ -90,20 +90,20 @@ class SplineShowOption(options.ShowOption):
 
     # if we start to support more backends, most of this options should become
     # some sort of spline common.
-    _valid_options = options.make_valid_options(
-        *options.vedo_common_options,
+    _valid_options = _options.make_valid_options(
+        *_options.vedo_common_options,
         *_vedo_spline_common_options,
-        options.Option(
+        _options.Option(
             "vedo",
             "fitting_queries",
             "Shows fitting queries if they are locally saved in splines.",
             (bool,),
         ),
-        options.Option(
+        _options.Option(
             "vedo",
             "arrow_data_on",
             "Specify parametric coordinates to place arrow_data.",
-            (list, tuple, np.ndarray),
+            (list, tuple, _np.ndarray),
         ),
     )
 
@@ -123,11 +123,11 @@ class SplineShowOption(options.ShowOption):
                 f"Given helpee is {type(helpee)}.",
             )
         self._options = {}
-        self._backend = gus.settings.VISUALIZATION_BACKEND
+        self._backend = _gus.settings.VISUALIZATION_BACKEND
         self._options[self._backend] = {}
 
 
-class MultipatchShowOption(options.ShowOption):
+class MultipatchShowOption(_options.ShowOption):
     """
     Show options for Multipatches.
     """
@@ -136,8 +136,8 @@ class MultipatchShowOption(options.ShowOption):
 
     # if we start to support more backends, most of this options should become
     # some sort of spline common.
-    _valid_options = options.make_valid_options(
-        *options.vedo_common_options,
+    _valid_options = _options.make_valid_options(
+        *_options.vedo_common_options,
         *_vedo_spline_common_options,
     )
 
@@ -157,7 +157,7 @@ class MultipatchShowOption(options.ShowOption):
                 f"Given helpee is {type(helpee)}.",
             )
         self._options = {}
-        self._backend = gus.settings.VISUALIZATION_BACKEND
+        self._backend = _gus.settings.VISUALIZATION_BACKEND
         self._options[self._backend] = {}
 
 
@@ -173,18 +173,18 @@ def _sample_knots_1d(spline):
 
     def sample_uks(s):
         """samples unique knots from single patch spline"""
-        return s.evaluate(np.asanyarray(s.unique_knots[0]).reshape(-1, 1))
+        return s.evaluate(_np.asanyarray(s.unique_knots[0]).reshape(-1, 1))
 
     # sample unique knots in physical space and create vertices
     # for multi-patch, we will call this function for its patches
     if spline.name.startswith("Multi"):
-        evaluated_knots = np.vstack([sample_uks(p) for p in spline.patches])
+        evaluated_knots = _np.vstack([sample_uks(p) for p in spline.patches])
     else:
         evaluated_knots = sample_uks(spline)
 
     # create vertices - for multipatch, we could remove duplicating vertices
     # it gets annoying
-    knots = Vertices(evaluated_knots)
+    knots = _Vertices(evaluated_knots)
 
     # apply show options to show this vertices as 'x'
     knots.show_options["labels"] = ["x"] * len(knots.vertices)
@@ -379,8 +379,8 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
                 )
             # tolerance padding. may still cause issues in splinepy.
             # in that case, we will have to scale queries.
-            lb_diff = queries.min(axis=0) - bounds[0] + settings.TOLERANCE
-            ub_diff = queries.max(axis=0) - bounds[1] - settings.TOLERANCE
+            lb_diff = queries.min(axis=0) - bounds[0] + _settings.TOLERANCE
+            ub_diff = queries.max(axis=0) - bounds[1] - _settings.TOLERANCE
             if any(lb_diff < 0) or any(ub_diff > 0):
                 raise ValueError(
                     f"Given locations for ({adata_name}) are outside the "
@@ -391,7 +391,7 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
         adata = spline.spline_data.as_arrow(adata_name, on=on)
 
         # create vertices that can be shown as arrows
-        loc_vertices = Vertices(spline.evaluate(queries), copy=False)
+        loc_vertices = _Vertices(spline.evaluate(queries), copy=False)
         loc_vertices.vertex_data[adata_name] = adata
 
         # transfer options
@@ -421,7 +421,7 @@ def _create_control_point_ids(spline):
     """
     # a bit redundant, but nicely separable
     cp_ids = spline.extract.control_points()
-    cp_ids.show_options["labels"] = np.arange(len(cp_ids.vertices))
+    cp_ids.show_options["labels"] = _np.arange(len(cp_ids.vertices))
     cp_ids.show_options["label_options"] = {"font": "VTK"}
 
     return cp_ids
@@ -450,7 +450,7 @@ def _create_fitting_queries(spline):
     Create fitting queries. This will raise if spline is not BSpline or
     fitting queries does not exist.
     """
-    fqs = Vertices(spline._fitting_queries)
+    fqs = _Vertices(spline._fitting_queries)
     fqs.show_options["c"] = "blue"
     fqs.show_options["r"] = 10
     return fqs
@@ -495,7 +495,7 @@ def _vedo_showable(spline):
         spline,
         spline.show_options.get("arrow_data", None),
         sampled_spline,
-        enforce_len(res, spline.para_dim),
+        _enforce_len(res, spline.para_dim),
     )
     if arrow_data is not None:
         sampled_gus["arrow_data"] = arrow_data
@@ -575,7 +575,7 @@ def show(spline, **kwargs):
             try:
                 spline.show_options[key] = value
             except BaseException:
-                log.debug(
+                _log.debug(
                     f"Skipping invalid option {key} for "
                     f"{spline.show_options._helps}."
                 )
@@ -602,10 +602,10 @@ def show(spline, **kwargs):
     if para_space:
         things_to_show.pop("parametric_spline")
 
-        return gus.show(
+        return _gus.show(
             ["Parametric Space", p_spline],
             ["Physical Space", *things_to_show.values()],
             **kwargs,
         )
 
-    return gus.show(things_to_show, **kwargs)
+    return _gus.show(things_to_show, **kwargs)
