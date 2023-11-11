@@ -1,8 +1,8 @@
-import numpy as np
-from gustaf.utils import arr
+import numpy as _np
+from gustaf.utils import arr as _arr
 
-from splinepy import settings
-from splinepy.utils import log
+from splinepy import settings as _settings
+from splinepy.utils import log as _log
 
 
 def extruded(spline, extrusion_vector=None):
@@ -13,16 +13,16 @@ def extruded(spline, extrusion_vector=None):
     spline: Spline
     extrusion_vector: np.ndarray
     """
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
     # Check input type
-    if not isinstance(spline, Spline):
+    if not isinstance(spline, _Spline):
         raise NotImplementedError("Extrude only works for splines")
 
     # Check extrusion_vector
     if extrusion_vector is not None:
         # make flat extrusion_vector
-        extrusion_vector = np.asarray(extrusion_vector).ravel()
+        extrusion_vector = _np.asarray(extrusion_vector).ravel()
     else:
         raise ValueError("No extrusion extrusion_vector given")
 
@@ -34,15 +34,15 @@ def extruded(spline, extrusion_vector=None):
         expansion_dimension = extrusion_vector.shape[0] - spline.dim
         # one smaller dim is allowed
         # warn that we assume new dim is all zero
-        log.debug(
+        _log.debug(
             f"Given extrusion vector is {expansion_dimension} dimension "
             "bigger than spline's dim. Assuming 0.0 entries for "
             "new dimension.",
         )
-        cps = np.hstack(
+        cps = _np.hstack(
             (
                 spline.control_points,
-                np.zeros((len(spline.control_points), expansion_dimension)),
+                _np.zeros((len(spline.control_points), expansion_dimension)),
             )
         )
     else:
@@ -54,12 +54,12 @@ def extruded(spline, extrusion_vector=None):
     # Start Extrusion
     spline_dict = {}
 
-    spline_dict["degrees"] = np.concatenate((spline.degrees, [1]))
-    spline_dict["control_points"] = np.vstack((cps, cps + extrusion_vector))
+    spline_dict["degrees"] = _np.concatenate((spline.degrees, [1]))
+    spline_dict["control_points"] = _np.vstack((cps, cps + extrusion_vector))
     if spline.has_knot_vectors:
         spline_dict["knot_vectors"] = spline.knot_vectors + [[0, 0, 1, 1]]
     if spline.is_rational:
-        spline_dict["weights"] = np.concatenate(
+        spline_dict["weights"] = _np.concatenate(
             (spline.weights, spline.weights)
         )
 
@@ -90,47 +90,47 @@ def revolved(
     -------
     spline : Spline
     """
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
     # Check input type
-    if not isinstance(spline, Spline):
+    if not isinstance(spline, _Spline):
         raise NotImplementedError("Revolutions only works for splines")
 
     # Check axis
     if axis is not None:
         # Transform into numpy array
-        axis = np.asarray(axis).ravel()
+        axis = _np.asarray(axis).ravel()
         # Check Axis dimension
         if spline.control_points.shape[1] > axis.shape[0]:
             raise ValueError(
                 "Dimension Mismatch between extrusion axis and spline."
             )
         elif spline.control_points.shape[1] < axis.shape[0]:
-            log.debug(
+            _log.debug(
                 "Control Point dimension is smaller than axis dimension,"
                 " filling with zeros"
             )
             expansion_dimension = axis.shape[0] - spline.dim
-            cps = np.hstack(
+            cps = _np.hstack(
                 (
                     spline.control_points,
-                    np.zeros(
+                    _np.zeros(
                         (len(spline.control_points), expansion_dimension)
                     ),
                 )
             )
         else:
-            cps = np.copy(spline.control_points)
+            cps = _np.copy(spline.control_points)
 
         # Make sure axis is normalized
 
-        axis_norm = np.linalg.norm(axis)
-        if not np.isclose(axis_norm, 0, atol=settings.TOLERANCE):
+        axis_norm = _np.linalg.norm(axis)
+        if not _np.isclose(axis_norm, 0, atol=_settings.TOLERANCE):
             axis = axis / axis_norm
         else:
             raise ValueError("Axis-norm is too close to zero.")
     else:
-        cps = np.copy(spline.control_points)
+        cps = _np.copy(spline.control_points)
         if spline.control_points.shape[1] == 3:
             raise ValueError("No rotation axis given")
 
@@ -147,11 +147,11 @@ def revolved(
         angle = 360
 
     if degree:
-        angle = np.radians(angle)
+        angle = _np.radians(angle)
 
     # Init center
     if center is not None:
-        center = np.asarray(center).ravel()
+        center = _np.asarray(center).ravel()
         # Check Axis dimension
         if not (problem_dimension == center.shape[0]):
             raise ValueError(
@@ -168,9 +168,9 @@ def revolved(
 
     # Angle must be (0, pi) non including
     # Rotation is always performed in half steps
-    PI = np.pi
+    PI = _np.pi
     minimum_n_knot_spans = int(
-        np.ceil(np.abs((angle + settings.TOLERANCE) / PI))
+        _np.ceil(_np.abs((angle + _settings.TOLERANCE) / PI))
     )
     if (n_knot_spans) is None or (n_knot_spans < minimum_n_knot_spans):
         n_knot_spans = minimum_n_knot_spans
@@ -185,32 +185,32 @@ def revolved(
     # Determine auxiliary values
     rot_a = angle / (2 * n_knot_spans)
     half_counter_angle = PI / 2 - rot_a
-    weight = np.sin(half_counter_angle)
+    weight = _np.sin(half_counter_angle)
     factor = 1 / weight
 
     # Determine rotation matrix
-    rotation_matrix = arr.rotation_matrix_around_axis(
+    rotation_matrix = _arr.rotation_matrix_around_axis(
         axis=axis, rotation=rot_a, degree=False
     ).T
 
     # Start Extrusion
     spline_dict = {}
 
-    spline_dict["degrees"] = np.concatenate((spline.degrees, [2]))
+    spline_dict["degrees"] = _np.concatenate((spline.degrees, [2]))
 
     spline_dict["control_points"] = cps
     end_points = cps
     for _i_segment in range(n_knot_spans):
         # Rotate around axis
-        mid_points = np.matmul(end_points, rotation_matrix)
-        end_points = np.matmul(mid_points, rotation_matrix)
+        mid_points = _np.matmul(end_points, rotation_matrix)
+        end_points = _np.matmul(mid_points, rotation_matrix)
         # Move away from axis using dot-product tricks
         if problem_dimension == 3:
-            mp_scale = axis * np.dot(mid_points, axis).reshape(-1, 1)
+            mp_scale = axis * _np.dot(mid_points, axis).reshape(-1, 1)
             mid_points = (mid_points - mp_scale) * factor + mp_scale
         else:
             mid_points *= factor
-        spline_dict["control_points"] = np.concatenate(
+        spline_dict["control_points"] = _np.concatenate(
             (spline_dict["control_points"], mid_points, end_points)
         )
 
@@ -224,11 +224,11 @@ def revolved(
         mid_weights = spline.weights * weight
         spline_dict["weights"] = spline.weights
         for _i_segment in range(n_knot_spans):
-            spline_dict["weights"] = np.concatenate(
+            spline_dict["weights"] = _np.concatenate(
                 (spline_dict["weights"], mid_weights, spline.weights)
             )
     else:
-        log.debug(
+        _log.debug(
             "True revolutions are only possible for rational spline types.",
             "Creating Approximation.",
         )
@@ -253,8 +253,8 @@ def from_bounds(parametric_bounds, physical_bounds):
     --------
     spline: BSpline
     """
-    physical_bounds = np.asanyarray(physical_bounds).reshape(2, -1)
-    parametric_bounds = np.asanyarray(parametric_bounds).reshape(2, -1)
+    physical_bounds = _np.asanyarray(physical_bounds).reshape(2, -1)
+    parametric_bounds = _np.asanyarray(parametric_bounds).reshape(2, -1)
 
     # get correctly sized bez box
     phys_size = physical_bounds[1] - physical_bounds[0]
@@ -399,18 +399,18 @@ def line(points):
     # lines have degree 1
     degree = 1
 
-    cps = np.array(points)
+    cps = _np.array(points)
     nknots = cps.shape[0] + degree + 1
 
-    knots = np.concatenate(
+    knots = _np.concatenate(
         (
-            np.full(degree, 0.0),
-            np.linspace(0.0, 1.0, nknots - 2 * degree),
-            np.full(degree, 1.0),
+            _np.full(degree, 0.0),
+            _np.linspace(0.0, 1.0, nknots - 2 * degree),
+            _np.full(degree, 1.0),
         )
     )
 
-    spline = settings.NAME_TO_TYPE["BSpline"](
+    spline = _settings.NAME_TO_TYPE["BSpline"](
         control_points=cps, knot_vectors=[knots], degrees=[degree]
     )
 
@@ -446,14 +446,14 @@ def arc(
     """
     # Define point spline of degree 0 at starting point of the arc
     if degree:
-        start_angle = np.radians(start_angle)
-        angle = np.radians(angle)
-    start_point = [radius * np.cos(start_angle), radius * np.sin(start_angle)]
-    point_spline = settings.NAME_TO_TYPE["RationalBezier"](
+        start_angle = _np.radians(start_angle)
+        angle = _np.radians(angle)
+    start_point = [radius * _np.cos(start_angle), radius * _np.sin(start_angle)]
+    point_spline = _settings.NAME_TO_TYPE["RationalBezier"](
         degrees=[0], control_points=[start_point], weights=[1.0]
     )
     # Bezier splines only support angles lower than 180 degrees
-    if abs(angle) >= np.pi or n_knot_spans > 1:
+    if abs(angle) >= _np.pi or n_knot_spans > 1:
         point_spline = point_spline.nurbs
 
     # Revolve - set degree to False, since all the angles are converted to rad
@@ -500,7 +500,7 @@ def box(*lengths):
     """
     # may dim check here?
     # starting point
-    nd_box = settings.NAME_TO_TYPE["Bezier"](
+    nd_box = _settings.NAME_TO_TYPE["Bezier"](
         degrees=[1], control_points=[[0], [lengths[0]]]
     )
     # use extrude
@@ -525,7 +525,7 @@ def plate(radius=1.0):
     """
     degrees = [2, 2]
     control_points = (
-        np.array(
+        _np.array(
             [
                 [-0.5, -0.5],
                 [0.0, -1.0],
@@ -540,9 +540,9 @@ def plate(radius=1.0):
         )
         * radius
     )
-    weights = np.tile([1.0, 1 / np.sqrt(2)], 5)[:-1]
+    weights = _np.tile([1.0, 1 / _np.sqrt(2)], 5)[:-1]
 
-    return settings.NAME_TO_TYPE["RationalBezier"](
+    return _settings.NAME_TO_TYPE["RationalBezier"](
         degrees=degrees, control_points=control_points, weights=weights
     )
 
@@ -577,11 +577,11 @@ def disk(
     if inner_radius is None:
         inner_radius = 0.0
 
-    cps = np.array([[inner_radius, 0.0], [outer_radius, 0.0]])
-    weights = np.ones([cps.shape[0]])
-    knots = np.repeat([0.0, 1.0], 2)
+    cps = _np.array([[inner_radius, 0.0], [outer_radius, 0.0]])
+    weights = _np.ones([cps.shape[0]])
+    knots = _np.repeat([0.0, 1.0], 2)
 
-    return settings.NAME_TO_TYPE["NURBS"](
+    return _settings.NAME_TO_TYPE["NURBS"](
         control_points=cps, knot_vectors=[knots], degrees=[1], weights=weights
     ).create.revolved(angle=angle, n_knot_spans=n_knot_spans, degree=degree)
 
@@ -625,11 +625,11 @@ def torus(
     """
 
     if torus_angle is None:
-        torus_angle = 2 * np.pi
+        torus_angle = 2 * _np.pi
         degree = False
 
     if section_angle is None:
-        section_angle = 2 * np.pi
+        section_angle = 2 * _np.pi
         section_angle_flag = False
         degree = False
     else:
@@ -645,7 +645,7 @@ def torus(
     if not section_angle_flag and not section_inner_radius_flag:
         cross_section = plate(section_outer_radius)
         # For more than 180 degree only NURBS can be used
-        if abs(torus_angle) >= np.pi:
+        if abs(torus_angle) >= _np.pi:
             cross_section = cross_section.nurbs
     else:
         cross_section = disk(
@@ -661,7 +661,7 @@ def torus(
 
     return cross_section.create.revolved(
         axis=[1.0, 0, 0],
-        center=np.zeros(3),
+        center=_np.zeros(3),
         angle=torus_angle,
         n_knot_spans=torus_n_knot_spans,
         degree=degree,
@@ -726,7 +726,7 @@ def surface_circle(outer_radius):
     aux_0_w = 2**-0.5
     aux_0 = outer_radius * aux_0_w
 
-    return settings.NAME_TO_TYPE["RationalBezier"](
+    return _settings.NAME_TO_TYPE["RationalBezier"](
         degrees=[2, 2],
         control_points=[
             [-aux_0, -aux_0],
@@ -780,7 +780,7 @@ def cone(
     # Extrude in z
     cone = ground.create.extruded([0, 0, height])
     # Move all upper control points to one
-    cone.control_points[np.isclose(cone.control_points[:, -1], height)] = [
+    cone.control_points[_np.isclose(cone.control_points[:, -1], height)] = [
         0,
         0,
         height,

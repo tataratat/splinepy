@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as _np
 
 
 def valid_queries(spline, queries):
@@ -28,10 +28,10 @@ def valid_queries(spline, queries):
         )
 
     # Check minimum value
-    min_query = np.min(queries, axis=0)
-    if np.any(bounds[0, :] > min_query):
-        error_dim = np.where(bounds[1, :] > min_query)[0][0]
-        error_query = np.argmin(queries, axis=0)[error_dim]
+    min_query = _np.min(queries, axis=0)
+    if _np.any(bounds[0, :] > min_query):
+        error_dim = _np.where(bounds[1, :] > min_query)[0][0]
+        error_query = _np.argmin(queries, axis=0)[error_dim]
         raise ValueError(
             f"Query request out of bounds in parametric dimension "
             f"{error_dim}. Detected query {queries[error_query,:]} at "
@@ -40,10 +40,10 @@ def valid_queries(spline, queries):
         )
 
     # Check maximum value
-    max_query = np.max(queries, axis=0)
-    if np.any(bounds[1, :] < max_query):
-        error_dim = np.where(bounds[1, :] < max_query)[0][0]
-        error_query = np.argmax(queries, axis=0)[error_dim]
+    max_query = _np.max(queries, axis=0)
+    if _np.any(bounds[1, :] < max_query):
+        error_dim = _np.where(bounds[1, :] < max_query)[0][0]
+        error_query = _np.argmax(queries, axis=0)[error_dim]
         raise ValueError(
             f"Query request out of bounds in parametric dimension "
             f"{error_dim}. Detected query {queries[error_query,:]} at "

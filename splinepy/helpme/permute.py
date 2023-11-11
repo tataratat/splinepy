@@ -1,6 +1,6 @@
-import numpy as np
+import numpy as _np
 
-from splinepy import utils
+from splinepy import utils as _utils
 
 
 def parametric_axes(spline, permutation_list, inplace=True):
@@ -34,7 +34,7 @@ def parametric_axes(spline, permutation_list, inplace=True):
     if not set(range(spline.para_dim)) == set(permutation_list):
         raise ValueError("Permutation list invalid")
 
-    utils.log.debug("Permuting parametric axes...")
+    _utils.log.debug("Permuting parametric axes...")
 
     # Update knot_vectors where applicable
     if "knot_vectors" in spline.required_properties:
@@ -56,32 +56,32 @@ def parametric_axes(spline, permutation_list, inplace=True):
 
     # Map global to local index
     # i_glob = i + n_i * j  + n_i * n_j * k ...
-    local_indices = np.empty([n_ctps, spline.para_dim], dtype=int)
-    global_indices = np.arange(n_ctps, dtype=int)
+    local_indices = _np.empty([n_ctps, spline.para_dim], dtype=int)
+    global_indices = _np.arange(n_ctps, dtype=int)
     for i_p in range(spline.para_dim):
         local_indices[:, i_p] = global_indices % ctps_dims[i_p]
         global_indices -= local_indices[:, i_p]
-        global_indices = np.floor_divide(global_indices, ctps_dims[i_p])
+        global_indices = _np.floor_divide(global_indices, ctps_dims[i_p])
 
     # Reorder indices
     local_indices[:] = local_indices[:, permutation_list]
 
     # Rearange global to local
-    global_indices = np.matmul(
-        local_indices, np.cumprod([1] + new_ctps_dims)[0:-1]
+    global_indices = _np.matmul(
+        local_indices, _np.cumprod([1] + new_ctps_dims)[0:-1]
     )
     # Get inverse mapping
-    global_indices = np.argsort(global_indices)
+    global_indices = _np.argsort(global_indices)
     if "weights" in spline.required_properties:
         dict_spline["weights"] = spline.weights[global_indices]
     dict_spline["control_points"] = spline.control_points[global_indices, :]
 
     if inplace:
-        utils.log.debug("  applying permutation inplace")
+        _utils.log.debug("  applying permutation inplace")
         spline._new_core(**dict_spline)
 
         return None
 
     else:
-        utils.log.debug("  returning permuted spline")
+        _utils.log.debug("  returning permuted spline")
         return type(spline)(**dict_spline)

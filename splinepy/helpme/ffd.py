@@ -2,12 +2,12 @@
 
 Freeform Deformation!
 """
-import gustaf as gus
+import gustaf as _gus
 
-from splinepy import settings
-from splinepy._base import SplinepyBase
-from splinepy.helpme.create import from_bounds
-from splinepy.spline import Spline
+from splinepy import settings as _settings
+from splinepy._base import SplinepyBase as _SplinepyBase
+from splinepy.helpme.create import from_bounds as _from_bounds
+from splinepy.spline import Spline as _Spline
 
 
 def _rescaled_vertices(vertices, scale, offset):
@@ -18,7 +18,7 @@ def _spline_para_dim_and_mesh_dim_matches(spline, mesh):
     return spline.para_dim == mesh.vertices.shape[1]
 
 
-class FFD(SplinepyBase):
+class FFD(_SplinepyBase):
     """
     Free-form deformation is a method used to deform an object by a
     deformation function. In our case the object is given via a mesh, the
@@ -64,7 +64,7 @@ class FFD(SplinepyBase):
 
         # use setters for attr
         if padding is None:
-            self.padding = settings.TOLERANCE
+            self.padding = _settings.TOLERANCE
         if mesh is not None:
             self.mesh = mesh
         if spline is not None:
@@ -121,7 +121,7 @@ class FFD(SplinepyBase):
             return None
 
         # type check
-        if not isinstance(mesh, gus.Vertices):
+        if not isinstance(mesh, _gus.Vertices):
             raise TypeError("mesh should be an instance of gus.Vertices")
 
         # warn and erase existing spline if dimension doesn't match
@@ -143,7 +143,7 @@ class FFD(SplinepyBase):
             par_dim = mesh.vertices.shape[1]
             # try to expand bounds same ratio as
             bounds = mesh.bounds().copy()
-            self.spline = from_bounds([[0] * par_dim, [1] * par_dim], bounds)
+            self.spline = _from_bounds([[0] * par_dim, [1] * par_dim], bounds)
             self._logd("created default spline")
 
         self._logd("Setting mesh.")
@@ -208,7 +208,7 @@ class FFD(SplinepyBase):
             self._spline = None
             return None
 
-        if not isinstance(spline, Spline):
+        if not isinstance(spline, _Spline):
             raise TypeError(
                 "spline should be an instance of splinepy.Spline class"
             )
@@ -252,7 +252,7 @@ class FFD(SplinepyBase):
         if padding < 0:
             raise ValueError("Padding should be a positive number.")
 
-        if padding < settings.TOLERANCE:
+        if padding < _settings.TOLERANCE:
             raise ValueError(
                 "Padding is too small - "
                 "should be bigger than the tolerance ({settings.TOLERANCE})."
@@ -307,7 +307,7 @@ class FFD(SplinepyBase):
         if return_gustaf or return_showable:
             return things_to_show
 
-        return gus.show(
+        return _gus.show(
             ["Original Mesh", things_to_show["original_mesh"]],
             [
                 "Spline and Mesh",
@@ -335,7 +335,7 @@ class FFD(SplinepyBase):
         # let's show faces at most, since volumes can take awhile
         mesh = self._mesh
         if mesh.kind == "volume":
-            mesh = gus.Faces(
+            mesh = _gus.Faces(
                 mesh.const_vertices,
                 mesh.faces()[mesh.single_faces()],
                 copy=False,
