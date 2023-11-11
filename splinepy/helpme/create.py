@@ -448,7 +448,10 @@ def arc(
     if degree:
         start_angle = _np.radians(start_angle)
         angle = _np.radians(angle)
-    start_point = [radius * _np.cos(start_angle), radius * _np.sin(start_angle)]
+    start_point = [
+        radius * _np.cos(start_angle),
+        radius * _np.sin(start_angle),
+    ]
     point_spline = _settings.NAME_TO_TYPE["RationalBezier"](
         degrees=[0], control_points=[start_point], weights=[1.0]
     )
