@@ -1,5 +1,12 @@
 import numpy as _np
-from gustaf import Edges, Faces, Vertices, Volumes as _Edges, _Faces, _Vertices, _Volumes
+from gustaf import (
+    Volumes as _Edges,
+)
+from gustaf import (
+    _Faces,
+    _Vertices,
+    _Volumes,
+)
 from gustaf.utils import connec as _connec
 from gustaf.utils.arr import enforce_len as _enforce_len
 
@@ -517,7 +524,7 @@ class Extractor:
     """
 
     def __init__(self, spl):
-        from splinepy import Multipatch, Spline as _Multipatch, _Spline
+        from splinepy import Multipatch, _Spline
 
         if not isinstance(spl, (_Spline, Multipatch)):
             raise ValueError("Extractor expects a Spline or Multipatch type")
