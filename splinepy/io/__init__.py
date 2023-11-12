@@ -1,5 +1,14 @@
-from splinepy.io import cats, gismo, iges, ioutils, irit, json, mfem, npz
-from splinepy.io.default import export, load
+from splinepy.io import (
+    cats,
+    gismo,
+    iges,
+    ioutils,
+    irit,
+    json,
+    mfem,
+    npz,
+    svg,
+)
 
 __all__ = [
     "cats",
@@ -12,4 +21,5 @@ __all__ = [
     "load",
     "mfem",
     "npz",
+    "svg",
 ]
