@@ -309,7 +309,7 @@ def to_tmpf(tmpd):
     return os.path.join(tmpd, "nqv248p90")
 
 
-def are_splines_equal(a, b, print_=True):
+def are_splines_equal(a, b, print_=False):
     """returns True if Splines are equivalent"""
     if a.whatami != b.whatami:
         return False
