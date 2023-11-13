@@ -4,6 +4,8 @@
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
+// for automatic conversion of py::list to std::vector
+#include <pybind11/stl.h>
 
 #include "splinepy/py/py_spline.hpp"
 
@@ -45,11 +47,12 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
  * @param tolerance tolerance for identifying individual knots
  * @return py::tuple to create new matrix
  */
-py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
-                                           const py::array_t<int>& degrees,
-                                           const int parametric_dimension,
-                                           const py::array_t<double>& new_knots,
-                                           const double& tolerance);
+py::tuple ComputeGlobalKnotInsertionMatrix(
+    const std::vector<py::array_t<double>>& old_kvs,
+    const py::array_t<int>& degrees,
+    const int parametric_dimension,
+    const py::array_t<double>& new_knots,
+    const double& tolerance);
 
 /**
  * @brief  Helper function to provide all necessary information to assemble and
@@ -59,7 +62,5 @@ py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
  */
 py::tuple
 BezierExtractionMatrices(const std::shared_ptr<splinepy::py::PySpline>& spline,
-                         const py::list& old_kvs,
-                         const py::array_t<int>& degrees,
                          const double& tolerance);
 } // namespace splinepy::py
