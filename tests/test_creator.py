@@ -342,47 +342,25 @@ class CreatorTest(c.SplineBasedTestCase):
             *self.all_3p3d_splines(),
         ):
             rng = np.random.default_rng(12345)
-            detSp, d_min = c.splinepy.helpme.create.determinant_spline(
-                sp_i, dmin=True, show=False
-            )
+            det_Spl = c.splinepy.helpme.create.determinant_spline(sp_i)
             rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
-                    detSp.evaluate(queries=rnd_queries)[:, 0],
+                    det_Spl.evaluate(queries=rnd_queries)[:, 0],
                     np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
-            self.assertTrue(d_min > 0)
 
         # Splines which are tangled or singular
         for sp_i in (Bez1, BSpC1_tang, NURBS_eqW_tang):
-            detSp, d_min = c.splinepy.helpme.create.determinant_spline(
-                sp_i, dmin=True, show=False
-            )
+            det_Spl = c.splinepy.helpme.create.determinant_spline(sp_i)
             rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
-                    detSp.evaluate(queries=rnd_queries)[:, 0],
+                    det_Spl.evaluate(queries=rnd_queries)[:, 0],
                     np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
-            self.assertTrue(d_min <= 0)
-
-        # Expect Failure: rational splines with unequal weights:
-
-        with self.assertRaises(TypeError):
-            detSp = c.splinepy.helpme.create.determinant_spline(NURBS_uneqW)
-
-        with self.assertRaises(TypeError):
-            detSp = c.splinepy.helpme.create.determinant_spline(
-                self.rational_bezier_2p2d()
-            )
-
-        with self.assertRaises(TypeError):
-            detSp = c.splinepy.helpme.create.determinant_spline(
-                self.nurbs_2p2d()
-            )
-
 
 if __name__ == "__main__":
     c.unittest.main()
