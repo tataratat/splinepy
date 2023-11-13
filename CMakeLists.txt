@@ -100,17 +100,6 @@ else()
   set(SPLINEPY_LIB_TYPE STATIC)
 endif()
 
-# try to avoid re-build of splinepy if  possible
-if(SPLINEPY_COMPILE_PYTHON)
-  find_package(splinepy QUIET)
-  if(splinepy_FOUND)
-    message("Found installed splinepy, building only python module")
-    add_subdirectory(third_party/pybind11)
-    add_subdirectory(src/py)
-    return()
-  endif()
-endif()
-
 message("")
 message(
   "                    %%\\ %%\\                                         ")
