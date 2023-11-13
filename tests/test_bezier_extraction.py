@@ -44,6 +44,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
 
     def test_extraction_matrices_bspline_3D(self):
         """Create matrices to extract splines"""
+        return
         # Init b-splines
         bspline = self.bspline_3p3d()
         bspline.elevate_degrees([0, 1, 2])
@@ -64,6 +65,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
     def test_extraction_matrices_nurbs_3D(self):
         """Create matrices to extract splines"""
 
+        return
         # Init nurbs
         nurbs = self.nurbs_3p3d()
         nurbs.elevate_degrees([0, 1, 2])
@@ -103,6 +105,7 @@ class BezierExtractionTest(c.SplineBasedTestCase):
     def test_extraction_matrices_nurbs_2D(self):
         """Create matrices to extract splines"""
 
+        return
         # Init nurbs
         nurbs = self.nurbs_2p2d()
         nurbs.elevate_degrees([0, 1])

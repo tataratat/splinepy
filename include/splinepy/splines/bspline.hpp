@@ -157,6 +157,11 @@ public:
           double* control_points,
           const int dim)
       : Base_(CreateBase(degrees, knot_vectors, control_points, dim)) {}
+
+  /// @brief copy ctor casts
+  /// @param other
+  BSpline(const BSpline& other) : Base_(static_cast<const Base_&>(other)) {}
+
   /// Inherited constructor
   using Base_::Base_;
 
@@ -422,6 +427,10 @@ public:
                                                             tolerance);
   }
 
+  virtual std::vector<std::vector<int>> SplinepyKnotMultiplicities() const {
+    return GetParameterSpace().KnotMultiplicities();
+  };
+
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractBoundary(const int& boundary_id) {
     return splinepy::splines::helpers::ExtractBoundaryMeshSlice(*this,
@@ -431,7 +440,7 @@ public:
   /// Bezier patch extraction
   virtual std::vector<std::shared_ptr<SplinepyBase>>
   SplinepyExtractBezierPatches() const {
-    return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
+    return splinepy::splines::helpers::ExtractBezierPatches(*this);
   }
 
   /// @brief Gets parameter space
@@ -448,6 +457,11 @@ public:
   constexpr Proximity_& GetProximity() { return *proximity_; }
   /// @brief Gets proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
+
+  /// Deep copy of current spline
+  virtual std::shared_ptr<SplinepyBase> SplinepyDeepCopy() const {
+    return std::make_shared<BSpline>(*this);
+  };
 
 protected:
   /// @brief Unique pointer to proximity
