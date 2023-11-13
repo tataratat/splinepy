@@ -95,6 +95,118 @@ ExtractBezierPatchIDs(const IndexingType* degrees,
 }
 
 /**
+ * @brief Extract Bezier Patch IDs
+ *
+ * This function assumed that repeated knots have been inserted, such that the
+ * continuity at each knot is C0. It returns the indices that are associated to
+ * the individual bezier patches and returns a vector of ID lists that can be
+ * used to create the new splines
+ *
+ * @tparam IndexingType integral type that represents the IDs - does not change
+ * return type
+ * @param degrees pointer to degrees vector
+ * @param n_patches_per_para_dim pointer to vector with same dimension that
+ * represents the number of patches within the B-Spline type along a respective
+ * parametric dimension
+ * @param para_dim parametric dimension
+ * @return std::vector<std::vector<int>>
+ */
+template<typename IndexingType>
+std::vector<std::vector<int>> ExtractBezierPatchIDs(
+    const std::shared_ptr<splinepy::splines::SplinepyBase>& spline,
+    const IndexingType* degrees,
+    const int* n_patches_per_para_dim) {
+  // Check for type
+  static_assert(std::is_integral_v<IndexingType>,
+                "Unsupported type for ExtractBezierPatchIDs");
+
+  // use runtime call to support this function in py_knot_insertion_matrix
+  if (!spline->SplinepyHasKnotVectors()) {
+    splinepy::utils::PrintAndThrowError(
+        spline->SplinepyWhatAmI(),
+        "is not a valid type for ExtractBezierPatchIDs");
+  }
+  const int para_dim = spline->SplinepyParaDim();
+
+  // Number of total patches and ctps per patch
+  int n_total_patches = n_patches_per_para_dim[0];
+  IndexingType n_ctps_per_patch = degrees[0] + 1;
+
+  // Offsets for start values of individual patches
+  std::vector<std::size_t> bezier_index_offsets{};
+  bezier_index_offsets.reserve(para_dim);
+  bezier_index_offsets.push_back(1);
+  for (int i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
+    n_total_patches *= n_patches_per_para_dim[i_para_dim];
+    n_ctps_per_patch *= degrees[i_para_dim] + 1;
+    bezier_index_offsets.push_back(bezier_index_offsets[i_para_dim - 1]
+                                   * (degrees[i_para_dim - 1] + 1));
+  }
+
+  // Init return values
+  std::vector<std::size_t> patch_ctp_id_offsets(para_dim, 0);
+  std::vector<std::vector<int>> list_of_id_lists(n_total_patches);
+  const std::vector<std::vector<int>> multiplicities =
+      spline->SplinepyKnotMultiplicities();
+  std::vector<int> patch_coords(para_dim, 0);
+  for (int i_patch{}; i_patch < n_total_patches; i_patch++) {
+    // Determine internal positions in local coord system
+    int ii{i_patch};
+    // Determine the parameter wise ids of the patch (i.e. the
+    // patch-coordinates) and calculate the required index offsets
+    for (int i{}; i < para_dim; i++) {
+      // ID in spline coordinate system of current patch
+      const int patch_coord = static_cast<int>(ii % n_patches_per_para_dim[i]);
+
+      // Coordinate offset of the control points indices
+      if (patch_coords[i] != patch_coord) {
+        patch_coords[i] = patch_coord;
+        patch_ctp_id_offsets[i] =
+            (patch_coord == 0)
+                ? 0
+                : patch_ctp_id_offsets[i] + multiplicities[i][patch_coord];
+      }
+
+      ii -= patch_coord;
+      ii /= n_patches_per_para_dim[i];
+      splinepy::utils::PrintInfo(i_patch, patch_coord);
+      splinepy::utils::PrintInfo("  pat off",
+                                 patch_ctp_id_offsets[i],
+                                 "mul",
+                                 multiplicities[i][patch_coord]);
+    }
+    splinepy::utils::PrintInfo("     for end",
+                               patch_ctp_id_offsets[0],
+                               patch_ctp_id_offsets[1]);
+
+    // Init vectors required for initialization
+    std::vector<int>& ids = list_of_id_lists[i_patch];
+    ids.reserve(n_ctps_per_patch);
+
+    // Extract relevant coordinates
+    for (int i_local_id{}; i_local_id < static_cast<int>(n_ctps_per_patch);
+         i_local_id++) {
+      int global_id{};
+      int n_ctps_in_previous_layers{1};
+      // Determine index of local point in global spline
+      for (int i_para_dim{}; i_para_dim < para_dim; i_para_dim++) {
+        // First id in local system
+        const int local_id = (i_local_id / bezier_index_offsets[i_para_dim])
+                             % (degrees[i_para_dim] + 1);
+        // Add patch offsets
+        global_id += (local_id + patch_ctp_id_offsets[i_para_dim])
+                     * n_ctps_in_previous_layers;
+        // Multiply to index offset
+        n_ctps_in_previous_layers *=
+            n_patches_per_para_dim[i_para_dim] * degrees[i_para_dim] + 1;
+      }
+      ids.push_back(global_id);
+    }
+  }
+  return list_of_id_lists;
+}
+
+/**
  * @brief Extracts Bezier patches of a B-Spline/NURBS type
  *
  * @tparam as_base flag to determine input type avoid circular dependency
@@ -102,9 +214,15 @@ ExtractBezierPatchIDs(const IndexingType* degrees,
  * @param input spline to be separated
  * @return auto vector of Bezier types, either Rational or polynomial
  */
-template<bool as_base = false, typename SplineType>
+template<typename SplineType>
 std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>
-ExtractBezierPatches(SplineType& input) {
+ExtractBezierPatches(const SplineType& spline) {
+  static_assert(SplineType::kHasKnotVectors,
+                "Invalid type for ExtractBezierPatches");
+  // make copy of input spline
+  auto input_ptr = spline.SplinepyDeepCopy();
+  SplineType& input = *(std::dynamic_pointer_cast<SplineType>(input_ptr));
+
   // Start by identifying types
   constexpr int para_dim = SplineType::kParaDim;
   constexpr bool is_rational = SplineType::kIsRational;
@@ -113,38 +231,38 @@ ExtractBezierPatches(SplineType& input) {
   // Predetermine some auxiliary values
   // Access spline degrees and determine offsets
   std::array<int, para_dim> degrees{};
-  for (int i_p{}; i_p < para_dim; i_p++) {
-    degrees[i_p] =
-        static_cast<int>(input.GetParameterSpace().GetDegrees()[i_p]);
-  }
+  input.SplinepyCurrentProperties(degrees.data(), nullptr, nullptr, nullptr);
+
   std::array<int, para_dim> n_patches_per_para_dim{};
   std::array<int, para_dim> n_ctps_per_para_dim{};
 
   // Identify all internal knots and the number of required Bezier patches
-  const auto parameter_space = input.GetParameterSpace();
+  const auto& parameter_space = input.GetParameterSpace();
   for (int i_p_dim{}; i_p_dim < para_dim; i_p_dim++) {
+    // Need to use BSplineLib's infamous NamedType
+    const bsplinelib::Dimension pd_query{i_p_dim};
+
     // Extract internal knots
     const auto bezier_information =
-        parameter_space.DetermineBezierExtractionKnots(
-            // Use SplineLib Type
-            bsplinelib::Dimension{i_p_dim});
+        parameter_space.DetermineBezierExtractionKnots(pd_query);
     n_patches_per_para_dim[i_p_dim] = std::get<0>(bezier_information);
     n_ctps_per_para_dim[i_p_dim] =
         n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
-    const auto& knot_vector_ref = std::get<1>(bezier_information);
+    const auto& required_knot_insertions = std::get<1>(bezier_information);
 
     // Insert knot into the copy of the spline before extraction
     // this is the most costly part of the calculation
-    for (std::size_t i_knot{}; i_knot < knot_vector_ref.size(); i_knot++) {
-      input.InsertKnot(bsplinelib::Dimension{i_p_dim}, knot_vector_ref[i_knot]);
+    for (const auto& knot_to_insert : required_knot_insertions) {
+      splinepy::utils::PrintInfo("inserting", knot_to_insert);
+      input.InsertKnot(pd_query, knot_to_insert);
     }
   }
 
   // Retrieve id information
   const std::vector<std::vector<int>>& ids =
-      ExtractBezierPatchIDs(degrees.data(),
-                            n_patches_per_para_dim.data(),
-                            para_dim);
+      ExtractBezierPatchIDs(input_ptr,
+                            degrees.data(),
+                            n_patches_per_para_dim.data());
 
   // Number of total patches
   const int n_total_patches = ids.size();
@@ -173,6 +291,12 @@ ExtractBezierPatches(SplineType& input) {
     // loop over cp ids to extract
     int local_counter{};
     for (const int& cp_id : cp_ids) {
+      splinepy::utils::PrintInfo("local",
+                                 local_counter,
+                                 "cp_id",
+                                 cp_id,
+                                 bspline_cps.Shape()[0],
+                                 extracted_cps.Shape()[0]);
       if constexpr (is_rational) {
         // we have to un-weight
         // get beginning of from and to row

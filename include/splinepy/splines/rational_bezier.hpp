@@ -280,6 +280,11 @@ public:
   /// @brief Get proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
 
+  /// Deep copy of current spline
+  virtual std::shared_ptr<SplinepyBase> SplinepyDeepCopy() const {
+    return std::make_shared<RationalBezier>(*this);
+  };
+
 protected:
   /// @brief Shared pointer to proximity
   std::shared_ptr<Proximity_> proximity_ = std::make_shared<Proximity_>(*this);

@@ -5,6 +5,8 @@
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
+#include "splinepy/py/py_spline.hpp"
+
 /// @brief
 namespace splinepy::py {
 
@@ -55,7 +57,9 @@ py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
  * set of individual bezier patches
  *
  */
-py::tuple BezierExtractionMatrices(const py::list& old_kvs,
-                                   const py::array_t<int>& degrees,
-                                   const double& tolerance);
+py::tuple
+BezierExtractionMatrices(const std::shared_ptr<splinepy::py::PySpline>& spline,
+                         const py::list& old_kvs,
+                         const py::array_t<int>& degrees,
+                         const double& tolerance);
 } // namespace splinepy::py

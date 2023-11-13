@@ -243,6 +243,9 @@ public:
                                   const double& knot,
                                   const double& tolerance);
 
+  /// Spline knot multiplicity per dimension
+  virtual std::vector<std::vector<int>> SplinepyKnotMultiplicities() const;
+
   /// Spline multiplication.
   virtual std::shared_ptr<SplinepyBase>
   SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const;
@@ -285,6 +288,9 @@ public:
   virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(
       const std::shared_ptr<SplinepyBase>& inner,
       const std::shared_ptr<SplinepyBase>& inner_derivative) const;
+
+  /// Deep copy of current spline
+  virtual std::shared_ptr<SplinepyBase> SplinepyDeepCopy() const;
 };
 
 } // namespace splinepy::splines

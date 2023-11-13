@@ -322,7 +322,8 @@ py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
       py::make_tuple(static_cast<int>(n_cps_new), static_cast<int>(n_cps_old)));
 }
 
-py::tuple BezierExtractionMatrices(const py::list& old_kvs,
+py::tuple BezierExtractionMatrices(const std::shared_ptr<PySpline>& spline,
+                                   const py::list& old_kvs,
                                    const py::array_t<int>& degrees,
                                    const double& tolerance) {
   // Create aliases
@@ -417,6 +418,8 @@ py::tuple BezierExtractionMatrices(const py::list& old_kvs,
       splines::helpers::ExtractBezierPatchIDs(degrees_ptr,
                                               n_patches_per_dimension.data(),
                                               n_para_dims);
+  // splines::helpers::ExtractBezierPatchIDs(spline->Core(), degrees_ptr,
+  //                                       n_patches_per_dimension.data());
   const std::size_t n_patches = list_of_ids.size();
   const std::size_t n_ctps_per_patch = list_of_ids[0].size();
   py::array_t<int> bezier_ctps_ids(n_ctps_per_patch * n_patches);
@@ -450,6 +453,7 @@ void init_knot_insertion_matrix(py::module& m) {
         py::arg("tolerance"));
   m.def("bezier_extraction_matrix",
         &splinepy::py::BezierExtractionMatrices,
+        py::arg("spline"),
         py::arg("old_knot_vectors"),
         py::arg("degrees"),
         py::arg("tolerance"));
