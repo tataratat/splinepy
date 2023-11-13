@@ -169,15 +169,7 @@ std::vector<std::vector<int>> ExtractBezierPatchIDs(
 
       ii -= patch_coord;
       ii /= n_patches_per_para_dim[i];
-      splinepy::utils::PrintInfo(i_patch, patch_coord);
-      splinepy::utils::PrintInfo("  pat off",
-                                 patch_ctp_id_offsets[i],
-                                 "mul",
-                                 multiplicities[i][patch_coord]);
     }
-    splinepy::utils::PrintInfo("     for end",
-                               patch_ctp_id_offsets[0],
-                               patch_ctp_id_offsets[1]);
 
     // Init vectors required for initialization
     std::vector<int>& ids = list_of_id_lists[i_patch];
@@ -253,7 +245,6 @@ ExtractBezierPatches(const SplineType& spline) {
     // Insert knot into the copy of the spline before extraction
     // this is the most costly part of the calculation
     for (const auto& knot_to_insert : required_knot_insertions) {
-      splinepy::utils::PrintInfo("inserting", knot_to_insert);
       input.InsertKnot(pd_query, knot_to_insert);
     }
   }
@@ -291,12 +282,6 @@ ExtractBezierPatches(const SplineType& spline) {
     // loop over cp ids to extract
     int local_counter{};
     for (const int& cp_id : cp_ids) {
-      splinepy::utils::PrintInfo("local",
-                                 local_counter,
-                                 "cp_id",
-                                 cp_id,
-                                 bspline_cps.Shape()[0],
-                                 extracted_cps.Shape()[0]);
       if constexpr (is_rational) {
         // we have to un-weight
         // get beginning of from and to row

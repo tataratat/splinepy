@@ -158,8 +158,7 @@ public:
 
   /// @brief copy ctor
   /// @param other
-  // Nurbs(const Nurbs& other) : Base_(static_cast<const Base_&>(other)) {
-  Nurbs(const Nurbs& other) {
+  Nurbs(const Nurbs& other) : Base_{} {
     Base_::parameter_space_ =
         std::make_shared<ParameterSpace_>(*other.parameter_space_);
     Base_::weighted_vector_space_ =
