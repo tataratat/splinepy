@@ -1,14 +1,14 @@
-import base64
-import copy
-import xml.etree.ElementTree as ET
-from sys import version as python_version
+import base64 as _base64
+import copy as _copy
+import xml.etree.ElementTree as _ET
+from sys import version as _python_version
 
-import numpy as np
+import numpy as _np
 
-from splinepy import settings
-from splinepy.utils.data import enforce_contiguous
-from splinepy.utils.log import debug, warning
-
+from splinepy import settings as _settings
+from splinepy.utils.data import enforce_contiguous as _enforce_contiguous
+from splinepy.utils.log import debug as _debug
+from splinepy.utils.log import warning as _warning
 
 def _spline_to_ET(
     root,
@@ -39,15 +39,15 @@ def _spline_to_ET(
     -------
     None
     """
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
     if fields_only and (len(multipatch.fields) == 0):
         return
 
     def _array_to_text(array, is_matrix, as_b64):
         if as_b64:
-            array = enforce_contiguous(array, dtype=np.float64, asarray=True)
-            return base64.b64encode(array).decode("ascii")
+            array = _enforce_contiguous(array, dtype=_np.float64, asarray=True)
+            return _base64.b64encode(array).decode("ascii")
         elif is_matrix:
             return "\n".join(
                 [" ".join([str(x) for x in row]) for row in array]
@@ -56,27 +56,27 @@ def _spline_to_ET(
             return " ".join(str(x) for x in array)
 
     if fields_only:
-        supports = np.array(
+        supports = _np.array(
             [
                 (i, j, 0)
                 for j, field in enumerate(multipatch.fields)
                 for i, v in enumerate(field.patches)
                 if v is not None
             ],
-            dtype=np.int64,
+            dtype=_np.int64,
         )
 
         # Very unintuitive solution to counting the support ids #indextrick
-        indices = np.argsort(supports[:, 0], kind="stable")
-        counter = np.arange(supports.shape[0])
-        bincount = np.bincount(supports[:, 0])
+        indices = _np.argsort(supports[:, 0], kind="stable")
+        counter = _np.arange(supports.shape[0])
+        bincount = _np.bincount(supports[:, 0])
         # Get number of occurrences for previous element to correct index shift
-        index_shift = np.cumsum(np.hstack([[0], bincount[:-1]]))
-        counter -= np.repeat(index_shift, bincount)
+        index_shift = _np.cumsum(_np.hstack([[0], bincount[:-1]]))
+        counter -= _np.repeat(index_shift, bincount)
         supports[indices, 2] = counter
 
         # Write Matrix
-        design_v_support = ET.SubElement(
+        design_v_support = _ET.SubElement(
             root,
             "Matrix",
             cols=str(supports.shape[1]),
@@ -91,14 +91,14 @@ def _spline_to_ET(
         if fields_only:
             # Check supports
             support = supports[supports[:, 0] == id, 1]
-            coefs = np.hstack(
+            coefs = _np.hstack(
                 [
                     multipatch.fields[j].patches[id].control_points
                     for j in support
                 ]
             )
             if "weights" in spline.required_properties:
-                weights = np.hstack(
+                weights = _np.hstack(
                     [multipatch.fields[j][id].weights for j in support]
                 )
         else:
@@ -106,7 +106,7 @@ def _spline_to_ET(
             if "weights" in spline.required_properties:
                 weights = spline.weights
 
-        if not issubclass(type(spline), Spline):
+        if not issubclass(type(spline), _Spline):
             raise ValueError(
                 "One of the splines handed to export is not a valid spline"
                 " representation"
@@ -125,7 +125,7 @@ def _spline_to_ET(
             type_name = "Nurbs"
 
         # Start element definition
-        spline_element = ET.SubElement(
+        spline_element = _ET.SubElement(
             root,
             "Geometry",
             id=str(id + index_offset),
@@ -134,18 +134,18 @@ def _spline_to_ET(
 
         # Define Basis functions
         if "weights" in spline.required_properties:
-            spline_basis_base = ET.SubElement(
+            spline_basis_base = _ET.SubElement(
                 spline_element,
                 "Basis",
                 type="Tensor" + type_name + "Basis" + str(spline.para_dim),
             )
-            spline_basis = ET.SubElement(
+            spline_basis = _ET.SubElement(
                 spline_basis_base,
                 "Basis",
                 type="TensorBSplineBasis" + str(spline.para_dim),
             )
         else:
-            spline_basis = ET.SubElement(
+            spline_basis = _ET.SubElement(
                 spline_element,
                 "Basis",
                 type="Tensor" + type_name + "Basis" + str(spline.para_dim),
@@ -155,13 +155,13 @@ def _spline_to_ET(
         format_flag = "B64Float64" if as_base64 else "ASCII"
 
         for i_para in range(spline.para_dim):
-            basis_fun = ET.SubElement(
+            basis_fun = _ET.SubElement(
                 spline_basis,
                 "Basis",
                 index=str(i_para),
                 type="BSplineBasis",
             )
-            knot_vector = ET.SubElement(
+            knot_vector = _ET.SubElement(
                 basis_fun,
                 "KnotVector",
                 degree=str(spline.degrees[i_para]),
@@ -173,13 +173,13 @@ def _spline_to_ET(
 
         if "weights" in spline.required_properties:
             # Add weights
-            weights_element = ET.SubElement(
+            weights_element = _ET.SubElement(
                 spline_basis_base,
                 "weights",
                 format=format_flag,
             )
             weights_element.text = _array_to_text(weights, True, as_base64)
-        coords = ET.SubElement(
+        coords = _ET.SubElement(
             spline_element,
             "coefs",
             format=format_flag,
@@ -228,26 +228,27 @@ def export(
     -------
     None
     """
-    from splinepy import Multipatch
-    from splinepy.settings import NTHREADS, TOLERANCE
-    from splinepy.spline import Spline
-    from splinepy.splinepy_core import orientations
+    from splinepy import Multipatch as _Multipatch
+    from splinepy.settings import NTHREADS as _NTHREADS
+    from splinepy.settings import TOLERANCE as _TOLERANCE 
+    from splinepy.spline import Spline as _Spline
+    from splinepy.splinepy_core import orientations as _orientations
 
     # First transform spline-data into a multipatch-data if required
-    if issubclass(type(multipatch), Spline):
+    if issubclass(type(multipatch), _Spline):
         # Transform to list
         multipatch = [multipatch]
 
     if isinstance(multipatch, list):
         # Transform to multipatch
-        multipatch = Multipatch(splines=multipatch)
-        warning(
+        multipatch = _Multipatch(splines=multipatch)
+        _warning(
             "No interfaces (i.e. inter-face connectivity) information is"
             " given. Try converting list to Multipatch object. Interfaces"
             "will be computed on the fly as a result."
         )
 
-    if not isinstance(multipatch, Multipatch):
+    if not isinstance(multipatch, _Multipatch):
         raise ValueError(
             "export Function expects list for multipatch argument"
         )
@@ -256,26 +257,26 @@ def export(
         raise ValueError("fname argument must be string")
 
     # All entries in gismo xml file have a unique ID
-    xml_data = ET.Element("xml")
+    xml_data = _ET.Element("xml")
     index_offset = 100
 
     # First export Multipatch information
-    multipatch_element = ET.SubElement(
+    multipatch_element = _ET.SubElement(
         xml_data, "MultiPatch", id=str(0), parDim=str(multipatch.para_dim)
     )
-    patch_range = ET.SubElement(multipatch_element, "patches", type="id_range")
+    patch_range = _ET.SubElement(multipatch_element, "patches", type="id_range")
     patch_range.text = (
         f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
     )
 
-    interface_data = ET.SubElement(multipatch_element, "interfaces")
+    interface_data = _ET.SubElement(multipatch_element, "interfaces")
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
-    global_interface_id = np.where(multipatch.interfaces.ravel() >= 0)[0]
+    global_interface_id = _np.where(multipatch.interfaces.ravel() >= 0)[0]
     number_of_element_faces = multipatch.interfaces.shape[1]
 
     if global_interface_id.size == 0:
-        warning("No inter-face connections were found.")
+        _warning("No inter-face connections were found.")
     else:
         # First we identify all interfaces between patches
         is_lower_id = (
@@ -285,10 +286,10 @@ def export(
 
         # The interfaces refer to the global face ids so now we can extract the
         # element ID and face ID
-        patch_id_start, face_id_start = np.divmod(
+        patch_id_start, face_id_start = _np.divmod(
             global_interface_id[is_lower_id], number_of_element_faces
         )
-        patch_id_end, face_id_end = np.divmod(
+        patch_id_end, face_id_end = _np.divmod(
             multipatch.interfaces[patch_id_start, face_id_start],
             number_of_element_faces,
         )
@@ -297,20 +298,20 @@ def export(
         (
             axis_mapping,
             axis_orientation,
-        ) = orientations(
+        ) = _orientations(
             multipatch.patches,
             patch_id_start,
             face_id_start,
             patch_id_end,
             face_id_end,
-            TOLERANCE,
-            NTHREADS,
+            _TOLERANCE,
+            _NTHREADS,
         )
 
         # write to file
         # Reminder: Face enumeration starts at 1 in gismo (i.e. requires an
         # offset of 1)
-        interface_array = np.hstack(
+        interface_array = _np.hstack(
             (
                 patch_id_start.reshape(-1, 1) + index_offset,
                 face_id_start.reshape(-1, 1) + 1,
@@ -319,7 +320,7 @@ def export(
                 # This is the orientation:
                 axis_mapping,
                 # Convert bool into -1 and 1 for gismo
-                axis_orientation.astype(np.int32),
+                axis_orientation.astype(_np.int32),
             )
         )
         interface_data.text = "\n".join(
@@ -331,7 +332,7 @@ def export(
         for boundary_id, face_id_list in enumerate(
             multipatch.boundaries, start=1
         ):
-            boundary_data = ET.SubElement(
+            boundary_data = _ET.SubElement(
                 multipatch_element,
                 "boundary",
                 name="BID" + str(boundary_id),
@@ -346,9 +347,9 @@ def export(
         # This is valid in the old format (1. list all boundaries, 2. set BCs)
         # Start extracting all boundaries
         # Boundaries are stored as patch-id (global) face-id (local)
-        boundary_spline, boundary_face = np.where(multipatch.interfaces < 0)
+        boundary_spline, boundary_face = _np.where(multipatch.interfaces < 0)
         if boundary_spline.size > 0:
-            boundary_data = ET.SubElement(multipatch_element, "boundary")
+            boundary_data = _ET.SubElement(multipatch_element, "boundary")
             boundary_data.text = "\n".join(
                 [
                     str(sid + index_offset) + " " + str(bid + 1)
@@ -364,17 +365,17 @@ def export(
         # local enumeration system of them multipatch
         boundary_condition_list = multipatch.boundaries
         if len(boundary_condition_list) > 1:
-            bcs_data = ET.SubElement(
+            bcs_data = _ET.SubElement(
                 xml_data,
                 "boundaryConditions",
                 id=str(1),
                 multipatch=str(len(multipatch.patches)),
             )
             bcs_data.insert(
-                0, ET.Comment(text="Please fill boundary conditions here")
+                0, _ET.Comment(text="Please fill boundary conditions here")
             )
             for bc_data_i in boundary_condition_list:
-                bc = ET.SubElement(
+                bc = _ET.SubElement(
                     bcs_data, "bc", type="Dirichlet", unknown="0"
                 )
                 bc.text = "\n".join(
@@ -389,7 +390,7 @@ def export(
     ###
     # Export fields first, as all necessary information is already available
     if export_fields:
-        field_xml = copy.deepcopy(xml_data)
+        field_xml = _copy.deepcopy(xml_data)
         _spline_to_ET(
             field_xml,
             multipatch,
@@ -397,9 +398,9 @@ def export(
             fields_only=True,
             as_base64=as_base64,
         )
-        if int(python_version.split(".")[1]) >= 9 and indent:
-            ET.indent(field_xml)
-        file_content = ET.tostring(field_xml)
+        if int(_python_version.split(".")[1]) >= 9 and indent:
+            _ET.indent(field_xml)
+        file_content = _ET.tostring(field_xml)
         with open(fname + ".fields.xml", "wb") as f:
             f.write(file_content)
 
@@ -426,7 +427,7 @@ def export(
                     )
                 attributes = gismo_dictionary.get("attributes", {})
                 option_text = gismo_dictionary.get("text", None)
-                optional_data = ET.SubElement(
+                optional_data = _ET.SubElement(
                     ETelement,
                     name,
                     **attributes,
@@ -441,18 +442,18 @@ def export(
 
         _apply_options(xml_data, options)
 
-    if int(python_version.split(".")[1]) >= 9 and indent:
+    if int(_python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
-        ET.indent(xml_data)
+        _ET.indent(xml_data)
 
-    elif int(python_version.split(".")[1]) < 9 and indent:
-        debug(
+    elif int(_python_version.split(".")[1]) < 9 and indent:
+        _debug(
             "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
-            f"Current python version: {python_version}",
+            f"Current python version: {_python_version}",
         )
 
-    file_content = ET.tostring(xml_data)
+    file_content = _ET.tostring(xml_data)
     with open(fname, "wb") as f:
         f.write(file_content)
 
@@ -474,7 +475,7 @@ def load(fname, load_options=True):
     options : list
       List of additional options, like boundary conditions and functions
     """
-    from splinepy.multipatch import Multipatch
+    from splinepy.multipatch import Multipatch as _Multipatch
 
     def _matrix_from_node(xml_node):
         """
@@ -488,20 +489,20 @@ def load(fname, load_options=True):
           numpy array in unspecified type, one-dimensional
         """
         type_from_keyword = {
-            "b64float64": np.float64,
-            "b64float32": np.float32,
-            "b64uint16": np.uint16,
-            "b64uint32": np.uint32,
-            "b64uint64": np.uint64,
-            "b64int16": np.int16,
-            "b64int32": np.int32,
-            "b64int64": np.int64,
+            "b64float64": _np.float64,
+            "b64float32": _np.float32,
+            "b64uint16": _np.uint16,
+            "b64uint32": _np.uint32,
+            "b64uint64": _np.uint64,
+            "b64int16": _np.int16,
+            "b64int32": _np.int32,
+            "b64int64": _np.int64,
         }
 
         # Check format
         format_flag = xml_node.attrib.get("format", "ASCII")
         if format_flag.lower() == "ascii":
-            return np.fromstring(xml_node.text.replace("\n", " "), sep=" ")
+            return _np.fromstring(xml_node.text.replace("\n", " "), sep=" ")
         # Check for all excepted binary flags
         format = type_from_keyword.get(format_flag.lower(), None)
 
@@ -510,9 +511,9 @@ def load(fname, load_options=True):
                 "Unknown format in xml file: " + format_flag.lower()
             )
 
-        return np.frombuffer(
-            base64.b64decode(xml_node.text.strip().encode("ascii")),
-            dtype=np.float64,
+        return _np.frombuffer(
+            _base64.b64decode(xml_node.text.strip().encode("ascii")),
+            dtype=_np.float64,
         )
 
     # Auxiliary function to unravel
@@ -551,9 +552,9 @@ def load(fname, load_options=True):
         return new_dictionary
 
     # Parse XML file
-    debug(f"Parsing xml-file '{fname}' ...")
-    root = ET.parse(fname).getroot()
-    debug("XML-file parsed start conversion")
+    _debug(f"Parsing xml-file '{fname}' ...")
+    root = _ET.parse(fname).getroot()
+    _debug("XML-file parsed start conversion")
 
     # Init return value
     list_of_splines = []
@@ -567,10 +568,10 @@ def load(fname, load_options=True):
             # Patch ids
             patch_element = child.find("patches")
             if patch_element is None:
-                debug("Unsupported format")
+                _debug("Unsupported format")
             if patch_element.attrib.get("type") != "id_range":
-                debug(f"Invalid patch type {patch_element.attrib.get('type')}")
-            patch_range = _matrix_from_node(patch_element).astype(np.int64)
+                _debug(f"Invalid patch type {patch_element.attrib.get('type')}")
+            patch_range = _matrix_from_node(patch_element).astype(_np.int64)
             offset = patch_range[0]
             n_splines = patch_range[1] - patch_range[0] + 1
             number_of_faces = parametric_dimension * 2
@@ -578,17 +579,17 @@ def load(fname, load_options=True):
             # Extract interfaces and boundaries
             interfaces_element = child.find("interfaces")
             interface_array = (
-                np.ones((n_splines, number_of_faces), dtype=np.int64)
+                _np.ones((n_splines, number_of_faces), dtype=_np.int64)
                 * invalid_integer
             )
             if interfaces_element is None or interfaces_element.text is None:
                 # This can occur if only one patch is in a Multipatch
-                debug("No connectivity found")
+                _debug("No connectivity found")
             else:
                 interface_information = (
                     _matrix_from_node(interfaces_element)
                     .astype(
-                        dtype=np.int64,
+                        dtype=_np.int64,
                     )
                     .reshape(-1, number_of_faces + 4)
                 )
@@ -613,7 +614,7 @@ def load(fname, load_options=True):
             # Extract interfaces and boundaries
             boundary_elements = child.findall("boundary")
             if boundary_elements is None:
-                debug("No boundary information found")
+                _debug("No boundary information found")
             else:
                 for id, boundary_element in enumerate(
                     boundary_elements, start=1
@@ -623,7 +624,7 @@ def load(fname, load_options=True):
                     boundary_information = (
                         _matrix_from_node(boundary_element)
                         .astype(
-                            dtype=np.int64,
+                            dtype=_np.int64,
                         )
                         .reshape(-1, 2)
                     )
@@ -634,7 +635,7 @@ def load(fname, load_options=True):
 
         elif child.tag.startswith("Geometry"):
             spline_dict = {}
-            debug(f"Found new spline in xml with id {child.attrib.get('id')}")
+            _debug(f"Found new spline in xml with id {child.attrib.get('id')}")
             for info in child:
                 if "basis" in info.tag.lower():
                     retrieve_from_basis_(info, spline_dict)
@@ -645,29 +646,29 @@ def load(fname, load_options=True):
                     ).reshape(-1, dim)
             if spline_dict.get("weights") is None:
                 list_of_splines.append(
-                    settings.NAME_TO_TYPE["BSpline"](**spline_dict)
+                    _settings.NAME_TO_TYPE["BSpline"](**spline_dict)
                 )
             else:
                 list_of_splines.append(
-                    settings.NAME_TO_TYPE["NURBS"](**spline_dict)
+                    _settings.NAME_TO_TYPE["NURBS"](**spline_dict)
                 )
         elif load_options:
             list_of_options.append(make_dictionary(child))
         else:
-            debug(
+            _debug(
                 f"Found unsupported keyword {child.tag}, which will be"
                 " ignored"
             )
             continue
 
-    debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
-    multipatch = Multipatch(list_of_splines)
+    _debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
+    multipatch = _Multipatch(list_of_splines)
     if interface_array is not None:
         if invalid_integer in interface_array:
-            warning("Unmatched faces or insufficient information in xml file")
-            invalid_splines = np.where(interface_array)[0][0] + offset
-            warning(f"Check faces with ids {invalid_splines}")
-            warning("Interface information ignored")
+            _warning("Unmatched faces or insufficient information in xml file")
+            invalid_splines = _np.where(interface_array)[0][0] + offset
+            _warning(f"Check faces with ids {invalid_splines}")
+            _warning("Interface information ignored")
 
         multipatch.interfaces = interface_array
 

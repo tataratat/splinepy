@@ -1,13 +1,13 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class Armadillo(TileBase):
+class Armadillo(_TileBase):
     def __init__(self):
         self._dim = 3
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.5, 0.5, 0.5],
             ]
@@ -57,8 +57,8 @@ class Armadillo(TileBase):
 
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -71,7 +71,7 @@ class Armadillo(TileBase):
                 "Derivatives are not implemented for this tile yet"
             )
 
-        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
+        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
@@ -86,7 +86,7 @@ class Armadillo(TileBase):
 
         if closure == "x_min":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -131,7 +131,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -176,7 +176,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -221,7 +221,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -266,7 +266,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -311,7 +311,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_zero,
@@ -356,7 +356,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -401,7 +401,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -446,7 +446,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -491,7 +491,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -536,7 +536,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -581,7 +581,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -626,7 +626,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -671,7 +671,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -716,7 +716,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -761,7 +761,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_one_half - v_half_contact_length,
@@ -806,7 +806,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -851,7 +851,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -898,7 +898,7 @@ class Armadillo(TileBase):
 
         elif closure == "x_max":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -943,7 +943,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -988,7 +988,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -1033,7 +1033,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -1078,7 +1078,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -1123,7 +1123,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_zero,
@@ -1168,7 +1168,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -1213,7 +1213,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -1258,7 +1258,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -1303,7 +1303,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -1348,7 +1348,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -1393,7 +1393,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -1438,7 +1438,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -1483,7 +1483,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -1528,7 +1528,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -1573,7 +1573,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_one_half - v_half_contact_length,
@@ -1618,7 +1618,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -1663,7 +1663,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -1710,7 +1710,7 @@ class Armadillo(TileBase):
 
         elif closure == "y_min":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -1755,7 +1755,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -1800,7 +1800,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -1845,7 +1845,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -1890,7 +1890,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -1935,7 +1935,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_zero,
@@ -1980,7 +1980,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_one,
@@ -2025,7 +2025,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -2070,7 +2070,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -2115,7 +2115,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -2160,7 +2160,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -2205,7 +2205,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -2250,7 +2250,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -2295,7 +2295,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -2340,7 +2340,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -2385,7 +2385,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_one_half - v_half_contact_length,
@@ -2430,7 +2430,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -2475,7 +2475,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -2523,7 +2523,7 @@ class Armadillo(TileBase):
         elif closure == "y_max":
             # set points:
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -2568,7 +2568,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -2613,7 +2613,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -2658,7 +2658,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -2703,7 +2703,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -2748,7 +2748,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_zero,
@@ -2793,7 +2793,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -2838,7 +2838,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -2883,7 +2883,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -2928,7 +2928,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -2973,7 +2973,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_one,
@@ -3018,7 +3018,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_one,
@@ -3063,7 +3063,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -3108,7 +3108,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -3153,7 +3153,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -3198,7 +3198,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_one_half - v_half_contact_length,
@@ -3243,7 +3243,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -3288,7 +3288,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -3335,7 +3335,7 @@ class Armadillo(TileBase):
 
         elif closure == "z_max":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -3380,7 +3380,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -3425,7 +3425,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -3470,7 +3470,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -3515,7 +3515,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -3560,7 +3560,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_zero,
@@ -3605,7 +3605,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -3650,7 +3650,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -3695,7 +3695,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -3740,7 +3740,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -3785,7 +3785,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -3830,7 +3830,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -3875,7 +3875,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -3920,7 +3920,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one,
@@ -3965,7 +3965,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one,
@@ -4010,7 +4010,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_zero,
@@ -4055,7 +4055,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -4100,7 +4100,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -4148,7 +4148,7 @@ class Armadillo(TileBase):
         elif closure == "z_min":
             # set points:
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -4193,7 +4193,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_right = np.array(
+            connection_front_right = _np.array(
                 [
                     [
                         v_wall_thickness + v_one_half,
@@ -4238,7 +4238,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            front = np.array(
+            front = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -4283,7 +4283,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_left = np.array(
+            connection_back_left = _np.array(
                 [
                     [
                         -v_wall_thickness + v_one_half,
@@ -4328,7 +4328,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [
                         v_zero,
@@ -4373,7 +4373,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_left = np.array(
+            connection_front_left = _np.array(
                 [
                     [
                         v_zero,
@@ -4418,7 +4418,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            back = np.array(
+            back = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -4463,7 +4463,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_right = np.array(
+            connection_back_right = _np.array(
                 [
                     [
                         v_inner_half_contact_length + v_one_half,
@@ -4508,7 +4508,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [
                         v_one,
@@ -4553,7 +4553,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [
                         v_one_half + v_inner_half_contact_length,
@@ -4598,7 +4598,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_bottom = np.array(
+            connection_front_bottom = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -4643,7 +4643,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_front_top = np.array(
+            connection_front_top = _np.array(
                 [
                     [
                         v_half_contact_length + v_one_half,
@@ -4688,7 +4688,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_bottom = np.array(
+            connection_back_bottom = _np.array(
                 [
                     [
                         v_one,
@@ -4733,7 +4733,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_back_top = np.array(
+            connection_back_top = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -4778,7 +4778,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_right = np.array(
+            connection_top_right = _np.array(
                 [
                     [
                         v_one_half + v_half_contact_length,
@@ -4823,7 +4823,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_top_left = np.array(
+            connection_top_left = _np.array(
                 [
                     [
                         v_one_half - v_half_contact_length,
@@ -4868,7 +4868,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_left = np.array(
+            connection_bottom_left = _np.array(
                 [
                     [
                         v_zero,
@@ -4913,7 +4913,7 @@ class Armadillo(TileBase):
                 ]
             )
 
-            connection_bottom_right = np.array(
+            connection_bottom_right = _np.array(
                 [
                     [
                         v_one,
@@ -4959,63 +4959,63 @@ class Armadillo(TileBase):
             )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
         )
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
-        )
-
-        spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
         )
-
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=back))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=left))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=back))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=front))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=left))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=bottom))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=front))
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
+        spline_list.append(
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
+        )
+
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=bottom))
+
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=top))
 
         return (spline_list, None)
 
@@ -5064,8 +5064,8 @@ class Armadillo(TileBase):
 
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -5078,7 +5078,7 @@ class Armadillo(TileBase):
                 "Derivatives are not implemented for this tile yet"
             )
 
-        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
+        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
@@ -5103,7 +5103,7 @@ class Armadillo(TileBase):
         spline_list = []
 
         # set points:
-        right = np.array(
+        right = _np.array(
             [
                 [
                     v_wall_thickness + v_one_half,
@@ -5148,7 +5148,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_front_right = np.array(
+        connection_front_right = _np.array(
             [
                 [
                     v_wall_thickness + v_one_half,
@@ -5193,7 +5193,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        front = np.array(
+        front = _np.array(
             [
                 [
                     v_inner_half_contact_length + v_one_half,
@@ -5238,7 +5238,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_back_left = np.array(
+        connection_back_left = _np.array(
             [
                 [
                     -v_wall_thickness + v_one_half,
@@ -5283,7 +5283,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        left = np.array(
+        left = _np.array(
             [
                 [
                     v_zero,
@@ -5328,7 +5328,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_front_left = np.array(
+        connection_front_left = _np.array(
             [
                 [
                     v_zero,
@@ -5373,7 +5373,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        back = np.array(
+        back = _np.array(
             [
                 [
                     v_half_contact_length + v_one_half,
@@ -5418,7 +5418,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_back_right = np.array(
+        connection_back_right = _np.array(
             [
                 [
                     v_inner_half_contact_length + v_one_half,
@@ -5463,7 +5463,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        bottom = np.array(
+        bottom = _np.array(
             [
                 [
                     v_one_half + v_half_contact_length,
@@ -5508,7 +5508,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        top = np.array(
+        top = _np.array(
             [
                 [
                     v_one_half + v_inner_half_contact_length,
@@ -5553,7 +5553,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_front_bottom = np.array(
+        connection_front_bottom = _np.array(
             [
                 [
                     v_half_contact_length + v_one_half,
@@ -5598,7 +5598,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_front_top = np.array(
+        connection_front_top = _np.array(
             [
                 [
                     v_half_contact_length + v_one_half,
@@ -5643,7 +5643,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_back_bottom = np.array(
+        connection_back_bottom = _np.array(
             [
                 [
                     v_one_half + v_half_contact_length,
@@ -5688,7 +5688,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_back_top = np.array(
+        connection_back_top = _np.array(
             [
                 [
                     v_one_half + v_half_contact_length,
@@ -5733,7 +5733,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_top_right = np.array(
+        connection_top_right = _np.array(
             [
                 [
                     v_one_half + v_half_contact_length,
@@ -5778,7 +5778,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_top_left = np.array(
+        connection_top_left = _np.array(
             [
                 [
                     v_one_half - v_half_contact_length,
@@ -5823,7 +5823,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_bottom_left = np.array(
+        connection_bottom_left = _np.array(
             [
                 [
                     v_zero,
@@ -5868,7 +5868,7 @@ class Armadillo(TileBase):
             ]
         )
 
-        connection_bottom_right = np.array(
+        connection_bottom_right = _np.array(
             [
                 [
                     v_one,
@@ -5913,63 +5913,63 @@ class Armadillo(TileBase):
             ]
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=right))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=back))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=back))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=left))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=left))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=front))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=front))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
         )
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=bottom))
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=bottom))
 
-        spline_list.append(Bezier(degrees=[1, 1, 1], control_points=top))
-
-        spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
-        )
+        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=top))
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
         )
 
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
+        )
+
+        spline_list.append(
+            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
         )
         spline_list.append(
-            Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
+            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
         )
 
         return (spline_list, None)

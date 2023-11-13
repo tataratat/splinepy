@@ -1,14 +1,14 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class NutTile2D(TileBase):
+class NutTile2D(_TileBase):
     def __init__(self):
         """Simple tile - looks like a nut"""
         self._dim = 2
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.5, 0.5],
             ]
@@ -54,8 +54,8 @@ class NutTile2D(TileBase):
 
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self.evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -63,7 +63,7 @@ class NutTile2D(TileBase):
 
         self.check_params(parameters)
 
-        if not (np.all(parameters[0] > 0) and np.all(parameters[0] < 0.5)):
+        if not (_np.all(parameters[0] > 0) and _np.all(parameters[0] < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
@@ -78,7 +78,7 @@ class NutTile2D(TileBase):
 
         if closure == "x_min":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_one, -v_outer_c_h + v_one_half],
@@ -87,7 +87,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            right_top = np.array(
+            right_top = _np.array(
                 [
                     [v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_one, v_outer_c_h + v_one_half],
@@ -96,7 +96,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [v_inner_c_h + v_one_half, v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_one],
@@ -105,7 +105,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_left = np.array(
+            bottom_left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, v_zero],
@@ -114,7 +114,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, v_zero],
@@ -123,7 +123,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top_left = np.array(
+            top_left = _np.array(
                 [
                     [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_zero, v_one],
@@ -132,7 +132,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -141,7 +141,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_right = np.array(
+            bottom_right = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -151,7 +151,7 @@ class NutTile2D(TileBase):
             )
 
         elif closure == "x_max":
-            right = np.array(
+            right = _np.array(
                 [
                     [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_one, v_zero],
@@ -160,7 +160,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            right_top = np.array(
+            right_top = _np.array(
                 [
                     [v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_one, v_one],
@@ -169,7 +169,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [v_inner_c_h + v_one_half, v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_one],
@@ -178,7 +178,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_left = np.array(
+            bottom_left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -187,7 +187,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -196,7 +196,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top_left = np.array(
+            top_left = _np.array(
                 [
                     [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_zero, v_outer_c_h + v_one_half],
@@ -205,7 +205,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -214,7 +214,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_right = np.array(
+            bottom_right = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -225,7 +225,7 @@ class NutTile2D(TileBase):
 
         elif closure == "y_min":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_one, -v_outer_c_h + v_one_half],
@@ -234,7 +234,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            right_top = np.array(
+            right_top = _np.array(
                 [
                     [v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_one, v_outer_c_h + v_one_half],
@@ -243,7 +243,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [v_inner_c_h + v_one_half, v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_one],
@@ -252,7 +252,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_left = np.array(
+            bottom_left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -261,7 +261,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -270,7 +270,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top_left = np.array(
+            top_left = _np.array(
                 [
                     [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_zero, v_outer_c_h + v_one_half],
@@ -279,7 +279,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_one, v_zero],
@@ -288,7 +288,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_right = np.array(
+            bottom_right = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_one, v_zero],
@@ -299,7 +299,7 @@ class NutTile2D(TileBase):
 
         elif closure == "y_max":
             # set points:
-            right = np.array(
+            right = _np.array(
                 [
                     [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_one, -v_outer_c_h + v_one_half],
@@ -308,7 +308,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            right_top = np.array(
+            right_top = _np.array(
                 [
                     [v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_one, v_outer_c_h + v_one_half],
@@ -317,7 +317,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top = np.array(
+            top = _np.array(
                 [
                     [v_inner_c_h + v_one_half, v_h_void + v_one_half],
                     [v_one, v_one],
@@ -326,7 +326,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_left = np.array(
+            bottom_left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -335,7 +335,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            left = np.array(
+            left = _np.array(
                 [
                     [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                     [v_zero, -v_outer_c_h + v_one_half],
@@ -344,7 +344,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            top_left = np.array(
+            top_left = _np.array(
                 [
                     [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
                     [v_zero, v_outer_c_h + v_one_half],
@@ -353,7 +353,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom = np.array(
+            bottom = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -362,7 +362,7 @@ class NutTile2D(TileBase):
                 ]
             )
 
-            bottom_right = np.array(
+            bottom_right = _np.array(
                 [
                     [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                     [v_outer_c_h + v_one_half, v_zero],
@@ -371,21 +371,21 @@ class NutTile2D(TileBase):
                 ]
             )
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=right))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=right))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=right_top))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=right_top))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=top_left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=top_left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=top))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=top))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_right))
 
         return spline_list
 
@@ -431,8 +431,8 @@ class NutTile2D(TileBase):
 
         if parameters is None:
             self._logd("Setting parameters to default values (0.2)")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -440,7 +440,7 @@ class NutTile2D(TileBase):
 
         self.check_params(parameters)
 
-        if not (np.all(parameters[0] > 0) and np.all(parameters[0] < 0.5)):
+        if not (_np.all(parameters[0] > 0) and _np.all(parameters[0] < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
@@ -463,7 +463,7 @@ class NutTile2D(TileBase):
         spline_list = []
 
         # set points:
-        right = np.array(
+        right = _np.array(
             [
                 [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                 [v_one, -v_outer_c_h + v_one_half],
@@ -472,7 +472,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        right_top = np.array(
+        right_top = _np.array(
             [
                 [v_h_void + v_one_half, v_inner_c_h + v_one_half],
                 [v_one, v_outer_c_h + v_one_half],
@@ -481,7 +481,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        top = np.array(
+        top = _np.array(
             [
                 [v_inner_c_h + v_one_half, v_h_void + v_one_half],
                 [v_outer_c_h + v_one_half, v_one],
@@ -490,7 +490,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        bottom_left = np.array(
+        bottom_left = _np.array(
             [
                 [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                 [v_zero, -v_outer_c_h + v_one_half],
@@ -499,7 +499,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        left = np.array(
+        left = _np.array(
             [
                 [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
                 [v_zero, -v_outer_c_h + v_one_half],
@@ -508,7 +508,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        top_left = np.array(
+        top_left = _np.array(
             [
                 [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
                 [v_zero, v_outer_c_h + v_one_half],
@@ -517,7 +517,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        bottom = np.array(
+        bottom = _np.array(
             [
                 [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                 [v_outer_c_h + v_one_half, v_zero],
@@ -526,7 +526,7 @@ class NutTile2D(TileBase):
             ]
         )
 
-        bottom_right = np.array(
+        bottom_right = _np.array(
             [
                 [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
                 [v_outer_c_h + v_one_half, v_zero],
@@ -535,20 +535,20 @@ class NutTile2D(TileBase):
             ]
         )
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=right))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=right))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=right_top))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=right_top))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=top_left))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=top_left))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=top))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=top))
 
-        spline_list.append(Bezier(degrees=[1, 1], control_points=bottom_right))
+        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_right))
 
         return spline_list

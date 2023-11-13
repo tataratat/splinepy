@@ -1,7 +1,7 @@
-from splinepy.bspline import BSplineBase
+from splinepy.bspline import BSplineBase as _BSplineBase
 
 
-class NURBS(BSplineBase):
+class NURBS(_BSplineBase):
     r"""
     Non-Uniform Rational B-Spline.
 

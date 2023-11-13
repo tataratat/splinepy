@@ -2,7 +2,7 @@
 io utils.
 """
 
-import os
+import os as _os
 
 
 def make_meaningful(line, comment="#"):
@@ -87,14 +87,14 @@ def abs_fname(fname):
     abs_fname: str
       Maybe same to fname, maybe not.
     """
-    if os.path.isabs(fname):
+    if _os.path.isabs(fname):
         pass
 
     elif "~" in fname:
-        fname = os.path.expanduser(fname)
+        fname = _os.path.expanduser(fname)
 
     else:
-        fname = os.path.abspath(fname)
+        fname = _os.path.abspath(fname)
 
     return fname
 
@@ -115,13 +115,13 @@ def expand_tabs(fname, overwrite=True, tab_expand=2):
     -------
     None
     """
-    import os.path as op
+    import os.path as _op
 
     # Safe guard in case an absolute path is handed to the function
     if overwrite:
         out_name = fname
     else:
-        dir, file = op.split(fname)
+        dir, file = _op.split(fname)
         out_name = dir + "copy_" + file
 
     with open(fname) as inputFile:
@@ -144,8 +144,8 @@ def dict_to_spline(spline_dictionary):
     spline_lits : list
       List of splines in called format (NAME_TO_TYPE)
     """
-    from splinepy.settings import NAME_TO_TYPE
-    from splinepy.spline import Spline
+    from splinepy.settings import NAME_TO_TYPE as _NAME_TO_TYPE
+    from splinepy.spline import Spline as _Spline
 
-    spline_list = [Spline(**spd) for spd in spline_dictionary]
-    return [NAME_TO_TYPE[spl.name](spline=spl) for spl in spline_list]
+    spline_list = [_Spline(**spd) for spd in spline_dictionary]
+    return [_NAME_TO_TYPE[spl.name](spline=spl) for spl in spline_list]

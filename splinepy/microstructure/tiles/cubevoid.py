@@ -1,10 +1,10 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class Cubevoid(TileBase):
+class Cubevoid(_TileBase):
     """Void in form of an cuboid set into a unit cell.
 
     Parametrization acts on the cuboid's orientation as well as on its
@@ -17,7 +17,7 @@ class Cubevoid(TileBase):
 
     def __init__(self):
         self._dim = 3
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.5, 0.5, 0.5],
             ]
@@ -25,7 +25,7 @@ class Cubevoid(TileBase):
         self._n_info_per_eval_point = 4
 
         # Aux values
-        self._sphere_ctps = np.array(
+        self._sphere_ctps = _np.array(
             [
                 [-0.5, -0.5, -0.5],
                 [0.5, -0.5, -0.5],
@@ -39,20 +39,20 @@ class Cubevoid(TileBase):
         )
 
     def _rotation_matrix_x(self, angle):
-        cc, ss = np.cos(angle), np.sin(angle)
-        return np.array([[1, 0, 0], [0, cc, ss], [0, -ss, cc]])
+        cc, ss = _np.cos(angle), _np.sin(angle)
+        return _np.array([[1, 0, 0], [0, cc, ss], [0, -ss, cc]])
 
     def _rotation_matrix_x_deriv(self, angle):
-        cc, ss = np.cos(angle), np.sin(angle)
-        return np.array([[0, 0, 0], [0, -ss, cc], [0, -cc, -ss]])
+        cc, ss = _np.cos(angle), _np.sin(angle)
+        return _np.array([[0, 0, 0], [0, -ss, cc], [0, -cc, -ss]])
 
     def _rotation_matrix_y(self, angle):
-        cc, ss = np.cos(angle), np.sin(angle)
-        return np.array([[cc, 0, -ss], [0, 1, 0], [ss, 0, cc]])
+        cc, ss = _np.cos(angle), _np.sin(angle)
+        return _np.array([[cc, 0, -ss], [0, 1, 0], [ss, 0, cc]])
 
     def _rotation_matrix_y_deriv(self, angle):
-        cc, ss = np.cos(angle), np.sin(angle)
-        return np.array([[-ss, 0, -cc], [0, 1, 0], [cc, 0, -ss]])
+        cc, ss = _np.cos(angle), _np.sin(angle)
+        return _np.array([[-ss, 0, -cc], [0, 1, 0], [cc, 0, -ss]])
 
     def create_tile(
         self,
@@ -89,7 +89,7 @@ class Cubevoid(TileBase):
         derivatives : list<list<splines>> / None
         """  # set to default if nothing is given
         if parameters is None:
-            parameters = np.array([0.5, 0.5, 0, 0]).reshape(1, 1, 4)
+            parameters = _np.array([0.5, 0.5, 0, 0]).reshape(1, 1, 4)
 
         # Create center ellipsoid
         # RotY * RotX * DIAG(r_x, r_yz) * T_base
@@ -104,7 +104,7 @@ class Cubevoid(TileBase):
             derivatives = None
 
         # Prepare auxiliary matrices and values
-        diag = np.diag([r_x, r_yz, r_yz])
+        diag = _np.diag([r_x, r_yz, r_yz])
         rotMx = self._rotation_matrix_x(rot_x)
         rotMy = self._rotation_matrix_y(rot_y)
 
@@ -117,7 +117,7 @@ class Cubevoid(TileBase):
                 v_one_half = 0.5
                 v_one = 1.0
                 v_zero = 0.0
-                ctps = np.einsum(
+                ctps = _np.einsum(
                     "ij,jk,kl,ml->mi",
                     rotMy,
                     rotMx,
@@ -132,26 +132,26 @@ class Cubevoid(TileBase):
                 v_one_half = 0.0
                 v_one = 0.0
                 v_zero = 0.0
-                ddiag = np.diag([dr_x, dr_yz, dr_yz])
+                ddiag = _np.diag([dr_x, dr_yz, dr_yz])
                 drotMx = self._rotation_matrix_x_deriv(rot_x)
                 drotMy = self._rotation_matrix_y_deriv(rot_y)
                 ctps_mat = (
                     drot_y
-                    * np.einsum(
+                    * _np.einsum(
                         "ij,jk,kl->il",
                         drotMy,
                         rotMx,
                         diag,
                     )
-                    + drot_x * np.einsum("ij,jk,kl->il", rotMy, drotMx, diag)
-                    + np.einsum("ij,jk,kl->il", rotMy, rotMx, ddiag)
+                    + drot_x * _np.einsum("ij,jk,kl->il", rotMy, drotMx, diag)
+                    + _np.einsum("ij,jk,kl->il", rotMy, rotMx, ddiag)
                 )
-                ctps = np.einsum("ij,kj->ki", ctps_mat, self._sphere_ctps)
+                ctps = _np.einsum("ij,kj->ki", ctps_mat, self._sphere_ctps)
 
             ctps += [v_one_half, v_one_half, v_one_half]
             # Start the assembly
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -166,7 +166,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[4, :],
@@ -182,7 +182,7 @@ class Cubevoid(TileBase):
             )
             # Y-Axis
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -197,7 +197,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[2, :],
@@ -213,7 +213,7 @@ class Cubevoid(TileBase):
             )
             # Z-Axis
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         [v_zero, v_zero, v_zero],
@@ -228,7 +228,7 @@ class Cubevoid(TileBase):
                 )
             )
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
                     control_points=[
                         ctps[1, :],
