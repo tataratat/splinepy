@@ -319,7 +319,7 @@ def determinant_spline(self):
       Spline which represents the jacobian determinant of the given spline object.
     """
 
-    from splinepy import BSpline, Bezier
+    from splinepy import Bezier, BSpline
 
     # checks if dimensions are equal.
     if self.dim != self.para_dim:
@@ -341,6 +341,8 @@ def determinant_spline(self):
         old_weights = self.weights
         # overwrite weights of spline
         self.weights = np.repeat([1], len(old_weights))
+    else:
+        rational_spline = False
 
     # calculate degrees of det spline
     deg_det = self.degrees * self.dim - 1
@@ -355,13 +357,14 @@ def determinant_spline(self):
         for i in range(d):
             # Add knots ([inner knots] * (mult_inc + 1))
             # since continuity at inner knots further decreases by 1!
-            kvs_temp = self.knot_vectors[i]
+            kvs_temp = np.array(self.knot_vectors[i]).tolist()
             unique_knots = np.unique(kvs_temp).tolist()
-            kvs_temp += np.repeat(unique_knots[1:-1], mult_inc[i] + 1) 
-            kvs_temp += np.repeat([unique_knots[0], unique_knots[-1]], mult_inc[i])
+            kvs_temp += np.repeat(unique_knots[1:-1], mult_inc[i] + 1).tolist()
+            kvs_temp += np.repeat(
+                [unique_knots[0], unique_knots[-1]], mult_inc[i]
+            ).tolist()
             kvs_temp.sort()
             kvs_det[i] = kvs_temp
-
 
         # number of cpts
         n_cpts = np.prod([len(kvs_det[i]) - deg_det[i] - 1 for i in range(d)])
@@ -375,16 +378,20 @@ def determinant_spline(self):
 
     else:
         # if Bezier Spline
-        n_cpts = np.prod([deg_det[i] - 1 for i in range(d)])
+        n_cpts = np.prod([deg_det[i] + 1 for i in range(d)])
 
         determinant_projection = Bezier(
-            degrees=deg_det,
-            control_points=np.empty((n_cpts,1)))
-        
+            degrees=deg_det, control_points=np.empty((n_cpts, 1))
+        )
+
     # get det(J) of spline at greville pts to calculate cpts of det Spline
-    sample_points = determinant_projection.greville_abscissae(duplicate_tolerance=1e-5)
+    sample_points = determinant_projection.greville_abscissae(
+        duplicate_tolerance=1e-5
+    )
     jac_dets = np.linalg.det(self.jacobian(sample_points))
-    basisfct_eval, supports = determinant_projection.basis_and_support(sample_points)
+    basisfct_eval, supports = determinant_projection.basis_and_support(
+        sample_points
+    )
 
     # build and solve system with scipy.sparse if available
     if has_scipy:
@@ -395,13 +402,15 @@ def determinant_spline(self):
         basis_functions = csr_array(
             (data, (row_ids, col_ids)), shape=(n_row, n_row)
         )
-        determinant_projection.control_points[:, 0] = linalg.spsolve(basis_functions, jac_dets)
+        determinant_projection.control_points[:, 0] = linalg.spsolve(
+            basis_functions, jac_dets
+        )
     else:
         basis_functions = np.zeros((n_cpts, n_cpts))
         np.put_along_axis(basis_functions, supports, basisfct_eval, axis=1)
-        determinant_projection.control_points[:, 0] = np.linalg.solve(basis_functions, jac_dets)
-
-    d_min = np.min(determinant_projection.control_points)
+        determinant_projection.control_points[:, 0] = np.linalg.solve(
+            basis_functions, jac_dets
+        )
 
     # if weights were overwritten, change them to original
     if rational_spline:
