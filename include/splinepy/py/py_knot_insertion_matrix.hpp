@@ -21,12 +21,12 @@ namespace py = pybind11;
  * @param new_kv New knot vector
  * @param degree
  * @param tolerance tolerance (to identify multiple knots)
- * @return std::tuple<py::array_t<double>, std::vector<std::size_t>>
+ * @return std::tuple<py::array_t<double>, std::vector<int>>
  */
-std::tuple<py::array_t<double>, std::vector<std::size_t>>
+std::tuple<py::array_t<double>, std::vector<int>>
 ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
                                       const py::array_t<double>& new_kv,
-                                      const std::size_t degree,
+                                      const int degree,
                                       const double& tolerance);
 
 /**
