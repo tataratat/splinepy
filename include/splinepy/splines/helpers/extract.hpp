@@ -1,9 +1,13 @@
 #pragma once
 
-#include <splinepy/splines/helpers/properties.hpp>
-#include <splinepy/splines/splinepy_base.hpp>
-#include <splinepy/utils/grid_points.hpp>
-#include <splinepy/utils/print.hpp>
+#include <array>
+#include <vector>
+
+#include "splinepy/splines/helpers/properties.hpp"
+#include "splinepy/splines/splinepy_base.hpp"
+#include "splinepy/utils/arrays.hpp"
+#include "splinepy/utils/grid_points.hpp"
+#include "splinepy/utils/print.hpp"
 
 namespace splinepy::splines::helpers {
 
@@ -115,7 +119,7 @@ ExtractControlMeshSliceFromIDs(const SplineType& spline,
   }
 }
 
-template<bool switch_plane_id_to_extrema = false, typename SplineType>
+template<typename SplineType>
 std::shared_ptr<splinepy::splines::SplinepyBase>
 ExtractBoundaryMeshSlice(const SplineType& spline, const int& boundary_id) {
   if constexpr (SplineType::kParaDim == 1) {
@@ -159,8 +163,7 @@ ExtractControlMeshSlice(const SplineType& spline,
   } else {
     // get ids on boundary
     const auto cmr =
-        splinepy::splines::helpers::template GetControlMeshResolutions<
-            std::size_t>(spline);
+        splinepy::splines::helpers::GetControlMeshResolutions(spline);
     const auto ids_on_boundary = splinepy::utils::GridPoints::IdsOnHyperPlane(
         cmr.data(),
         static_cast<int>(cmr.size()),
@@ -170,6 +173,148 @@ ExtractControlMeshSlice(const SplineType& spline,
                                           ids_on_boundary,
                                           plane_normal_axis);
   }
+}
+
+/**
+ * @brief Extract Bezier Patch IDs
+ *
+ * This function assumed that repeated knots have been inserted, such that the
+ * continuity at each knot is C0. It returns the indices that are associated to
+ * the individual bezier patches and returns a vector of ID lists that can be
+ * used to create the new splines
+ *
+ * @param knot_multiplicities multiplicies of each unique knot per dim
+ * @param degrees pointer to degrees vector
+ * @param n_patches_per_para_dim pointer to vector with same dimension that
+ * represents the number of patches within the B-Spline type along a respective
+ * parametric dimension
+ * @return std::vector<std::vector<int>>
+ */
+std::vector<std::vector<int>>
+ExtractBezierPatchIDs(const std::vector<std::vector<int>>& knot_multiplicities,
+                      const int* degrees,
+                      const int* n_patches_per_para_dim);
+/**
+ * @brief Extracts Bezier patches of a B-Spline/NURBS type
+ *
+ * @tparam as_base flag to determine input type avoid circular dependency
+ * @tparam SplineType Spline-type (NURBS of BSpline)
+ * @param input spline to be separated
+ * @return auto vector of Bezier types, either Rational or polynomial
+ */
+template<typename SplineType>
+std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>>
+ExtractBezierPatches(const SplineType& spline) {
+  static_assert(SplineType::kHasKnotVectors,
+                "Invalid type for ExtractBezierPatches");
+  // make copy of input spline
+  auto input_ptr = spline.SplinepyDeepCopy();
+  SplineType& input = *(std::dynamic_pointer_cast<SplineType>(input_ptr));
+
+  // Start by identifying types
+  constexpr int para_dim = SplineType::kParaDim;
+  constexpr bool is_rational = SplineType::kIsRational;
+  const int dim = input.SplinepyDim();
+
+  // Predetermine some auxiliary values
+  // Access spline degrees and determine offsets
+  std::array<int, para_dim> degrees{};
+  input.SplinepyCurrentProperties(degrees.data(), nullptr, nullptr, nullptr);
+
+  std::array<int, para_dim> n_patches_per_para_dim{};
+  std::array<int, para_dim> n_ctps_per_para_dim{};
+
+  // Identify all internal knots and the number of required Bezier patches
+  const auto& parameter_space = input.GetParameterSpace();
+  for (int i_p_dim{}; i_p_dim < para_dim; i_p_dim++) {
+    // Need to use BSplineLib's infamous NamedType
+    const bsplinelib::Dimension pd_query{i_p_dim};
+
+    // Extract internal knots
+    const auto bezier_information =
+        parameter_space.DetermineBezierExtractionKnots(pd_query);
+    n_patches_per_para_dim[i_p_dim] = std::get<0>(bezier_information);
+    n_ctps_per_para_dim[i_p_dim] =
+        n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
+    const auto& required_knot_insertions = std::get<1>(bezier_information);
+
+    // Insert knot into the copy of the spline before extraction
+    // this is the most costly part of the calculation
+    for (const auto& knot_to_insert : required_knot_insertions) {
+      input.InsertKnot(pd_query, knot_to_insert);
+    }
+  }
+
+  // Retrieve id information
+  const std::vector<std::vector<int>>& ids =
+      ExtractBezierPatchIDs(input.SplinepyKnotMultiplicities(),
+                            degrees.data(),
+                            n_patches_per_para_dim.data());
+
+  // Number of total patches
+  const int n_total_patches = ids.size();
+  const int n_ctps_per_patch = ids[0].size();
+
+  // Init return value
+  std::vector<std::shared_ptr<splinepy::splines::SplinepyBase>> bezier_list{};
+  bezier_list.reserve(n_total_patches);
+
+  // get base control points to copy - in case of NURBS, this will be weighted
+  // coordinates with the weights at the last column
+  const auto& bspline_cps = input.GetCoordinates();
+
+  // prepare temporary space to copy control point values
+  splinepy::utils::Array<double, 2> extracted_cps(n_ctps_per_patch, dim);
+  splinepy::utils::Array<double> extracted_weights;
+  double* extracted_weights_data{nullptr};
+  if constexpr (is_rational) {
+    extracted_weights.Reallocate(n_ctps_per_patch);
+    extracted_weights_data = extracted_weights.data();
+  }
+
+  // Loop over the individual patches
+  for (const std::vector<int>& cp_ids : ids) {
+
+    // loop over cp ids to extract
+    int local_counter{};
+    for (const int& cp_id : cp_ids) {
+      if constexpr (is_rational) {
+        // we have to un-weight
+        // get beginning of from and to row
+        const double* from_ptr = &bspline_cps(cp_id, 0);
+        double* to_ptr = &extracted_cps(local_counter, 0);
+        // invert weight
+        const double w_inv = 1. / from_ptr[dim];
+
+        // apply inverted weight and save to temporary
+        for (int i{}; i < dim; ++i) {
+          to_ptr[i] = from_ptr[i] * w_inv;
+        }
+        // copy weight
+        extracted_weights[local_counter] = from_ptr[dim];
+
+        ++local_counter;
+      } else {
+        // for non-rational bspline, we can just copy values
+        std::copy_n(&bspline_cps(cp_id, 0),
+                    dim,
+                    &extracted_cps(local_counter++, 0));
+      }
+    }
+
+    // use dynamic spline creator to create beziers.
+    // weights's data will be nullptr if it is non rational.
+    // all the values are copied by bezier and rational bezier
+    bezier_list.push_back(splinepy::splines::SplinepyBase::SplinepyCreate(
+        para_dim,
+        dim,
+        degrees.data(),
+        nullptr,
+        extracted_cps.data(),
+        extracted_weights_data));
+  }
+
+  return bezier_list;
 }
 
 } /* namespace splinepy::splines::helpers */

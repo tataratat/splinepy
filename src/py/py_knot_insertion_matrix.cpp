@@ -1,7 +1,9 @@
 #include <sstream>
 
+#include <BSplineLib/ParameterSpaces/knot_vector.hpp>
+
 #include "splinepy/py/py_knot_insertion_matrix.hpp"
-#include "splinepy/splines/helpers/extract_bezier_patches.hpp"
+#include "splinepy/splines/helpers/extract.hpp"
 #include "splinepy/utils/print.hpp"
 
 /// @brief
