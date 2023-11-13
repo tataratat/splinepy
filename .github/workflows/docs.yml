@@ -15,13 +15,13 @@ jobs:
     - name: Set up  python
       uses: actions/setup-python@v3
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: install dependencies
       run: pip install numpy
 
     - name: build splinepy linux
-      run: CC=clang-14 CXX=clang++-14 python3 setup.py --minimal --debug develop
+      run: CC=clang-14 CXX=clang++-14 pip install . -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
 
     - name: test
       run: |

@@ -9,7 +9,7 @@ project(
 option(SPLINEPY_COMPILE_BSPLINELIB "Compile bsplinelib together." ON)
 option(SPLINEPY_VERBOSE_MAKE
        "Verbose `make` output. Alias to CMAKE_VERBOSE_MAKEFILE" OFF)
-option(SPLINEPY_MORE "Compile a full set of splines." OFF)
+option(SPLINEPY_MORE "Compile a full set of splines." ON)
 option(SPLINEPY_BUILD_SHARED "build shared library for splinepy" OFF)
 option(SPLINEPY_COMPILE_PYTHON "Compile python module." ON)
 option(SPLINEPY_ENABLE_WARNINGS "Add warning flags" OFF)
@@ -98,17 +98,6 @@ if(SPLINEPY_BUILD_SHARED)
   set(SPLINEPY_LIB_TYPE SHARED)
 else()
   set(SPLINEPY_LIB_TYPE STATIC)
-endif()
-
-# try to avoid re-build of splinepy if  possible
-if(SPLINEPY_COMPILE_PYTHON)
-  find_package(splinepy QUIET)
-  if(splinepy_FOUND)
-    message("Found installed splinepy, building only python module")
-    add_subdirectory(third_party/pybind11)
-    add_subdirectory(src/py)
-    return()
-  endif()
 endif()
 
 message("")

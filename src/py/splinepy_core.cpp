@@ -46,4 +46,20 @@ PYBIND11_MODULE(splinepy_core, m) {
   splinepy::py::init_fitting(m);
   splinepy::py::init_knot_insertion_matrix(m);
   splinepy::py::init_multipatch(m);
+
+  // add some build configuration info
+  m.def("build_type", []() {
+#ifndef NDEBUG
+    return "debug";
+#else
+  return "release";
+#endif
+  });
+  m.def("is_minimal", []() {
+#ifdef SPLINEPY_MORE
+    return false;
+#else
+  return true;
+#endif
+  });
 }

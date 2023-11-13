@@ -10,9 +10,9 @@ git clone git@github.com:<path-to-your-fork>
 cd splinepy  # or <forkname>
 git submodule update --init --recursive
 git checkout -b new-feature0
-python3 setup.py develop --minimal --debug
+pip install -e. --config-settings=cmake.args=-DSPLINEPY_MORE=OFF --config-settings=cmake.build-type="Debug"
 ```
-`--minimal` flag builds splines upto 3D (both parametric and physical dimensions), and that way we can reduce compile time. `--debug` build also reduces compile time. We are experimenting with the ways to reduce compile time during development. Let us know if you have a great idea!
+`--config-settings=cmake.args=-DSPLINEPY_MORE` build argument builds splines up to 3D (both parametric and physical dimensions if they are part of template parameters), and that way we can reduce compile time. `--config-settings=cmake.build-type="Debug"` build also reduces compile time. We are experimenting with ways to reduce compile time during development. Let us know if you have a great idea!
 
 ## Python style / implementation preferences
 - use `if` and `raise` instead of `assert`

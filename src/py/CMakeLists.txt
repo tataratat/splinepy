@@ -43,3 +43,8 @@ install(
   EXPORT "${TARGETS_EXPORT_NAME}"
   NAMESPACE "${namespace}"
   DESTINATION "${cfg_dest}")
+
+install(
+  TARGETS splinepy_core
+  DESTINATION splinepy
+  COMPONENT PythonModule)
