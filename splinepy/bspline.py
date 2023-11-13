@@ -162,8 +162,6 @@ class BSplineBase(spline.Spline):
         if beziers:
             indices, data = splinepy_core.bezier_extraction_matrix(
                 self,
-                [kv.numpy() for kv in self.knot_vectors],
-                self.degrees,
                 settings.TOLERANCE,
             )
 
