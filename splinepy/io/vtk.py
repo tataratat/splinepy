@@ -4,7 +4,7 @@ This one samples and exports a vtk compatible geometries.
 Requires sample resolutions.
 Doesn't load.
 """
-from splinepy import splinepy_core
+from splinepy import splinepy_core as _splinepy_core
 
 
 def export(fname, splines, resolutions_per_spline):
@@ -22,4 +22,4 @@ def export(fname, splines, resolutions_per_spline):
     --------
     None
     """
-    return splinepy_core.export_vtk(fname, splines, resolutions_per_spline)
+    return _splinepy_core.export_vtk(fname, splines, resolutions_per_spline)

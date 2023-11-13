@@ -2,18 +2,20 @@
 Multipatch Spline Configuration
 """
 
-import numpy as np
+import numpy as _np
 
-from splinepy import settings
-from splinepy._base import SplinepyBase
-from splinepy.helpme import visualize
-from splinepy.helpme.extract import Extractor
-from splinepy.spline import _default_if_none, _get_helper
-from splinepy.splinepy_core import PyMultipatch, boundaries_from_continuity
-from splinepy.utils.data import MultipatchData
+from splinepy import settings as _settings
+from splinepy._base import SplinepyBase as _SplinepyBase
+from splinepy.helpme import visualize as _visualize
+from splinepy.helpme.extract import Extractor as _Extractor
+from splinepy.spline import _default_if_none
+from splinepy.spline import _get_helper
+from splinepy.splinepy_core import PyMultipatch as _PyMultipatch
+from splinepy.splinepy_core import boundaries_from_continuity as _boundaries_from_continuity
+from splinepy.utils.data import MultipatchData as _MultipatchData
 
 
-class Multipatch(SplinepyBase, PyMultipatch):
+class Multipatch(_SplinepyBase, _PyMultipatch):
     """
     System of patches to store information such as boundaries and
     interfaces
@@ -25,7 +27,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         "_spline_data",
     )
 
-    __show_option__ = visualize.SplineShowOption
+    __show_option__ = _visualize.SplineShowOption
 
     def __init__(self, splines=None, interfaces=None, *, spline=None):
         """
@@ -47,11 +49,11 @@ class Multipatch(SplinepyBase, PyMultipatch):
         """
         # Init values
         if spline is not None:
-            if not isinstance(spline, PyMultipatch):
+            if not isinstance(spline, _PyMultipatch):
                 raise TypeError("spline must be PyMultipatch.")
             super().__init__(spline)
         elif splines is not None:
-            super().__init__(splines, settings.NTHREADS, False)
+            super().__init__(splines, _settings.NTHREADS, False)
         else:
             super().__init__()
 
@@ -76,7 +78,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
 
     @patches.setter
     def patches(self, list_of_splines):
-        PyMultipatch.patches.fset(self, list_of_splines)
+        _PyMultipatch.patches.fset(self, list_of_splines)
 
     @property
     def interfaces(self):
@@ -144,7 +146,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         boundary_list = []
         for i_bid in range(-1, max_BID - 1, -1):
             self._logd(f"Extracting boundary with ID {abs(i_bid)}")
-            boundary_list.append(np.where(self.interfaces == i_bid))
+            boundary_list.append(_np.where(self.interfaces == i_bid))
             self._logd(
                 f"Found {boundary_list[-1][1].size} boundary "
                 f"elements on boundary {abs(i_bid)}"
@@ -167,7 +169,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
           Embedded splines representing boundaries of system
         """
         if nthreads is None:
-            nthreads = settings.NTHREADS
+            nthreads = _settings.NTHREADS
 
         # apply nthreads
         previous_nthreads = self.n_default_threads
@@ -290,7 +292,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         interfaces : array-like (n_patch x n_boundaries)
         """
         if tolerance is None:
-            tolerance = settings.TOLERANCE
+            tolerance = _settings.TOLERANCE
 
         # save previous default tol
         previous_tol = self.tolerance
@@ -351,7 +353,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         if mask is None:
             boundary_ids = self.interfaces < 0
         else:
-            boundary_ids = np.isin(-self.interfaces, np.abs(mask))
+            boundary_ids = _np.isin(-self.interfaces, _np.abs(mask))
 
         # Check if there is a boundary
         if not boundary_ids.any():
@@ -367,7 +369,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         ]
 
         # Cols and Rows
-        row_ids, col_ids = np.where(boundary_ids)
+        row_ids, col_ids = _np.where(boundary_ids)
 
         # Function is applied to all face centers
         try:
@@ -397,7 +399,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         -------
         spline_data: MultipatchData
         """
-        return _get_helper(self, "_spline_data", MultipatchData)
+        return _get_helper(self, "_spline_data", _MultipatchData)
 
     @property
     def show_options(self):
@@ -432,10 +434,10 @@ class Multipatch(SplinepyBase, PyMultipatch):
         -------
         spline_showable: dict
         """
-        return visualize.show(self, return_showable=True, **kwargs)
+        return _visualize.show(self, return_showable=True, **kwargs)
 
     def show(self, **kwargs):
-        return visualize.show(self, **kwargs)
+        return _visualize.show(self, **kwargs)
 
     def boundaries_from_continuity(
         self,
@@ -459,14 +461,14 @@ class Multipatch(SplinepyBase, PyMultipatch):
         None
         """
         if tolerance is None:
-            tolerance = settings.TOLERANCE
+            tolerance = _settings.TOLERANCE
         if nthreads is None:
-            nthreads = settings.NTHREADS
+            nthreads = _settings.NTHREADS
         b_patches = self.boundary_multipatch(nthreads=nthreads)
 
         # Pass information to c++ backend
         self._logd("Start propagation of information...")
-        n_new_boundaries = boundaries_from_continuity(
+        n_new_boundaries = _boundaries_from_continuity(
             b_patches.patches,
             b_patches.interfaces,
             self.interfaces,
@@ -490,7 +492,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         None
         """
         # retrieve all boundary elements
-        boundary_ids = np.isin(-self.interfaces, np.abs(mask))
+        boundary_ids = _np.isin(-self.interfaces, _np.abs(mask))
 
         if not boundary_ids.any():
             self._logd(
@@ -499,7 +501,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
             )
             return None
 
-        self.interfaces[boundary_ids] = np.min(mask)
+        self.interfaces[boundary_ids] = _np.min(mask)
 
     def add_fields(
         self,
@@ -533,7 +535,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         None
         """
         if nthreads is None:
-            nthreads = settings.NTHREADS
+            nthreads = _settings.NTHREADS
 
         super().add_fields(
             fields,
@@ -588,7 +590,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
         )
         return super().sample(
             resolutions,
-            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            nthreads=_default_if_none(nthreads, _settings.NTHREADS),
             same_parametric_bounds=False,
         )
 
@@ -610,7 +612,7 @@ class Multipatch(SplinepyBase, PyMultipatch):
 
         return super().evaluate(
             queries,
-            nthreads=_default_if_none(nthreads, settings.NTHREADS),
+            nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 
     @property
@@ -626,4 +628,4 @@ class Multipatch(SplinepyBase, PyMultipatch):
         --------
         extractor: Extractor
         """
-        return _get_helper(self, "_extractor", Extractor)
+        return _get_helper(self, "_extractor", _Extractor)

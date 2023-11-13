@@ -3,13 +3,14 @@ xml io.
 Keyword follows RWTH CATS's spline format.
 Possibly will be turned into pure python io.
 """
-import xml.etree.ElementTree as ET
-from sys import version as python_version
+import xml.etree.ElementTree as _ET
+from sys import version as _python_version
 
-import numpy as np
+import numpy as _np
 
-from splinepy.io import ioutils
-from splinepy.utils.log import debug, warning
+from splinepy.io import ioutils as _ioutils
+from splinepy.utils.log import debug as _debug
+from splinepy.utils.log import warning as _warning 
 
 # List of spline keywords (bundled here in case they change - many unused)
 CATS_XML_KEY_WORDS = {
@@ -54,7 +55,7 @@ def load(fname):
     def _read_spline(xml_element):
         spline_dict = {}
         if not xml_element.tag.startswith(CATS_XML_KEY_WORDS["patch"]):
-            debug(
+            _debug(
                 f"Found unexpected keyword {xml_element.tag}, which will be "
                 f"ignored"
             )
@@ -77,7 +78,7 @@ def load(fname):
                 f"{xml_element}"
             )
         if ctps_dim > dim:
-            debug(
+            _debug(
                 "Spline seems to contain field information, but field "
                 "retrieval is not implemented. All non-geometry info will be "
                 "ignored"
@@ -90,20 +91,20 @@ def load(fname):
         for info in xml_element:
             # We ignore most keywords at the moment
             if CATS_XML_KEY_WORDS["coeff_names"] in info.tag:
-                debug(
+                _debug(
                     f"Will use the following control point vars as control "
                     f"point coordinates : {info.text.split()[:dim]}"
                 )
             # Control points
             elif CATS_XML_KEY_WORDS["control_points"] in info.tag:
-                spline_dict["control_points"] = np.fromstring(
+                spline_dict["control_points"] = _np.fromstring(
                     info.text.replace("\n", " "), sep=" "
                 ).reshape(-1, ctps_dim)[:, :dim]
 
             # degrees
             elif CATS_XML_KEY_WORDS["degrees"] in info.tag:
-                spline_dict["degrees"] = np.fromstring(
-                    info.text.replace("\n", " "), sep=" ", dtype=np.int64
+                spline_dict["degrees"] = _np.fromstring(
+                    info.text.replace("\n", " "), sep=" ", dtype=_np.int64
                 )
                 if spline_dict["degrees"].size != para_dim:
                     raise ValueError(
@@ -114,7 +115,7 @@ def load(fname):
 
             # weights
             elif CATS_XML_KEY_WORDS["weights"] in info.tag:
-                spline_dict["weights"] = np.fromstring(
+                spline_dict["weights"] = _np.fromstring(
                     info.text.replace("\n", " "), sep=" "
                 )
 
@@ -123,23 +124,23 @@ def load(fname):
                 spline_dict["knot_vectors"] = []
                 for child_info in info:
                     if CATS_XML_KEY_WORDS["knot_vector"] not in child_info.tag:
-                        debug("Redundant item in knot_vectors block of xml")
+                        _debug("Redundant item in knot_vectors block of xml")
                     spline_dict["knot_vectors"].append(
-                        np.fromstring(
+                        _np.fromstring(
                             child_info.text.replace("\n", " "), sep=" "
                         )
                     )
 
             # All other keywords will be ignored for the moment
             else:
-                debug(f"Ignoring keyword {info.tag}")
+                _debug(f"Ignoring keyword {info.tag}")
 
         return spline_dict
 
     # Parse  XML file
-    debug(f"Parsing xml-file '{fname}' ...")
-    root = ET.parse(fname).getroot()
-    debug("XML-file parsed start conversion")
+    _debug(f"Parsing xml-file '{fname}' ...")
+    root = _ET.parse(fname).getroot()
+    _debug("XML-file parsed start conversion")
     list_of_splines = []
     if root.tag.startswith(CATS_XML_KEY_WORDS["spline_list"]):
         if root.attrib.get(CATS_XML_KEY_WORDS["spline_type"], "1") != "1":
@@ -151,10 +152,10 @@ def load(fname):
         for patch_element in root:
             list_of_splines.append(_read_spline(patch_element))
     else:
-        debug(f"Unused xml-keyword {root.tag}")
+        _debug(f"Unused xml-keyword {root.tag}")
         return []
 
-    debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
+    _debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
     if len(list_of_splines) != n_patches:
         raise ValueError(
             f"Found {len(list_of_splines)} splines, but expected to find "
@@ -162,7 +163,7 @@ def load(fname):
         )
 
     # Return splines
-    return ioutils.dict_to_spline(list_of_splines)
+    return _ioutils.dict_to_spline(list_of_splines)
 
 
 def export(fname, spline_list, indent=True):
@@ -182,18 +183,18 @@ def export(fname, spline_list, indent=True):
     --------
     None
     """
-    from splinepy.multipatch import Multipatch
-    from splinepy.spline import Spline
+    from splinepy.multipatch import Multipatch as _Multipatch
+    from splinepy.spline import Spline as _Spline
 
     # First transform spline-data into a multipatch-data if required
-    if issubclass(type(spline_list), Spline):
+    if issubclass(type(spline_list), _Spline):
         # Transform to list
         spline_list = [spline_list]
 
-    if isinstance(spline_list, Multipatch):
+    if isinstance(spline_list, _Multipatch):
         # @todo: current implementation only exports geometry, export fields
         if spline_list.fields:
-            warning("Fields are not supported yet")
+            _warning("Fields are not supported yet")
         # Transform to multipatch
         spline_list = spline_list.patches
 
@@ -203,7 +204,7 @@ def export(fname, spline_list, indent=True):
         )
 
     # Start a list of a list of patches
-    spline_list_element = ET.Element(
+    spline_list_element = _ET.Element(
         CATS_XML_KEY_WORDS["spline_list"],
         SplineType=str(1),
         **{CATS_XML_KEY_WORDS["n_patches"]: str(len(spline_list))},
@@ -217,7 +218,7 @@ def export(fname, spline_list, indent=True):
         patch = spline.nurbs if spline.is_rational else spline.bspline
 
         # Write spline header
-        patch_element = ET.SubElement(
+        patch_element = _ET.SubElement(
             spline_list_element,
             CATS_XML_KEY_WORDS["patch"],
             **{
@@ -231,7 +232,7 @@ def export(fname, spline_list, indent=True):
         )
 
         # Variable names (@todo fields)
-        control_point_var_names = ET.SubElement(
+        control_point_var_names = _ET.SubElement(
             patch_element,
             CATS_XML_KEY_WORDS["coeff_names"],
         )
@@ -241,7 +242,7 @@ def export(fname, spline_list, indent=True):
         )
 
         # Control point variables
-        control_points_elements = ET.SubElement(
+        control_points_elements = _ET.SubElement(
             patch_element,
             CATS_XML_KEY_WORDS["control_points"],
         )
@@ -250,19 +251,19 @@ def export(fname, spline_list, indent=True):
         )
 
         # degrees
-        degrees_elements = ET.SubElement(
+        degrees_elements = _ET.SubElement(
             patch_element,
             CATS_XML_KEY_WORDS["degrees"],
         )
         degrees_elements.text = " ".join(str(deg) for deg in patch.degrees)
 
         # knot-vectors
-        knot_vectors_elements = ET.SubElement(
+        knot_vectors_elements = _ET.SubElement(
             patch_element,
             CATS_XML_KEY_WORDS["knot_vectors"],
         )
         for kv in patch.knot_vectors:
-            knot_vector_element = ET.SubElement(
+            knot_vector_element = _ET.SubElement(
                 knot_vectors_elements,
                 CATS_XML_KEY_WORDS["knot_vector"],
             )
@@ -270,7 +271,7 @@ def export(fname, spline_list, indent=True):
 
         # weights if rational
         if patch.is_rational:
-            weights_elements = ET.SubElement(
+            weights_elements = _ET.SubElement(
                 patch_element,
                 CATS_XML_KEY_WORDS["weights"],
             )
@@ -279,17 +280,17 @@ def export(fname, spline_list, indent=True):
             )
 
     # Beautify and export
-    if int(python_version.split(".")[1]) >= 9 and indent:
+    if int(_python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
-        ET.indent(spline_list_element)
+        _ET.indent(spline_list_element)
 
-    elif int(python_version.split(".")[1]) < 9 and indent:
-        debug(
+    elif int(_python_version.split(".")[1]) < 9 and indent:
+        _debug(
             "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
-            f"Current python version: {python_version}",
+            f"Current python version: {_python_version}",
         )
 
-    file_content = ET.tostring(spline_list_element)
+    file_content = _ET.tostring(spline_list_element)
     with open(fname, "wb") as f:
         f.write(file_content)

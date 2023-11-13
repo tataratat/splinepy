@@ -1,7 +1,7 @@
 """
 iges io.
 """
-from splinepy import splinepy_core
+from splinepy import splinepy_core as _splinepy_core
 
 
 def load(fname):
@@ -17,7 +17,7 @@ def load(fname):
     splines: list
       Spline Type defined in NAME_TO_TYPE
     """
-    return splinepy_core.read_iges(fname)
+    return _splinepy_core.read_iges(fname)
 
 
 def export(fname, splines):
@@ -34,4 +34,4 @@ def export(fname, splines):
     --------
     None
     """
-    return splinepy_core.export_iges(fname, splines)
+    return _splinepy_core.export_iges(fname, splines)

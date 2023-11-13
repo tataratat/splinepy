@@ -1,15 +1,15 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class CrossTile2D(TileBase):
+class CrossTile2D(_TileBase):
     def __init__(self):
         """Simple crosstile with linear-quadratic branches and a trilinear
         center spline."""
         self._dim = 2
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.0, 0.5],
                 [1.0, 0.5],
@@ -60,8 +60,8 @@ class CrossTile2D(TileBase):
 
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -69,7 +69,7 @@ class CrossTile2D(TileBase):
 
         self.check_params(parameters)
 
-        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
+        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError("Thickness out of range (0, .5)")
 
         if not (0.0 < float(boundary_width) < 0.5):
@@ -121,7 +121,7 @@ class CrossTile2D(TileBase):
                 # Minimum x position
                 branch_thickness = parameters[1]
 
-                block0_ctps = np.array(
+                block0_ctps = _np.array(
                     [
                         [v_zero, v_zero],
                         [fill_height, v_zero],
@@ -130,7 +130,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block1_ctps = np.array(
+                block1_ctps = _np.array(
                     [
                         [v_zero, bound_width],
                         [fill_height, bound_width],
@@ -139,7 +139,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block2_ctps = np.array(
+                block2_ctps = _np.array(
                     [
                         [v_zero, inv_bound_width],
                         [fill_height, inv_bound_width],
@@ -148,7 +148,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                branch_ctps = np.array(
+                branch_ctps = _np.array(
                     [
                         [fill_height, bound_width],
                         [ctps_mid_height_top, v_one_half - branch_thickness],
@@ -160,25 +160,25 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[2, 1], control_points=branch_ctps)
+                    _Bezier(degrees=[2, 1], control_points=branch_ctps)
                 )
             elif closure == "x_max":
                 # Maximum x position
                 branch_thickness = parameters[0]
 
-                block0_ctps = np.array(
+                block0_ctps = _np.array(
                     [
                         [inv_fill_height, v_zero],
                         [v_one, v_zero],
@@ -187,7 +187,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block1_ctps = np.array(
+                block1_ctps = _np.array(
                     [
                         [inv_fill_height, bound_width],
                         [v_one, bound_width],
@@ -196,7 +196,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block2_ctps = np.array(
+                block2_ctps = _np.array(
                     [
                         [inv_fill_height, inv_bound_width],
                         [v_one, inv_bound_width],
@@ -205,7 +205,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                branch_ctps = np.array(
+                branch_ctps = _np.array(
                     [
                         [0, v_one_half - branch_thickness],
                         [
@@ -223,25 +223,25 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[2, 1], control_points=branch_ctps)
+                    _Bezier(degrees=[2, 1], control_points=branch_ctps)
                 )
             elif closure == "y_min":
                 # Minimum y position
                 branch_thickness = parameters[3]
 
-                block0_ctps = np.array(
+                block0_ctps = _np.array(
                     [
                         [v_zero, v_zero],
                         [bound_width, v_zero],
@@ -250,7 +250,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block1_ctps = np.array(
+                block1_ctps = _np.array(
                     [
                         [bound_width, v_zero],
                         [inv_bound_width, v_zero],
@@ -259,7 +259,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block2_ctps = np.array(
+                block2_ctps = _np.array(
                     [
                         [inv_bound_width, v_zero],
                         [v_one, v_zero],
@@ -268,7 +268,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                branch_ctps = np.array(
+                branch_ctps = _np.array(
                     [
                         [bound_width, fill_height],
                         [inv_bound_width, fill_height],
@@ -280,25 +280,25 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 2], control_points=branch_ctps)
+                    _Bezier(degrees=[1, 2], control_points=branch_ctps)
                 )
             elif closure == "y_max":
                 # Maximum y position
                 branch_thickness = parameters[2]
 
-                block0_ctps = np.array(
+                block0_ctps = _np.array(
                     [
                         [v_zero, inv_fill_height],
                         [bound_width, inv_fill_height],
@@ -307,7 +307,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block1_ctps = np.array(
+                block1_ctps = _np.array(
                     [
                         [bound_width, inv_fill_height],
                         [inv_bound_width, inv_fill_height],
@@ -316,7 +316,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                block2_ctps = np.array(
+                block2_ctps = _np.array(
                     [
                         [inv_bound_width, inv_fill_height],
                         [v_one, inv_fill_height],
@@ -325,7 +325,7 @@ class CrossTile2D(TileBase):
                     ]
                 )
 
-                branch_ctps = np.array(
+                branch_ctps = _np.array(
                     [
                         [v_one_half - branch_thickness, v_zero],
                         [v_one_half + branch_thickness, v_zero],
@@ -343,19 +343,19 @@ class CrossTile2D(TileBase):
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block0_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block0_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block1_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block1_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 1], control_points=block2_ctps)
+                    _Bezier(degrees=[1, 1], control_points=block2_ctps)
                 )
 
                 spline_list.append(
-                    Bezier(degrees=[1, 2], control_points=branch_ctps)
+                    _Bezier(degrees=[1, 2], control_points=branch_ctps)
                 )
             else:
                 raise NotImplementedError(
@@ -417,8 +417,8 @@ class CrossTile2D(TileBase):
         # set to default if nothing is given
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
-            parameters = np.array(
-                np.ones(
+            parameters = _np.array(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -426,7 +426,7 @@ class CrossTile2D(TileBase):
 
         self.check_params(parameters)
 
-        if not (np.all(parameters > 0) and np.all(parameters < max_radius)):
+        if not (_np.all(parameters > 0) and _np.all(parameters < max_radius)):
             raise ValueError(f"Thickness out of range (0, {center_expansion})")
 
         self.check_param_derivatives(parameter_sensitivities)
@@ -481,16 +481,16 @@ class CrossTile2D(TileBase):
             spline_list = []
 
             # Create the center-tile
-            center_points = np.array(
+            center_points = _np.array(
                 [
                     [-center_r, -center_r],
                     [center_r, -center_r],
                     [-center_r, center_r],
                     [center_r, center_r],
                 ]
-            ) + np.array([v_one_half, v_one_half])
+            ) + _np.array([v_one_half, v_one_half])
 
-            y_min_ctps = np.array(
+            y_min_ctps = _np.array(
                 [
                     [-y_min_r, -v_one_half],
                     [y_min_r, -v_one_half],
@@ -499,9 +499,9 @@ class CrossTile2D(TileBase):
                     [-center_r, -center_r],
                     [center_r, -center_r],
                 ]
-            ) + np.array([v_one_half, v_one_half])
+            ) + _np.array([v_one_half, v_one_half])
 
-            y_max_ctps = np.array(
+            y_max_ctps = _np.array(
                 [
                     [-center_r, center_r],
                     [center_r, center_r],
@@ -510,9 +510,9 @@ class CrossTile2D(TileBase):
                     [-y_max_r, v_one_half],
                     [y_max_r, v_one_half],
                 ]
-            ) + np.array([v_one_half, v_one_half])
+            ) + _np.array([v_one_half, v_one_half])
 
-            x_min_ctps = np.array(
+            x_min_ctps = _np.array(
                 [
                     [-v_one_half, -x_min_r],
                     [-hd_center, -x_min_r],
@@ -521,9 +521,9 @@ class CrossTile2D(TileBase):
                     [-hd_center, x_min_r],
                     [-center_r, center_r],
                 ]
-            ) + np.array([v_one_half, v_one_half])
+            ) + _np.array([v_one_half, v_one_half])
 
-            x_max_ctps = np.array(
+            x_max_ctps = _np.array(
                 [
                     [center_r, -center_r],
                     [hd_center, -x_max_r],
@@ -532,26 +532,26 @@ class CrossTile2D(TileBase):
                     [hd_center, x_max_r],
                     [v_one_half, x_max_r],
                 ]
-            ) + np.array([v_one_half, v_one_half])
+            ) + _np.array([v_one_half, v_one_half])
 
             spline_list.append(
-                Bezier(degrees=[1, 1], control_points=center_points)
+                _Bezier(degrees=[1, 1], control_points=center_points)
             )
 
             spline_list.append(
-                Bezier(degrees=[2, 1], control_points=x_min_ctps)
+                _Bezier(degrees=[2, 1], control_points=x_min_ctps)
             )
 
             spline_list.append(
-                Bezier(degrees=[2, 1], control_points=x_max_ctps)
+                _Bezier(degrees=[2, 1], control_points=x_max_ctps)
             )
 
             spline_list.append(
-                Bezier(degrees=[1, 2], control_points=y_min_ctps)
+                _Bezier(degrees=[1, 2], control_points=y_min_ctps)
             )
 
             spline_list.append(
-                Bezier(degrees=[1, 2], control_points=y_max_ctps)
+                _Bezier(degrees=[1, 2], control_points=y_max_ctps)
             )
 
             # Pass to output

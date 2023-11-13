@@ -1,10 +1,10 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class InverseCrossTile3D(TileBase):
+class InverseCrossTile3D(_TileBase):
     """Class that provides necessary functions to create inverse microtile,
     that can be used to describe the domain within a microstructure."""
 
@@ -12,7 +12,7 @@ class InverseCrossTile3D(TileBase):
         """Simple inverse crosstile to tile with linear-quadratic branches and
         a trilinear center spline."""
         self._dim = 3
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.0, 0.5, 0.5],
                 [1.0, 0.5, 0.5],
@@ -67,7 +67,7 @@ class InverseCrossTile3D(TileBase):
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
             parameters = (
-                np.ones(
+                _np.ones(
                     (
                         self._evaluation_points.shape[0],
                         self._n_info_per_eval_point,
@@ -83,7 +83,7 @@ class InverseCrossTile3D(TileBase):
                 "Derivatives are not implemented for this tile yet"
             )
 
-        if not (np.all(parameters > 0) and np.all(parameters < 0.5)):
+        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError("Thickness out of range (0, .5)")
 
         if not (0.0 < float(boundary_width) < 0.5):
@@ -104,7 +104,7 @@ class InverseCrossTile3D(TileBase):
         spline_list = []
         if closure == "z_min":
             branch_thickness = parameters.flatten()[5]
-            branch_neighbor_x_min_ctps = np.array(
+            branch_neighbor_x_min_ctps = _np.array(
                 [
                     [-0.5, -r_center, filling_height],
                     [-half_r_center, -r_center, filling_height],
@@ -137,16 +137,16 @@ class InverseCrossTile3D(TileBase):
                     [-seperator_distance, aux_column_width, 1.0],
                     [-branch_thickness, branch_thickness, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 1, 2],
                     control_points=branch_neighbor_x_min_ctps,
                 )
             )
 
-            branch_neighbor_x_max_ctps = np.array(
+            branch_neighbor_x_max_ctps = _np.array(
                 [
                     [r_center, -r_center, filling_height],
                     [half_r_center, -r_center, filling_height],
@@ -175,16 +175,16 @@ class InverseCrossTile3D(TileBase):
                     [seperator_distance, aux_column_width, 1.0],
                     [0.5, aux_column_width, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 1, 2],
                     control_points=branch_neighbor_x_max_ctps,
                 )
             )
 
-            branch_neighbor_y_min_ctps = np.array(
+            branch_neighbor_y_min_ctps = _np.array(
                 [
                     [-r_center, -0.5, filling_height],
                     [r_center, -0.5, filling_height],
@@ -217,16 +217,16 @@ class InverseCrossTile3D(TileBase):
                     [-branch_thickness, -branch_thickness, 1.0],
                     [branch_thickness, -branch_thickness, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 2, 2],
                     control_points=branch_neighbor_y_min_ctps,
                 )
             )
 
-            branch_neighbor_y_max_ctps = np.array(
+            branch_neighbor_y_max_ctps = _np.array(
                 [
                     [-r_center, r_center, filling_height],
                     [r_center, r_center, filling_height],
@@ -255,16 +255,16 @@ class InverseCrossTile3D(TileBase):
                     [-aux_column_width, 0.5, 1.0],
                     [aux_column_width, 0.5, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 2, 2],
                     control_points=branch_neighbor_y_max_ctps,
                 )
             )
 
-            branch_x_min_y_min_ctps = np.array(
+            branch_x_min_y_min_ctps = _np.array(
                 [
                     [-0.5, -0.5, filling_height],
                     [-half_r_center, -0.5, filling_height],
@@ -310,15 +310,15 @@ class InverseCrossTile3D(TileBase):
                     [-seperator_distance, -aux_column_width, 1.0],
                     [-branch_thickness, -branch_thickness, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_min_y_min_ctps
                 )
             )
 
-            branch_x_min_y_max_ctps = np.array(
+            branch_x_min_y_max_ctps = _np.array(
                 [
                     [-0.5, r_center, filling_height],
                     [-half_r_center, r_center, filling_height],
@@ -360,15 +360,15 @@ class InverseCrossTile3D(TileBase):
                     [-seperator_distance, 0.5, 1.0],
                     [-aux_column_width, 0.5, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_min_y_max_ctps
                 )
             )
 
-            branch_x_max_y_min_ctps = np.array(
+            branch_x_max_y_min_ctps = _np.array(
                 [
                     [r_center, -0.5, filling_height],
                     [half_r_center, -0.5, filling_height],
@@ -410,15 +410,15 @@ class InverseCrossTile3D(TileBase):
                     [seperator_distance, -aux_column_width, 1.0],
                     [0.5, -aux_column_width, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_max_y_min_ctps
                 )
             )
 
-            branch_x_max_y_max_ctps = np.array(
+            branch_x_max_y_max_ctps = _np.array(
                 [
                     [r_center, r_center, filling_height],
                     [half_r_center, r_center, filling_height],
@@ -460,10 +460,10 @@ class InverseCrossTile3D(TileBase):
                     [seperator_distance, 0.5, 1.0],
                     [0.5, 0.5, 1.0],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_max_y_max_ctps
                 )
             )
@@ -472,7 +472,7 @@ class InverseCrossTile3D(TileBase):
 
         elif closure == "z_max":
             branch_thickness = parameters.flatten()[4]
-            branch_neighbor_x_min_ctps = np.array(
+            branch_neighbor_x_min_ctps = _np.array(
                 [
                     [-0.5, -aux_column_width, 0.0],
                     [-seperator_distance, -aux_column_width, 0.0],
@@ -509,16 +509,16 @@ class InverseCrossTile3D(TileBase):
                     [-half_r_center, r_center, inv_filling_height],
                     [-r_center, r_center, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 1, 2],
                     control_points=branch_neighbor_x_min_ctps,
                 )
             )
 
-            branch_neighbor_x_max_ctps = np.array(
+            branch_neighbor_x_max_ctps = _np.array(
                 [
                     [branch_thickness, -branch_thickness, 0.0],
                     [seperator_distance, -aux_column_width, 0.0],
@@ -555,16 +555,16 @@ class InverseCrossTile3D(TileBase):
                     [half_r_center, r_center, inv_filling_height],
                     [0.5, r_center, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 1, 2],
                     control_points=branch_neighbor_x_max_ctps,
                 )
             )
 
-            branch_neighbor_y_min_ctps = np.array(
+            branch_neighbor_y_min_ctps = _np.array(
                 [
                     [-aux_column_width, -0.5, 0.0],
                     [aux_column_width, -0.5, 0.0],
@@ -601,16 +601,16 @@ class InverseCrossTile3D(TileBase):
                     [-r_center, -r_center, inv_filling_height],
                     [r_center, -r_center, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 2, 2],
                     control_points=branch_neighbor_y_min_ctps,
                 )
             )
 
-            branch_neighbor_y_max_ctps = np.array(
+            branch_neighbor_y_max_ctps = _np.array(
                 [
                     [-branch_thickness, branch_thickness, 0.0],
                     [branch_thickness, branch_thickness, 0.0],
@@ -647,16 +647,16 @@ class InverseCrossTile3D(TileBase):
                     [-r_center, 0.5, inv_filling_height],
                     [r_center, 0.5, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 2, 2],
                     control_points=branch_neighbor_y_max_ctps,
                 )
             )
 
-            branch_x_min_y_min_ctps = np.array(
+            branch_x_min_y_min_ctps = _np.array(
                 [
                     [-0.5, -0.5, 0.0],
                     [-seperator_distance, -0.5, 0.0],
@@ -702,15 +702,15 @@ class InverseCrossTile3D(TileBase):
                     [-half_r_center, -r_center, inv_filling_height],
                     [-r_center, -r_center, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_min_y_min_ctps
                 )
             )
 
-            branch_x_max_y_max_ctps = np.array(
+            branch_x_max_y_max_ctps = _np.array(
                 [
                     [branch_thickness, branch_thickness, 0.0],
                     [seperator_distance, aux_column_width, 0.0],
@@ -756,15 +756,15 @@ class InverseCrossTile3D(TileBase):
                     [half_r_center, 0.5, inv_filling_height],
                     [0.5, 0.5, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_max_y_max_ctps
                 )
             )
 
-            branch_x_max_y_min_ctps = np.array(
+            branch_x_max_y_min_ctps = _np.array(
                 [
                     [aux_column_width, -0.5, 0.0],
                     [seperator_distance, -0.5, 0.0],
@@ -810,15 +810,15 @@ class InverseCrossTile3D(TileBase):
                     [half_r_center, -r_center, inv_filling_height],
                     [0.5, -r_center, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_max_y_min_ctps
                 )
             )
 
-            branch_x_min_y_max_ctps = np.array(
+            branch_x_min_y_max_ctps = _np.array(
                 [
                     [-0.5, aux_column_width, 0.0],
                     [-seperator_distance, aux_column_width, 0.0],
@@ -864,10 +864,10 @@ class InverseCrossTile3D(TileBase):
                     [-half_r_center, 0.5, inv_filling_height],
                     [-r_center, 0.5, inv_filling_height],
                 ]
-            ) + np.array([0.5, 0.5, 0.0])
+            ) + _np.array([0.5, 0.5, 0.0])
 
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2, 2, 2], control_points=branch_x_min_y_max_ctps
                 )
             )
@@ -933,7 +933,7 @@ class InverseCrossTile3D(TileBase):
         if parameters is None:
             self._logd("Setting branch thickness to default 0.2")
             parameters = (
-                np.ones(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 )
                 * 0.2
@@ -946,7 +946,7 @@ class InverseCrossTile3D(TileBase):
 
         self.check_params(parameters)
 
-        if np.any(parameters < min_radius) or np.any(parameters > max_radius):
+        if _np.any(parameters < min_radius) or _np.any(parameters > max_radius):
             raise ValueError(
                 f"Radii must be in (0,{max_radius}) for "
                 f"center_expansion {center_expansion}"
@@ -971,7 +971,7 @@ class InverseCrossTile3D(TileBase):
         ] = parameters.flatten()
 
         # center radius
-        center_r = np.sum(parameters) / 6.0 * center_expansion
+        center_r = _np.sum(parameters) / 6.0 * center_expansion
 
         # Auxiliary values for smooothing (mid-branch thickness)
         [
@@ -981,7 +981,7 @@ class InverseCrossTile3D(TileBase):
             aux_y_max,
             aux_z_min,
             aux_z_max,
-        ] = np.minimum(parameters.ravel(), center_r)
+        ] = _np.minimum(parameters.ravel(), center_r)
         # Branch midlength
         hd_center = 0.5 * (0.5 + center_r)
         aux_column_width = 0.5 - 2 * (0.5 - seperator_distance)
@@ -990,7 +990,7 @@ class InverseCrossTile3D(TileBase):
         spline_list = []
 
         # Start with branch interconnections
-        x_min_y_min = np.array(
+        x_min_y_min = _np.array(
             [
                 [-0.5, -0.5, -aux_column_width],
                 [-seperator_distance, -0.5, -aux_column_width],
@@ -1011,13 +1011,13 @@ class InverseCrossTile3D(TileBase):
                 [-hd_center, -aux_x_min, aux_x_min],
                 [-center_r, -center_r, center_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 1], control_points=x_min_y_min)
+            _Bezier(degrees=[2, 2, 1], control_points=x_min_y_min)
         )
 
-        x_max_y_min = np.array(
+        x_max_y_min = _np.array(
             [
                 [y_min_r, -0.5, -y_min_r],
                 [seperator_distance, -0.5, -aux_column_width],
@@ -1038,13 +1038,13 @@ class InverseCrossTile3D(TileBase):
                 [hd_center, -aux_x_max, aux_x_max],
                 [0.5, -x_max_r, x_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 1], control_points=x_max_y_min)
+            _Bezier(degrees=[2, 2, 1], control_points=x_max_y_min)
         )
 
-        x_min_y_max = np.array(
+        x_min_y_max = _np.array(
             [
                 [-0.5, x_min_r, -x_min_r],
                 [-hd_center, aux_x_min, -aux_x_min],
@@ -1065,13 +1065,13 @@ class InverseCrossTile3D(TileBase):
                 [-seperator_distance, 0.5, aux_column_width],
                 [-y_max_r, 0.5, y_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 1], control_points=x_min_y_max)
+            _Bezier(degrees=[2, 2, 1], control_points=x_min_y_max)
         )
 
-        x_max_y_max = np.array(
+        x_max_y_max = _np.array(
             [
                 [center_r, center_r, -center_r],
                 [hd_center, aux_x_max, -aux_x_max],
@@ -1092,13 +1092,13 @@ class InverseCrossTile3D(TileBase):
                 [seperator_distance, 0.5, aux_column_width],
                 [0.5, 0.5, aux_column_width],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 1], control_points=x_max_y_max)
+            _Bezier(degrees=[2, 2, 1], control_points=x_max_y_max)
         )
 
-        x_min_z_min = np.array(
+        x_min_z_min = _np.array(
             [
                 [-0.5, -aux_column_width, -0.5],
                 [-seperator_distance, -aux_column_width, -0.5],
@@ -1119,13 +1119,13 @@ class InverseCrossTile3D(TileBase):
                 [-hd_center, aux_x_min, -aux_x_min],
                 [-center_r, center_r, -center_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 1, 2], control_points=x_min_z_min)
+            _Bezier(degrees=[2, 1, 2], control_points=x_min_z_min)
         )
 
-        x_max_z_min = np.array(
+        x_max_z_min = _np.array(
             [
                 [z_min_r, -z_min_r, -0.5],
                 [seperator_distance, -aux_column_width, -0.5],
@@ -1146,13 +1146,13 @@ class InverseCrossTile3D(TileBase):
                 [hd_center, aux_x_max, -aux_x_max],
                 [0.5, x_max_r, -x_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 1, 2], control_points=x_max_z_min)
+            _Bezier(degrees=[2, 1, 2], control_points=x_max_z_min)
         )
 
-        x_min_z_max = np.array(
+        x_min_z_max = _np.array(
             [
                 [-0.5, -x_min_r, x_min_r],
                 [-hd_center, -aux_x_min, aux_x_min],
@@ -1173,13 +1173,13 @@ class InverseCrossTile3D(TileBase):
                 [-seperator_distance, aux_column_width, 0.5],
                 [-z_max_r, z_max_r, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 1, 2], control_points=x_min_z_max)
+            _Bezier(degrees=[2, 1, 2], control_points=x_min_z_max)
         )
 
-        x_max_z_max = np.array(
+        x_max_z_max = _np.array(
             [
                 [center_r, -center_r, center_r],
                 [hd_center, -aux_x_max, aux_x_max],
@@ -1200,13 +1200,13 @@ class InverseCrossTile3D(TileBase):
                 [seperator_distance, aux_column_width, 0.5],
                 [0.5, aux_column_width, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 1, 2], control_points=x_max_z_max)
+            _Bezier(degrees=[2, 1, 2], control_points=x_max_z_max)
         )
 
-        y_min_z_min = np.array(
+        y_min_z_min = _np.array(
             [
                 [-aux_column_width, -0.5, -0.5],
                 [aux_column_width, -0.5, -0.5],
@@ -1227,13 +1227,13 @@ class InverseCrossTile3D(TileBase):
                 [-center_r, -center_r, -center_r],
                 [center_r, -center_r, -center_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[1, 2, 2], control_points=y_min_z_min)
+            _Bezier(degrees=[1, 2, 2], control_points=y_min_z_min)
         )
 
-        y_max_z_min = np.array(
+        y_max_z_min = _np.array(
             [
                 [-z_min_r, z_min_r, -0.5],
                 [z_min_r, z_min_r, -0.5],
@@ -1254,13 +1254,13 @@ class InverseCrossTile3D(TileBase):
                 [-y_max_r, 0.5, -y_max_r],
                 [y_max_r, 0.5, -y_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[1, 2, 2], control_points=y_max_z_min)
+            _Bezier(degrees=[1, 2, 2], control_points=y_max_z_min)
         )
 
-        y_min_z_max = np.array(
+        y_min_z_max = _np.array(
             [
                 [-y_min_r, -0.5, y_min_r],
                 [y_min_r, -0.5, y_min_r],
@@ -1281,13 +1281,13 @@ class InverseCrossTile3D(TileBase):
                 [-z_max_r, -z_max_r, 0.5],
                 [z_max_r, -z_max_r, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[1, 2, 2], control_points=y_min_z_max)
+            _Bezier(degrees=[1, 2, 2], control_points=y_min_z_max)
         )
 
-        y_max_z_max = np.array(
+        y_max_z_max = _np.array(
             [
                 [-center_r, center_r, center_r],
                 [center_r, center_r, center_r],
@@ -1308,13 +1308,13 @@ class InverseCrossTile3D(TileBase):
                 [-aux_column_width, 0.5, 0.5],
                 [aux_column_width, 0.5, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[1, 2, 2], control_points=y_max_z_max)
+            _Bezier(degrees=[1, 2, 2], control_points=y_max_z_max)
         )
 
-        x_min_y_min_z_min = np.array(
+        x_min_y_min_z_min = _np.array(
             [
                 [-0.5, -0.5, -0.5],
                 [-seperator_distance, -0.5, -0.5],
@@ -1344,13 +1344,13 @@ class InverseCrossTile3D(TileBase):
                 [-hd_center, -aux_x_min, -aux_x_min],
                 [-center_r, -center_r, -center_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_min)
+            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_min)
         )
 
-        x_max_y_min_z_min = np.array(
+        x_max_y_min_z_min = _np.array(
             [
                 [aux_column_width, -0.5, -0.5],
                 [seperator_distance, -0.5, -0.5],
@@ -1380,13 +1380,13 @@ class InverseCrossTile3D(TileBase):
                 [hd_center, -aux_x_max, -aux_x_max],
                 [0.5, -x_max_r, -x_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_min)
+            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_min)
         )
 
-        x_min_y_max_z_min = np.array(
+        x_min_y_max_z_min = _np.array(
             [
                 [-0.5, aux_column_width, -0.5],
                 [-seperator_distance, aux_column_width, -0.5],
@@ -1416,13 +1416,13 @@ class InverseCrossTile3D(TileBase):
                 [-seperator_distance, 0.5, -aux_column_width],
                 [-y_max_r, 0.5, -y_max_r],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_min)
+            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_min)
         )
 
-        x_max_y_max_z_min = np.array(
+        x_max_y_max_z_min = _np.array(
             [
                 [z_min_r, z_min_r, -0.5],
                 [seperator_distance, aux_column_width, -0.5],
@@ -1452,13 +1452,13 @@ class InverseCrossTile3D(TileBase):
                 [seperator_distance, 0.5, -aux_column_width],
                 [0.5, 0.5, -aux_column_width],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_min)
+            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_min)
         )
 
-        x_min_y_min_z_max = np.array(
+        x_min_y_min_z_max = _np.array(
             [
                 [-0.5, -0.5, aux_column_width],
                 [-seperator_distance, -0.5, aux_column_width],
@@ -1488,13 +1488,13 @@ class InverseCrossTile3D(TileBase):
                 [-seperator_distance, -aux_column_width, 0.5],
                 [-z_max_r, -z_max_r, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_max)
+            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_max)
         )
 
-        x_max_y_min_z_max = np.array(
+        x_max_y_min_z_max = _np.array(
             [
                 [y_min_r, -0.5, y_min_r],
                 [seperator_distance, -0.5, aux_column_width],
@@ -1524,13 +1524,13 @@ class InverseCrossTile3D(TileBase):
                 [seperator_distance, -aux_column_width, 0.5],
                 [0.5, -aux_column_width, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_max)
+            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_max)
         )
 
-        x_min_y_max_z_max = np.array(
+        x_min_y_max_z_max = _np.array(
             [
                 [-0.5, x_min_r, x_min_r],
                 [-hd_center, aux_x_min, aux_x_min],
@@ -1560,13 +1560,13 @@ class InverseCrossTile3D(TileBase):
                 [-seperator_distance, 0.5, 0.5],
                 [-aux_column_width, 0.5, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_max)
+            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_max)
         )
 
-        x_max_y_max_z_max = np.array(
+        x_max_y_max_z_max = _np.array(
             [
                 [center_r, center_r, center_r],
                 [hd_center, aux_x_max, aux_x_max],
@@ -1596,10 +1596,10 @@ class InverseCrossTile3D(TileBase):
                 [seperator_distance, 0.5, 0.5],
                 [0.5, 0.5, 0.5],
             ]
-        ) + np.array([0.5, 0.5, 0.5])
+        ) + _np.array([0.5, 0.5, 0.5])
 
         spline_list.append(
-            Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
+            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
         )
 
         return (spline_list, None)

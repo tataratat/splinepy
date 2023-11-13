@@ -1,17 +1,20 @@
-import numpy as np
+import numpy as _np
 
 try:
-    import scipy
+    import scipy as _scipy
 
     has_scipy = True
 except ImportError:
     has_scipy = False
 
 
-from splinepy import settings, spline, splinepy_core, utils
+from splinepy import settings as _settings
+from splinepy import spline as _spline
+from splinepy import splinepy_core as _splinepy_core
+from splinepy import utils as _utils
 
 
-class BSplineBase(spline.Spline):
+class BSplineBase(_spline.Spline):
     r"""BSpline base. Contains extra operations that are only available for
     bspline families, i.e., :class:`.BSpline` and :class:`.NURBS`.
 
@@ -106,8 +109,8 @@ class BSplineBase(spline.Spline):
                 "(Too small)"
             )
 
-        inserted = splinepy_core.insert_knots(
-            self, parametric_dimension, utils.data.enforce_contiguous(knots)
+        inserted = _splinepy_core.insert_knots(
+            self, parametric_dimension, _utils.data.enforce_contiguous(knots)
         )
 
         self._logd(f"Inserted {len(knots)} knot(s).")
@@ -160,10 +163,10 @@ class BSplineBase(spline.Spline):
           insertion for more details
         """
         if beziers:
-            indices, data = splinepy_core.bezier_extraction_matrix(
+            indices, data = _splinepy_core.bezier_extraction_matrix(
                 [kv.numpy() for kv in self.knot_vectors],
                 self.degrees,
-                settings.TOLERANCE,
+                _settings.TOLERANCE,
             )
 
             # Indices represents the relevant ctps whereas data is a list of
@@ -172,11 +175,11 @@ class BSplineBase(spline.Spline):
             matrices = []
             for m_data in data:
                 if has_scipy:
-                    matrix = scipy.sparse.csr_matrix(
+                    matrix = _scipy.sparse.csr_matrix(
                         m_data[0], shape=m_data[1]
                     )
                 else:
-                    matrix = np.zeros(m_data[1])
+                    matrix = _np.zeros(m_data[1])
                     matrix[m_data[0][1][0], m_data[0][1][1]] = m_data[0][0]
                 matrices.append(matrix)
             #  2. Create global matrix
@@ -188,17 +191,17 @@ class BSplineBase(spline.Spline):
             matrices = [matrix[ids, :] for ids in indices]
             return matrices
 
-        data = splinepy_core.global_knot_insertion_matrix(
+        data = _splinepy_core.global_knot_insertion_matrix(
             self.knot_vectors,
             self.degrees,
             parametric_dimension,
-            utils.data.enforce_contiguous(knots, dtype="float64"),
-            settings.TOLERANCE,
+            _utils.data.enforce_contiguous(knots, dtype="float64"),
+            _settings.TOLERANCE,
         )
         if has_scipy:
-            matrix = scipy.sparse.csr_matrix(data[0], shape=data[1])
+            matrix = _scipy.sparse.csr_matrix(data[0], shape=data[1])
         else:
-            matrix = np.zeros(data[1])
+            matrix = _np.zeros(data[1])
             matrix[data[0][1][0], data[0][1][1]] = data[0][0]
 
         return matrix
@@ -239,11 +242,11 @@ class BSplineBase(spline.Spline):
                 "(Too small)"
             )
 
-        removed = splinepy_core.remove_knots(
+        removed = _splinepy_core.remove_knots(
             self,
             parametric_dimension,
-            utils.data.enforce_contiguous(knots),
-            tolerance=spline._default_if_none(tolerance, settings.TOLERANCE),
+            _utils.data.enforce_contiguous(knots),
+            tolerance=_spline._default_if_none(tolerance, _settings.TOLERANCE),
         )
 
         if any(removed):
@@ -266,14 +269,14 @@ class BSplineBase(spline.Spline):
         -------
         None
         """
-        if not splinepy_core.has_core(self):
+        if not _splinepy_core.has_core(self):
             raise ValueError(
                 "spline is not fully initialized."
                 "Please, first initialize spline before normalize_knot_vectors."
             )
 
         for kv in self.knot_vectors:
-            if isinstance(kv, splinepy_core.KnotVector):
+            if isinstance(kv, _splinepy_core.KnotVector):
                 kv.scale(0, 1)
 
     def extract_bezier_patches(self):
@@ -290,11 +293,11 @@ class BSplineBase(spline.Spline):
         extracted Beziers : list
         """
         # Extract bezier patches and create PyRationalBezier objects
-        patches = splinepy_core.extract_bezier_patches(self.copy())
+        patches = _splinepy_core.extract_bezier_patches(self.copy())
 
         # use core spline based init and name to type conversion to find
         # correct types
-        return [settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
+        return [_settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
 
 
 class BSpline(BSplineBase):
@@ -438,12 +441,12 @@ class BSpline(BSplineBase):
         if knot_vector is None:
             knot_vector = []
 
-        query_points = utils.data.enforce_contiguous(
+        query_points = _utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )
 
         fitted = cls(
-            **splinepy_core.interpolate_curve(
+            **_splinepy_core.interpolate_curve(
                 points=query_points,
                 degree=degree,
                 centripetal=centripetal,
@@ -494,11 +497,11 @@ class BSpline(BSplineBase):
         if knot_vector is None:
             knot_vector = []
 
-        query_points = utils.data.enforce_contiguous(
+        query_points = _utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )
 
-        results = splinepy_core.approximate_curve(
+        results = _splinepy_core.approximate_curve(
             points=query_points,
             degree=degree,
             n_control_points=num_control_points,
@@ -549,12 +552,12 @@ class BSpline(BSplineBase):
         --------
         fitted: BSpline
         """
-        query_points = utils.data.enforce_contiguous(
+        query_points = _utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )
 
         fitted = cls(
-            **splinepy_core.interpolate_surface(
+            **_splinepy_core.interpolate_surface(
                 points=query_points,
                 size_u=size_u,
                 size_v=size_v,
@@ -627,12 +630,12 @@ class BSpline(BSplineBase):
             or larger than the number of control points in each dimension."""
             )
 
-        query_points = utils.data.enforce_contiguous(
+        query_points = _utils.data.enforce_contiguous(
             query_points, dtype="float64"
         )
 
         fitted = cls(
-            **splinepy_core.approximate_surface(
+            **_splinepy_core.approximate_surface(
                 points=query_points,
                 num_points_u=num_points_u,
                 num_points_v=num_points_v,
@@ -672,9 +675,9 @@ class BSpline(BSplineBase):
         --------
         same_nurbs: NURBS
         """
-        same_nurbs = settings.NAME_TO_TYPE["NURBS"](
+        same_nurbs = _settings.NAME_TO_TYPE["NURBS"](
             **self.todict(),
-            weights=np.ones(self.control_points.shape[0], dtype=np.float64),
+            weights=_np.ones(self.control_points.shape[0], dtype=_np.float64),
         )
 
         return same_nurbs

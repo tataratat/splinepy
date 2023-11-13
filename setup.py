@@ -1,12 +1,13 @@
-import os
-import platform
-import re
-import subprocess
-import sys
-from pathlib import Path
+import os as _os
+import platform as _platform
+import re as _re
+import subprocess as _subprocess
+import sys as _sys
+from pathlib import Path as _Path
 
-from setuptools import Extension, setup
-from setuptools.command.build_ext import build_ext
+from setuptools import Extension as _Extension
+from setuptools import setup as _setup
+from setuptools.command.build_ext import build_ext as _build_ext
 
 with open("splinepy/_version.py") as f:
     version = eval(f.read().strip().split("=")[-1])
@@ -26,22 +27,22 @@ PLAT_TO_CMAKE = {
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
-class CMakeExtension(Extension):
+class CMakeExtension(_Extension):
     def __init__(
         self, name: str, sourcedir: str = "", extra_args: dict = None
     ) -> None:
         super().__init__(name, sources=[])
-        self.sourcedir = os.fspath(Path(sourcedir).resolve())
+        self.sourcedir = _os.fspath(_Path(sourcedir).resolve())
         if extra_args is not None:
             self.extra_args = extra_args
             self.debug = extra_args.get("--debug", False)
 
 
-class CMakeBuild(build_ext):
+class CMakeBuild(_build_ext):
     def build_extension(self, ext: CMakeExtension) -> None:
         # Must be in this form due to bug in .resolve()
         # only fixed in Python 3.10+
-        ext_fullpath = Path.cwd() / self.get_ext_fullpath(
+        ext_fullpath = _Path.cwd() / self.get_ext_fullpath(
             ext.name
         )  # type: ignore[no-untyped-call]
         extdir = ext_fullpath.parent.resolve()
@@ -50,7 +51,7 @@ class CMakeBuild(build_ext):
         # auxiliary "native" libs
 
         debug = (
-            int(os.environ.get("DEBUG", 0))
+            int(_os.environ.get("DEBUG", 0))
             if self.debug is None
             else self.debug
         )
@@ -60,14 +61,14 @@ class CMakeBuild(build_ext):
 
         # CMake lets you override the generator - we need to check this.
         # Can be set with Conda-Build, for example.
-        cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+        cmake_generator = _os.environ.get("CMAKE_GENERATOR", "")
 
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
-            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
-            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{_os.sep}",
+            f"-DPYTHON_EXECUTABLE={_sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
         ]
         # extra cmake args
@@ -76,9 +77,9 @@ class CMakeBuild(build_ext):
         build_args = []
         # Adding CMake arguments set as environment variable
         # (needed e.g. to build for ARM OSx on conda-forge)
-        if "CMAKE_ARGS" in os.environ:
+        if "CMAKE_ARGS" in _os.environ:
             cmake_args += [
-                item for item in os.environ["CMAKE_ARGS"].split(" ") if item
+                item for item in _os.environ["CMAKE_ARGS"].split(" ") if item
             ]
 
         if self.compiler.compiler_type != "msvc":
@@ -89,9 +90,9 @@ class CMakeBuild(build_ext):
             # 3.15+.
             if not cmake_generator or cmake_generator == "Ninja":
                 try:
-                    import ninja  # noqa: F401
+                    import ninja as _ninja  # noqa: F401
 
-                    ninja_executable_path = Path(ninja.BIN_DIR) / "ninja"
+                    ninja_executable_path = _Path(_ninja.BIN_DIR) / "ninja"
                     cmake_args += [
                         "-GNinja",
                         "-DCMAKE_MAKE_PROGRAM"
@@ -124,9 +125,9 @@ class CMakeBuild(build_ext):
                 ]
                 build_args += ["--config", cfg]
 
-        if sys.platform.startswith("darwin"):
+        if _sys.platform.startswith("darwin"):
             # Cross-compile support for macOS - respect ARCHFLAGS if set
-            archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+            archs = _re.findall(r"-arch (\S+)", _os.environ.get("ARCHFLAGS", ""))
             if archs:
                 cmake_args += [
                     "-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))
@@ -134,7 +135,7 @@ class CMakeBuild(build_ext):
 
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
-        if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in _os.environ:
             # self.parallel is a Python 3 only way to set parallel jobs by hand
             # using -j in the build_ext call,
             # not supported by pip or PyPA-build.
@@ -145,14 +146,14 @@ class CMakeBuild(build_ext):
             if len(ext.extra_args["build_args"]) != 0:
                 build_args.extend(ext.extra_args["build_args"])
 
-        build_temp = Path(self.build_temp) / ext.name
+        build_temp = _Path(self.build_temp) / ext.name
         if not build_temp.exists():
             build_temp.mkdir(parents=True)
 
-        subprocess.run(
+        _subprocess.run(
             ["cmake", ext.sourcedir] + cmake_args, cwd=build_temp, check=True
         )
-        subprocess.run(
+        _subprocess.run(
             ["cmake", "--build", "."] + build_args, cwd=build_temp, check=True
         )
 
@@ -195,31 +196,31 @@ build_options = {
         keys[2]: "-DSPLINEPY_ENABLE_WARNINGS=OFF",
         keys[5]: "-DSPLINEPY_BUILD_EXPLICIT=ON",
     },
-    "build_args": {keys[3]: f"-j {os.cpu_count()}"},
+    "build_args": {keys[3]: f"-j {_os.cpu_count()}"},
     keys[4]: False,
 }
 
 # go through options
-if_in_argv_do(sys.argv, keys[0], build_options, "-DSPLINEPY_VERBOSE_MAKE=ON")
-if_in_argv_do(sys.argv, keys[1], build_options, "-DSPLINEPY_MORE=OFF")
+if_in_argv_do(_sys.argv, keys[0], build_options, "-DSPLINEPY_VERBOSE_MAKE=ON")
+if_in_argv_do(_sys.argv, keys[1], build_options, "-DSPLINEPY_MORE=OFF")
 if_in_argv_do(
-    sys.argv, keys[2], build_options, "-DSPLINEPY_ENABLE_WARNINGS=ON"
+    _sys.argv, keys[2], build_options, "-DSPLINEPY_ENABLE_WARNINGS=ON"
 )
-if_in_argv_do(sys.argv, keys[3], build_options, "-j 1")
-if_in_argv_do(sys.argv, keys[4], build_options, True)
+if_in_argv_do(_sys.argv, keys[3], build_options, "-j 1")
+if_in_argv_do(_sys.argv, keys[4], build_options, True)
 if_in_argv_do(
-    sys.argv, keys[5], build_options, "-DSPLINEPY_BUILD_EXPLICIT=OFF"
+    _sys.argv, keys[5], build_options, "-DSPLINEPY_BUILD_EXPLICIT=OFF"
 )
 
 # environ option
-if eval(os.environ.get("SPLINEPY_MINIMAL_DEBUG_BUILD", "False")):
+if eval(_os.environ.get("SPLINEPY_MINIMAL_DEBUG_BUILD", "False")):
     print("Environment variable SPLINEPY_MINIMAL_DEBUG_BUILD set.")
     build_options["cmake_args"][keys[1]] = "-DSPLINEPY_MORE=OFF"
     build_options[keys[4]] = True
 
 if (
-    "SPLINEPY_GITHUB_ACTIONS_BUILD" in os.environ
-    and platform.system().startswith("Windows")
+    "SPLINEPY_GITHUB_ACTIONS_BUILD" in _os.environ
+    and _platform.system().startswith("Windows")
 ):
     print("Environment variable SPLINEPY_GITHUB_ACTIONS_BUILD set.")
     print("Platform is detected as Windows.")
@@ -245,7 +246,7 @@ print("}")
 print("****************************************")
 
 
-setup(
+_setup(
     name="splinepy",
     version=version,
     author="Jaewook Lee",

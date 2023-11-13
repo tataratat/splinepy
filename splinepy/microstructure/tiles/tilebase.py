@@ -1,9 +1,9 @@
-import numpy as np
+import numpy as _np
 
-from splinepy._base import SplinepyBase
+from splinepy._base import SplinepyBase as _SplinepyBase
 
 
-class TileBase(SplinepyBase):
+class TileBase(_SplinepyBase):
     """
     Base class for tile objects
     """
@@ -68,7 +68,7 @@ class TileBase(SplinepyBase):
         """
         # check if tuple
 
-        if not (isinstance(params, np.ndarray) and params.ndim == 2):
+        if not (isinstance(params, _np.ndarray) and params.ndim == 2):
             raise TypeError("parameters must be two-dimensional np array")
 
         if not (
@@ -98,7 +98,7 @@ class TileBase(SplinepyBase):
         if derivatives is None:
             return False
 
-        if not (isinstance(derivatives, np.ndarray) and derivatives.ndim == 3):
+        if not (isinstance(derivatives, _np.ndarray) and derivatives.ndim == 3):
             raise TypeError("parameters must be three-dimensional np array")
 
         if not (

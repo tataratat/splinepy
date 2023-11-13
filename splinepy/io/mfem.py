@@ -3,16 +3,14 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
-import gustaf as gus
-import numpy as np
+import gustaf as _gus
+import numpy as _np
 
-# single function imports
-from splinepy.io.ioutils import (
-    dict_to_spline,
-    form_lines,
-    make_meaningful,
-    next_line,
-)
+from splinepy.io.ioutils import dict_to_spline as _dict_to_spline
+from splinepy.io.ioutils import form_lines as _form_lines
+from splinepy.io.ioutils import make_meaningful as _make_meaningful
+from splinepy.io.ioutils import next_line as _next_line
+
 
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
@@ -45,9 +43,9 @@ def load(fname):
     nurbs: dict
       dict ready to be used for init.
     """
-    from copy import deepcopy
+    from copy import deepcopy as _deepcopy
 
-    mk = deepcopy(_mfem_meaningful_keywords)
+    mk = _deepcopy(_mfem_meaningful_keywords)
     # they follow a strict order or keywords, so just gather those in order
     # Ordering is a hotkey because control points comes right after
     hotkeys = [
@@ -59,7 +57,7 @@ def load(fname):
     collect = False
     with open(fname) as f:
         for single_line in f:
-            line = make_meaningful(single_line)
+            line = _make_meaningful(single_line)
             if not line:
                 continue
 
@@ -69,7 +67,7 @@ def load(fname):
 
             elif len(keyword_hit) == 1 and keyword_hit[0] in hotkeys:
                 collect = True
-                current_key = deepcopy(keyword_hit[0])
+                current_key = _deepcopy(keyword_hit[0])
                 continue
 
             elif len(keyword_hit) == 1 and keyword_hit[0] not in hotkeys:
@@ -117,11 +115,11 @@ def load(fname):
     mfem_dict_spline = {
         "degrees": degrees,
         "knot_vectors": knot_vectors,
-        "control_points": np.ascontiguousarray(control_points),
-        "weights": np.ascontiguousarray(weights),
+        "control_points": _np.ascontiguousarray(control_points),
+        "weights": _np.ascontiguousarray(weights),
     }
 
-    spline = dict_to_spline([mfem_dict_spline])[0]
+    spline = _dict_to_spline([mfem_dict_spline])[0]
 
     _, reorder = dof_mapping(spline)
 
@@ -150,7 +148,7 @@ def read_solution(
 
     with open(fname) as f:
         hotkey = "Ordering"
-        line = next_line(f)
+        line = _next_line(f)
         solution = []
         collect = False
         while line is not None:
@@ -159,18 +157,18 @@ def read_solution(
             elif hotkey in line:
                 collect = True
 
-            line = next_line(f)
+            line = _next_line(f)
 
     if len(reference_nurbs.control_points) != len(solution):
         raise ValueError("Solution length does not match reference nurbs")
 
     mfem_dict_spline = reference_nurbs.todict()
 
-    spline = dict_to_spline([mfem_dict_spline])[0]
+    spline = _dict_to_spline([mfem_dict_spline])[0]
 
     _, reorder = dof_mapping(spline)
 
-    spline.cps = np.ascontiguousarray(solution)[reorder]
+    spline.cps = _np.ascontiguousarray(solution)[reorder]
     spline.ws[:] = spline.ws[reorder]
 
     return spline
@@ -203,7 +201,7 @@ def _mfem_dof_map_2d(spline):
     to_m.extend(edges)
     to_m.extend(internal)
 
-    return to_m, np.argsort(to_m).tolist()
+    return to_m, _np.argsort(to_m).tolist()
 
 
 def _mfem_dof_map_3d(spline):
@@ -256,7 +254,7 @@ def _mfem_dof_map_3d(spline):
     to_m.extend(faces)
     to_m.extend(internal)
 
-    return to_m, np.argsort(to_m).tolist()
+    return to_m, _np.argsort(to_m).tolist()
 
 
 def dof_mapping(spline):
@@ -302,13 +300,13 @@ def export_cartesian(
     -------
     None
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     # Check first spline
-    if not isinstance(spline_list, (list, Multipatch)):
+    if not isinstance(spline_list, (list, _Multipatch)):
         raise ValueError("export_cartesian expects list for export.")
     if isinstance(spline_list, list):
-        spline_list = Multipatch(splines=spline_list)
+        spline_list = _Multipatch(splines=spline_list)
 
     # Set Tolerance
     if tolerance is None:
@@ -332,7 +330,7 @@ def export_cartesian(
 
         def _corner_vertex_ids(spline):
             cmr = spline.control_mesh_resolutions
-            return np.array(
+            return _np.array(
                 [
                     0,
                     cmr[0] - 1,
@@ -343,9 +341,9 @@ def export_cartesian(
             )
 
         # Face enumeration is different from splinepy's
-        sub_element_vertices = np.array([[0, 1], [1, 2], [3, 2], [0, 3]])
+        sub_element_vertices = _np.array([[0, 1], [1, 2], [3, 2], [0, 3]])
         # splinepy's face 3 corresponds to mfem's face 0
-        splinepy_face_id_2_mfem_face_id = np.array([3, 1, 0, 2])
+        splinepy_face_id_2_mfem_face_id = _np.array([3, 1, 0, 2])
 
     elif para_dim == 3:
         geometry_type = 5
@@ -355,7 +353,7 @@ def export_cartesian(
 
         def _corner_vertex_ids(spline):
             cmr = spline.control_mesh_resolutions
-            return np.array(
+            return _np.array(
                 [
                     0,
                     cmr[0] - 1,
@@ -369,7 +367,7 @@ def export_cartesian(
                 dtype="int32",
             )
 
-        sub_element_vertices = np.array(
+        sub_element_vertices = _np.array(
             [
                 [0, 1, 2, 3],
                 [1, 2, 6, 5],
@@ -379,10 +377,10 @@ def export_cartesian(
                 [4, 5, 6, 7],
             ]
         )
-        splinepy_face_id_2_mfem_face_id = np.array([3, 1, 4, 2, 0, 5])
+        splinepy_face_id_2_mfem_face_id = _np.array([3, 1, 4, 2, 0, 5])
 
     # Create a list of all corner vertices ordered by spline patch number
-    corner_vertices = np.vstack(
+    corner_vertices = _np.vstack(
         [
             spline.cps[_corner_vertex_ids(spline), :]
             for spline in spline_list.patches
@@ -392,15 +390,15 @@ def export_cartesian(
     # Retrieve information using bezman
     connectivity = spline_list.interfaces
 
-    (_, _, inverse_numeration, _) = gus.utils.arr.close_rows(
+    (_, _, inverse_numeration, _) = _gus.utils.arr.close_rows(
         corner_vertices, tolerance, return_intersection=False
     )
     vertex_ids = inverse_numeration.reshape(-1, n_vertex_per_element)
     # Get boundaries from interfaces
-    boundary_elements, boundary_faces = np.where(connectivity < 0)
+    boundary_elements, boundary_faces = _np.where(connectivity < 0)
     boundary_ids = -connectivity[boundary_elements, boundary_faces]
     # Convert from splinepy enumeration to mfem enumeration
-    boundaries = np.take_along_axis(
+    boundaries = _np.take_along_axis(
         vertex_ids[boundary_elements, :],
         sub_element_vertices[splinepy_face_id_2_mfem_face_id[boundary_faces]],
         axis=1,
@@ -442,7 +440,7 @@ def export_cartesian(
         f.write(f"\n\nedges\n{0}\n")
 
         # Write Number Of vertices
-        f.write(f"\nvertices\n{int(np.max(vertex_ids)+1)}\n\n")
+        f.write(f"\nvertices\n{int(_np.max(vertex_ids)+1)}\n\n")
 
         # Export Splines
         f.write("patches\n\n")
@@ -528,7 +526,7 @@ def export(fname, nurbs, precision=10):
     else:
         nurbs = nurbs.nurbs  # turns it into nurbs
 
-    intro_sec = form_lines(
+    intro_sec = _form_lines(
         "MFEM NURBS mesh v1.0",
         "",
         "#",
@@ -543,21 +541,21 @@ def export(fname, nurbs, precision=10):
         "",
     )
 
-    dimension_sec = form_lines(
+    dimension_sec = _form_lines(
         "dimension",
         str(nurbs.para_dim),
         "",
     )
 
     if nurbs.para_dim == 2:
-        elements_sec = form_lines(
+        elements_sec = _form_lines(
             "elements",
             "1",
             "1 3 0 1 2 3",
             "",
         )
 
-        boundary_sec = form_lines(
+        boundary_sec = _form_lines(
             "boundary",
             "4",
             "1 1 0 1",
@@ -567,7 +565,7 @@ def export(fname, nurbs, precision=10):
             "",
         )
 
-        edges_sec = form_lines(
+        edges_sec = _form_lines(
             "edges",
             "4",
             "0 0 1",
@@ -577,7 +575,7 @@ def export(fname, nurbs, precision=10):
             "",
         )
 
-        vertices_sec = form_lines(
+        vertices_sec = _form_lines(
             "vertices",
             "4",
             "",
@@ -603,13 +601,13 @@ def export(fname, nurbs, precision=10):
 
         # This is reusable
         def kv_sec(spline):
-            kvs = form_lines(
+            kvs = _form_lines(
                 "knotvectors",
                 str(len(spline.knot_vectors)),
             )
             kvs2 = ""
             for i in range(spline.para_dim):
-                kvs2 += form_lines(
+                kvs2 += _form_lines(
                     str(spline.degrees[i])
                     + " "
                     + str(cnr[i])
@@ -631,7 +629,7 @@ def export(fname, nurbs, precision=10):
     # disregard inverse
     reorder_ids, _ = dof_mapping(nurbs)
 
-    with np.printoptions(
+    with _np.printoptions(
         formatter={"float_kind": lambda x: f"{x:.{precision}f}"}
     ):
         # weights - string operation
@@ -650,7 +648,7 @@ def export(fname, nurbs, precision=10):
         cps_sec = cps_sec.replace("\n", "")  # remove \n
         cps_sec = cps_sec.replace("]", "\n")  # replace ] with \n
 
-    fe_space_sec = form_lines(
+    fe_space_sec = _form_lines(
         "FiniteElementSpace",
         "FiniteElementCollection: NURBS" + str(nurbs.degrees[0]),
         "VDim: " + str(nurbs.dim),

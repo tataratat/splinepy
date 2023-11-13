@@ -2,13 +2,13 @@
 Export splines in custom json format
 """
 
-import base64
-import json
+import base64 as _base64
+import json as _json
 
-import numpy as np
+import numpy as _np
 
-from splinepy import settings
-from splinepy.utils.log import debug
+from splinepy import settings as _settings
+from splinepy.utils.log import debug as _debug
 
 
 def load(fname):
@@ -24,11 +24,11 @@ def load(fname):
     spline_list: list
     """
     # Make Required Properties locally accessible
-    from splinepy.spline import RequiredProperties
+    from splinepy.spline import RequiredProperties as _RequiredProperties
 
     # Import data from file into dict format
     with open(fname) as f:
-        jsonbz = json.load(f)
+        jsonbz = _json.load(f)
 
     spline_list = []
     base64encoding = jsonbz["Base64Encoding"]
@@ -36,26 +36,26 @@ def load(fname):
     for jbz in jsonbz["SplineList"]:
         # Convert Base64 str into np array
         if base64encoding:
-            jbz["control_points"] = np.frombuffer(
-                base64.b64decode(jbz["control_points"].encode("ascii")),
-                dtype=np.float64,
+            jbz["control_points"] = _np.frombuffer(
+                _base64.b64decode(jbz["control_points"].encode("ascii")),
+                dtype=_np.float64,
             ).reshape((-1, jbz["dim"]))
             if jbz.get("weights") is not None:
-                jbz["weights"] = np.frombuffer(
-                    base64.b64decode(jbz["weights"].encode("ascii")),
-                    dtype=np.float64,
+                jbz["weights"] = _np.frombuffer(
+                    _base64.b64decode(jbz["weights"].encode("ascii")),
+                    dtype=_np.float64,
                 ).reshape((-1, 1))
 
         # Declare Type and get required properties
-        req_props = RequiredProperties.of(jbz["SplineType"])
+        req_props = _RequiredProperties.of(jbz["SplineType"])
         data_dict = {}
         for prop in req_props:
             data_dict[prop] = jbz[prop]
         spline_list.append(
-            settings.NAME_TO_TYPE[jbz["SplineType"]](**data_dict)
+            _settings.NAME_TO_TYPE[jbz["SplineType"]](**data_dict)
         )
 
-    debug("Imported " + str(len(spline_list)) + " splines from file.")
+    _debug("Imported " + str(len(spline_list)) + " splines from file.")
 
     return spline_list
 
@@ -100,11 +100,11 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
     }
 
     # Append all splines to a dictionary
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
     spline_dictonary_list = []
     for i_spline in spline_list:
-        if not issubclass(type(i_spline), Spline):
+        if not issubclass(type(i_spline), _Spline):
             raise ValueError("Unsupported type in list")
 
         # Create Dictionary
@@ -116,17 +116,17 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
         spline_dictonary_list.append(i_spline_dict)
 
         if base64encoding:
-            i_spline_dict["control_points"] = base64.b64encode(
-                np.array(i_spline_dict["control_points"])
+            i_spline_dict["control_points"] = _base64.b64encode(
+                _np.array(i_spline_dict["control_points"])
             ).decode("utf-8")
             if "weights" in i_spline.required_properties:
-                i_spline_dict["weights"] = base64.b64encode(
-                    np.array(i_spline_dict["weights"])
+                i_spline_dict["weights"] = _base64.b64encode(
+                    _np.array(i_spline_dict["weights"])
                 ).decode("utf-8")
 
     output_dict["SplineList"] = spline_dictonary_list
 
     with open(fname, "w") as file_pointer:
-        file_pointer.write(json.dumps(output_dict, indent=4))
+        file_pointer.write(_json.dumps(output_dict, indent=4))
 
     return output_dict
