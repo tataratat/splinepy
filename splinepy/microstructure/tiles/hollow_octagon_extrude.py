@@ -1,7 +1,7 @@
 import numpy as _np
 
 from splinepy.bezier import Bezier as _Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
+from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class NutTile3D(_TileBase):

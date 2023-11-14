@@ -82,7 +82,7 @@ if __name__ == "__main__":
         degrees=[2, 1],
         control_points=[[0, 0], [2, 1], [4, 0], [0, 2], [2, 4], [4, 2]],
     )
-    generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
+    generator.microtile = splinepy.microstructure.tiles.Cross2D()
     generator.tiling = [3, 2]
 
     m = splinepy.Multipatch(generator.create(center_expansion=1.2))
