@@ -4,6 +4,10 @@
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
+// for automatic conversion of py::list to std::vector
+#include <pybind11/stl.h>
+
+#include "splinepy/py/py_spline.hpp"
 
 /// @brief
 namespace splinepy::py {
@@ -17,12 +21,12 @@ namespace py = pybind11;
  * @param new_kv New knot vector
  * @param degree
  * @param tolerance tolerance (to identify multiple knots)
- * @return std::tuple<py::array_t<double>, std::vector<std::size_t>>
+ * @return std::tuple<py::array_t<double>, std::vector<int>>
  */
-std::tuple<py::array_t<double>, std::vector<std::size_t>>
+std::tuple<py::array_t<double>, std::vector<int>>
 ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
                                       const py::array_t<double>& new_kv,
-                                      const std::size_t degree,
+                                      const int degree,
                                       const double& tolerance);
 
 /**
@@ -43,11 +47,12 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
  * @param tolerance tolerance for identifying individual knots
  * @return py::tuple to create new matrix
  */
-py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
-                                           const py::array_t<int>& degrees,
-                                           const int parametric_dimension,
-                                           const py::array_t<double>& new_knots,
-                                           const double& tolerance);
+py::tuple ComputeGlobalKnotInsertionMatrix(
+    const std::vector<py::array_t<double>>& old_kvs,
+    const py::array_t<int>& degrees,
+    const int parametric_dimension,
+    const py::array_t<double>& new_knots,
+    const double& tolerance);
 
 /**
  * @brief  Helper function to provide all necessary information to assemble and
@@ -55,7 +60,7 @@ py::tuple ComputeGlobalKnotInsertionMatrix(const py::list& old_kvs,
  * set of individual bezier patches
  *
  */
-py::tuple BezierExtractionMatrices(const py::list& old_kvs,
-                                   const py::array_t<int>& degrees,
-                                   const double& tolerance);
+py::tuple
+BezierExtractionMatrices(const std::shared_ptr<splinepy::py::PySpline>& spline,
+                         const double& tolerance);
 } // namespace splinepy::py

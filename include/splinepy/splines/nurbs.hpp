@@ -6,7 +6,6 @@
 #include <splinepy/proximity/proximity.hpp>
 #include <splinepy/splines/helpers/basis_functions.hpp>
 #include <splinepy/splines/helpers/extract.hpp>
-#include <splinepy/splines/helpers/extract_bezier_patches.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
 #include <splinepy/splines/splinepy_base.hpp>
@@ -155,6 +154,19 @@ public:
         const int dim)
       : Base_(CreateBase(degrees, knot_vectors, control_points, weights, dim)) {
   }
+
+  /// @brief copy ctor
+  /// @param other
+  Nurbs(const Nurbs& other) : Base_{} {
+    Base_::parameter_space_ =
+        std::make_shared<ParameterSpace_>(*other.parameter_space_);
+    Base_::weighted_vector_space_ =
+        std::make_shared<WeightedVectorSpace_>(*other.weighted_vector_space_);
+    Base_::homogeneous_b_spline_ =
+        std::make_shared<HomogeneousBSpline_>(Base_::parameter_space_,
+                                              Base_::weighted_vector_space_);
+  }
+
   // inherit ctor
   using Base_::Base_;
 
@@ -458,6 +470,10 @@ public:
                                                             tolerance);
   }
 
+  virtual std::vector<std::vector<int>> SplinepyKnotMultiplicities() const {
+    return GetParameterSpace().KnotMultiplicities();
+  };
+
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractBoundary(const int& boundary_id) {
     return splinepy::splines::helpers::ExtractBoundaryMeshSlice(*this,
@@ -467,7 +483,7 @@ public:
   /// Bezier patch extraction
   virtual std::vector<std::shared_ptr<SplinepyBase>>
   SplinepyExtractBezierPatches() const {
-    return splinepy::splines::helpers::ExtractBezierPatches<true>(*this);
+    return splinepy::splines::helpers::ExtractBezierPatches(*this);
   }
 
   /// @brief Gets parameter space
@@ -484,6 +500,11 @@ public:
   constexpr Proximity_& GetProximity() { return *proximity_; }
   /// @brief Gets proximity
   constexpr const Proximity_& GetProximity() const { return *proximity_; }
+
+  /// Deep copy of current spline
+  virtual std::shared_ptr<SplinepyBase> SplinepyDeepCopy() const {
+    return std::make_shared<Nurbs>(*this);
+  };
 
 protected:
   /// @brief Unique pointer to proximity

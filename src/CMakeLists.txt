@@ -4,6 +4,7 @@ set(SPLINEPY_SRCS
     ${PROJECT_SOURCE_DIR}/src/fitting/utils.cpp
     ${PROJECT_SOURCE_DIR}/src/fitting/lu_solve.cpp
     ${PROJECT_SOURCE_DIR}/src/utils/coordinate_pointers.cpp
+    ${PROJECT_SOURCE_DIR}/src/splines/helpers/extract.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/bezier1.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/bezier2.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/bezier3.cpp

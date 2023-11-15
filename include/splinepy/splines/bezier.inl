@@ -3,11 +3,11 @@
 
 #include "splinepy/splines/rational_bezier.hpp"
 
-#include <splinepy/splines/helpers/basis_functions.hpp>
-#include <splinepy/splines/helpers/extract.hpp>
-#include <splinepy/splines/helpers/properties.hpp>
-#include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
-#include <splinepy/utils/print.hpp>
+#include "splinepy/splines/helpers/basis_functions.hpp"
+#include "splinepy/splines/helpers/extract.hpp"
+#include "splinepy/splines/helpers/properties.hpp"
+#include "splinepy/splines/helpers/scalar_type_wrapper.hpp"
+#include "splinepy/utils/print.hpp"
 
 namespace splinepy::splines {
 
