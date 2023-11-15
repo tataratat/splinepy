@@ -6,7 +6,7 @@ on:
 
 jobs:
   macos_wheel:
-    if: contains(github.event.comment.body, fromJSON('["/wheels_all", "/wheels_mac"]'))
+    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_mac")
     runs-on: macos-latest
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
         retention-days: 1
 
   linux_wheel:
-    if: contains(github.event.comment.body, fromJSON('["/wheels_all", "/wheels_linux"]'))
+    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_linux")
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -59,7 +59,7 @@ jobs:
         retention-days: 1
 
   windows_wheel:
-    if: contains(github.event.comment.body, fromJSON('["/wheels_all", "/wheels_windows"]'))
+    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_windows")
     runs-on: windows-latest
     strategy:
       matrix:
