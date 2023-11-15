@@ -112,7 +112,7 @@ py::list ExtractBezierPatches(const std::shared_ptr<PySpline>& spline) {
   const auto sp_patches = spline->Core()->SplinepyExtractBezierPatches();
   py::list patches;
   for (const auto& p : sp_patches) {
-    patches.append(std::make_shared<PySpline>(p));
+    patches.append(std::make_shared<PySpline>(p)->ToDerived());
   }
   return patches;
 }

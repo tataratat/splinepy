@@ -288,12 +288,8 @@ class BSplineBase(spline.Spline):
         -------
         extracted Beziers : list
         """
-        # Extract bezier patches and create PyRationalBezier objects
-        patches = splinepy_core.extract_bezier_patches(self.copy())
-
-        # use core spline based init and name to type conversion to find
-        # correct types
-        return [settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
+        # this core call makes copy of self and extracts bezier patches.
+        return splinepy_core.extract_bezier_patches(self)
 
 
 class BSpline(BSplineBase):
