@@ -1,4 +1,4 @@
-name: main
+name: test wheel builds
 
 on:
   pull_request_review_comment:
