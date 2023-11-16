@@ -94,9 +94,19 @@ class InplaceModificationTest(c.SplineBasedTestCase):
             # check if we are good to start
             assert c.np.allclose(orig.sample(res), s.sample(res))
 
+            # hold reference to control points
+            s_cps = s.control_points
             # modify cps
             s.control_points /= 2
             assert c.np.allclose(orig.sample(res) / 2, s.sample(res))
+            # check if they are still the same array
+            assert s_cps is s.control_points
+
+            # modify ws
+            if s.is_rational:
+                s_ws = s.weights
+                s.weights *= 0.5
+                assert s_ws is s.weights
 
     def test_inplace_change_weights(self):
         """test inplace change of weights by comparing quarter circle"""
