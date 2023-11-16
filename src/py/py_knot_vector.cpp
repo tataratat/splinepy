@@ -144,7 +144,32 @@ void init_knot_vector(py::module_& m) {
             return arr;
           },
           "Similar to numpy(), but supports np.array or np.asarray based "
-          "creation.");
+          "creation.")
+      .def(
+          "unique",
+          [](const KnotVector& kv) -> py::array_t<KnotType> {
+            const KnotVector::Knots_& uniques = kv.GetUniqueKnots();
+            py::array_t<KnotType> arr(uniques.size());
+            KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
+            for (int i{}; i < static_cast<int>(uniques.size()); ++i) {
+              arr_ptr[i] = uniques[i];
+            }
+            return arr;
+          },
+          "Returns multiplicities of unique knots")
+      .def(
+          "multiplicities",
+          [](const KnotVector& kv) -> py::array_t<int> {
+            const bsplinelib::Vector<int> multiplicities =
+                kv.DetermineMultiplicities();
+            py::array_t<int> arr(multiplicities.size());
+            int* arr_ptr = static_cast<int*>(arr.request().ptr);
+            for (int i{}; i < static_cast<int>(multiplicities.size()); ++i) {
+              arr_ptr[i] = multiplicities[i];
+            }
+            return arr;
+          },
+          "Returns multiplicities of unique knots");
 }
 
 } // namespace splinepy::py
