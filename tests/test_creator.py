@@ -348,7 +348,7 @@ class CreatorTest(c.SplineBasedTestCase):
             rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
-                    det_spl.evaluate(queries=rnd_queries)[:, 0],
+                    det_spl.evaluate(queries=rnd_queries).ravel(),
                     np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
@@ -359,7 +359,7 @@ class CreatorTest(c.SplineBasedTestCase):
             rnd_queries = rng.random((10, sp_i.dim), "float32")
             self.assertTrue(
                 np.allclose(
-                    det_spl.evaluate(queries=rnd_queries)[:, 0],
+                    det_spl.evaluate(queries=rnd_queries).ravel(),
                     np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
