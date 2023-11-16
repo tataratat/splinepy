@@ -15,5 +15,7 @@ class SplinepyBase:
         super().__init_subclass__(*args, **kwargs)
         cls._logi = _log.prepend_log("<" + cls.__qualname__ + ">", _log.info)
         cls._logd = _log.prepend_log("<" + cls.__qualname__ + ">", _log.debug)
-        cls._logw = _log.prepend_log("<" + cls.__qualname__ + ">", _log.warning)
+        cls._logw = _log.prepend_log(
+            "<" + cls.__qualname__ + ">", _log.warning
+        )
         return super().__new__(cls)

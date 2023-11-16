@@ -9,8 +9,8 @@ import numpy as _np
 from splinepy import helpme as _helpme
 from splinepy import io as _io
 from splinepy import settings as _settings
-from splinepy import utils as _utils
 from splinepy import splinepy_core as _core
+from splinepy import utils as _utils
 from splinepy._base import SplinepyBase as _SplinepyBase
 from splinepy.helpme import visualize as _visualize
 from splinepy.helpme.check import Checker as _Checker
@@ -874,7 +874,7 @@ class Spline(_SplinepyBase, _core.PySpline):
             self._logd(
                 "Returning multiplicities of knots if Bezier was BSpline"
             )
-            return [np.array([d + 1, d + 1]) for d in self.degrees]
+            return [_np.array([d + 1, d + 1]) for d in self.degrees]
 
         else:
             self._logd("Retrieving knot multiplicities")
@@ -1190,7 +1190,8 @@ class Spline(_SplinepyBase, _core.PySpline):
         self._logd(f"Sampling {_np.prod(resolutions)} points from spline.")
 
         return super().sample(
-            resolutions, nthreads=_default_if_none(nthreads, _settings.NTHREADS)
+            resolutions,
+            nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 
     def derivative(self, queries, orders, nthreads=None):

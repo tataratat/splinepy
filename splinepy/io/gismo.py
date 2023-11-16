@@ -10,6 +10,7 @@ from splinepy.utils.data import enforce_contiguous as _enforce_contiguous
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
 
+
 def _spline_to_ET(
     root,
     multipatch,
@@ -230,7 +231,7 @@ def export(
     """
     from splinepy import Multipatch as _Multipatch
     from splinepy.settings import NTHREADS as _NTHREADS
-    from splinepy.settings import TOLERANCE as _TOLERANCE 
+    from splinepy.settings import TOLERANCE as _TOLERANCE
     from splinepy.spline import Spline as _Spline
     from splinepy.splinepy_core import orientations as _orientations
 
@@ -264,7 +265,9 @@ def export(
     multipatch_element = _ET.SubElement(
         xml_data, "MultiPatch", id=str(0), parDim=str(multipatch.para_dim)
     )
-    patch_range = _ET.SubElement(multipatch_element, "patches", type="id_range")
+    patch_range = _ET.SubElement(
+        multipatch_element, "patches", type="id_range"
+    )
     patch_range.text = (
         f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
     )
@@ -570,7 +573,9 @@ def load(fname, load_options=True):
             if patch_element is None:
                 _debug("Unsupported format")
             if patch_element.attrib.get("type") != "id_range":
-                _debug(f"Invalid patch type {patch_element.attrib.get('type')}")
+                _debug(
+                    f"Invalid patch type {patch_element.attrib.get('type')}"
+                )
             patch_range = _matrix_from_node(patch_element).astype(_np.int64)
             offset = patch_range[0]
             n_splines = patch_range[1] - patch_range[0] + 1

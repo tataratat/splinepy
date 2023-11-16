@@ -58,7 +58,8 @@ class Cube3D(_TileBase):
         self.check_params(parameters)
 
         if not (
-            _np.all(parameters[:, :2] > 0.0) and _np.all(parameters[:, :2] < 0.5)
+            _np.all(parameters[:, :2] > 0.0)
+            and _np.all(parameters[:, :2] < 0.5)
         ):
             raise ValueError("The wall thickness must be in (0.0 and 0.5)")
 

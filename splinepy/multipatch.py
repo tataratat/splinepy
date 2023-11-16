@@ -8,10 +8,11 @@ from splinepy import settings as _settings
 from splinepy._base import SplinepyBase as _SplinepyBase
 from splinepy.helpme import visualize as _visualize
 from splinepy.helpme.extract import Extractor as _Extractor
-from splinepy.spline import _default_if_none
-from splinepy.spline import _get_helper
+from splinepy.spline import _default_if_none, _get_helper
 from splinepy.splinepy_core import PyMultipatch as _PyMultipatch
-from splinepy.splinepy_core import boundaries_from_continuity as _boundaries_from_continuity
+from splinepy.splinepy_core import (
+    boundaries_from_continuity as _boundaries_from_continuity,
+)
 from splinepy.utils.data import MultipatchData as _MultipatchData
 
 

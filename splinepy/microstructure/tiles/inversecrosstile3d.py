@@ -946,7 +946,9 @@ class InverseCrossTile3D(_TileBase):
 
         self.check_params(parameters)
 
-        if _np.any(parameters < min_radius) or _np.any(parameters > max_radius):
+        if _np.any(parameters < min_radius) or _np.any(
+            parameters > max_radius
+        ):
             raise ValueError(
                 f"Radii must be in (0,{max_radius}) for "
                 f"center_expansion {center_expansion}"

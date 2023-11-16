@@ -3,6 +3,7 @@ import numpy as _np
 from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
+
 class Ellipsvoid(_TileBase):
     """Void in form of an ellipse set into a unit cell.
 

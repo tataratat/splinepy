@@ -79,7 +79,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_1))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_1)
+            )
             spline_2 = _np.array(
                 [
                     [cl_2_inv, v_zero],
@@ -89,7 +91,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_2))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_2)
+            )
             spline_3 = _np.array(
                 [
                     [v_zero, a_inv],
@@ -99,7 +103,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_3))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_3)
+            )
             spline_4 = _np.array(
                 [
                     [cl_2_inv, a_inv],
@@ -109,7 +115,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_4))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_4)
+            )
 
             spline_5 = _np.array(
                 [
@@ -120,7 +128,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_5))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_5)
+            )
 
             spline_6 = _np.array(
                 [
@@ -131,7 +141,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_6))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_6)
+            )
 
             spline_7 = _np.array(
                 [
@@ -146,7 +158,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[3, 1], control_points=spline_7))
+            spline_list.append(
+                _Bezier(degrees=[3, 1], control_points=spline_7)
+            )
 
             spline_8 = _np.array(
                 [
@@ -161,7 +175,9 @@ class SnappyTile(_TileBase):
                 ]
             ) + [v_one_half, v_zero]
 
-            spline_list.append(_Bezier(degrees=[3, 1], control_points=spline_8))
+            spline_list.append(
+                _Bezier(degrees=[3, 1], control_points=spline_8)
+            )
 
             spline_9 = _np.array(
                 [
@@ -176,7 +192,9 @@ class SnappyTile(_TileBase):
                 ]
             )
 
-            spline_list.append(_Bezier(degrees=[3, 1], control_points=spline_9))
+            spline_list.append(
+                _Bezier(degrees=[3, 1], control_points=spline_9)
+            )
 
             spline_10 = _np.array(
                 [
@@ -204,7 +222,9 @@ class SnappyTile(_TileBase):
                     [cl_2, v_one],
                 ]
             )
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_1))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_1)
+            )
             spline_2 = _np.array(
                 [
                     [cl_2_inv, v_zero],
@@ -213,7 +233,9 @@ class SnappyTile(_TileBase):
                     [v_one, v_one],
                 ]
             )
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_2))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_2)
+            )
             spline_3 = _np.array(
                 [
                     [v_one_half - cl_2, v_one_half - b],
@@ -222,7 +244,9 @@ class SnappyTile(_TileBase):
                     [v_one_half + cl_2, v_one],
                 ]
             )
-            spline_list.append(_Bezier(degrees=[1, 1], control_points=spline_3))
+            spline_list.append(
+                _Bezier(degrees=[1, 1], control_points=spline_3)
+            )
             spline_4 = _np.array(
                 [
                     [cl_2, v_zero],
@@ -235,7 +259,9 @@ class SnappyTile(_TileBase):
                     [v_one_half - cl_2, v_one],
                 ]
             )
-            spline_list.append(_Bezier(degrees=[3, 1], control_points=spline_4))
+            spline_list.append(
+                _Bezier(degrees=[3, 1], control_points=spline_4)
+            )
             spline_5 = _np.array(
                 [
                     [cl_2, v_one_half - b],
@@ -249,7 +275,9 @@ class SnappyTile(_TileBase):
                 ]
             ) + [v_one_half, v_zero]
 
-            spline_list.append(_Bezier(degrees=[3, 1], control_points=spline_5))
+            spline_list.append(
+                _Bezier(degrees=[3, 1], control_points=spline_5)
+            )
             return (spline_list, None)
         else:
             raise ValueError(

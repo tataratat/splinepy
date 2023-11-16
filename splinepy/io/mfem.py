@@ -11,7 +11,6 @@ from splinepy.io.ioutils import form_lines as _form_lines
 from splinepy.io.ioutils import make_meaningful as _make_meaningful
 from splinepy.io.ioutils import next_line as _next_line
 
-
 # keywords : possible assert value
 _mfem_meaningful_keywords = {
     "MFEM NURBS mesh v1.0": "intro",

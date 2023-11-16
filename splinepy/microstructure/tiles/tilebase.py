@@ -98,7 +98,9 @@ class TileBase(_SplinepyBase):
         if derivatives is None:
             return False
 
-        if not (isinstance(derivatives, _np.ndarray) and derivatives.ndim == 3):
+        if not (
+            isinstance(derivatives, _np.ndarray) and derivatives.ndim == 3
+        ):
             raise TypeError("parameters must be three-dimensional np array")
 
         if not (

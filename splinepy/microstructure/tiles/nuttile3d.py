@@ -189,7 +189,9 @@ class NutTile3D(_TileBase):
 
         spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right))
 
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right_top))
+        spline_list.append(
+            _Bezier(degrees=[1, 1, 1], control_points=right_top)
+        )
 
         spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=bottom))
 
@@ -587,6 +589,8 @@ class NutTile3D(_TileBase):
 
         spline_list.append(_Bezier(degrees=[1, 1], control_points=top))
 
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_right))
+        spline_list.append(
+            _Bezier(degrees=[1, 1], control_points=bottom_right)
+        )
 
         return (spline_list, None)

@@ -14,7 +14,7 @@ from splinepy._base import SplinepyBase as _SplinepyBase
 
 __all__ = [
     "PhysicalSpaceArray",
-    "DataHolder",
+    "_DataHolder",
     "enforce_contiguous_values",
     "cartesian_product",
     "SplineDataAdaptor",
@@ -369,7 +369,8 @@ def cartesian_product(arrays, reverse=True):
 
     dim_reducing_views = (
         *_accumulate(
-            _chain((_cartesian,), _repeat(0, n_arr - 1)), _np.ndarray.__getitem__
+            _chain((_cartesian,), _repeat(0, n_arr - 1)),
+            _np.ndarray.__getitem__,
         ),
     )
     idx = slice(None), *_repeat(None, n_arr - 1)

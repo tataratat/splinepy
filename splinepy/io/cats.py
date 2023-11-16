@@ -10,7 +10,7 @@ import numpy as _np
 
 from splinepy.io import ioutils as _ioutils
 from splinepy.utils.log import debug as _debug
-from splinepy.utils.log import warning as _warning 
+from splinepy.utils.log import warning as _warning
 
 # List of spline keywords (bundled here in case they change - many unused)
 CATS_XML_KEY_WORDS = {
