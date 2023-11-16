@@ -1729,6 +1729,3 @@ class Spline(_SplinepyBase, _core.PySpline):
     kvs = knot_vectors
     cps = control_points
     ws = weights
-
-    # Deprecated - TODO: inform
-    knot_vector_bounds = parametric_bounds
