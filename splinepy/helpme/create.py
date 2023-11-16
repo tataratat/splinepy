@@ -360,15 +360,16 @@ def determinant_spline(spline):
 
     # knot_vectors
     if spline.has_knot_vectors:
-        for kv, u_kv, m in zip(
-            spline.knot_vectors, spline.unique_knots, mult_inc
+        print(spline.unique_knots, spline.knot_multiplicities)
+        for u_kv, kn_m, m in zip(
+            spline.unique_knots, spline.knot_multiplicities, mult_inc
         ):
             # increase knot multiplicities:
             #   @ each inner knot -> mult_inc + 1
             #   @ begin & end -> mult_inc
             # since continuity at inner knots further decreases by 1
-            tmp_kv = np.append(kv, np.repeat(u_kv, m + 1)[1:-1])
-            tmp_kv.sort()
+            kn_m[1:-1] += 1
+            tmp_kv = np.repeat(u_kv,kn_m + m)
             kvs_det.append(tmp_kv)
 
         # number of cpts
