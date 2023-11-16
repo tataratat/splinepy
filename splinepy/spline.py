@@ -864,7 +864,7 @@ class Spline(SplinepyBase, core.PySpline):
 
         Returns
         --------
-        unique_knots: list
+        knot_multiplicities: list<np.array>
         """
         if "Bezier" in self.name:
             self._logd(
