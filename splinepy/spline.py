@@ -849,16 +849,32 @@ class Spline(SplinepyBase, core.PySpline):
             return list(self.parametric_bounds.T)
 
         else:
-            self._logd("Computing unique knots")
-            unique_knots = []
-            for kv in self.knot_vectors:
-                unique_knots_per_dim = [kv[0]]
-                for k, d in zip(kv[1:], np.diff(kv)):
-                    if d > settings.TOLERANCE:
-                        unique_knots_per_dim.append(k)
-                unique_knots.append(np.array(unique_knots_per_dim))
+            self._logd("Retrieving unique knots")
+            return [k.unique() for k in self.knot_vectors]
 
-            return unique_knots
+    @property
+    def knot_multiplicities(self):
+        """
+        Returns knot multiplicities.
+        Does not store results.
+
+        Parameters
+        -----------
+        None
+
+        Returns
+        --------
+        unique_knots: list
+        """
+        if "Bezier" in self.name:
+            self._logd(
+                "Returning multiplicities of knots if Bezier was BSpline"
+            )
+            return [np.array([d + 1, d + 1]) for d in self.degrees]
+
+        else:
+            self._logd("Retrieving knot multiplicities")
+            return [k.multiplicities() for k in self.knot_vectors]
 
     @property
     def parametric_bounds(self):
