@@ -284,7 +284,7 @@ def _safe_new_core(spl, exclude="?"):
     )
 
 
-def _safe_array_copy(spl, array, key):
+def _safe_array_copy(spl, array, key, coupled_key):
     """
     In splinepy we make safe copies. For control_points and weights,
     to support non-contiguous / homogeneous control points in backend,
@@ -302,48 +302,44 @@ def _safe_array_copy(spl, array, key):
     spl: Spline
     array: np.ndarray
     key: str
+    coupled_key: str
 
     Returns
     -------
-    None
+    copied: bool
+      Whether copy was made
     """
-    # is current value same is given array?
+    # is current value same as given array?
     if spl._data.get(key, None) is array:
-        return None
+        return False
 
-    # safety copy
-    spl._data[key] = np.array(array, dtype="float64", copy=True, order="C")
+    coupled_array = spl._data.get(coupled_key, None)
+    if coupled_array is not None:
+        # length check - they need to match
+        if len(coupled_array) != len(array):
+            raise ValueError(
+                f"len({key}) ({len(array)}) "
+                f"should match len({coupled_key}) ({len(coupled_array)})."
+            )
 
-
-def _safe_array_copy(spl, array, key):
-    """
-    In splinepy we make safe copies. For control_points and weights,
-    to support non-contiguous / homogeneous control points in backend,
-    we have a helper class called `PhysicalSpaceArray`. This syncs
-    numpy array and backend's control points through `ControlPointPointers`.
-
-    This function checks a non-copy criteria: self assignment.
-    This tends to happen during inplace operationrs.
-    For example, spline.cps += 1 becomes
-    cp_ref = spline.cps; cp_ref +=1; spline.cps = cp_ref.
-    In this case, we don't want to create a new core spline.
-
-    Parameters
-    ----------
-    spl: Spline
-    array: np.ndarray
-    key: str
-
-    Returns
-    -------
-    None
-    """
-    # is current value same is given array?
-    if spl._data.get(key, None) is array:
-        return None
+        # for rational splines, control points and weights are coupled
+        # -> in backends, we save weighted control points and they must
+        #    belong to a same spline.
+        # for example, if we are setting new control points,
+        # we need to create a copy of weights so that these new control points
+        # are coupled with a fresh weight array.
+        #
+        # Else, the following assert will raise
+        # >>> orig_sample = spl.sample(n)
+        # >>> spl.cps = new_cps
+        # >>> spl.ws[[1,2,3]] *= .5
+        # >>> assert not np.allclose(orig_sample, spl.sample(n))
+        if isinstance(coupled_array, _utils.data.PhysicalSpaceArray):
+            spl._data[coupled_key] = coupled_array.copy()
 
     # safety copy
     spl._data[key] = _np.array(array, dtype="float64", copy=True, order="C")
+    return True
 
 
 class Spline(_SplinepyBase, _core.PySpline):
@@ -745,6 +741,7 @@ class Spline(_SplinepyBase, _core.PySpline):
             # such as np.ndarray, so we need to keep it alive.
             if self.name.startswith("BSpline"):
                 saved_cps = self._data.get("control_points", None)
+                self._data = {}
                 if saved_cps is not None:
                     self._logw(
                         "_new_core(keep_properties=False) -",
@@ -990,20 +987,11 @@ class Spline(_SplinepyBase, _core.PySpline):
             self._data = {}
             return None
 
-        # len should match weights' len
-        if self.weights is not None:
-            if len(self.weights) != len(control_points):
-                raise ValueError(
-                    f"len(control_points) ({len(control_points)}) "
-                    f"should match len(weights) ({len(self.weights)})"
-                )
-            # we need to remove existing weights so that pointers don't get
-            # mixed
-            if isinstance(self.weights, _utils.data.PhysicalSpaceArray):
-                self._data["weights"] = self._data["weights"].copy()
-
         # set - copies if it is not the same value
-        _safe_array_copy(self, control_points, "control_points")
+        if not _safe_array_copy(
+            self, control_points, "control_points", "weights"
+        ):
+            return None
 
         _safe_new_core(self, exclude="control_points")
 
@@ -1145,22 +1133,10 @@ class Spline(_SplinepyBase, _core.PySpline):
             self._data = {}
             return None
 
-        # len should match control_points' len
-        if self.control_points is not None:
-            if len(self.control_points) != len(weights):
-                raise ValueError(
-                    f"len(weights) ({len(weights)}) should match "
-                    f"len(control_points) ({len(self.control_points)})."
-                )
-
-            # we need to remove existing cps so that pointers don't get mixed
-            if isinstance(self.control_points, _utils.data.PhysicalSpaceArray):
-                self._data["control_points"] = self._data[
-                    "control_points"
-                ].copy()
-
         # set - copies if it is not the same value
-        _safe_array_copy(self, weights, "weights")
+        # if it is the same, return
+        if not _safe_array_copy(self, weights, "weights", "control_points"):
+            return None
 
         _safe_new_core(self, exclude="weights")
 
