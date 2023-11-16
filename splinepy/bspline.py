@@ -164,8 +164,7 @@ class BSplineBase(_spline.Spline):
         """
         if beziers:
             indices, data = _splinepy_core.bezier_extraction_matrix(
-                [kv.numpy() for kv in self.knot_vectors],
-                self.degrees,
+                self,
                 _settings.TOLERANCE,
             )
 
@@ -292,12 +291,8 @@ class BSplineBase(_spline.Spline):
         -------
         extracted Beziers : list
         """
-        # Extract bezier patches and create PyRationalBezier objects
-        patches = _splinepy_core.extract_bezier_patches(self.copy())
-
-        # use core spline based init and name to type conversion to find
-        # correct types
-        return [_settings.NAME_TO_TYPE[p.name](spline=p) for p in patches]
+        # this core call makes copy of self and extracts bezier patches.
+        return _splinepy_core.extract_bezier_patches(self)
 
 
 class BSpline(BSplineBase):
