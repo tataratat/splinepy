@@ -1,7 +1,5 @@
 import numpy as np
 
-import splinepy
-
 try:
     from . import common as c
 except BaseException:
@@ -96,7 +94,7 @@ class CreatorTest(c.SplineBasedTestCase):
 
         # Expect Failure - not a spline
         with self.assertRaises(NotImplementedError):
-            splinepy.helpme.create.revolved([4])
+            c.splinepy.helpme.create.revolved([4])
         # Expect Failure - No rotation axis
         with self.assertRaises(ValueError):
             cuboid.create.revolved()
