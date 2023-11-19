@@ -20,6 +20,13 @@ from splinepy.helpme.integrate import Integrator as _Integrator
 from splinepy.utils.data import SplineData as _SplineData
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
+try:
+    import scipy
+
+    has_scipy = True
+except ImportError:
+    has_scipy = False
+
 
 class RequiredProperties(_SplinepyBase):
     """
@@ -1331,6 +1338,56 @@ class Spline(_SplinepyBase, _core.PySpline):
             queries=queries,
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
+
+    def basis_function_matrix(self, queries, nthreads=None, orders=None):
+        r"""
+        Returns a matrix representing the basis functions (derivatives of a
+        requested spline)
+
+        With given queries :math:`\pmb{\xi}`, control points
+        :math:`\mathbf{C}`, associated to spline :math:`\mathcal{S}`,
+        function returns matrix :math:`\mathbf{A}`, such that
+
+        .. math::
+            \mathcal{S}(\pmb{\xi}) = A(\pmb{\xi}) \cdot \mathbf{C}
+
+        Parameters
+        -----------
+        queries: (n, para_dim) array-like
+        n_threads: int
+        orders: (para_dim,) array-like
+          order of basis function derivatives (defaults to zero, i.e. evaluate)
+
+        Returns
+        --------
+        matrix: (n, n_ctps) np.ndarray / scipy.sparse.csr_array
+        """
+
+        # If no orders are set, use zeroth order derivative, aka evaluation
+        if orders is None:
+            orders = np.zeros(self.para_dim)
+
+        # Computation of the basis function values and their supports
+        bfs, supports = self.basis_derivative_and_support(
+            queries, orders, nthreads
+        )
+
+        # Return in Matrix shape (scipy if available)
+        if has_scipy:
+            return scipy.sparse.csr_array(
+                (
+                    bfs.ravel(),
+                    (
+                        np.arange(bfs.shape[0]).repeat(bfs.shape[1]),
+                        supports.ravel(),
+                    ),
+                ),
+                shape=(bfs.shape[0], self.cps.shape[0]),
+            )
+        else:
+            matrix = np.zeros((bfs.shape[0], self.cps.shape[0]))
+            np.put_along_axis(matrix, supports, bfs, axis=1)
+            return matrix
 
     def basis_derivative(self, queries, orders, nthreads=None):
         """
