@@ -541,6 +541,45 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
                 [[1.0, 1.0, 1.0]],
             )
 
+    def test_basis_function_matrix(self):
+        """Test the correct evaluation of basis function matrices"""
+        # Use
+        q2D = c.np.random.rand(10, 2)
+
+        # Test for both bezier and BSpline family  and rationals
+        bezier = self.bezier_2p2d().copy()
+        rational = self.rational_bezier_2p2d().copy()
+        bspline = self.bspline_2p2d().copy()
+
+        # Compute derivative matrix
+        for spline in (bezier, rational, bspline):
+            # Trivial evaluation
+            matrix = spline.basis_function_matrix(q2D)
+            self.assertTrue(
+                c.np.allclose(
+                    matrix @ spline.cps,
+                    spline.evaluate(q2D),
+                )
+            )
+
+            # Test first order derivative
+            matrix = spline.basis_function_matrix(q2D, orders=[1, 0])
+            self.assertTrue(
+                c.np.allclose(
+                    matrix @ spline.cps,
+                    spline.derivative(q2D, orders=[1, 0]),
+                )
+            )
+
+            # Test seoncd order derivative
+            matrix = spline.basis_function_matrix(q2D, orders=[1, 2])
+            self.assertTrue(
+                c.np.allclose(
+                    matrix @ spline.cps,
+                    spline.derivative(q2D, orders=[1, 2]),
+                )
+            )
+
 
 if __name__ == "__main__":
     c.unittest.main()
