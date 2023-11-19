@@ -160,7 +160,7 @@ def _export_control_mesh(
 
 
 def _export_spline(
-    spline, svg_spline_element, box_min_x, box_max_y, tolerance
+    spline, svg_spline_element, box_min_x, box_max_y, tolerance=None
 ):
     """
     Export a spline's control mesh in svg format using polylines for the mesh
@@ -185,13 +185,27 @@ def _export_spline(
     box_margins : float/int
       box margins are currently used to determine the text-offset, more options
       will be added soon
+    tolerance : float
+      Splines that can not be represented exactly by cubic B-Splines (i.e.,
+      rationals or high order splines) a tolerance is required for the
+      approximation. Default uses an absolute deviation of 1% of the bounding
+      box of the given spline
     """
+    from splinepy import BSpline
+    from splinepy.settings import TOLERANCE
 
     svg_paths = ET.SubElement(
         svg_spline_element,
         "g",
         id="spline_paths",
     )
+
+    # Set tolerance for export to default if no user data
+    if tolerance is None:
+        tolerance = 0.01 * np.linalg.norm(
+            spline.control_point_bounds[0, :]
+            - spline.control_point_bounds[1, :]
+        )
 
     if spline.para_dim == 1:
         # Export is done in 2 stages
@@ -202,12 +216,106 @@ def _export_spline(
         else:
             # Create a cubic b-spline with knot multiplicities
             # min(3 - (degree - original_m), 1)
+            new_knot_vector = []
+            k_mult = spline.knot_multiplicities[0]
+            k_mult[1:-1] = np.maximum(1, 3 - spline.degrees[0] + k_mult[1:-1])
+            new_knot_vector.append(np.repeat(spline.unique_knots, k_mult))
+
+            # Queries
+            para_queries = spline.greville_abscissae(
+                duplicate_tolerance=TOLERANCE
+            )
+            para_test = np.sort(
+                np.vstack(
+                    (
+                        para_queries,
+                        np.convolve(
+                            para_queries.ravel(), np.ones(2) * 0.5, "valid"
+                        ).reshape(-1, 1),
+                    )
+                ),
+                axis=0,
+            )
+
+            # Check queries
+            if para_queries.size <= (new_knot_vector[0].size - 3 - 1):
+                para_queries = para_test
+                para_test = np.sort(
+                    np.vstack(
+                        (
+                            para_queries,
+                            np.convolve(
+                                para_queries.ravel(), np.ones(2) * 0.5, "valid"
+                            ).reshape(-1, 1),
+                        )
+                    ),
+                    axis=0,
+                )
+
             # Approximate it
-            # Evaluate both splines (maybe at greville aabscissae? -> For
+            approximation = BSpline.approximate_curve(
+                query_points=spline.evaluate(para_queries),
+                num_control_points=new_knot_vector[0].size - 3 - 1,
+                degree=3,
+                knot_vector=new_knot_vector,
+            )
+
+            # Evaluate both splines (maybe at greville abscissae? -> For
             # rational splines more points should be tested)
+            distance = np.linalg.norm(
+                approximation.evaluate(para_test) - spline.evaluate(para_test),
+                axis=1,
+            )
+
             # If distance is too large -> refine the knots where the error is
             # too large and approximate again, repeat (not very efficient, but
             # should do the trick)
+            while np.max(distance) > tolerance:
+                # Refine
+                approximation.insert_knots(
+                    0,
+                    np.convolve(
+                        approximation.unique_knots[0].ravel(),
+                        np.ones(2) * 0.5,
+                        "valid",
+                    ),
+                )
+
+                number_of_ctps = len(approximation.knot_vectors[0]) - 3 - 1
+                # Check queries
+                if para_queries.size <= number_of_ctps:
+                    para_queries = para_test
+                    para_test = np.sort(
+                        np.vstack(
+                            (
+                                para_queries,
+                                np.convolve(
+                                    para_queries.ravel(),
+                                    np.ones(2) * 0.5,
+                                    "valid",
+                                ).reshape(-1, 1),
+                            )
+                        ),
+                        axis=0,
+                    )
+
+                # Approximate it
+                approximation = BSpline.approximate_curve(
+                    query_points=spline.evaluate(para_queries),
+                    num_control_points=number_of_ctps,
+                    degree=3,
+                    knot_vector=approximation.knot_vectors,
+                    centripetal=False,
+                )
+
+                # Evaluate both splines (maybe at greville abscissae? -> For
+                # rational splines more points should be tested)
+                distance = np.linalg.norm(
+                    approximation.evaluate(para_test)
+                    - spline.evaluate(para_test),
+                    axis=1,
+                )
+
             raise NotImplementedError(
                 f"I am working on it. Approximate with tolerance {tolerance}"
             )
@@ -279,7 +387,7 @@ def _export_spline(
     pass
 
 
-def export(fname, *splines, indent=True, box_margins=0.1):
+def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
     """
     Exports a number of splines into an svg plot
 
@@ -297,6 +405,11 @@ def export(fname, *splines, indent=True, box_margins=0.1):
       Makes it more human-readable
     box_margins : int, float
       Offset around the splines (relative units)
+    tolerance : float
+      Splines that can not be represented exactly by cubic B-Splines (i.e.,
+      rationals or high order splines) a tolerance is required for the
+      approximation. Default uses an absolute deviation of 1% of the bounding
+      box of the given spline
 
     Returns
     -------
@@ -351,7 +464,9 @@ def export(fname, *splines, indent=True, box_margins=0.1):
         _export_control_mesh(
             spline, spline_group, box_min_x, box_max_y, box_margins
         )
-        _export_spline(spline, spline_group, box_min_x, box_max_y, 1e-5)
+        _export_spline(
+            spline, spline_group, box_min_x, box_max_y, tolerance=tolerance
+        )
 
     # Dump into file
     if int(python_version.split(".")[1]) >= 9 and indent:
