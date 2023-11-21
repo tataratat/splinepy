@@ -322,9 +322,6 @@ def determinant_spline(spline):
       Spline which represents the jacobian determinant of the given spline object.
     """
 
-    # from splinepy import Bezier, BSpline
-    from splinepy import settings
-
     # checks if dimensions are equal.
     if spline.dim != spline.para_dim:
         raise ValueError(
@@ -351,50 +348,50 @@ def determinant_spline(spline):
         rational_spline = False
 
     # calculate degrees of det spline
-    deg_det = spline.degrees * spline.dim - 1
-    d = spline.para_dim
-    # initialize lists for knot vectors
-    kvs_det = []
+    degrees_determinant_spline = spline.degrees * spline.dim - 1
     # calculate necessary additional knot multiplicity due to degree elevation
-    mult_inc = spline.degrees * (d - 1) - 1
+    multiplicity_increase = degrees_determinant_spline - spline.degrees
+
+    # initialize lists for knot vectors
+    knot_vectors_determinant_spline = []
 
     # knot_vectors
     if spline.has_knot_vectors:
         for u_kv, kn_m, m in zip(
-            spline.unique_knots, spline.knot_multiplicities, mult_inc
+            spline.unique_knots, spline.knot_multiplicities, multiplicity_increase
         ):
             # increase knot multiplicities:
             #   @ each inner knot -> mult_inc + 1
             #   @ begin & end -> mult_inc
             # since continuity at inner knots further decreases by 1
             kn_m[1:-1] += 1
-            tmp_kv = np.repeat(u_kv, kn_m + m)
-            kvs_det.append(tmp_kv)
+            temp_knot_vector = np.repeat(u_kv, kn_m + m)
+            knot_vectors_determinant_spline.append(temp_knot_vector)
 
         # number of cpts
-        n_cpts = np.prod([len(kvs_det[i]) - deg_det[i] - 1 for i in range(d)])
+        n_control_points = np.prod([len(kvs_ds) - d_ds - 1 for kvs_ds, d_ds in zip(knot_vectors_determinant_spline, degrees_determinant_spline)])
 
         # create BSpline with empty cpts for calculation
         determinant_projection = settings.NAME_TO_TYPE["BSpline"](
-            degrees=deg_det,
-            control_points=np.empty([n_cpts, 1]),
-            knot_vectors=kvs_det,
+            degrees=degrees_determinant_spline,
+            control_points=np.empty((n_control_points, 1)),
+            knot_vectors=knot_vectors_determinant_spline,
         )
 
     else:
         # if Bezier Spline
-        n_cpts = np.prod(deg_det + 1)
+        n_control_points = np.prod(degrees_determinant_spline + 1)
         # create Bezier spline with empty cpts for calculation
         determinant_projection = settings.NAME_TO_TYPE["Bezier"](
-            degrees=deg_det, control_points=np.empty([n_cpts, 1])
+            degrees=degrees_determinant_spline, control_points=np.empty((n_control_points, 1))
         )
 
     # get det(J) of spline at greville pts to calculate cpts of det Spline
     sample_points = determinant_projection.greville_abscissae(
         duplicate_tolerance=settings.TOLERANCE
     )
-    jac_dets = np.linalg.det(spline.jacobian(sample_points))
-    basisfct_eval, supports = determinant_projection.basis_and_support(
+    jacobian_determinants = np.linalg.det(spline.jacobian(sample_points))
+    basis_functions_evaluated, supports = determinant_projection.basis_and_support(
         sample_points
     )
 
@@ -402,19 +399,19 @@ def determinant_spline(spline):
     if has_scipy:
         n_row, n_col = supports.shape
         row_ids = np.arange(n_row).repeat(n_col)
-        col_ids = supports.ravel()
-        data = basisfct_eval.ravel()
+        column_ids = supports.ravel()
+        data = basis_functions_evaluated.ravel()
         basis_functions = csr_array(
-            (data, (row_ids, col_ids)), shape=(n_row, n_row)
+            (data, (row_ids, column_ids)), shape=(n_row, n_row)
         )
         determinant_projection.control_points[:, 0] = linalg.spsolve(
-            basis_functions, jac_dets
+            basis_functions, jacobian_determinants
         )
     else:
-        basis_functions = np.empty((n_cpts, n_cpts))
-        np.put_along_axis(basis_functions, supports, basisfct_eval, axis=1)
+        basis_functions = np.empty((n_control_points, n_control_points))
+        np.put_along_axis(basis_functions, supports, basis_functions_evaluated, axis=1)
         determinant_projection.control_points[:, 0] = np.linalg.solve(
-            basis_functions, jac_dets
+            basis_functions, jacobian_determinants
         )
 
     # if weights were overwritten, change them to original
