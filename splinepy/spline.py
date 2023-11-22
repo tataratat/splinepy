@@ -1339,7 +1339,9 @@ class Spline(_SplinepyBase, _core.PySpline):
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 
-    def basis_function_matrix(self, queries, nthreads=None, orders=None):
+    def basis_function_matrix(
+        self, queries, nthreads=None, orders=None, as_array=False
+    ):
         r"""
         Returns a matrix representing the basis functions (derivatives of a
         requested spline)
@@ -1357,6 +1359,8 @@ class Spline(_SplinepyBase, _core.PySpline):
         n_threads: int
         orders: (para_dim,) array-like
           order of basis function derivatives (defaults to zero, i.e. evaluate)
+        as_array : bool
+          use numpy even if scipy is available
 
         Returns
         --------
@@ -1373,7 +1377,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         )
 
         # Return in Matrix shape (scipy if available)
-        if has_scipy:
+        if has_scipy and not as_array:
             return scipy.sparse.csr_array(
                 (
                     bfs.ravel(),
