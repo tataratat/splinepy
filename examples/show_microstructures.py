@@ -80,16 +80,9 @@ def para_function(x):
 
 
 def para_sens_function(x):
-    if splinepy.spline.has_scipy:
-        return (
-            para_spline.basis_function_matrix(x)
-            .todense()
-            .reshape(x.shape[0], 1, para_spline.cps.shape[0])
-        )
-    else:
-        para_spline.basis_function_matrix(x).reshape(
-            x.shape[0], 1, para_spline.cps.shape[0]
-        )
+    return para_spline.basis_function_matrix(x, as_array=True).reshape(
+        x.shape[0], 1, para_spline.cps.shape[0]
+    )
 
 
 # Parametrized microstructure inner and outer derivatives
