@@ -21,6 +21,7 @@ def edges(
     Parameters
     -----------
     spline: Spline/ Multipatch
+      (`self`-argument if called via extract member of a spline)
     resolution: int
       samples per parametric dimension
     all_knots: bool
@@ -122,7 +123,8 @@ def faces(
 
     Parameters
     -----------
-    spline: BSpline or NURBS
+    spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
     resolution: int or list
       samples per parametric dimension.
     watertight: bool
@@ -195,7 +197,7 @@ def volumes(spline, resolution, watertight=False):
     Parameters
     -----------
     spline: Spline / Multipatch
-      spline to be meshed into volumes
+      (`self`-argument if called via extract member of a spline)
     resolution: int
       Sample resolution
     watertight : bool
@@ -255,6 +257,7 @@ def control_points(spline):
     Parameters
     -----------
     spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
 
     Returns
     --------
@@ -269,6 +272,7 @@ def control_edges(spline):
     Parameters
     -----------
     spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
 
     Returns
     --------
@@ -297,6 +301,7 @@ def control_faces(spline):
     Parameters
     -----------
     spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
 
     Returns
     --------
@@ -323,7 +328,7 @@ def control_volumes(spline):
     Parameters
     -----------
     spline: Spline / Multipatch
-
+      (`self`-argument if called via extract member of a spline)
     Returns
     --------
     volumes: Volumes
@@ -349,7 +354,8 @@ def control_mesh(spline):
 
     Parameters
     -----------
-    None
+    spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
 
     Returns
     --------
@@ -372,6 +378,8 @@ def spline(spline, para_dim, split_plane):
 
     Parameters
     ----------
+    spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
     para_dim : int
       parametric dimension to be extract ted
     split_plane : float / tuple<float, float>
@@ -476,18 +484,20 @@ def spline(spline, para_dim, split_plane):
 
 
 def boundaries(spline, boundary_ids=None):
-    """
+    r"""
     Extracts boundary spline.
 
     The boundaries deducted from the parametric axis which is normal to the
-    boundary (j), if the boundary is at parametric axis position x_j=x_jmin
-    the corresponding boundary is 2*j, else at parametric axis position
-    x_j=x_jmin the boundary is 2*j+1
+    boundary (:math:`j`), if the boundary is at parametric axis position
+    :math:`x_{j}=x_{j_{min}}` the corresponding boundary is :math:`2j`, else at
+    parametric axis position :math:`x_j=x_{j_{min}}` the boundary is
+    :math:`2j+1`
 
 
     Parameters
     -----------
     spline: Spline / Multipatch
+      (`self`-argument if called via extract member of a spline)
     boundary_ids: list
       Only considered for Spline. Default is None and returns all boundaries.
 
@@ -552,6 +562,19 @@ class Extractor:
         return control_mesh(self._spline)
 
     def beziers(self):
+        """
+        Extract all (rational) Bezier patches within a given spline
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        beziers : list
+          List of all individual bezier patches representing the non-zero
+          knot-spans
+        """
         if not self._spline.has_knot_vectors:
             return [self._spline]
         return self._spline.extract_bezier_patches()
@@ -589,3 +612,15 @@ class Extractor:
             return spline_copy
         else:
             return spline(self._spline, splitting_plane, interval)
+
+
+# Use function docstrings in Extractor functions
+Extractor.edges.__doc__ = edges.__doc__
+Extractor.faces.__doc__ = faces.__doc__
+Extractor.volumes.__doc__ = volumes.__doc__
+Extractor.control_points.__doc__ = control_points.__doc__
+Extractor.control_edges.__doc__ = control_edges.__doc__
+Extractor.control_faces.__doc__ = control_faces.__doc__
+Extractor.control_volumes.__doc__ = control_volumes.__doc__
+Extractor.control_mesh.__doc__ = control_mesh.__doc__
+Extractor.boundaries.__doc__ = boundaries.__doc__
