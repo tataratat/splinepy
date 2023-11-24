@@ -7,14 +7,18 @@ def __splinepy_name_to_type__():
     """Workaround to provide flexible string to type conversion without
     causing circular import
     """
-    from splinepy import NURBS, Bezier, BSpline, Multipatch, RationalBezier
+    from splinepy import NURBS as _NURBS
+    from splinepy import Bezier as _Bezier
+    from splinepy import BSpline as _BSpline
+    from splinepy import Multipatch as _Multipatch
+    from splinepy import RationalBezier as _RationalBezier
 
     return {
-        "Bezier": Bezier,
-        "RationalBezier": RationalBezier,
-        "BSpline": BSpline,
-        "NURBS": NURBS,
-        "Multipatch": Multipatch,
+        "Bezier": _Bezier,
+        "RationalBezier": _RationalBezier,
+        "BSpline": _BSpline,
+        "NURBS": _NURBS,
+        "Multipatch": _Multipatch,
     }
 
 

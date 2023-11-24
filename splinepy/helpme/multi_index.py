@@ -1,7 +1,7 @@
 """
 Helps you find control point ids.
 """
-import numpy as np
+import numpy as _np
 
 
 class MultiIndex:
@@ -21,14 +21,14 @@ class MultiIndex:
         ----------
         grid_resolutions: array-like
         """
-        if not isinstance(grid_resolutions, (tuple, list, np.ndarray)):
+        if not isinstance(grid_resolutions, (tuple, list, _np.ndarray)):
             raise TypeError(
                 "grid_resolutions must be array-like type, not"
                 f"{type(grid_resolutions)}"
             )
 
         # create raveled indices
-        raveled = np.arange(np.prod(grid_resolutions), dtype="int32")
+        raveled = _np.arange(_np.prod(grid_resolutions), dtype="int32")
 
         # to allow general __getitem__ like query, turn them into
         # grid's shape

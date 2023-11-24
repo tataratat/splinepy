@@ -2,8 +2,8 @@
 Thin logging wrapper.
 """
 
-import functools
-import logging
+import functools as _functools
+import logging as _logging
 
 
 def configure(debug=False, logfile=None):
@@ -21,14 +21,14 @@ def configure(debug=False, logfile=None):
     None
     """
     # logger
-    logger = logging.getLogger("splinepy")
+    logger = _logging.getLogger("splinepy")
 
     # level
-    level = logging.DEBUG if debug else logging.INFO
+    level = _logging.DEBUG if debug else _logging.INFO
     logger.setLevel(level)
 
     # format
-    formatter = logging.Formatter(
+    formatter = _logging.Formatter(
         fmt="%(asctime)-15s %(name)s [%(levelname)s] %(message)s"
     )
 
@@ -38,7 +38,7 @@ def configure(debug=False, logfile=None):
     new_handlers = []
     for _i, h in enumerate(logger.handlers):
         # we skip all the stream handler.
-        if isinstance(h, logging.StreamHandler):
+        if isinstance(h, _logging.StreamHandler):
             continue
 
         # blindly keep other ones
@@ -46,7 +46,7 @@ def configure(debug=False, logfile=None):
             new_handlers.append(h)
 
     # add new stream handler
-    stream_handler = logging.StreamHandler()
+    stream_handler = _logging.StreamHandler()
     stream_handler.setLevel(level)
     stream_handler.setFormatter(formatter)
     new_handlers.append(stream_handler)
@@ -55,7 +55,7 @@ def configure(debug=False, logfile=None):
 
     # output logs
     if logfile is not None:
-        file_logger_handler = logging.FileHandler(logfile)
+        file_logger_handler = _logging.FileHandler(logfile)
         logger.addHandler(file_logger_handler)
 
 
@@ -71,7 +71,7 @@ def debug(*log):
     --------
     None
     """
-    logger = logging.getLogger("splinepy")
+    logger = _logging.getLogger("splinepy")
     logger.debug(" ".join(map(str, log)))
 
 
@@ -87,7 +87,7 @@ def info(*log):
     --------
     None
     """
-    logger = logging.getLogger("splinepy")
+    logger = _logging.getLogger("splinepy")
     logger.info(" ".join(map(str, log)))
 
 
@@ -103,7 +103,7 @@ def warning(*log):
     --------
     None
     """
-    logger = logging.getLogger("splinepy")
+    logger = _logging.getLogger("splinepy")
     logger.warning(" ".join(map(str, log)))
 
 
@@ -121,4 +121,4 @@ def prepend_log(message, log_func):
     -------
     prepended: function
     """
-    return functools.partial(log_func, message)
+    return _functools.partial(log_func, message)

@@ -1,14 +1,14 @@
-import gustaf as gus
-import numpy as np
+import gustaf as _gus
+import numpy as _np
 
-from splinepy._base import SplinepyBase
-from splinepy.bspline import BSpline
-from splinepy.multipatch import Multipatch
-from splinepy.splinepy_core import PySpline
-from splinepy.utils.data import cartesian_product
+from splinepy._base import SplinepyBase as _SplinepyBase
+from splinepy.bspline import BSpline as _BSpline
+from splinepy.multipatch import Multipatch as _Multipatch
+from splinepy.splinepy_core import PySpline as _PySpline
+from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
-class Microstructure(SplinepyBase):
+class Microstructure(_SplinepyBase):
     """Helper class to facilitatae the construction of microstructures."""
 
     def __init__(
@@ -77,7 +77,7 @@ class Microstructure(SplinepyBase):
         None
         """
 
-        if not isinstance(deformation_function, PySpline):
+        if not isinstance(deformation_function, _PySpline):
             raise ValueError(
                 "Deformation function must be splinepy-Spline."
                 " e.g. splinepy.NURBS"
@@ -154,7 +154,7 @@ class Microstructure(SplinepyBase):
         None
         """
         # place single tiles into a list to provide common interface
-        if isinstance(microtile, (PySpline, list)):
+        if isinstance(microtile, (_PySpline, list)):
             microtile = self._make_microtilable(microtile)
         # Assign Microtile object to member variable
         self._microtile = microtile
@@ -285,10 +285,10 @@ class Microstructure(SplinepyBase):
                     self.tiling[i_pd] = n_current_spans
                 else:
                     # Determine new knots
-                    n_k_span = np.zeros(n_current_spans, dtype=int)
-                    span_measure = np.diff(ukv)
+                    n_k_span = _np.zeros(n_current_spans, dtype=int)
+                    span_measure = _np.diff(ukv)
                     for _ in range(tt - n_current_spans):
-                        add_knot = np.argmax(span_measure)
+                        add_knot = _np.argmax(span_measure)
                         n_k_span[add_knot] += 1
                         span_measure[add_knot] *= n_k_span[add_knot] / (
                             n_k_span[add_knot] + 1
@@ -297,7 +297,7 @@ class Microstructure(SplinepyBase):
                     new_knots = []
                     for i, nks in enumerate(n_k_span):
                         new_knots.extend(
-                            np.linspace(ukv[i], ukv[i + 1], nks + 2)[1:-1]
+                            _np.linspace(ukv[i], ukv[i + 1], nks + 2)[1:-1]
                         )
                     additional_knots.append(new_knots)
 
@@ -370,10 +370,10 @@ class Microstructure(SplinepyBase):
         # Second step (if MS is parametrized)
         if is_parametrized:
             para_bounds = self.deformation_function.parametric_bounds.T
-            def_fun_para_space = BSpline(
+            def_fun_para_space = _BSpline(
                 degrees=[1] * self.deformation_function.para_dim,
                 knot_vectors=para_bounds.repeat(2, 1),
-                control_points=cartesian_product(para_bounds),
+                control_points=_cartesian_product(para_bounds),
             )
             for i_pd in range(deformation_function_copy.para_dim):
                 if len(deformation_function_copy.unique_knots[i_pd][1:-1]) > 0:
@@ -502,8 +502,8 @@ class Microstructure(SplinepyBase):
         )
 
         # Use element_resolutions to get global indices of patches
-        local_indices = cartesian_product(
-            [np.arange(er) for er in element_resolutions]
+        local_indices = _cartesian_product(
+            [_np.arange(er) for er in element_resolutions]
         )
 
         # Determine the number of geometric derivatives with respect to the
@@ -556,11 +556,11 @@ class Microstructure(SplinepyBase):
                 # To avoid unnecessary constructions (if a parameter
                 # sensitivity evaluates to zero), perform only those that are
                 # in the support of a specific design variable
-                support = np.where(
-                    np.any(np.any(tile_sensitivities != 0.0, axis=0), axis=0)
+                support = _np.where(
+                    _np.any(_np.any(tile_sensitivities != 0.0, axis=0), axis=0)
                 )[0]
-                anti_support = np.where(
-                    np.any(np.all(tile_sensitivities == 0.0, axis=0), axis=0)
+                anti_support = _np.where(
+                    _np.any(_np.all(tile_sensitivities == 0.0, axis=0), axis=0)
                 )[0]
                 tile_sens_on_support = tile_sensitivities[:, :, support]
             else:
@@ -626,7 +626,7 @@ class Microstructure(SplinepyBase):
                     # derivatives of the composed spline with respect to a
                     # component of a control point within the bezier patch
                     # of the deformation function.
-                    cps = np.hstack([p.cps for p in patch_info])
+                    cps = _np.hstack([p.cps for p in patch_info])
                     # We use the matrices to map the contributions of the
                     # bezier ctps to the deformation functions
                     mapped_cps = cps @ knot_insertion_matrices[i_patch]
@@ -634,7 +634,7 @@ class Microstructure(SplinepyBase):
                     # Last step: create beziers to be added to the derivative
                     # fields
                     for j_cc in range(n_macro_sensitivities):
-                        control_points = np.zeros(
+                        control_points = _np.zeros(
                             (cps.shape[0], self._deformation_function.dim)
                         )
                         ii_ctps, jj_dim = divmod(
@@ -650,7 +650,7 @@ class Microstructure(SplinepyBase):
                         )
 
         # Use a multipatch object to bundle all information
-        self._microstructure = Multipatch(splines=spline_list_ms)
+        self._microstructure = _Multipatch(splines=spline_list_ms)
 
         # Add fields if requested
         if macro_sensitivities or parameter_sensitivities:
@@ -689,7 +689,7 @@ class Microstructure(SplinepyBase):
         deformation_function = self.deformation_function
 
         # Show in vedo
-        return gus.show(
+        return _gus.show(
             ["Deformation Function", deformation_function],
             ["Microtile", microtile[0]],
             ["Composed Microstructure", microstructure],
@@ -763,7 +763,7 @@ class Microstructure(SplinepyBase):
         result = self._parametrization_function(
             self._microtile.evaluation_points
         )
-        if not isinstance(result, np.ndarray):
+        if not isinstance(result, _np.ndarray):
             raise ValueError(
                 "Function outline of parametrization function must be "
                 "`f(np.ndarray)->np.ndarray`"
@@ -776,7 +776,7 @@ class Microstructure(SplinepyBase):
         result = self.parameter_sensitivity_function(
             self._microtile.evaluation_points
         )
-        if (not isinstance(result, np.ndarray)) or (not result.ndim == 3):
+        if (not isinstance(result, _np.ndarray)) or (not result.ndim == 3):
             raise ValueError(
                 "Function outline of parameter sensitivity function must "
                 "be `f(np.ndarray)->np.ndarray`, with dimension 3 and shape:"
@@ -798,7 +798,7 @@ class Microstructure(SplinepyBase):
         return _UserTile(microtile)
 
 
-class _UserTile(SplinepyBase):
+class _UserTile(_SplinepyBase):
     def __init__(self, microtile):
         """
         On the fly created class of a user tile
@@ -813,7 +813,7 @@ class _UserTile(SplinepyBase):
             microtile = [microtile]
 
         for m in microtile:
-            if not isinstance(m, PySpline):
+            if not isinstance(m, _PySpline):
                 raise ValueError(
                     "Microtiles must be (list of) "
                     "splinepy-Splines. e.g. splinepy.NURBS"
