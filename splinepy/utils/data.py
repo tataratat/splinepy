@@ -12,6 +12,13 @@ from gustaf.helpers.data import DataHolder as _DataHolder
 from splinepy import splinepy_core as _splinepy_core
 from splinepy._base import SplinepyBase as _SplinepyBase
 
+try:
+    import scipy as _scipy
+
+    has_scipy = True
+except ImportError:
+    has_scipy = False
+
 __all__ = [
     "PhysicalSpaceArray",
     "_DataHolder",
@@ -380,6 +387,55 @@ def cartesian_product(arrays, reverse=True):
     _cartesian[..., 0] = arrays[0][idx]
 
     return cartesian.reshape(-1, n_arr)
+
+
+def make_matrix(values, supports, n_cols, as_array=False):
+    r"""
+    Create a matrix from values and supports.
+
+    Used for basis functions their derivatives and everything mapped.
+    Uses scipy if available. If `as_array` is true, dense matrix (numpy) is enforced
+
+    This matrix can be used for approximations and IGA-applications. With given
+    queries :math:`\pmb{\xi}`, control points :math:`\mathbf{C}`, associated to
+    spline :math:`\mathcal{S}`, this function can be used to return matrix
+    :math:`\mathbf{A}`, such that
+
+    .. math::
+        \mathcal{S}(\pmb{\xi}) = A(\pmb{\xi}) \cdot \mathbf{C}
+
+    Parameters
+    ----------
+    values : np.ndarray
+      Values to be inserted into the matrix
+    supports : np.ndarray
+      Column values corresponding to the given values
+    n_cols : int
+      Number of columns of the matrix (matches n_ctps for basis-functions)
+    as_array : bool
+      Return as numpy / dense type
+
+    Returns
+    -------
+    matrix : np.ndarray / scipy.sparse.csr_array
+      Matrix
+    """
+    # Return in Matrix shape (scipy if available)
+    if has_scipy and not as_array:
+        return _scipy.sparse.csr_array(
+            (
+                values.ravel(),
+                (
+                    _np.arange(values.shape[0]).repeat(values.shape[1]),
+                    supports.ravel(),
+                ),
+            ),
+            shape=(values.shape[0], n_cols),
+        )
+    else:
+        matrix = _np.zeros((values.shape[0], n_cols))
+        _np.put_along_axis(matrix, supports, values, axis=1)
+        return matrix
 
 
 class SplineDataAdaptor(_SplinepyBase):
