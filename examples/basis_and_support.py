@@ -53,5 +53,7 @@ if __name__ == "__main__":
     print(n.basis_and_support(q))
 
     print("These can also be stored within a matrix (scipy/numpy)")
-    basis_function_matrix = b.basis_function_matrix(q)
+    basis_function_matrix = splinepy.utils.data.make_matrix(
+        *b.basis_and_support(q), b.control_points.shape[0], as_array=True
+    )
     print(basis_function_matrix)

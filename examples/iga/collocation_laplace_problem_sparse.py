@@ -9,7 +9,7 @@ The refinement will only be applied to the solution field, to make the
 calculations more efficient
 """
 import numpy as np
-from scipy.sparse import csr_array, linalg
+from scipy.sparse import linalg
 
 import splinepy as sp
 
@@ -57,18 +57,16 @@ solution_field.insert_knots(1, new_knots)
 # Get greville points and geometric values
 evaluation_points = solution_field.greville_abscissae()
 mapper = solution_field.mapper(reference=geometry)
-bf_laplacian, support = mapper.basis_laplacian_and_support(evaluation_points)
+sp_laplacian = sp.utils.data.make_matrix(
+    *mapper.basis_laplacian_and_support(evaluation_points),
+    solution_field.cps.shape[0],
+    as_array=False,
+)
+
 
 # Evaluate RHS function
 physical_points = geometry.evaluate(evaluation_points)
 rhs = source_function(physical_points)
-
-# prepare lhs sparse matrix
-n_row, n_col = support.shape
-row_ids = np.arange(n_row).repeat(n_col)
-col_ids = support.ravel()
-data = bf_laplacian.ravel()
-sp_laplacian = csr_array((data, (row_ids, col_ids)), shape=(n_row, n_row))
 
 # Set dirichlet values (identify boundary nodes and set matrix to identity rhs
 # to 0)

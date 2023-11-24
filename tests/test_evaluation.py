@@ -543,6 +543,7 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
 
     def test_basis_function_matrix(self):
         """Test the correct evaluation of basis function matrices"""
+        make_matrix = c.splinepy.utils.data.make_matrix
         # Use
         q2D = c.np.random.rand(10, 2)
 
@@ -554,7 +555,9 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
         # Compute derivative matrix
         for spline in (bezier, rational, bspline):
             # Trivial evaluation
-            matrix = spline.basis_function_matrix(q2D)
+            matrix = make_matrix(
+                *spline.basis_and_support(q2D), spline.cps.shape[0]
+            )
             self.assertTrue(
                 c.np.allclose(
                     matrix @ spline.cps,
@@ -563,7 +566,10 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
             )
 
             # Test first order derivative
-            matrix = spline.basis_function_matrix(q2D, orders=[1, 0])
+            matrix = make_matrix(
+                *spline.basis_derivative_and_support(q2D, orders=[1, 0]),
+                spline.cps.shape[0],
+            )
             self.assertTrue(
                 c.np.allclose(
                     matrix @ spline.cps,
@@ -571,8 +577,12 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
                 )
             )
 
-            # Test seoncd order derivative
-            matrix = spline.basis_function_matrix(q2D, orders=[1, 2])
+            # Test seoncd order derivative as numpy (enforce)
+            matrix = make_matrix(
+                *spline.basis_derivative_and_support(q2D, orders=[1, 2]),
+                spline.cps.shape[0],
+                as_array=True,
+            )
             self.assertTrue(
                 c.np.allclose(
                     matrix @ spline.cps,

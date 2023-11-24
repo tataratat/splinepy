@@ -12,6 +12,13 @@ import numpy as np
 
 import splinepy as sp
 
+try:
+    import scipy
+
+    has_scipy = True
+except ImportError:
+    has_scipy = False
+
 # Test Case
 n_refine = 15
 
@@ -56,12 +63,12 @@ solution_field.insert_knots(1, new_knots)
 # Get greville points and geometric values
 evaluation_points = solution_field.greville_abscissae()
 mapper = solution_field.mapper(reference=geometry)
-bf_laplacian, support = mapper.basis_laplacian_and_support(evaluation_points)
-# Use the values and support to store it in global matrix (sparse)
-laplacian = np.zeros(
-    (evaluation_points.shape[0], solution_field.control_points.shape[0])
+
+# Compute Laplacian matrix
+laplacian = sp.utils.data.make_matrix(
+    *mapper.basis_laplacian_and_support(evaluation_points),
+    solution_field.control_points.shape[0],
 )
-np.put_along_axis(laplacian, support, bf_laplacian, axis=1)
 
 # Evaluate RHS function
 physical_points = geometry.evaluate(evaluation_points)
@@ -82,7 +89,14 @@ laplacian[indices, indices] = 1
 rhs[indices] = 0
 
 # Solve linear system
-solution_field.control_points = np.linalg.solve(-laplacian, rhs).reshape(-1, 1)
+if has_scipy:
+    solution_field.control_points = scipy.sparse.linalg.spsolve(
+        -laplacian, rhs
+    ).reshape(-1, 1)
+else:
+    solution_field.control_points = np.linalg.solve(-laplacian, rhs).reshape(
+        -1, 1
+    )
 
 
 # Plot geometry and field
