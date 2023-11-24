@@ -1,11 +1,11 @@
 """
 irit io.
 """
-import re
+import re as _re
 
-import numpy as np
+import numpy as _np
 
-from splinepy.io import ioutils
+from splinepy.io import ioutils as _ioutils
 
 # Keywords that indicate new spline (irit is case insensitive, all lower case)
 SPLINE_KEY_WORD_REGEX = r"\s+(bspline|bezier)\s+"
@@ -33,7 +33,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
     """
     # Expand taps to spaces
     if expand_tabs:
-        ioutils.expand_tabs(fname)
+        _ioutils.expand_tabs(fname)
 
     # Delete lines not containing brackets in the beginning
     def extract_relevant_text(lines):
@@ -42,7 +42,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
                 [
                     line.lower().strip()
                     for line in lines
-                    if re.match(r".*[\[\]].*", line) is not None
+                    if _re.match(r".*[\[\]].*", line) is not None
                 ]
             )
         else:
@@ -55,7 +55,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
 
         # At this point we ignore all non-spline related data and do a keyword
         # based search for relevant information
-        spline_strings = re.split(SPLINE_KEY_WORD_REGEX, relevant_text)
+        spline_strings = _re.split(SPLINE_KEY_WORD_REGEX, relevant_text)
 
         # Init list
         spline_list = []
@@ -66,10 +66,10 @@ def load(fname, expand_tabs=True, strip_comments=False):
             spline = {}
 
             # Extract data from data
-            extracted_data = re.split(r"\]\s*\]", data)[0] + "]"
+            extracted_data = _re.split(r"\]\s*\]", data)[0] + "]"
 
             # Split dimensions and degrees from data
-            dim_and_deg = re.split(r"(e\d|p\d)", extracted_data)
+            dim_and_deg = _re.split(r"(e\d|p\d)", extracted_data)
 
             # must contain ctps/degs rational/poly dimension control points
             if len(dim_and_deg) != 3:
@@ -87,35 +87,35 @@ def load(fname, expand_tabs=True, strip_comments=False):
 
             # Extract degrees (and control point dimensions)
             deg_info = [
-                int(s) for s in re.split(r"\s+", dim_and_deg[0]) if len(s) > 0
+                int(s) for s in _re.split(r"\s+", dim_and_deg[0]) if len(s) > 0
             ]
 
             # IRIT uses orders instead of degrees
             if type == "bezier":
-                orders = np.array(deg_info)
-                n_ctps = np.prod(orders)
+                orders = _np.array(deg_info)
+                n_ctps = _np.prod(orders)
             else:
-                n_ctps = np.prod(deg_info[: (len(deg_info) // 2)])
-                orders = np.array(deg_info[(len(deg_info) // 2) :])
+                n_ctps = _np.prod(deg_info[: (len(deg_info) // 2)])
+                orders = _np.array(deg_info[(len(deg_info) // 2) :])
             spline["degrees"] = orders - 1
 
             # Paradim is specified from degrees
             para_dim = orders.size
 
             # Extract control point and kv information
-            ctps_and_kvs = re.findall(r"\[(.*?)\]", dim_and_deg[2])
+            ctps_and_kvs = _re.findall(r"\[(.*?)\]", dim_and_deg[2])
             ctps = " ".join(
-                [s for s in ctps_and_kvs if re.search(r"\s*kv.*", s) is None]
+                [s for s in ctps_and_kvs if _re.search(r"\s*kv.*", s) is None]
             )
 
             if is_rational:
-                ctps = np.fromstring(str(ctps), dtype=float, sep=" ").reshape(
+                ctps = _np.fromstring(str(ctps), dtype=float, sep=" ").reshape(
                     -1, dim + 1
                 )
                 spline["weights"] = ctps[:, 0]
                 spline["control_points"] = ctps[:, 1:] / ctps[:, 0:1]
             else:
-                spline["control_points"] = np.fromstring(
+                spline["control_points"] = _np.fromstring(
                     str(ctps), dtype=float, sep=" "
                 ).reshape(-1, dim)
 
@@ -138,7 +138,7 @@ def load(fname, expand_tabs=True, strip_comments=False):
                 knot_v_strings = [
                     s.split("kv")[1]
                     for s in ctps_and_kvs
-                    if re.search(r"\s*kv.*", s) is not None
+                    if _re.search(r"\s*kv.*", s) is not None
                 ]
                 if len(knot_v_strings) != para_dim:
                     raise ValueError(
@@ -152,14 +152,14 @@ def load(fname, expand_tabs=True, strip_comments=False):
                         + str(len(knot_v_strings))
                     )
                 spline["knot_vectors"] = [
-                    np.fromstring(kv, dtype=float, sep=" ")
+                    _np.fromstring(kv, dtype=float, sep=" ")
                     for kv in knot_v_strings
                 ]
 
             # Append dictionary to list
             spline_list.append(spline)
 
-        return ioutils.dict_to_spline(spline_list)
+        return _ioutils.dict_to_spline(spline_list)
 
 
 def export(fname, splines):
@@ -175,14 +175,14 @@ def export(fname, splines):
     --------
     None
     """
-    from splinepy.bezier import BezierBase
-    from splinepy.bspline import BSplineBase
-    from splinepy.multipatch import Multipatch
-    from splinepy.spline import Spline
+    from splinepy.bezier import BezierBase as _BezierBase
+    from splinepy.bspline import BSplineBase as _BSplineBase
+    from splinepy.multipatch import Multipatch as _Multipatch
+    from splinepy.spline import Spline as _Spline
 
-    if isinstance(splines, Multipatch):
+    if isinstance(splines, _Multipatch):
         splines = splines.patches
-    elif isinstance(splines, Spline):
+    elif isinstance(splines, _Spline):
         splines = [splines]
 
     # Start Export
@@ -198,10 +198,10 @@ def export(fname, splines):
             # Paradim key
             f.write(PARA_DIM_KEYS.get(str(spline.para_dim), "MULTIVAR"))
             # Type identifier
-            if isinstance(spline, BezierBase):
+            if isinstance(spline, _BezierBase):
                 f.write(" BEZIER ")
             # Write orders or/and control point mesh resolutions
-            if isinstance(spline, BSplineBase):
+            if isinstance(spline, _BSplineBase):
                 f.write(" BSPLINE ")
                 f.write(
                     " ".join(
@@ -222,7 +222,7 @@ def export(fname, splines):
                 f.write(" E" + str(spline.dim) + "\n")
 
             # Write knot vectors where required
-            if isinstance(spline, BSplineBase):
+            if isinstance(spline, _BSplineBase):
                 for kv in spline.knot_vectors:
                     f.write(
                         "    [KV " + " ".join([str(k) for k in kv]) + "]\n"
@@ -230,7 +230,7 @@ def export(fname, splines):
 
             # Determine weighted control points
             if spline.is_rational:
-                control_points = np.hstack(
+                control_points = _np.hstack(
                     (
                         spline.weights.reshape(-1, 1),
                         spline.weights.reshape(-1, 1) * spline.control_points,

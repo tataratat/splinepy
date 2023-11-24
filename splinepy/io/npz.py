@@ -8,9 +8,10 @@ keys in raw files are:
   - whatami : (1,) np.ndarray, str
 """
 
-import numpy as np
+import numpy as _np
 
-from splinepy import io, splinepy_core
+from splinepy import io as _io
+from splinepy import splinepy_core as _splinepy_core
 
 
 def load(
@@ -27,7 +28,7 @@ def load(
     --------
     list_spline: list of NURBS / BSpline / Bezier / Rational Bezier
     """
-    loaded = np.load(fname)
+    loaded = _np.load(fname)
 
     # Initialize an empty list to store the splines
     list_of_spline_dicts = []
@@ -55,7 +56,7 @@ def load(
         # Append dictionary of spline to the list
         list_of_spline_dicts.append(dict_spline)
 
-    return io.ioutils.dict_to_spline(list_of_spline_dicts)
+    return _io.ioutils.dict_to_spline(list_of_spline_dicts)
 
 
 def export(fname, list_of_splines):
@@ -74,7 +75,7 @@ def export(fname, list_of_splines):
 
     # Checking for proper type of input
     if not isinstance(list_of_splines, list):
-        if isinstance(list_of_splines, splinepy_core.PySpline):
+        if isinstance(list_of_splines, _splinepy_core.PySpline):
             list_of_splines = [list_of_splines]
         else:
             raise TypeError("Only a list of splines or a spline can be saved.")
@@ -106,7 +107,7 @@ def export(fname, list_of_splines):
                 ] = spline.knot_vectors[j]
 
     # Save the dictionary as `.npz`
-    np.savez(
+    _np.savez(
         fname,
         **property_dicts,
     )

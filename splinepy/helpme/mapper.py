@@ -2,13 +2,13 @@
 Helps you map derivatives of fields and basis function into the physical
 (image) domain
 """
-import numpy as np
+import numpy as _np
 
-from splinepy import utils
-from splinepy._base import SplinepyBase
+from splinepy import utils as _utils
+from splinepy._base import SplinepyBase as _SplinepyBase
 
 
-class Mapper(SplinepyBase):
+class Mapper(_SplinepyBase):
     r"""Map expressions and derivatives into the physical domain using a
     geometric mapper
 
@@ -134,18 +134,18 @@ class Mapper(SplinepyBase):
         # a : solution field shape_function
         # b : geometry field shape_function
         self._logd("Evaluating basis function gradients in physical space")
-        queries = utils.data.enforce_contiguous(queries, dtype="float64")
+        queries = _utils.data.enforce_contiguous(queries, dtype="float64")
 
         # Precompute required values
-        invjacs = np.linalg.inv(
+        invjacs = _np.linalg.inv(
             self._geometry_reference.jacobian(queries, nthreads)
         )
         results = {}
 
-        bf_gradients = np.empty(
+        bf_gradients = _np.empty(
             (
                 queries.shape[0],
-                np.prod(self._field_reference.degrees + 1),
+                _np.prod(self._field_reference.degrees + 1),
                 self._para_dim,
             )
         )
@@ -155,18 +155,18 @@ class Mapper(SplinepyBase):
         ) = self._field_reference.basis_derivative_and_support(
             queries=queries,
             # Array size M with [0, ..., 0, 1, 0, ..., 0] with 1 at position k
-            orders=np.eye(1, M=self._para_dim, k=0),
+            orders=_np.eye(1, M=self._para_dim, k=0),
             nthreads=nthreads,
         )
         results["support"] = support
         for i in range(1, self._para_dim):
             bf_gradients[:, :, i] = self._field_reference.basis_derivative(
                 queries=queries,
-                orders=np.eye(1, M=self._para_dim, k=i),
+                orders=_np.eye(1, M=self._para_dim, k=i),
                 nthreads=nthreads,
             )
         if gradient:
-            results["gradient"] = np.einsum(
+            results["gradient"] = _np.einsum(
                 "qsi,qij->qsj", bf_gradients, invjacs, optimize=True
             )
             results["support"] = support
@@ -174,10 +174,10 @@ class Mapper(SplinepyBase):
         if hessian or laplacian:
             # Retrieve basis function hessians from both the geometry as from
             # the field
-            bf_hessians = np.empty(
+            bf_hessians = _np.empty(
                 (
                     queries.shape[0],
-                    np.prod(self._field_reference.degrees + 1),
+                    _np.prod(self._field_reference.degrees + 1),
                     self._para_dim,
                     self._para_dim,
                 )
@@ -188,15 +188,15 @@ class Mapper(SplinepyBase):
                         :, :, i, j
                     ] = self._field_reference.basis_derivative(
                         queries=queries,
-                        orders=np.eye(1, M=self._para_dim, k=i)
-                        + np.eye(1, M=self._para_dim, k=j),
+                        orders=_np.eye(1, M=self._para_dim, k=i)
+                        + _np.eye(1, M=self._para_dim, k=j),
                         nthreads=nthreads,
                     )
                     if i != j:
                         bf_hessians[:, :, j, i] = bf_hessians[:, :, i, j]
             # This is unnecessary if isoparametric (but if only field is high
             # order, this is more efficient)
-            geo_hessians = np.empty(
+            geo_hessians = _np.empty(
                 (
                     queries.shape[0],
                     self._para_dim,  # dim==para_dim
@@ -210,15 +210,15 @@ class Mapper(SplinepyBase):
                         :, :, i, j
                     ] = self._geometry_reference.derivative(
                         queries=queries,
-                        orders=np.eye(1, M=self._para_dim, k=i)
-                        + np.eye(1, M=self._para_dim, k=j),
+                        orders=_np.eye(1, M=self._para_dim, k=i)
+                        + _np.eye(1, M=self._para_dim, k=j),
                         nthreads=nthreads,
                     )
                     if i != j:
                         geo_hessians[:, :, j, i] = geo_hessians[:, :, i, j]
 
             # Overwrite bf_hessians (see documentation for indices)
-            bf_hessians -= np.einsum(
+            bf_hessians -= _np.einsum(
                 "qan,qnm,qmlk->qalk",
                 bf_gradients,
                 invjacs,
@@ -226,7 +226,7 @@ class Mapper(SplinepyBase):
                 optimize=True,
             )
         if hessian:
-            results["hessian"] = np.einsum(
+            results["hessian"] = _np.einsum(
                 "eli,ealk,ekj->eaij",
                 invjacs,
                 bf_hessians,
@@ -236,11 +236,11 @@ class Mapper(SplinepyBase):
             results["support"] = support
         if laplacian:
             if hessian:
-                results["laplacian"] = np.einsum(
+                results["laplacian"] = _np.einsum(
                     "eaii->ea", results["hessian"], optimize=True
                 )
             else:
-                results["laplacian"] = np.einsum(
+                results["laplacian"] = _np.einsum(
                     "eli,ealk,eki->ea",
                     invjacs,
                     bf_hessians,
@@ -313,7 +313,7 @@ class Mapper(SplinepyBase):
             results["basis_function_values"] = as_dictionary
         # Start computation
         if gradient:
-            results["gradient"] = np.einsum(
+            results["gradient"] = _np.einsum(
                 "qsd,qsv->qvd",
                 as_dictionary["gradient"],
                 self._field_reference.control_points[supports, :],
@@ -323,11 +323,11 @@ class Mapper(SplinepyBase):
             # Can only be performed on vector fields with para_dim=dim
             if self._field_reference.para_dim == self._field_reference.dim:
                 if gradient:
-                    results["divergence"] = np.einsum(
+                    results["divergence"] = _np.einsum(
                         "qii->q", results["gradient"], optimize=True
                     )
                 else:
-                    results["divergence"] = np.einsum(
+                    results["divergence"] = _np.einsum(
                         "qsd,qsd->q",
                         as_dictionary["gradient"],
                         self._field_reference.control_points[supports, :],
@@ -340,7 +340,7 @@ class Mapper(SplinepyBase):
                 )
 
         if hessian:
-            results["hessian"] = np.einsum(
+            results["hessian"] = _np.einsum(
                 "qsij,qsv->qvij",
                 as_dictionary["hessian"],
                 self._field_reference.control_points[supports, :],
@@ -348,11 +348,11 @@ class Mapper(SplinepyBase):
             )
         if laplacian:
             if hessian:
-                results["laplacian"] = np.einsum(
+                results["laplacian"] = _np.einsum(
                     "qdii->qd", results["hessian"], optimize=True
                 )
             else:
-                results["laplacian"] = np.einsum(
+                results["laplacian"] = _np.einsum(
                     "qs,qsd->qd",
                     as_dictionary["laplacian"],
                     self._field_reference.control_points[supports, :],
