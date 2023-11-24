@@ -1,15 +1,15 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class DoubleLatticeTile(TileBase):
+class DoubleLatticeTile(_TileBase):
     def __init__(self):
         """Simple crosstile with linear-quadratic branches and a trilinear
         center spline."""
         self._dim = 2
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.5, 0.5],
             ]
@@ -53,9 +53,9 @@ class DoubleLatticeTile(TileBase):
         # set to default if nothing is given
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = np.ones((1, 1)) * 0.1
+            parameters = _np.ones((1, 1)) * 0.1
         else:
-            if not (np.all(parameters > 0) and np.all(parameters < 0.25)):
+            if not (_np.all(parameters > 0) and _np.all(parameters < 0.25)):
                 raise ValueError("The parameter must be in 0.01 and 0.25")
             pass
         self.check_params(parameters)
@@ -102,7 +102,7 @@ class DoubleLatticeTile(TileBase):
 
             # 1
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a01, a01],
@@ -115,7 +115,7 @@ class DoubleLatticeTile(TileBase):
 
             # 2
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a01, a01],
@@ -128,7 +128,7 @@ class DoubleLatticeTile(TileBase):
 
             # 3
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a04, a01],
@@ -141,7 +141,7 @@ class DoubleLatticeTile(TileBase):
 
             # 4
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a08, a01],
@@ -154,7 +154,7 @@ class DoubleLatticeTile(TileBase):
 
             # 5
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a10, a02],
@@ -167,7 +167,7 @@ class DoubleLatticeTile(TileBase):
 
             # 6
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a11, a04],
@@ -180,7 +180,7 @@ class DoubleLatticeTile(TileBase):
 
             # 7
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a10, a09],
@@ -192,7 +192,7 @@ class DoubleLatticeTile(TileBase):
             )
             # 8
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a09, a10],
@@ -205,7 +205,7 @@ class DoubleLatticeTile(TileBase):
 
             # 9
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a03, a10],
@@ -218,7 +218,7 @@ class DoubleLatticeTile(TileBase):
 
             # 10
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a02, a10],
@@ -231,7 +231,7 @@ class DoubleLatticeTile(TileBase):
 
             # 11
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a01, a08],
@@ -244,7 +244,7 @@ class DoubleLatticeTile(TileBase):
 
             # 12
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a01, a04],
@@ -257,7 +257,7 @@ class DoubleLatticeTile(TileBase):
 
             # 13
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a02, a09],
@@ -270,7 +270,7 @@ class DoubleLatticeTile(TileBase):
 
             # 14
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a02, a10],
@@ -283,7 +283,7 @@ class DoubleLatticeTile(TileBase):
 
             # 15
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a02, a02],
@@ -296,7 +296,7 @@ class DoubleLatticeTile(TileBase):
 
             # 16
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a02, a02],
@@ -309,7 +309,7 @@ class DoubleLatticeTile(TileBase):
 
             # 17
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a09, a02],
@@ -322,7 +322,7 @@ class DoubleLatticeTile(TileBase):
 
             # 18
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a06, a06],
@@ -335,7 +335,7 @@ class DoubleLatticeTile(TileBase):
 
             # 19
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a06, a06],
@@ -348,7 +348,7 @@ class DoubleLatticeTile(TileBase):
 
             # 20
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1],
                     control_points=[
                         [a06, a06],

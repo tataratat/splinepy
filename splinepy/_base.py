@@ -2,7 +2,7 @@
 
 Base type of splinepy
 """
-from splinepy.utils import log
+from splinepy.utils import log as _log
 
 
 class SplinepyBase:
@@ -13,7 +13,9 @@ class SplinepyBase:
         Add logger shortcut.
         """
         super().__init_subclass__(*args, **kwargs)
-        cls._logi = log.prepend_log("<" + cls.__qualname__ + ">", log.info)
-        cls._logd = log.prepend_log("<" + cls.__qualname__ + ">", log.debug)
-        cls._logw = log.prepend_log("<" + cls.__qualname__ + ">", log.warning)
+        cls._logi = _log.prepend_log("<" + cls.__qualname__ + ">", _log.info)
+        cls._logd = _log.prepend_log("<" + cls.__qualname__ + ">", _log.debug)
+        cls._logw = _log.prepend_log(
+            "<" + cls.__qualname__ + ">", _log.warning
+        )
         return super().__new__(cls)

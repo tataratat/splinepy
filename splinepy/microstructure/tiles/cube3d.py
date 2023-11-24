@@ -1,14 +1,14 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class Cube3D(TileBase):
+class Cube3D(_TileBase):
     def __init__(self):
         """Simple tile - looks like a nut"""
         self._dim = 3
-        self._evaluation_points = np.array(
+        self._evaluation_points = _np.array(
             [
                 [0.0, 0.5, 0.5],
                 [1.0, 0.5, 0.5],
@@ -49,7 +49,7 @@ class Cube3D(TileBase):
         if parameters is None:
             self._logd("Setting parameters to default value (0.2)")
             parameters = (
-                np.ones(
+                _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
                 ).reshape(-1, 1)
                 * 0.2
@@ -58,13 +58,14 @@ class Cube3D(TileBase):
         self.check_params(parameters)
 
         if not (
-            np.all(parameters[:, :2] > 0.0) and np.all(parameters[:, :2] < 0.5)
+            _np.all(parameters[:, :2] > 0.0)
+            and _np.all(parameters[:, :2] < 0.5)
         ):
             raise ValueError("The wall thickness must be in (0.0 and 0.5)")
 
-        if not np.all(
-            (parameters[:, 2:] > np.deg2rad(-30))
-            and (parameters[:, 2:] < np.deg2rad(30))
+        if not _np.all(
+            (parameters[:, 2:] > _np.deg2rad(-30))
+            and (parameters[:, 2:] < _np.deg2rad(30))
         ):
             raise ValueError("Rotation is only allowed between +-30 deg")
 
@@ -107,9 +108,9 @@ class Cube3D(TileBase):
 
             # x_max_z_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_one - z_max, z_max, v_one],
                             [v_one, v_zero, v_one],
@@ -126,9 +127,9 @@ class Cube3D(TileBase):
 
             # x_min_z_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, x_min, x_min],
                             [center, center, center],
@@ -145,9 +146,9 @@ class Cube3D(TileBase):
 
             # x_min_z_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_zero, v_one],
                             [z_max, z_max, v_one],
@@ -164,9 +165,9 @@ class Cube3D(TileBase):
 
             # x_max_z_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_one - center, center, center],
                             [v_one, x_max, x_max],
@@ -183,9 +184,9 @@ class Cube3D(TileBase):
 
             # x_max_y_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_one - y_max, v_one, y_max],
                             [v_one, v_one, v_zero],
@@ -202,9 +203,9 @@ class Cube3D(TileBase):
 
             # y_max_z_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_one, v_zero],
                             [v_one, v_one, v_zero],
@@ -221,9 +222,9 @@ class Cube3D(TileBase):
 
             # x_min_y_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_one, v_zero],
                             [y_max, v_one, y_max],
@@ -240,9 +241,9 @@ class Cube3D(TileBase):
 
             # y_max_z_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [y_max, v_one, v_one - y_max],
                             [v_one - y_max, v_one, v_one - y_max],
@@ -259,9 +260,9 @@ class Cube3D(TileBase):
 
             # x_max_y_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_one - center, center, center],
                             [v_one, x_max, x_max],
@@ -278,9 +279,9 @@ class Cube3D(TileBase):
 
             # x_min_y_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, x_min, x_min],
                             [center, center, center],
@@ -297,9 +298,9 @@ class Cube3D(TileBase):
 
             # y_min_z_max
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [center, center, v_one - center],
                             [v_one - center, center, v_one - center],
@@ -316,9 +317,9 @@ class Cube3D(TileBase):
 
             # y_min_z_min
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[1, 1, 1],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [z_min, z_min, v_zero],
                             [v_one - z_min, z_min, v_zero],

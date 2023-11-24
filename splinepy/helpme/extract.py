@@ -1,10 +1,13 @@
-import numpy as np
-from gustaf import Edges, Faces, Vertices, Volumes
-from gustaf.utils import connec
-from gustaf.utils.arr import enforce_len
+import numpy as _np
+from gustaf import Edges as _Edges
+from gustaf import Faces as _Faces
+from gustaf import Vertices as _Vertices
+from gustaf import Volumes as _Volumes
+from gustaf.utils import connec as _connec
+from gustaf.utils.arr import enforce_len as _enforce_len
 
-from splinepy import settings
-from splinepy.utils.data import cartesian_product
+from splinepy import settings as _settings
+from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
 def edges(
@@ -27,7 +30,7 @@ def edges(
     --------
     edges: Edges
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     # Check resolution input
     if not isinstance(resolution, int):
@@ -35,23 +38,23 @@ def edges(
 
     if spline.para_dim == 1:
         vertices = spline.sample(resolution)
-        e = connec.range_to_edges(
+        e = _connec.range_to_edges(
             (0, resolution),
             closed=False,
         )
-        if isinstance(spline, Multipatch):
-            e = np.vstack(
+        if isinstance(spline, _Multipatch):
+            e = _np.vstack(
                 [e + i * resolution for i in range(len(spline.patches))]
             )
-        return Edges(
+        return _Edges(
             vertices=vertices,
             edges=e,
         )
 
     else:
         # recursion for Multipatch splines
-        if isinstance(spline, Multipatch):
-            return Edges.concat(
+        if isinstance(spline, _Multipatch):
+            return _Edges.concat(
                 [
                     edges(spline=s, resolution=resolution, all_knots=all_knots)
                     for s in spline.patches
@@ -68,7 +71,7 @@ def edges(
         for i in range(spline.para_dim):
             split_knots = relevant_knots.copy()
             split_knots.pop(i)
-            n_knot_lines = np.prod([len(s) for s in split_knots], dtype=int)
+            n_knot_lines = _np.prod([len(s) for s in split_knots], dtype=int)
             # Create query points
             # Sampling along a line can be done using cartesian product,
             # however, to preserve the correct order we need to permute the
@@ -80,22 +83,22 @@ def edges(
             reorder_mask = (
                 [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
             )
-            extract_knot_queries = cartesian_product(
-                [np.linspace(*spline.parametric_bounds[:, i], resolution)]
+            extract_knot_queries = _cartesian_product(
+                [_np.linspace(*spline.parametric_bounds[:, i], resolution)]
                 + split_knots,
                 reverse=True,
             )[:, reorder_mask]
 
             # Retrieve connectivity to be repeated
-            single_line_connectivity = connec.range_to_edges(
+            single_line_connectivity = _connec.range_to_edges(
                 (0, resolution),
                 closed=False,
             )
 
             temp_edges.append(
-                Edges(
+                _Edges(
                     vertices=spline.evaluate(extract_knot_queries),
-                    edges=np.vstack(
+                    edges=_np.vstack(
                         [
                             single_line_connectivity + resolution * j
                             for j in range(n_knot_lines)
@@ -104,7 +107,7 @@ def edges(
                 )
             )
 
-        return Edges.concat(temp_edges)
+        return _Edges.concat(temp_edges)
 
 
 def faces(
@@ -130,46 +133,43 @@ def faces(
     --------
     faces: faces
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     if spline.para_dim == 2:
-        if isinstance(spline, Multipatch):
+        if isinstance(spline, _Multipatch):
             n_faces = (resolution - 1) ** spline.para_dim
             vertices = resolution**spline.para_dim
-            f_loc = connec.make_quad_faces(
-                enforce_len(resolution, spline.para_dim)
+            f_loc = _connec.make_quad_faces(
+                _enforce_len(resolution, spline.para_dim)
             )
-            face_connectivity = np.empty((n_faces * len(spline.patches), 4))
+            face_connectivity = _np.empty((n_faces * len(spline.patches), 4))
             # Create Connectivity for Multipatches
             for i in range(len(spline.patches)):
                 face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
                     i * vertices
                 )
         else:
-            face_connectivity = connec.make_quad_faces(
-                enforce_len(resolution, spline.para_dim)
+            face_connectivity = _connec.make_quad_faces(
+                _enforce_len(resolution, spline.para_dim)
             )
-        faces = Faces(
+        faces = _Faces(
             vertices=spline.sample(resolution),
             faces=face_connectivity,
         )
 
     elif spline.para_dim == 3:
         # Extract boundaries and sample from boundaries
-        if isinstance(spline, Multipatch):
+        if isinstance(spline, _Multipatch):
             boundaries = spline.boundary_multipatch()
         else:
-            boundaries = Multipatch(splines=spline.extract.boundaries())
-        # The following block assumes a integer resolution but might get a list
-        # as input. In that case, we take the max of the list and use it as
-        # resolution.
-        # I am not sure if this is correct or if we should instead rework the
-        # following lines so that list resolution is supported.
-        res = resolution if isinstance(resolution, int) else max(resolution)
-        n_faces = (res - 1) ** 2
-        vertices = res**2
-        f_loc = connec.make_quad_faces(enforce_len(res, 2))
-        face_connectivity = np.empty((n_faces * len(boundaries.patches), 4))
+            boundaries = _Multipatch(splines=spline.extract.boundaries())
+        resolution = (
+            resolution if isinstance(resolution, int) else max(resolution)
+        )
+        n_faces = (resolution - 1) ** 2
+        vertices = resolution**2
+        f_loc = _connec.make_quad_faces(_enforce_len(resolution, 2))
+        face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
 
         # Create Connectivity for Multipatches
         for i in range(len(boundaries.patches)):
@@ -178,7 +178,7 @@ def faces(
             )
 
         # make faces and merge vertices before returning
-        faces = Faces(
+        faces = _Faces(
             vertices=boundaries.sample(resolution), faces=face_connectivity
         )
 
@@ -207,7 +207,7 @@ def volumes(spline, resolution, watertight=False):
     --------
     volumes: Volumes
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     if spline.para_dim != 3 or spline.dim != 3:
         raise ValueError(
@@ -215,16 +215,16 @@ def volumes(spline, resolution, watertight=False):
             "para_dim: 3 dim: 3 splines."
         )
 
-    if isinstance(spline, Multipatch):
+    if isinstance(spline, _Multipatch):
         if not isinstance(resolution, int):
             raise ValueError(
                 "Resolution for sampling must be integer type for Multipatch "
                 "objects"
             )
-        p_connect = connec.make_hexa_volumes(enforce_len(resolution, 3))
+        p_connect = _connec.make_hexa_volumes(_enforce_len(resolution, 3))
         n_elements_per_patch = p_connect.shape[0]
         n_vertices_per_patch = resolution**spline.para_dim
-        connectivity = np.empty(
+        connectivity = _np.empty(
             (n_elements_per_patch * len(spline.patches), p_connect.shape[1])
         )
 
@@ -236,10 +236,10 @@ def volumes(spline, resolution, watertight=False):
             )
             connectivity[ids] = p_connect + i * n_vertices_per_patch
     else:
-        connectivity = connec.make_hexa_volumes(enforce_len(resolution, 3))
+        connectivity = _connec.make_hexa_volumes(_enforce_len(resolution, 3))
 
     # Create volumes
-    volumes = Volumes(
+    volumes = _Volumes(
         vertices=spline.sample(resolution),
         volumes=connectivity,
     )
@@ -262,7 +262,7 @@ def control_points(spline):
     --------
     cps_as_Vertices: Vertices
     """
-    return Vertices(spline.control_points)
+    return _Vertices(spline.control_points)
 
 
 def control_edges(spline):
@@ -276,18 +276,18 @@ def control_edges(spline):
     --------
     edges: Edges
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     if spline.para_dim != 1:
         raise ValueError("Invalid spline type!")
 
-    if isinstance(spline, Multipatch):
+    if isinstance(spline, _Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Edges.concat([control_edges(s) for s in spline.patches])
+        return _Edges.concat([control_edges(s) for s in spline.patches])
     else:
-        return Edges(
+        return _Edges(
             vertices=spline.control_points,
-            edges=connec.range_to_edges(
+            edges=_connec.range_to_edges(
                 len(spline.control_points), closed=False
             ),
         )
@@ -304,18 +304,18 @@ def control_faces(spline):
     --------
     faces: Faces
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     if spline.para_dim != 2:
         raise ValueError("Invalid spline type!")
 
-    if isinstance(spline, Multipatch):
+    if isinstance(spline, _Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Faces.concat([control_faces(s) for s in spline.patches])
+        return _Faces.concat([control_faces(s) for s in spline.patches])
     else:
-        return Faces(
+        return _Faces(
             vertices=spline.control_points,
-            faces=connec.make_quad_faces(spline.control_mesh_resolutions),
+            faces=_connec.make_quad_faces(spline.control_mesh_resolutions),
         )
 
 
@@ -330,18 +330,18 @@ def control_volumes(spline):
     --------
     volumes: Volumes
     """
-    from splinepy import Multipatch
+    from splinepy import Multipatch as _Multipatch
 
     if spline.para_dim != 3:
         raise ValueError("Invalid spline type!")
 
-    if isinstance(spline, Multipatch):
+    if isinstance(spline, _Multipatch):
         # @todo avoid loop and transfer range_to_edges to cpp
-        return Volumes.concat([control_volumes(s) for s in spline.patches])
+        return _Volumes.concat([control_volumes(s) for s in spline.patches])
     else:
-        return Volumes(
+        return _Volumes(
             vertices=spline.control_points,
-            volumes=connec.make_hexa_volumes(spline.control_mesh_resolutions),
+            volumes=_connec.make_hexa_volumes(spline.control_mesh_resolutions),
         )
 
 
@@ -384,10 +384,10 @@ def spline(spline, para_dim, split_plane):
     -------
     spline
     """
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
     # Check type
-    if not isinstance(spline, Spline):
+    if not isinstance(spline, _Spline):
         raise TypeError("Unknown spline representation passed to sub spline")
 
     # Check arguments for sanity
@@ -429,15 +429,15 @@ def spline(spline, para_dim, split_plane):
     # Start extraction
     cps_res = spline_copy.control_mesh_resolutions
     # start and end id. indices correspond to [first dim][first appearance]
-    start_id = np.where(
+    start_id = _np.where(
         abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[0])
-        < settings.TOLERANCE
+        < _settings.TOLERANCE
     )[0][0]
-    end_id = np.where(
+    end_id = _np.where(
         abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[-1])
-        < settings.TOLERANCE
+        < _settings.TOLERANCE
     )[0][0]
-    para_dim_ids = np.arange(np.prod(cps_res))
+    para_dim_ids = _np.arange(_np.prod(cps_res))
     for i_pd in range(para_dim):
         para_dim_ids -= para_dim_ids % cps_res[i_pd]
         para_dim_ids = para_dim_ids // cps_res[i_pd]
@@ -465,7 +465,7 @@ def spline(spline, para_dim, split_plane):
                 (end_id + spline_copy.degrees[para_dim] - 1)
             ]
 
-            spline_info["knot_vectors"][para_dim] = np.concatenate(
+            spline_info["knot_vectors"][para_dim] = _np.concatenate(
                 ([start_knot], knots_in_between, [end_knot])
             )
 
@@ -490,7 +490,7 @@ def boundaries(spline, boundary_ids=None):
     Parameters
     -----------
     spline: Spline / Multipatch
-    boundary_ids: list
+    boundary_ids:
       Only considered for Spline. Default is None and returns all boundaries.
 
     Returns
@@ -498,17 +498,17 @@ def boundaries(spline, boundary_ids=None):
     boundary_spline: type(self)
         boundary spline, which has one less para_dim
     """
-    from splinepy import Multipatch
-    from splinepy import splinepy_core as core
+    from splinepy import Multipatch as _Multipatch
+    from splinepy import splinepy_core as _core
 
     # Pass to respective c++ implementation
-    if isinstance(spline, Multipatch):
+    if isinstance(spline, _Multipatch):
         return spline.boundary_multipatch()
     else:
         bids = [] if boundary_ids is None else list(boundary_ids)
         return [
             type(spline)(spline=c)
-            for c in core.extract_boundaries(spline, bids)
+            for c in _core.extract_boundaries(spline, bids)
         ]
 
 
@@ -522,9 +522,10 @@ class Extractor:
     """
 
     def __init__(self, spl):
-        from splinepy import Multipatch, Spline
+        from splinepy import Multipatch as _Multipatch
+        from splinepy import Spline as _Spline
 
-        if not isinstance(spl, (Spline, Multipatch)):
+        if not isinstance(spl, (_Spline, _Multipatch)):
             raise ValueError("Extractor expects a Spline or Multipatch type")
         self._spline = spl
 

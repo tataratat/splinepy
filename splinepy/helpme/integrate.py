@@ -1,6 +1,6 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.utils.data import cartesian_product
+from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
 def volume(spline, orders=None):
@@ -26,10 +26,10 @@ def volume(spline, orders=None):
     volume : float
       Integral of dim-dimensional object
     """
-    from splinepy.spline import Spline
+    from splinepy.spline import Spline as _Spline
 
-    # Check input type
-    if not isinstance(spline, Spline):
+    # Check i_nput type
+    if not isinstance(spline, _Spline):
         raise NotImplementedError("Extrude only works for splines")
 
     # Determine integration points
@@ -53,9 +53,9 @@ def volume(spline, orders=None):
             )
 
         # Gauss-Legendre is exact for polynomials 2*n-1
-        quad_orders = np.ceil((expected_degree + 1) * 0.5).astype("int")
+        quad_orders = _np.ceil((expected_degree + 1) * 0.5).astype("int")
     else:
-        quad_orders = np.ascontiguousarray(orders, dtype=int).flatten()
+        quad_orders = _np.ascontiguousarray(orders, dtype=int).flatten()
         if quad_orders.size != spline.para_dim:
             raise ValueError(
                 "Integration order must be array of size para_dim"
@@ -63,25 +63,25 @@ def volume(spline, orders=None):
 
     for order in quad_orders:
         # Get legendre quadratuer points
-        pos, ws = np.polynomial.legendre.leggauss(order)
+        pos, ws = _np.polynomial.legendre.leggauss(order)
         # from (-1,1) to (0,1)
         positions.append(pos * 0.5 + 0.5)
         weights.append(ws * 0.5)
 
     # summarize integration points
-    positions = cartesian_product(positions)
-    weights = cartesian_product(weights).prod(axis=1)
+    positions = _cartesian_product(positions)
+    weights = _cartesian_product(weights).prod(axis=1)
 
     # Calculate Volume
     if spline.has_knot_vectors:
-        volume = np.sum(
+        volume = _np.sum(
             [
-                np.sum(np.linalg.det(b.jacobian(positions)) * weights)
+                _np.sum(_np.linalg.det(b.jacobian(positions)) * weights)
                 for b in spline.extract.beziers()
             ]
         )
     else:
-        volume = np.sum(np.linalg.det(spline.jacobian(positions)) * weights)
+        volume = _np.sum(_np.linalg.det(spline.jacobian(positions)) * weights)
     return volume
 
 

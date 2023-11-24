@@ -2,18 +2,20 @@
 
 Helps helpee to manage data. Some useful data structures.
 """
-from itertools import accumulate, chain, repeat
+from itertools import accumulate as _accumulate
+from itertools import chain as _chain
+from itertools import repeat as _repeat
 
-import numpy as np
-from gustaf.helpers.data import DataHolder
-from gustaf.utils.arr import enforce_len
+import numpy as _np
+from gustaf.helpers.data import DataHolder as _DataHolder
+from gustaf.utils.arr import enforce_len as _enforce_len
 
-from splinepy import splinepy_core
-from splinepy._base import SplinepyBase
+from splinepy import splinepy_core as _splinepy_core
+from splinepy._base import SplinepyBase as _SplinepyBase
 
 __all__ = [
     "PhysicalSpaceArray",
-    "DataHolder",
+    "_DataHolder",
     "enforce_contiguous_values",
     "cartesian_product",
     "SplineDataAdaptor",
@@ -21,7 +23,7 @@ __all__ = [
 ]
 
 
-class PhysicalSpaceArray(np.ndarray):
+class PhysicalSpaceArray(_np.ndarray):
     """numpy array object that keeps mirroring inplace changes to the source.
     Meant to help control_points.
     """
@@ -76,7 +78,7 @@ class PhysicalSpaceArray(np.ndarray):
 
     def copy(self, *args, **kwargs):
         """copy creates regular numpy array"""
-        return np.array(self, *args, copy=True, **kwargs)
+        return _np.array(self, *args, copy=True, **kwargs)
 
     def view(self, *args, **kwargs):
         """Set writeable flags to False for the view."""
@@ -170,14 +172,14 @@ class PhysicalSpaceArray(np.ndarray):
         #
         # here, we will try to parse very simple, yet, quite often used
         # indexings
-        contig = np.ascontiguousarray  # frequently used
+        contig = _np.ascontiguousarray  # frequently used
         if isinstance(key, int) or (
-            isinstance(key, np.ndarray) and key.ndim == 0
+            isinstance(key, _np.ndarray) and key.ndim == 0
         ):
             # single get item is always contiguous
             self._source_ptr.set_row(key, self[key])
 
-        elif isinstance(key, np.ndarray) and key.ndim == 1:
+        elif isinstance(key, _np.ndarray) and key.ndim == 1:
             if key.dtype.kind.startswith("b"):
                 key = contig(self.row_indices()[key])
 
@@ -191,14 +193,14 @@ class PhysicalSpaceArray(np.ndarray):
         # tuple is a bit tricky
         elif isinstance(key, tuple) and (
             isinstance(key[0], int)
-            or (isinstance(key[0], np.ndarray) and key[0].ndim == 0)
+            or (isinstance(key[0], _np.ndarray) and key[0].ndim == 0)
         ):
             self._source_ptr.set_row(key[0], self[key[0]])
 
         elif isinstance(key, tuple) and (
-            isinstance(key[0], (list, np.ndarray))
+            isinstance(key[0], (list, _np.ndarray))
         ):
-            if isinstance(key[0][0], (np.bool_, bool)):
+            if isinstance(key[0][0], (_np.bool_, bool)):
                 key = (contig(self.row_indices()[key[0]]),)
 
             self._source_ptr.sync_rows(key[0], self)
@@ -216,7 +218,7 @@ class PhysicalSpaceArray(np.ndarray):
             stop = stop + len(self) if stop < 0 else stop
             step = 1 if key.step is None else key.step
 
-            ids = np.arange(
+            ids = _np.arange(
                 start, stop, step, dtype="int32"
             )  # should be contig
             self._source_ptr.sync_rows(ids, self)
@@ -229,7 +231,7 @@ class PhysicalSpaceArray(np.ndarray):
         else:
             # even more complex? then
             # TODO - just sync if this seems to take too long
-            ids = np.unique(self.full_row_indices()[key])
+            ids = _np.unique(self.full_row_indices()[key])
             self._source_ptr.sync_rows(contig(ids), self)
 
         return sr
@@ -242,7 +244,7 @@ class PhysicalSpaceArray(np.ndarray):
             return self._row_indices
 
         len_, d = self._source_ptr.len(), self._source_ptr.dim()
-        self._row_indices = np.arange(len_, dtype="int32")
+        self._row_indices = _np.arange(len_, dtype="int32")
         self._full_row_indices = self._row_indices.repeat(d).reshape(len_, d)
         return self._row_indices
 
@@ -254,7 +256,7 @@ class PhysicalSpaceArray(np.ndarray):
             return self._full_row_indices
 
         len_, d = self._source_ptr.len(), self._source_ptr.dim()
-        self._row_indices = np.arange(len_, dtype="int32")
+        self._row_indices = _np.arange(len_, dtype="int32")
         self._full_row_indices = self._row_indices.repeat(d).reshape(len_, d)
         return self._full_row_indices
 
@@ -278,15 +280,15 @@ def enforce_contiguous(array, dtype=None, asarray=False):
     -------
     contiguous_array: array-like
     """
-    if isinstance(array, np.ndarray):
+    if isinstance(array, _np.ndarray):
         if array.flags["C_CONTIGUOUS"] and (
-            dtype is None or np.dtype(dtype) is array.dtype
+            dtype is None or _np.dtype(dtype) is array.dtype
         ):
             return array
-        return np.ascontiguousarray(array, dtype=dtype)
+        return _np.ascontiguousarray(array, dtype=dtype)
 
-    if asarray and isinstance(array, (list, tuple, splinepy_core.KnotVector)):
-        return np.ascontiguousarray(array, dtype=dtype)
+    if asarray and isinstance(array, (list, tuple, _splinepy_core.KnotVector)):
+        return _np.ascontiguousarray(array, dtype=dtype)
 
     return array
 
@@ -308,11 +310,11 @@ def enforce_contiguous_values(dict_):
     dict_with_contiguous = {}
     for key, value in dict_.items():
         # most likely will be asking about np.ndarray
-        if isinstance(value, np.ndarray):
+        if isinstance(value, _np.ndarray):
             contig_value = enforce_contiguous(value)
 
         # or, list. only check if the first element is np.ndarray
-        elif isinstance(value, list) and isinstance(value[0], np.ndarray):
+        elif isinstance(value, list) and isinstance(value[0], _np.ndarray):
             contig_value = [enforce_contiguous(v) for v in value]
 
         # abandon Nones
@@ -353,25 +355,26 @@ def cartesian_product(arrays, reverse=True):
     cartesian: (n, len(arrays)) np.ndarray
     """
     n_arr = len(arrays)
-    dtype = np.result_type(*arrays)
+    dtype = _np.result_type(*arrays)
 
     # for reverse, use view of reverse ordered arrays
     if reverse:
         arrays = arrays[::-1]
 
     shape = *map(len, arrays), n_arr
-    cartesian = np.empty(shape, dtype=dtype)
+    cartesian = _np.empty(shape, dtype=dtype)
 
     # reverse order the view of output array, so that reverse
     # is again in original order, but just reversed fastest iterating dim
     _cartesian = cartesian[..., ::-1] if reverse else cartesian
 
     dim_reducing_views = (
-        *accumulate(
-            chain((_cartesian,), repeat(0, n_arr - 1)), np.ndarray.__getitem__
+        *_accumulate(
+            _chain((_cartesian,), _repeat(0, n_arr - 1)),
+            _np.ndarray.__getitem__,
         ),
     )
-    idx = slice(None), *repeat(None, n_arr - 1)
+    idx = slice(None), *_repeat(None, n_arr - 1)
     for i in range(n_arr - 1, 0, -1):
         dim_reducing_views[i][..., i] = arrays[i][idx[: n_arr - i]]
         dim_reducing_views[i - 1][1:] = dim_reducing_views[i]
@@ -380,7 +383,7 @@ def cartesian_product(arrays, reverse=True):
     return cartesian.reshape(-1, n_arr)
 
 
-class SplineDataAdaptor(SplinepyBase):
+class SplineDataAdaptor(_SplinepyBase):
     """
     Prepares data to be presentable on spline. To support both
     scalar-data and vector-data, which are representable with colors and
@@ -401,7 +404,8 @@ class SplineDataAdaptor(SplinepyBase):
 
     def __init__(self, data, locations=None, function=None):
         """ """
-        from splinepy import Multipatch, Spline
+        from splinepy import Multipatch as _Multipatch
+        from splinepy import Spline as _Spline
 
         # default
         self._user_created = True
@@ -413,7 +417,7 @@ class SplineDataAdaptor(SplinepyBase):
         self.arrow_data_only = False
 
         # is spline we know?
-        if isinstance(data, (Spline, Multipatch)):
+        if isinstance(data, (_Spline, _Multipatch)):
             self.is_spline = True
 
         # data has evaluate?
@@ -433,7 +437,7 @@ class SplineDataAdaptor(SplinepyBase):
             # set what holds true
             self.has_locations = True
             self.arrow_data_only = True
-            self.locations = np.asanyarray(locations)
+            self.locations = _np.asanyarray(locations)
 
             # if this is not a spline we know, it doesn't have a function,
             # it should:
@@ -499,7 +503,7 @@ class SplineDataAdaptor(SplinepyBase):
                     para_dim = self.data.para_dim
                 return self.function(
                     self.data,
-                    resolutions=enforce_len(resolutions, para_dim),
+                    resolutions=_enforce_len(resolutions, para_dim),
                 )
             elif self.is_spline and self.data.para_dim > 2:
                 # TODO: replace this with generalized query helpers.
@@ -538,7 +542,7 @@ class SplineDataAdaptor(SplinepyBase):
         raise RuntimeError("Something went wrong while preparing spline data.")
 
 
-class SplineData(DataHolder):
+class SplineData(_DataHolder):
     """
     Data manager for splines.
     """
@@ -649,7 +653,7 @@ class MultipatchData(SplineData):
         if "Multipatch" not in str(type(helpee).__mro__):
             raise AttributeError("Helpee is not a multipatch")
 
-        DataHolder.__init__(self, helpee)
+        _DataHolder.__init__(self, helpee)
 
     def __setitem__(self, key, value):
         """
@@ -696,7 +700,7 @@ class MultipatchData(SplineData):
         if isinstance(key, int):
             return self._helpee.fields[key]
         elif isinstance(key, str):
-            saved = DataHolder.__getitem__(self, key)  # will raise KeyError
+            saved = _DataHolder.__getitem__(self, key)  # will raise KeyError
             if isinstance(saved, int):
                 return self._helpee.fields[saved]
             elif isinstance(saved, SplineDataAdaptor):
