@@ -292,7 +292,7 @@ def _safe_array_copy(spl, array, key, coupled_key):
     numpy array and backend's control points through `ControlPointPointers`.
 
     This function checks a non-copy criteria: self assignment.
-    This tends to happen during inplace operationrs.
+    This tends to happen during inplace operations.
     For example, spline.cps += 1 becomes
     cp_ref = spline.cps; cp_ref +=1; spline.cps = cp_ref.
     In this case, we don't want to create a new core spline.
