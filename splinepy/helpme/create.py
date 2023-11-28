@@ -7,6 +7,7 @@ from splinepy.utils import log as _log
 try:
     from scipy.sparse import csr_array as _csr_array
     from scipy.sparse import linalg as _linalg
+
     has_scipy = True
 
 except ImportError as err:
@@ -306,7 +307,7 @@ def determinant_spline(spline):
     dmin <= 0 --> spline is COULD BE tangled
 
     Only works if (parameter dimension == physical dimension).
-    A definitive statement about the entanglement can only be made with 
+    A definitive statement about the entanglement can only be made with
     non-rational splines or rational splines with equal weights!
     Otherwise, the resulting spline, and therefore the entanglement check
     is just an approximation.
@@ -354,7 +355,9 @@ def determinant_spline(spline):
     # knot_vectors
     if spline.has_knot_vectors:
         for u_kv, kn_m, m in zip(
-            spline.unique_knots, spline.knot_multiplicities, multiplicity_increase
+            spline.unique_knots,
+            spline.knot_multiplicities,
+            multiplicity_increase,
         ):
             # increase knot multiplicities:
             #   @ each inner knot -> mult_inc + 1
@@ -365,7 +368,14 @@ def determinant_spline(spline):
             knot_vectors_determinant_spline.append(temp_knot_vector)
 
         # number of cpts
-        n_control_points = _np.prod([len(kvs_ds) - d_ds - 1 for kvs_ds, d_ds in zip(knot_vectors_determinant_spline, degrees_determinant_spline)])
+        n_control_points = _np.prod(
+            [
+                len(kvs_ds) - d_ds - 1
+                for kvs_ds, d_ds in zip(
+                    knot_vectors_determinant_spline, degrees_determinant_spline
+                )
+            ]
+        )
 
         # create BSpline with empty cpts for calculation
         determinant_projection = _settings.NAME_TO_TYPE["BSpline"](
@@ -379,7 +389,8 @@ def determinant_spline(spline):
         n_control_points = _np.prod(degrees_determinant_spline + 1)
         # create Bezier spline with empty cpts for calculation
         determinant_projection = _settings.NAME_TO_TYPE["Bezier"](
-            degrees=degrees_determinant_spline, control_points=_np.empty((n_control_points, 1))
+            degrees=degrees_determinant_spline,
+            control_points=_np.empty((n_control_points, 1)),
         )
 
     # get det(J) of spline at greville pts to calculate cpts of det Spline
@@ -387,9 +398,10 @@ def determinant_spline(spline):
         duplicate_tolerance=_settings.TOLERANCE
     )
     jacobian_determinants = _np.linalg.det(spline.jacobian(sample_points))
-    basis_functions_evaluated, supports = determinant_projection.basis_and_support(
-        sample_points
-    )
+    (
+        basis_functions_evaluated,
+        supports,
+    ) = determinant_projection.basis_and_support(sample_points)
 
     # build and solve system with scipy.sparse if available
     if has_scipy:
@@ -406,7 +418,9 @@ def determinant_spline(spline):
     else:
         # np.zeros is needed because np.empty gives non-zero values!
         basis_functions = _np.zeros((n_control_points, n_control_points))
-        _np.put_along_axis(basis_functions, supports, basis_functions_evaluated, axis=1)
+        _np.put_along_axis(
+            basis_functions, supports, basis_functions_evaluated, axis=1
+        )
         determinant_projection.control_points[:, 0] = _np.linalg.solve(
             basis_functions, jacobian_determinants
         )

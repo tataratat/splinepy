@@ -10,7 +10,7 @@ class GetPropertyTest(c.SplineBasedTestCase):
         for spline in zip(self.bspline_2p2d(),self.bspline_3p3d(),self.nurbs_2p2d(),self.nurbs_3p3d()):
             copy_knot_vectors = spline.knot_vectors[:]
             unique_knots = [np.unique(ckvs) for ckvs in copy_knot_vectors]
-            
+
             for uk, uk_fct  in zip(unique_knots, spline.unique_knots):
                 assert c.np.allclose(
                     uk, uk_fct
