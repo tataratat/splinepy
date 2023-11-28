@@ -305,33 +305,6 @@ class CreatorTest(c.SplineBasedTestCase):
         # After degree elevation det(J) < 0??
         nurbs_eq_w.elevate_degrees([0, 0, 1, 2])
 
-        # unequal weights:
-        nurbs_uneq_w = c.splinepy.NURBS(
-            degrees=[3, 1],
-            knot_vectors=[
-                [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
-                [0.0, 0.0, 1.0, 1.0],
-            ],
-            control_points=[
-                [0.0, 0.0],
-                [0.5, 0.0],
-                [1.0, -1.0],
-                [2.0, -3.0],
-                [2.5, -3.0],
-                [3.0, -3],
-                [5.0, 5.0],
-                [6.0, 5.0],
-                [7.0, 5.0],
-                [8.0, 5.0],
-                [9.0, 5.0],
-                [10.0, 5.0],
-            ],
-            weights=[1, 1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1, 1],
-        )
-        nurbs_uneq_w = c.splinepy.helpme.create.extruded(
-            nurbs_uneq_w, [0, 0, 3]
-        )
-
         # Splines which are not tangled
 
         for sp_i in (
@@ -363,7 +336,6 @@ class CreatorTest(c.SplineBasedTestCase):
                     np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
-
 
 if __name__ == "__main__":
     c.unittest.main()

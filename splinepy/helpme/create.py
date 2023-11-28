@@ -5,9 +5,10 @@ from splinepy import settings as _settings
 from splinepy.utils import log as _log
 
 try:
-    from scipy.sparse import csr_array, linalg
-
+    from scipy.sparse import csr_array as _csr_array
+    from scipy.sparse import linalg as _linalg
     has_scipy = True
+
 except ImportError as err:
     from gustaf.helpers.raise_if import ModuleImportRaiser
 
@@ -301,12 +302,14 @@ def determinant_spline(spline):
     """
     Creates a spline representing the projection of the jacobian determinant
 
-    Only works if (parameter dimension == physical dimension) and non-rational splines
-    or rational splines with equal weights
-    (otherwise give B-Spline approximation of spline)!
-
     dmin > 0 --> spline is not tangled
     dmin <= 0 --> spline is COULD BE tangled
+
+    Only works if (parameter dimension == physical dimension).
+    A definitive statement about the entanglement can only be made with 
+    non-rational splines or rational splines with equal weights!
+    Otherwise, the resulting spline, and therefore the entanglement check
+    is just an approximation.
 
     references:
     Mantzaflaris, A., Jüttler, B., Khoromskij, B. N., & Langer, U. (2017)
@@ -332,20 +335,13 @@ def determinant_spline(spline):
     # checks if spline is rational and if weights differ
     # otherwise NURBS can be treated like regular BSpline
 
-    if spline.is_rational and np.allclose(
+    if spline.is_rational and not _np.allclose(
         spline.weights, spline.weights.ravel()[0]
     ):
-        rational_spline = True
-        log.debug(
+        _log.debug(
             f"Spline is rational ({spline.whatami}) with unequal weights!"
-            "Determinant Spline will be calculated with all weights set to 1."
+            "Result is only an approximation."
         )
-        # save old weights
-        old_weights = spline.weights
-        # overwrite weights of spline
-        spline.weights = np.repeat([1], len(old_weights))
-    else:
-        rational_spline = False
 
     # calculate degrees of det spline
     degrees_determinant_spline = spline.degrees * spline.dim - 1
@@ -365,32 +361,32 @@ def determinant_spline(spline):
             #   @ begin & end -> mult_inc
             # since continuity at inner knots further decreases by 1
             kn_m[1:-1] += 1
-            temp_knot_vector = np.repeat(u_kv, kn_m + m)
+            temp_knot_vector = _np.repeat(u_kv, kn_m + m)
             knot_vectors_determinant_spline.append(temp_knot_vector)
 
         # number of cpts
-        n_control_points = np.prod([len(kvs_ds) - d_ds - 1 for kvs_ds, d_ds in zip(knot_vectors_determinant_spline, degrees_determinant_spline)])
+        n_control_points = _np.prod([len(kvs_ds) - d_ds - 1 for kvs_ds, d_ds in zip(knot_vectors_determinant_spline, degrees_determinant_spline)])
 
         # create BSpline with empty cpts for calculation
-        determinant_projection = settings.NAME_TO_TYPE["BSpline"](
+        determinant_projection = _settings.NAME_TO_TYPE["BSpline"](
             degrees=degrees_determinant_spline,
-            control_points=np.empty((n_control_points, 1)),
+            control_points=_np.empty((n_control_points, 1)),
             knot_vectors=knot_vectors_determinant_spline,
         )
 
     else:
         # if Bezier Spline
-        n_control_points = np.prod(degrees_determinant_spline + 1)
+        n_control_points = _np.prod(degrees_determinant_spline + 1)
         # create Bezier spline with empty cpts for calculation
-        determinant_projection = settings.NAME_TO_TYPE["Bezier"](
-            degrees=degrees_determinant_spline, control_points=np.empty((n_control_points, 1))
+        determinant_projection = _settings.NAME_TO_TYPE["Bezier"](
+            degrees=degrees_determinant_spline, control_points=_np.empty((n_control_points, 1))
         )
 
     # get det(J) of spline at greville pts to calculate cpts of det Spline
     sample_points = determinant_projection.greville_abscissae(
-        duplicate_tolerance=settings.TOLERANCE
+        duplicate_tolerance=_settings.TOLERANCE
     )
-    jacobian_determinants = np.linalg.det(spline.jacobian(sample_points))
+    jacobian_determinants = _np.linalg.det(spline.jacobian(sample_points))
     basis_functions_evaluated, supports = determinant_projection.basis_and_support(
         sample_points
     )
@@ -398,25 +394,22 @@ def determinant_spline(spline):
     # build and solve system with scipy.sparse if available
     if has_scipy:
         n_row, n_col = supports.shape
-        row_ids = np.arange(n_row).repeat(n_col)
+        row_ids = _np.arange(n_row).repeat(n_col)
         column_ids = supports.ravel()
         data = basis_functions_evaluated.ravel()
-        basis_functions = csr_array(
+        basis_functions = _csr_array(
             (data, (row_ids, column_ids)), shape=(n_row, n_row)
         )
-        determinant_projection.control_points[:, 0] = linalg.spsolve(
+        determinant_projection.control_points[:, 0] = _linalg.spsolve(
             basis_functions, jacobian_determinants
         )
     else:
-        basis_functions = np.empty((n_control_points, n_control_points))
-        np.put_along_axis(basis_functions, supports, basis_functions_evaluated, axis=1)
-        determinant_projection.control_points[:, 0] = np.linalg.solve(
+        # np.zeros is needed because np.empty gives non-zero values!
+        basis_functions = _np.zeros((n_control_points, n_control_points))
+        _np.put_along_axis(basis_functions, supports, basis_functions_evaluated, axis=1)
+        determinant_projection.control_points[:, 0] = _np.linalg.solve(
             basis_functions, jacobian_determinants
         )
-
-    # if weights were overwritten, change them to original
-    if rational_spline:
-        spline.weights = old_weights
 
     return determinant_projection
 
