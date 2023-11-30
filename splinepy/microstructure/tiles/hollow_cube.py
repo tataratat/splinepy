@@ -1,14 +1,14 @@
 import numpy as _np
 
-
 from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class Cube3D(_TileBase):
+class HollowCube(_TileBase):
     def __init__(self):
         """Simple tile - looks like a nut"""
         self._dim = 3
+        self._para_dim = 3
         self._evaluation_points = _np.array(
             [
                 [0.0, 0.5, 0.5],

@@ -1,15 +1,15 @@
 import numpy as _np
 
-
 from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class SnappyTile(_TileBase):
+class Snappy(_TileBase):
     def __init__(self):
         """Snap-through tile consisting of a thin truss and a thick truss that
         collide into each other"""
         self._dim = 2
+        self._para_dim = 2
         # Dummy point
         self._evaluation_points = _np.array([[0.5, 0.5]])
         self._n_info_per_eval_point = 1
