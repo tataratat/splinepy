@@ -2,11 +2,7 @@
 splinepy welcomes and appreciates discussions, issues and pull requests!
 
 ## Quick start
-<<<<<<< Updated upstream
-Once the repo is forked, one possible starting point would be creating a new python environments, for example, using [conda](https://docs.conda.io/en/latest/miniconda.html) with `python=3.10`
-=======
-Once the repo is forked, one possible starting point would be creating a new python environments, for example, using [conda](https://docs.conda.io/en/latest/miniconda.html) with, for example, `python=3.9`
->>>>>>> Stashed changes
+Once the repo is forked, one possible starting point would be creating a new python environments, for example, using [conda](https://docs.conda.io/en/latest/miniconda.html) with, for example, `python=3.10`
 ```bash
 conda create -n splinepyenv python=3.10
 conda activate splinepyenv
@@ -23,11 +19,8 @@ pip install -e. --config-settings=cmake.args=-DSPLINEPY_MORE=OFF --config-settin
 - no complex comphrehensions: preferably fits in a line, 2 lines max if it is totally necessary
 - use first letter abbreviations in element loops:  `for kv in knot_vectors`
 - use `i`, `j`, `k`, `l` for pure index: `for i, kv in enumerate(knot_vectors)`
-<<<<<<< Updated upstream
 - module local import with a leading underscore: `from splinepy import settings as _settings`
-=======
 - to avoid redundancy, doc strings can be copied (see, e.g., helpme module)
->>>>>>> Stashed changes
 
 ## C++ style / implementation preferences
 For c++, we've prepared a `.clang-format`, with that you can just run `clang-format`. We closely follow naming scheme suggested by [google stype guide](https://google.github.io/styleguide/cppguide.html#Naming), with a clear exception of file naming.
