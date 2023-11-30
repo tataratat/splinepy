@@ -1,12 +1,13 @@
 import numpy as _np
 
-
 from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class Ellipsvoid(_TileBase):
-    """Void in form of an ellipse set into a unit cell.
+class EllipsVoid(_TileBase):
+    """Void in form of an ellipsoid set into a unit cell.
+
+    The Ellips(v)oid :D
 
     Parametrization acts on the elipsoid's orientation as well as on its
     expansion (radii in x and y/z direction).
@@ -18,6 +19,7 @@ class Ellipsvoid(_TileBase):
 
     def __init__(self):
         self._dim = 3
+        self._para_dim = 3
         self._evaluation_points = _np.array(
             [
                 [0.5, 0.5, 0.5],
