@@ -8,10 +8,20 @@ from splinepy.utils import log as _log
 def extruded(spline, extrusion_vector=None):
     """Extrudes Splines.
 
+    Linear Extrusion of a given spline along an extrusion vector. This will
+    extend the parametric dimensionality by one. If the dimension of the
+    extrusion vector is higher than the spline's dimension, the spline will be
+    extended into the new dimension.
+
     Parameters
     ----------
     spline: Spline
+      (`self`-argument if called via extract member of a spline)
     extrusion_vector: np.ndarray
+
+    Returns
+    -------
+    extruded_spline : Spline
     """
     from splinepy.spline import Spline as _Spline
 
@@ -73,8 +83,8 @@ def revolved(
 
     Parameters
     ----------
-    spline : Spline
-      Basis-Spline to be revolved
+    spline: Spline
+      (`self`-argument if called via extract member of a spline)
     axis : np.ndarray
       Axis of revolution
     center : np.ndarray
@@ -839,3 +849,9 @@ class Creator:
 
     def parametric_view(self, *args, **kwargs):
         return parametric_view(self.spline, *args, **kwargs)
+
+
+# Use function docstrings in Extractor functions
+Creator.extruded.__doc__ = extruded.__doc__
+Creator.revolved.__doc__ = revolved.__doc__
+Creator.parametric_view.__doc__ = parametric_view.__doc__
