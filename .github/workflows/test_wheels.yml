@@ -1,12 +1,12 @@
 name: test wheel builds
 
 on:
-  pull_request_review_comment:
-    types: [created, edited]
+  pull_request:
+    types: [labeled]
 
 jobs:
   macos_wheel:
-    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_mac")
+    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-mac-test')
     runs-on: macos-latest
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
         retention-days: 1
 
   linux_wheel:
-    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_linux")
+    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-linux-test')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -59,7 +59,7 @@ jobs:
         retention-days: 1
 
   windows_wheel:
-    if: contains(github.event.comment.body, "/wheels_all") || contains(github.event.comment.body, "/wheels_windows")
+    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-windows-test')
     runs-on: windows-latest
     strategy:
       matrix:
