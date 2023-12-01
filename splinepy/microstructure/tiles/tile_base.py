@@ -68,7 +68,7 @@ class TileBase(_SplinepyBase):
         """
         if self._para_dim is None:
             raise TypeError(
-                "Inherited Tile-types need to provide _dim, see documentation."
+                "Inherited Tile-types need to provide _para_dim, see documentation."
             )
         return self._para_dim
 
