@@ -8,7 +8,7 @@ from itertools import repeat as _repeat
 
 import numpy as _np
 from gustaf.helpers.data import DataHolder as _DataHolder
-from gustaf.utils.arr import _enforce_len
+from gustaf.utils.arr import enforce_len as _enforce_len
 
 from splinepy import splinepy_core as _splinepy_core
 from splinepy._base import SplinepyBase as _SplinepyBase
@@ -559,7 +559,7 @@ class SplineDataAdaptor(_SplinepyBase):
                     para_dim = self.data.para_dim
                 return self.function(
                     self.data,
-                    resolutions=enforce_len(resolutions, para_dim),
+                    resolutions=_enforce_len(resolutions, para_dim),
                 )
             elif self.is_spline and self.data.para_dim > 2:
                 # TODO: replace this with generalized query helpers.
