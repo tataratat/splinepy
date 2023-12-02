@@ -1,14 +1,15 @@
 import numpy as _np
 
 from splinepy.bezier import Bezier as _Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
+from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class CrossTile3D(_TileBase):
+class Cross3D(_TileBase):
     def __init__(self):
         """Simple crosstile with linear-quadratic branches and a trilinear
         center spline."""
         self._dim = 3
+        self._para_dim = 3
         self._evaluation_points = _np.array(
             [
                 [0.0, 0.5, 0.5],
@@ -371,7 +372,7 @@ class CrossTile3D(_TileBase):
         parameter_sensitivities=None,
         center_expansion=1.0,
         closure=None,
-        **kwargs,  ## noqa ARG002
+        **kwargs,  # noqa ARG002
     ):
         """Create a microtile based on the parameters that describe the branch
         thicknesses.

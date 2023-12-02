@@ -97,7 +97,7 @@ generator.deformation_function = splinepy.BSpline(
 generator.tiling = [2, 2]
 generator.parameter_sensitivity_function = para_sens_function
 generator.parametrization_function = para_function
-generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
+generator.microtile = splinepy.microstructure.tiles.Cross2D()
 ms = generator.create(macro_sensitivities=True)
 len(ms.fields)
 
@@ -120,7 +120,7 @@ def foo(x):
 
 # Cube 3D without closing face
 generator = splinepy.microstructure.microstructure.Microstructure()
-generator.microtile = splinepy.microstructure.tiles.Cube3D()
+generator.microtile = splinepy.microstructure.tiles.HollowCube()
 
 generator.parametrization_function = foo
 generator.deformation_function = splinepy.Bezier(
@@ -183,7 +183,7 @@ generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [2, 0], [0, 1], [2, 1]]
 )
-generator.microtile = splinepy.microstructure.tiles.DoubleLatticeTile()
+generator.microtile = splinepy.microstructure.tiles.DoubleLattice()
 generator.tiling = [12, 6]
 generator.parametrization_function = parameter_function_double_lattice
 my_ms = generator.create(contact_length=0.4)
@@ -207,7 +207,7 @@ generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
-generator.microtile = splinepy.microstructure.tiles.NutTile2D()
+generator.microtile = splinepy.microstructure.tiles.HollowOctagon()
 generator.tiling = [10, 10]
 generator.parametrization_function = parametrization_function_nut
 my_ms = generator.create(closing_face="x", contact_length=0.4)
@@ -226,7 +226,7 @@ generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
-generator.microtile = splinepy.microstructure.tiles.CrossTile2D()
+generator.microtile = splinepy.microstructure.tiles.Cross2D()
 generator.tiling = [5, 5]
 generator.parametrization_function = parameter_function_double_lattice
 ms = generator.create(closing_face="x", center_expansion=1.3)
@@ -281,7 +281,7 @@ generator = splinepy.microstructure.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
-generator.microtile = splinepy.microstructure.tiles.CrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.Cross3D()
 generator.tiling = [2, 2, 3]
 generator.show(
     control_points=False, resolutions=2, title="3D Crosstile Microstructure"
@@ -334,7 +334,7 @@ generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 ).create.extruded(extrusion_vector=[0, 0, 1])
-generator.microtile = splinepy.microstructure.tiles.InverseCrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.InverseCross3D()
 generator.tiling = [3, 3, 5]
 generator.parametrization_function = foo
 
@@ -356,7 +356,7 @@ _, showables_inverse = generator.show(
 )
 
 # Corresponding Structure
-generator.microtile = splinepy.microstructure.tiles.CrossTile3D()
+generator.microtile = splinepy.microstructure.tiles.Cross3D()
 microstructure = generator.create(
     closing_face="z", seperator_distance=0.4, center_expansion=1.3
 )

@@ -1,14 +1,16 @@
 import numpy as _np
 
 from splinepy.bezier import Bezier as _Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
+from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class DoubleLatticeTile(_TileBase):
+class DoubleLattice(_TileBase):
     def __init__(self):
-        """Simple crosstile with linear-quadratic branches and a trilinear
-        center spline."""
+        """
+        Lattice base cell, consisting of a rectangle with two diagonals in the
+        center"""
         self._dim = 2
+        self._para_dim = 2
         self._evaluation_points = _np.array(
             [
                 [0.5, 0.5],

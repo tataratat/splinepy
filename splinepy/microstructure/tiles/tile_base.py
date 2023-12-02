@@ -54,6 +54,24 @@ class TileBase(_SplinepyBase):
             )
         return self._dim
 
+    @property
+    def para_dim(self):
+        """Returns dimensionality in parametric space of the Microtile.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        para_dim : int
+        """
+        if self._para_dim is None:
+            raise TypeError(
+                "Inherited Tile-types need to provide _para_dim, see documentation."
+            )
+        return self._para_dim
+
     def check_params(self, params):
         """Checks if the parameters have the correct format and shape
 

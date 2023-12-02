@@ -1,10 +1,10 @@
 import numpy as _np
 
 from splinepy.bezier import Bezier as _Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
+from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class Cubevoid(_TileBase):
+class CubeVoid(_TileBase):
     """Void in form of an cuboid set into a unit cell.
 
     Parametrization acts on the cuboid's orientation as well as on its
@@ -17,6 +17,7 @@ class Cubevoid(_TileBase):
 
     def __init__(self):
         self._dim = 3
+        self._para_dim = 3
         self._evaluation_points = _np.array(
             [
                 [0.5, 0.5, 0.5],
