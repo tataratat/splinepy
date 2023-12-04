@@ -3,18 +3,7 @@ from gustaf.utils import arr as _arr
 
 from splinepy import settings as _settings
 from splinepy.utils import log as _log
-
-try:
-    from scipy.sparse import csr_array as _csr_array
-    from scipy.sparse import linalg as _linalg
-
-    has_scipy = True
-
-except ImportError as err:
-    from gustaf.helpers.raise_if import ModuleImportRaiser
-
-    scipy = ModuleImportRaiser("scipy", err)
-    has_scipy = False
+from splinepy.utils.data import make_matrix as _make_matrix
 
 
 def extruded(spline, extrusion_vector=None):
@@ -318,19 +307,31 @@ def determinant_spline(spline):
 
     Parameters
     ----------
-    None
+    spline: Spline
+        (`self`-argument if called via extract member of a spline)
 
     Returns
     -------
     determinant_projection: BSpline
-      Spline which represents the jacobian determinant of the given spline object.
+      Spline which represents the jacobian determinant of the
+      given spline object.
     """
+    from splinepy.utils.data import has_scipy as _has_scipy
+
+    # choose solver (numpy/scipy)
+    if _has_scipy:
+        from scipy.sparse.linalg import spsolve as _spsolve
+
+        solving_function = _spsolve
+
+    else:
+        solving_function = _np.linalg.solve
 
     # checks if dimensions are equal.
     if spline.dim != spline.para_dim:
         raise ValueError(
-            f"Dimension of parameter space and physical space ({spline.whatami})"
-            "are not the same!"
+            "Dimension of parameter space and physical space"
+            "are not the same ({spline.whatami})!"
         )
 
     # checks if spline is rational and if weights differ
@@ -339,7 +340,7 @@ def determinant_spline(spline):
     if spline.is_rational and not _np.allclose(
         spline.weights, spline.weights.ravel()[0]
     ):
-        _log.debug(
+        _log.warning(
             f"Spline is rational ({spline.whatami}) with unequal weights!"
             "Result is only an approximation."
         )
@@ -349,11 +350,11 @@ def determinant_spline(spline):
     # calculate necessary additional knot multiplicity due to degree elevation
     multiplicity_increase = degrees_determinant_spline - spline.degrees
 
-    # initialize lists for knot vectors
-    knot_vectors_determinant_spline = []
-
     # knot_vectors
     if spline.has_knot_vectors:
+        # initialize lists for knot vectors
+        knot_vectors_determinant_spline = []
+
         for u_kv, kn_m, m in zip(
             spline.unique_knots,
             spline.knot_multiplicities,
@@ -376,54 +377,33 @@ def determinant_spline(spline):
                 )
             ]
         )
-
-        # create BSpline with empty cpts for calculation
         determinant_projection = _settings.NAME_TO_TYPE["BSpline"](
             degrees=degrees_determinant_spline,
-            control_points=_np.empty((n_control_points, 1)),
             knot_vectors=knot_vectors_determinant_spline,
+            control_points=_np.empty((n_control_points, 1)),
         )
 
     else:
         # if Bezier Spline
         n_control_points = _np.prod(degrees_determinant_spline + 1)
-        # create Bezier spline with empty cpts for calculation
         determinant_projection = _settings.NAME_TO_TYPE["Bezier"](
             degrees=degrees_determinant_spline,
             control_points=_np.empty((n_control_points, 1)),
         )
 
-    # get det(J) of spline at greville pts to calculate cpts of det Spline
-    sample_points = determinant_projection.greville_abscissae(
+    # get det(J) of spline at greville pts
+    # to calculate cpts of determinant Spline
+    sample_queries = determinant_projection.greville_abscissae(
         duplicate_tolerance=_settings.TOLERANCE
     )
-    jacobian_determinants = _np.linalg.det(spline.jacobian(sample_points))
-    (
-        basis_functions_evaluated,
-        supports,
-    ) = determinant_projection.basis_and_support(sample_points)
-
-    # build and solve system with scipy.sparse if available
-    if has_scipy:
-        n_row, n_col = supports.shape
-        row_ids = _np.arange(n_row).repeat(n_col)
-        column_ids = supports.ravel()
-        data = basis_functions_evaluated.ravel()
-        basis_functions = _csr_array(
-            (data, (row_ids, column_ids)), shape=(n_row, n_row)
-        )
-        determinant_projection.control_points[:, 0] = _linalg.spsolve(
-            basis_functions, jacobian_determinants
-        )
-    else:
-        # np.zeros is needed because np.empty gives non-zero values!
-        basis_functions = _np.zeros((n_control_points, n_control_points))
-        _np.put_along_axis(
-            basis_functions, supports, basis_functions_evaluated, axis=1
-        )
-        determinant_projection.control_points[:, 0] = _np.linalg.solve(
-            basis_functions, jacobian_determinants
-        )
+    jacobian_determinants = _np.linalg.det(spline.jacobian(sample_queries))
+    coefficient_matrix = _make_matrix(
+        *determinant_projection.basis_and_support(sample_queries),
+        n_control_points,
+    )
+    determinant_projection.control_points[:, 0] = solving_function(
+        coefficient_matrix, jacobian_determinants
+    )
 
     return determinant_projection
 
@@ -999,3 +979,4 @@ class Creator:
 Creator.extruded.__doc__ = extruded.__doc__
 Creator.revolved.__doc__ = revolved.__doc__
 Creator.parametric_view.__doc__ = parametric_view.__doc__
+Creator.determinant_spline.__doc__ = determinant_spline.__doc__

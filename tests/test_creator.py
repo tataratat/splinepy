@@ -316,9 +316,8 @@ class CreatorTest(c.SplineBasedTestCase):
             self.bspline_2p2d(),
             *self.all_3p3d_splines(),
         ):
-            rng = np.random.default_rng(12345)
             det_spl = c.splinepy.helpme.create.determinant_spline(sp_i)
-            rnd_queries = rng.random((10, sp_i.dim), "float32")
+            rnd_queries = np.random.random((10, sp_i.dim))
             self.assertTrue(
                 np.allclose(
                     det_spl.evaluate(queries=rnd_queries).ravel(),
@@ -329,7 +328,7 @@ class CreatorTest(c.SplineBasedTestCase):
         # Splines which are tangled or singular
         for sp_i in (bez_1, bsp_c1_tang, nurbs_eq_w_tang):
             det_spl = c.splinepy.helpme.create.determinant_spline(sp_i)
-            rnd_queries = rng.random((10, sp_i.dim), "float32")
+            rnd_queries = np.random.random((10, sp_i.dim))
             self.assertTrue(
                 np.allclose(
                     det_spl.evaluate(queries=rnd_queries).ravel(),
