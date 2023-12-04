@@ -1,14 +1,14 @@
-import numpy as np
+import numpy as _np
 
-from splinepy.bezier import Bezier
-from splinepy.microstructure.tiles.tilebase import TileBase
+from splinepy.bezier import Bezier as _Bezier
+from splinepy.microstructure.tiles.tilebase import TileBase as _TileBase
 
 
-class DrilledCrossBeams(TileBase):
+class DrilledCrossBeams(_TileBase):
     def __init__(self):
         """DrilledCrossBeams"""
         self._dim = 2
-        self._evaluation_points = np.array([[0.5, 0.5]])
+        self._evaluation_points = _np.array([[0.5, 0.5]])
         self._n_info_per_eval_point = 1
 
     def create_tile(
@@ -38,10 +38,11 @@ class DrilledCrossBeams(TileBase):
             self._logd(
                 "Tile request is not parametrized, setting default Pi/8"
             )
-            parameters = np.array([[np.pi / 8]])
+            parameters = _np.array([[_np.pi / 8]])
         else:
             if not (
-                np.all(parameters >= -np.pi) and np.all(parameters < np.pi)
+                _np.all(parameters >= -_np.pi * 0.5)
+                and _np.all(parameters < _np.pi * 0.5)
             ):
                 raise ValueError("The parameter must be in -Pi and Pi")
             pass
@@ -59,27 +60,27 @@ class DrilledCrossBeams(TileBase):
         for i_derivative in range(n_derivatives + 1):
             # Constant auxiliary values
             if i_derivative == 0:
-                alpha = parameters[0, 0] + np.pi / 4  # parameters.shape == [1]
+                alpha = parameters[0, 0] + _np.pi / 4
                 v_one_half = 0.5
                 v_zero = 0.0
-                r = np.sqrt(0.125)
-                s = r * np.sin(alpha)
-                c = r * np.cos(alpha)
+                r = _np.sqrt(0.125)
+                s = r * _np.sin(alpha)
+                c = r * _np.cos(alpha)
             else:
                 alpha = parameter_sensitivities[0, 0, i_derivative - 1]
                 v_one_half = 0.0
                 v_zero = 0.0
-                r = np.sqrt(0.125)
-                s = r * np.cos(alpha)
-                c = -r * np.sin(alpha)
+                r = _np.sqrt(0.125)
+                s = r * _np.cos(alpha)
+                c = -r * _np.sin(alpha)
 
             # Init return value
             spline_list = []
             # 1
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_zero],
                             [-s, -c],
@@ -91,9 +92,9 @@ class DrilledCrossBeams(TileBase):
             )
             # 2
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_zero],
                             [c, -s],
@@ -105,9 +106,9 @@ class DrilledCrossBeams(TileBase):
             )
             # 3
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_zero],
                             [s, c],
@@ -119,9 +120,9 @@ class DrilledCrossBeams(TileBase):
             )
             # 4
             spline_list.append(
-                Bezier(
+                _Bezier(
                     degrees=[2],
-                    control_points=np.array(
+                    control_points=_np.array(
                         [
                             [v_zero, v_zero],
                             [-c, s],
