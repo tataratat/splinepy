@@ -308,7 +308,6 @@ def determinant_spline(spline):
     Parameters
     ----------
     spline: Spline
-        (`self`-argument if called via extract member of a spline)
 
     Returns
     -------
