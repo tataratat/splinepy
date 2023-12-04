@@ -8,6 +8,7 @@ class DrilledCrossBeams(_TileBase):
     def __init__(self):
         """DrilledCrossBeams"""
         self._dim = 2
+        self._para_dim = 1
         self._evaluation_points = _np.array([[0.5, 0.5]])
         self._n_info_per_eval_point = 1
 
