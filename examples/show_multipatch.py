@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 box0.parametric_bounds, resolutions
             ).vertices
             return np.linalg.det(
-                np.vstack(d.jacobian(q) for d in data.patches)
+                np.vstack([d.jacobian(q) for d in data.patches])
             )
         elif on is not None:
             return np.linalg.det(data.jacobians(on))
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     generator.microtile = splinepy.microstructure.tiles.Cross2D()
     generator.tiling = [3, 2]
 
-    m = splinepy.Multipatch(generator.create(center_expansion=1.2))
+    m = generator.create(center_expansion=1.2)
     m.spline_data["detJ"] = splinepy.SplineDataAdaptor(m, function=plot_jacs)
     m.show_options["data_name"] = "detJ"
     m.show_options["lighting"] = "off"

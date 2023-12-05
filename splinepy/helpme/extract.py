@@ -166,9 +166,10 @@ def faces(
         else:
             boundaries = _Multipatch(splines=spline.extract.boundaries())
 
-        n_faces = (resolution - 1) ** 2
-        vertices = resolution**2
-        f_loc = _connec.make_quad_faces(_enforce_len(resolution, 2))
+        res = resolution if isinstance(resolution, int) else max(resolution)
+        n_faces = (res - 1) ** 2
+        vertices = res**2
+        f_loc = _connec.make_quad_faces(_enforce_len(res, 2))
         face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
 
         # Create Connectivity for Multipatches

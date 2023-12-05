@@ -8,6 +8,7 @@ from itertools import repeat as _repeat
 
 import numpy as _np
 from gustaf.helpers.data import DataHolder as _DataHolder
+from gustaf.utils.arr import enforce_len as _enforce_len
 
 from splinepy import splinepy_core as _splinepy_core
 from splinepy._base import SplinepyBase as _SplinepyBase
@@ -545,7 +546,21 @@ class SplineDataAdaptor(_SplinepyBase):
         # if resolutions is specified, this is not a location query
         if resolutions is not None:
             if self.has_function:
-                return self.function(self.data, resolutions=resolutions)
+                # enable to have a tuple of splines in the data field
+                # to enable comparisons, enforce para_dim match
+                if isinstance(self.data, tuple):
+                    para_dim = self.data[0].para_dim
+                    if any(d.para_dim != para_dim for d in self.data):
+                        raise ValueError(
+                            "All splines in the data field need to be "
+                            "of the same parametric dimension."
+                        )
+                else:
+                    para_dim = self.data.para_dim
+                return self.function(
+                    self.data,
+                    resolutions=_enforce_len(resolutions, para_dim),
+                )
             elif self.is_spline and self.data.para_dim > 2:
                 # TODO: replace this with generalized query helpers.
                 return self.data.extract.faces(

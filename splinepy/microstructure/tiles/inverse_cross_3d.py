@@ -471,7 +471,7 @@ class InverseCross3D(_TileBase):
                 )
             )
 
-            return spline_list
+            return (spline_list, None)
 
         elif closure == "z_max":
             branch_thickness = parameters.flatten()[4]
@@ -1606,5 +1606,4 @@ class InverseCross3D(_TileBase):
         spline_list.append(
             _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
         )
-
         return (spline_list, None)
