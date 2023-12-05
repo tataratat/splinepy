@@ -3,6 +3,7 @@ from gustaf.utils import arr as _arr
 
 from splinepy import settings as _settings
 from splinepy.utils import log as _log
+from splinepy.utils.data import make_matrix as _make_matrix
 
 
 def extruded(spline, extrusion_vector=None):
@@ -285,6 +286,125 @@ def from_bounds(parametric_bounds, physical_bounds):
     bspline_box.kvs = new_kvs
 
     return bspline_box
+
+
+def determinant_spline(spline):
+    """
+    Creates a spline representing the projection of the jacobian determinant
+
+    dmin > 0 --> spline is not tangled
+    dmin <= 0 --> spline is COULD BE tangled
+
+    Only works if (parameter dimension == physical dimension).
+    A definitive statement about the entanglement can only be made with
+    non-rational splines or rational splines with equal weights!
+    Otherwise, the resulting spline, and therefore the entanglement check
+    is just an approximation.
+
+    references:
+    Mantzaflaris, A., Jüttler, B., Khoromskij, B. N., & Langer, U. (2017)
+    Limkilde, A., Evgrafov, A., Gravesen, J., & Mantzaflaris, A. (2021)
+
+    Parameters
+    ----------
+    spline: Spline
+
+    Returns
+    -------
+    determinant_projection: BSpline
+      Spline which represents the jacobian determinant of the
+      given spline object.
+    """
+    from splinepy.utils.data import has_scipy as _has_scipy
+
+    # choose solver (numpy/scipy)
+    if _has_scipy:
+        from scipy.sparse.linalg import spsolve as _spsolve
+
+        solving_function = _spsolve
+
+    else:
+        solving_function = _np.linalg.solve
+
+    # checks if dimensions are equal.
+    if spline.dim != spline.para_dim:
+        raise ValueError(
+            "Dimension of parameter space and physical space"
+            "are not the same ({spline.whatami})!"
+        )
+
+    # checks if spline is rational and if weights differ
+    # otherwise NURBS can be treated like regular BSpline
+
+    if spline.is_rational and not _np.allclose(
+        spline.weights, spline.weights.ravel()[0]
+    ):
+        _log.warning(
+            f"Spline is rational ({spline.whatami}) with unequal weights!"
+            "Result is only an approximation."
+        )
+
+    # calculate degrees of det spline
+    degrees_determinant_spline = spline.degrees * spline.dim - 1
+    # calculate necessary additional knot multiplicity due to degree elevation
+    multiplicity_increase = degrees_determinant_spline - spline.degrees
+
+    # knot_vectors
+    if spline.has_knot_vectors:
+        # initialize lists for knot vectors
+        knot_vectors_determinant_spline = []
+
+        for u_kv, kn_m, m in zip(
+            spline.unique_knots,
+            spline.knot_multiplicities,
+            multiplicity_increase,
+        ):
+            # increase knot multiplicities:
+            #   @ each inner knot -> mult_inc + 1
+            #   @ begin & end -> mult_inc
+            # since continuity at inner knots further decreases by 1
+            kn_m[1:-1] += 1
+            temp_knot_vector = _np.repeat(u_kv, kn_m + m)
+            knot_vectors_determinant_spline.append(temp_knot_vector)
+
+        # number of cpts
+        n_control_points = _np.prod(
+            [
+                len(kvs_ds) - d_ds - 1
+                for kvs_ds, d_ds in zip(
+                    knot_vectors_determinant_spline, degrees_determinant_spline
+                )
+            ]
+        )
+        determinant_projection = _settings.NAME_TO_TYPE["BSpline"](
+            degrees=degrees_determinant_spline,
+            knot_vectors=knot_vectors_determinant_spline,
+            control_points=_np.empty((n_control_points, 1)),
+        )
+
+    else:
+        # if Bezier Spline
+        n_control_points = _np.prod(degrees_determinant_spline + 1)
+        determinant_projection = _settings.NAME_TO_TYPE["Bezier"](
+            degrees=degrees_determinant_spline,
+            control_points=_np.empty((n_control_points, 1)),
+        )
+
+    # get det(J) of spline at greville pts
+    # to calculate cpts of determinant Spline
+    sample_queries = determinant_projection.greville_abscissae(
+        duplicate_tolerance=_settings.TOLERANCE
+    )
+    jacobian_determinants = _np.linalg.det(spline.jacobian(sample_queries))
+    coefficient_matrix = _make_matrix(
+        *determinant_projection.basis_and_support(sample_queries),
+        n_control_points,
+    )
+    determinant_projection.control_points[:, 0] = solving_function(
+        coefficient_matrix, jacobian_determinants
+    )
+
+    return determinant_projection
 
 
 def parametric_view(spline, axes=True, conform=False):
@@ -850,8 +970,12 @@ class Creator:
     def parametric_view(self, *args, **kwargs):
         return parametric_view(self.spline, *args, **kwargs)
 
+    def determinant_spline(self, *args, **kwargs):
+        return determinant_spline(self.spline, *args, **kwargs)
+
 
 # Use function docstrings in Extractor functions
 Creator.extruded.__doc__ = extruded.__doc__
 Creator.revolved.__doc__ = revolved.__doc__
 Creator.parametric_view.__doc__ = parametric_view.__doc__
+Creator.determinant_spline.__doc__ = determinant_spline.__doc__
