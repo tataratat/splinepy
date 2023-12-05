@@ -395,7 +395,8 @@ def make_matrix(values, supports, n_cols, as_array=False):
     Create a matrix from values and supports.
 
     Used for basis functions their derivatives and everything mapped.
-    Uses scipy if available. If `as_array` is true, dense matrix (numpy) is enforced
+    Uses scipy if available. If `as_array` is true, dense matrix (numpy) is
+    enforced
 
     This matrix can be used for approximations and IGA-applications. With given
     queries :math:`\pmb{\xi}`, control points :math:`\mathbf{C}`, associated to
@@ -437,6 +438,34 @@ def make_matrix(values, supports, n_cols, as_array=False):
         matrix = _np.zeros((values.shape[0], n_cols))
         _np.put_along_axis(matrix, supports, values, axis=1)
         return matrix
+
+
+def uniform_query(bounds, resolutions):
+    """
+    Creates uniform query within the given bounds and resolutions.
+    Same as `gus.create.vertices.raster(bounds, resolution).vertices`.
+
+    Parameters
+    ----------
+    bounds: 2D array-like
+      [[lower_1, lower_2, ...], [upper_1, upper_2, ...]]
+    resolutions: 1D array-like
+      [resolution_1, resolution_2, ...]
+    """
+    # unpack bounds
+    lower_b, upper_b = bounds
+
+    if not (len(lower_b) == len(upper_b) == len(resolutions)):
+        raise ValueError(
+            "lower and upper bounds should have same len as resolutions"
+        )
+
+    # create per-dimension queries
+    queries_per_dim = []
+    for lb, ub, r in zip(lower_b, upper_b, resolutions):
+        queries_per_dim.append(_np.linspace(lb, ub, r))
+
+    return cartesian_product(queries_per_dim, reverse=True)
 
 
 class SplineDataAdaptor(_SplinepyBase):
