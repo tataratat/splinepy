@@ -36,7 +36,7 @@ def isophotes_to_direction(normal=None, interval=0.02):
     def isophotes_scalars(data, resolutions=None, on=None):
         if resolutions is not None:
             q = gus.create.vertices.raster(
-                data.knot_vector_bounds.tolist(), resolutions
+                data.parametric_bounds.tolist(), resolutions
             ).vertices
             v1 = data.derivative(q, [1, 0])
             v2 = data.derivative(q, [0, 1])
@@ -56,7 +56,7 @@ def isophotes_to_direction(normal=None, interval=0.02):
 def gaussian_curvature(data, resolutions=None, on=None):
     if resolutions is not None:
         q = gus.create.vertices.raster(
-            data.knot_vector_bounds.tolist(), resolutions
+            data.parametric_bounds.tolist(), resolutions
         ).vertices
         v1 = data.derivative(q, [1, 0])
         v2 = data.derivative(q, [0, 1])
@@ -83,7 +83,7 @@ def gaussian_curvature(data, resolutions=None, on=None):
 def mean_curvature(data, resolutions=None, on=None):
     if resolutions is not None:
         q = gus.create.vertices.raster(
-            data.knot_vector_bounds.tolist(), resolutions
+            data.parametric_bounds.tolist(), resolutions
         ).vertices
         v1 = data.derivative(q, [1, 0])
         v2 = data.derivative(q, [0, 1])
