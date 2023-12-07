@@ -60,7 +60,9 @@ if __name__ == "__main__":
                 np.vstack([d.jacobian(q) for d in data.patches])
             )
         elif on is not None:
-            return np.linalg.det(data.jacobians(on))
+            return np.linalg.det(
+                np.vstack([d.jacobian(on) for d in data.patches])
+            )
 
     # use adaptor to plot values at specific places
     # this works because multipatch's evaluate() evaluates at
