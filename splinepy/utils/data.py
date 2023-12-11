@@ -395,7 +395,8 @@ def make_matrix(values, supports, n_cols, as_array=False):
     Create a matrix from values and supports.
 
     Used for basis functions their derivatives and everything mapped.
-    Uses scipy if available. If `as_array` is true, dense matrix (numpy) is enforced
+    Uses scipy if available. If `as_array` is true, dense matrix (numpy) is
+    enforced
 
     This matrix can be used for approximations and IGA-applications. With given
     queries :math:`\pmb{\xi}`, control points :math:`\mathbf{C}`, associated to
@@ -439,11 +440,56 @@ def make_matrix(values, supports, n_cols, as_array=False):
         return matrix
 
 
+def uniform_query(bounds, resolutions):
+    """
+    Creates uniform query within the given bounds and resolutions.
+    Same as `gus.create.vertices.raster(bounds, resolution).vertices`.
+
+    Parameters
+    ----------
+    bounds: 2D array-like
+      [[lower_1, lower_2, ...], [upper_1, upper_2, ...]]
+    resolutions: 1D array-like
+      [resolution_1, resolution_2, ...]
+    """
+    # unpack bounds
+    lower_b, upper_b = bounds
+
+    if not (len(lower_b) == len(upper_b) == len(resolutions)):
+        raise ValueError(
+            "lower and upper bounds should have same len as resolutions"
+        )
+
+    # create per-dimension queries
+    queries_per_dim = []
+    for lb, ub, r in zip(lower_b, upper_b, resolutions):
+        queries_per_dim.append(_np.linspace(lb, ub, r))
+
+    return cartesian_product(queries_per_dim, reverse=True)
+
+
 class SplineDataAdaptor(_SplinepyBase):
     """
     Prepares data to be presentable on spline. To support both
     scalar-data and vector-data, which are representable with colors and
     arrows respectively, this class will prepare data accordingly.
+
+    Parameters
+    ----------
+    data: any
+      Any data that you want to plot on to the spline. If this is not a
+      spline, it requires a `function` that takes this data to create
+      appropriate values.
+    locations: 2D array-like
+      Optional. If specified, used to evaluate data at specific locations.
+      Applicable for arrow data
+    function: callable
+      Optional. A callable used to evaluate values using data at query points.
+      function(data, queries) -> values
+    parametric_bounds: 2D array-like
+      Optional. Parametric bounds of supporting spline. Required for stand-alone
+      use. Otherwise, set by helping spline. Used to compute query points for
+      resolution based sampling.
     """
 
     __slots__ = (
@@ -455,10 +501,13 @@ class SplineDataAdaptor(_SplinepyBase):
         "has_locations",
         "has_evaluate",
         "arrow_data_only",
+        "parametric_bounds",
         "_user_created",
     )
 
-    def __init__(self, data, locations=None, function=None):
+    def __init__(
+        self, data, locations=None, function=None, parametric_bounds=None
+    ):
         """ """
         from splinepy import Multipatch as _Multipatch
         from splinepy import Spline as _Spline
@@ -471,6 +520,7 @@ class SplineDataAdaptor(_SplinepyBase):
         self.has_locations = False
         self.has_evaluate = False
         self.arrow_data_only = False
+        self.parametric_bounds = parametric_bounds
 
         # is spline we know?
         if isinstance(data, (_Spline, _Multipatch)):
@@ -546,20 +596,15 @@ class SplineDataAdaptor(_SplinepyBase):
         # if resolutions is specified, this is not a location query
         if resolutions is not None:
             if self.has_function:
-                # enable to have a tuple of splines in the data field
-                # to enable comparisons, enforce para_dim match
-                if isinstance(self.data, tuple):
-                    para_dim = self.data[0].para_dim
-                    if any(d.para_dim != para_dim for d in self.data):
-                        raise ValueError(
-                            "All splines in the data field need to be "
-                            "of the same parametric dimension."
-                        )
-                else:
-                    para_dim = self.data.para_dim
+                # parametric bounds needs to be set by now.
+                queries = uniform_query(
+                    self.parametric_bounds,
+                    _enforce_len(resolutions, len(self.parametric_bounds[0])),
+                )
+                # pass to evaluate.
                 return self.function(
                     self.data,
-                    resolutions=_enforce_len(resolutions, para_dim),
+                    on=queries,
                 )
             elif self.is_spline and self.data.para_dim > 2:
                 # TODO: replace this with generalized query helpers.
@@ -631,6 +676,9 @@ class SplineData(_DataHolder):
             adapted = SplineDataAdaptor(value)  # will test usability
             adapted._user_created = False  # mark for __getitem__
             self._saved[key] = adapted
+
+        # set parametric_bounds
+        self._saved[key].parametric_bounds = self._helpee.parametric_bounds
 
     def __getitem__(self, key):
         """
@@ -724,6 +772,8 @@ class MultipatchData(SplineData):
         """
         if isinstance(value, SplineDataAdaptor):
             self._saved[key] = value
+            # set parametric_bounds of the first patch
+            value.parametric_bounds = self._helpee.patches[0].parametric_bounds
         elif "PyMultipatch" in str(type(value).__mro__):
             # get id of this field that's about to be added
             self._saved[key] = len(self._helpee.fields)

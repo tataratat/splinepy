@@ -1,14 +1,19 @@
 """Call all *.py files in the working directory.
 """
 import glob
+import itertools
+import pathlib
 import subprocess
 import sys
 
 if __name__ == "__main__":
     files_not_completed = []
-
-    for file in glob.glob("*.py"):
-        if file == "run_all_examples.py":
+    examples_root_dir = pathlib.Path(__file__).parent.absolute()
+    for file in itertools.chain(
+        glob.glob(str(examples_root_dir / "*.py")),
+        glob.glob(str(examples_root_dir / "iga/*.py")),
+    ):
+        if "run_all_examples.py" in file:
             continue
         print(f"Calling {file}")
         proc_return = subprocess.run([sys.executable, file], check=False)

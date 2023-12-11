@@ -92,18 +92,12 @@ if __name__ == "__main__":
     )
     # b.show(parametric_space=True)  # does the same
 
-    # 5. plot function that supports both resolutions and on
-    def plot_func(data, resolutions=None, on=None):
+    # 5. plot function defines how to evaluate at given parametric location
+    def plot_func(data, on):
         """
         callback to evaluate derivatives
         """
-        if resolutions is not None:
-            q = gus.create.vertices.raster(
-                [[0, 0], [1, 1]], resolutions
-            ).vertices
-            return data.derivative(q, [0, 1])
-        elif on is not None:
-            return data.derivative(on, [0, 1])
+        return data.derivative(on, [0, 1])
 
     # use adaptor to defie a data
     plot_func_data = splinepy.SplineDataAdaptor(b, function=plot_func)
@@ -165,16 +159,13 @@ if __name__ == "__main__":
     deformed.show_options["c"] = "hotpink"
 
     # define callback
-    def func(self_and_deformed, resolutions=None, on=None):
+    def func(self_and_deformed, on):
         """
         callback to sample displacements.
         """
         # unpack data
         self, deformed = self_and_deformed
-        if resolutions is not None:
-            return deformed.sample(resolutions) - self.sample(resolutions)
-        elif on is not None:
-            return deformed.evaluate(on) - self.evaluate(on)
+        return deformed.evaluate(on) - self.evaluate(on)
 
     # use adaptor - data is used as the first arg for callback
     deformed_data = splinepy.SplineDataAdaptor(
