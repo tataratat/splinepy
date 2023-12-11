@@ -12,7 +12,6 @@ a given surface based on the description in
      Morgan Kaufmann, 2001"
 """
 
-import gustaf as gus
 import numpy as np
 
 import splinepy as sp
@@ -33,16 +32,9 @@ def isophotes_to_direction(normal=None, interval=0.02):
         normal = [1, 0, 0]
     normal = normal / np.linalg.norm(normal)
 
-    def isophotes_scalars(data, resolutions=None, on=None):
-        if resolutions is not None:
-            q = gus.create.vertices.raster(
-                data.parametric_bounds.tolist(), resolutions
-            ).vertices
-            v1 = data.derivative(q, [1, 0])
-            v2 = data.derivative(q, [0, 1])
-        elif on is not None:
-            v1 = data.derivative(on, [1, 0])
-            v2 = data.derivative(on, [0, 1])
+    def isophotes_scalars(data, on):
+        v1 = data.derivative(on, [1, 0])
+        v2 = data.derivative(on, [0, 1])
         normals = np.cross(v1, v2)
         test = np.arccos(
             np.matmul(normals, normal) / np.linalg.norm(normals, axis=1)
@@ -53,22 +45,12 @@ def isophotes_to_direction(normal=None, interval=0.02):
 
 
 # Gaussian Curvature
-def gaussian_curvature(data, resolutions=None, on=None):
-    if resolutions is not None:
-        q = gus.create.vertices.raster(
-            data.parametric_bounds.tolist(), resolutions
-        ).vertices
-        v1 = data.derivative(q, [1, 0])
-        v2 = data.derivative(q, [0, 1])
-        v3 = data.derivative(q, [2, 0])
-        v4 = data.derivative(q, [0, 2])
-        v5 = data.derivative(q, [1, 1])
-    elif on is not None:
-        v1 = data.derivative(on, [1, 0])
-        v2 = data.derivative(on, [0, 1])
-        v3 = data.derivative(on, [2, 0])
-        v4 = data.derivative(on, [0, 2])
-        v5 = data.derivative(on, [1, 1])
+def gaussian_curvature(data, on):
+    v1 = data.derivative(on, [1, 0])
+    v2 = data.derivative(on, [0, 1])
+    v3 = data.derivative(on, [2, 0])
+    v4 = data.derivative(on, [0, 2])
+    v5 = data.derivative(on, [1, 1])
     # Using notation from "An introduction to NURBS historical perspective"
     normals = np.cross(v1, v2)
     A = np.einsum("ij,ij->i", normals, v3)
@@ -80,22 +62,12 @@ def gaussian_curvature(data, resolutions=None, on=None):
 
 
 # Mean Curvature
-def mean_curvature(data, resolutions=None, on=None):
-    if resolutions is not None:
-        q = gus.create.vertices.raster(
-            data.parametric_bounds.tolist(), resolutions
-        ).vertices
-        v1 = data.derivative(q, [1, 0])
-        v2 = data.derivative(q, [0, 1])
-        v3 = data.derivative(q, [2, 0])
-        v4 = data.derivative(q, [0, 2])
-        v5 = data.derivative(q, [1, 1])
-    elif on is not None:
-        v1 = data.derivative(on, [1, 0])
-        v2 = data.derivative(on, [0, 1])
-        v3 = data.derivative(on, [2, 0])
-        v4 = data.derivative(on, [0, 2])
-        v5 = data.derivative(on, [1, 1])
+def mean_curvature(data, on=None):
+    v1 = data.derivative(on, [1, 0])
+    v2 = data.derivative(on, [0, 1])
+    v3 = data.derivative(on, [2, 0])
+    v4 = data.derivative(on, [0, 2])
+    v5 = data.derivative(on, [1, 1])
     # Using notation from "An introduction to NURBS historical perspective"
     normals = np.cross(v1, v2)
     A = np.einsum("ij,ij->i", normals, v3)

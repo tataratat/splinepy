@@ -93,7 +93,7 @@ if __name__ == "__main__":
     # b.show(parametric_space=True)  # does the same
 
     # 5. plot function defines how to evaluate at given parametric location
-    def plot_func(data, on=None):
+    def plot_func(data, on):
         """
         callback to evaluate derivatives
         """
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     deformed.show_options["c"] = "hotpink"
 
     # define callback
-    def func(self_and_deformed, on=None):
+    def func(self_and_deformed, on):
         """
         callback to sample displacements.
         """

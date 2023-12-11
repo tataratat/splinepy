@@ -1,4 +1,3 @@
-import gustaf as gus
 import numpy as np
 
 import splinepy
@@ -36,33 +35,17 @@ if __name__ == "__main__":
     m.show()
 
     # plot arrow data with callback
-    def plot_eval(data, resolutions=None, on=None):
+    def plot_eval(data, on):
         """
         evaluates at given location
         """
-        if resolutions is not None:
-            q = gus.create.vertices.raster(
-                box0.parametric_bounds, resolutions
-            ).vertices
-            return data.evaluate(q)
-        elif on is not None:
-            return data.evaluate(on)
+        return data.evaluate(on)
 
-    def plot_jacs(data, resolutions=None, on=None):
+    def plot_jacs(data, on):
         """
         evaluates at given location
         """
-        if resolutions is not None:
-            q = gus.create.vertices.raster(
-                box0.parametric_bounds, resolutions
-            ).vertices
-            return np.linalg.det(
-                np.vstack([d.jacobian(q) for d in data.patches])
-            )
-        elif on is not None:
-            return np.linalg.det(
-                np.vstack([d.jacobian(on) for d in data.patches])
-            )
+        return np.linalg.det(np.vstack([d.jacobian(on) for d in data.patches]))
 
     # use adaptor to plot values at specific places
     # this works because multipatch's evaluate() evaluates at
