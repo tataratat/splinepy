@@ -154,7 +154,7 @@ class BezierOperations(c.SplineBasedTestCase):
         self.assertTrue(
             c.np.allclose(
                 bezier2.evaluate(queries) + bezier1.evaluate(queries),
-                bezier_sum.evaluate(queries)
+                bezier_sum.evaluate(queries),
             )
         )
 
@@ -180,7 +180,7 @@ class BezierOperations(c.SplineBasedTestCase):
         self.assertTrue(
             c.np.allclose(
                 bezier2.evaluate(queries) * bezier1.evaluate(queries),
-                bezier_sum.evaluate(queries)
+                bezier_sum.evaluate(queries),
             )
         )
 
@@ -190,10 +190,9 @@ class BezierOperations(c.SplineBasedTestCase):
         orders = [3, 2, 4]
         bezier = c.splinepy.Bezier(
             degrees=degrees,
-            control_points=c.np.random.random((
-                c.np.prod(c.np.array(degrees)+1),
-                3
-            ))
+            control_points=c.np.random.random(
+                (c.np.prod(c.np.array(degrees) + 1), 3)
+            ),
         )
         close_form = bezier.close_form_derivative(orders)
 
@@ -205,7 +204,31 @@ class BezierOperations(c.SplineBasedTestCase):
         self.assertTrue(
             c.np.allclose(
                 bezier.derivative(queries, orders),
-                close_form.evaluate(queries)
+                close_form.evaluate(queries),
+            )
+        )
+
+        # Repeat for rationals (low orders required, because orders square with
+        # every derivative)
+        degrees = [2, 1, 2]
+        orders = [1, 0, 1]
+        n_cps = c.np.prod(c.np.array(degrees) + 1)
+        rationals = c.splinepy.RationalBezier(
+            degrees=degrees,
+            control_points=c.np.random.random((n_cps, 3)),
+            weights=c.np.abs(c.np.random.random(n_cps)),
+        )
+        close_form = rationals.close_form_derivative(orders)
+
+        # Create queries
+        n_test_points = 100
+        para_dim = rationals.para_dim
+        queries = c.np.random.random((n_test_points, para_dim))
+
+        self.assertTrue(
+            c.np.allclose(
+                rationals.derivative(queries, orders),
+                close_form.evaluate(queries),
             )
         )
 
