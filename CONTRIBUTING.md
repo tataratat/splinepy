@@ -37,6 +37,7 @@ precommit run -a
 ## Local documentation build
 ```bash
 pip install -r docs/requirements.txt
+python3 docs/source/handle_markdown.py
 sphinx-build -b html docs/source docs/build -E -j auto
 # `-E` to ignore existing files, -j auto for parallel build (or specify number
 # of processes) you can now open `docs/build/index.html` with your browser
