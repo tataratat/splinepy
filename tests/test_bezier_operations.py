@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class ComposeSensitivitiesTest(c.SplineBasedTestCase):
+class BezierOperations(c.SplineBasedTestCase):
     """
     Test composition sensitivity, i.e., the derivative concerning the
     deformation function's control points.
@@ -131,6 +131,83 @@ class ComposeSensitivitiesTest(c.SplineBasedTestCase):
 
                 # Reset dx spline
                 bspline_dx.cps[cps, dim] -= dx
+
+    def test_sum(self):
+        # Create two splines
+        bezier1 = self.bezier_2p2d()
+        bezier2 = c.splinepy.Bezier(
+            degrees=[1, 1],
+            control_points=[
+                [0.5, 0.0],
+                [1.0, 0.5],
+                [0.0, 0.5],
+                [0.5, 1.0],
+            ],
+        )
+        bezier_sum = bezier1 + bezier2
+
+        # Create queries
+        n_test_points = 10
+        para_dim = 2
+        queries = c.np.random.random((n_test_points, para_dim))
+
+        self.assertTrue(
+            c.np.allclose(
+                bezier2.evaluate(queries) + bezier1.evaluate(queries),
+                bezier_sum.evaluate(queries)
+            )
+        )
+
+    def test_multiply(self):
+        # Create two splines
+        bezier1 = self.bezier_2p2d()
+        bezier2 = c.splinepy.Bezier(
+            degrees=[1, 1],
+            control_points=[
+                [0.0],
+                [0.5],
+                [0.5],
+                [1.0],
+            ],
+        )
+        bezier_sum = bezier1 * bezier2
+
+        # Create queries
+        n_test_points = 10
+        para_dim = 2
+        queries = c.np.random.random((n_test_points, para_dim))
+
+        self.assertTrue(
+            c.np.allclose(
+                bezier2.evaluate(queries) * bezier1.evaluate(queries),
+                bezier_sum.evaluate(queries)
+            )
+        )
+
+    def test_close_form_derivative(self):
+        # Construct a random spline
+        degrees = [5, 5, 5]
+        orders = [3, 2, 4]
+        bezier = c.splinepy.Bezier(
+            degrees=degrees,
+            control_points=c.np.random.random((
+                c.np.prod(c.np.array(degrees)+1),
+                3
+            ))
+        )
+        close_form = bezier.close_form_derivative(orders)
+
+        # Create queries
+        n_test_points = 100
+        para_dim = bezier.para_dim
+        queries = c.np.random.random((n_test_points, para_dim))
+
+        self.assertTrue(
+            c.np.allclose(
+                bezier.derivative(queries, orders),
+                close_form.evaluate(queries)
+            )
+        )
 
 
 if __name__ == "__main__":
