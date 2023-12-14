@@ -3,6 +3,7 @@ import numpy as _np
 from splinepy import settings as _settings
 from splinepy import spline as _spline
 from splinepy import splinepy_core as _splinepy_core
+from splinepy import utils as _utils
 
 
 class BezierBase(_spline.Spline):
@@ -97,6 +98,29 @@ class BezierBase(_spline.Spline):
         added = _splinepy_core.add(self, summand)
 
         return type(self)(spline=added)
+
+    def derivative_spline(self, orders):
+        r"""
+        Calculates the spline that describes the requested derivative in a
+        close-form representation of the the same spline-type.
+
+        Parameters
+        ----------
+        orders: (para_dim,) array-like
+          requested orders
+
+        Returns
+        -------
+        derivative_spline : BezierBase
+        """
+        # Ensure array-type
+        orders = _utils.data.enforce_contiguous(orders, dtype="int32")
+        # dimension compatibility checked in cpp
+        derivative_spline = _splinepy_core.derivative_spline(self, orders)
+
+        return _settings.NAME_TO_TYPE[derivative_spline.name](
+            spline=derivative_spline
+        )
 
     def compose(self, inner_function, compute_sensitivities=False):
         r"""

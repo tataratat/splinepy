@@ -607,12 +607,10 @@ RationalBezier<para_dim, dim>::SplinepyDerivativeSpline(
     const int* orders) const {
   // copy construct to start
   Base_ derived_bez{*this};
+  Derivative_ orders_{};
+  std::copy(orders, orders + para_dim, std::begin(orders_));
   // derive
-  for (std::size_t i{}; i < para_dim; ++i) {
-    for (int j{}; j < orders[i]; ++j) {
-      derived_bez = derived_bez.DerivativeWRTParametricDimension(i);
-    }
-  }
+  derived_bez = derived_bez.DerivativeWRTParametricDimension(orders_);
 
   return std::make_shared<RationalBezier<para_dim, dim>>(derived_bez);
 }

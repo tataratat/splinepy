@@ -261,3 +261,22 @@ if __name__ == "__main__":
             disc,
         ]
     )
+
+    # 9. plot derivative
+    bezier = splinepy.Bezier(
+        degrees=[3], control_points=[[0, 0], [1, 0], [1, 2], [3, 2]]
+    )
+    bezier.spline_data["deriv"] = bezier.derivative_spline([1])
+    bezier.show_options["arrow_data"] = "deriv"
+    bezier.show_options["arrow_data_on"] = np.linspace(0, 1, 7).reshape(-1, 1)
+    bezier.show_options["control_points"] = True
+    bezier.show_options["arrow_data_scale"] = 0.3
+    bezier.show_options["control_mesh"] = False
+    bezier.show_options["control_point_ids"] = False
+    splinepy.show(
+        [
+            "9. Show the derivative of the of the line as a vector plor\n"
+            "Close form derivatives can be computed for Bezier types",
+            bezier,
+        ]
+    )
