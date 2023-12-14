@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class BezierOperations(c.SplineBasedTestCase):
+class BezierOperationsTest(c.SplineBasedTestCase):
     """
     Test composition sensitivity, i.e., the derivative concerning the
     deformation function's control points.
