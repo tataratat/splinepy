@@ -266,7 +266,7 @@ if __name__ == "__main__":
     bezier = splinepy.Bezier(
         degrees=[3], control_points=[[0, 0], [1, 0], [1, 2], [3, 2]]
     )
-    bezier.spline_data["deriv"] = bezier.close_form_derivative([1])
+    bezier.spline_data["deriv"] = bezier.derivative_spline([1])
     bezier.show_options["arrow_data"] = "deriv"
     bezier.show_options["arrow_data_on"] = np.linspace(0, 1, 7).reshape(-1, 1)
     bezier.show_options["control_points"] = True

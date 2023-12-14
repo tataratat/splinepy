@@ -194,7 +194,7 @@ class BezierOperationsTest(c.SplineBasedTestCase):
                 (c.np.prod(c.np.array(degrees) + 1), 3)
             ),
         )
-        close_form = bezier.close_form_derivative(orders)
+        close_form = bezier.derivative_spline(orders)
 
         # Create queries
         n_test_points = 100
@@ -218,7 +218,7 @@ class BezierOperationsTest(c.SplineBasedTestCase):
             control_points=c.np.random.random((n_cps, 3)),
             weights=c.np.abs(c.np.random.random(n_cps)),
         )
-        close_form = rationals.close_form_derivative(orders)
+        close_form = rationals.derivative_spline(orders)
 
         # Create queries
         n_test_points = 100

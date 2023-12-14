@@ -255,7 +255,7 @@ void init_spline_extensions(py::module& m) {
         &splinepy::py::ComposeSensitivities,
         py::arg("outer"),
         py::arg("inner"));
-  m.def("close_form_derivative",
+  m.def("derivative_spline",
         &splinepy::py::DerivativeSpline,
         py::arg("spline"),
         py::arg("orders"));

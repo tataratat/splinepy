@@ -99,7 +99,7 @@ class BezierBase(_spline.Spline):
 
         return type(self)(spline=added)
 
-    def close_form_derivative(self, orders):
+    def derivative_spline(self, orders):
         r"""
         Calculates the spline that describes the requested derivative in a
         close-form representation of the the same spline-type.
@@ -111,17 +111,15 @@ class BezierBase(_spline.Spline):
 
         Returns
         -------
-        close_form_derivative : BezierBase
+        derivative_spline : BezierBase
         """
         # Ensure array-type
         orders = _utils.data.enforce_contiguous(orders, dtype="int32")
         # dimension compatibility checked in cpp
-        close_form_derivative = _splinepy_core.close_form_derivative(
-            self, orders
-        )
+        derivative_spline = _splinepy_core.derivative_spline(self, orders)
 
-        return _settings.NAME_TO_TYPE[close_form_derivative.name](
-            spline=close_form_derivative
+        return _settings.NAME_TO_TYPE[derivative_spline.name](
+            spline=derivative_spline
         )
 
     def compose(self, inner_function, compute_sensitivities=False):
