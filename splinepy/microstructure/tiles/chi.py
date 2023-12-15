@@ -4,9 +4,9 @@ from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
-class DrilledCrossBeams(_TileBase):
+class Chi(_TileBase):
     def __init__(self):
-        """DrilledCrossBeams"""
+        """Chi"""
         self._dim = 2
         self._para_dim = 1
         self._evaluation_points = _np.array([[0.5, 0.5]])
@@ -45,7 +45,7 @@ class DrilledCrossBeams(_TileBase):
                 _np.all(parameters >= -_np.pi * 0.5)
                 and _np.all(parameters < _np.pi * 0.5)
             ):
-                raise ValueError("The parameter must be in -Pi and Pi")
+                raise ValueError("The parameter must be in -Pi/2 and Pi/2")
             pass
         self.check_params(parameters)
 
