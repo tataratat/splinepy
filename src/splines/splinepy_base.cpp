@@ -571,7 +571,7 @@ std::vector<std::vector<int>> SplinepyBase::SplinepyKnotMultiplicities() const {
       "SplinepyKnotMultiplicities not implemented for",
       SplinepyWhatAmI());
   return std::vector<std::vector<int>>{};
-};
+}
 
 std::shared_ptr<SplinepyBase>
 SplinepyBase::SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
@@ -655,6 +655,6 @@ std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyDeepCopy() const {
   splinepy::utils::PrintAndThrowError("SplinepyDeepCopy is not implemented for",
                                       SplinepyWhatAmI());
   return {std::shared_ptr<SplinepyBase>{}};
-};
+}
 
 } // namespace splinepy::splines
