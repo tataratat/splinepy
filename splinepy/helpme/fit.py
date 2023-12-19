@@ -135,13 +135,16 @@ def solve_for_control_points(
         target_spline.control_points.shape[0],
     )
 
-    if interpolate_endpoints and target_spline.control_points.shape != points.shape:
+    if (
+        interpolate_endpoints
+        and target_spline.control_points.shape != points.shape
+    ):
         # reduction of matrix necessary for interpolation of endpoints
         target_spline.control_points[0] = points[0]
         # [-1] index doesn't work -> therefore exact index is used
-        target_spline.control_points[target_spline.control_points.shape[0] - 1] = points[
-            -1
-        ]
+        target_spline.control_points[
+            target_spline.control_points.shape[0] - 1
+        ] = points[-1]
 
         if target_spline.control_points.shape[0] == 2:
             # control points = endpoints
@@ -198,18 +201,19 @@ def solve_for_control_points(
 
 def fit_curve(
     points,
-    degree = None,
-    n_control_points = None,
-    knot_vector = None,
-    target_spline = None,
-    associated_queries = None,
-    centripetal = True,
-    interpolate_endpoints = True,
-    verbose_output = False,
+    degree=None,
+    n_control_points=None,
+    knot_vector=None,
+    target_spline=None,
+    associated_queries=None,
+    centripetal=True,
+    interpolate_endpoints=True,
+    verbose_output=False,
 ):
     """
     Fits a spline with given parameters through given points.
-    Spline will be interpolated if n_control_points = n_points (otherwise approximated).
+    Spline will be interpolated if n_control_points = n_points and
+    approximated if not.
 
     Parameters
     ----------
@@ -248,14 +252,16 @@ def fit_curve(
     # calculate n_points due to multiple usage
     n_points = points.shape[0]
 
-    if associated_queries is not None and (knot_vector is not None or target_spline is not None):
+    if associated_queries is not None and (
+        knot_vector is not None or target_spline is not None
+    ):
         # if associated queries are used, knot_vector must be given too!
         u_k = associated_queries
-        
+
     else:
-        u_k = parametrize_curve(points = points, 
-                                n_points = n_points, 
-                                centripetal = centripetal) 
+        u_k = parametrize_curve(
+            points=points, n_points=n_points, centripetal=centripetal
+        )
 
     # check dimension of associated queries
     if associated_queries is not None and associated_queries.shape[1] != 1:
@@ -298,15 +304,16 @@ def fit_curve(
         elif degree is None:
             if knot_vector and n_control_points is not None:
                 _log.info(
-                    "Neither degree nor target_vector was given. "
-                    "Degree was calculated with knot_vector and n_control_points."
+                    "Neither degree nor target_vector was given. Degree was "
+                    "calculated with knot_vector and n_control_points."
                 )
                 degree = len(knot_vector) - n_control_points - 1
 
             else:
                 raise ValueError(
-                    "Neither degree nor target_vector was given and n_control_points or "
-                    "knot_vector is None -> unable to calculate degree."
+                    "Neither degree nor target_vector was given "
+                    "and n_control_points or knot_vector is None "
+                    "-> unable to calculate degree."
                 )
 
         elif n_control_points is None:
@@ -318,41 +325,46 @@ def fit_curve(
                 n_control_points = len(knot_vector) - degree - 1
             else:
                 _log.warning(
-                    "Neither n_control_points nor target_vector was given and degree or "
-                    "knot_vector is None -> set n_control_points = n_points ."
+                    "Neither n_control_points nor target_vector was given "
+                    "and degree or knot_vector is None "
+                    "-> set n_control_points = n_points ."
                 )
                 n_control_points = n_points
 
         elif knot_vector is None:
             if degree >= n_control_points:
-                raise ValueError("Given degree must be lower than n_control_points!")
+                raise ValueError(
+                    "Given degree must be lower than n_control_points!"
+                )
 
             knot_vector = compute_knot_vector(
-                                        degree= degree, 
-                                        n_control_points= n_control_points, 
-                                        u_k= u_k, 
-                                        n_points= n_points
+                degree=degree,
+                n_control_points=n_control_points,
+                u_k=u_k,
+                n_points=n_points,
             )
 
         # build target_spline
         control_points = _np.empty((n_control_points, points.shape[1]))
 
         target_spline = _settings.NAME_TO_TYPE["BSpline"](
-            degrees= [degree],
-            knot_vectors= [knot_vector],
-            control_points= control_points,
+            degrees=[degree],
+            knot_vectors=[knot_vector],
+            control_points=control_points,
         )
 
     # check number of points and control points
     if n_control_points > n_points:
-        raise ValueError("Requirement (n_points >= n_control_points) not satisfied!")
+        raise ValueError(
+            "Requirement (n_points >= n_control_points) not satisfied!"
+        )
 
     # solve system for control points
     residual = solve_for_control_points(
-        points= points,
-        target_spline= target_spline,
-        queries= u_k,
-        interpolate_endpoints= interpolate_endpoints,
+        points=points,
+        target_spline=target_spline,
+        queries=u_k,
+        interpolate_endpoints=interpolate_endpoints,
     )
 
     if verbose_output:
@@ -362,7 +374,7 @@ def fit_curve(
             "control_points": target_spline.control_points,
             "points": points,
             "associated_queries": u_k,
-            "residual": residual
+            "residual": residual,
         }
 
     return target_spline, residual
