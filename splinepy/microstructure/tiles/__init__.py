@@ -5,6 +5,7 @@ Interface for tools and generators creating simple microstructures.
 
 from splinepy.microstructure.tiles import (
     armadillo,
+    chi,
     cross_2d,
     cross_3d,
     cube_void,
@@ -18,6 +19,7 @@ from splinepy.microstructure.tiles import (
     tile_base,
 )
 from splinepy.microstructure.tiles.armadillo import Armadillo
+from splinepy.microstructure.tiles.chi import Chi
 from splinepy.microstructure.tiles.cross_2d import Cross2D
 from splinepy.microstructure.tiles.cross_3d import Cross3D
 from splinepy.microstructure.tiles.cube_void import CubeVoid
@@ -34,6 +36,7 @@ from splinepy.microstructure.tiles.tile_base import TileBase
 
 __all__ = [
     "armadillo",
+    "chi",
     "cross_2d",
     "cross_3d",
     "cube_void",
@@ -46,6 +49,7 @@ __all__ = [
     "snappy",
     "tile_base",
     "Armadillo",
+    "Chi",
     "Cross2D",
     "Cross3D",
     "CubeVoid",
