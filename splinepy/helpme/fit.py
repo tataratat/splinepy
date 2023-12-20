@@ -135,6 +135,8 @@ def solve_for_control_points(
         target_spline.control_points.shape[0],
     )
 
+    points = points.copy()
+
     if (
         interpolate_endpoints
         and target_spline.control_points.shape != points.shape
@@ -301,7 +303,7 @@ def fit_curve(
             )
             n_control_points = len(knot_vector) - degree - 1
 
-        elif degree is None:
+        if degree is None:
             if knot_vector and n_control_points is not None:
                 _log.info(
                     "Neither degree nor target_vector was given. Degree was "
@@ -316,7 +318,7 @@ def fit_curve(
                     "-> unable to calculate degree."
                 )
 
-        elif n_control_points is None:
+        if n_control_points is None:
             if knot_vector is not None:
                 _log.info(
                     "n_control_points was not given and therefore calculated "
@@ -331,7 +333,7 @@ def fit_curve(
                 )
                 n_control_points = n_points
 
-        elif knot_vector is None:
+        if knot_vector is None:
             if degree >= n_control_points:
                 raise ValueError(
                     "Given degree must be lower than n_control_points!"
