@@ -29,16 +29,16 @@ if __name__ == "__main__":
     x = np.linspace(-1, 1, n_sample)
     target_points = np.vstack([x, f(x)]).T.reshape(-1, 2)
 
-    # Curve interpolation creates Bspline where the number of control points
-    # equals the sampling points
-    interpolated_curve = splinepy.BSpline.interpolate_curve(
-        target_points, degree=2
+    # fit_curve creates Bspline where the n_control_points = n_target_points
+    # if no further information is given
+    interpolated_curve, _ = splinepy.helpme.fit.fit_curve(
+        points=target_points, degree=2
     )
 
     # In curve approximation the number of control points must be chosen
     n_cps = 10
-    approximated_curve = splinepy.BSpline.approximate_curve(
-        target_points, degree=3, num_control_points=n_cps
+    approximated_curve, _ = splinepy.helpme.fit.fit_curve(
+        points=target_points, degree=3, n_control_points=n_cps
     )
     interp_errs = evaluate_approximation(interpolated_curve, target_points)
     approx_errs = evaluate_approximation(approximated_curve, target_points)
@@ -60,8 +60,8 @@ if __name__ == "__main__":
 
     # The number of control points affects the approximation error
     for n_cps in range(n_sample, 5, -5):
-        approximated_curve = splinepy.BSpline.approximate_curve(
-            target_points, degree=3, num_control_points=n_cps
+        approximated_curve, _ = splinepy.helpme.fit.fit_curve(
+            target_points, degree=3, n_control_points=n_cps
         )
 
         max_error, mean_error = evaluate_approximation(

@@ -30,8 +30,8 @@ class TestSplinepyFitting(c.unittest.TestCase):
 
         target_points = c.np.vstack((x, f(x))).T.reshape(-1, 2)
 
-        interpolation_spline = c.splinepy.BSpline.interpolate_curve(
-            target_points, degree=degree
+        interpolation_spline, _ = c.splinepy.helpme.fit.fit_curve(
+            points=target_points, degree=degree
         )
         interpolated_points = interpolation_spline.sample(
             resolutions=resolution
@@ -57,8 +57,8 @@ class TestSplinepyFitting(c.unittest.TestCase):
 
         target_points = c.np.vstack((x, f(x))).T.reshape(-1, 2)
 
-        approximated_spline = c.splinepy.BSpline.approximate_curve(
-            target_points, degree=degree, num_control_points=n_sample - 5
+        approximated_spline, _ = c.splinepy.helpme.fit.fit_curve(
+            points=target_points, degree=degree, n_control_points=n_sample - 5
         )
         approximated_points = approximated_spline.sample(resolution)
 

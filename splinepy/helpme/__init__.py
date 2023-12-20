@@ -1,12 +1,12 @@
 from splinepy.helpme import (
     create,
     extract,
+    fit,
     integrate,
     mapper,
     multi_index,
     permute,
     visualize,
-    fit,
 )
 
 __all__ = [
