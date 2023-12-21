@@ -53,6 +53,31 @@ def parametrize_curve(points, n_points, centripetal):
 
     return u_k.reshape(-1, 1)
 
+def parametrize_surface(points, size, centripetal):
+        
+        u_k = _np.zeros((size[0],1))
+
+        for l in range(size[1]):
+            u_k += parametrize_curve(
+                points=points[l * size[0] : (l + 1) * size[0]], 
+                n_points=size[0], 
+                centripetal=centripetal
+            )
+        u_k /= size[1]
+
+        v_l = _np.zeros((size[1],1))
+
+        for k in range(size[0]):
+            v_l += parametrize_curve(
+                points=points[range(k, size[0] * size[1], size[0])], 
+                n_points=size[1], 
+                centripetal=centripetal
+            )
+        v_l /= size[0]
+
+        return [u_k, v_l]
+
+
 
 def compute_knot_vector(degree, n_control_points, u_k, n_points):
     """
@@ -254,9 +279,10 @@ def fit_curve(
     # calculate n_points due to multiple usage
     n_points = points.shape[0]
 
-    if associated_queries is not None and (
-        knot_vector is not None or target_spline is not None
-    ):
+    # if associated_queries is not None and (
+    #     knot_vector is not None or target_spline is not None
+    # ):
+    if associated_queries is not None:
         # if associated queries are used, knot_vector must be given too!
         u_k = associated_queries
 
@@ -282,33 +308,33 @@ def fit_curve(
                 "and points do not match!"
             )
 
-        if degree is not None:
-            _log.warning("Overwrite degrees (target_spline given).")
+        # if degree is not None:
+        #     _log.warning("Overwrite degrees (target_spline given).")
         degree = target_spline.degrees[0]
 
-        if n_control_points is not None:
-            _log.warning("Ignore n_control_points (target_spline given).")
+        # if n_control_points is not None:
+            # _log.warning("Ignore n_control_points (target_spline given).")
         n_control_points = target_spline.control_points.shape[0]
 
-        if knot_vector is not None:
-            _log.warning("Overwrite knot_vector (target_spline given).")
+        # if knot_vector is not None:
+            # _log.warning("Overwrite knot_vector (target_spline given).")
         knot_vector = target_spline.knot_vectors[0]
 
     else:
         # sanity checks for given values
-        if degree and n_control_points and knot_vector is not None:
-            _log.warning(
-                "Problem is over specified: n_control_points will be "
-                "calculated with degree and knot_vector"
-            )
+        if degree is not None and n_control_points is not None and knot_vector is not None:
+            # _log.warning(
+            #     "Problem is over specified: n_control_points will be "
+            #     "calculated with degree and knot_vector"
+            # )
             n_control_points = len(knot_vector) - degree - 1
 
         if degree is None:
             if knot_vector and n_control_points is not None:
-                _log.info(
-                    "Neither degree nor target_vector was given. Degree was "
-                    "calculated with knot_vector and n_control_points."
-                )
+                # _log.info(
+                #     "Neither degree nor target_vector was given. Degree was "
+                #     "calculated with knot_vector and n_control_points."
+                # )
                 degree = len(knot_vector) - n_control_points - 1
 
             else:
@@ -320,17 +346,17 @@ def fit_curve(
 
         if n_control_points is None:
             if knot_vector is not None:
-                _log.info(
-                    "n_control_points was not given and therefore calculated "
-                    "with knot_vector and degree"
-                )
+                # _log.info(
+                #     "n_control_points was not given and therefore calculated "
+                #     "with knot_vector and degree"
+                # )
                 n_control_points = len(knot_vector) - degree - 1
             else:
-                _log.warning(
-                    "Neither n_control_points nor target_vector was given "
-                    "and degree or knot_vector is None "
-                    "-> set n_control_points = n_points ."
-                )
+                # _log.warning(
+                #     "Neither n_control_points nor target_vector was given "
+                #     "and degree or knot_vector is None "
+                #     "-> set n_control_points = n_points ."
+                # )
                 n_control_points = n_points
 
         if knot_vector is None:
@@ -381,6 +407,138 @@ def fit_curve(
 
     return target_spline, residual
 
+def fit_surface(
+    points,
+    size,
+    degrees=[None,None],
+    n_control_points=[None,None],
+    knot_vectors=[None,None],
+    target_splines=[None,None],
+    associated_queries=[None,None],
+    centripetal=True,
+    interpolate_endpoints=True,
+    verbose_output=False,
+):
+    
+    if target_splines != [None,None]:
+        # do something if one surface spline is given instead of 2 single splines
+        if len(target_splines) == 1:
+            if target_splines.para_dim != 2:
+                raise ValueError("If target spline is given as one spline, "
+                                "parametric dimension must be 2!")
+            original_target_spline = target_splines.copy()
+            if target_splines.has_knot_vectors:
+                if target_splines.is_rational:
+                    target_splines[0] = _settings.NAME_TO_TYPE["NURBS"](
+                        degrees=original_target_spline.degrees[0],
+                        knot_vectors=original_target_spline.knot_vectors[0],
+                        weights=original_target_spline.weights[0],
+                        control_points=original_target_spline.control_points[0],
+                    )
+                    target_splines[1] = _settings.NAME_TO_TYPE["NURBS"](
+                        degrees=original_target_spline.degrees[1],
+                        knot_vectors=original_target_spline.knot_vectors[1],
+                        weights=original_target_spline.weights[1],
+                        control_points=original_target_spline.control_points[1],
+                    )
+                else:
+                    target_splines[0] = _settings.NAME_TO_TYPE["BSpline"](
+                        degrees=original_target_spline.degrees[0],
+                        knot_vectors=original_target_spline.knot_vectors[0],
+                        control_points=original_target_spline.control_points[0],
+                    )
+                    target_splines[1] = _settings.NAME_TO_TYPE["BSpline"](
+                        degrees=original_target_spline.degrees[1],
+                        knot_vectors=original_target_spline.knot_vectors[1],
+                        control_points=original_target_spline.control_points[1],
+                    )
+            else:
+                if target_splines.is_rational:
+                    target_splines[0] = _settings.NAME_TO_TYPE["Bezier"](
+                        degrees=original_target_spline.degrees[0],
+                        control_points=original_target_spline.control_points[0],
+                    )
+                    target_splines[1] = _settings.NAME_TO_TYPE["Bezier"](
+                        degrees=original_target_spline.degrees[1],
+                        control_points=original_target_spline.control_points[1],
+                    )
+                else:
+                    target_splines[0] = _settings.NAME_TO_TYPE["RationalBezier"](
+                        degrees=original_target_spline.degrees[0],
+                        control_points=original_target_spline.control_points[0],
+                    )
+                    target_splines[1] = _settings.NAME_TO_TYPE["RationalBezier"](
+                        degrees=original_target_spline.degrees[1],
+                        control_points=original_target_spline.control_points[1],
+                    )
+
+    target_points = points
+    blank = [None, None]
+    u_k = blank
+    calculated_knot_vectors = knot_vectors
+
+    if associated_queries != blank and (knot_vectors != blank or target_splines != blank):
+        
+        u_k[0] = _np.array(associated_queries[0])
+        u_k[1] = _np.array(associated_queries[1])
+            
+        # check dimensions of queries
+        if u_k[0].shape[1] != 1 or u_k[1].shape[1]:
+            raise ValueError(
+            "Parametric dimension of target_spline "
+            "and associated_queries do not match!"
+        ) 
+
+    else:
+
+        u_k = parametrize_surface(points=target_points,
+                                size=size,
+                                centripetal=centripetal)
+
+    # curve fit for every l in v direction
+    calculated_control_points = _np.empty((n_control_points[0] * size[1], target_points.shape[1]))
+    print(n_control_points)
+    for l in range(size[1]):
+        fitted_spline, _ = fit_curve(
+            points=target_points[l * size[0] : (l + 1) * size[0]],
+            degree=degrees[0],
+            n_control_points=n_control_points[0],
+            knot_vector=calculated_knot_vectors[0],
+            target_spline=target_splines[0],
+            associated_queries=u_k[0],
+            centripetal=centripetal,
+            interpolate_endpoints=interpolate_endpoints
+        )
+        # cps in u direction (later fitted in v direction)
+        calculated_control_points[l * n_control_points[0] : (l + 1) * n_control_points[0]] = fitted_spline.control_points
+        if l == 0 and knot_vectors[0] is None:
+            calculated_knot_vectors[0] = fitted_spline.knot_vectors[0]
+    
+
+    # curve fit for every k in u direction
+    for k in range(n_control_points[0]):
+        fitted_spline, _ = fit_curve(
+            points=calculated_control_points[range(k, n_control_points[0] * size[1], n_control_points[0])],
+            degree=degrees[1],
+            n_control_points=n_control_points[1],
+            knot_vector=calculated_knot_vectors[1],
+            target_spline=target_splines[1],
+            associated_queries=u_k[1],
+            centripetal=centripetal,
+            interpolate_endpoints=interpolate_endpoints
+        )
+        calculated_control_points[range(k, n_control_points[0] * n_control_points[1], n_control_points[0])] = fitted_spline.control_points
+        if k == 0 and knot_vectors[1] is None:
+            # knot_vector = fitted_spline.knot_vectors[0]
+            calculated_knot_vectors[1] = fitted_spline.knot_vectors[0]
+            
+    fitted_spline = _settings.NAME_TO_TYPE["BSpline"](
+            degrees=degrees,
+            knot_vectors=calculated_knot_vectors,
+            control_points=calculated_control_points[:_np.prod(n_control_points)],
+        )
+        
+    return fitted_spline
 
 class Fitter:
     """
