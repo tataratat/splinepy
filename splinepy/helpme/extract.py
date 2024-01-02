@@ -7,6 +7,7 @@ from gustaf.utils import connec as _connec
 from gustaf.utils.arr import enforce_len as _enforce_len
 
 from splinepy import settings as _settings
+from splinepy.utils import log as _log
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
@@ -35,7 +36,10 @@ def edges(
 
     # Check resolution input
     if not isinstance(resolution, int):
-        raise ValueError("Resolution must be integer-type")
+        _log.debug(
+            "extract.edges - resolution must be integer-type. Taking max."
+        )
+        resolution = int(max(resolution))
 
     if spline.para_dim == 1:
         vertices = spline.sample(resolution)
