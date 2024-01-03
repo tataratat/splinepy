@@ -1457,13 +1457,17 @@ class Spline(_SplinepyBase, _core.PySpline):
 
         queries = _utils.data.enforce_contiguous(queries, dtype="float64")
 
+        # set small tolerance.
+        if tolerance is None and _settings.TOLERANCE > 1.0e-18:
+            tolerance = 1e-18
+
         verbose_info = super().proximities(
             queries=queries,
             initial_guess_sample_resolutions=_default_if_none(
                 initial_guess_sample_resolutions,
                 self.control_mesh_resolutions * 2,
             ),
-            tolerance=_default_if_none(tolerance, _settings.TOLERANCE),
+            tolerance=tolerance,
             max_iterations=max_iterations,
             aggressive_search_bounds=aggressive_search_bounds,
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
