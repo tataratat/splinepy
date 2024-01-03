@@ -1,6 +1,8 @@
+import time
+
 import gustaf as gus
 import numpy as np
-import time
+
 import splinepy
 
 if __name__ == "__main__":
@@ -34,9 +36,7 @@ if __name__ == "__main__":
     interpolated_curve_py, _ = splinepy.helpme.fit.fit_curve(
         points=target_points, degree=2
     )
-    interpolated_curve = splinepy.BSpline.interpolate_curve(
-        target_points, 2
-    )
+    interpolated_curve = splinepy.BSpline.interpolate_curve(target_points, 2)
 
     # In curve approximation the number of control points must be chosen
     n_cps = 10
@@ -48,8 +48,12 @@ if __name__ == "__main__":
     )
     interp_errs = evaluate_approximation(interpolated_curve, target_points)
     approx_errs = evaluate_approximation(approximated_curve, target_points)
-    interp_errs_py = evaluate_approximation(interpolated_curve_py, target_points)
-    approx_errs_py = evaluate_approximation(approximated_curve_py, target_points)
+    interp_errs_py = evaluate_approximation(
+        interpolated_curve_py, target_points
+    )
+    approx_errs_py = evaluate_approximation(
+        approximated_curve_py, target_points
+    )
 
     gus.show(
         [
@@ -63,8 +67,8 @@ if __name__ == "__main__":
             approximated_curve,
         ],
         [
-            f"PY: Interpolated curve \nMax. distance {interp_errs_py[0]:.5f}, "
-            f"mean distance {interp_errs_py[1]:.5f}",
+            f"PY: Interpolated curve \nMax. distance {interp_errs_py[0]:.5f},"
+            f" mean distance {interp_errs_py[1]:.5f}",
             interpolated_curve_py,
         ],
         [
@@ -116,7 +120,7 @@ if __name__ == "__main__":
         ]
         for (cps, curve, errs) in approximated_curves
     ]
-    gus.show(*gus_list_cpp,*gus_list)
+    gus.show(*gus_list_cpp, *gus_list)
 
     # 2. Surface fitting
     n_sample = [20, 20]
@@ -144,16 +148,16 @@ if __name__ == "__main__":
     print("C++: ", elapsed)
 
     t = time.time()
-    interpolated_surface_py = splinepy.helpme.fit.fit_surface(
+    interpolated_surface_py, _ = splinepy.helpme.fit.fit_surface(
         points=target_points,
         size=[n_sample[0], n_sample[1]],
         knot_vectors=interpolated_surface.knot_vectors,
         n_control_points=[n_sample[0], n_sample[1]],
-        degrees=[3,2],
+        degrees=[3, 2],
     )
     elapsed = time.time() - t
     print("Python: ", elapsed)
-    # print(np.allclose(interpolated_surface.cps ,interpolated_surface_py.cps))
+    print(np.allclose(interpolated_surface.cps, interpolated_surface_py.cps))
 
     n_cps = [int(0.75 * n_sample[0]), int(0.6 * n_sample[1])]
 
@@ -171,12 +175,12 @@ if __name__ == "__main__":
     print("C++: ", elapsed)
 
     t = time.time()
-    approximated_surface_py = splinepy.helpme.fit.fit_surface(
+    approximated_surface_py, _ = splinepy.helpme.fit.fit_surface(
         points=target_points,
         size=[n_sample[0], n_sample[1]],
         n_control_points=[n_cps[0], n_cps[1]],
-        degrees=[3,2],
-        centripetal=True
+        degrees=[3, 2],
+        centripetal=True,
     )
     elapsed = time.time() - t
     print("Python: ", elapsed)
@@ -204,12 +208,41 @@ if __name__ == "__main__":
     interpolated_surface_py.show_options["c"] = "red"
     approximated_surface_py.show_options["c"] = "red"
     gus.show(
-        [f"C++: Interpolated surface with ({n_cps_int}) CPs\n Max. Distance {max_error_int:.5f}, Mean Distance: {mean_error_int:.5f}", interpolated_surface, pts],
-        [f"PY: Interpolated surface with ({n_cps_int_py}) CPs\n Max. Distance {max_error_int_py:.5f}, Mean Distance: {mean_error_int_py:.5f}", interpolated_surface,interpolated_surface_py, pts],
-        [f"C++: Approximated surface with ({n_cps}) CPs\n Max. Distance {max_error:.5f}, Mean Distance: {mean_error:.5f}", approximated_surface, pts],
-        [f"PY: Approximated surface with ({n_cps_py}) CPs\n Max. Distance {max_error_py:.5f}, Mean Distance: {mean_error_py:.5f}", approximated_surface, approximated_surface_py, pts]
+        [
+            f"C++: Interpolated surface with ({n_cps_int}) CPs\n"
+            f"Max. Distance {max_error_int:.5f},\n"
+            f"Mean Distance: {mean_error_int:.5f}",
+            interpolated_surface,
+            pts,
+        ],
+        [
+            f"C++: Approximated surface with ({n_cps}) CPs\n"
+            f"Max. Distance {max_error:.5f},\n"
+            f"Mean Distance: {mean_error:.5f}",
+            approximated_surface,
+            pts,
+        ],
+        [
+            f"PY: Interpolated surface with ({n_cps_int_py}) CPs\n"
+            f"Max. Distance {max_error_int_py:.5f},\n"
+            f"Mean Distance: {mean_error_int_py:.5f}",
+            interpolated_surface,
+            interpolated_surface_py,
+            pts,
+        ],
+        [
+            f"PY: Approximated surface with ({n_cps_py}) CPs\n"
+            f"Max. Distance {max_error_py:.5f},\n"
+            f"Mean Distance: {mean_error_py:.5f}",
+            approximated_surface,
+            approximated_surface_py,
+            pts,
+        ],
     )
-    # print(np.allclose(approximated_surface.cps, approximated_surface_py.cps))
+    print(
+        "same cps?\n",
+        np.allclose(approximated_surface.cps, approximated_surface_py.cps),
+    )
 
     approximated_surfaces = []
     approximated_surfaces_py = []
@@ -233,12 +266,12 @@ if __name__ == "__main__":
             approximated_surface, target_points
         )
         t = time.time()
-        approximated_surface_py = splinepy.helpme.fit.fit_surface(
+        approximated_surface_py, _ = splinepy.helpme.fit.fit_surface(
             points=target_points,
-            size=[n_sample[0],n_sample[1]],
-            n_control_points=[n_sample[0] - int(r / 2),n_sample[1] - r],
-            degrees=[3,2],
-            knot_vectors=[None,None]
+            size=[n_sample[0], n_sample[1]],
+            n_control_points=[n_sample[0] - int(r / 2), n_sample[1] - r],
+            degrees=[3, 2],
+            knot_vectors=[None, None],
         )
         elapsed = time.time() - t
         print("Python: ", elapsed)
@@ -254,7 +287,10 @@ if __name__ == "__main__":
             [n_cps_py, approximated_surface_py, [max_error_py, mean_error_py]]
         )
 
-        # print(np.allclose(approximated_surface.cps, approximated_surface_py.cps))
+        print(
+            "same cps?\n",
+            np.allclose(approximated_surface.cps, approximated_surface_py.cps),
+        )
 
     gus_list = [
         [
@@ -272,4 +308,4 @@ if __name__ == "__main__":
         ]
         for (cps, surface, errs) in approximated_surfaces_py
     ]
-    gus.show(*gus_list,*gus_list_py)
+    gus.show(*gus_list, *gus_list_py)
