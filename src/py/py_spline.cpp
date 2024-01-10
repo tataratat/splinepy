@@ -886,9 +886,12 @@ void init_pyspline(py::module& m) {
               splinepy::utils::PrintAndThrowError("Invalid PySpline state.");
             }
 
+            // since we keep kwargs alive in data_, we want to
+            // set data first
+            std::shared_ptr<PySpline> spl = std::make_shared<PySpline>();
+            spl->data_ = t[1].cast<py::dict>();              // saved data
             py::kwargs properties = t[0].cast<py::kwargs>(); // init
-            PySpline spl(properties);
-            spl.data_ = t[1].cast<py::dict>(); // saved data
+            spl->NewCore(properties);
 
             return spl;
           }));
