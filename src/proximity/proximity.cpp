@@ -1,5 +1,3 @@
-#include <napf.hpp>
-
 #include "splinepy/proximity/proximity.hpp"
 #include "splinepy/splines/helpers/properties.hpp"
 #include "splinepy/utils/nthreads.hpp"
