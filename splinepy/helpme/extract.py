@@ -22,7 +22,7 @@ def edges(
     -----------
     spline: Spline/ Multipatch
       (`self`-argument if called via extract member of a spline)
-    resolution: int
+    resolution: int or list
       samples per parametric dimension
     all_knots: bool
       Switch to allow all knot-line extraction or just contour (para_dim>0)
@@ -33,11 +33,13 @@ def edges(
     """
     from splinepy import Multipatch as _Multipatch
 
-    # Check resolution input
-    if not isinstance(resolution, int):
-        raise ValueError("Resolution must be integer-type")
-
     if spline.para_dim == 1:
+        # get a single value
+        if isinstance(resolution, (_np.ndarray, tuple, list)):
+            resolution = max(resolution)
+        # ensure int
+        resolution = int(resolution)
+
         vertices = spline.sample(resolution)
         e = _connec.range_to_edges(
             (0, resolution),
@@ -53,6 +55,9 @@ def edges(
         )
 
     else:
+        # for para_dim > 1, we support array-like resolutions
+        resolution = _enforce_len(resolution, spline.para_dim)
+
         # recursion for Multipatch splines
         if isinstance(spline, _Multipatch):
             return _Edges.concat(
@@ -85,14 +90,14 @@ def edges(
                 [*range(1, i + 1)] + [0] + [*range(1 + i, spline.para_dim)]
             )
             extract_knot_queries = _cartesian_product(
-                [_np.linspace(*spline.parametric_bounds[:, i], resolution)]
+                [_np.linspace(*spline.parametric_bounds[:, i], resolution[i])]
                 + split_knots,
                 reverse=True,
             )[:, reorder_mask]
 
             # Retrieve connectivity to be repeated
             single_line_connectivity = _connec.range_to_edges(
-                (0, resolution),
+                (0, resolution[i]),
                 closed=False,
             )
 
@@ -101,7 +106,7 @@ def edges(
                     vertices=spline.evaluate(extract_knot_queries),
                     edges=_np.vstack(
                         [
-                            single_line_connectivity + resolution * j
+                            single_line_connectivity + resolution[i] * j
                             for j in range(n_knot_lines)
                         ]
                     ),
@@ -199,7 +204,7 @@ def volumes(spline, resolution, watertight=False):
     -----------
     spline: Spline / Multipatch
       (`self`-argument if called via extract member of a spline)
-    resolution: int
+    resolution: int or list
       Sample resolution
     watertight : bool
       Return watertight mesh
