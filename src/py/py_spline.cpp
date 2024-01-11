@@ -12,6 +12,7 @@
 #include "splinepy/splines/nurbs.hpp"
 #include "splinepy/splines/rational_bezier.hpp"
 #include "splinepy/utils/grid_points.hpp"
+#include "splinepy/utils/nthreads.hpp"
 
 namespace splinepy::py {
 
