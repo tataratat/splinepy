@@ -435,7 +435,7 @@ py::array_t<double> PySpline::Derivative(py::array_t<double> queries,
   // process input
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-  int n_orders;
+  int n_orders{};
   if (CheckPyArraySize(orders, para_dim_, false)) {
     n_orders = 1;
   } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
@@ -558,7 +558,7 @@ py::array_t<double> PySpline::BasisDerivative(py::array_t<double> queries,
                                               int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-  int n_orders;
+  int n_orders{};
   if (CheckPyArraySize(orders, para_dim_, false)) {
     n_orders = 1;
   } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
@@ -604,7 +604,7 @@ py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
                                               int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-  int n_orders;
+  int n_orders{};
   if (CheckPyArraySize(orders, para_dim_, false)) {
     n_orders = 1;
   } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
