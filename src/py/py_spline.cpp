@@ -435,51 +435,43 @@ py::array_t<double> PySpline::Derivative(py::array_t<double> queries,
   // process input
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-  int constant_orders_factor = 0;
-  if (!CheckPyArraySize(orders, para_dim_, false)) {
-    if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
-      splinepy::utils::PrintAndThrowError(
-          "Derivative-query-orders (orders) must either have same size as",
-          "spline's parametric dimension or same shape as queries.",
-          "Expected: size{",
-          para_dim_,
-          "} or shape{",
-          n_queries,
-          ",",
-          para_dim_,
-          "}",
-          "Given: size{",
-          orders.size(),
-          "}, approx. shape {(size / para_dim), para_dim} = {",
-          orders.size() / para_dim_,
-          ",",
-          para_dim_,
-          "}");
-    } else {
-      // orders shape matches query shape.
-      constant_orders_factor = 1;
-    }
+  int n_orders;
+  if (CheckPyArraySize(orders, para_dim_, false)) {
+    n_orders = 1;
+  } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
+    n_orders = orders.shape(0);
+  } else {
+    splinepy::utils::PrintAndThrowError(
+        "Derivative-query-orders must be either have same size as para_dim",
+        "or (n, para_dim) shape.");
   }
 
   // prepare output
-  py::array_t<double> derived(n_queries * dim_);
+  py::array_t<double> derived({n_queries * n_orders, dim_});
   double* derived_ptr = static_cast<double*>(derived.request().ptr);
 
   // prepare lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
+
+  const int out_stride0 = dim_ * n_orders;
+  const int out_stride1 = dim_;
   auto derive = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
-      Core()->SplinepyDerivative(
-          &queries_ptr[i * para_dim_],
-          &orders_ptr[constant_orders_factor * i * para_dim_],
-          &derived_ptr[i * dim_]);
+      for (int j{}; j < n_orders; ++j) {
+        Core()->SplinepyDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[j * para_dim_],
+            &derived_ptr[i * out_stride0 + j * out_stride1]);
+      }
     }
   };
 
   splinepy::utils::NThreadExecution(derive, n_queries, nthreads);
 
-  derived.resize({n_queries, dim_});
+  if (n_orders > 1) {
+    derived.resize({n_queries, n_orders, dim_});
+  }
   return derived;
 }
 
@@ -566,50 +558,43 @@ py::array_t<double> PySpline::BasisDerivative(py::array_t<double> queries,
                                               int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-
-  int constant_orders_factor = 0;
-  if (!CheckPyArraySize(orders, para_dim_, false)) {
-    if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
-      splinepy::utils::PrintAndThrowError(
-          "Derivative-query-orders (orders) must either have same size as",
-          "spline's parametric dimension or same shape as queries.",
-          "Expected: size{",
-          para_dim_,
-          "} or shape{",
-          n_queries,
-          ",",
-          para_dim_,
-          "}",
-          "Given: size{",
-          orders.size(),
-          "}, approx. shape {(size / para_dim), para_dim} = {",
-          orders.size() / para_dim_,
-          ",",
-          para_dim_,
-          "}");
-    } else {
-      constant_orders_factor = 1;
-    }
+  int n_orders;
+  if (CheckPyArraySize(orders, para_dim_, false)) {
+    n_orders = 1;
+  } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
+    n_orders = orders.shape(0);
+  } else {
+    splinepy::utils::PrintAndThrowError(
+        "Derivative-query-orders must be either have same size as para_dim",
+        "or (n, para_dim) shape.");
   }
 
   // prepare results
   const int n_support = Core()->SplinepyNumberOfSupports();
-  py::array_t<double> basis_der({n_queries, n_support});
+  py::array_t<double> basis_der({n_queries * n_orders, n_support});
 
   // prepare_lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
   double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
+  const int out_stride0 = n_support * n_orders;
+  const int out_stride1 = n_support;
   auto basis_derivative = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
-      Core()->SplinepyBasisDerivative(
-          &queries_ptr[i * para_dim_],
-          &orders_ptr[constant_orders_factor * i * para_dim_],
-          &basis_der_ptr[i * n_support]);
+      for (int j{}; j < n_orders; ++j) {
+        Core()->SplinepyBasisDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[j * para_dim_],
+            &basis_der_ptr[i * out_stride0 + j * out_stride1]);
+      }
     }
   };
 
   splinepy::utils::NThreadExecution(basis_derivative, n_queries, nthreads);
+
+  if (n_orders > 1) {
+    basis_der.resize({n_queries, n_orders, n_support});
+  }
 
   return basis_der;
 }
@@ -619,56 +604,51 @@ py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
                                               int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
-
-  int constant_orders_factor = 0;
-  if (!CheckPyArraySize(orders, para_dim_, false)) {
-    if (!CheckPyArrayShape(orders, {n_queries, para_dim_}, false)) {
-      splinepy::utils::PrintAndThrowError(
-          "Derivative-query-orders (orders) must either have same size as",
-          "spline's parametric dimension or same shape as queries.",
-          "Expected: size{",
-          para_dim_,
-          "} or shape{",
-          n_queries,
-          ",",
-          para_dim_,
-          "}",
-          "Given: size{",
-          orders.size(),
-          "}, approx. shape {(size / para_dim), para_dim} = {",
-          orders.size() / para_dim_,
-          ",",
-          para_dim_,
-          "}");
-    } else {
-      constant_orders_factor = 1;
-    }
+  int n_orders;
+  if (CheckPyArraySize(orders, para_dim_, false)) {
+    n_orders = 1;
+  } else if (CheckPyArrayShape(orders, {-1, para_dim_}, false)) {
+    n_orders = orders.shape(0);
+  } else {
+    splinepy::utils::PrintAndThrowError(
+        "Derivative-query-orders must be either have same size as para_dim",
+        "or (n, para_dim) shape.");
   }
 
   // prepare results
   const int n_support = Core()->SplinepyNumberOfSupports();
-  py::array_t<double> basis_der(n_queries * n_support);
-  py::array_t<int> support(n_queries * n_support);
+  py::array_t<double> basis_der({n_queries * n_orders, n_support});
+  py::array_t<int> support({n_queries, n_support});
 
   // prepare_lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
   int* orders_ptr = static_cast<int*>(orders.request().ptr);
   double* basis_der_ptr = static_cast<double*>(basis_der.request().ptr);
   int* support_ptr = static_cast<int*>(support.request().ptr);
+
+  const int out_stride0 = n_support * n_orders;
+  const int out_stride1 = n_support;
+
   auto basis_der_support = [&](const int begin, const int end, int) {
     for (int i{begin}; i < end; ++i) {
-      Core()->SplinepyBasisDerivativeAndSupport(
-          &queries_ptr[i * para_dim_],
-          &orders_ptr[constant_orders_factor * i * para_dim_],
-          &basis_der_ptr[i * n_support],
-          &support_ptr[i * n_support]);
+      // first fill ders
+      for (int j{}; j < n_orders; ++j) {
+        Core()->SplinepyBasisDerivative(
+            &queries_ptr[i * para_dim_],
+            &orders_ptr[j * para_dim_],
+            &basis_der_ptr[i * out_stride0 + j * out_stride1]);
+      }
+      // then supports
+      Core()->SplinepySupport(&queries_ptr[i * para_dim_],
+                              &support_ptr[i * n_support]);
     }
   };
 
   splinepy::utils::NThreadExecution(basis_der_support, n_queries, nthreads);
 
-  basis_der.resize({n_queries, n_support});
-  support.resize({n_queries, n_support});
+  if (n_orders > 1) {
+    basis_der.resize({n_queries, n_orders, n_support});
+  }
 
   return py::make_tuple(basis_der, support);
 }
