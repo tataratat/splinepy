@@ -1,8 +1,5 @@
 # create splinepy target - enables cpp standalone use define srcs
 set(SPLINEPY_SRCS
-    ${PROJECT_SOURCE_DIR}/src/fitting/fitting.cpp
-    ${PROJECT_SOURCE_DIR}/src/fitting/utils.cpp
-    ${PROJECT_SOURCE_DIR}/src/fitting/lu_solve.cpp
     ${PROJECT_SOURCE_DIR}/src/proximity/proximity.cpp
     ${PROJECT_SOURCE_DIR}/src/utils/coordinate_pointers.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/helpers/extract.cpp

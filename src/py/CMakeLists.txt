@@ -1,7 +1,6 @@
 # reader, export helper, and python module
 set(PYSPLINEPY_SRCS
     py_coordinate_pointers.cpp
-    py_fitting.cpp
     py_knot_insertion_matrix.cpp
     py_knot_vector.cpp
     py_multipatch.cpp
