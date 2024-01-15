@@ -1,15 +1,20 @@
 import numpy as _np
-import scipy as _scipy
 
 from splinepy import settings as _settings
 from splinepy.utils import log as _log
 from splinepy.utils.data import has_scipy as _has_scipy
 from splinepy.utils.data import make_matrix as _make_matrix
 
+if _has_scipy:
+    from scipy.sparse.linalg import spsolve as _spsolve
+
+    # from scipy.sparse.linalg import lsqr as _lsqr
+
 
 def parametrize_curve(points, n_points, centripetal):
     """
-    Parametrizes the given points to be used in interpolation/approximation.
+    Parametrizes given points to be used in interpolation/approximation.
+    Values are then used to build adequate knot vectors.
 
     Parameters
     ----------
@@ -47,13 +52,14 @@ def parametrize_curve(points, n_points, centripetal):
 def parametrize_surface(points, size, centripetal):
     """
     Parametrizes the given points to be used in interpolation/approximation.
+    Values are then used to build adequate knot vectors.
 
     Parameters
     ----------
     points: (m + 1 x dim) array
         points to be interpolated/approximated
 
-    size: (2 x 1) array
+    size: (2,) array-like
         number of points in u and v direction
 
     centripetal: bool
@@ -96,7 +102,7 @@ def parametrize_surface(points, size, centripetal):
 
 def compute_knot_vector(degree, n_control_points, u_k, n_points):
     """
-    Computes the knot_vector for a spline interpolation/approximation.
+    Computes the knot_vector for a spline.
 
     Parameters
     ----------
@@ -106,7 +112,7 @@ def compute_knot_vector(degree, n_control_points, u_k, n_points):
     n_control_points: int
         number of control points
 
-    u_k: (n x 1) array
+    u_k: (n x 1) array-like
         array containing parametrization values
 
     n_points: int
@@ -144,14 +150,14 @@ def compute_knot_vector(degree, n_control_points, u_k, n_points):
 
 
 def solve_for_control_points(
-    points, target_spline, queries, interpolate_endpoints
+    target_points, target_spline, queries, interpolate_endpoints
 ):
     """
     Builds and solves the system to calculate control points.
 
     Parameters
     ----------
-    points: (m + 1 x dim) array
+    target_points: (m + 1 x dim) array
         points to be interpolated/approximated
 
     target_spline: spline
@@ -173,7 +179,7 @@ def solve_for_control_points(
         *target_spline.basis_and_support(queries),
         target_spline.control_points.shape[0],
     )
-    points = points.copy()
+    points = target_points.copy()
 
     if (
         interpolate_endpoints
@@ -181,14 +187,16 @@ def solve_for_control_points(
     ):
         # reduction of matrix necessary for interpolation of endpoints
         target_spline.control_points[0] = points[0]
-        # [-1] index doesn't work -> therefore exact index is used
+        # [-1] index doesn't work -> therefore actual index is used
         target_spline.control_points[
             target_spline.control_points.shape[0] - 1
         ] = points[-1]
 
         if target_spline.control_points.shape[0] == 2:
             # control points = endpoints
-            residual = 0
+            residual = _np.linalg.norm(
+                coefficient_matrix @ target_spline.control_points - points
+            )
         elif _has_scipy:
             # move known values to RHS
             points[1:-1, :] += (
@@ -198,23 +206,20 @@ def solve_for_control_points(
 
             # solve system A^TAx=A^Tb
             at = coefficient_matrix[1:-1, 1:-1].transpose(copy=True)
-            target_spline.control_points[1:-1] = _scipy.sparse.linalg.spsolve(
+            target_spline.control_points[1:-1] = _spsolve(
                 at @ coefficient_matrix[1:-1, 1:-1], at @ points[1:-1]
-            )
-            residual = _np.linalg.norm(
-                coefficient_matrix @ target_spline.control_points - points
             )
 
             # alternative using lsqr
 
             # for i in range(0, points.shape[1]):
             #     (
-            #         target_spline.control_points[1:-1, i],
-            #         _,
-            #         _,
-            #         residual[i],
-            #     ) = _lsqr(coefficient_matrix[1:-1, 1:-1], points[1:-1, i])[:4]
+            #         target_spline.control_points[1:-1, i]
+            #     ) = _lsqr(coefficient_matrix[1:-1, 1:-1], points[1:-1, i])[0]
 
+            residual = _np.linalg.norm(
+                coefficient_matrix @ target_spline.control_points - points
+            )
         else:
             # move known values to RHS
             points[1:-1, :] += (
@@ -245,11 +250,8 @@ def solve_for_control_points(
     # interpolation or approximation with original system
     elif _has_scipy:
         at = coefficient_matrix.transpose(copy=True)
-        target_spline.control_points = _scipy.sparse.linalg.spsolve(
+        target_spline.control_points = _spsolve(
             at @ coefficient_matrix, at @ points
-        )
-        residual = _np.linalg.norm(
-            coefficient_matrix @ target_spline.control_points - points
         )
 
         # alternative using lsqr
@@ -258,6 +260,10 @@ def solve_for_control_points(
         #     target_spline.control_points[:, i], _, _, residual[i] = _lsqr(
         #         coefficient_matrix, points[:, i]
         #     )[:4]
+
+        residual = _np.linalg.norm(
+            coefficient_matrix @ target_spline.control_points - points
+        )
 
     else:
         target_spline.control_points, residual = _np.linalg.lstsq(
@@ -449,7 +455,7 @@ def fit_curve(
 
     # solve system for control points
     residual = solve_for_control_points(
-        points=points,
+        target_points=points,
         target_spline=target_spline,
         queries=u_k,
         interpolate_endpoints=interpolate_endpoints,
