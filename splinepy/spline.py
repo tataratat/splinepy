@@ -1198,12 +1198,13 @@ class Spline(_SplinepyBase, _core.PySpline):
         Parameters
         -----------
         queries: (n, para_dim) array-like
-        orders: (para_dim,) or (n, para_dim) array-like
+        orders: (para_dim,) or (m, para_dim) array-like
         nthreads: int
 
         Returns
         --------
-        results: (n, dim) np.ndarray
+        results: (n, m, dim) np.ndarray
+          Iff m == 1, it will have (n, dim) shape.
         """
         self._logd("Evaluating derivatives of the spline")
 
@@ -1337,12 +1338,13 @@ class Spline(_SplinepyBase, _core.PySpline):
         Parameters
         ----------
         queries: (n, para_dim) array-like
-        orders: (para_dim,) or (n, para_dim) array-like
+        orders: (para_dim,) or (m, para_dim) array-like
         nthreads: int
 
         Returns
         --------
-        basis_derivatives: (n, prod(degrees + 1)) np.ndarray
+        basis_derivatives: (n, m, prod(degrees + 1)) np.ndarray
+          Iff m == 1, it will have (n, prod(degrees + 1)) shape.
         """
         self._logd("Evaluating basis function derivatives")
         queries = _utils.data.enforce_contiguous(
@@ -1369,12 +1371,13 @@ class Spline(_SplinepyBase, _core.PySpline):
         Parameters
         ----------
         queries: (n, para_dim) array-like
-        orders: (para_dim,) or (n, para_dim) array-like
+        orders: (para_dim,) or (m, para_dim) array-like
         nthreads: int
 
         Returns
         --------
-        basis_derivatives: (n, prod(degrees + 1)) np.ndarray
+        basis_derivatives: (n, m, prod(degrees + 1)) np.ndarray
+          Iff m == 1, it will have (n, prod(degrees + 1)) shape.
         supports: (n, prod(degrees + 1)) np.ndarray
         """
         self._logd("Evaluating basis function derivatives")
