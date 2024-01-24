@@ -590,6 +590,69 @@ class TestSplinepyEvaluation(c.SplineBasedTestCase):
                 )
             )
 
+    def test_multiple_derivative_queries(self):
+        """Test cartesian product queries of parametric coordinates and orders"""
+        p_coord = {2: c.np.random.rand(10, 2), 3: c.np.random.rand(10, 3)}
+        a = c.np.array  # shortcut
+        orders = {
+            2: c.splinepy.utils.data.cartesian_product(
+                [a([0, 1, 2]), a([0, 1, 2])]
+            ),
+            3: c.splinepy.utils.data.cartesian_product(
+                [a([0, 1, 2]), a([0, 1, 2]), a([0, 1, 2])]
+            ),
+        }
+        jac_transpose_orders = {2: c.np.eye(2), 3: c.np.eye(3)}
+
+        for spline in [*self.all_2p2d_splines(), *self.all_3p3d_splines()]:
+            pd = spline.para_dim
+            qs = p_coord[pd]
+            jto = jac_transpose_orders[pd]
+            os = orders[pd]
+
+            # multiple queries
+            multi0 = spline.derivative(qs, os)
+            multi1 = spline.basis_derivative(qs, os)
+            multi2, multi2_support = spline.basis_derivative_and_support(
+                qs, os
+            )
+
+            # as well as jacobian transposed queries
+            # however, we transpose results to enable direct comparison
+            multi_jac = spline.derivative(qs, jto).transpose(0, 2, 1)
+            single_jac = spline.jacobian(qs)
+
+            # multiple single evaluations
+            single0 = []
+            single1 = []
+            single2 = []
+            single2_support = []
+            # loop in order of the visit
+            for q in qs:
+                for o in os:
+                    single0.append(spline.derivative([q], o))
+                    single1.append(spline.basis_derivative([q], o))
+                    s2, s2_s = spline.basis_derivative_and_support([q], o)
+                    single2.append(s2)
+                    single2_support.append(s2_s)
+
+            # compare and see if they match
+            # multi queries will return
+            # (n_queries, n_orders, dim or n_support) shape
+            # for comparison, reshape. we could also ravel both, alternatively.
+            dim = multi0.shape[-1]
+            assert c.np.allclose(multi0.reshape(-1, dim), c.np.vstack(single0))
+            sup = multi1.shape[-1]
+            assert c.np.allclose(multi1.reshape(-1, sup), c.np.vstack(single1))
+            assert c.np.allclose(multi2.reshape(-1, sup), c.np.vstack(single2))
+            assert (
+                multi2_support
+                == a(single2_support).reshape(-1, multi2_support.shape[-1])[
+                    :: len(os)
+                ]
+            ).all()
+            assert c.np.allclose(multi_jac, single_jac)
+
 
 if __name__ == "__main__":
     c.unittest.main()
