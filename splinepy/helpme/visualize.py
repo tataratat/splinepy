@@ -15,7 +15,7 @@ _vedo_spline_common_options = (
         "knot_lw",
         "Line width of knots. Number of pixels. "
         "Applicable to para_dim > 1.",
-        (int,),
+        (float, float),
     ),
     _options.Option(
         "vedo",
@@ -70,7 +70,7 @@ _vedo_spline_common_options = (
         "vedo",
         "control_mesh_lw",
         "Line width of control mesh. Number of pixels",
-        (int,),
+        (float, int),
     ),
     _options.Option(
         "vedo",
