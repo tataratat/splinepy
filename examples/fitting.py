@@ -32,13 +32,13 @@ if __name__ == "__main__":
 
     # fit_curve creates Bspline where the n_control_points = n_target_points
     # if no further information is given
-    interpolated_curve, _ = splinepy.helpme.fit.fit_curve(
+    interpolated_curve, _ = splinepy.helpme.fit.curve(
         points=target_points, degree=2
     )
 
     # In curve approximation the number of control points must be chosen
     n_cps = 10
-    approximated_curve, _ = splinepy.helpme.fit.fit_curve(
+    approximated_curve, _ = splinepy.helpme.fit.curve(
         points=target_points, degree=3, n_control_points=n_cps
     )
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # The number of control points affects the approximation error
     for n_cps in range(n_sample, 5, -5):
-        approximated_curve, _ = splinepy.helpme.fit.fit_curve(
+        approximated_curve, _ = splinepy.helpme.fit.curve(
             target_points, degree=3, n_control_points=n_cps
         )
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         (xx.flatten(), yy.flatten(), h(xx, yy).flatten())
     ).T
 
-    interpolated_surface, _ = splinepy.helpme.fit.fit_surface(
+    interpolated_surface, _ = splinepy.helpme.fit.surface(
         points=target_points,
         size=[n_sample[0], n_sample[1]],
         n_control_points=[n_sample[0], n_sample[1]],
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     n_cps = [int(0.75 * n_sample[0]), int(0.6 * n_sample[1])]
 
-    approximated_surface, _ = splinepy.helpme.fit.fit_surface(
+    approximated_surface, _ = splinepy.helpme.fit.surface(
         points=target_points,
         size=[n_sample[0], n_sample[1]],
         n_control_points=[n_cps[0], n_cps[1]],
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     approximated_surfaces = []
     # The approximation error changes with the number of control points
     for r in range(0, min(n_sample) - 2, 5):
-        approximated_surface, _ = splinepy.helpme.fit.fit_surface(
+        approximated_surface, _ = splinepy.helpme.fit.surface(
             points=target_points,
             size=[n_sample[0], n_sample[1]],
             n_control_points=[n_sample[0] - int(r / 2), n_sample[1] - r],

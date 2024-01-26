@@ -11,9 +11,9 @@ if _has_scipy:
     # from scipy.sparse.linalg import lsqr as _lsqr
 
 
-def parametrize_curve(points, n_points, centripetal):
+def parametrise(points, size, centripetal):
     """
-    Parametrizes given points to be used in interpolation/approximation.
+    parametrises given points to be used in interpolation/approximation.
     Values are then used to build adequate knot vectors.
 
     Parameters
@@ -21,83 +21,75 @@ def parametrize_curve(points, n_points, centripetal):
     points: (m + 1 x dim) array
         points to be interpolated/approximated
 
-    n_points: int
-        number of points
+    size: array-like
+        number of points per parametric dimension
 
     centripetal: bool
-        if True -> centripetal parametrization will be used
+        if True -> centripetal parametrisation will be used
 
     Returns
     -------
-    u_k: (n x 1) array
-        array containing parametrization values
+    parametric_coordinates: array-like
+        array containing parametrisation values per parametric dimension
     """
-    u_k = _np.empty((n_points, 1))
 
-    chord_lengths = _np.linalg.norm(_np.diff(points, axis=0), axis=1)
+    def parametrise_line(points, n_points, centripetal):
+        u_k = _np.empty((n_points, 1))
 
-    if centripetal:
-        chord_lengths = _np.sqrt(chord_lengths)
+        chord_lengths = _np.linalg.norm(_np.diff(points, axis=0), axis=1)
 
-    total_chord_length = _np.sum(chord_lengths)
+        if centripetal:
+            chord_lengths = _np.sqrt(chord_lengths)
 
-    chord_lengths = chord_lengths / total_chord_length
-    u_k[0] = 0.0
-    u_k[-1] = 1.0
+        total_chord_length = _np.sum(chord_lengths)
 
-    u_k[1:-1] = _np.cumsum(chord_lengths[:-1]).reshape(-1, 1)
-    return u_k.reshape(-1, 1)
+        chord_lengths = chord_lengths / total_chord_length
+        u_k[0] = 0.0
+        u_k[-1] = 1.0
 
-
-def parametrize_surface(points, size, centripetal):
-    """
-    Parametrizes the given points to be used in interpolation/approximation.
-    Values are then used to build adequate knot vectors.
-
-    Parameters
-    ----------
-    points: (m + 1 x dim) array
-        points to be interpolated/approximated
-
-    size: (2,) array-like
-        number of points in u and v direction
-
-    centripetal: bool
-        if True -> centripetal parametrization will be used
-
-    Returns
-    -------
-    [u_k, v_l]: list
-        list containing parametrization values in both directions
-    """
+        u_k[1:-1] = _np.cumsum(chord_lengths[:-1]).reshape(-1, 1)
+        return u_k.reshape(-1, 1)
 
     from splinepy.helpme.multi_index import MultiIndex
 
     mi = MultiIndex(size)
 
-    u_k = _np.zeros((size[0], 1))
+    n_dimensions = len(size)
 
-    for i in range(size[1]):
-        u_k += parametrize_curve(
-            # points=points[i * size[0] : (i + 1) * size[0]],
-            points=points[mi[i, :]],
-            n_points=size[0],
-            centripetal=centripetal,
-        )
-    u_k /= size[1]
+    if n_dimensions == 1:
+        u_k = _np.zeros((size[0],1))
+        u_k += parametrise_line(
+                points=points,
+                n_points=size[0],
+                centripetal=centripetal
+            )
+        parametric_coordinates = u_k
 
-    v_l = _np.zeros((size[1], 1))
+    if n_dimensions == 2:
+        k = 0
+        parametric_coordinates = []
+        for n_points in size:
+            u_k = _np.zeros((n_points,1))
+            if k == 0:
+                for i in range(n_points):
+                    u_k += parametrise_line(
+                        points=points[mi[i,:]],
+                        n_points=n_points,
+                        centripetal=centripetal
+                    )
+            if k == 1:
+                for i in range(n_points):
+                    u_k += parametrise_line(
+                        points=points[mi[:,i]],
+                        n_points=n_points,
+                        centripetal=centripetal
+                    )
+            u_k /= n_points
+            parametric_coordinates.append(u_k)
+            k += 1
 
-    for k in range(size[0]):
-        v_l += parametrize_curve(
-            # points=points[range(k, size[0] * size[1], size[0])],
-            points=points[mi[:, k]],
-            n_points=size[1],
-            centripetal=centripetal,
-        )
-    v_l /= size[0]
 
-    return [u_k, v_l]
+    return parametric_coordinates
 
 
 def compute_knot_vector(degree, n_control_points, u_k, n_points):
@@ -113,7 +105,7 @@ def compute_knot_vector(degree, n_control_points, u_k, n_points):
         number of control points
 
     u_k: (n x 1) array-like
-        array containing parametrization values
+        array containing parametrisation values
 
     n_points: int
         number of points
@@ -205,17 +197,11 @@ def solve_for_control_points(
             ).todense()
 
             # solve system A^TAx=A^Tb
+            # (tried using scipy.sparse.linalg.lsqr but had worse performance)
             at = coefficient_matrix[1:-1, 1:-1].transpose(copy=True)
             target_spline.control_points[1:-1] = _spsolve(
                 at @ coefficient_matrix[1:-1, 1:-1], at @ points[1:-1]
             )
-
-            # alternative using lsqr
-
-            # for i in range(0, points.shape[1]):
-            #     (
-            #         target_spline.control_points[1:-1, i]
-            #     ) = _lsqr(coefficient_matrix[1:-1, 1:-1], points[1:-1, i])[0]
 
             residual = _np.linalg.norm(
                 coefficient_matrix @ target_spline.control_points - points
@@ -237,29 +223,12 @@ def solve_for_control_points(
             )[:2]
             residual = _np.sqrt(_np.linalg.norm(residual))
 
-            # manual alternative: A^TAx=A^Tb
-
-            # at=coefficient_matrix[1:-1, 1:-1].copy().transpose()
-            # target_spline.control_points[1:-1]=_np.linalg.solve(
-            #     at@coefficient_matrix[1:-1, 1:-1],at@points[1:-1]
-            #     )
-            # residual = _np.linalg.norm(
-            #     coefficient_matrix @ target_spline.control_points - points
-            #     )
-
     # interpolation or approximation with original system
     elif _has_scipy:
         at = coefficient_matrix.transpose(copy=True)
         target_spline.control_points = _spsolve(
             at @ coefficient_matrix, at @ points
         )
-
-        # alternative using lsqr
-
-        # for i in range(0, points.shape[1]):
-        #     target_spline.control_points[:, i], _, _, residual[i] = _lsqr(
-        #         coefficient_matrix, points[:, i]
-        #     )[:4]
 
         residual = _np.linalg.norm(
             coefficient_matrix @ target_spline.control_points - points
@@ -271,20 +240,10 @@ def solve_for_control_points(
         )[:2]
         residual = _np.sqrt(_np.linalg.norm(residual))
 
-        # manual alternative
-
-        # at=coefficient_matrix.copy().transpose()
-        # target_spline.control_points=_np.linalg.solve(
-        #     at@coefficient_matrix,at@points
-        #     )
-        # residual = _np.linalg.norm(
-        #     coefficient_matrix @ target_spline.control_points - points
-        #     )
-
     return residual
 
 
-def fit_curve(
+def curve(
     points,
     degree=None,
     n_control_points=None,
@@ -322,7 +281,7 @@ def fit_curve(
         will only be used if a knot_vector or target_spline is also given!
 
     centripetal: bool (default = True)
-        if True -> centripetal parametrization will be used
+        if True -> centripetal parametrisation will be used
 
     interpolate_endpoints: bool
         if True -> endpoints are interpolated
@@ -341,16 +300,12 @@ def fit_curve(
     # calculate n_points due to multiple usage
     n_points = points.shape[0]
 
-    # if associated_queries is not None and (
-    #     knot_vector is not None or target_spline is not None
-    # ):
     if associated_queries is not None:
-        # if associated queries are used, knot_vector must be given too!
         u_k = associated_queries
 
     else:
-        u_k = parametrize_curve(
-            points=points, n_points=n_points, centripetal=centripetal
+        u_k = parametrise(
+            points=points, size=[n_points], centripetal=centripetal
         )
 
     # check dimension of associated queries
@@ -473,7 +428,7 @@ def fit_curve(
     return target_spline, residual
 
 
-def fit_surface(
+def surface(
     points,
     size,
     degrees=None,
@@ -513,7 +468,7 @@ def fit_surface(
         will only be used if knot_vectors or target_splines is also given!
 
     centripetal: bool (default = True)
-        if True -> centripetal parametrization will be used
+        if True -> centripetal parametrisation will be used
 
     interpolate_endpoints: bool
         if True -> endpoints are interpolated
@@ -555,7 +510,7 @@ def fit_surface(
         target_splines = [None, None]
         # extract spline in each direction (knot_vectors, weights etc.
         # of original spline), works for all type of splines!
-        # extraction point is mid-points of parameter space
+        # extraction point is mid-point of parameter space
         target_splines[0] = original_target_splines.extract.spline(
             0,
             (
@@ -588,7 +543,7 @@ def fit_surface(
             )
 
     else:
-        u_k = parametrize_surface(
+        u_k = parametrise(
             points=target_points, size=size, centripetal=centripetal
         )
 
@@ -602,7 +557,7 @@ def fit_surface(
     residual_u = _np.empty(size[0])
 
     # first spline is fitted with given values
-    fitted_spline_u, residual_u[0] = fit_curve(
+    fitted_spline_u, residual_u[0] = curve(
         points=target_points[0 : size[0]],
         degree=degrees[0],
         n_control_points=n_control_points[0],
@@ -619,7 +574,7 @@ def fit_surface(
 
     for i in range(1, size[1]):
         # previously fitted spline is used for the other fits
-        fitted_spline_u, residual_u[i] = fit_curve(
+        fitted_spline_u, residual_u[i] = curve(
             points=target_points[i * size[0] : (i + 1) * size[0]],
             target_spline=fitted_spline_u,
             associated_queries=u_k[0],
@@ -635,7 +590,7 @@ def fit_surface(
     residual_v = _np.empty(n_control_points[0])
 
     # first spline is fitted with given values
-    fitted_spline_v, residual_v[0] = fit_curve(
+    fitted_spline_v, residual_v[0] = curve(
         points=calculated_control_points[
             range(0, n_control_points[0] * size[1], n_control_points[0])
         ],
@@ -658,7 +613,7 @@ def fit_surface(
 
     for k in range(1, n_control_points[0]):
         # previously fitted spline is used for the other fits
-        fitted_spline_v, residual_v[k] = fit_curve(
+        fitted_spline_v, residual_v[k] = curve(
             points=calculated_control_points[
                 range(k, n_control_points[0] * size[1], n_control_points[0])
             ],
@@ -699,40 +654,3 @@ def fit_surface(
             "residual": residual,
         }
     return fitted_spline, residual
-
-
-class Fitter:
-    """
-    Helper class to create interpolated or approximated splines
-    from points.
-    """
-
-    def __init__(self, spl):
-        self.spline = spl
-
-    def parametrize_curve(self, *args, **kwargs):
-        return parametrize_curve(self.spline, *args, **kwargs)
-
-    def parametrize_surface(self, *args, **kwargs):
-        return parametrize_curve(self.spline, *args, **kwargs)
-
-    def compute_knot_vector(self, *args, **kwargs):
-        return compute_knot_vector(self.spline, *args, **kwargs)
-
-    def solve_for_control_points(self, *args, **kwargs):
-        return solve_for_control_points(self.spline, *args, **kwargs)
-
-    def fit_curve(self, *args, **kwargs):
-        return fit_curve(self.spline, *args, **kwargs)
-
-    def fit_surface(self, *args, **kwargs):
-        return fit_curve(self.spline, *args, **kwargs)
-
-
-# Use function docstrings in Extractor functions
-Fitter.parametrize_curve.__doc__ = parametrize_curve.__doc__
-Fitter.parametrize_surface.__doc__ = parametrize_surface.__doc__
-Fitter.compute_knot_vector.__doc__ = compute_knot_vector.__doc__
-Fitter.solve_for_control_points.__doc__ = solve_for_control_points.__doc__
-Fitter.fit_curve.__doc__ = fit_curve.__doc__
-Fitter.fit_surface.__doc__ = fit_surface.__doc__

@@ -28,7 +28,7 @@ class TestSplinepyFitting(c.unittest.TestCase):
 
         target_points = c.np.vstack((x, f(x))).T.reshape(-1, 2)
 
-        interpolation_spline, _ = c.splinepy.helpme.fit.fit_curve(
+        interpolation_spline, _ = c.splinepy.helpme.fit.curve(
             points=target_points, degree=degree
         )
         interpolated_points = interpolation_spline.sample(
@@ -55,7 +55,7 @@ class TestSplinepyFitting(c.unittest.TestCase):
 
         target_points = c.np.vstack((x, f(x))).T.reshape(-1, 2)
 
-        approximated_spline, _ = c.splinepy.helpme.fit.fit_curve(
+        approximated_spline, _ = c.splinepy.helpme.fit.curve(
             points=target_points, degree=degree, n_control_points=n_sample - 5
         )
         approximated_points = approximated_spline.sample(resolution)
@@ -80,7 +80,7 @@ class TestSplinepyFitting(c.unittest.TestCase):
             (xx.flatten(), yy.flatten(), f(xx, yy).flatten())
         ).T
 
-        bspline, _ = c.splinepy.helpme.fit.fit_surface(
+        bspline, _ = c.splinepy.helpme.fit.surface(
             points=target_points,
             size=[sample_size[0], sample_size[1]],
             n_control_points=[sample_size[0], sample_size[1]],
@@ -108,7 +108,7 @@ class TestSplinepyFitting(c.unittest.TestCase):
             (xx.flatten(), yy.flatten(), f(xx, yy).flatten())
         ).T
 
-        bspline, _ = c.splinepy.helpme.fit.fit_surface(
+        bspline, _ = c.splinepy.helpme.fit.surface(
             points=target_points,
             size=[sample_size[0], sample_size[1]],
             n_control_points=[sample_size[0] - 2, sample_size[1] - 2],
