@@ -15,7 +15,7 @@ _vedo_spline_common_options = (
         "knot_lw",
         "Line width of knots. Number of pixels. "
         "Applicable to para_dim > 1.",
-        (int),
+        (float, float),
     ),
     _options.Option(
         "vedo",
@@ -70,7 +70,7 @@ _vedo_spline_common_options = (
         "vedo",
         "control_mesh_lw",
         "Line width of control mesh. Number of pixels",
-        (int),
+        (float, int),
     ),
     _options.Option(
         "vedo",
@@ -123,8 +123,6 @@ class SplineShowOption(_options.ShowOption):
                 f"Given helpee is {type(helpee)}.",
             )
         self._options = {}
-        self._backend = _gus.settings.VISUALIZATION_BACKEND
-        self._options[self._backend] = {}
 
 
 class MultipatchShowOption(_options.ShowOption):
@@ -157,12 +155,6 @@ class MultipatchShowOption(_options.ShowOption):
                 f"Given helpee is {type(helpee)}.",
             )
         self._options = {}
-        self._backend = _gus.settings.VISUALIZATION_BACKEND
-        self._options[self._backend] = {}
-
-
-def make_showable(spline):
-    return eval(f"_{spline.show_options._backend}_showable(spline)")
 
 
 def _sample_knots_1d(spline):
@@ -456,7 +448,7 @@ def _create_fitting_queries(spline):
     return fqs
 
 
-def _vedo_showable(spline):
+def make_showable(spline):
     """
     Goes through common procedures for preparing showable splines.
 

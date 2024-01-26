@@ -478,9 +478,7 @@ def parametric_view(spline, axes=True, conform=False):
 
     # take shallow copy
     para_spline.spline_data._saved = spline.spline_data._saved.copy()
-    para_spline.show_options._options[
-        para_spline._show_options._backend
-    ] = spline.show_options._options[spline._show_options._backend].copy()
+    para_spline.show_options._options = spline.show_options._options.copy()
 
     if axes and "axes" in spline.show_options.valid_keys():
         # configure axes
