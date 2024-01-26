@@ -9,22 +9,22 @@ except BaseException:
 cats_no_indent_export = [
     '<SplineList SplineType="1" NumberOfSplines="4"><SplineEntry splDim="'
     '2" spaceDim="2" numOfCntrlPntVars="2" numCntrlPnts="6" numOfEleVars="0" c'
-    'losed="0"><cntrlPntVarNames>x0 x1</cntrlPntVarNames><cntrlPntVars>0.0 0.0'
+    'losed="0"><cntrlPntVarNames>x y</cntrlPntVarNames><cntrlPntVars>0.0 0.0'
     " 0.5 0.0 1.0 0.0 0.0 1.0 0.5 1.0 1.0 1.0</cntrlPntVars><deg>2 1</deg><knt"
     "Vecs><knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec><knotVec>0.0 0.0 1.0 1.0</"
     'knotVec></kntVecs></SplineEntry><SplineEntry splDim="2" spaceDim="2" numO'
     'fCntrlPntVars="2" numCntrlPnts="4" numOfEleVars="0" closed="0"><cntrlPntV'
-    "arNames>x0 x1</cntrlPntVarNames><cntrlPntVars>1.0 0.0 2.0 0.0 1.0 1.0 2.0"
+    "arNames>x y</cntrlPntVarNames><cntrlPntVars>1.0 0.0 2.0 0.0 1.0 1.0 2.0"
     " 1.0</cntrlPntVars><deg>1 1</deg><kntVecs><knotVec>0.0 0.0 1.0 1.0</knotV"
     "ec><knotVec>0.0 0.0 1.0 1.0</knotVec></kntVecs><wght>1.0 1.0 1.0 1.0</wgh"
     't></SplineEntry><SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2'
-    '" numCntrlPnts="9" numOfEleVars="0" closed="0"><cntrlPntVarNames>x0 x1</c'
+    '" numCntrlPnts="9" numOfEleVars="0" closed="0"><cntrlPntVarNames>x y</c'
     "ntrlPntVarNames><cntrlPntVars>0.0 1.0 0.5 1.0 1.0 1.0 0.0 1.5 0.5 1.5 1.0"
     " 1.5 0.0 2.0 0.5 2.0 1.0 2.0</cntrlPntVars><deg>2 1</deg><kntVecs><knotVe"
     "c>0.0 0.0 0.0 1.0 1.0 1.0</knotVec><knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>"
     '</kntVecs></SplineEntry><SplineEntry splDim="2" spaceDim="2" numOfCntrlPn'
     'tVars="2" numCntrlPnts="6" numOfEleVars="0" closed="0"><cntrlPntVarNames>'
-    "x0 x1</cntrlPntVarNames><cntrlPntVars>1.0 1.0 2.0 1.0 1.0 1.5 2.0 1.5 1.0"
+    "x y</cntrlPntVarNames><cntrlPntVars>1.0 1.0 2.0 1.0 1.0 1.5 2.0 1.5 1.0"
     " 2.0 2.0 2.0</cntrlPntVars><deg>1 1</deg><kntVecs><knotVec>0.0 0.0 1.0 1."
     "0</knotVec><knotVec>0.0 0.0 0.5 1.0 1.0</knotVec></kntVecs><wght>1.0 1.0 "
     "1.0 1.0 1.0 1.0</wght></SplineEntry></SplineList>"
@@ -36,7 +36,7 @@ cats_indent_export = [
         '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="6" numOfEleVars="0" closed="0">\n'
     ),
-    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVarNames>x y</cntrlPntVarNames>\n",
     "    <cntrlPntVars>0.0 0.0\n",
     "0.5 0.0\n",
     "1.0 0.0\n",
@@ -53,7 +53,7 @@ cats_indent_export = [
         '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="4" numOfEleVars="0" closed="0">\n'
     ),
-    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVarNames>x y</cntrlPntVarNames>\n",
     "    <cntrlPntVars>1.0 0.0\n",
     "2.0 0.0\n",
     "1.0 1.0\n",
@@ -69,7 +69,7 @@ cats_indent_export = [
         '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="9" numOfEleVars="0" closed="0">\n'
     ),
-    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVarNames>x y</cntrlPntVarNames>\n",
     "    <cntrlPntVars>0.0 1.0\n",
     "0.5 1.0\n",
     "1.0 1.0\n",
@@ -89,7 +89,7 @@ cats_indent_export = [
         '  <SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2" numCnt'
         'rlPnts="6" numOfEleVars="0" closed="0">\n'
     ),
-    "    <cntrlPntVarNames>x0 x1</cntrlPntVarNames>\n",
+    "    <cntrlPntVarNames>x y</cntrlPntVarNames>\n",
     "    <cntrlPntVars>1.0 1.0\n",
     "2.0 1.0\n",
     "1.0 1.5\n",
