@@ -12,7 +12,7 @@ description = "Process, analyze and visualize N-dim, N-degree splines"
 keywords = ["bezier", "rational bezier", "bspline", "nurbs", "multi patch"]
 urls = {Homepage = "https://github.com/tataratat/splinepy"}
 classifiers=[
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.7",
