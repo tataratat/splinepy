@@ -236,10 +236,17 @@ def export(fname, spline_list, indent=True):
             patch_element,
             CATS_XML_KEY_WORDS["coeff_names"],
         )
-        # These don't really matter so let's just assign numbers
-        control_point_var_names.text = " ".join(
-            "x" + str(i) for i in range(patch.dim)
-        )
+
+        # These are usually hard coded variable names in xns or feafa
+        # x y z t seems to only matter. see issue #257
+        cp_varnames = [
+            "x",
+            "y",
+            "z",
+            "t",
+            *[f"x{i}" for i in range(4, patch.dim)],
+        ]
+        control_point_var_names.text = " ".join(cp_varnames[: patch.dim])
 
         # Control point variables
         control_points_elements = _ET.SubElement(
