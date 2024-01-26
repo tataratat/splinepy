@@ -383,7 +383,7 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
         adata = spline.spline_data.as_arrow(adata_name, on=on)
 
         # create vertices that can be shown as arrows
-        loc_vertices = _Vertices(spline.evaluate(queries), copy=False)
+        loc_vertices = _Vertices(spline.evaluate(queries))
         loc_vertices.vertex_data[adata_name] = adata
 
         # transfer options
