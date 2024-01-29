@@ -8,6 +8,7 @@ with source term f=1
 The refinement will only be applied to the solution field, to make the
 calculations more efficient
 """
+
 import numpy as np
 
 import splinepy as sp

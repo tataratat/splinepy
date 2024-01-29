@@ -2,6 +2,7 @@
 
 Helps helpee to manage data. Some useful data structures.
 """
+
 from itertools import accumulate as _accumulate
 from itertools import chain as _chain
 from itertools import repeat as _repeat

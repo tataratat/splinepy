@@ -1,4 +1,5 @@
 """Create gus"""
+
 import gustaf as gus
 
 import splinepy

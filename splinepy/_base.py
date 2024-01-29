@@ -2,6 +2,7 @@
 
 Base type of splinepy
 """
+
 from splinepy.utils import log as _log
 
 
