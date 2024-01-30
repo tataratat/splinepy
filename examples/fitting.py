@@ -1,6 +1,5 @@
 import gustaf as gus
 import numpy as np
-
 import splinepy
 
 if __name__ == "__main__":

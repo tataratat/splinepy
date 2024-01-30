@@ -54,40 +54,28 @@ def parametrise(points, size, centripetal):
 
     mi = MultiIndex(size)
 
+    # Loop over all dimensions and append each para_coords to list
     n_dimensions = len(size)
-
-    if n_dimensions == 1:
-        u_k = _np.zeros((size[0],1))
-        u_k += parametrise_line(
+    parametric_coordinates = [None] * n_dimensions
+    for k in range(n_dimensions):
+        u_k = _np.zeros((size[k], 1))
+        entry_indices = [slice(None) for _ in range(n_dimensions)]
+        if n_dimensions == 1:
+            u_k += parametrise_line(
                 points=points,
-                n_points=size[0],
-                centripetal=centripetal
+                n_points=size[k],
+                centripetal=centripetal,
             )
-        parametric_coordinates = u_k
-
-    if n_dimensions == 2:
-        k = 0
-        parametric_coordinates = []
-        for n_points in size:
-            u_k = _np.zeros((n_points,1))
-            if k == 0:
-                for i in range(n_points):
-                    u_k += parametrise_line(
-                        points=points[mi[i,:]],
-                        n_points=n_points,
-                        centripetal=centripetal
-                    )
-            if k == 1:
-                for i in range(n_points):
-                    u_k += parametrise_line(
-                        points=points[mi[:,i]],
-                        n_points=n_points,
-                        centripetal=centripetal
-                    )
-            u_k /= n_points
-            parametric_coordinates.append(u_k)
-            k += 1
-
+            parametric_coordinates = [u_k]
+        else:
+            for i in range(size[k]):
+                entry_indices[k] = i
+                u_k += parametrise_line(
+                    points=points[mi[tuple(entry_indices)]],
+                    n_points=size[k],
+                    centripetal=centripetal,
+                )
+            parametric_coordinates[k] = (u_k/size[k])
 
     return parametric_coordinates
 
@@ -306,7 +294,7 @@ def curve(
     else:
         u_k = parametrise(
             points=points, size=[n_points], centripetal=centripetal
-        )
+        )[0]
 
     # check dimension of associated queries
     if associated_queries is not None and associated_queries.shape[1] != 1:
