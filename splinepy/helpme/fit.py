@@ -8,9 +8,6 @@ from splinepy.utils.data import make_matrix as _make_matrix
 if _has_scipy:
     from scipy.sparse.linalg import spsolve as _spsolve
 
-    # from scipy.sparse.linalg import lsqr as _lsqr
-
-
 def parametrise(points, size, centripetal):
     """
     parametrises given points to be used in interpolation/approximation.
@@ -75,7 +72,7 @@ def parametrise(points, size, centripetal):
                     n_points=size[k],
                     centripetal=centripetal,
                 )
-            parametric_coordinates[k] = (u_k/size[k])
+            parametric_coordinates[k] = u_k / size[k]
 
     return parametric_coordinates
 
