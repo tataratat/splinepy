@@ -86,7 +86,7 @@ class FFD(_SplinepyBase):
 
         # evaluate new vertices
         current_mesh = type(self._mesh)(
-            vertices=self._spline.evaluate(self._q_vertices), copy=False
+            vertices=self._spline.evaluate(self._q_vertices)
         )
 
         # apply connectivity if applicable
@@ -338,7 +338,6 @@ class FFD(_SplinepyBase):
             mesh = _gus.Faces(
                 mesh.const_vertices,
                 mesh.faces()[mesh.single_faces()],
-                copy=False,
             )
 
         # original mesh
