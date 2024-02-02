@@ -1,0 +1,107 @@
+<xml>
+  <MultiPatch id="0" parDim="2">
+    <patches type="id_range">100 103</patches>
+    <interfaces>100 2 101 1 0 1 1 1
+100 4 102 3 0 1 1 1
+101 4 103 3 0 1 1 1
+102 2 103 1 0 1 1 1</interfaces>
+    <boundary>100 1
+100 3
+101 2
+101 3
+102 1
+102 4
+103 2
+103 4</boundary>
+  </MultiPatch>
+  <boundaryConditions id="1" multipatch="4">
+    <!--Please fill boundary conditions here-->
+    <bc type="Dirichlet" unknown="0">0 3
+1 3
+2 4
+3 4</bc>
+    <bc type="Dirichlet" unknown="0">0 1
+2 1</bc>
+    <bc type="Dirichlet" unknown="0">1 2
+3 2</bc>
+  </boundaryConditions>
+  <Geometry id="100" type="TensorBSpline2">
+    <Basis type="TensorBSplineBasis2">
+      <Basis index="0" type="BSplineBasis">
+        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>
+      </Basis>
+      <Basis index="1" type="BSplineBasis">
+        <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>
+      </Basis>
+    </Basis>
+    <coefs format="ASCII" geoDim="2">0.0 0.0
+0.5 0.0
+1.0 0.0
+0.0 1.0
+0.5 1.0
+1.0 1.0</coefs>
+  </Geometry>
+  <Geometry id="101" type="TensorNurbs2">
+    <Basis type="TensorNurbsBasis2">
+      <Basis type="TensorBSplineBasis2">
+        <Basis index="0" type="BSplineBasis">
+          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>
+        </Basis>
+        <Basis index="1" type="BSplineBasis">
+          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>
+        </Basis>
+      </Basis>
+      <weights format="ASCII">1.0
+1.0
+1.0
+1.0</weights>
+    </Basis>
+    <coefs format="ASCII" geoDim="2">1.0 0.0
+2.0 0.0
+1.0 1.0
+2.0 1.0</coefs>
+  </Geometry>
+  <Geometry id="102" type="TensorBSpline2">
+    <Basis type="TensorBSplineBasis2">
+      <Basis index="0" type="BSplineBasis">
+        <KnotVector degree="2" format="ASCII">0.0 0.0 0.0 1.0 1.0 1.0</KnotVector>
+      </Basis>
+      <Basis index="1" type="BSplineBasis">
+        <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector>
+      </Basis>
+    </Basis>
+    <coefs format="ASCII" geoDim="2">0.0 1.0
+0.5 1.0
+1.0 1.0
+0.0 1.5
+0.5 1.5
+1.0 1.5
+0.0 2.0
+0.5 2.0
+1.0 2.0</coefs>
+  </Geometry>
+  <Geometry id="103" type="TensorNurbs2">
+    <Basis type="TensorNurbsBasis2">
+      <Basis type="TensorBSplineBasis2">
+        <Basis index="0" type="BSplineBasis">
+          <KnotVector degree="1" format="ASCII">0.0 0.0 1.0 1.0</KnotVector>
+        </Basis>
+        <Basis index="1" type="BSplineBasis">
+          <KnotVector degree="1" format="ASCII">0.0 0.0 0.5 1.0 1.0</KnotVector>
+        </Basis>
+      </Basis>
+      <weights format="ASCII">1.0
+1.0
+1.0
+1.0
+1.0
+1.0</weights>
+    </Basis>
+    <coefs format="ASCII" geoDim="2">1.0 1.0
+2.0 1.0
+1.0 1.5
+2.0 1.5
+1.0 2.0
+2.0 2.0</coefs>
+  </Geometry>
+</xml>
