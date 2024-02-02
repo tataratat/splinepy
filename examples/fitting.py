@@ -25,25 +25,25 @@ if __name__ == "__main__":
     n_sample = 25
     n_resolution = 3 * n_sample
     x = np.linspace(-1, 1, n_sample)
-    target_points = np.vstack([x, f(x)]).T.reshape(-1, 2)
-    pts = gus.create.vertices.Vertices(target_points)
+    fitting_points = np.vstack([x, f(x)]).T.reshape(-1, 2)
+    pts = gus.create.vertices.Vertices(fitting_points)
     pts.show_options["c"] = "blue"
     pts.show_options["r"] = 10
 
-    # fit_curve creates Bspline where the n_control_points = n_target_points
+    # fit_curve creates Bspline where the n_control_points = n_fitting_points
     # if no further information is given
     interpolated_curve, _ = splinepy.helpme.fit.curve(
-        points=target_points, degree=2
+        fitting_points=fitting_points, degree=2
     )
 
     # In curve approximation the number of control points must be chosen
     n_cps = 10
     approximated_curve, _ = splinepy.helpme.fit.curve(
-        points=target_points, degree=3, n_control_points=n_cps
+        fitting_points=fitting_points, degree=3, n_control_points=n_cps
     )
 
-    interp_errs = evaluate_approximation(interpolated_curve, target_points)
-    approx_errs = evaluate_approximation(approximated_curve, target_points)
+    interp_errs = evaluate_approximation(interpolated_curve, fitting_points)
+    approx_errs = evaluate_approximation(approximated_curve, fitting_points)
 
     gus.show(
         [
@@ -65,11 +65,11 @@ if __name__ == "__main__":
     # The number of control points affects the approximation error
     for n_cps in range(n_sample, 5, -5):
         approximated_curve, _ = splinepy.helpme.fit.curve(
-            target_points, degree=3, n_control_points=n_cps
+            fitting_points, degree=3, n_control_points=n_cps
         )
 
         max_error, mean_error = evaluate_approximation(
-            approximated_curve, target_points
+            approximated_curve, fitting_points
         )
         approximated_curves.append(
             [n_cps, approximated_curve, [max_error, mean_error]]
@@ -97,12 +97,12 @@ if __name__ == "__main__":
     def h(x, y):
         return -0.9 * (x**3) + 0.7 * y**2 + x * y + 0.1 * np.sin(5 * x)
 
-    target_points = np.vstack(
+    fitting_points = np.vstack(
         (xx.flatten(), yy.flatten(), h(xx, yy).flatten())
     ).T
 
     interpolated_surface, _ = splinepy.helpme.fit.surface(
-        points=target_points,
+        fitting_points=fitting_points,
         size=[n_sample[0], n_sample[1]],
         n_control_points=[n_sample[0], n_sample[1]],
         degrees=[3, 2],
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     n_cps = [int(0.75 * n_sample[0]), int(0.6 * n_sample[1])]
 
     approximated_surface, _ = splinepy.helpme.fit.surface(
-        points=target_points,
+        fitting_points=fitting_points,
         size=[n_sample[0], n_sample[1]],
         n_control_points=[n_cps[0], n_cps[1]],
         degrees=[3, 2],
@@ -120,15 +120,15 @@ if __name__ == "__main__":
 
     n_cps_int = interpolated_surface.control_mesh_resolutions
     max_error_int, mean_error_int = evaluate_approximation(
-        interpolated_surface, target_points
+        interpolated_surface, fitting_points
     )
 
     n_cps = approximated_surface.control_mesh_resolutions
     max_error, mean_error = evaluate_approximation(
-        approximated_surface, target_points
+        approximated_surface, fitting_points
     )
 
-    pts = gus.create.vertices.Vertices(target_points)
+    pts = gus.create.vertices.Vertices(fitting_points)
     pts.show_options["c"] = "blue"
     pts.show_options["r"] = 10
 
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     # The approximation error changes with the number of control points
     for r in range(0, min(n_sample) - 2, 5):
         approximated_surface, _ = splinepy.helpme.fit.surface(
-            points=target_points,
+            fitting_points=fitting_points,
             size=[n_sample[0], n_sample[1]],
             n_control_points=[n_sample[0] - int(r / 2), n_sample[1] - r],
             degrees=[3, 2],
@@ -163,7 +163,7 @@ if __name__ == "__main__":
         n_cps = approximated_surface.control_mesh_resolutions
 
         max_error, mean_error = evaluate_approximation(
-            approximated_surface, target_points
+            approximated_surface, fitting_points
         )
 
         approximated_surfaces.append(
