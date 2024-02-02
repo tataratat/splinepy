@@ -26,15 +26,15 @@ def test_extraction():
     for offset in range(4):
         queries = c.np.random.rand(20, 1)
         assert c.np.allclose(
-                b.evaluate(queries + offset),
-                b_beziers[offset].evaluate(queries),
-            )
-        
+            b.evaluate(queries + offset),
+            b_beziers[offset].evaluate(queries),
+        )
+
         assert c.np.allclose(
-                n.evaluate(queries + offset),
-                n_beziers[offset].evaluate(queries),
-            )
-        
+            n.evaluate(queries + offset),
+            n_beziers[offset].evaluate(queries),
+        )
+
 
 def test_extraction_matrices_bspline_3D():
     """Create matrices to extract splines"""
@@ -53,6 +53,7 @@ def test_extraction_matrices_bspline_3D():
         # Test matrices m against spline ctps
         assert c.np.allclose(b.control_points, m @ bspline.control_points)
 
+
 def test_extraction_matrices_nurbs_3D():
     """Create matrices to extract splines"""
 
@@ -68,9 +69,11 @@ def test_extraction_matrices_nurbs_3D():
     for m, b in zip(n_matrices, beziers_n):
         # Test matrices m against spline ctps
         assert c.np.allclose(b.weights, m @ nurbs.weights)
-        assert c.np.allclose(b.control_points,
-                (m @ (nurbs.control_points * nurbs.weights)) / b.weights,
-            )
+        assert c.np.allclose(
+            b.control_points,
+            (m @ (nurbs.control_points * nurbs.weights)) / b.weights,
+        )
+
 
 def test_extraction_matrices_bspline_2D():
     """Create matrices to extract splines"""
@@ -87,6 +90,7 @@ def test_extraction_matrices_bspline_2D():
         # Test matrices m against spline ctps
         assert c.np.allclose(b.control_points, m @ bspline.control_points)
 
+
 def test_extraction_matrices_nurbs_2D():
     """Create matrices to extract splines"""
 
@@ -101,6 +105,7 @@ def test_extraction_matrices_nurbs_2D():
     for m, b in zip(n_matrices, beziers_n):
         # Test matrices m against spline ctps
         assert c.np.allclose(b.weights, m @ nurbs.weights)
-        assert c.np.allclose(b.control_points,
-                (m @ (nurbs.control_points * nurbs.weights)) / b.weights,
-            )
+        assert c.np.allclose(
+            b.control_points,
+            (m @ (nurbs.control_points * nurbs.weights)) / b.weights,
+        )

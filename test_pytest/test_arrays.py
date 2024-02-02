@@ -1,5 +1,6 @@
 import conf_pytest as c
 
+
 def test_uniform_query():
     """
     Test uniform query against gustaf's vertice creation
@@ -12,6 +13,3 @@ def test_uniform_query():
         spp_q = c.splinepy.utils.data.uniform_query(bounds, res)
 
         assert c.np.allclose(gus_q, spp_q)
-
-
-
