@@ -204,7 +204,7 @@ def solve_for_control_points(
 
             # solve system using lstsq
 
-            (fitting_spline.control_points[1:-1],) = _np.linalg.lstsq(
+            fitting_spline.control_points[1:-1] = _np.linalg.lstsq(
                 coefficient_matrix[1:-1, 1:-1], rhs[1:-1]
             )[0]
 
@@ -216,7 +216,7 @@ def solve_for_control_points(
         )
 
     else:
-        fitting_spline.control_points, residual = _np.linalg.lstsq(
+        fitting_spline.control_points = _np.linalg.lstsq(
             coefficient_matrix, fitting_points
         )[0]
 
@@ -261,7 +261,6 @@ def curve(
 
     associated_queries:(n x 1) array
         values where the spline will be evaluated
-        will only be used if a knot_vector or fitting_spline is also given!
 
     centripetal:bool (default = True)
         if True -> centripetal parameterization will be used
@@ -599,7 +598,9 @@ def surface(
             fitted_spline_u.knot_vectors[0],
             fitted_spline_v.knot_vectors[0],
         ],
-        control_points=interim_control_points[: _np.prod(n_control_points)],
+        control_points=interim_control_points[
+            mi_interim_cps[: n_control_points[0], : n_control_points[1]]
+        ],
     )
 
     residual = _np.linalg.norm(
