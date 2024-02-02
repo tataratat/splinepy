@@ -93,9 +93,6 @@ class FFD(_SplinepyBase):
         if hasattr(self._mesh, "elements"):
             current_mesh.elements = self._mesh.elements.copy()
 
-        # setback to default
-        current_mesh.setter_copies = True
-
         return current_mesh
 
     @mesh.setter
