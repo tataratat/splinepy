@@ -1,4 +1,4 @@
-import conf_pytest as c
+import conftest as c
 
 
 def test_uniform_query():
