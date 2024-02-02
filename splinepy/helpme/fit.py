@@ -107,14 +107,14 @@ def compute_knot_vector(degree, n_control_points, u_k, n_fitting_points):
     knot_vector = _np.empty(degree + n_control_points + 1)
 
     knot_vector[: (degree + 1)] = 0.0
-    knot_vector[-(degree + 1):] = 1.0
+    knot_vector[-(degree + 1) :] = 1.0
 
     # check if interpolation or approximation
     if n_fitting_points == n_control_points:
         # interpolation
         # NURBS Book eq. 9.8 (n_fitting_points = m + 1,
         # n_control_points = n + 1)
-        knot_vector[(degree + 1):-(degree + 1)] = (
+        knot_vector[(degree + 1) : -(degree + 1)] = (
             _np.convolve(u_k.ravel(), _np.ones(degree), "valid")[1:-1] / degree
         )
 
@@ -599,8 +599,8 @@ def surface(
             fitted_spline_u.knot_vectors[0],
             fitted_spline_v.knot_vectors[0],
         ],
-        control_points=interim_control_points[: _np.prod(n_control_points)]
-        )
+        control_points=interim_control_points[: _np.prod(n_control_points)],
+    )
 
     residual = _np.linalg.norm(
         (_np.linalg.norm(residual_u), _np.linalg.norm(residual_v))
