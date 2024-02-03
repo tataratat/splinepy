@@ -103,8 +103,8 @@ if __name__ == "__main__":
 
     interpolated_surface, _ = splinepy.helpme.fit.surface(
         fitting_points=fitting_points,
-        size=[n_sample[0], n_sample[1]],
-        n_control_points=[n_sample[0], n_sample[1]],
+        size=n_sample,
+        n_control_points=n_sample,
         degrees=[3, 2],
     )
 
@@ -112,8 +112,8 @@ if __name__ == "__main__":
 
     approximated_surface, _ = splinepy.helpme.fit.surface(
         fitting_points=fitting_points,
-        size=[n_sample[0], n_sample[1]],
-        n_control_points=[n_cps[0], n_cps[1]],
+        size=n_sample,
+        n_control_points=n_cps,
         degrees=[3, 2],
         centripetal=True,
     )
@@ -154,10 +154,10 @@ if __name__ == "__main__":
     for r in range(0, min(n_sample) - 2, 5):
         approximated_surface, _ = splinepy.helpme.fit.surface(
             fitting_points=fitting_points,
-            size=[n_sample[0], n_sample[1]],
+            size=n_sample,
             n_control_points=[n_sample[0] - int(r / 2), n_sample[1] - r],
             degrees=[3, 2],
-            knot_vectors=[None, None],
+            knot_vectors=None,
         )
 
         n_cps = approximated_surface.control_mesh_resolutions

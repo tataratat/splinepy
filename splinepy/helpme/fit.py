@@ -184,9 +184,9 @@ def solve_for_control_points(
             )
         elif _has_scipy:
             # move known values to RHS
-            rhs[1:-1, :] += (
-                -coefficient_matrix[1:-1, [0]] * fitting_points[0, :]
-                - coefficient_matrix[1:-1, [-1]] * fitting_points[-1, :]
+            rhs[1:-1, :] -= (
+                coefficient_matrix[1:-1, [0]] * fitting_points[0, :]
+                + coefficient_matrix[1:-1, [-1]] * fitting_points[-1, :]
             ).todense()
 
             # solve system A^TAx = A^Tb
