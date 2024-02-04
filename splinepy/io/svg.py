@@ -232,7 +232,9 @@ def _export_spline(
             )
 
             # For rational splines this might be insufficient
-            if original_spline.is_rational and (para_queries.shape[0] < 4):
+            if original_spline.is_rational and (
+                original_spline.degrees[0] < 3
+            ):
                 para_queries = np.sort(
                     np.vstack(
                         (
