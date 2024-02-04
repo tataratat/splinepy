@@ -4,7 +4,8 @@ from sys import version as python_version
 import numpy as np
 from vedo.colors import get_color as _get_color
 
-from splinepy.utils.log import debug
+from splinepy.utils.log import debug as _debug
+from splinepy.utils.log import warning as _warning
 
 
 def _export_control_mesh(
@@ -191,7 +192,7 @@ def _export_spline(
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
     """
-    from splinepy import BSpline
+    from splinepy.helpme.fit import curve as _fit_curve
     from splinepy.settings import TOLERANCE
 
     svg_paths = ET.SubElement(
@@ -207,40 +208,41 @@ def _export_spline(
             - spline.control_point_bounds[1, :]
         )
 
-    if spline.para_dim == 1:
-        # Export is done in 2 stages
-        # (1) Approximation (trying to preserve the continuity)
+    # Approximation curve-wise
+    def _approximate_curve(spline_copy, tolerance):
         if spline.degrees[0] <= 3 and not spline.is_rational:
             spline_copy = spline.copy()
             spline_copy.elevate_degrees([0] * (3 - spline.degrees[0]))
         else:
-            # Create a cubic b-spline with knot multiplicities
-            # min(3 - (degree - original_m), 1)
-            new_knot_vector = []
-            k_mult = spline.knot_multiplicities[0]
-            k_mult[1:-1] = np.maximum(1, 3 - spline.degrees[0] + k_mult[1:-1])
-            new_knot_vector.append(np.repeat(spline.unique_knots, k_mult))
+            # Use fit tool to approximate curve
+            _warning(
+                "SVG export only supports (up to) cubic polynomial splines --"
+                " using approximation"
+            )
 
             # Queries
             para_queries = spline.greville_abscissae(
                 duplicate_tolerance=TOLERANCE
             )
-            para_test = np.sort(
-                np.vstack(
-                    (
-                        para_queries,
-                        np.convolve(
-                            para_queries.ravel(), np.ones(2) * 0.5, "valid"
-                        ).reshape(-1, 1),
-                    )
-                ),
-                axis=0,
+
+            # Create knot-vector
+            k_mult = spline.knot_multiplicities[0]
+            k_mult[1:-1] = np.maximum(1, 3 - spline.degrees[0] + k_mult[1:-1])
+            k_mult[0] = 4
+            k_mult[-1] = 4
+            new_knot_vector = np.repeat(spline.unique_knots, k_mult)
+            residual = 2 * tolerance
+            spline_copy, residual = _fit_curve(
+                spline.evaluate(para_queries),
+                degree=3,
+                knot_vector=new_knot_vector,
+                associated_queries=para_queries,
             )
 
-            # Check queries
-            if para_queries.size <= (new_knot_vector[0].size - 3 - 1):
-                para_queries = para_test
-                para_test = np.sort(
+            # Refine until approximation is found
+            while residual > tolerance:
+                # Loop until tolerance satisfied
+                para_queries = np.sort(
                     np.vstack(
                         (
                             para_queries,
@@ -252,102 +254,59 @@ def _export_spline(
                     axis=0,
                 )
 
-            # Approximate it
-            approximation = BSpline.approximate_curve(
-                query_points=spline.evaluate(para_queries),
-                num_control_points=new_knot_vector[0].size - 3 - 1,
-                degree=3,
-                knot_vector=new_knot_vector,
-            )
-
-            # Evaluate both splines (maybe at greville abscissae? -> For
-            # rational splines more points should be tested)
-            distance = np.linalg.norm(
-                approximation.evaluate(para_test) - spline.evaluate(para_test),
-                axis=1,
-            )
-
-            # If distance is too large -> refine the knots where the error is
-            # too large and approximate again, repeat (not very efficient, but
-            # should do the trick)
-            while np.max(distance) > tolerance:
-                # Refine
-                approximation.insert_knots(
+                # Insert a few knots
+                spline_copy.insert_knots(
                     0,
                     np.convolve(
-                        approximation.unique_knots[0].ravel(),
+                        spline_copy.unique_knots[0].ravel(),
                         np.ones(2) * 0.5,
                         "valid",
                     ),
                 )
+                new_knot_vector = spline_copy.knot_vectors[0]
 
-                number_of_ctps = len(approximation.knot_vectors[0]) - 3 - 1
-                # Check queries
-                if para_queries.size <= number_of_ctps:
-                    para_queries = para_test
-                    para_test = np.sort(
-                        np.vstack(
-                            (
-                                para_queries,
-                                np.convolve(
-                                    para_queries.ravel(),
-                                    np.ones(2) * 0.5,
-                                    "valid",
-                                ).reshape(-1, 1),
-                            )
-                        ),
-                        axis=0,
-                    )
-
-                # Approximate it
-                approximation = BSpline.approximate_curve(
-                    query_points=spline.evaluate(para_queries),
-                    num_control_points=number_of_ctps,
+                # Create better approximation
+                spline_copy, residual = _fit_curve(
+                    spline.evaluate(para_queries),
                     degree=3,
-                    knot_vector=approximation.knot_vectors,
-                    centripetal=False,
+                    knot_vector=new_knot_vector,
+                    associated_queries=para_queries,
                 )
-
-                # Evaluate both splines (maybe at greville abscissae? -> For
-                # rational splines more points should be tested)
-                distance = np.linalg.norm(
-                    approximation.evaluate(para_test)
-                    - spline.evaluate(para_test),
-                    axis=1,
-                )
-
-            raise NotImplementedError(
-                f"I am working on it. Approximate with tolerance {tolerance}"
-            )
 
         # Sanity check
         assert spline_copy.degrees[0] == 3
         assert not spline_copy.is_rational
+        return spline_copy
 
-        # Relevant options
-        # - c
-        # - alpha
-        # - knots
+    # Export is done in 2 stages
+    # (1) Approximation (trying to preserve the continuity)
+    # (2) Export
 
-        # Bezier Extract and join the paths
-        r, g, b = _get_color(spline.show_options.get("c", "green"))
-        a = spline.show_options.get("alpha", 1.0)
-        splines = spline_copy.extract.beziers()
+    # First : Retrieve export options
+    r, g, b = _get_color(spline.show_options.get("c", "green"))
+    a = spline.show_options.get("alpha", 1.0)
+
+    # check if the parametric dimension is 2, if the case, extract boundary
+    if spline.para_dim == 1:
+        # Approximation
+        spline_copy = _approximate_curve(spline, tolerance)
+        bezier_elements = spline_copy.extract.beziers()
+        path_d = " ".join(
+            [
+                (
+                    f"M {s.cps[0,0]-box_min_x},{box_max_y - s.cps[0,1]} C"
+                    f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
+                    f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
+                    f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                )
+                for s in bezier_elements
+            ]
+        )
         svg_path = ET.SubElement(
             svg_paths,
             "path",
             # draw path
-            d=" ".join(
-                [
-                    (
-                        f"M {s.cps[0,0]-box_min_x},{box_max_y - s.cps[0,1]} C"
-                        f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
-                        f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                        f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
-                    )
-                    for s in splines
-                ]
-            ),
+            d=path_d,
         )
         svg_path.attrib["fill"] = "none"
         svg_path.attrib["stroke"] = (
@@ -357,7 +316,7 @@ def _export_spline(
             spline.show_options.get("lw", 0.01)
         )
 
-        # Plot knots
+        # Plot knots as rectangles
         if spline.show_options.get("knots", True):
             ukvs = spline.unique_knots[0]
             knot_projected = spline.evaluate(ukvs.reshape(-1, 1))
@@ -381,8 +340,42 @@ def _export_spline(
                     width=str(dx),
                 )
 
-    if spline.para_dim == 2:
-        raise NotImplementedError("I am working on this, sorry")
+    elif spline.para_dim == 2:
+        pass
+    else:
+        raise ValueError("String dimension invalid")
+
+    # Approximation
+    spline_copy = _approximate_curve(spline, tolerance)
+
+    # Relevant options
+    # - c
+    # - alpha
+    # - knots
+
+    # Bezier Extract and join the paths
+    splines = spline_copy.extract.beziers()
+    svg_path = ET.SubElement(
+        svg_paths,
+        "path",
+        # draw path
+        d=" ".join(
+            [
+                (
+                    f"M {s.cps[0,0]-box_min_x},{box_max_y - s.cps[0,1]} C"
+                    f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
+                    f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
+                    f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                )
+                for s in splines
+            ]
+        ),
+    )
+    svg_path.attrib["fill"] = "none"
+    svg_path.attrib["stroke"] = (
+        f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
+    )
+    svg_path.attrib["stroke-width"] = str(spline.show_options.get("lw", 0.01))
 
     pass
 
@@ -474,7 +467,7 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         ET.indent(svg_data)
 
     elif int(python_version.split(".")[1]) < 9 and indent:
-        debug(
+        _debug(
             "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
             f"Current python version: {python_version}",
