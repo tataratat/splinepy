@@ -65,32 +65,6 @@ def _export_control_mesh(
             cy=str(box_max_y - ctp[1]),
             r=str(spline.show_options.get("control_point_r", 0.02)),
         )
-    if spline.show_options.get("control_point_ids", True):
-        # Text Options
-        svg_control_point_ids = ET.SubElement(
-            svg_mesh,
-            "g",
-            id="control_point_ids",
-        )
-
-        # Set text options
-        svg_control_point_ids.attrib["font-family"] = "sans-serif"
-        svg_control_point_ids.attrib["font-size"] = ".1"
-        svg_control_point_ids.attrib["text-anchor"] = "middle"
-        svg_control_point_ids.attrib["font-family"] = "sans-serif"
-        svg_control_point_ids.attrib["fill"] = "black"
-        svg_control_point_ids.attrib["stroke"] = "none"
-
-        for i, ctp in enumerate(spline.control_points):
-            text_element = ET.SubElement(
-                svg_control_point_ids,
-                "text",
-                x=str(ctp[0] - box_min_x),
-                y=str(box_max_y - ctp[1]),
-                dx=str(0.5 * box_margins),
-                dy=str(0.5 * box_margins),
-            )
-            text_element.text = str(i)
 
     # Then connect the points using a control mesh
     if spline.show_options.get("control_mesh", True):
@@ -157,19 +131,152 @@ def _export_control_mesh(
                     ),
                 )
 
-    pass
+    if spline.show_options.get("control_point_ids", True):
+        # Text Options
+        svg_control_point_ids = ET.SubElement(
+            svg_mesh,
+            "g",
+            id="control_point_ids",
+        )
+
+        # Set text options
+        svg_control_point_ids.attrib["font-family"] = "sans-serif"
+        svg_control_point_ids.attrib["font-size"] = ".1"
+        svg_control_point_ids.attrib["text-anchor"] = "middle"
+        svg_control_point_ids.attrib["font-family"] = "sans-serif"
+        svg_control_point_ids.attrib["fill"] = "black"
+        svg_control_point_ids.attrib["stroke"] = "none"
+
+        for i, ctp in enumerate(spline.control_points):
+            text_element = ET.SubElement(
+                svg_control_point_ids,
+                "text",
+                x=str(ctp[0] - box_min_x),
+                y=str(box_max_y - ctp[1]),
+                dx=str(0.5 * box_margins),
+                dy=str(0.5 * box_margins),
+            )
+            text_element.text = str(i)
+
+
+def _quiver_plot(
+    # spline,
+    svg_spline_element,
+    box_min_x,
+    box_max_y,
+    tolerance=None,
+    q_width=0.1,
+    q_head_width=0.3,
+    q_head_length=0.5,
+    q_headaxis_length=0.45,
+    positions=None,
+    directions=None,
+):
+    """
+    Export a quiver plot using arrows as defined
+    [here](https://matplotlib.org/stable/_images/quiver_sizes.svg)
+
+    Parameters
+    ----------
+    spline : Spline
+      Providing the control points for the mesh
+    svg_spline_element : xml.etree.ElementTree
+      Parent element of the spline (most likely spline group), where the mesh
+      is written into
+    box_min_x : float/int
+      minimum coordinate of the box, providing the necessary offsets for spline
+      export
+    box_max_y : float/int
+      maximum y coordinate of the surrounding box (pictures use LHS coordinate
+      system in top left corner)
+    box_margins : float/int
+      box margins are currently used to determine the text-offset, more options
+      will be added soon
+    tolerance : float
+      Splines that can not be represented exactly by cubic B-Splines (i.e.,
+      rationals or high order splines) a tolerance is required for the
+      approximation. Default uses an absolute deviation of 1% of the bounding
+      box of the given spline
+    q_width : float
+      relative width of the stem of the arrow
+    q_head_widt : float
+      relative width of the head of the arrow
+    q_head_length : float
+      relative length of the head of the arrow
+    q_headaxis_length : float
+      relative arrow length of the head wings
+    %%%%%%%%
+    Temporary variables (to be deleted)
+
+    """
+    # Create a default arrow along x-axis with length 1 that will be scaled
+    # down accordingly
+    default_arrow_control_points_ = np.array(
+        [
+            [0, -q_width],
+            [1 - q_headaxis_length, -q_width],
+            [1 - q_head_length, -q_head_width],
+            [1, 0],
+            [1 - q_head_length, q_head_width],
+            [1 - q_headaxis_length, q_width],
+            [0, q_width],
+        ]
+    ) * [1, 0.5]
+
+    # Discard all points that are below the tolerance
+    arrow_length = np.linalg.norm(directions, axis=1)
+    over_tolerance = arrow_length > tolerance
+    directions = directions[over_tolerance]
+    positions = positions[over_tolerance]
+    arrow_length = arrow_length[over_tolerance]
+
+    # Create rotation matrices
+    angles = np.arctan2(directions[:, 1], directions[:, 0])
+    rotation_matrices = np.empty((angles.shape[0], 2, 2))
+    rotation_matrices[:, 0, 0] = np.cos(angles)
+    rotation_matrices[:, 1, 0] = np.sin(angles)
+    rotation_matrices[:, 0, 1] = -rotation_matrices[:, 1, 0]
+    rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
+
+    # Map arrow control points
+    arrow_control_points_ = np.einsum(
+        "nij,ki,n->nkj",
+        rotation_matrices,
+        default_arrow_control_points_,
+        arrow_length,
+    )
+
+    # Create a new group
+    svg_quiver = ET.SubElement(
+        svg_spline_element,
+        "g",
+        id="quiver",
+    )
+
+    # Loop over control points and write them into a group
+    for i in range(arrow_length.shape[0]):
+        svg_arrow = ET.SubElement(
+            svg_quiver,
+            "polyline",
+            points=" ".join(
+                [
+                    str(xx - box_min_x) + "," + str(box_max_y - xy)
+                    for (xx, xy) in arrow_control_points_[i, :, :]
+                    + positions[i, :]
+                ]
+            ),
+        )
+        # We want color here (can directly be added as attribute)
+        svg_arrow.attrib["fill"] = "black"
+        svg_arrow.attrib["stroke"] = "none"
 
 
 def _export_spline(
     spline, svg_spline_element, box_min_x, box_max_y, tolerance=None
 ):
     """
-    Export a spline's control mesh in svg format using polylines for the mesh
-    lines, circles for the control points.
+    Export a spline in svg format cubic beziers as approximations
 
-    In order to provide the necessary tools for knot lines and simultaneously
-    fill the spline in 2D, surfaces will be plotted without outlines first,
-    whereas
     Parameters
     ----------
     spline : Spline
@@ -560,6 +667,18 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         _export_control_mesh(
             spline, spline_group, box_min_x, box_max_y, box_margins
         )
+        if spline.para_dim == 2:
+            queries = np.random.random((10, 2))
+            directions = np.random.random((10, 2)) - [0.5, 0.5]
+            _quiver_plot(
+                spline,
+                spline_group,
+                box_min_x,
+                box_max_y,
+                box_margins,
+                positions=spline.evaluate(queries),
+                directions=directions,
+            )
 
     # Dump into file
     if int(python_version.split(".")[1]) >= 9 and indent:
