@@ -3,7 +3,7 @@ import numpy as _np
 from splinepy import utils as _utils
 
 
-def parametric_axes(spline, permutation_list, inplace=True):
+def permute_parametric_axes(spline, permutation_list, inplace=True):
     """
     Permutates the parametric dimensions
 
@@ -85,3 +85,67 @@ def parametric_axes(spline, permutation_list, inplace=True):
     else:
         _utils.log.debug("  returning permuted spline")
         return type(spline)(**dict_spline)
+
+
+def invert_axes(spline, axes, inplace=False):
+    """
+    Flip the parametric axes
+
+    This function flips parametric axes without changing the parametric bounds
+    of the spline. This can be used, e.g., to achieve conformaty on a
+    multipatch interface
+
+    Parameters
+    ----------
+    spline: Spline
+    axes : list
+        List of axes to be flipped
+    inplace: bool
+        Default is True. If True, modifies spline inplace, else, returns
+        a modified_spline.
+
+    Returns
+    -------
+    modified_spline : type(spline)
+        spline with reordered parametric dimensions. iff `inplace=True`.
+    """
+    from splinepy.helpme.multi_index import MultiIndex as _MultiIndex
+
+    # Sanity checks
+    if isinstance(axes, int):
+        axes = [axes]
+    if not isinstance(axes, list):
+        raise ValueError("Permutation list incomprehensive")
+
+    # Create copy if not inplace
+    if not inplace:
+        spline = spline.copy()
+
+    # Create a multi index object
+    mi = _MultiIndex(spline.control_mesh_resolutions)
+    indexing = [slice(None, None, None)] * spline.para_dim
+
+    # Loop over all axis to be flipped and prepare the flip
+    for axis in axes:
+        # Reverse control point indexing
+        indexing[axis] = slice(None, None, -1)
+
+        # Reverse knot vectors (keep parametric bounds unchanged)
+        if spline.has_knot_vectors:
+            para_bounds = spline.parametric_bounds
+            spline.knot_vectors[axis] = (
+                para_bounds[0, axis]
+                + para_bounds[1, axis]
+                - _np.flip(spline.knot_vectors[axis])
+            )
+    # Convert list to tuple for indexing
+    indexing = tuple(indexing)
+
+    # Flip control points
+    spline.cps = spline.cps[mi[indexing]]
+
+    # Do same with weights if applicable
+    if spline.is_rational:
+        spline.weights = spline.weights[mi[indexing]]
+
+    return spline
