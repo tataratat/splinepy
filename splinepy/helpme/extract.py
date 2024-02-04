@@ -435,7 +435,7 @@ def spline(spline, para_dim, split_plane):
         if not (
             (len(split_plane) == 2)
             and (isinstance(split_plane[0], float))
-            and (isinstance(split_plane[0], float))
+            and (isinstance(split_plane[1], float))
         ):
             raise ValueError(
                 "Range must be float or tuple of floats with length 2"
@@ -449,65 +449,70 @@ def spline(spline, para_dim, split_plane):
         split_plane = [split_plane]
 
     # Check if is bezier-type
-    is_bezier = "Bezier" in spline.whatami
-    is_rational = "weights" in spline.required_properties
-    if is_bezier:
-        spline_copy = spline.nurbs if is_rational else spline.bspline
+    if not spline.has_knot_vectors:
+        spline_copy = spline.nurbs if spline.is_rational else spline.bspline
     else:
         spline_copy = spline.copy()
 
-    for _ in range(spline_copy.degrees[para_dim]):
+    for _ in range(spline_copy.degrees[para_dim] + 1):
         # Will do nothing if spline already has sufficient number of knots
-        # at given position
+        # at given position go to c^-1 extraction
         spline_copy.insert_knots(para_dim, split_plane)
 
-    # Start extraction
-    cps_res = spline_copy.control_mesh_resolutions
     # start and end id. indices correspond to [first dim][first appearance]
     start_id = _np.where(
         abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[0])
         < _settings.TOLERANCE
     )[0][0]
-    end_id = _np.where(
-        abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[-1])
+
+    # Check if boundary
+    if (
+        abs(spline_copy.knot_vectors[para_dim][-1] - split_plane[0])
         < _settings.TOLERANCE
-    )[0][0]
-    para_dim_ids = _np.arange(_np.prod(cps_res))
-    for i_pd in range(para_dim):
-        para_dim_ids -= para_dim_ids % cps_res[i_pd]
-        para_dim_ids = para_dim_ids // cps_res[i_pd]
-    # indices are shifted by one
-    para_dim_ids = para_dim_ids % cps_res[para_dim] + 1
+    ):
+        start_id -= 1
+
+    end_id = (
+        _np.where(
+            abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[-1])
+            < _settings.TOLERANCE
+        )[0][-1]
+        - spline_copy.degrees[para_dim]
+    )
+
+    # Check if boundary
+    if (
+        abs(spline_copy.knot_vectors[para_dim][-1] - split_plane[-1])
+        < _settings.TOLERANCE
+    ):
+        end_id -= 1
+
+    # Use MultiIndex for extraction
+    mi = spline_copy.multi_index
+    indices = [slice(None, None, None) for _ in range(spline_copy.para_dim)]
+    if start_id == end_id:
+        indices[para_dim] = start_id
+    else:
+        indices[para_dim] = slice(start_id, end_id, None)
+    indices = mi[tuple(indices)]
 
     # Return new_spline
     spline_info = {}
-    spline_info["control_points"] = spline_copy.cps[
-        (para_dim_ids >= start_id) & (para_dim_ids <= end_id)
-    ]
+    spline_info["control_points"] = spline_copy.cps[indices]
     spline_info["degrees"] = spline_copy.degrees.tolist()
     if start_id == end_id:
         spline_info["degrees"].pop(para_dim)
-    if not is_bezier:
+    if spline.has_knot_vectors:
         spline_info["knot_vectors"] = spline_copy.knot_vectors.copy()
         if start_id == end_id:
             spline_info["knot_vectors"].pop(para_dim)
         else:
-            start_knot = spline_copy.knot_vectors[para_dim][start_id]
-            knots_in_between = spline_copy.knot_vectors[para_dim][
-                start_id : (end_id + spline_copy.degrees[para_dim])
-            ]
-            end_knot = spline_copy.knot_vectors[para_dim][
-                (end_id + spline_copy.degrees[para_dim] - 1)
-            ]
+            spline_info["knot_vectors"][para_dim] = spline_copy.knot_vectors[
+                para_dim
+            ][start_id : (end_id + spline_copy.degrees[para_dim] + 1)]
 
-            spline_info["knot_vectors"][para_dim] = _np.concatenate(
-                ([start_knot], knots_in_between, [end_knot])
-            )
-
-    if is_rational:
-        spline_info["weights"] = spline_copy.weights[
-            (para_dim_ids >= start_id) & (para_dim_ids <= end_id)
-        ]
+    if spline.is_rational:
+        spline_info["weights"] = spline_copy.weights[indices]
 
     return type(spline)(**spline_info)
 
