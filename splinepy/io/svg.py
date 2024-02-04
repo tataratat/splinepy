@@ -193,7 +193,11 @@ def _export_spline(
       box of the given spline
     """
     from splinepy.helpme.fit import curve as _fit_curve
+    from splinepy.helpme.reparameterize import invert_axes as _invert_axes
     from splinepy.settings import TOLERANCE
+
+    # Maximum number of refinements for approximation
+    MAX_ITERATION = 4
 
     svg_paths = ET.SubElement(
         svg_spline_element,
@@ -209,10 +213,12 @@ def _export_spline(
         )
 
     # Approximation curve-wise
-    def _approximate_curve(spline_copy, tolerance):
-        if spline.degrees[0] <= 3 and not spline.is_rational:
-            spline_copy = spline.copy()
-            spline_copy.elevate_degrees([0] * (3 - spline.degrees[0]))
+    def _approximate_curve(original_spline, tolerance):
+        if original_spline.degrees[0] <= 3 and not (
+            original_spline.is_rational and original_spline.degrees[0] > 1
+        ):
+            spline_copy = original_spline.copy()
+            spline_copy.elevate_degrees([0] * (3 - original_spline.degrees[0]))
         else:
             # Use fit tool to approximate curve
             _warning(
@@ -221,26 +227,44 @@ def _export_spline(
             )
 
             # Queries
-            para_queries = spline.greville_abscissae(
+            para_queries = original_spline.greville_abscissae(
                 duplicate_tolerance=TOLERANCE
             )
 
+            # For rational splines this might be insufficient
+            if original_spline.is_rational and (para_queries.shape[0] < 4):
+                para_queries = np.sort(
+                    np.vstack(
+                        (
+                            para_queries,
+                            np.convolve(
+                                para_queries.ravel(), np.ones(2) * 0.5, "valid"
+                            ).reshape(-1, 1),
+                        )
+                    ),
+                    axis=0,
+                )
+
             # Create knot-vector
-            k_mult = spline.knot_multiplicities[0]
-            k_mult[1:-1] = np.maximum(1, 3 - spline.degrees[0] + k_mult[1:-1])
+            k_mult = original_spline.knot_multiplicities[0]
+            k_mult[1:-1] = np.maximum(
+                1, 3 - original_spline.degrees[0] + k_mult[1:-1]
+            )
             k_mult[0] = 4
             k_mult[-1] = 4
-            new_knot_vector = np.repeat(spline.unique_knots, k_mult)
+            new_knot_vector = np.repeat(original_spline.unique_knots, k_mult)
             residual = 2 * tolerance
             spline_copy, residual = _fit_curve(
-                spline.evaluate(para_queries),
+                original_spline.evaluate(para_queries),
                 degree=3,
                 knot_vector=new_knot_vector,
                 associated_queries=para_queries,
             )
 
             # Refine until approximation is found
-            while residual > tolerance:
+            for _ in range(MAX_ITERATION):
+                if residual < tolerance:
+                    break
                 # Loop until tolerance satisfied
                 para_queries = np.sort(
                     np.vstack(
@@ -267,10 +291,16 @@ def _export_spline(
 
                 # Create better approximation
                 spline_copy, residual = _fit_curve(
-                    spline.evaluate(para_queries),
+                    original_spline.evaluate(para_queries),
                     degree=3,
                     knot_vector=new_knot_vector,
                     associated_queries=para_queries,
+                )
+
+            if residual > tolerance:
+                _warning(
+                    "Requested tolerance could not be reached within maximum"
+                    " number of refinement steps"
                 )
 
         # Sanity check
@@ -291,11 +321,14 @@ def _export_spline(
         # Approximation
         spline_copy = _approximate_curve(spline, tolerance)
         bezier_elements = spline_copy.extract.beziers()
-        path_d = " ".join(
+        path_d = (
+            f"M {bezier_elements[0].cps[0,0]-box_min_x},"
+            f"{box_max_y - bezier_elements[0].cps[0,1]}"
+        )
+        path_d += " ".join(
             [
                 (
-                    f"M {s.cps[0,0]-box_min_x},{box_max_y - s.cps[0,1]} C"
-                    f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
+                    f" C {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
                     f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
                     f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
                 )
@@ -325,9 +358,7 @@ def _export_spline(
                 # - knot_alpha
                 # - knot_c
                 # - knot_lw
-                r, g, b = _get_color(
-                    spline.show_options.get("knot_alpha", "blue")
-                )
+                r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
                 a = spline.show_options.get("knot_alpha", 1.0)
                 dx = spline.show_options.get("knot_lw", 0.02)
                 ET.SubElement(
@@ -341,43 +372,109 @@ def _export_spline(
                 )
 
     elif spline.para_dim == 2:
-        pass
+        # The spline itself is only plottet if the data_name show_option is not
+        # set
+        if spline.show_options.get("data_name", None) is not None:
+            # Plot a scalar field using vedo and export an image
+            pass
+        else:
+            # Extract boundaries
+            spline_boundaries = spline.extract.boundaries()
+
+            # Flip boundaries on boundary 0 and 3
+            _invert_axes(spline_boundaries[0], axes=[0], inplace=True)
+            _invert_axes(spline_boundaries[3], axes=[0], inplace=True)
+
+            bezier_elements = []
+            for i in [2, 1, 3, 0]:
+                spline_copy = _approximate_curve(
+                    spline_boundaries[i], tolerance
+                )
+                bezier_elements += spline_copy.extract.beziers()
+
+            path_d = (
+                f"M {bezier_elements[0].cps[0,0]-box_min_x},"
+                f"{box_max_y - bezier_elements[0].cps[0,1]}"
+            )
+            path_d += " ".join(
+                [
+                    (
+                        f" C"
+                        f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
+                        f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
+                        f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                    )
+                    for s in bezier_elements
+                ]
+            )
+
+            svg_path = ET.SubElement(
+                svg_paths,
+                "path",
+                # draw path
+                d=path_d,
+            )
+            svg_path.attrib["fill"] = (
+                f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
+            )
+            svg_path.attrib["stroke"] = "none"
+
+        # Extract knots
+        if spline.show_options.get("knots", True):
+            # Retrieve options
+            r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
+            a = spline.show_options.get("knot_alpha", 1.0)
+            dx = spline.show_options.get("knot_lw", 0.02)
+
+            # Extract knot lines as splines
+            knot_lines = []
+            for knot in spline.unique_knots[0]:
+                knot_lines.append(spline.extract.spline(0, knot))
+            for knot in spline.unique_knots[1]:
+                knot_lines.append(spline.extract.spline(1, knot))
+
+            # Exports knots in separate group
+            svg_knots = ET.SubElement(
+                svg_paths,
+                "g",
+                id="knots",
+            )
+
+            # Export knots to paths
+            for knot_line in knot_lines:
+                # Approximation and export
+                spline_copy = _approximate_curve(knot_line, tolerance)
+                bezier_elements = spline_copy.extract.beziers()
+                path_d = (
+                    f"M {bezier_elements[0].cps[0,0]-box_min_x},"
+                    f"{box_max_y - bezier_elements[0].cps[0,1]}"
+                )
+                path_d += " ".join(
+                    [
+                        (
+                            f" C {s.cps[1,0]-box_min_x},"
+                            f"{box_max_y - s.cps[1,1]}"
+                            f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
+                            f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                        )
+                        for s in bezier_elements
+                    ]
+                )
+                svg_path = ET.SubElement(
+                    svg_knots,
+                    "path",
+                    # draw path
+                    d=path_d,
+                )
+                svg_path.attrib["fill"] = "none"
+                svg_path.attrib["stroke"] = (
+                    f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
+                )
+                svg_path.attrib["stroke-width"] = str(
+                    spline.show_options.get("lw", 0.01)
+                )
     else:
         raise ValueError("String dimension invalid")
-
-    # Approximation
-    spline_copy = _approximate_curve(spline, tolerance)
-
-    # Relevant options
-    # - c
-    # - alpha
-    # - knots
-
-    # Bezier Extract and join the paths
-    splines = spline_copy.extract.beziers()
-    svg_path = ET.SubElement(
-        svg_paths,
-        "path",
-        # draw path
-        d=" ".join(
-            [
-                (
-                    f"M {s.cps[0,0]-box_min_x},{box_max_y - s.cps[0,1]} C"
-                    f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
-                    f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                    f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
-                )
-                for s in splines
-            ]
-        ),
-    )
-    svg_path.attrib["fill"] = "none"
-    svg_path.attrib["stroke"] = (
-        f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
-    )
-    svg_path.attrib["stroke-width"] = str(spline.show_options.get("lw", 0.01))
-
-    pass
 
 
 def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
@@ -453,12 +550,13 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
     # Write splines in svg file
     for i, spline in enumerate(splines):
         # Put every spline into a new dedicated group
+
         spline_group = ET.SubElement(svg_data, "g", id="spline" + str(i))
-        _export_control_mesh(
-            spline, spline_group, box_min_x, box_max_y, box_margins
-        )
         _export_spline(
             spline, spline_group, box_min_x, box_max_y, tolerance=tolerance
+        )
+        _export_control_mesh(
+            spline, spline_group, box_min_x, box_max_y, box_margins
         )
 
     # Dump into file
