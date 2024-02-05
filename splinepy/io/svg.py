@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 from sys import version as python_version
 
 import numpy as np
-from vedo.colors import get_color as _get_color
 
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
@@ -51,6 +50,8 @@ def _export_control_mesh(
       box margins are currently used to determine the text-offset, more options
       will be added soon
     """
+    from vedo.colors import get_color as _get_color
+
     # First draw all control points
     if not spline.show_options.get("control_points", True):
         return
@@ -337,6 +338,8 @@ def _export_spline(
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
     """
+    from vedo.colors import get_color as _get_color
+
     from splinepy.helpme.fit import curve as _fit_curve
     from splinepy.helpme.reparameterize import invert_axes as _invert_axes
     from splinepy.settings import TOLERANCE
