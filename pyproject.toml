@@ -32,7 +32,7 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.optional-dependencies]
-all = ["gustaf[all]>=0.0.12"]
+all = ["gustaf[all]>=0.0.21"]
 test = ["funi>=0.0.1"]
 
 [tool.scikit-build]
