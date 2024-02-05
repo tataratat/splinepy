@@ -7,7 +7,7 @@ splinepy is a python library for splines of arbitrary dimensions and degrees.
 The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and easy-to-use APIs.
 
 ## Install guide
-splinepy wheels are available for python3.6+ for MacOS, Linux, and Windows:
+splinepy wheels are available for python3.8+ for MacOS, Linux, and Windows:
 ```bash
 # including all optional dependencies
 pip install "splinepy[all]"  # quotation marks required for some shells
