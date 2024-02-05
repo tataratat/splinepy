@@ -26,9 +26,6 @@ void init_knot_insertion_matrix(py::module_&);
 // Exporter
 void init_spline_exporter(py::module_&);
 
-// fitting
-void init_fitting(py::module_&);
-
 // multipatch
 void init_multipatch(py::module_& m);
 
@@ -43,7 +40,6 @@ PYBIND11_MODULE(splinepy_core, m) {
   splinepy::py::init_spline_extensions(m);
   splinepy::py::init_spline_reader(m);
   splinepy::py::init_spline_exporter(m);
-  splinepy::py::init_fitting(m);
   splinepy::py::init_knot_insertion_matrix(m);
   splinepy::py::init_multipatch(m);
 

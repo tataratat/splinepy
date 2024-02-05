@@ -1,6 +1,7 @@
 from splinepy.helpme import (
     create,
     extract,
+    fit,
     integrate,
     mapper,
     multi_index,
@@ -16,4 +17,5 @@ __all__ = [
     "multi_index",
     "permute",
     "visualize",
+    "fit",
 ]
