@@ -15,15 +15,15 @@ classifiers=[
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Natural Language :: English",
     "Topic :: Scientific/Engineering",
 ]
-dependencies = ["numpy", "gustaf>=0.0.12"]
+dependencies = ["numpy", "gustaf>=0.0.22"]
 requires-python = '>=3.7'
 dynamic = ["version"]
 
@@ -32,7 +32,7 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.optional-dependencies]
-all = ["gustaf[all]>=0.0.21"]
+all = ["gustaf[all]>=0.0.22"]
 test = ["funi>=0.0.1"]
 
 [tool.scikit-build]
