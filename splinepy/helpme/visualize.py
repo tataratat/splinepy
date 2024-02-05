@@ -247,20 +247,18 @@ def _sample_spline(spline, res):
     return sp
 
 
-def _process_scalar_field(spline, data_name, sampled_spline, res):
+def _process_scalar_field(spline, data, sampled_spline, res):
     """
     Assuming field data is defined, extracts field value and applies
     to sampled spline.
     """
     # get data name and try to sample scalar field
-    sampled_spline_data = spline.spline_data.as_scalar(
-        data_name, res, default=None
-    )
+    sampled_spline_data = spline.spline_data.as_scalar(data, res, default=None)
 
     # apply sampled data as vertex data to sampled_spline
     if sampled_spline_data is not None:
         # transfer data
-        sampled_spline.vertex_data[data_name] = sampled_spline_data
+        sampled_spline.vertex_data[data] = sampled_spline_data
 
         # transfer options - maybe vectorized query?
         keys = (
@@ -276,10 +274,10 @@ def _process_scalar_field(spline, data_name, sampled_spline, res):
         )
 
         # mark that we want to see this data
-        sampled_spline.show_options["data_name"] = data_name
+        sampled_spline.show_options["data"] = data
 
     else:
-        raise ValueError(f"No spline_data named ({data_name}) for {spline}.")
+        raise ValueError(f"No spline_data named ({data}) for {spline}.")
 
 
 def _process_spline_color(spline, sampled_spline, res):
@@ -302,23 +300,23 @@ def _process_spline_color(spline, sampled_spline, res):
         "lighting", default_lighting
     )
 
-    # process scalar field if data_name is defined
-    data_name = spline.show_options.get("data_name", None)
-    if data_name is not None:
-        _process_scalar_field(spline, data_name, sampled_spline, res)
+    # process scalar field if data is defined
+    data = spline.show_options.get("data", None)
+    if data is not None:
+        _process_scalar_field(spline, data, sampled_spline, res)
 
 
-def _sample_arrow_data(spline, adata_name, sampled_spline, res):
+def _sample_arrow_data(spline, adata, sampled_spline, res):
     """
     Process arrow_data. Also known as vector_data.
     """
     # early exit?
-    if adata_name is None:
+    if adata is None:
         return None
 
     # use getitem to retrieve adapted_adata. this will raise key error if
     # it doesn't exist
-    adapted_adata = spline.spline_data[adata_name]
+    adapted_adata = spline.spline_data[adata]
 
     # if location is specified, this will be a separate Vertices obj with
     # configured arrow_data. Multipatch might just return a multipatch,
@@ -330,7 +328,7 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
     # this case causes conflict of interest. raise
     if has_locations and adata_on:
         raise ValueError(
-            f"arrow_data-({adata_name}) has fixed location, "
+            f"arrow_data-({adata}) has fixed location, "
             "but and `arrow_data_on` is set.",
         )
 
@@ -342,8 +340,8 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
     #         then, add arrow as vertex_data to them
     if not create_vertices:
         # sample arrows and append to sampled spline.
-        sampled_spline.vertex_data[adata_name] = spline.spline_data.as_arrow(
-            adata_name, resolutions=res
+        sampled_spline.vertex_data[adata] = spline.spline_data.as_arrow(
+            adata, resolutions=res
         )
 
         # transfer options to sampled_spline
@@ -375,16 +373,16 @@ def _sample_arrow_data(spline, adata_name, sampled_spline, res):
             ub_diff = queries.max(axis=0) - bounds[1] - _settings.TOLERANCE
             if any(lb_diff < 0) or any(ub_diff > 0):
                 raise ValueError(
-                    f"Given locations for ({adata_name}) are outside the "
+                    f"Given locations for ({adata}) are outside the "
                     f"parametric bounds ({bounds})."
                 )
 
         # get arrow
-        adata = spline.spline_data.as_arrow(adata_name, on=on)
+        adata_values = spline.spline_data.as_arrow(adata, on=on)
 
         # create vertices that can be shown as arrows
         loc_vertices = _Vertices(spline.evaluate(queries))
-        loc_vertices.vertex_data[adata_name] = adata
+        loc_vertices.vertex_data[adata] = adata_values
 
         # transfer options
         keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
