@@ -23,12 +23,10 @@ def _rgb_2_hex(r, g, b):
     Returns
     hex : string
     """
-    return f"#{int(256 * r):02x}{int(256 * g):02x}{int(256 * b):02x}"
+    return f"#{int(255 * r):02x}{int(255 * g):02x}{int(255 * b):02x}"
 
 
-def _export_control_mesh(
-    spline, svg_spline_element, box_min_x, box_max_y, box_margins
-):
+def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     """
     Export a spline's control mesh in svg format using polylines for the mesh
     lines, circles for the control points.
@@ -46,9 +44,6 @@ def _export_control_mesh(
     box_max_y : float/int
       maximum y coordinate of the surrounding box (pictures use LHS coordinate
       system in top left corner)
-    box_margins : float/int
-      box margins are currently used to determine the text-offset, more options
-      will be added soon
     """
     from vedo.colors import get_color as _get_color
 
@@ -163,14 +158,17 @@ def _export_control_mesh(
         svg_control_point_ids.attrib["fill"] = "black"
         svg_control_point_ids.attrib["stroke"] = "none"
 
+        # Text offset
+        dx, dy = 0.0, 0.0
+
         for i, ctp in enumerate(spline.control_points):
             text_element = ET.SubElement(
                 svg_control_point_ids,
                 "text",
                 x=str(ctp[0] - box_min_x),
                 y=str(box_max_y - ctp[1]),
-                dx=str(0.5 * box_margins),
-                dy=str(0.5 * box_margins),
+                dx=str(dx),
+                dy=str(dy),
             )
             text_element.text = str(i)
 
@@ -180,13 +178,11 @@ def _quiver_plot(
     svg_spline_element,
     box_min_x,
     box_max_y,
-    tolerance=None,
+    tolerance=0.0,
     q_width=0.1,
     q_head_width=0.3,
     q_head_length=0.5,
     q_headaxis_length=0.45,
-    positions=None,
-    directions=None,
 ):
     """
     Export a quiver plot using arrows as defined
@@ -209,10 +205,7 @@ def _quiver_plot(
       box margins are currently used to determine the text-offset, more options
       will be added soon
     tolerance : float
-      Splines that can not be represented exactly by cubic B-Splines (i.e.,
-      rationals or high order splines) a tolerance is required for the
-      approximation. Default uses an absolute deviation of 1% of the bounding
-      box of the given spline
+      tolerance as a cut-off length under which no arrow is plotted
     q_width : float
       relative width of the stem of the arrow
     q_head_widt : float
@@ -247,11 +240,10 @@ def _quiver_plot(
     if arrow_data_field is None:
         return
 
-    arrow_data = spline.spline_data.get(arrow_data_field, None)
-    if arrow_data is None:
-        raise ValueError("Requested Arrow Data field not available")
-    # vertex_data = _sample(spline, arrow_data_field,)
-    # a = arrow_data.as_arrow()
+    # Use Arrow Data to retrieve spline data (is already scaled)
+    arrow_data = spline.extract.arrow_data(arrow_data_field)
+    positions = arrow_data.vertices[arrow_data.edges[:, 0]]
+    directions = arrow_data.vertices[arrow_data.edges[:, 1]] - positions
 
     # Discard all points that are below the tolerance
     arrow_length = np.linalg.norm(directions, axis=1)
@@ -277,14 +269,13 @@ def _quiver_plot(
         v_max = np.max(arrow_length)
     cmap_style = spline.show_options.get("cmap", "jet")
     colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
-    arrow_data_scale = spline.show_options.get("arrow_data_scale", 0.5)
 
     # Map arrow control points
     arrow_control_points_ = np.einsum(
-        "nij,ki,n->nkj",
+        "nij,kj,n->nki",
         rotation_matrices,
         default_arrow_control_points_,
-        arrow_length * arrow_data_scale,
+        arrow_length,
     )
 
     # Create a new group
@@ -302,8 +293,9 @@ def _quiver_plot(
             points=" ".join(
                 [
                     str(xx - box_min_x) + "," + str(box_max_y - xy)
-                    for (xx, xy) in arrow_control_points_[i, :, :]
-                    + positions[i, :]
+                    for (xx, xy) in (
+                        arrow_control_points_[i, :, :] + positions[i, :]
+                    )
                 ]
             ),
             style=(f"fill:{_rgb_2_hex(*colors[i])};stroke:none"),
@@ -703,21 +695,13 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         _export_spline(
             spline, spline_group, box_min_x, box_max_y, tolerance=tolerance
         )
-        _export_control_mesh(
-            spline, spline_group, box_min_x, box_max_y, box_margins
+        _quiver_plot(
+            spline=spline,
+            svg_spline_element=spline_group,
+            box_min_x=box_min_x,
+            box_max_y=box_max_y,
         )
-        if spline.para_dim == 2:
-            queries = np.random.random((10, 2))
-            directions = np.random.random((10, 2)) - [0.5, 0.5]
-            _quiver_plot(
-                spline,
-                spline_group,
-                box_min_x,
-                box_max_y,
-                box_margins,
-                positions=spline.evaluate(queries),
-                directions=directions,
-            )
+        _export_control_mesh(spline, spline_group, box_min_x, box_max_y)
 
     # Dump into file
     if int(python_version.split(".")[1]) >= 9 and indent:
