@@ -110,3 +110,11 @@ exclude = "third_party"
 
 [tool.blackdoc]
 line-length = 75
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+console_output_style = "count"
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:jupyter_client",
+]
