@@ -91,7 +91,7 @@ solution_field.control_points[:] = linalg.spsolve(-sp_laplacian, rhs).reshape(
 
 # Plot geometry and field
 geometry.spline_data["field"] = solution_field
-geometry.show_options["data_name"] = "field"
+geometry.show_options["data"] = "field"
 geometry.show_options["cmap"] = "jet"
 geometry.show_options["lighting"] = "off"
 geometry.show_options["scalarbar"] = True

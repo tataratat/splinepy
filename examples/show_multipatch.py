@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # plot scalar data
     m = splinepy.Multipatch([box0, box1, box2, box3])
     m.spline_data["t"] = m
-    m.show_options["data_name"] = "t"
+    m.show_options["data"] = "t"
     m.show_options["lighting"] = "off"
     m.show()
 
@@ -72,6 +72,6 @@ if __name__ == "__main__":
 
     m = generator.create(center_expansion=1.2)
     m.spline_data["detJ"] = splinepy.SplineDataAdaptor(m, function=plot_jacs)
-    m.show_options["data_name"] = "detJ"
+    m.show_options["data"] = "detJ"
     m.show_options["lighting"] = "off"
     m.show()
