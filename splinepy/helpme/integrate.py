@@ -31,7 +31,7 @@ def volume(spline, orders=None):
 
     # Check i_nput type
     if not isinstance(spline, _Spline):
-        raise NotImplementedError("Extrude only works for splines")
+        raise NotImplementedError("volume integration only works for splines")
 
     # Determine integration points
     positions = []
