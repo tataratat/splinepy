@@ -974,7 +974,7 @@ class Creator:
         return determinant_spline(self._helpee, *args, **kwargs)
 
 
-# Use function docstrings in Extractor functions
+# Use function docstrings in Creator functions
 Creator.extruded.__doc__ = extruded.__doc__
 Creator.revolved.__doc__ = revolved.__doc__
 Creator.parametric_view.__doc__ = parametric_view.__doc__

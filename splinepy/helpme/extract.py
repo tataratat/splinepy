@@ -3,10 +3,13 @@ from gustaf import Edges as _Edges
 from gustaf import Faces as _Faces
 from gustaf import Vertices as _Vertices
 from gustaf import Volumes as _Volumes
+from gustaf.create.edges import from_data as _from_data
 from gustaf.utils import connec as _connec
 from gustaf.utils.arr import enforce_len as _enforce_len
 
 from splinepy import settings as _settings
+from splinepy.helpme import visualize as _visualize
+from splinepy.utils import log as _log
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
@@ -116,6 +119,30 @@ def edges(
         return _Edges.concat(temp_edges)
 
 
+def _uniform_3d_faces(spline, res):
+    # Extract boundaries and sample from boundaries
+    if isinstance(spline, _settings.NAME_TO_TYPE["Multipatch"]):
+        boundaries = spline.boundary_multipatch()
+    else:
+        boundaries = _settings.NAME_TO_TYPE["Multipatch"](
+            splines=spline.extract.boundaries()
+        )
+
+    n_faces = (res - 1) ** 2
+    vertices = res**2
+    f_loc = _connec.make_quad_faces(_enforce_len(res, 2))
+    face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
+
+    # Create Connectivity for Multipatches
+    for i in range(len(boundaries.patches)):
+        face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+            i * vertices
+        )
+
+    # make faces and merge vertices before returning
+    return _Faces(vertices=boundaries.sample(res), faces=face_connectivity)
+
+
 def faces(
     spline,
     resolution,
@@ -165,28 +192,24 @@ def faces(
         )
 
     elif spline.para_dim == 3:
-        # Extract boundaries and sample from boundaries
-        if isinstance(spline, _Multipatch):
-            boundaries = spline.boundary_multipatch()
+        full_res = _enforce_len(resolution, spline.para_dim)
+        if (full_res[0] == full_res[1] == full_res[2]) or isinstance(
+            spline, _Multipatch
+        ):
+            faces = _uniform_3d_faces(spline, int(max(full_res)))
         else:
-            boundaries = _Multipatch(splines=spline.extract.boundaries())
+            # single patch should support varying resolution sample
+            b_faces = []
+            for i, bs in enumerate(spline.extract.boundaries()):
+                res = full_res.tolist()
+                pop_dim = i // 2
+                res.pop(pop_dim)
 
-        res = resolution if isinstance(resolution, int) else max(resolution)
-        n_faces = (res - 1) ** 2
-        vertices = res**2
-        f_loc = _connec.make_quad_faces(_enforce_len(res, 2))
-        face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
+                b_faces.append(
+                    _Faces(bs.sample(res), _connec.make_quad_faces(res))
+                )
 
-        # Create Connectivity for Multipatches
-        for i in range(len(boundaries.patches)):
-            face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
-                i * vertices
-            )
-
-        # make faces and merge vertices before returning
-        faces = _Faces(
-            vertices=boundaries.sample(resolution), faces=face_connectivity
-        )
+            faces = _Faces.concat(b_faces)
 
     else:
         raise ValueError("Invalid spline to make faces.")
@@ -526,6 +549,61 @@ def boundaries(spline, boundary_ids=None):
         ]
 
 
+def arrow_data(spline, adata_name):
+    """
+    Creates edges that represent arrow_data.
+    This function respects entries in show_options.
+
+    Parameters
+    ----------
+    spline: Spline
+    adata_name: str
+
+    Returns
+    -------
+    adata_edges: gus.Edges
+    """
+    if adata_name not in spline.spline_data:
+        raise KeyError(
+            f"given splines does not have arrow data - {adata_name}."
+        )
+
+    default_res = 10 if spline.name.startswith("Multi") else 100
+    res = spline.show_options.get("resolutions", default_res)
+    sampled_spline = _visualize._sample_spline(spline, res)
+
+    adata = _visualize._sample_arrow_data(
+        spline, adata_name, sampled_spline, _enforce_len(res, spline.para_dim)
+    )
+
+    # if `on` is specified, arrow_data will be a vertices, else it's processed
+    # within sampled_spline
+    gus_mesh = sampled_spline if adata is None else adata
+
+    arrow_data_value = gus_mesh.vertex_data.as_arrow(adata_name, None, True)
+
+    # if data and origin does not have save dimension, they can't be
+    # represented as edges.
+    # We can either raise error or return gus_mesh. We will do the latter
+    # One can extract origin and value using gus_mesh.vertices and
+    # gus_mesh.vertex_data[adata_name]
+    if arrow_data_value.shape[1] != spline.dim:
+        _log.warning(
+            "dimension mismatch between arrow_data and spline."
+            "returning sampled mesh as is (not as gus.Edges)."
+        )
+        return gus_mesh
+
+    as_edges = _from_data(
+        gus_mesh,
+        arrow_data_value,
+        gus_mesh.show_options.get("arrow_data_scale", None),
+        data_norm=gus_mesh.vertex_data.as_scalar(adata),
+    )
+
+    return as_edges
+
+
 class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
@@ -620,6 +698,9 @@ class Extractor:
             return spline_copy
         else:
             return spline(self._helpee, splitting_plane, interval)
+
+    def arrow_data(self, *args, **kwargs):
+        return arrow_data(self._helpee, *args, **kwargs)
 
 
 # Use function docstrings in Extractor functions

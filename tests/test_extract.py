@@ -363,6 +363,84 @@ class extractTest(c.unittest.TestCase):
         list_of_boundaries = bez_el0.extract.boundaries()[0]
         self.assertTrue(c.are_splines_equal(list_of_boundaries, boundary_0))
 
+    def test_extract_arrow_data(self):
+        """
+        see if arrow_data is created as we wished
+        """
+        spline = c.splinepy.helpme.create.box(10, 20, 30)
+        # try to avoid zero division below
+        spline.cps -= 0.0001
+
+        # set self data and resolutions
+        spline.spline_data["me"] = spline
+        res = [11, 13, 17]
+        spline.show_options["resolutions"] = res
+
+        # 1. check number of edges
+        me_edges = spline.extract.arrow_data("me")
+        assert isinstance(me_edges, c.gus.Edges)
+        # 3d should give you arrows on the faces
+        total = 0
+        for i in range(spline.para_dim):
+            r = res.copy()
+            r.pop(i)
+            total += c.np.prod(r) * 2
+
+        assert len(me_edges.edges) == total
+
+        # 2. check if they point to the direction they need to point
+        def check_values(a, b):
+            # normalize - this may do some zero division
+            a /= c.np.linalg.norm(a, axis=1).reshape(-1, 1)
+            b /= c.np.linalg.norm(b, axis=1).reshape(-1, 1)
+            a[c.np.isnan(a)] = 0
+            b[c.np.isnan(b)] = 0
+
+            assert c.np.allclose(a, b)
+
+        direction = c.np.diff(
+            me_edges.vertices[me_edges.edges], axis=1
+        ).reshape(-1, me_edges.vertices.shape[1])
+        sample = spline.extract.faces(res, watertight=False).vertices
+
+        check_values(direction, sample)
+
+        # 3. do the same with locations
+        locations = c.np.random.random((10, 3))
+        spline.spline_data["me_at"] = c.splinepy.SplineDataAdaptor(
+            spline, locations=locations
+        )
+        me_at_edges = spline.extract.arrow_data("me_at")
+
+        # 3.1 len test
+        assert isinstance(me_at_edges, c.gus.Edges)
+        assert len(me_at_edges.edges) == len(locations)
+
+        # 3.2 arrow validity
+        direction = c.np.diff(
+            me_at_edges.vertices[me_at_edges.edges], axis=1
+        ).reshape(-1, me_at_edges.vertices.shape[1])
+        sample = spline.evaluate(locations)
+
+        check_values(direction, sample)
+
+        # 4. at last, scaling
+        spline.show_options["arrow_data_scale"] = 200
+        me_at_edges = spline.extract.arrow_data("me_at")
+
+        # 3.1 len test
+        assert isinstance(me_at_edges, c.gus.Edges)
+        assert len(me_at_edges.edges) == len(locations)
+
+        # 3.2 arrow validity
+        direction = c.np.diff(
+            me_at_edges.vertices[me_at_edges.edges], axis=1
+        ).reshape(-1, me_at_edges.vertices.shape[1])
+        sample = spline.evaluate(locations)
+        assert c.np.allclose(
+            direction, sample * spline.show_options["arrow_data_scale"]
+        )
+
 
 if __name__ == "__main__":
     c.unittest.main()
