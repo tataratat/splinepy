@@ -8,6 +8,25 @@ from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
 
 
+def _rgb_2_hex(r, g, b):
+    """
+    Helper function to convert (r,g,b) to hex format
+
+    Parameters
+    ----------
+    r : float [0,1]
+      red value
+    g : float [0,1]
+      green value
+    b : float [0,1]
+      blue value
+
+    Returns
+    hex : string
+    """
+    return f"#{int(256 * r):02x}{int(256 * g):02x}{int(256 * b):02x}"
+
+
 def _export_control_mesh(
     spline, svg_spline_element, box_min_x, box_max_y, box_margins
 ):
@@ -54,7 +73,7 @@ def _export_control_mesh(
         svg_mesh,
         "g",
         id="control_points",
-        fill=f"rgba({100*r}%,{100*g}%,{100*b}%,{100*a}%)",
+        style=f"fill:{_rgb_2_hex(r, b, g)};fill-opacity:{a}",
     )
 
     for ctp in spline.control_points:
@@ -68,27 +87,23 @@ def _export_control_mesh(
 
     # Then connect the points using a control mesh
     if spline.show_options.get("control_mesh", True):
-        # Retrieve options
+        # Relevant options:
+        # - control_mesh_c
+        # - control_mesh_lw
+        # - control_mesh_alpha (tbd)
         r, g, b = _get_color(spline.show_options.get("control_mesh_c", "red"))
         a = spline.show_options.get("control_mesh_alpha", 1.0)
+        stroke_width = spline.show_options.get("control_mesh_lw", 0.01)
 
         # Create a new group
         svg_mesh_polylines = ET.SubElement(
             svg_mesh,
             "g",
             id="mesh",
-        )
-
-        # Relevant options:
-        # - control_mesh_c
-        # - control_mesh_lw
-        # - control_mesh_alpha (tbd)
-        svg_mesh_polylines.attrib["fill"] = "none"
-        svg_mesh_polylines.attrib[
-            "stroke"
-        ] = f"rgba({100*r}%,{100*g}%,{100*b}%,{100*a}%)"
-        svg_mesh_polylines.attrib["stroke-width"] = spline.show_options.get(
-            "control_mesh_lw", ".01"
+            style=(
+                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                f"stroke-width:{stroke_width}"
+            ),
         )
 
         # Draw the actual lines
@@ -160,7 +175,7 @@ def _export_control_mesh(
 
 
 def _quiver_plot(
-    # spline,
+    spline,
     svg_spline_element,
     box_min_x,
     box_max_y,
@@ -205,10 +220,13 @@ def _quiver_plot(
       relative length of the head of the arrow
     q_headaxis_length : float
       relative arrow length of the head wings
-    %%%%%%%%
-    Temporary variables (to be deleted)
 
+    Returns
+    -------
+    None
     """
+    from vedo import color_map as _color_map
+
     # Create a default arrow along x-axis with length 1 that will be scaled
     # down accordingly
     default_arrow_control_points_ = np.array(
@@ -222,6 +240,17 @@ def _quiver_plot(
             [0, q_width],
         ]
     ) * [1, 0.5]
+
+    # Obtain Data to be plotted
+    arrow_data_field = spline.show_options.get("arrow_data", None)
+    if arrow_data_field is None:
+        return
+
+    arrow_data = spline.spline_data.get(arrow_data_field, None)
+    if arrow_data is None:
+        raise ValueError("Requested Arrow Data field not available")
+    # vertex_data = _sample(spline, arrow_data_field,)
+    # a = arrow_data.as_arrow()
 
     # Discard all points that are below the tolerance
     arrow_length = np.linalg.norm(directions, axis=1)
@@ -238,12 +267,23 @@ def _quiver_plot(
     rotation_matrices[:, 0, 1] = -rotation_matrices[:, 1, 0]
     rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
 
+    # Retrieve information on colors and values
+    v_min = spline.show_options.get("vmin", None)
+    if v_min is None:
+        v_min = np.min(arrow_length)
+    v_max = spline.show_options.get("vmax", None)
+    if v_min is None:
+        v_max = np.max(arrow_length)
+    cmap_style = spline.show_options.get("cmap", "jet")
+    colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
+    arrow_data_scale = spline.show_options.get("arrow_data_scale", 0.5)
+
     # Map arrow control points
     arrow_control_points_ = np.einsum(
         "nij,ki,n->nkj",
         rotation_matrices,
         default_arrow_control_points_,
-        arrow_length,
+        arrow_length * arrow_data_scale,
     )
 
     # Create a new group
@@ -255,7 +295,7 @@ def _quiver_plot(
 
     # Loop over control points and write them into a group
     for i in range(arrow_length.shape[0]):
-        svg_arrow = ET.SubElement(
+        ET.SubElement(
             svg_quiver,
             "polyline",
             points=" ".join(
@@ -265,10 +305,8 @@ def _quiver_plot(
                     + positions[i, :]
                 ]
             ),
+            style=(f"fill:{_rgb_2_hex(*colors[i])};stroke:none"),
         )
-        # We want color here (can directly be added as attribute)
-        svg_arrow.attrib["fill"] = "black"
-        svg_arrow.attrib["stroke"] = "none"
 
 
 def _export_spline(
@@ -444,18 +482,15 @@ def _export_spline(
                 for s in bezier_elements
             ]
         )
-        svg_path = ET.SubElement(
+        ET.SubElement(
             svg_paths,
             "path",
             # draw path
             d=path_d,
-        )
-        svg_path.attrib["fill"] = "none"
-        svg_path.attrib["stroke"] = (
-            f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
-        )
-        svg_path.attrib["stroke-width"] = str(
-            spline.show_options.get("lw", 0.01)
+            style=(
+                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                f"stroke-width:{spline.show_options.get('lw', 0.01)}"
+            ),
         )
 
         # Plot knots as rectangles
@@ -470,14 +505,18 @@ def _export_spline(
                 r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
                 a = spline.show_options.get("knot_alpha", 1.0)
                 dx = spline.show_options.get("knot_lw", 0.02)
+
                 ET.SubElement(
                     svg_paths,
                     "rect",
-                    fill=f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)",
                     x=str(x - box_min_x - 0.5 * dx),
                     y=str(box_max_y - y - 0.5 * dx),
                     height=str(dx),
                     width=str(dx),
+                    style=(
+                        f"fill:{_rgb_2_hex(r,g,b)};stroke:none;"
+                        f"fill-opacity:{a};"
+                    ),
                 )
 
     elif spline.para_dim == 2:
@@ -517,16 +556,15 @@ def _export_spline(
                 ]
             )
 
-            svg_path = ET.SubElement(
+            ET.SubElement(
                 svg_paths,
                 "path",
                 # draw path
                 d=path_d,
+                style=(
+                    f"fill:{_rgb_2_hex(r,g,b)};fill-opacity:{a};stroke:none"
+                ),
             )
-            svg_path.attrib["fill"] = (
-                f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
-            )
-            svg_path.attrib["stroke"] = "none"
 
         # Extract knots
         if spline.show_options.get("knots", True):
@@ -569,18 +607,16 @@ def _export_spline(
                         for s in bezier_elements
                     ]
                 )
-                svg_path = ET.SubElement(
+                ET.SubElement(
                     svg_knots,
                     "path",
                     # draw path
                     d=path_d,
-                )
-                svg_path.attrib["fill"] = "none"
-                svg_path.attrib["stroke"] = (
-                    f"rgba({100*r}%,{100*g}%" f",{100*b}%,{100*a}%)"
-                )
-                svg_path.attrib["stroke-width"] = str(
-                    spline.show_options.get("lw", 0.01)
+                    style=(
+                        f"fill:none;stroke:{_rgb_2_hex(r,g,b)};"
+                        f"stroke-opacity:{a};"
+                        f"stroke-width:{spline.show_options.get('lw', 0.01)}"
+                    ),
                 )
     else:
         raise ValueError("String dimension invalid")
