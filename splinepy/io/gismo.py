@@ -49,10 +49,10 @@ def _spline_to_ET(
         return
 
     if fields_only and field_mask is not None:
-        if not isinstance(field_mask, (list, np.ndarray)):
+        if not isinstance(field_mask, (list, _np.ndarray)):
             raise ValueError("field_mask must be list of integers")
-        field_mask = np.unique(
-            enforce_contiguous(field_mask, dtype=np.int64, asarray=True)
+        field_mask = _np.unique(
+            _enforce_contiguous(field_mask, dtype=_np.int64, asarray=True)
         )
 
         # Check if range is valid
@@ -241,8 +241,9 @@ def export(
       'attributes'->dictionary (optional), 'children'->list in the same format
       (optional)
     export_fields : bool
-      Export fields to separate files ending with field<id>.xml, e.g.,
-      filename.xml.field.xml
+      Export fields to separate file ending with fields.xml, e.g.,
+      filename.xml.fields.xml. Only non-zero splines are exported to save
+      memory
     field_mask : list
       Selection of active fields that are exported (to save memory and speed up
       export)
