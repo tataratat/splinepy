@@ -119,6 +119,30 @@ def edges(
         return _Edges.concat(temp_edges)
 
 
+def _uniform_3d_faces(spline, res):
+    # Extract boundaries and sample from boundaries
+    if isinstance(spline, _settings.NAME_TO_TYPE["Multipatch"]):
+        boundaries = spline.boundary_multipatch()
+    else:
+        boundaries = _settings.NAME_TO_TYPE["Multipatch"](
+            splines=spline.extract.boundaries()
+        )
+
+    n_faces = (res - 1) ** 2
+    vertices = res**2
+    f_loc = _connec.make_quad_faces(_enforce_len(res, 2))
+    face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
+
+    # Create Connectivity for Multipatches
+    for i in range(len(boundaries.patches)):
+        face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
+            i * vertices
+        )
+
+    # make faces and merge vertices before returning
+    return _Faces(vertices=boundaries.sample(res), faces=face_connectivity)
+
+
 def faces(
     spline,
     resolution,
@@ -168,28 +192,24 @@ def faces(
         )
 
     elif spline.para_dim == 3:
-        # Extract boundaries and sample from boundaries
-        if isinstance(spline, _Multipatch):
-            boundaries = spline.boundary_multipatch()
+        full_res = _enforce_len(resolution, spline.para_dim)
+        if (full_res[0] == full_res[1] == full_res[2]) or isinstance(
+            spline, _Multipatch
+        ):
+            faces = _uniform_3d_faces(spline, int(max(full_res)))
         else:
-            boundaries = _Multipatch(splines=spline.extract.boundaries())
+            # single patch should support varying resolution sample
+            b_faces = []
+            for i, bs in enumerate(spline.extract.boundaries()):
+                res = full_res.tolist()
+                pop_dim = i // 2
+                res.pop(pop_dim)
 
-        res = resolution if isinstance(resolution, int) else max(resolution)
-        n_faces = (res - 1) ** 2
-        vertices = res**2
-        f_loc = _connec.make_quad_faces(_enforce_len(res, 2))
-        face_connectivity = _np.empty((n_faces * len(boundaries.patches), 4))
+                b_faces.append(
+                    _Faces(bs.sample(res), _connec.make_quad_faces(res))
+                )
 
-        # Create Connectivity for Multipatches
-        for i in range(len(boundaries.patches)):
-            face_connectivity[i * n_faces : (i + 1) * n_faces] = f_loc + (
-                i * vertices
-            )
-
-        # make faces and merge vertices before returning
-        faces = _Faces(
-            vertices=boundaries.sample(resolution), faces=face_connectivity
-        )
+            faces = _Faces.concat(b_faces)
 
     else:
         raise ValueError("Invalid spline to make faces.")
@@ -552,13 +572,13 @@ def arrow_data(spline, adata_name):
     res = spline.show_options.get("resolutions", default_res)
     sampled_spline = _visualize._sample_spline(spline, res)
 
-    arrow_data = _visualize._sample_arrow_data(
+    adata = _visualize._sample_arrow_data(
         spline, adata_name, sampled_spline, _enforce_len(res, spline.para_dim)
     )
 
     # if `on` is specified, arrow_data will be a vertices, else it's processed
     # within sampled_spline
-    gus_mesh = sampled_spline if arrow_data is None else arrow_data
+    gus_mesh = sampled_spline if adata is None else adata
 
     arrow_data_value = gus_mesh.vertex_data.as_arrow(adata_name, None, True)
 
@@ -578,7 +598,7 @@ def arrow_data(spline, adata_name):
         gus_mesh,
         arrow_data_value,
         gus_mesh.show_options.get("arrow_data_scale", None),
-        data_norm=gus_mesh.vertex_data.as_scalar(arrow_data),
+        data_norm=gus_mesh.vertex_data.as_scalar(adata),
     )
 
     return as_edges
