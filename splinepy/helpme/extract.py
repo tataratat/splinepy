@@ -3,10 +3,13 @@ from gustaf import Edges as _Edges
 from gustaf import Faces as _Faces
 from gustaf import Vertices as _Vertices
 from gustaf import Volumes as _Volumes
+from gustaf.create.edges import from_data as _from_data
 from gustaf.utils import connec as _connec
 from gustaf.utils.arr import enforce_len as _enforce_len
 
 from splinepy import settings as _settings
+from splinepy.helpme import visualize as _visualize
+from splinepy.utils import log as _log
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
@@ -526,6 +529,61 @@ def boundaries(spline, boundary_ids=None):
         ]
 
 
+def arrow_data(spline, adata_name):
+    """
+    Creates edges that represent arrow_data.
+    This function respects entries in show_options.
+
+    Parameters
+    ----------
+    spline: Spline
+    adata_name: str
+
+    Returns
+    -------
+    adata_edges: gus.Edges
+    """
+    if adata_name not in spline.spline_data:
+        raise KeyError(
+            f"given splines does not have arrow data - {adata_name}."
+        )
+
+    default_res = 10 if spline.name.startswith("Multi") else 100
+    res = spline.show_options.get("resolutions", default_res)
+    sampled_spline = _visualize._sample_spline(spline, res)
+
+    arrow_data = _visualize._sample_arrow_data(
+        spline, adata_name, sampled_spline, _enforce_len(res, spline.para_dim)
+    )
+
+    # if `on` is specified, arrow_data will be a vertices, else it's processed
+    # within sampled_spline
+    gus_mesh = sampled_spline if arrow_data is None else arrow_data
+
+    arrow_data_value = gus_mesh.vertex_data.as_arrow(adata_name, None, True)
+
+    # if data and origin does not have save dimension, they can't be
+    # represented as edges.
+    # We can either raise error or return gus_mesh. We will do the latter
+    # One can extract origin and value using gus_mesh.vertices and
+    # gus_mesh.vertex_data[adata_name]
+    if arrow_data_value.shape[1] != spline.dim:
+        _log.warning(
+            "dimension mismatch between arrow_data and spline."
+            "returning sampled mesh as is (not as gus.Edges)."
+        )
+        return gus_mesh
+
+    as_edges = _from_data(
+        gus_mesh,
+        arrow_data_value,
+        gus_mesh.show_options.get("arrow_data_scale", None),
+        data_norm=gus_mesh.vertex_data.as_scalar(arrow_data),
+    )
+
+    return as_edges
+
+
 class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
@@ -620,6 +678,9 @@ class Extractor:
             return spline_copy
         else:
             return spline(self._helpee, splitting_plane, interval)
+
+    def arrow_data(self, *args, **kwargs):
+        return arrow_data(self._helpee, *args, **kwargs)
 
 
 # Use function docstrings in Extractor functions
