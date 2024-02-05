@@ -10,6 +10,7 @@ from the root of the project.
 
 Author: Clemens Fricke
 """
+
 import os
 import pathlib
 import re

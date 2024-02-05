@@ -1,5 +1,6 @@
 """Call all *.py files in the working directory.
 """
+
 import glob
 import itertools
 import pathlib

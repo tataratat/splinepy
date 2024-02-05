@@ -2,6 +2,7 @@
 Helps you map derivatives of fields and basis function into the physical
 (image) domain
 """
+
 import numpy as _np
 
 from splinepy import utils as _utils
@@ -184,13 +185,13 @@ class Mapper(_SplinepyBase):
             )
             for i in range(self._para_dim):
                 for j in range(i, self._para_dim):
-                    bf_hessians[
-                        :, :, i, j
-                    ] = self._field_reference.basis_derivative(
-                        queries=queries,
-                        orders=_np.eye(1, M=self._para_dim, k=i)
-                        + _np.eye(1, M=self._para_dim, k=j),
-                        nthreads=nthreads,
+                    bf_hessians[:, :, i, j] = (
+                        self._field_reference.basis_derivative(
+                            queries=queries,
+                            orders=_np.eye(1, M=self._para_dim, k=i)
+                            + _np.eye(1, M=self._para_dim, k=j),
+                            nthreads=nthreads,
+                        )
                     )
                     if i != j:
                         bf_hessians[:, :, j, i] = bf_hessians[:, :, i, j]
@@ -206,13 +207,13 @@ class Mapper(_SplinepyBase):
             )
             for i in range(self._para_dim):
                 for j in range(i, self._geometry_reference.para_dim):
-                    geo_hessians[
-                        :, :, i, j
-                    ] = self._geometry_reference.derivative(
-                        queries=queries,
-                        orders=_np.eye(1, M=self._para_dim, k=i)
-                        + _np.eye(1, M=self._para_dim, k=j),
-                        nthreads=nthreads,
+                    geo_hessians[:, :, i, j] = (
+                        self._geometry_reference.derivative(
+                            queries=queries,
+                            orders=_np.eye(1, M=self._para_dim, k=i)
+                            + _np.eye(1, M=self._para_dim, k=j),
+                            nthreads=nthreads,
+                        )
                     )
                     if i != j:
                         geo_hessians[:, :, j, i] = geo_hessians[:, :, i, j]

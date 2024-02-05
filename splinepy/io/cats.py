@@ -3,6 +3,7 @@ xml io.
 Keyword follows RWTH CATS's spline format.
 Possibly will be turned into pure python io.
 """
+
 import xml.etree.ElementTree as _ET
 from sys import version as _python_version
 

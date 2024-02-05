@@ -1,6 +1,7 @@
 """
 Abstract Spline
 """
+
 import copy as _copy
 import os as _os
 

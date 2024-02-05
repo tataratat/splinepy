@@ -541,9 +541,9 @@ def surface(
         interpolate_endpoints=interpolate_endpoints,
     )
 
-    interim_control_points[
-        mi_interim_cps[:, 0]
-    ] = fitted_spline_u.control_points
+    interim_control_points[mi_interim_cps[:, 0]] = (
+        fitted_spline_u.control_points
+    )
 
     for v in range(1, size[1]):
         # previously fitted spline is used for the other fits
@@ -555,9 +555,9 @@ def surface(
             interpolate_endpoints=interpolate_endpoints,
         )
         # cps in u direction (later fitted in v direction)
-        interim_control_points[
-            mi_interim_cps[:, v]
-        ] = fitted_spline_u.control_points
+        interim_control_points[mi_interim_cps[:, v]] = (
+            fitted_spline_u.control_points
+        )
 
     # curve fit for every k in n_control_points_u
     residual_v = _np.empty(n_control_points[0])
@@ -574,9 +574,9 @@ def surface(
         interpolate_endpoints=interpolate_endpoints,
     )
 
-    interim_control_points[
-        mi_interim_cps[0, : n_control_points[1]]
-    ] = fitted_spline_v.control_points
+    interim_control_points[mi_interim_cps[0, : n_control_points[1]]] = (
+        fitted_spline_v.control_points
+    )
 
     for u in range(1, n_control_points[0]):
         # previously fitted spline is used for the other fits
@@ -588,9 +588,9 @@ def surface(
             interpolate_endpoints=interpolate_endpoints,
         )
 
-        interim_control_points[
-            mi_interim_cps[u, : n_control_points[1]]
-        ] = fitted_spline_v.control_points
+        interim_control_points[mi_interim_cps[u, : n_control_points[1]]] = (
+            fitted_spline_v.control_points
+        )
 
     fitted_spline = _settings.NAME_TO_TYPE["BSpline"](
         degrees=degrees,
