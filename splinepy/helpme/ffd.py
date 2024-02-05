@@ -290,7 +290,7 @@ class FFD(_SplinepyBase):
             raise ValueError("Please set a mesh before calling show()")
         return_showable = kwargs.pop("return_showable", False)
         return_gustaf = kwargs.pop("return_gustaf", False)
-        title = kwargs.pop("title", "gustaf - FFD")
+        title = kwargs.pop("title", "FFD")
 
         if return_gustaf and return_showable:
             raise ValueError(

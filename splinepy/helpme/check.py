@@ -70,8 +70,14 @@ class Checker:
       Parent spline, that is to be checked
     """
 
+    __slots__ = ("_helpee",)
+
     def __init__(self, spl):
-        self._spline = spl
+        self._helpee = spl
 
     def valid_queries(self, queries):
-        return valid_queries(self._spline, queries)
+        return valid_queries(self._helpee, queries)
+
+
+# Use function docstrings in Checker functions
+Checker.valid_queries.__doc__ = valid_queries.__doc__

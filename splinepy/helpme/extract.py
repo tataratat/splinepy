@@ -535,37 +535,39 @@ class Extractor:
     >>> spline_faces = my_spline.extract.faces()
     """
 
+    __slots__ = ("_helpee",)
+
     def __init__(self, spl):
         from splinepy import Multipatch as _Multipatch
         from splinepy import Spline as _Spline
 
         if not isinstance(spl, (_Spline, _Multipatch)):
             raise ValueError("Extractor expects a Spline or Multipatch type")
-        self._spline = spl
+        self._helpee = spl
 
     def edges(self, *args, **kwargs):
-        return edges(self._spline, *args, **kwargs)
+        return edges(self._helpee, *args, **kwargs)
 
     def faces(self, *args, **kwargs):
-        return faces(self._spline, *args, **kwargs)
+        return faces(self._helpee, *args, **kwargs)
 
     def volumes(self, *args, **kwargs):
-        return volumes(self._spline, *args, **kwargs)
+        return volumes(self._helpee, *args, **kwargs)
 
     def control_points(self):
-        return control_points(self._spline)
+        return control_points(self._helpee)
 
     def control_edges(self):
-        return control_edges(self._spline)
+        return control_edges(self._helpee)
 
     def control_faces(self):
-        return control_faces(self._spline)
+        return control_faces(self._helpee)
 
     def control_volumes(self):
-        return control_volumes(self._spline)
+        return control_volumes(self._helpee)
 
     def control_mesh(self):
-        return control_mesh(self._spline)
+        return control_mesh(self._helpee)
 
     def beziers(self):
         """
@@ -581,12 +583,12 @@ class Extractor:
           List of all individual bezier patches representing the non-zero
           knot-spans
         """
-        if not self._spline.has_knot_vectors:
-            return [self._spline]
-        return self._spline.extract_bezier_patches()
+        if not self._helpee.has_knot_vectors:
+            return [self._helpee]
+        return self._helpee.extract_bezier_patches()
 
     def boundaries(self, *args, **kwargs):
-        return boundaries(self._spline, *args, **kwargs)
+        return boundaries(self._helpee, *args, **kwargs)
 
     def spline(self, splitting_plane=None, interval=None):
         """Extract a spline from a spline.
@@ -612,12 +614,12 @@ class Extractor:
             splitting_plane = dict(
                 sorted(splitting_plane.items(), key=lambda x: x[0])[::-1]
             )
-            spline_copy = self._spline.copy()
+            spline_copy = self._helpee.copy()
             for key, item in splitting_plane.items():
                 spline_copy = spline(spline_copy, key, item)
             return spline_copy
         else:
-            return spline(self._spline, splitting_plane, interval)
+            return spline(self._helpee, splitting_plane, interval)
 
 
 # Use function docstrings in Extractor functions

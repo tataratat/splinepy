@@ -956,20 +956,22 @@ class Creator:
     >>> spline_faces = my_spline.create.extrude(vector=[3, 1, 3])
     """
 
+    __slots__ = ("_helpee",)
+
     def __init__(self, spl):
-        self.spline = spl
+        self._helpee = spl
 
     def extruded(self, *args, **kwargs):
-        return extruded(self.spline, *args, **kwargs)
+        return extruded(self._helpee, *args, **kwargs)
 
     def revolved(self, *args, **kwargs):
-        return revolved(self.spline, *args, **kwargs)
+        return revolved(self._helpee, *args, **kwargs)
 
     def parametric_view(self, *args, **kwargs):
-        return parametric_view(self.spline, *args, **kwargs)
+        return parametric_view(self._helpee, *args, **kwargs)
 
     def determinant_spline(self, *args, **kwargs):
-        return determinant_spline(self.spline, *args, **kwargs)
+        return determinant_spline(self._helpee, *args, **kwargs)
 
 
 # Use function docstrings in Extractor functions

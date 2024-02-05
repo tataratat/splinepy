@@ -30,7 +30,7 @@ def volume(spline, orders=None):
 
     # Check i_nput type
     if not isinstance(spline, _Spline):
-        raise NotImplementedError("Extrude only works for splines")
+        raise NotImplementedError("volume integration only works for splines")
 
     # Determine integration points
     positions = []
@@ -125,8 +125,10 @@ class Integrator:
       Spline parent
     """
 
+    __slots__ = ("_helpee",)
+
     def __init__(self, spl):
-        self.spline = spl
+        self._helpee = spl
 
     def volume(self, *args, **kwargs):
-        return volume(self.spline, *args, **kwargs)
+        return volume(self._helpee, *args, **kwargs)
