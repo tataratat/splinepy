@@ -1,4 +1,5 @@
 import numpy as _np
+from gustaf.helpers._base import HelperBase as _HelperBase
 from gustaf.utils import arr as _arr
 
 from splinepy import settings as _settings
@@ -948,7 +949,7 @@ def pyramid(width, length, height):
     return p
 
 
-class Creator:
+class Creator(_HelperBase):
     """Helper class to build new splines from existing geometries.
 
     Examples
@@ -956,20 +957,22 @@ class Creator:
     >>> spline_faces = my_spline.create.extrude(vector=[3, 1, 3])
     """
 
+    __slots__ = ()
+
     def __init__(self, spl):
-        self.spline = spl
+        self._helpee = spl
 
     def extruded(self, *args, **kwargs):
-        return extruded(self.spline, *args, **kwargs)
+        return extruded(self._helpee, *args, **kwargs)
 
     def revolved(self, *args, **kwargs):
-        return revolved(self.spline, *args, **kwargs)
+        return revolved(self._helpee, *args, **kwargs)
 
     def parametric_view(self, *args, **kwargs):
-        return parametric_view(self.spline, *args, **kwargs)
+        return parametric_view(self._helpee, *args, **kwargs)
 
     def determinant_spline(self, *args, **kwargs):
-        return determinant_spline(self.spline, *args, **kwargs)
+        return determinant_spline(self._helpee, *args, **kwargs)
 
 
 # Use function docstrings in Extractor functions
