@@ -239,7 +239,8 @@ def _get_helper(spl, attr_name, helper_class):
     if attr is not None:  # hasattr
         return attr
 
-    # don't have attr - create and set
+    # if attr doesn't exist, create one and save to its member defined in
+    # slots
     helper_obj = helper_class(spl)
     setattr(spl, attr_name, helper_obj)
 
@@ -385,10 +386,6 @@ class Spline(_SplinepyBase, _core.PySpline):
     """
 
     __slots__ = (
-        "_extractor",
-        "_checker",
-        "_creator",
-        "_integrator",
         "_show_options",
         "_spline_data",
     )
@@ -566,7 +563,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         extractor: Extractor
         """
-        return _get_helper(self, "_extractor", _Extractor)
+        return _Extractor(self)
 
     @property
     def check(self):
@@ -583,9 +580,9 @@ class Spline(_SplinepyBase, _core.PySpline):
 
         Returns
         --------
-        extractor: Extractor
+        checker: Checker
         """
-        return _get_helper(self, "_checker", _Checker)
+        return _Checker(self)
 
     @property
     def integrate(self):
@@ -607,7 +604,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         integrator: Integrator
         """
-        return _get_helper(self, "_integrator", _Integrator)
+        return _Integrator(self)
 
     @property
     def create(self):
@@ -626,7 +623,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         -------
         creator: spline.Creator
         """
-        return _get_helper(self, "_creator", _Creator)
+        return _Creator(self)
 
     @property
     def show_options(self):

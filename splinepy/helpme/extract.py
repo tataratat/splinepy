@@ -3,7 +3,6 @@ from gustaf import Edges as _Edges
 from gustaf import Faces as _Faces
 from gustaf import Vertices as _Vertices
 from gustaf import Volumes as _Volumes
-from gustaf.helpers._base import HelperBase as _HelperBase
 from gustaf.utils import connec as _connec
 from gustaf.utils.arr import enforce_len as _enforce_len
 
@@ -527,7 +526,7 @@ def boundaries(spline, boundary_ids=None):
         ]
 
 
-class Extractor(_HelperBase):
+class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
 
@@ -536,7 +535,7 @@ class Extractor(_HelperBase):
     >>> spline_faces = my_spline.extract.faces()
     """
 
-    __slots__ = ()
+    __slots__ = ("_helpee",)
 
     def __init__(self, spl):
         from splinepy import Multipatch as _Multipatch

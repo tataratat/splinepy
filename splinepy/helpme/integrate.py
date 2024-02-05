@@ -1,5 +1,4 @@
 import numpy as _np
-from gustaf.helpers._base import HelperBase as _HelperBase
 
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
@@ -108,7 +107,7 @@ def physical_function(
     )
 
 
-class Integrator(_HelperBase):
+class Integrator:
     """Helper class to integrate some values on a given spline geometry
 
     Examples
@@ -126,7 +125,7 @@ class Integrator(_HelperBase):
       Spline parent
     """
 
-    __slots__ = ()
+    __slots__ = ("_helpee",)
 
     def __init__(self, spl):
         self._helpee = spl

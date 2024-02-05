@@ -1,5 +1,4 @@
 import numpy as _np
-from gustaf.helpers._base import HelperBase as _HelperBase
 from gustaf.utils import arr as _arr
 
 from splinepy import settings as _settings
@@ -949,7 +948,7 @@ def pyramid(width, length, height):
     return p
 
 
-class Creator(_HelperBase):
+class Creator:
     """Helper class to build new splines from existing geometries.
 
     Examples
@@ -957,7 +956,7 @@ class Creator(_HelperBase):
     >>> spline_faces = my_spline.create.extrude(vector=[3, 1, 3])
     """
 
-    __slots__ = ()
+    __slots__ = ("_helpee",)
 
     def __init__(self, spl):
         self._helpee = spl

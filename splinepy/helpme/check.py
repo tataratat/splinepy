@@ -1,5 +1,4 @@
 import numpy as _np
-from gustaf.helpers._base import HelperBase as _HelperBase
 
 
 def valid_queries(spline, queries):
@@ -54,7 +53,7 @@ def valid_queries(spline, queries):
     return True
 
 
-class Checker(_HelperBase):
+class Checker:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
 
@@ -71,10 +70,14 @@ class Checker(_HelperBase):
       Parent spline, that is to be checked
     """
 
-    __slots__ = ()
+    __slots__ = ("_helpee",)
 
     def __init__(self, spl):
         self._helpee = spl
 
     def valid_queries(self, queries):
         return valid_queries(self._helpee, queries)
+
+
+# Use function docstrings in Checker functions
+Checker.valid_queries.__doc__ = valid_queries.__doc__
