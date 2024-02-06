@@ -47,41 +47,13 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     """
     from vedo.colors import get_color as _get_color
 
-    # First draw all control points
-    if not spline.show_options.get("control_points", True):
-        return
-
-    # Relevant options:
-    # - control_point_ids
-    # - control_point_alpha
-    # - control_point_c
-    # - control_point_r
-
-    # transform color into (relative) rgb using vedo helper function
-    r, g, b = _get_color(spline.show_options.get("control_point_c", "red"))
-    a = spline.show_options.get("control_point_alpha", 1.0)
     svg_mesh = ET.SubElement(
         svg_spline_element,
         "g",
         id="control_mesh",
     )
-    svg_control_points = ET.SubElement(
-        svg_mesh,
-        "g",
-        id="control_points",
-        style=f"fill:{_rgb_2_hex(r, b, g)};fill-opacity:{a}",
-    )
 
-    for ctp in spline.control_points:
-        ET.SubElement(
-            svg_control_points,
-            "circle",
-            cx=str(ctp[0] - box_min_x),
-            cy=str(box_max_y - ctp[1]),
-            r=str(spline.show_options.get("control_point_r", 0.02)),
-        )
-
-    # Then connect the points using a control mesh
+    # First draw mesh
     if spline.show_options.get("control_mesh", True):
         # Relevant options:
         # - control_mesh_c
@@ -142,6 +114,36 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
                     ),
                 )
 
+    # Then control points
+    if spline.show_options.get("control_points", True):
+
+        # Relevant options:
+        # - control_point_ids
+        # - control_point_alpha
+        # - control_point_c
+        # - control_point_r
+
+        # transform color into (relative) rgb using vedo helper function
+        r, g, b = _get_color(spline.show_options.get("control_point_c", "red"))
+        a = spline.show_options.get("control_point_alpha", 1.0)
+
+        svg_control_points = ET.SubElement(
+            svg_mesh,
+            "g",
+            id="control_points",
+            style=f"fill:{_rgb_2_hex(r, g, b)};fill-opacity:{a}",
+        )
+
+        for ctp in spline.control_points:
+            ET.SubElement(
+                svg_control_points,
+                "circle",
+                cx=str(ctp[0] - box_min_x),
+                cy=str(box_max_y - ctp[1]),
+                r=str(spline.show_options.get("control_point_r", 0.02)),
+            )
+
+    # Lastly IDs
     if spline.show_options.get("control_point_ids", True):
         # Text Options
         svg_control_point_ids = ET.SubElement(
