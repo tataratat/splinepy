@@ -1,16 +1,21 @@
 import pathlib
 
-from splinepy.io import gismo, iges, irit, json, mfem, npz
+from splinepy.io import gismo as _gismo
+from splinepy.io import iges as _iges
+from splinepy.io import irit as _irit
+from splinepy.io import json as _json
+from splinepy.io import mfem as _mfem
+from splinepy.io import npz as _npz
 
 extension_to_io = {
-    ".xml": gismo,
-    ".iges": iges,
-    ".igs": iges,
-    ".itd": irit,
-    ".irit": irit,
-    ".json": json,
-    ".mfem": mfem,
-    ".npz": npz,
+    ".xml": _gismo,
+    ".iges": _iges,
+    ".igs": _iges,
+    ".itd": _irit,
+    ".irit": _irit,
+    ".json": _json,
+    ".mfem": _mfem,
+    ".npz": _npz,
 }
 
 
