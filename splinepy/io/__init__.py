@@ -1,4 +1,4 @@
-from splinepy.io import cats, gismo, iges, ioutils, irit, json, mfem, npz, vtk
+from splinepy.io import cats, gismo, iges, ioutils, irit, json, mfem, npz
 from splinepy.io.default import export, load
 
 __all__ = [
@@ -12,5 +12,4 @@ __all__ = [
     "load",
     "mfem",
     "npz",
-    "vtk",
 ]

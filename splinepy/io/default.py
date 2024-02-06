@@ -1,9 +1,9 @@
 import pathlib
 
-from splinepy.io import gismo, iges, irit, json, mfem, npz, vtk
+from splinepy.io import gismo, iges, irit, json, mfem, npz
 
 extension_to_io = {
-    ".g2": gismo,
+    ".xml": gismo,
     ".iges": iges,
     ".igs": iges,
     ".itd": irit,
@@ -11,7 +11,6 @@ extension_to_io = {
     ".json": json,
     ".mfem": mfem,
     ".npz": npz,
-    ".vtk": vtk,
 }
 
 

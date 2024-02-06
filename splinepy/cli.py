@@ -7,11 +7,19 @@ from splinepy._version import __version__
 
 
 def show(args):
+    """Commandline interface functionality keyword show.
+
+    Can load and show the file that is given in the args. Some options on what is shown
+    can also be set.
+
+    Args:
+        args (namespace): Args namespace from argparse containing the options for show.
+    """
     fname = args.input_file
     from splinepy import io
 
     loaded = io.load(fname)
-    interactive = args.interactive
+    interactive = args.interactive or not args.output_file
     close = not bool(args.output_file)
     if interactive and not close:
         print(
@@ -20,12 +28,27 @@ def show(args):
             "interactive window to save a screenshot "
             "(saved as screenshot.png.)"
         )
+    if not isinstance(loaded, list):
+        loaded = [loaded]
+    for loaded_object in loaded:
+        loaded_object.show_options["knots"] = args.no_knot_vectors
+        loaded_object.show_options["control_points"] = args.no_control_points
+        loaded_object.show_options["control_point_ids"] = args.no_cp_ids
+        loaded_object.show_options["control_mesh"] = args.no_control_mesh
+        if args.resolution:
+            loaded_object.show_options["resolutions"] = int(args.resolution)
     show_vedo = splinepy.show(loaded, interactive=interactive, close=close)
     if args.output_file:
         show_vedo.screenshot(args.output_file)
 
 
 def entry():
+    """Entry point for splinepy commandline interface.
+
+    Currently only supports version and show commands.
+
+    Try out `splinpy -h` for more information.
+    """
     print("")
     print(
         "                    %%\\ %%\\                                         "
@@ -88,7 +111,36 @@ def entry():
         action="store_true",
         help="Show graphic in interactive window even if save to file is on.",
     )
-
+    parser_plot.add_argument(
+        "-c",
+        "--no-control_points",
+        action="store_false",
+        help="Do not show control points.",
+    )
+    parser_plot.add_argument(
+        "-k",
+        "--no-knot-vectors",
+        action="store_false",
+        help="Do not show knot vectors.",
+    )
+    parser_plot.add_argument(
+        "-n",
+        "--no-cp-ids",
+        action="store_false",
+        help="Do not show control point ids.",
+    )
+    parser_plot.add_argument(
+        "-m",
+        "--no-control-mesh",
+        action="store_false",
+        help="Do not show control mesh.",
+    )
+    parser_plot.add_argument(
+        "-r",
+        "--resolution",
+        action="store",
+        help="Resolution if the spline. Number of interpolated points.",
+    )
     args = parser.parse_args()
 
     if args.version:
@@ -112,6 +164,9 @@ def entry():
         return
 
     if args.command == "show":
+        if args.input_file is None:
+            parser_plot.print_help()
+            return
         show(args)
     else:
         parser.print_help()

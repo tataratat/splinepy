@@ -74,7 +74,7 @@ build = ["cp*-many*"]
 skip = "pp*"
 
 [tool.ruff]
-select = [
+lint.select = [
   "E", "F", "W", # flake8
   "B",           # flake8-bugbear
   "ARG",         # flake8-unused-arguments
@@ -87,9 +87,9 @@ select = [
   "UP",          # pyupdate specific rules
   "C400","C401","C402","C403","C404","C405" # additional pyupgrade rules
 ]
-fixable = ["ALL"]
+lint.fixable = ["ALL"]
 target-version = "py37"
-ignore = [
+lint.ignore = [
     "PLR2004", # TODO!
     "PLR0912", # Too many branches
     "PLR0913", # Too many arguments to function call
@@ -98,7 +98,7 @@ ignore = [
     "PLR0911", # Too many return statements
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "setup.py" = ["T201"]
 "examples/*.py" = ["T201"]
 "tests/common.py" = ["T201"]
