@@ -35,6 +35,9 @@ content-type = "text/markdown"
 all = ["gustaf[all]>=0.0.22"]
 test = ["funi>=0.0.1"]
 
+[project.scripts]
+splinepy = "splinepy.cli:entry"
+
 [tool.scikit-build]
 wheel.packages = [
     "splinepy",
@@ -99,6 +102,7 @@ ignore = [
 "setup.py" = ["T201"]
 "examples/*.py" = ["T201"]
 "tests/common.py" = ["T201"]
+"splinepy/cli.py" = ["T201"]
 
 [tool.codespell]
 ignore-words-list = "connec"
