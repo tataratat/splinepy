@@ -70,7 +70,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
             id="mesh",
             style=(
                 f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
-                f"stroke-width:{stroke_width}"
+                f"stroke-width:{stroke_width};stroke-linecap:round"
             ),
         )
 
@@ -486,7 +486,8 @@ def _export_spline(
             d=path_d,
             style=(
                 f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
-                f"stroke-width:{spline.show_options.get('lw', 0.01)}"
+                f"stroke-width:{spline.show_options.get('lw', 0.01)};"
+                "stroke-linecap:round"
             ),
         )
 
@@ -559,7 +560,8 @@ def _export_spline(
                 # draw path
                 d=path_d,
                 style=(
-                    f"fill:{_rgb_2_hex(r,g,b)};fill-opacity:{a};stroke:none"
+                    f"fill:{_rgb_2_hex(r,g,b)};fill-opacity:{a};stroke:none;"
+                    "stroke-linecap:round"
                 ),
             )
 
@@ -612,7 +614,8 @@ def _export_spline(
                     style=(
                         f"fill:none;stroke:{_rgb_2_hex(r,g,b)};"
                         f"stroke-opacity:{a};"
-                        f"stroke-width:{spline.show_options.get('lw', 0.01)}"
+                        f"stroke-width:{spline.show_options.get('lw', 0.01)};"
+                        "stroke-linecap:round"
                     ),
                 )
     else:
