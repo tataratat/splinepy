@@ -26,6 +26,200 @@ def _rgb_2_hex(r, g, b):
     return f"#{int(255 * r):02x}{int(255 * g):02x}{int(255 * b):02x}"
 
 
+def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
+    """
+    Export a spline's data-field as a pixel-bitmap. The pixel density is based
+    on the sample resolution, (10 * resolution). The image is embedded in b64
+    format
+
+    Parameters
+    ----------
+    spline : Spline
+      Providing the control points for the mesh
+    svg_spline_element : xml.etree.ElementTree
+      Parent element of the spline (most likely spline group), where the mesh
+      is written into
+    box_min_x : float/int
+      minimum coordinate of the box, providing the necessary offsets for spline
+      export
+    box_max_y : float/int
+      maximum y coordinate of the surrounding box (pictures use LHS coordinate
+      system in top left corner)
+
+    Returns
+    -------
+    None
+    """
+
+    from vedo import Plotter as _Plotter
+
+    from splinepy.helpme.visualize import _process_scalar_field, _sample_spline
+
+    def _write_png(bitmap, as_base64=True):
+        """
+        Write PNG data from a buffer.
+
+        This function is taken from
+        https://stackoverflow.com/questions/56564977/
+
+        Nitesh Menon's answer with some comments added to it
+
+        Replacing this by an external library like PIL or imageio is a @todo
+        still.
+
+        Parameters
+        ----------
+        bitmap : np.ndarray
+          Picture with dimensions (width, height, 4) as RGBA image
+        as_base64 : bool
+          Write into readable base64 format
+
+        Returns
+        -------
+        png : string
+          Base64 encoded String with png data
+        """
+        import base64
+        import struct  # Packing data
+        import zlib  # Compression
+
+        # Extract data
+        buf = bytearray(bitmap)
+        if (
+            (bitmap.ndim != 3)
+            or (bitmap.shape[2] != 4)
+            or (bitmap.dtype is not np.dtype("uint8"))
+        ):
+            raise ValueError("Was expecting bitmap in RGBA format")
+        width = bitmap.shape[1]
+        height = bitmap.shape[0]
+
+        # Reverse the vertical line order and add null bytes at the start
+        width_byte_4 = width * 4
+
+        # Note: Contrary to the original post, the array is not concatenated in
+        # reverse but in the original order (modified by jzwar)
+        raw_data = b"".join(
+            # Add a null byte and concatenate the raw data
+            b"\x00" + buf[span : span + width_byte_4]
+            # Iterate over the buffer
+            for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
+        )
+
+        def png_pack(png_tag, data):
+            """
+            Pack PNG data into a chunk according to png standard.
+
+            Parameters:
+            png_tag : bytes
+              PNG tag identifier.
+            data : bytes
+              Data to be packed.
+
+            Returns
+            -------
+            bytes
+              Packed PNG chunk.
+            """
+            chunk_head = png_tag + data  # Concatenate the tag and data
+            return (
+                # Pack the length of chunk
+                struct.pack("!I", len(data))
+                +
+                # Concatenate the chunk header
+                chunk_head
+                +
+                # Pack CRC-32 checksum
+                struct.pack("!I", 0xFFFFFFFF & zlib.crc32(chunk_head))
+            )
+
+        pure_data = b"".join(
+            [
+                b"\x89PNG\r\n\x1a\n",  # PNG file signature
+                png_pack(
+                    b"IHDR", struct.pack("!2I5B", width, height, 8, 6, 0, 0, 0)
+                ),  # PNG header chunk
+                # PNG data chunk (compressed)
+                png_pack(b"IDAT", zlib.compress(raw_data, 9)),
+                png_pack(b"IEND", b""),  # PNG end chunk
+            ]
+        )
+
+        # Return encoded
+        if as_base64:
+            return base64.b64encode(pure_data)
+        else:
+            return pure_data
+
+    # Sample the spline
+    resolution = spline.show_options.get("resolutions", 100)
+    sampled_spline = _sample_spline(spline, resolution)
+    data = spline.show_options.get("data", None)
+
+    # Check
+    if data is None:
+        raise ValueError(
+            "There is no data provided, although data plot is requested"
+        )
+
+    # Process the scalar field
+    _process_scalar_field(spline, data, sampled_spline, res=resolution)
+
+    # Set a resolution (This needs to be improved still)
+    pixel_size = (resolution * 10, resolution * 10)
+
+    # Create a Plotter
+    plotter = _Plotter(
+        shape=(1, 1),  # Only one field
+        N=1,  # Number of things to plot
+        size=pixel_size,  # Resolution, i.e. pixel density
+        sharecam=True,
+        offscreen=True,
+        title="",
+        bg=(255, 255, 255),
+        axes=0,
+    )
+    plotter.show(
+        sampled_spline.showable(),
+    )
+
+    # Extract bounding box
+    x_min = sampled_spline.vertices[:, 0].min()
+    y_min = sampled_spline.vertices[:, 1].min()
+    x_max = sampled_spline.vertices[:, 0].max()
+    y_max = sampled_spline.vertices[:, 1].max()
+
+    # Extract the bitmap and transform to RGBA
+    bitmap = plotter.screenshot(asarray=True)
+
+    if bitmap.shape[2] == 3:
+        alpha_layer = (
+            np.ones((bitmap.shape[0], bitmap.shape[1]), dtype=bitmap.dtype)
+            * 255
+        )
+        alpha_layer[np.all(bitmap == 255, axis=-1)] = 0
+        bitmap = np.concatenate(
+            (bitmap, alpha_layer.reshape(*alpha_layer.shape, 1)), axis=-1
+        )
+
+    # Crop image
+    bitmap = bitmap[np.any(alpha_layer != 0, axis=1), :, :]
+    bitmap = bitmap[:, np.any(alpha_layer != 0, axis=0), :]
+
+    # Write Bitmap into svg
+    image_svg = ET.SubElement(
+        svg_element,
+        "image",
+        x=str(x_min - box_min_x),  # str(box_max_y - xy)
+        y=str(box_max_y - y_max),
+        width=str(x_max - x_min),
+        height=str(y_max - y_min),
+    )
+    image_svg.attrib["xlink:href"] = "data:image/png;base64," + _write_png(
+        bitmap=bitmap, as_base64=True
+    ).decode("utf-8")
+
+
 def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     """
     Export a spline's control mesh in svg format using polylines for the mesh
@@ -44,6 +238,10 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     box_max_y : float/int
       maximum y coordinate of the surrounding box (pictures use LHS coordinate
       system in top left corner)
+
+    Returns
+    -------
+    None
     """
     from vedo.colors import get_color as _get_color
 
@@ -341,18 +539,16 @@ def _export_spline(
     # Maximum number of refinements for approximation
     MAX_ITERATION = 4
 
-    svg_paths = ET.SubElement(
-        svg_spline_element,
-        "g",
-        id="spline_paths",
-    )
-
     # Set tolerance for export to default if no user data
     if tolerance is None:
         tolerance = 0.01 * np.linalg.norm(
             spline.control_point_bounds[0, :]
             - spline.control_point_bounds[1, :]
         )
+
+    # Sanity check
+    if spline.para_dim not in [1, 2]:
+        raise ValueError("String dimension invalid")
 
     # Approximation curve-wise
     def _approximate_curve(original_spline, tolerance):
@@ -452,77 +648,58 @@ def _export_spline(
         assert not spline_copy.is_rational
         return spline_copy
 
-    # Export is done in 2 stages
-    # (1) Approximation (trying to preserve the continuity)
-    # (2) Export
+    # Write the actual spline as the lowest layer
+    svg_spline = ET.SubElement(
+        svg_spline_element,
+        "g",
+        id="spline_paths",
+    )
 
-    # First : Retrieve export options
-    r, g, b = _get_color(spline.show_options.get("c", "green"))
-    a = spline.show_options.get("alpha", 1.0)
+    # Check if a field is to be plotted
+    if spline.show_options.get("data", None) is not None:
 
-    # check if the parametric dimension is 2, if the case, extract boundary
-    if spline.para_dim == 1:
-        # Approximation
-        spline_copy = _approximate_curve(spline, tolerance)
-        bezier_elements = spline_copy.extract.beziers()
-        path_d = (
-            f"M {bezier_elements[0].cps[0,0]-box_min_x},"
-            f"{box_max_y - bezier_elements[0].cps[0,1]}"
-        )
-        path_d += " ".join(
-            [
-                (
-                    f" C {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
-                    f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                    f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
-                )
-                for s in bezier_elements
-            ]
-        )
-        ET.SubElement(
-            svg_paths,
-            "path",
-            # draw path
-            d=path_d,
-            style=(
-                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
-                f"stroke-width:{spline.show_options.get('lw', 0.01)};"
-                "stroke-linecap:round"
-            ),
-        )
+        # spline.show()
+        _export_spline_field(spline, svg_spline, box_min_x, box_max_y)
 
-        # Plot knots as rectangles
-        if spline.show_options.get("knots", True):
-            ukvs = spline.unique_knots[0]
-            knot_projected = spline.evaluate(ukvs.reshape(-1, 1))
-            for x, y in knot_projected:
-                # Relevant options
-                # - knot_alpha
-                # - knot_c
-                # - knot_lw
-                r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
-                a = spline.show_options.get("knot_alpha", 1.0)
-                dx = spline.show_options.get("knot_lw", 0.02)
+    else:
+        # Export is done in 2 stages
+        # (1) Approximation (trying to preserve the continuity)
+        # (2) Export
 
-                ET.SubElement(
-                    svg_paths,
-                    "rect",
-                    x=str(x - box_min_x - 0.5 * dx),
-                    y=str(box_max_y - y - 0.5 * dx),
-                    height=str(dx),
-                    width=str(dx),
-                    style=(
-                        f"fill:{_rgb_2_hex(r,g,b)};stroke:none;"
-                        f"fill-opacity:{a};"
-                    ),
-                )
+        # First : Retrieve export options
+        r, g, b = _get_color(spline.show_options.get("c", "green"))
+        a = spline.show_options.get("alpha", 1.0)
 
-    elif spline.para_dim == 2:
-        # The spline itself is only plottet if the data_name show_option is not
-        # set
-        if spline.show_options.get("data_name", None) is not None:
-            # Plot a scalar field using vedo and export an image
-            pass
+        # check if the parametric dimension is 2, if the case, extract boundary
+        if spline.para_dim == 1:
+            # Approximation
+            spline_copy = _approximate_curve(spline, tolerance)
+            bezier_elements = spline_copy.extract.beziers()
+            path_d = (
+                f"M {bezier_elements[0].cps[0,0]-box_min_x},"
+                f"{box_max_y - bezier_elements[0].cps[0,1]}"
+            )
+            path_d += " ".join(
+                [
+                    (
+                        f" C {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
+                        f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
+                        f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                    )
+                    for s in bezier_elements
+                ]
+            )
+            ET.SubElement(
+                svg_spline,
+                "path",
+                # draw path
+                d=path_d,
+                style=(
+                    f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                    f"stroke-width:{spline.show_options.get('lw', 0.01)};"
+                    "stroke-linecap:round"
+                ),
+            )
         else:
             # Extract boundaries
             spline_boundaries = spline.extract.boundaries()
@@ -555,7 +732,7 @@ def _export_spline(
             )
 
             ET.SubElement(
-                svg_paths,
+                svg_spline,
                 "path",
                 # draw path
                 d=path_d,
@@ -565,8 +742,40 @@ def _export_spline(
                 ),
             )
 
-        # Extract knots
-        if spline.show_options.get("knots", True):
+        # Plot knots as rectangles
+    if spline.show_options.get("knots", True):
+        # Exports knots in separate group
+        svg_knots = ET.SubElement(
+            svg_spline_element,
+            "g",
+            id="knots",
+        )
+        if spline.para_dim == 1:
+            ukvs = spline.unique_knots[0]
+            knot_projected = spline.evaluate(ukvs.reshape(-1, 1))
+            for x, y in knot_projected:
+                # Relevant options
+                # - knot_alpha
+                # - knot_c
+                # - knot_lw
+                r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
+                a = spline.show_options.get("knot_alpha", 1.0)
+                dx = spline.show_options.get("knot_lw", 0.02)
+
+                ET.SubElement(
+                    svg_knots,
+                    "rect",
+                    x=str(x - box_min_x - 0.5 * dx),
+                    y=str(box_max_y - y - 0.5 * dx),
+                    height=str(dx),
+                    width=str(dx),
+                    style=(
+                        f"fill:{_rgb_2_hex(r,g,b)};stroke:none;"
+                        f"fill-opacity:{a};"
+                    ),
+                )
+
+        else:
             # Retrieve options
             r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
             a = spline.show_options.get("knot_alpha", 1.0)
@@ -578,13 +787,6 @@ def _export_spline(
                 knot_lines.append(spline.extract.spline(0, knot))
             for knot in spline.unique_knots[1]:
                 knot_lines.append(spline.extract.spline(1, knot))
-
-            # Exports knots in separate group
-            svg_knots = ET.SubElement(
-                svg_paths,
-                "g",
-                id="knots",
-            )
 
             # Export knots to paths
             for knot_line in knot_lines:
@@ -618,8 +820,6 @@ def _export_spline(
                         "stroke-linecap:round"
                     ),
                 )
-    else:
-        raise ValueError("String dimension invalid")
 
 
 def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
@@ -687,6 +887,7 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
     svg_data.attrib["style"] = "background-color:white"
     svg_data.attrib["xmlns"] = "http://www.w3.org/2000/svg"
+    svg_data.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
 
     # Determine offsets
     box_min_x = ctps_bounds[0, 0] - box_margins
