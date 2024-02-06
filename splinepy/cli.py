@@ -15,9 +15,10 @@ def show(args):
     close = not bool(args.output_file)
     if interactive and not close:
         print(
-            "Interactive mode is on and output file is set. This functionality"
-            " is currently not working correctly. A workaround is to use S "
-            "(Shift+S) in the interactive window to save a screenshot."
+            "Interactive mode is on and output file is set. "
+            "Output file will be ignored. Instead, use S (Shift+S) in the "
+            "interactive window to save a screenshot "
+            "(saved as screenshot.png.)"
         )
     show_vedo = splinepy.show(loaded, interactive=interactive, close=close)
     if args.output_file:
