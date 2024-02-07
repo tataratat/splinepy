@@ -101,7 +101,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         # reverse but in the original order (modified by jzwar)
         raw_data = b"".join(
             # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span: (span + width_byte_4)]
+            b"\x00" + buf[span : (span + width_byte_4)]
             # Iterate over the buffer
             for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
         )
@@ -247,6 +247,10 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     None
     """
     from vedo.colors import get_color as _get_color
+
+    # Default behaviour in show is, no mesh and no ids, if no control points
+    if not spline.show_options.get("control_points", True):
+        return
 
     svg_mesh = ET.SubElement(
         svg_spline_element,
