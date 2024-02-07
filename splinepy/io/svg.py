@@ -101,7 +101,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         # reverse but in the original order (modified by jzwar)
         raw_data = b"".join(
             # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span : span + width_byte_4]
+            b"\x00" + buf[span: (span + width_byte_4)]
             # Iterate over the buffer
             for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
         )
@@ -208,8 +208,6 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     min_y_pixel = has_pixels.min()
     max_y_pixel = has_pixels.max()
     bitmap = bitmap[min_x_pixel:max_x_pixel, min_y_pixel:max_y_pixel, :]
-    # bitmap = bitmap[np.any(alpha_layer != 0, axis=1), :, :]
-    # bitmap = bitmap[:, np.any(alpha_layer != 0, axis=0), :]
 
     # Write Bitmap into svg
     image_svg = ET.SubElement(
@@ -650,7 +648,9 @@ def _export_spline(
 
         # Sanity check
         assert spline_copy.degrees[0] == 3
-        assert not spline_copy.is_rational
+        assert (not spline_copy.is_rational) or (
+            original_spline.is_rational and original_spline.degrees[0] <= 1
+        )
         return spline_copy
 
     # Write the actual spline as the lowest layer
@@ -838,7 +838,7 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
     ----------
     fname : string
         name of the output file
-    splines : Spline-Type
+    splines : Spline-Type, list
         Splines to be exported
     indent: bool
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
@@ -862,6 +862,10 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         raise ValueError("fname argument must be string")
     if not isinstance(box_margins, (int, float)):
         raise ValueError("fname argument must be string")
+
+    # Check if user passed list
+    if (len(splines) == 1) and isinstance(splines[0], list):
+        splines = splines[0]
 
     for spline in splines:
         if not isinstance(spline, Spline):
