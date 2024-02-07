@@ -164,7 +164,8 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
 
     # Process the scalar field
     _process_scalar_field(spline, data, sampled_spline, res=resolution)
-
+    # scalar bar distorts the dimensions of spline bitmap image
+    sampled_spline.show_options["scalarbar"] = False
     # Set a resolution (This needs to be improved still)
     pixel_size = (resolution * 10, resolution * 10)
 
