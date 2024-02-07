@@ -18,10 +18,14 @@ if __name__ == "__main__":
     l_eye = splinepy.helpme.create.disk(0.15)
     l_eye.cps += [0.6, 0.2]
     l_eye.show_options["c"] = "black"
+    l_eye.show_options["control_points"] = False
+    l_eye.show_options["knots"] = False
 
     r_eye = splinepy.helpme.create.disk(0.15)
     r_eye.cps += [-0.6, 0.2]
     r_eye.show_options["c"] = "black"
+    r_eye.show_options["control_points"] = False
+    r_eye.show_options["knots"] = False
 
     x_offset = 0.59
     y_offset = 0.16
@@ -29,10 +33,14 @@ if __name__ == "__main__":
     l_pupil = splinepy.helpme.create.disk(0.05)
     l_pupil.cps += [x_offset, y_offset]
     l_pupil.show_options["c"] = "white"
+    l_pupil.show_options["control_points"] = False
+    l_pupil.show_options["knots"] = False
 
     r_pupil = splinepy.helpme.create.disk(0.05)
     r_pupil.cps += [-x_offset, y_offset]
     r_pupil.show_options["c"] = "white"
+    r_pupil.show_options["control_points"] = False
+    r_pupil.show_options["knots"] = False
 
     upper_lip = splinepy.Bezier(
         [5, 1],
@@ -52,6 +60,8 @@ if __name__ == "__main__":
         ],
     )
     upper_lip.show_options["c"] = "orange7"
+    upper_lip.show_options["control_points"] = False
+    upper_lip.show_options["knots"] = False
 
     inner_mouth = splinepy.Bezier(
         [5, 1],
@@ -66,6 +76,8 @@ if __name__ == "__main__":
         ],
     )
     inner_mouth.show_options["c"] = "orange5"
+    inner_mouth.show_options["control_points"] = False
+    inner_mouth.show_options["knots"] = False
 
     lower_lip = splinepy.Bezier(
         [5, 1],
@@ -80,6 +92,8 @@ if __name__ == "__main__":
         ],
     )
     lower_lip.show_options["c"] = "orange7"
+    lower_lip.show_options["control_points"] = False
+    lower_lip.show_options["knots"] = False
 
     item_to_show = [l_eye, r_eye, upper_lip, inner_mouth, lower_lip]
     if WITH_PUPILS:
@@ -87,8 +101,6 @@ if __name__ == "__main__":
 
     plt = gus.show(
         item_to_show,
-        control_points=False,
-        knots=False,
         lighting="off",
         background="white",
         close=False,
@@ -109,6 +121,9 @@ if __name__ == "__main__":
                 splinepy.helpme.create.disk(height),
                 splinepy.helpme.create.box(width + 2 * x_shift, 2 * height),
             ]
+            for spline in background:
+                spline.show_options["control_points"] = False
+                spline.show_options["knots"] = False
 
             background[0].cps += [-x_shift, y_shift]
             background[1].cps += [width + x_shift, y_shift]
@@ -124,8 +139,6 @@ if __name__ == "__main__":
 
         plt = gus.show(
             [*background, *item_to_show],
-            control_points=False,
-            knots=False,
             lighting="off",
             background="black",
             close=False,

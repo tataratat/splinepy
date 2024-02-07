@@ -55,6 +55,12 @@ def load(fname):
             _settings.NAME_TO_TYPE[jbz["SplineType"]](**data_dict)
         )
 
+        # Add show options if any
+        show_options = jbz.get("show_options", None)
+        if show_options is not None:
+            for key, value in show_options.items():
+                spline_list[-1].show_options[key] = value
+
     _debug("Imported " + str(len(spline_list)) + " splines from file.")
 
     return spline_list
@@ -113,7 +119,6 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
         # Append para_dim and dim
         i_spline_dict["dim"] = i_spline.dim
         i_spline_dict["para_dim"] = i_spline.para_dim
-        spline_dictonary_list.append(i_spline_dict)
 
         if base64encoding:
             i_spline_dict["control_points"] = _base64.b64encode(
@@ -123,6 +128,10 @@ def export(fname, spline_list, list_name=None, base64encoding=False):
                 i_spline_dict["weights"] = _base64.b64encode(
                     _np.array(i_spline_dict["weights"])
                 ).decode("utf-8")
+
+        i_spline_dict["show_options"] = dict(i_spline.show_options)
+
+        spline_dictonary_list.append(i_spline_dict)
 
     output_dict["SplineList"] = spline_dictonary_list
 
