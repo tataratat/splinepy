@@ -101,7 +101,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         # reverse but in the original order (modified by jzwar)
         raw_data = b"".join(
             # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span : span + width_byte_4]
+            b"\x00" + buf[span: span + width_byte_4]
             # Iterate over the buffer
             for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
         )
@@ -184,10 +184,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     )
 
     # Extract bounding box
-    x_min = sampled_spline.vertices[:, 0].min()
-    y_min = sampled_spline.vertices[:, 1].min()
-    x_max = sampled_spline.vertices[:, 0].max()
-    y_max = sampled_spline.vertices[:, 1].max()
+    x_min, y_min, x_max, y_max = sampled_spline.bounds().ravel()
 
     # Extract the bitmap and transform to RGBA
     bitmap = plotter.screenshot(asarray=True)
@@ -203,8 +200,15 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         )
 
     # Crop image
-    bitmap = bitmap[np.any(alpha_layer != 0, axis=1), :, :]
-    bitmap = bitmap[:, np.any(alpha_layer != 0, axis=0), :]
+    has_pixels = np.where(np.any(alpha_layer != 0, axis=1))[0]
+    min_x_pixel = has_pixels.min()
+    max_x_pixel = has_pixels.max()
+    has_pixels = np.where(np.any(alpha_layer != 0, axis=0))[0]
+    min_y_pixel = has_pixels.min()
+    max_y_pixel = has_pixels.max()
+    bitmap = bitmap[min_x_pixel:max_x_pixel, min_y_pixel:max_y_pixel, :]
+    # bitmap = bitmap[np.any(alpha_layer != 0, axis=1), :, :]
+    # bitmap = bitmap[:, np.any(alpha_layer != 0, axis=0), :]
 
     # Write Bitmap into svg
     image_svg = ET.SubElement(
