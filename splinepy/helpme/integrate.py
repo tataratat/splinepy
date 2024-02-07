@@ -5,45 +5,89 @@ import numpy as _np
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
-def volume(spline, orders=None):
-    r"""Compute volume of a given spline
+def _get_integral_measure(spline):
+    """
+    Determines the appropriate measure to be used in integration
 
-    Determinante has degree
+    If the spline dimension matches its parametric dimension it will return a
+    Callable in the form
 
     .. math::
-        p_i^{det} = n_{dim} \cdot p_i - 1
+        \\mathcal{J}_S = det(\\mathbf(J))
+
+    If the physical dimension is bigger then the paramtric dimension it will
+    return
+
+    .. math::
+        \\mathcal{J}_S = \big( det(\\mathbf(J)^T \\mathbf(J)\big)^{0.5}
+
+    Parameters
+    ----------
+    spline : Spline / Multipatch
+      For parametric and physical dimension
+
+    Returns
+    -------
+    measure : Callable
+      single patch only
+    """
+    # Check dimensionality
+    if spline.dim == spline.para_dim:
+
+        def measure(spline_patch, positions):
+            return _np.linalg.det(spline_patch.jacobian(positions))
+
+        return measure
+
+    elif spline.dim > spline.para_dim:
+
+        def measure(spline_patch, positions):
+            jacs = spline_patch.jacobian(positions)
+            return _np.sqrt(
+                _np.linalg.det(_np.einsum("oji,ojk->oik", jacs, jacs))
+            )
+
+        return measure
+
+    else:
+        raise ValueError("`Volume` not supported if para_dim > dim")
+
+
+def _get_quadrature_information(spline, orders=None):
+    """
+    Select appropriate integration order (gauss-legendre)
+
+    Determinante of a polynomial spline with para_dim==dim has degree
+
+    .. math::
+        p_i^{det} = n_{dim} \\cdot p_i - 1
 
     cf. [Mantzaflaris et al., 2017,
     DOI:http://dx.doi.org/10.1016/j.cma.2016.11.013]
 
+    The same order approximation will also be used for the metric
+
+    .. math::
+        \\mathcal{J}_S = \big( det(\\mathbf(J)^T \\mathbf(J)\big)^{0.5}
+
     Parameters
     ----------
-    spline : Spline to be integrated
-      splinepy - spline type
+    spline : Spline
+      Spline for integration
     orders : array-like (optional)
-      order for gauss quadrature
+      Orders along every parametric dimension
 
     Returns
     -------
-    volume : float
-      Integral of dim-dimensional object
+    positions : np.ndarray
+      quadrature position in unit-square
+    weights : np.ndarray
+      quadrature weights
     """
-    from splinepy.spline import Spline as _Spline
-
-    # Check i_nput type
-    if not isinstance(spline, _Spline):
-        raise NotImplementedError("volume integration only works for splines")
 
     # Determine integration points
     positions = []
     weights = []
-
-    # Check dimensionality
-    if not (spline.dim == spline.para_dim):
-        raise ValueError(
-            "`Volume` of embedded spline depends on projection, "
-            "integration is aborted"
-        )
 
     # Determine integration orders
     if orders is None:
@@ -71,31 +115,98 @@ def volume(spline, orders=None):
         weights.append(ws * 0.5)
 
     # summarize integration points
-    positions = _cartesian_product(positions)
-    weights = _cartesian_product(weights).prod(axis=1)
+    return (
+        _cartesian_product(positions),
+        _cartesian_product(weights).prod(axis=1),
+    )
+
+
+def volume(spline, orders=None):
+    r"""Compute volume of a given spline
+
+    Parameters
+    ----------
+    spline : Spline
+        (self if called via integrator)
+      splinepy - spline type
+    orders : array-like (optional)
+      order for gauss quadrature
+
+    Returns
+    -------
+    volume : float
+      Integral of dim-dimensional object
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check i_nput type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("Extrude only works for splines")
+
+    # Retrieve aux info
+    meas = _get_integral_measure(spline)
+    positions, weights = _get_quadrature_information(spline, orders)
 
     # Calculate Volume
     if spline.has_knot_vectors:
         volume = _np.sum(
             [
-                _np.sum(_np.linalg.det(b.jacobian(positions)) * weights)
+                _np.sum(meas(b, positions) * weights)
                 for b in spline.extract.beziers()
             ]
         )
     else:
-        volume = _np.sum(_np.linalg.det(spline.jacobian(positions)) * weights)
+        volume = _np.sum(meas(spline, positions) * weights)
     return volume
 
 
 def parametric_function(
-    function,  # noqa ARG001
-    orders,  # noqa ARG001
+    spline,
+    function,
+    orders=None,
 ):
-    """Integrate a function defined within the parametric domain"""
-    raise NotImplementedError(
-        "Function not implemented yet. Please feel free to write an issue, if "
-        "you need it: github.com/tatarata/splinepy/issues"
-    )
+    """Integrate a function defined within the parametric domain
+
+    Parameters
+    ----------
+    spline : Spline
+        (self if called via integrator)
+    function : Callable
+    orders : optional
+
+    Returns
+    -------
+    integral : np.ndarray
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check i_nput type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("Extrude only works for splines")
+
+    # Retrieve aux info
+    meas = _get_integral_measure(spline)
+    positions, weights = _get_quadrature_information(spline, orders)
+
+    # Calculate Volume
+    if spline.has_knot_vectors:
+        # positions must be mapped into each knot-element
+        para_view = spline.create.parametric_view()
+        result = 0
+        for bezier_element in para_view.extract.beziers():
+            quad_positions = bezier_element.evaluate(positions)
+            result = result + _np.sum(
+                function(quad_positions)
+                * meas(spline, quad_positions)
+                * weights,
+                axis=1,
+            )
+
+    else:
+        result = _np.sum(
+            function(positions) * meas(spline, positions) * weights, axis=1
+        )
+    return result
 
 
 def physical_function(
@@ -135,3 +246,11 @@ class Integrator:
     @_wraps(volume)
     def volume(self, *args, **kwargs):
         return volume(self._helpee, *args, **kwargs)
+
+    def parametric_function(self, *args, **kwargs):
+        return parametric_function(self._helpee, *args, **kwargs)
+
+
+# Use function docstrings in Extractor functions
+Integrator.volume.__doc__ = volume.__doc__
+Integrator.parametric_function.__doc__ = parametric_function.__doc__
