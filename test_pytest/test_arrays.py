@@ -11,7 +11,7 @@ def test_uniform_query():
     for i in range(1, 11):
         l_bound = np.random.random(i)
         bounds = [l_bound, l_bound + 1]
-        res = np.random.randint([3] * i) + 2  # minimum 2
+        res = np.random.Generator([3] * i) + 2  # minimum 2
         gus_q = gus.create.vertices.raster(bounds, res).vertices
         spp_q = splinepy.utils.data.uniform_query(bounds, res)
 
