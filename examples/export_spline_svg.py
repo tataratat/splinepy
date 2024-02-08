@@ -32,6 +32,7 @@ circle = circle.nurbs
 circle.insert_knots(0, [0.333, 0.666])
 circle.insert_knots(1, [0.333, 0.666])
 circle.spline_data["field"] = circle
+# svg export also respects many of the show_option configurations 
 circle.show_options["arrow_data"] = "field"
 circle.show_options["arrow_data_scale"] = 0.4
 circle.show_options["arrow_data_on"] = spp.utils.data.cartesian_product(

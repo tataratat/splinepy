@@ -201,7 +201,8 @@ bool ScalarTypeInsertKnot(SplineType& spline,
   const auto& knot_vector =
       *spline.GetParameterSpace().GetKnotVectors()[query_dim];
 
-  // Check if request is valid before SplineLib
+  // Check if request is valid before BSplineLib
+  // TODO: see discussions in PR #297
   const auto para_bounds = GetParametricBounds(spline);
   if ((para_bounds[0][query_dim] >= query)
       || (para_bounds[1][query_dim] <= query)) {

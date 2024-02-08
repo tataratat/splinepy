@@ -109,7 +109,6 @@ def invert_axes(spline, axes, inplace=False):
     modified_spline : type(spline)
         spline with reordered parametric dimensions. iff `inplace=True`.
     """
-    from splinepy.helpme.multi_index import MultiIndex as _MultiIndex
 
     # Sanity checks
     if isinstance(axes, int):
@@ -122,7 +121,7 @@ def invert_axes(spline, axes, inplace=False):
         spline = spline.copy()
 
     # Create a multi index object
-    mi = _MultiIndex(spline.control_mesh_resolutions)
+    mi = spline.multi_index
     indexing = [slice(None, None, None)] * spline.para_dim
 
     # Loop over all axis to be flipped and prepare the flip
