@@ -15,6 +15,54 @@ __all__ = [
 ]
 
 
+@pytest.fixture
+def np_rng():
+    return np.random.default_rng()
+
+
+@pytest.fixture
+def get_2d_control_points_b_spline():
+    return [
+        [0, 0],
+        [0, 1],
+        [1, 1.5],
+        [3, 1.5],
+        [-1, 0],
+        [-1, 2],
+        [1, 4],
+        [3, 4],
+        [-2, 0],
+        [-2, 2],
+        [1, 5],
+        [3, 5],
+    ]
+
+
+@pytest.fixture
+def get_2d_control_points_nurbs():
+    return [
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ]
+
+
+@pytest.fixture
+def get_2d_control_points_bezier():
+    return [
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ]
+
+
+@pytest.fixture
 def get_3d_control_points():
     return [
         [0.0, 0.0, 0.0],
@@ -28,7 +76,7 @@ def get_3d_control_points():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_knotvectors_2():
     return [
         [0, 0, 0, 0.5, 1, 1, 1],
@@ -36,7 +84,7 @@ def get_knotvectors_2():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_knotvectors_3():
     return [
         [0.0, 0.0, 1.0, 1.0],
@@ -69,43 +117,23 @@ def get_queries_3D():
 
 
 @pytest.fixture
-def dict_bspline_2p2d():
+def dict_bspline_2p2d(get_knotvectors_2, get_2d_control_points_b_spline):
     return {
         "degrees": [2, 2],
-        "knot_vectors": get_knotvectors_2(),
-        "control_points": [
-            [0, 0],
-            [0, 1],
-            [1, 1.5],
-            [3, 1.5],
-            [-1, 0],
-            [-1, 2],
-            [1, 4],
-            [3, 4],
-            [-2, 0],
-            [-2, 2],
-            [1, 5],
-            [3, 5],
-        ],
+        "knot_vectors": get_knotvectors_2,
+        "control_points": get_2d_control_points_b_spline,
     }
 
 
 @pytest.fixture
-def dict_nurbs_2p2d():
+def dict_nurbs_2p2d(get_2d_control_points_nurbs):
     return {
         "degrees": [2, 1],
         "knot_vectors": [
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        "control_points": [
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        "control_points": get_2d_control_points_nurbs,
         "weights": [
             [1.0],
             [2**-0.5],
@@ -119,33 +147,19 @@ def dict_nurbs_2p2d():
 
 #
 @pytest.fixture
-def dict_bezier_2p2d():
+def dict_bezier_2p2d(get_2d_control_points_nurbs):
     return {
         "degrees": [2, 1],
-        "control_points": [
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        "control_points": get_2d_control_points_nurbs,
     }
 
 
 #
 @pytest.fixture
-def dict_rational_bezier_2p2d():
+def dict_rational_bezier_2p2d(get_2d_control_points_nurbs):
     return {
         "degrees": [2, 1],
-        "control_points": [
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        "control_points": get_2d_control_points_nurbs,
         "weights": [
             [1.0],
             [2**-0.5],
@@ -159,82 +173,62 @@ def dict_rational_bezier_2p2d():
 
 # 3D
 @pytest.fixture
-def dict_bezier_3p3d():
+def dict_bezier_3p3d(get_3d_control_points):
     return {
         "degrees": [1, 1, 1],
-        "control_points": get_3d_control_points(),
+        "control_points": get_3d_control_points,
     }
 
 
 @pytest.fixture
-def dict_rational_bezier_3p3d():
+def dict_rational_bezier_3p3d(get_3d_control_points):
     return {
         "degrees": [1, 1, 1],
-        "control_points": get_3d_control_points(),
-        "weights": [1.0] * len(get_3d_control_points()),
+        "control_points": get_3d_control_points,
+        "weights": [1.0] * len(get_3d_control_points),
     }
 
 
 @pytest.fixture
-def dict_bspline_3p3d():
+def dict_bspline_3p3d(get_3d_control_points, get_knotvectors_3):
     return {
         "degrees": [1, 1, 1],
-        "control_points": get_3d_control_points(),
-        "knot_vectors": get_knotvectors_3(),
+        "control_points": get_3d_control_points,
+        "knot_vectors": get_knotvectors_3,
     }
 
 
 @pytest.fixture
-def dict_nurbs_3p3d():
+def dict_nurbs_3p3d(get_knotvectors_3, get_3d_control_points):
     return {
         "degrees": [1, 1, 1],
-        "control_points": get_3d_control_points(),
-        "weights": [1.0] * len(get_3d_control_points()),
-        "knot_vectors": get_knotvectors_3(),
+        "control_points": get_3d_control_points,
+        "weights": [1.0] * len(get_3d_control_points),
+        "knot_vectors": get_knotvectors_3,
     }
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
 @pytest.fixture
-def bspline_2p2d():
+def bspline_2p2d(get_knotvectors_2, get_2d_control_points_b_spline):
     return splinepy.BSpline(
         degrees=[2, 2],
-        knot_vectors=get_knotvectors_2(),
-        control_points=[
-            [0, 0],
-            [0, 1],
-            [1, 1.5],
-            [3, 1.5],
-            [-1, 0],
-            [-1, 2],
-            [1, 4],
-            [3, 4],
-            [-2, 0],
-            [-2, 2],
-            [1, 5],
-            [3, 5],
-        ],
+        knot_vectors=get_knotvectors_2,
+        control_points=get_2d_control_points_b_spline,
     )
 
 
 # half-half circle.
 @pytest.fixture
-def nurbs_2p2d():
+def nurbs_2p2d(get_2d_control_points_nurbs):
     return splinepy.NURBS(
         degrees=[2, 1],
         knot_vectors=[
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=[
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        control_points=get_2d_control_points_nurbs,
         weights=[
             [1.0],
             [2**-0.5],
@@ -247,39 +241,18 @@ def nurbs_2p2d():
 
 
 @pytest.fixture
-def nurbs_2p2d_quarter_circle():
-    """explicit function for quarter circle
-    in case n2p2d changes in the future..."""
-    return dict_nurbs_2p2d()
-
-
-@pytest.fixture
-def bezier_2p2d():
+def bezier_2p2d(get_2d_control_points_nurbs):
     return splinepy.Bezier(
         degrees=[2, 1],
-        control_points=[
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        control_points=get_2d_control_points_nurbs,
     )
 
 
 @pytest.fixture
-def rational_bezier_2p2d():
+def rational_bezier_2p2d(get_2d_control_points_bezier):
     return splinepy.RationalBezier(
         degrees=[2, 1],
-        control_points=[
-            [-1.0, 0.0],
-            [-1.0, 1.0],
-            [0.0, 1.0],
-            [-2.0, 0.0],
-            [-2.0, 2.0],
-            [0.0, 2.0],
-        ],
+        control_points=get_2d_control_points_bezier,
         weights=[
             [1.0],
             [2**-0.5],
@@ -292,37 +265,37 @@ def rational_bezier_2p2d():
 
 
 @pytest.fixture
-def bezier_3p3d():
+def bezier_3p3d(get_3d_control_points):
     return splinepy.Bezier(
-        degrees=[1, 1, 1], control_points=get_3d_control_points()
+        degrees=[1, 1, 1], control_points=get_3d_control_points
     )
 
 
 @pytest.fixture
-def rational_bezier_3p3d():
+def rational_bezier_3p3d(get_3d_control_points):
     return splinepy.RationalBezier(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        weights=[1.0] * len(get_3d_control_points()),
+        control_points=get_3d_control_points,
+        weights=[1.0] * len(get_3d_control_points),
     )
 
 
 @pytest.fixture
-def bspline_3p3d():
+def bspline_3p3d(get_3d_control_points, get_knotvectors_3):
     return splinepy.BSpline(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        knot_vectors=get_knotvectors_3(),
+        control_points=get_3d_control_points,
+        knot_vectors=get_knotvectors_3,
     )
 
 
 @pytest.fixture
-def nurbs_3p3d():
+def nurbs_3p3d(get_3d_control_points, get_knotvectors_3):
     return splinepy.NURBS(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points(),
-        weights=[1.0] * len(get_3d_control_points()),
-        knot_vectors=get_knotvectors_3(),
+        control_points=get_3d_control_points,
+        weights=[1.0] * len(get_3d_control_points),
+        knot_vectors=get_knotvectors_3,
     )
 
 
@@ -466,13 +439,10 @@ def are_stripped_lines_same(a, b, ignore_order=False):
 
 
 @pytest.fixture
-def spline_types_as_list():
-    return [
-        bspline_2p2d(),
-        nurbs_2p2d(),
-        bezier_2p2d(),
-        rational_bezier_2p2d(),
-    ]
+def spline_types_as_list(
+    bspline_2p2d, nurbs_2p2d, bezier_2p2d, rational_bezier_2p2d
+):
+    return [bspline_2p2d, nurbs_2p2d, bezier_2p2d, rational_bezier_2p2d]
 
 
 @pytest.fixture
@@ -486,30 +456,35 @@ def get_all_spline_types_empty_as_list():
 
 
 @pytest.fixture
-def get_spline_dictionaries():
+def get_spline_dictionaries(
+    dict_bspline_2p2d,
+    dict_nurbs_2p2d,
+    dict_bezier_2p2d,
+    dict_rational_bezier_2p2d,
+):
     return [
-        dict_bspline_2p2d(),
-        dict_nurbs_2p2d(),
-        dict_bezier_2p2d(),
-        dict_rational_bezier_2p2d(),
+        dict_bspline_2p2d,
+        dict_nurbs_2p2d,
+        dict_bezier_2p2d,
+        dict_rational_bezier_2p2d,
     ]
 
 
-@pytest.fixture
-def all_2p2d_splines(self):
-    return (
-        self.bezier_2p2d(),
-        self.rational_bezier_2p2d(),
-        self.bspline_2p2d(),
-        self.nurbs_2p2d(),
-    )
+# @pytest.fixture
+# def all_2p2d_splines(self):
+#     return (
+#         self.bezier_2p2d(),
+#         self.rational_bezier_2p2d(),
+#         self.bspline_2p2d(),
+#         self.nurbs_2p2d(),
+#     )
 
 
-@pytest.fixture
-def all_3p3d_splines(self):
-    return (
-        self.bezier_3p3d(),
-        self.rational_bezier_3p3d(),
-        self.bspline_3p3d(),
-        self.nurbs_3p3d(),
-    )
+# @pytest.fixture
+# def all_3p3d_splines(self):
+#     return (
+#         self.bezier_3p3d(),
+#         self.rational_bezier_3p3d(),
+#         self.bspline_3p3d(),
+#         self.nurbs_3p3d(),
+#     )

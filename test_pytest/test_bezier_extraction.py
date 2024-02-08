@@ -11,17 +11,18 @@ def test_extraction():
     """
     test the extraction of beziers
     """
+    rng = np.random.default_rng()
     # Define some splines
     b = splinepy.BSpline(
         knot_vectors=[[0, 0, 0, 1, 2, 2, 3, 4, 4, 4]],
         degrees=[2],
-        control_points=np.random.Generator(7, 2),
+        control_points=rng.random((7, 2)),
     )
     n = splinepy.NURBS(
         knot_vectors=[[0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 4, 4]],
         degrees=[3],
-        control_points=np.random.Generator(8, 2),
-        weights=np.random.Generator(8, 1),
+        control_points=rng.random((8, 2)),
+        weights=rng.random((8, 1)),
     )
 
     # Extract Beziers
@@ -30,7 +31,7 @@ def test_extraction():
 
     # Loop over knot_spans and test at random points
     for offset in range(4):
-        queries = np.random.Generator(20, 1)
+        queries = rng.random((20, 1))
         assert np.allclose(
             b.evaluate(queries + offset),
             b_beziers[offset].evaluate(queries),
@@ -43,18 +44,18 @@ def test_extraction():
 
 
 @pytest.mark.parametrize("splinetype", all_splinetypes)
-def test_extraction_matrices(splinetype, request):
+def test_extraction_matrices(splinetype, np_rng, request):
     spline = request.getfixturevalue(splinetype)
 
     if "3d" in splinetype:
         spline.elevate_degrees([0, 1, 2])
-        spline.insert_knots(0, np.random.Generator(3))
-        spline.insert_knots(1, np.random.Generator(3))
-        spline.insert_knots(2, np.random.Generator(3))
+        spline.insert_knots(0, np_rng.random(3))
+        spline.insert_knots(1, np_rng.random(3))
+        spline.insert_knots(2, np_rng.random(3))
     elif "2d" in splinetype:
         spline.elevate_degrees([0, 1])
-        spline.insert_knots(0, np.random.Generator(3))
-        spline.insert_knots(1, np.random.Generator(3))
+        spline.insert_knots(0, np_rng.random(3))
+        spline.insert_knots(1, np_rng.random(3))
     else:
         pytest.fail()
 
