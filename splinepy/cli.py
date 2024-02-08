@@ -22,9 +22,8 @@ def convert(args):
     loaded = io.load(fname)
     if not isinstance(loaded, list):
         loaded = [loaded]
-    for loaded_object in loaded:
-        if args.output_file:
-            io.export(args.output_file, loaded_object)
+    if args.output_file:
+        io.export(args.output_file, loaded)
 
 
 def show(args):
@@ -117,7 +116,7 @@ def entry():
 
     parser_plot = subparsers.add_parser("show", help="Show the given spline.")
     parser_plot.add_argument(
-        "-i", "--input-file", type=str, help="Input file name."
+        "-i", "--input-file", type=str, help="Input file name.", required=True
     )
     parser_plot.add_argument(
         "-o",
@@ -166,14 +165,14 @@ def entry():
         "convert", help="Convert the given spline."
     )
     parser_convert.add_argument(
-        "-i", "--input-file", type=str, help="Input file name."
+        "-i", "--input-file", type=str, help="Input file name.", required=True
     )
     parser_convert.add_argument(
         "-o",
         "--output-file",
         type=str,
         help="Export graphic to file.",
-        required=False,
+        required=True,
     )
     args = parser.parse_args()
 
