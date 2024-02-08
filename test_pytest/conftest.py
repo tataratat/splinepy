@@ -15,7 +15,7 @@ __all__ = [
 ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_2d_control_points_b_spline():
     return [
         [0, 0],
@@ -33,7 +33,7 @@ def get_2d_control_points_b_spline():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_2d_control_points_nurbs():
     return [
         [-1.0, 0.0],
@@ -45,7 +45,7 @@ def get_2d_control_points_nurbs():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_2d_control_points_bezier():
     return [
         [-1.0, 0.0],
@@ -57,7 +57,7 @@ def get_2d_control_points_bezier():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_3d_control_points():
     return [
         [0.0, 0.0, 0.0],
@@ -71,7 +71,7 @@ def get_3d_control_points():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_knotvectors_2():
     return [
         [0, 0, 0, 0.5, 1, 1, 1],
@@ -79,7 +79,7 @@ def get_knotvectors_2():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_knotvectors_3():
     return [
         [0.0, 0.0, 1.0, 1.0],
@@ -89,7 +89,7 @@ def get_knotvectors_3():
 
 
 # query points
-# @pytest.fixture
+@pytest.fixture
 def get_queries_2D():
     return [
         [0.01, 0.01],
@@ -100,7 +100,7 @@ def get_queries_2D():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_queries_3D():
     return [
         [0.1, 0.1, 0.1],
@@ -111,7 +111,7 @@ def get_queries_3D():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def dict_bspline_2p2d():
     return {
         "degrees": [2, 2],
@@ -120,7 +120,7 @@ def dict_bspline_2p2d():
     }
 
 
-# @pytest.fixture
+@pytest.fixture
 def dict_nurbs_2p2d():
     return {
         "degrees": [2, 1],
@@ -141,13 +141,13 @@ def dict_nurbs_2p2d():
 
 
 #
-# @pytest.fixture
+@pytest.fixture
 def dict_bezier_2p2d():
     return {"degrees": [2, 1], "control_points": get_2d_control_points_nurbs()}
 
 
 #
-# @pytest.fixture
+@pytest.fixture
 def dict_rational_bezier_2p2d():
     return {
         "degrees": [2, 1],
@@ -164,7 +164,7 @@ def dict_rational_bezier_2p2d():
 
 
 # 3D
-# @pytest.fixture
+@pytest.fixture
 def dict_bezier_3p3d():
     return {
         "degrees": [1, 1, 1],
@@ -172,7 +172,7 @@ def dict_bezier_3p3d():
     }
 
 
-# @pytest.fixture
+@pytest.fixture
 def dict_rational_bezier_3p3d():
     return {
         "degrees": [1, 1, 1],
@@ -181,7 +181,7 @@ def dict_rational_bezier_3p3d():
     }
 
 
-# @pytest.fixture
+@pytest.fixture
 def dict_bspline_3p3d():
     return {
         "degrees": [1, 1, 1],
@@ -190,7 +190,7 @@ def dict_bspline_3p3d():
     }
 
 
-# @pytest.fixture
+@pytest.fixture
 def dict_nurbs_3p3d():
     return {
         "degrees": [1, 1, 1],
@@ -202,7 +202,7 @@ def dict_nurbs_3p3d():
 
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
-# @pytest.fixture
+@pytest.fixture
 def bspline_2p2d():
     return splinepy.BSpline(
         degrees=[2, 2],
@@ -212,7 +212,7 @@ def bspline_2p2d():
 
 
 # half-half circle.
-# @pytest.fixture
+@pytest.fixture
 def nurbs_2p2d():
     return splinepy.NURBS(
         degrees=[2, 1],
@@ -232,14 +232,14 @@ def nurbs_2p2d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def nurbs_2p2d_quarter_circle():
     """explicit function for quarter circle
     in case n2p2d changes in the future..."""
     return dict_nurbs_2p2d()
 
 
-# @pytest.fixture
+@pytest.fixture
 def bezier_2p2d():
     return splinepy.Bezier(
         degrees=[2, 1],
@@ -247,7 +247,7 @@ def bezier_2p2d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def rational_bezier_2p2d():
     return splinepy.RationalBezier(
         degrees=[2, 1],
@@ -263,14 +263,14 @@ def rational_bezier_2p2d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def bezier_3p3d():
     return splinepy.Bezier(
         degrees=[1, 1, 1], control_points=get_3d_control_points()
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def rational_bezier_3p3d():
     return splinepy.RationalBezier(
         degrees=[1, 1, 1],
@@ -279,7 +279,7 @@ def rational_bezier_3p3d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def bspline_3p3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
@@ -288,7 +288,7 @@ def bspline_3p3d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def nurbs_3p3d():
     return splinepy.NURBS(
         degrees=[1, 1, 1],
@@ -298,7 +298,7 @@ def nurbs_3p3d():
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def raster(bounds, resolutions):
     """prepares raster points using np.meshgrid"""
     l_bounds, u_bounds = bounds[0], bounds[1]
@@ -313,7 +313,7 @@ def raster(bounds, resolutions):
     return np.hstack([p.reshape(-1, 1) for p in pts[::-1]])
 
 
-# @pytest.fixture
+@pytest.fixture
 def nd_box(dim):
     """creates simple box in n-d"""
     ds = [1 for _ in range(dim)]
@@ -331,13 +331,13 @@ def nd_box(dim):
     }
 
 
-# @pytest.fixture
+@pytest.fixture
 def to_tmpf(tmpd):
     """given tmpd, returns tmpf"""
     return os.path.join(tmpd, "nqv248p90")
 
 
-# @pytest.fixture
+@pytest.fixture
 def are_splines_equal(a, b, print_=False):
     """returns True if Splines are equivalent"""
     if a.whatami != b.whatami:
@@ -358,7 +358,7 @@ def are_splines_equal(a, b, print_=False):
     return True
 
 
-# @pytest.fixture
+@pytest.fixture
 def are_items_close(a, b):
     """returns True if items in a and b are close"""
     all_close = True
@@ -376,7 +376,7 @@ def are_items_close(a, b):
     return all_close
 
 
-# @pytest.fixture
+@pytest.fixture
 def are_items_same(a, b):
     """returns True if items in a and b are same"""
     all_same = True
@@ -394,7 +394,7 @@ def are_items_same(a, b):
     return all_same
 
 
-# @pytest.fixture
+@pytest.fixture
 def are_stripped_lines_same(a, b, ignore_order=False):
     """returns True if items in a and b same, preceding and tailing whitespaces
     are ignored and strings are joined"""
@@ -437,7 +437,7 @@ def are_stripped_lines_same(a, b, ignore_order=False):
     return all_same
 
 
-# @pytest.fixture
+@pytest.fixture
 def spline_types_as_list():
     return [
         bspline_2p2d(),
@@ -447,7 +447,7 @@ def spline_types_as_list():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_all_spline_types_empty_as_list():
     return [
         splinepy.BSpline(),
@@ -457,7 +457,7 @@ def get_all_spline_types_empty_as_list():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def get_spline_dictionaries():
     return [
         dict_bspline_2p2d(),
@@ -467,7 +467,7 @@ def get_spline_dictionaries():
     ]
 
 
-# @pytest.fixture
+@pytest.fixture
 def all_2p2d_splines(self):
     return (
         self.bezier_2p2d(),
@@ -477,7 +477,7 @@ def all_2p2d_splines(self):
     )
 
 
-# @pytest.fixture
+@pytest.fixture
 def all_3p3d_splines(self):
     return (
         self.bezier_3p3d(),
