@@ -15,49 +15,6 @@ __all__ = [
 ]
 
 
-@pytest.fixture
-def get_2d_control_points_b_spline():
-    return [
-        [0, 0],
-        [0, 1],
-        [1, 1.5],
-        [3, 1.5],
-        [-1, 0],
-        [-1, 2],
-        [1, 4],
-        [3, 4],
-        [-2, 0],
-        [-2, 2],
-        [1, 5],
-        [3, 5],
-    ]
-
-
-@pytest.fixture
-def get_2d_control_points_nurbs():
-    return [
-        [-1.0, 0.0],
-        [-1.0, 1.0],
-        [0.0, 1.0],
-        [-2.0, 0.0],
-        [-2.0, 2.0],
-        [0.0, 2.0],
-    ]
-
-
-@pytest.fixture
-def get_2d_control_points_bezier():
-    return [
-        [-1.0, 0.0],
-        [-1.0, 1.0],
-        [0.0, 1.0],
-        [-2.0, 0.0],
-        [-2.0, 2.0],
-        [0.0, 2.0],
-    ]
-
-
-@pytest.fixture
 def get_3d_control_points():
     return [
         [0.0, 0.0, 0.0],
@@ -71,7 +28,7 @@ def get_3d_control_points():
     ]
 
 
-@pytest.fixture
+# @pytest.fixture
 def get_knotvectors_2():
     return [
         [0, 0, 0, 0.5, 1, 1, 1],
@@ -79,7 +36,7 @@ def get_knotvectors_2():
     ]
 
 
-@pytest.fixture
+# @pytest.fixture
 def get_knotvectors_3():
     return [
         [0.0, 0.0, 1.0, 1.0],
@@ -116,7 +73,20 @@ def dict_bspline_2p2d():
     return {
         "degrees": [2, 2],
         "knot_vectors": get_knotvectors_2(),
-        "control_points": get_2d_control_points_b_spline(),
+        "control_points": [
+            [0, 0],
+            [0, 1],
+            [1, 1.5],
+            [3, 1.5],
+            [-1, 0],
+            [-1, 2],
+            [1, 4],
+            [3, 4],
+            [-2, 0],
+            [-2, 2],
+            [1, 5],
+            [3, 5],
+        ],
     }
 
 
@@ -128,7 +98,14 @@ def dict_nurbs_2p2d():
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        "control_points": get_2d_control_points_nurbs(),
+        "control_points": [
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         "weights": [
             [1.0],
             [2**-0.5],
@@ -143,7 +120,17 @@ def dict_nurbs_2p2d():
 #
 @pytest.fixture
 def dict_bezier_2p2d():
-    return {"degrees": [2, 1], "control_points": get_2d_control_points_nurbs()}
+    return {
+        "degrees": [2, 1],
+        "control_points": [
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+    }
 
 
 #
@@ -151,7 +138,14 @@ def dict_bezier_2p2d():
 def dict_rational_bezier_2p2d():
     return {
         "degrees": [2, 1],
-        "control_points": get_2d_control_points_nurbs(),
+        "control_points": [
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         "weights": [
             [1.0],
             [2**-0.5],
@@ -196,7 +190,7 @@ def dict_nurbs_3p3d():
         "degrees": [1, 1, 1],
         "control_points": get_3d_control_points(),
         "weights": [1.0] * len(get_3d_control_points()),
-        "knot_vectors": get_knotvectors_2(),
+        "knot_vectors": get_knotvectors_3(),
     }
 
 
@@ -207,7 +201,20 @@ def bspline_2p2d():
     return splinepy.BSpline(
         degrees=[2, 2],
         knot_vectors=get_knotvectors_2(),
-        control_points=get_2d_control_points_b_spline(),
+        control_points=[
+            [0, 0],
+            [0, 1],
+            [1, 1.5],
+            [3, 1.5],
+            [-1, 0],
+            [-1, 2],
+            [1, 4],
+            [3, 4],
+            [-2, 0],
+            [-2, 2],
+            [1, 5],
+            [3, 5],
+        ],
     )
 
 
@@ -220,7 +227,14 @@ def nurbs_2p2d():
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=get_2d_control_points_nurbs(),
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         weights=[
             [1.0],
             [2**-0.5],
@@ -243,7 +257,14 @@ def nurbs_2p2d_quarter_circle():
 def bezier_2p2d():
     return splinepy.Bezier(
         degrees=[2, 1],
-        control_points=get_2d_control_points_nurbs(),
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
     )
 
 
@@ -251,7 +272,14 @@ def bezier_2p2d():
 def rational_bezier_2p2d():
     return splinepy.RationalBezier(
         degrees=[2, 1],
-        control_points=get_2d_control_points_bezier(),
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         weights=[
             [1.0],
             [2**-0.5],
