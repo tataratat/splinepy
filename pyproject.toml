@@ -119,3 +119,13 @@ exclude = "third_party"
 
 [tool.blackdoc]
 line-length = 75
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = [
+    "test_pytest",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:jupyter_client",
+]
