@@ -17,7 +17,7 @@ def _spline_to_ET(
     index_offset,
     fields_only=False,
     as_base64=False,
-    field_mask=True,
+    field_mask=None,
 ):
     """
     Write spline data to xml element in gismo format
