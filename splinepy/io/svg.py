@@ -6,6 +6,18 @@ import numpy as np
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
 
+try:
+    from vedo import Plotter as _Plotter
+    from vedo import color_map as _color_map
+    from vedo.colors import get_color as _get_color
+except ImportError as err:
+    from gustaf.helpers.raise_if import ModuleImportRaiser
+
+    _error_message_vedo_import = "Vedo library required for svg export"
+    _Plotter = ModuleImportRaiser(_error_message_vedo_import, err)
+    _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
+    _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
+
 
 def _rgb_2_hex(r, g, b):
     """
@@ -21,6 +33,7 @@ def _rgb_2_hex(r, g, b):
       blue value
 
     Returns
+    -------
     hex : string
     """
     return f"#{int(255 * r):02x}{int(255 * g):02x}{int(255 * b):02x}"
@@ -50,8 +63,6 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     -------
     None
     """
-
-    from vedo import Plotter as _Plotter
 
     from splinepy.helpme.visualize import _process_scalar_field, _sample_spline
 
@@ -201,10 +212,10 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         )
 
     # Crop image
-    has_pixels = np.where(np.any(alpha_layer != 0, axis=1))[0]
+    has_pixels = np.where(np.any(alpha_layer, axis=1))[0]
     min_x_pixel = has_pixels.min()
     max_x_pixel = has_pixels.max()
-    has_pixels = np.where(np.any(alpha_layer != 0, axis=0))[0]
+    has_pixels = np.where(np.any(alpha_layer, axis=0))[0]
     min_y_pixel = has_pixels.min()
     max_y_pixel = has_pixels.max()
     bitmap = bitmap[min_x_pixel:max_x_pixel, min_y_pixel:max_y_pixel, :]
@@ -246,7 +257,6 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     -------
     None
     """
-    from vedo.colors import get_color as _get_color
 
     # Default behaviour in show is, no mesh and no ids, if no control points
     if not spline.show_options.get("control_points", True):
@@ -428,7 +438,6 @@ def _quiver_plot(
     -------
     None
     """
-    from vedo import color_map as _color_map
 
     # Create a default arrow along x-axis with length 1 that will be scaled
     # down accordingly
@@ -544,10 +553,8 @@ def _export_spline(
     -------
     None
     """
-    from vedo.colors import get_color as _get_color
-
     from splinepy.helpme.fit import curve as _fit_curve
-    from splinepy.helpme.reparameterize import invert_axes as _invert_axes
+    from splinepy.helpme.reparametrize import invert_axes as _invert_axes
     from splinepy.settings import TOLERANCE
 
     # Maximum number of refinements for approximation

@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class ReparameterizeTest(c.SplineBasedTestCase):
+class reparametrizeTest(c.SplineBasedTestCase):
     def test_permute_parametric_axes(self):
         """
         test permute
@@ -30,7 +30,7 @@ class ReparameterizeTest(c.SplineBasedTestCase):
                 orig.insert_knots(1, [0.1, 0.2])
                 orig.insert_knots(2, [0.3, 0.5, 0.6, 0.9])
 
-            perm = c.splinepy.helpme.reparameterize.permute_parametric_axes(
+            perm = c.splinepy.helpme.reparametrize.permute_parametric_axes(
                 orig, permutation, inplace=False
             )
             queries = c.np.asarray(c.get_queries_3D())
@@ -46,7 +46,7 @@ class ReparameterizeTest(c.SplineBasedTestCase):
         # ic.nplace
         for orig in originals:
             perm = orig.copy()
-            c.splinepy.helpme.reparameterize.permute_parametric_axes(
+            c.splinepy.helpme.reparametrize.permute_parametric_axes(
                 perm, permutation, inplace=True
             )
             queries = c.np.asarray(c.get_queries_3D())
@@ -79,7 +79,7 @@ class ReparameterizeTest(c.SplineBasedTestCase):
 
         for spline in [z, r, b, n]:
             # With copy
-            new_spline = c.splinepy.helpme.reparameterize.invert_axes(
+            new_spline = c.splinepy.helpme.reparametrize.invert_axes(
                 spline, flipped_axes, inplace=False
             )
 
@@ -93,7 +93,7 @@ class ReparameterizeTest(c.SplineBasedTestCase):
 
             # in place
             spline_copy = spline.copy()
-            new_spline2 = c.splinepy.helpme.reparameterize.invert_axes(
+            new_spline2 = c.splinepy.helpme.reparametrize.invert_axes(
                 spline_copy, flipped_axes, inplace=True
             )
 

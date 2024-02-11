@@ -5,7 +5,7 @@ from splinepy.helpme import (
     integrate,
     mapper,
     multi_index,
-    reparameterize,
+    reparametrize,
     visualize,
 )
 
@@ -15,7 +15,7 @@ __all__ = [
     "integrate",
     "mapper",
     "multi_index",
-    "reparameterize",
+    "reparametrize",
     "visualize",
     "fit",
 ]
