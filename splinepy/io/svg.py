@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as _ET
 from sys import version as python_version
 
 import numpy as np
@@ -210,7 +210,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     bitmap = bitmap[min_x_pixel:max_x_pixel, min_y_pixel:max_y_pixel, :]
 
     # Write Bitmap into svg
-    image_svg = ET.SubElement(
+    image_svg = _ET.SubElement(
         svg_element,
         "image",
         x=str(x_min - box_min_x),  # str(box_max_y - xy)
@@ -252,7 +252,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     if not spline.show_options.get("control_points", True):
         return
 
-    svg_mesh = ET.SubElement(
+    svg_mesh = _ET.SubElement(
         svg_spline_element,
         "g",
         id="control_mesh",
@@ -269,7 +269,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         stroke_width = spline.show_options.get("control_mesh_lw", 0.01)
 
         # Create a new group
-        svg_mesh_polylines = ET.SubElement(
+        svg_mesh_polylines = _ET.SubElement(
             svg_mesh,
             "g",
             id="mesh",
@@ -281,7 +281,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
 
         # Draw the actual lines
         if spline.para_dim == 1:
-            ET.SubElement(
+            _ET.SubElement(
                 svg_mesh_polylines,
                 "polyline",
                 points=" ".join(
@@ -296,7 +296,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
             cmr_xi, cmr_eta = spline.control_mesh_resolutions
             for i in range(cmr_eta):
                 # for
-                ET.SubElement(
+                _ET.SubElement(
                     svg_mesh_polylines,
                     "polyline",
                     points=" ".join(
@@ -308,7 +308,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
                 )
             for i in range(cmr_xi):
                 # for
-                ET.SubElement(
+                _ET.SubElement(
                     svg_mesh_polylines,
                     "polyline",
                     points=" ".join(
@@ -332,7 +332,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         r, g, b = _get_color(spline.show_options.get("control_point_c", "red"))
         a = spline.show_options.get("control_point_alpha", 1.0)
 
-        svg_control_points = ET.SubElement(
+        svg_control_points = _ET.SubElement(
             svg_mesh,
             "g",
             id="control_points",
@@ -340,7 +340,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         )
 
         for ctp in spline.control_points:
-            ET.SubElement(
+            _ET.SubElement(
                 svg_control_points,
                 "circle",
                 cx=str(ctp[0] - box_min_x),
@@ -351,7 +351,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     # Lastly IDs
     if spline.show_options.get("control_point_ids", True):
         # Text Options
-        svg_control_point_ids = ET.SubElement(
+        svg_control_point_ids = _ET.SubElement(
             svg_mesh,
             "g",
             id="control_point_ids",
@@ -369,7 +369,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         dx, dy = 0.0, 0.0
 
         for i, ctp in enumerate(spline.control_points):
-            text_element = ET.SubElement(
+            text_element = _ET.SubElement(
                 svg_control_point_ids,
                 "text",
                 x=str(ctp[0] - box_min_x),
@@ -486,7 +486,7 @@ def _quiver_plot(
     )
 
     # Create a new group
-    svg_quiver = ET.SubElement(
+    svg_quiver = _ET.SubElement(
         svg_spline_element,
         "g",
         id="quiver",
@@ -494,7 +494,7 @@ def _quiver_plot(
 
     # Loop over control points and write them into a group
     for i in range(arrow_length.shape[0]):
-        ET.SubElement(
+        _ET.SubElement(
             svg_quiver,
             "polyline",
             points=" ".join(
@@ -658,7 +658,7 @@ def _export_spline(
         return spline_copy
 
     # Write the actual spline as the lowest layer
-    svg_spline = ET.SubElement(
+    svg_spline = _ET.SubElement(
         svg_spline_element,
         "g",
         id="spline_paths",
@@ -698,7 +698,7 @@ def _export_spline(
                     for s in bezier_elements
                 ]
             )
-            ET.SubElement(
+            _ET.SubElement(
                 svg_spline,
                 "path",
                 # draw path
@@ -740,7 +740,7 @@ def _export_spline(
                 ]
             )
 
-            ET.SubElement(
+            _ET.SubElement(
                 svg_spline,
                 "path",
                 # draw path
@@ -754,7 +754,7 @@ def _export_spline(
         # Plot knots as rectangles
     if spline.show_options.get("knots", True):
         # Exports knots in separate group
-        svg_knots = ET.SubElement(
+        svg_knots = _ET.SubElement(
             svg_spline_element,
             "g",
             id="knots",
@@ -771,7 +771,7 @@ def _export_spline(
                 a = spline.show_options.get("knot_alpha", 1.0)
                 dx = spline.show_options.get("knot_lw", 0.02)
 
-                ET.SubElement(
+                _ET.SubElement(
                     svg_knots,
                     "rect",
                     x=str(x - box_min_x - 0.5 * dx),
@@ -817,7 +817,7 @@ def _export_spline(
                         for s in bezier_elements
                     ]
                 )
-                ET.SubElement(
+                _ET.SubElement(
                     svg_knots,
                     "path",
                     # draw path
@@ -831,7 +831,9 @@ def _export_spline(
                 )
 
 
-def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
+def export(
+    fname, *splines, indent=True, box_margins=0.1, tolerance=None, **kwargs
+):
     """
     Exports a number of splines into an svg plot
 
@@ -890,7 +892,16 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         )
 
     # Initialize svg element
-    svg_data = ET.Element("svg")
+    svg_data = _ET.Element("svg")
+
+    # licked it so its ours
+    svg_data.insert(
+        1,
+        _ET.Comment(
+            "generated by splinepy https://github.com/tataratat/splinepy"
+        ),
+    )
+
     box_size = (
         ctps_bounds[1, 0] - ctps_bounds[0, 0] + 2 * box_margins,
         ctps_bounds[1, 1] - ctps_bounds[0, 1] + 2 * box_margins,
@@ -908,9 +919,21 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
 
     # Write splines in svg file
     for i, spline in enumerate(splines):
-        # Put every spline into a new dedicated group
+        # Copy spline options from keyword arguments
+        # (taken from visualize to ensure conformity)
+        orig_show_options = None
+        if kwargs:
+            orig_show_options = spline.show_options
+            spline._show_options = spline.__show_option__(spline)
+            orig_show_options.copy_valid_options(spline.show_options)
+            for key, value in kwargs.items():
+                try:
+                    spline.show_options[key] = value
+                except BaseException:
+                    continue
 
-        spline_group = ET.SubElement(svg_data, "g", id="spline" + str(i))
+        # Put every spline into a new dedicated group
+        spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
         _export_spline(
             spline, spline_group, box_min_x, box_max_y, tolerance=tolerance
         )
@@ -922,10 +945,14 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
         )
         _export_control_mesh(spline, spline_group, box_min_x, box_max_y)
 
+        # set original options back
+        if orig_show_options is not None:
+            spline._show_options = orig_show_options
+
     # Dump into file
     if int(python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9
-        ET.indent(svg_data)
+        _ET.indent(svg_data)
 
     elif int(python_version.split(".")[1]) < 9 and indent:
         _debug(
@@ -934,7 +961,7 @@ def export(fname, *splines, indent=True, box_margins=0.1, tolerance=None):
             f"Current python version: {python_version}",
         )
 
-    file_content = ET.tostring(svg_data)
+    file_content = _ET.tostring(svg_data)
     with open(fname, "wb") as f:
         f.write(file_content)
     pass
