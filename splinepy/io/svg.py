@@ -395,6 +395,8 @@ def _quiver_plot(
     Export a quiver plot using arrows as defined
     [here](https://matplotlib.org/stable/_images/quiver_sizes.svg)
 
+    The arrows will be scaled using the `arrow_data_scale` flag
+
     Parameters
     ----------
     spline : Spline
@@ -513,7 +515,8 @@ def _export_spline(
     spline, svg_spline_element, box_min_x, box_max_y, tolerance=None
 ):
     """
-    Export a spline in svg format cubic beziers as approximations
+    Export a spline in svg format cubic beziers as approximations (even for
+    lower degree splines, for simplicity). Also exports the knot lines
 
     Parameters
     ----------
@@ -536,6 +539,10 @@ def _export_spline(
       rationals or high order splines) a tolerance is required for the
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
+
+    Returns
+    -------
+    None
     """
     from vedo.colors import get_color as _get_color
 
@@ -559,11 +566,26 @@ def _export_spline(
 
     # Approximation curve-wise
     def _approximate_curve(original_spline, tolerance):
+        """
+        Approximate a curve using third order B-Splines
+
+        Continuity will be preserved
+
+        original_spline : Spline
+          Any type spline as a basis for approximation
+        tolerance : double
+          approximation tolerance (given a maximum number of iterations)
+
+        Returns
+        -------
+        """
         if original_spline.degrees[0] <= 3 and not (
             original_spline.is_rational and original_spline.degrees[0] > 1
         ):
-            spline_copy = original_spline.copy()
-            spline_copy.elevate_degrees([0] * (3 - original_spline.degrees[0]))
+            spline_approximation = original_spline.copy()
+            spline_approximation.elevate_degrees(
+                [0] * (3 - original_spline.degrees[0])
+            )
         else:
             # Use fit tool to approximate curve
             _warning(
@@ -601,7 +623,7 @@ def _export_spline(
             k_mult[-1] = 4
             new_knot_vector = np.repeat(original_spline.unique_knots, k_mult)
             residual = 2 * tolerance
-            spline_copy, residual = _fit_curve(
+            spline_approximation, residual = _fit_curve(
                 original_spline.evaluate(para_queries),
                 degree=3,
                 knot_vector=new_knot_vector,
@@ -626,18 +648,18 @@ def _export_spline(
                 )
 
                 # Insert a few knots
-                spline_copy.insert_knots(
+                spline_approximation.insert_knots(
                     0,
                     np.convolve(
-                        spline_copy.unique_knots[0].ravel(),
+                        spline_approximation.unique_knots[0].ravel(),
                         np.ones(2) * 0.5,
                         "valid",
                     ),
                 )
-                new_knot_vector = spline_copy.knot_vectors[0]
+                new_knot_vector = spline_approximation.knot_vectors[0]
 
                 # Create better approximation
-                spline_copy, residual = _fit_curve(
+                spline_approximation, residual = _fit_curve(
                     original_spline.evaluate(para_queries),
                     degree=3,
                     knot_vector=new_knot_vector,
@@ -651,11 +673,11 @@ def _export_spline(
                 )
 
         # Sanity check
-        assert spline_copy.degrees[0] == 3
-        assert (not spline_copy.is_rational) or (
+        assert spline_approximation.degrees[0] == 3
+        assert (not spline_approximation.is_rational) or (
             original_spline.is_rational and original_spline.degrees[0] <= 1
         )
-        return spline_copy
+        return spline_approximation
 
     # Write the actual spline as the lowest layer
     svg_spline = _ET.SubElement(
@@ -759,25 +781,26 @@ def _export_spline(
             "g",
             id="knots",
         )
+
+        # Relevant options
+        # - knot_alpha
+        # - knot_c
+        # - knot_lw
+        r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
+        a = spline.show_options.get("knot_alpha", 1.0)
+        lw = spline.show_options.get("knot_lw", 0.02)
         if spline.para_dim == 1:
             ukvs = spline.unique_knots[0]
             knot_projected = spline.evaluate(ukvs.reshape(-1, 1))
             for x, y in knot_projected:
-                # Relevant options
-                # - knot_alpha
-                # - knot_c
-                # - knot_lw
-                r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
-                a = spline.show_options.get("knot_alpha", 1.0)
-                dx = spline.show_options.get("knot_lw", 0.02)
 
                 _ET.SubElement(
                     svg_knots,
                     "rect",
-                    x=str(x - box_min_x - 0.5 * dx),
-                    y=str(box_max_y - y - 0.5 * dx),
-                    height=str(dx),
-                    width=str(dx),
+                    x=str(x - box_min_x - 0.5 * lw),
+                    y=str(box_max_y - y - 0.5 * lw),
+                    height=str(lw),
+                    width=str(lw),
                     style=(
                         f"fill:{_rgb_2_hex(r,g,b)};stroke:none;"
                         f"fill-opacity:{a};"
@@ -785,10 +808,6 @@ def _export_spline(
                 )
 
         else:
-            # Retrieve options
-            r, g, b = _get_color(spline.show_options.get("knot_c", "blue"))
-            a = spline.show_options.get("knot_alpha", 1.0)
-            dx = spline.show_options.get("knot_lw", 0.02)
 
             # Extract knot lines as splines
             knot_lines = []
@@ -825,7 +844,7 @@ def _export_spline(
                     style=(
                         f"fill:none;stroke:{_rgb_2_hex(r,g,b)};"
                         f"stroke-opacity:{a};"
-                        f"stroke-width:{spline.show_options.get('lw', 0.01)};"
+                        f"stroke-width:{lw};"
                         "stroke-linecap:round"
                     ),
                 )
@@ -902,6 +921,7 @@ def export(
         ),
     )
 
+    # Set the box margins and svg options globally
     box_size = (
         ctps_bounds[1, 0] - ctps_bounds[0, 0] + 2 * box_margins,
         ctps_bounds[1, 1] - ctps_bounds[0, 1] + 2 * box_margins,
