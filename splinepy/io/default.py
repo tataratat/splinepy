@@ -14,7 +14,7 @@ extension_to_io = {
     ".itd": _irit,
     ".irit": _irit,
     ".json": _json,
-    ".mfem": _mfem,
+    ".mesh": _mfem,
     ".npz": _npz,
 }
 
