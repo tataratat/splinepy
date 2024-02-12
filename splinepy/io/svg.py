@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as _ET
-from sys import version as _python_version
 
 import numpy as _np
 
@@ -15,7 +14,7 @@ except ImportError as err:
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
-from splinepy.utils.log import debug as _debug
+from splinepy.utils.log import info as _info
 from splinepy.utils.log import warning as _warning
 
 
@@ -99,7 +98,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         if (
             (bitmap.ndim != 3)
             or (bitmap.shape[2] != 4)
-            or (bitmap.dtype is not np.dtype("uint8"))
+            or (bitmap.dtype is not _np.dtype("uint8"))
         ):
             raise ValueError("Was expecting bitmap in RGBA format")
         width = bitmap.shape[1]
@@ -190,11 +189,8 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         title="",
         bg=(255, 255, 255),
         axes=0,
-        zoom="tightest",
     )
-    plotter.show(
-        sampled_spline.showable(),
-    )
+    plotter.show(sampled_spline.showable(), zoom="tightest")
 
     # Extract bounding box
     x_min, y_min, x_max, y_max = sampled_spline.bounds().ravel()
@@ -204,11 +200,11 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
 
     if bitmap.shape[2] == 3:
         alpha_layer = (
-            np.ones((bitmap.shape[0], bitmap.shape[1]), dtype=bitmap.dtype)
+            _np.ones((bitmap.shape[0], bitmap.shape[1]), dtype=bitmap.dtype)
             * 255
         )
-        alpha_layer[np.all(bitmap == 255, axis=-1)] = 0
-        bitmap = np.concatenate(
+        alpha_layer[_np.all(bitmap == 255, axis=-1)] = 0
+        bitmap = _np.concatenate(
             (bitmap, alpha_layer.reshape(*alpha_layer.shape, 1)), axis=-1
         )
     elif bitmap.shape[2] == 4:
@@ -217,10 +213,11 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         raise RuntimeError("Failed to extract field bitmap")
 
     # Crop image
-    has_pixels = np.where(np.any(alpha_layer, axis=1))[0]
+    pixel_layer = alpha_layer != 0
+    has_pixels = _np.where(_np.any(pixel_layer, axis=1))[0]
     min_x_pixel = has_pixels.min()
     max_x_pixel = has_pixels.max()
-    has_pixels = np.where(np.any(alpha_layer, axis=0))[0]
+    has_pixels = _np.where(_np.any(pixel_layer, axis=0))[0]
     min_y_pixel = has_pixels.min()
     max_y_pixel = has_pixels.max()
     bitmap = bitmap[min_x_pixel:max_x_pixel, min_y_pixel:max_y_pixel, :]
@@ -239,7 +236,9 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     ).decode("utf-8")
 
 
-def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
+def _export_control_mesh(
+    spline, svg_spline_element, box_min_x, box_max_y, **kwargs
+):
     """
     Export a spline's control mesh in svg format using polylines for the mesh
     lines, circles for the control points.
@@ -257,6 +256,9 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
     box_max_y : float/int
       maximum y coordinate of the surrounding box (pictures use LHS coordinate
       system in top left corner)
+    kwargs :
+      Key word argument options for output specification
+      `{"font-family","font-size","text-anchor","font-family","fill","stroke"}`
 
     Returns
     -------
@@ -281,8 +283,10 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         # - control_mesh_alpha (tbd)
         r, g, b = _get_color(spline.show_options.get("control_mesh_c", "red"))
         a = spline.show_options.get("control_mesh_alpha", 1.0)
-        bbox_norm = np.linalg.norm(np.diff(spline.control_point_bounds))
-        stroke_width = spline.show_options.get("control_mesh_lw", bbox_norm * 0.001)
+        stroke_width = spline.show_options.get(
+            "control_mesh_lw",
+            _np.linalg.norm(_np.diff(spline.control_point_bounds)) * 0.001,
+        )
 
         # Create a new group
         svg_mesh_polylines = _ET.SubElement(
@@ -374,12 +378,20 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         )
 
         # Set text options
-        svg_control_point_ids.attrib["font-family"] = "sans-serif"
-        svg_control_point_ids.attrib["font-size"] = ".1"
-        svg_control_point_ids.attrib["text-anchor"] = "middle"
-        svg_control_point_ids.attrib["font-family"] = "sans-serif"
-        svg_control_point_ids.attrib["fill"] = "black"
-        svg_control_point_ids.attrib["stroke"] = "none"
+        svg_control_point_ids.attrib["font-family"] = kwargs.get(
+            "font-family", "sans-serif"
+        )
+        svg_control_point_ids.attrib["font-size"] = kwargs.get(
+            "font-size", ".1"
+        )
+        svg_control_point_ids.attrib["text-anchor"] = kwargs.get(
+            "text-anchor", "middle"
+        )
+        svg_control_point_ids.attrib["font-family"] = kwargs.get(
+            "font-family", "sans-serif"
+        )
+        svg_control_point_ids.attrib["fill"] = kwargs.get("fill", "black")
+        svg_control_point_ids.attrib["stroke"] = kwargs.get("stroke", "none")
 
         # Text offset
         dx, dy = 0.0, 0.0
@@ -447,7 +459,7 @@ def _quiver_plot(
 
     # Create a default arrow along x-axis with length 1 that will be scaled
     # down accordingly
-    default_arrow_control_points_ = np.array(
+    default_arrow_control_points_ = _np.array(
         [
             [0, -q_width],
             [1 - q_headaxis_length, -q_width],
@@ -470,28 +482,28 @@ def _quiver_plot(
     directions = arrow_data.vertices[arrow_data.edges[:, 1]] - positions
 
     # Discard all points that are below the tolerance
-    arrow_length = np.linalg.norm(directions, axis=1)
+    arrow_length = _np.linalg.norm(directions, axis=1)
     over_tolerance = arrow_length > tolerance
     directions = directions[over_tolerance]
     positions = positions[over_tolerance]
     arrow_length = arrow_length[over_tolerance]
 
     # Create rotation matrices
-    angles = np.arctan2(directions[:, 1], directions[:, 0])
-    rotation_matrices = np.empty((angles.shape[0], 2, 2))
-    rotation_matrices[:, 0, 0] = np.cos(angles)
-    rotation_matrices[:, 1, 0] = np.sin(angles)
+    angles = _np.arctan2(directions[:, 1], directions[:, 0])
+    rotation_matrices = _np.empty((angles.shape[0], 2, 2))
+    rotation_matrices[:, 0, 0] = _np.cos(angles)
+    rotation_matrices[:, 1, 0] = _np.sin(angles)
     rotation_matrices[:, 0, 1] = -rotation_matrices[:, 1, 0]
     rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
 
     # Retrieve information on colors and values
-    v_min = spline.show_options.get("vmin", np.min(arrow_length))
-    v_max = spline.show_options.get("vmax", np.max(arrow_length))
+    v_min = spline.show_options.get("vmin", _np.min(arrow_length))
+    v_max = spline.show_options.get("vmax", _np.max(arrow_length))
     cmap_style = spline.show_options.get("cmap", "jet")
     colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
 
     # Map arrow control points
-    arrow_control_points_ = np.einsum(
+    arrow_control_points_ = _np.einsum(
         "nij,kj,n->nki",
         rotation_matrices,
         default_arrow_control_points_,
@@ -521,9 +533,11 @@ def _quiver_plot(
             style=(f"fill:{_rgb_2_hex(*colors[i])};stroke:none"),
         )
 
+    return None
+
 
 def _export_spline(
-    spline, svg_spline_element, box_min_x, box_max_y, tolerance=None
+    spline, svg_spline_element, box_min_x, box_max_y, tolerance=None, **kwargs
 ):
     """
     Export a spline in svg format cubic beziers as approximations (even for
@@ -550,13 +564,15 @@ def _export_spline(
       rationals or high order splines) a tolerance is required for the
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
+    kwargs:
+      `{"linecap"}`
 
     Returns
     -------
     None
     """
     from splinepy.helpme.fit import curve as _fit_curve
-    from splinepy.helpme.reparametrize import invert_axes as _invert_axes
+    from splinepy.helpme.reparametrize import flip_axes as _flip_axes
     from splinepy.settings import TOLERANCE
 
     # Maximum number of refinements for approximation
@@ -564,14 +580,14 @@ def _export_spline(
 
     # Set tolerance for export to default if no user data
     if tolerance is None:
-        tolerance = 0.01 * np.linalg.norm(
+        tolerance = 0.01 * _np.linalg.norm(
             spline.control_point_bounds[0, :]
             - spline.control_point_bounds[1, :]
         )
 
     # Sanity check
     if spline.para_dim not in [1, 2]:
-        raise ValueError("String dimension invalid")
+        raise ValueError("Unsupported spline dimension")
 
     # Approximation curve-wise
     def _approximate_curve(original_spline, tolerance):
@@ -611,12 +627,14 @@ def _export_spline(
             if original_spline.is_rational and (
                 original_spline.degrees[0] < 3
             ):
-                para_queries = np.sort(
-                    np.vstack(
+                para_queries = _np.sort(
+                    _np.vstack(
                         (
                             para_queries,
-                            np.convolve(
-                                para_queries.ravel(), np.ones(2) * 0.5, "valid"
+                            _np.convolve(
+                                para_queries.ravel(),
+                                _np.ones(2) * 0.5,
+                                "valid",
                             ).reshape(-1, 1),
                         )
                     ),
@@ -625,12 +643,12 @@ def _export_spline(
 
             # Create knot-vector
             k_mult = original_spline.knot_multiplicities[0]
-            k_mult[1:-1] = np.maximum(
+            k_mult[1:-1] = _np.maximum(
                 1, 3 - original_spline.degrees[0] + k_mult[1:-1]
             )
             k_mult[0] = 4
             k_mult[-1] = 4
-            new_knot_vector = np.repeat(original_spline.unique_knots, k_mult)
+            new_knot_vector = _np.repeat(original_spline.unique_knots, k_mult)
             residual = 2 * tolerance
             spline_approximation, residual = _fit_curve(
                 original_spline.evaluate(para_queries),
@@ -644,12 +662,14 @@ def _export_spline(
                 if residual < tolerance:
                     break
                 # Loop until tolerance satisfied
-                para_queries = np.sort(
-                    np.vstack(
+                para_queries = _np.sort(
+                    _np.vstack(
                         (
                             para_queries,
-                            np.convolve(
-                                para_queries.ravel(), np.ones(2) * 0.5, "valid"
+                            _np.convolve(
+                                para_queries.ravel(),
+                                _np.ones(2) * 0.5,
+                                "valid",
                             ).reshape(-1, 1),
                         )
                     ),
@@ -659,9 +679,9 @@ def _export_spline(
                 # Insert a few knots
                 spline_approximation.insert_knots(
                     0,
-                    np.convolve(
+                    _np.convolve(
                         spline_approximation.unique_knots[0].ravel(),
-                        np.ones(2) * 0.5,
+                        _np.ones(2) * 0.5,
                         "valid",
                     ),
                 )
@@ -676,7 +696,7 @@ def _export_spline(
                 )
 
             if residual > tolerance:
-                _warning(
+                _info(
                     "Requested tolerance could not be reached within maximum"
                     " number of refinement steps"
                 )
@@ -745,8 +765,8 @@ def _export_spline(
             spline_boundaries = spline.extract.boundaries()
 
             # Flip boundaries on boundary 0 and 3
-            _invert_axes(spline_boundaries[0], axes=[0], inplace=True)
-            _invert_axes(spline_boundaries[3], axes=[0], inplace=True)
+            _flip_axes(spline_boundaries[0], axes=[0], inplace=True)
+            _flip_axes(spline_boundaries[3], axes=[0], inplace=True)
 
             bezier_elements = []
             for i in [2, 1, 3, 0]:
@@ -778,7 +798,7 @@ def _export_spline(
                 d=path_d,
                 style=(
                     f"fill:{_rgb_2_hex(r,g,b)};fill-opacity:{a};stroke:none;"
-                    "stroke-linecap:round"
+                    f"stroke-linecap:{kwargs.get('linecap','round')}"
                 ),
             )
 
@@ -854,7 +874,7 @@ def _export_spline(
                         f"fill:none;stroke:{_rgb_2_hex(r,g,b)};"
                         f"stroke-opacity:{a};"
                         f"stroke-width:{lw};"
-                        "stroke-linecap:round"
+                        f"stroke-linecap:{kwargs.get('linecap','round')}"
                     ),
                 )
 
@@ -884,6 +904,10 @@ def export(
       rationals or high order splines) a tolerance is required for the
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
+    kwargs:
+      Specify more output options
+      `{"background_c", "linecap", "font-family", "font-size", "text-anchor",
+      "font-family", "fill", "stroke"}`
 
     Returns
     -------
@@ -912,10 +936,10 @@ def export(
     # Determine bounding box of all elements
     ctps_bounds = splines[0].control_point_bounds
     for spline in splines[1::]:
-        ctps_bounds[0, :] = np.minimum(
+        ctps_bounds[0, :] = _np.minimum(
             spline.control_point_bounds[0, :], ctps_bounds[0, :]
         )
-        ctps_bounds[1, :] = np.maximum(
+        ctps_bounds[1, :] = _np.maximum(
             spline.control_point_bounds[1, :], ctps_bounds[1, :]
         )
 
@@ -938,7 +962,9 @@ def export(
     svg_data.attrib["viewBox"] = f"0 0 {box_size[0]} {box_size[1]}"
     svg_data.attrib["height"] = str(400)
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
-    svg_data.attrib["style"] = "background-color:white"
+    svg_data.attrib["style"] = (
+        f"background-color:{kwargs.get('background_c','white')}"
+    )
     svg_data.attrib["xmlns"] = "http://www.w3.org/2000/svg"
     svg_data.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
 
@@ -982,13 +1008,6 @@ def export(
     if indent and hasattr(_ET, "indent"):
         # Pretty printing xml with indent only exists in version > 3.9
         _ET.indent(svg_data)
-
-    elif indent:
-        _debug(
-            "Indented xml output is only supported from > python3.9.",
-            "Output will not be indented.",
-            f"Current python version: {python_version}",
-        )
 
     file_content = _ET.tostring(svg_data)
     with open(fname, "wb") as f:

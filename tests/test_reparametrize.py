@@ -59,7 +59,7 @@ class reparametrizeTest(c.SplineBasedTestCase):
                 f"{perm.whatami} failed to permute inplace.",
             )
 
-    def test_invert_axes(self):
+    def test_flip_axes(self):
         """
         test invert axes
         """
@@ -79,7 +79,7 @@ class reparametrizeTest(c.SplineBasedTestCase):
 
         for spline in [z, r, b, n]:
             # With copy
-            new_spline = c.splinepy.helpme.reparametrize.invert_axes(
+            new_spline = c.splinepy.helpme.reparametrize.flip_axes(
                 spline, flipped_axes, inplace=False
             )
 
@@ -93,7 +93,7 @@ class reparametrizeTest(c.SplineBasedTestCase):
 
             # in place
             spline_copy = spline.copy()
-            new_spline2 = c.splinepy.helpme.reparametrize.invert_axes(
+            new_spline2 = c.splinepy.helpme.reparametrize.flip_axes(
                 spline_copy, flipped_axes, inplace=True
             )
 

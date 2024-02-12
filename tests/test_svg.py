@@ -163,7 +163,7 @@ class SVGExportTest(c.unittest.TestCase):
         askew_spline2D.show_options["data"] = "field_function"
         askew_spline2D.show_options["knot_c"] = "black"
         askew_spline2D.show_options["control_points"] = False
-        askew_spline2D.show_options["resolutions"] = 20
+        askew_spline2D.show_options["resolutions"] = 100
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = c.to_tmpf(tmpd)
             # With a list
