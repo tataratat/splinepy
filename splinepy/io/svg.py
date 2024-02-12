@@ -111,7 +111,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         # reverse but in the original order (modified by jzwar)
         raw_data = b"".join(
             # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span : (span + width_byte_4)]
+            b"\x00" + buf[span: (span + width_byte_4)]
             # Iterate over the buffer
             for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
         )
@@ -613,7 +613,7 @@ def _export_spline(
             )
         else:
             # Use fit tool to approximate curve
-            _warning(
+            _info(
                 "SVG export only supports (up to) cubic polynomial splines --"
                 " using approximation"
             )
@@ -696,7 +696,7 @@ def _export_spline(
                 )
 
             if residual > tolerance:
-                _info(
+                _warning(
                     "Requested tolerance could not be reached within maximum"
                     " number of refinement steps"
                 )
