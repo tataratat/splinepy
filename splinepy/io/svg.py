@@ -111,7 +111,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         # reverse but in the original order (modified by jzwar)
         raw_data = b"".join(
             # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span: (span + width_byte_4)]
+            b"\x00" + buf[span : (span + width_byte_4)]
             # Iterate over the buffer
             for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
         )
@@ -702,10 +702,18 @@ def _export_spline(
                 )
 
         # Sanity check
-        assert spline_approximation.degrees[0] == 3
-        assert (not spline_approximation.is_rational) or (
-            original_spline.is_rational and original_spline.degrees[0] <= 1
-        )
+        if (
+            (spline_approximation.degrees[0] == 3)
+            or (not spline_approximation.is_rational)
+            or (
+                original_spline.is_rational and original_spline.degrees[0] <= 1
+            )
+        ):
+            raise RuntimeError(
+                "Spline Approximation returned unexpected result that is "
+                "non-compliant to svg standard. Expected cubic bezier spline."
+            )
+
         return spline_approximation
 
     # Write the actual spline as the lowest layer
