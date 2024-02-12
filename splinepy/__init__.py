@@ -5,7 +5,6 @@ from splinepy import (
     bspline,
     helpme,
     io,
-    load,
     microstructure,
     multipatch,
     nurbs,
@@ -19,7 +18,6 @@ from splinepy._version import __version__
 from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.helpme.ffd import FFD
-from splinepy.load import load_solution, load_splines
 from splinepy.multipatch import Multipatch
 from splinepy.nurbs import NURBS
 from splinepy.rational_bezier import RationalBezier
@@ -53,7 +51,6 @@ __all__ = [
     "bezier",
     "bspline",
     "io",
-    "load",
     "multipatch",
     "nurbs",
     "rational_bezier",
@@ -71,8 +68,6 @@ __all__ = [
     "Spline",
     "SplineDataAdaptor",
     "FFD",
-    "load_splines",
-    "load_solution",
     "to_derived",
     "show",
 ]
