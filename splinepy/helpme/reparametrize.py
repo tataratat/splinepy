@@ -87,12 +87,12 @@ def permute_parametric_axes(spline, permutation_list, inplace=True):
         return type(spline)(**dict_spline)
 
 
-def invert_axes(spline, axes, inplace=False):
+def flip_axes(spline, axes, inplace=False):
     """
     Flip the parametric axes
 
     This function flips parametric axes without changing the parametric bounds
-    of the spline. This can be used, e.g., to achieve conformaty on a
+    of the spline. This can be used, e.g., to achieve conformity on a
     multipatch interface
 
     Parameters
@@ -113,8 +113,8 @@ def invert_axes(spline, axes, inplace=False):
     # Sanity checks
     if isinstance(axes, int):
         axes = [axes]
-    if not isinstance(axes, list):
-        raise ValueError("Permutation list incomprehensive")
+    if not isinstance(axes, (list, tuple)):
+        raise TypeError("Permutation list should be a list")
 
     # Create copy if not inplace
     if not inplace:
@@ -132,7 +132,7 @@ def invert_axes(spline, axes, inplace=False):
         # Reverse knot vectors (keep parametric bounds unchanged)
         if spline.has_knot_vectors:
             para_bounds = spline.parametric_bounds
-            spline.knot_vectors[axis] = (
+            spline.knot_vectors[axis][:] = list(
                 para_bounds[0, axis]
                 + para_bounds[1, axis]
                 - _np.flip(spline.knot_vectors[axis])
@@ -141,10 +141,10 @@ def invert_axes(spline, axes, inplace=False):
     indexing = tuple(indexing)
 
     # Flip control points
-    spline.cps = spline.cps[mi[indexing]]
+    spline.cps[:] = spline.cps[mi[indexing]]
 
     # Do same with weights if applicable
     if spline.is_rational:
-        spline.weights = spline.weights[mi[indexing]]
+        spline.weights[:] = spline.weights[mi[indexing]]
 
     return spline

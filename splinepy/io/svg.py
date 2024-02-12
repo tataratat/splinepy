@@ -1,10 +1,7 @@
 import xml.etree.ElementTree as _ET
-from sys import version as python_version
+from sys import version as _python_version
 
-import numpy as np
-
-from splinepy.utils.log import debug as _debug
-from splinepy.utils.log import warning as _warning
+import numpy as _np
 
 try:
     from vedo import Plotter as _Plotter
@@ -17,6 +14,9 @@ except ImportError as err:
     _Plotter = ModuleImportRaiser(_error_message_vedo_import, err)
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
+
+from splinepy.utils.log import debug as _debug
+from splinepy.utils.log import warning as _warning
 
 
 def _rgb_2_hex(r, g, b):
@@ -190,6 +190,7 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         title="",
         bg=(255, 255, 255),
         axes=0,
+        zoom="tightest",
     )
     plotter.show(
         sampled_spline.showable(),
@@ -210,6 +211,10 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         bitmap = np.concatenate(
             (bitmap, alpha_layer.reshape(*alpha_layer.shape, 1)), axis=-1
         )
+    elif bitmap.shape[2] == 4:
+        alpha_layer = bitmap[:, :, -1]
+    else:
+        raise RuntimeError("Failed to extract field bitmap")
 
     # Crop image
     has_pixels = np.where(np.any(alpha_layer, axis=1))[0]
@@ -260,7 +265,7 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
 
     # Default behaviour in show is, no mesh and no ids, if no control points
     if not spline.show_options.get("control_points", True):
-        return
+        return None
 
     svg_mesh = _ET.SubElement(
         svg_spline_element,
@@ -276,7 +281,8 @@ def _export_control_mesh(spline, svg_spline_element, box_min_x, box_max_y):
         # - control_mesh_alpha (tbd)
         r, g, b = _get_color(spline.show_options.get("control_mesh_c", "red"))
         a = spline.show_options.get("control_mesh_alpha", 1.0)
-        stroke_width = spline.show_options.get("control_mesh_lw", 0.01)
+        bbox_norm = np.linalg.norm(np.diff(spline.control_point_bounds))
+        stroke_width = spline.show_options.get("control_mesh_lw", bbox_norm * 0.001)
 
         # Create a new group
         svg_mesh_polylines = _ET.SubElement(
@@ -456,7 +462,7 @@ def _quiver_plot(
     # Obtain Data to be plotted
     arrow_data_field = spline.show_options.get("arrow_data", None)
     if arrow_data_field is None:
-        return
+        return None
 
     # Use Arrow Data to retrieve spline data (is already scaled)
     arrow_data = spline.extract.arrow_data(arrow_data_field)
@@ -479,12 +485,8 @@ def _quiver_plot(
     rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
 
     # Retrieve information on colors and values
-    v_min = spline.show_options.get("vmin", None)
-    if v_min is None:
-        v_min = np.min(arrow_length)
-    v_max = spline.show_options.get("vmax", None)
-    if v_min is None:
-        v_max = np.max(arrow_length)
+    v_min = spline.show_options.get("vmin", np.min(arrow_length))
+    v_max = spline.show_options.get("vmax", np.max(arrow_length))
     cmap_style = spline.show_options.get("cmap", "jet")
     colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
 
@@ -503,7 +505,7 @@ def _quiver_plot(
         id="quiver",
     )
 
-    # Loop over control points and write them into a group
+    # Loop over arrows and write them into a group
     for i in range(arrow_length.shape[0]):
         _ET.SubElement(
             svg_quiver,
@@ -977,11 +979,11 @@ def export(
             spline._show_options = orig_show_options
 
     # Dump into file
-    if int(python_version.split(".")[1]) >= 9 and indent:
+    if indent and hasattr(_ET, "indent"):
         # Pretty printing xml with indent only exists in version > 3.9
         _ET.indent(svg_data)
 
-    elif int(python_version.split(".")[1]) < 9 and indent:
+    elif indent:
         _debug(
             "Indented xml output is only supported from > python3.9.",
             "Output will not be indented.",
