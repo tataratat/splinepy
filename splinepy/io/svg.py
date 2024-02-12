@@ -696,7 +696,7 @@ def _export_spline(
                 )
 
         # Sanity check
-        if (
+        if not (
             (spline_approximation.degrees[0] == 3)
             or (not spline_approximation.is_rational)
             or (
