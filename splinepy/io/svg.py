@@ -409,15 +409,7 @@ def _export_control_mesh(
 
 
 def _quiver_plot(
-    spline,
-    svg_spline_element,
-    box_min_x,
-    box_max_y,
-    tolerance=0.0,
-    q_width=0.1,
-    q_head_width=0.3,
-    q_head_length=0.5,
-    q_headaxis_length=0.45,
+    spline, svg_spline_element, box_min_x, box_max_y, tolerance=0.0, **kwargs
 ):
     """
     Export a quiver plot using arrows as defined
@@ -443,31 +435,33 @@ def _quiver_plot(
       will be added soon
     tolerance : float
       tolerance as a cut-off length under which no arrow is plotted
-    q_width : float
-      relative width of the stem of the arrow
-    q_head_widt : float
-      relative width of the head of the arrow
-    q_head_length : float
-      relative length of the head of the arrow
-    q_headaxis_length : float
-      relative arrow length of the head wings
+    kwargs :
+      Optional for arrow sizing,
+      `{"arrow_width", "arrow_head_width", "arrow_head_length",
+      "arrow_headaxis_length"}`
 
     Returns
     -------
     None
     """
 
+    # Get arrow scales
+    arrow_width = kwargs.get("arrow_width", 0.1)
+    arrow_head_width = kwargs.get("arrow_head_width", 0.3)
+    arrow_head_length = kwargs.get("arrow_head_length", 0.5)
+    arrow_headaxis_length = kwargs.get("arrow_headaxis_length", 0.45)
+
     # Create a default arrow along x-axis with length 1 that will be scaled
     # down accordingly
     default_arrow_control_points_ = _np.array(
         [
-            [0, -q_width],
-            [1 - q_headaxis_length, -q_width],
-            [1 - q_head_length, -q_head_width],
+            [0, -arrow_width],
+            [1 - arrow_headaxis_length, -arrow_width],
+            [1 - arrow_head_length, -arrow_head_width],
             [1, 0],
-            [1 - q_head_length, q_head_width],
-            [1 - q_headaxis_length, q_width],
-            [0, q_width],
+            [1 - arrow_head_length, arrow_head_width],
+            [1 - arrow_headaxis_length, arrow_width],
+            [0, arrow_width],
         ]
     ) * [1, 0.5]
 
@@ -915,7 +909,8 @@ def export(
     kwargs:
       Specify more output options
       `{"background_c", "linecap", "font-family", "font-size", "text-anchor",
-      "font-family", "fill", "stroke"}`
+      "font-family", "fill", "stroke", "arrow_width", "arrow_head_width",
+      "arrow_head_length", "arrow_headaxis_length"}`
 
     Returns
     -------
@@ -998,15 +993,23 @@ def export(
         # Put every spline into a new dedicated group
         spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
         _export_spline(
-            spline, spline_group, box_min_x, box_max_y, tolerance=tolerance
+            spline,
+            spline_group,
+            box_min_x,
+            box_max_y,
+            tolerance=tolerance,
+            **kwargs,
         )
         _quiver_plot(
             spline=spline,
             svg_spline_element=spline_group,
             box_min_x=box_min_x,
             box_max_y=box_max_y,
+            **kwargs,
         )
-        _export_control_mesh(spline, spline_group, box_min_x, box_max_y)
+        _export_control_mesh(
+            spline, spline_group, box_min_x, box_max_y, **kwargs
+        )
 
         # set original options back
         if orig_show_options is not None:
