@@ -14,7 +14,7 @@ except ImportError as err:
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
-from splinepy.utils.log import info as _info
+from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
 
 
@@ -607,7 +607,7 @@ def _export_spline(
             )
         else:
             # Use fit tool to approximate curve
-            _info(
+            _debug(
                 "SVG export only supports (up to) cubic polynomial splines --"
                 " using approximation"
             )
