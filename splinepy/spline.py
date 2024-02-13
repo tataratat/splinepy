@@ -833,8 +833,19 @@ class Spline(_SplinepyBase, _core.PySpline):
                 return None
 
             # check type and early exit if it is core type
-            if kvs is not None and isinstance(kvs[0], _core.KnotVector):
+            are_ctypes = [
+                False
+            ]  # False init to return false in all() and any()
+            if kvs is not None:
+                are_ctypes = [isinstance(kv, _core.KnotVector) for kv in kvs]
+
+            if all(are_ctypes):
                 return kvs
+            elif any(are_ctypes):
+                # this is a mixed, meaning that we have an inplace change
+                # issue #360 this won't catch all the cases until we expose
+                # parameter space -> TODO: expose ParameterSpace
+                _safe_new_core(self, exclude="knot_vectors")
 
             # get one from the core
             kvs = [self._knot_vector(i) for i in range(self.para_dim)]
