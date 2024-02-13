@@ -6,6 +6,7 @@ from splinepy.io import irit as _irit
 from splinepy.io import json as _json
 from splinepy.io import mfem as _mfem
 from splinepy.io import npz as _npz
+from splinepy.io import svg as _svg
 
 extension_to_io = {
     ".xml": _gismo,
@@ -16,6 +17,7 @@ extension_to_io = {
     ".json": _json,
     ".mesh": _mfem,
     ".npz": _npz,
+    ".svg": _svg,
 }
 
 

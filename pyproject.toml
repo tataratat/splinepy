@@ -105,8 +105,8 @@ lint.ignore = [
 "splinepy/cli.py" = ["T201"]
 
 [tool.codespell]
-ignore-words-list = "connec"
-skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*"
+ignore-words-list = "connec,tye,ned"
+skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*,./tests/data/*.svg"
 
 [tool.black]
 line-length = 79

@@ -122,15 +122,15 @@ Available in `splinepy.io`.
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | iges    | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file                                                                        |
 | irit    | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format                                                                                       |
-| json    | (Custom) easy-to-read format, supports base64 encoding                                                                                               |
+| json    | (Custom) easy-to-read format, supports base64 encoding.                                                                                              |
 | mfem    | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
 | gismo   | [GISMO](https://gismo.github.io) compatible `.xml` format                                                                                            |
 | npz     | Based on np.savez()                                                                                                                                  |
+| svg     | Exports spline to svg representation. Limited to 2D geometric splines. Adheres to many of the show_options.                                          |
 | xml     | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format                                                                                          |
 
-
 ## Dependencies
-The following are direct dependencies for splinepy. Please feel free to check out the repositories linked.
+The following are direct dependencies for `splinepy`. Please feel free to check out the repositories linked.
 
 | Package | Description                                             | Python | C++ |
 | ------- | ------------------------------------------------------- | :----: | :---: |

@@ -342,7 +342,7 @@ def curve(
 
         elif degree is None:
             if knot_vector is not None and n_control_points is not None:
-                _log.info(
+                _log.debug(
                     "Neither degree nor fitting_vector was given. Degree was "
                     "calculated with knot_vector and n_control_points."
                 )
@@ -357,7 +357,7 @@ def curve(
 
         elif n_control_points is None:
             if knot_vector is not None:
-                _log.info(
+                _log.debug(
                     "n_control_points was not given and therefore calculated "
                     "with knot_vector and degree"
                 )

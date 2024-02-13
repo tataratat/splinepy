@@ -9,6 +9,7 @@ Overview
 - :class:`.BSplineBase` extends :class:`.Spline` with features available for BSpline-famlilies. It becomes a basis for :class:`.BSpline` and :class:`.NURBS`, where derived classes implements appropriate initializations.
 - :class:`.Multipatch` extends / documents :class:`.PyMultipatch`.
 - :class:`splinepy.helpme` module contains useful application-driven tools / utility functions.
+- :class:`splinepy.io` module provides all methods concerning exports to other mesh/file formats, but also exporting vector graphics using `svg`
 
 
 Python API
