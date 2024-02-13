@@ -833,9 +833,8 @@ class Spline(_SplinepyBase, _core.PySpline):
                 return None
 
             # check type and early exit if it is core type
-            are_ctypes = [
-                False
-            ]  # False init to return false in all() and any()
+            # False init to return false in all() and any()
+            are_ctypes = [False]
             if kvs is not None:
                 are_ctypes = [isinstance(kv, _core.KnotVector) for kv in kvs]
 
