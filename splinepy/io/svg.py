@@ -379,19 +379,18 @@ def _export_control_mesh(
 
         # Set text options
         svg_control_point_ids.attrib["font-family"] = kwargs.get(
-            "font-family", "sans-serif"
+            "font_family", "sans-serif"
         )
-        svg_control_point_ids.attrib["font-size"] = kwargs.get(
-            "font-size", ".1"
+        svg_control_point_ids.attrib["font-size"] = str(
+            kwargs.get("font_size", 0.1)
         )
         svg_control_point_ids.attrib["text-anchor"] = kwargs.get(
-            "text-anchor", "middle"
+            "text_anchor", "middle"
         )
-        svg_control_point_ids.attrib["font-family"] = kwargs.get(
-            "font-family", "sans-serif"
+        svg_control_point_ids.attrib["fill"] = _rgb_2_hex(
+            *_get_color(kwargs.get("text_color", "k"))
         )
-        svg_control_point_ids.attrib["fill"] = kwargs.get("fill", "black")
-        svg_control_point_ids.attrib["stroke"] = kwargs.get("stroke", "none")
+        svg_control_point_ids.attrib["stroke"] = "none"
 
         # Text offset
         dx, dy = 0.0, 0.0
@@ -413,7 +412,7 @@ def _quiver_plot(
 ):
     """
     Export a quiver plot using arrows as defined
-    [here](https://matplotlib.org/stable/_images/quiver_sizes.svg)
+    https://matplotlib.org/stable/_images/quiver_sizes.svg
 
     The arrows will be scaled using the `arrow_data_scale` flag
 
@@ -890,6 +889,51 @@ def export(
     Graphics are built to resemble vedo plots as close as possible by relying
     on spline show_options
 
+    Example
+    -------
+    .. code-block:: python
+
+        spline = c.splinepy.Bezier(
+            degrees=[2, 2],
+            control_points=[
+                [1, 0],
+                [3, 1],
+                [5, 0],  # First row
+                [0, 2],
+                [2, 3],
+                [4, 2],  # Second row
+                [1, 4],
+                [3, 5],
+                [5, 4],  # Third row
+            ],
+        )
+        spline.show_options["c"] = (157, 157, 156)
+        spline.show_options["knot_c"] = "red"
+        spline.show_options["control_mesh"] = True
+        spline.show_options["control_mesh_lw"] = 0.05
+        spline.show_options["control_point_c"] = (0, 102, 157)
+        spline.show_options["control_mesh_c"] = (0, 102, 157)
+        spline.show_options["control_point_ids"] = False
+        spline.show_options["control_point_r"] = 0.2
+        splinepy.io.svg.export(
+            "spline.svg",
+            spline,
+            box_margins=0.2,
+            background_c=None,
+        )
+
+    results in
+
+    .. raw:: html
+
+        <object
+            data="../../../tests/data/svg_mini_example.svg"
+            type="image/svg+xml"
+            align="center"
+            >
+        </object>
+
+
     Parameters
     ----------
     fname : string
@@ -907,10 +951,25 @@ def export(
       approximation. Default uses an absolute deviation of 1% of the bounding
       box of the given spline
     kwargs:
-      Specify more output options
-      `{"background_c", "linecap", "font-family", "font-size", "text-anchor",
-      "font-family", "fill", "stroke", "arrow_width", "arrow_head_width",
-      "arrow_head_length", "arrow_headaxis_length"}`
+      Specify more output options:
+
+      - background_c (color, string, rgb, None) : background color
+      - linecap ("string"): linecap option for end of lines and connections, see
+        https://www.w3.org/TR/SVG2/
+        for more information
+      - font_family (string): Font for control point ids
+      - font_size (float): Size of control point ids
+      - text_anchor (string): position of the control point ids relative to
+        point
+      - text_color (color, string, rgb) : control point id color
+      - arrow_width (float): Arrow options see
+        https://matplotlib.org/stable/_images/quiver_sizes.svg
+      - arrow_head_width (float) : Arrow options see
+        https://matplotlib.org/stable/_images/quiver_sizes.svg
+      - arrow_head_length (float) : Arrow options see
+        https://matplotlib.org/stable/_images/quiver_sizes.svg
+      - arrow_headaxis_length (float) : Arrow options see
+        https://matplotlib.org/stable/_images/quiver_sizes.svg
 
     Returns
     -------
@@ -965,9 +1024,9 @@ def export(
     svg_data.attrib["viewBox"] = f"0 0 {box_size[0]} {box_size[1]}"
     svg_data.attrib["height"] = str(400)
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
-    svg_data.attrib["style"] = (
-        f"background-color:{kwargs.get('background_c','white')}"
-    )
+    background_c = kwargs.get("background_c", "white")
+    if background_c is not None:
+        svg_data.attrib["style"] = f"background-color:{background_c}"
     svg_data.attrib["xmlns"] = "http://www.w3.org/2000/svg"
     svg_data.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
 

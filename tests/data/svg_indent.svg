@@ -17,7 +17,7 @@
         <circle cx="0.5" cy="1.5" r="0.1" />
         <circle cx="1.5" cy="1.5" r="0.1" />
       </g>
-      <g id="control_point_ids" font-family="sans-serif" font-size=".1" text-anchor="middle" fill="black" stroke="none">
+      <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
         <text x="0.5" y="2.5" dx="0.0" dy="0.0">0</text>
         <text x="1.5" y="2.5" dx="0.0" dy="0.0">1</text>
         <text x="0.5" y="1.5" dx="0.0" dy="0.0">2</text>
@@ -42,7 +42,7 @@
         <circle cx="1.5" cy="1.5" r="0.1" />
         <circle cx="2.5" cy="1.5" r="0.1" />
       </g>
-      <g id="control_point_ids" font-family="sans-serif" font-size=".1" text-anchor="middle" fill="black" stroke="none">
+      <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
         <text x="1.5" y="2.5" dx="0.0" dy="0.0">0</text>
         <text x="2.5" y="2.5" dx="0.0" dy="0.0">1</text>
         <text x="1.5" y="1.5" dx="0.0" dy="0.0">2</text>
@@ -108,7 +108,7 @@
         <circle cx="2.0" cy="0.5" r="0.1" />
         <circle cx="2.5" cy="0.5" r="0.1" />
       </g>
-      <g id="control_point_ids" font-family="sans-serif" font-size=".1" text-anchor="middle" fill="black" stroke="none">
+      <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
         <text x="1.5" y="1.5" dx="0.0" dy="0.0">0</text>
         <text x="2.0" y="1.5" dx="0.0" dy="0.0">1</text>
         <text x="2.5" y="1.5" dx="0.0" dy="0.0">2</text>

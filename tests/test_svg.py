@@ -217,6 +217,46 @@ class SVGExportTest(c.unittest.TestCase):
                     )
                 )
 
+        # One last example minimal to reuse file for documentation
+
+        spline = c.splinepy.Bezier(
+            degrees=[2, 2],
+            control_points=[
+                [1, 0],
+                [3, 1],
+                [5, 0],  # First row
+                [0, 2],
+                [2, 3],
+                [4, 2],  # Second row
+                [1, 4],
+                [3, 5],
+                [5, 4],  # Third row
+            ],
+        )
+        spline.show_options["c"] = (157, 157, 156)
+        spline.show_options["knot_c"] = "red"
+        spline.show_options["control_mesh"] = True
+        spline.show_options["control_mesh_lw"] = 0.05
+        spline.show_options["control_point_c"] = (0, 102, 157)
+        spline.show_options["control_mesh_c"] = (0, 102, 157)
+        spline.show_options["control_point_ids"] = False
+        spline.show_options["control_point_r"] = 0.2
+
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
+            c.splinepy.io.svg.export(
+                tmpf, spline, indent=False, box_margins=0.2, background_c=None
+            )
+
+            with open(tmpf) as tmp_read, open(
+                c.os.path.dirname(__file__) + "/data/svg_mini_example.svg"
+            ) as base_file:
+                self.assertTrue(
+                    c.are_stripped_lines_same(
+                        base_file.readlines(), tmp_read.readlines(), True
+                    )
+                )
+
 
 if __name__ == "__main__":
     c.unittest.main()
