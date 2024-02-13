@@ -15,6 +15,7 @@ from splinepy.microstructure.tiles import (
     hollow_octagon,
     hollow_octagon_extrude,
     inverse_cross_3d,
+    quadrupel_lattice,
     snappy,
     tile_base,
 )
@@ -31,6 +32,7 @@ from splinepy.microstructure.tiles.hollow_octagon_extrude import (
     HollowOctagonExtrude,
 )
 from splinepy.microstructure.tiles.inverse_cross_3d import InverseCross3D
+from splinepy.microstructure.tiles.quadrupel_lattice import QuadrupelLattice
 from splinepy.microstructure.tiles.snappy import Snappy
 from splinepy.microstructure.tiles.tile_base import TileBase
 
@@ -46,6 +48,7 @@ __all__ = [
     "hollow_octagon",
     "hollow_octagon_extrude",
     "inverse_cross_3d",
+    "quadrupel_lattice",
     "snappy",
     "tile_base",
     "Armadillo",
@@ -59,6 +62,7 @@ __all__ = [
     "HollowOctagon",
     "HollowOctagonExtrude",
     "InverseCross3D",
+    "QuadrupelLattice",
     "Snappy",
     "TileBase",
 ]
