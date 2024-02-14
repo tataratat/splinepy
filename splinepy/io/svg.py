@@ -927,7 +927,7 @@ def export(
     .. raw:: html
 
         <object
-            data="../../../tests/data/svg_mini_example.svg"
+            data="../_static/svg_mini_example.svg"
             type="image/svg+xml"
             align="center"
             >
