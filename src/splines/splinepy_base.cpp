@@ -407,6 +407,14 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
   return true;
 }
 
+std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+SplinepyBase::SplinepyParameterSpace() {
+  splinepy::utils::PrintAndThrowError(
+      "SplinepyParameterSpace not implemented for",
+      SplinepyWhatAmI());
+  return nullptr;
+}
+
 std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
 SplinepyBase::SplinepyKnotVector(const int p_dim) {
   splinepy::utils::PrintAndThrowError("SplinepyKnotVector not implemented for",
