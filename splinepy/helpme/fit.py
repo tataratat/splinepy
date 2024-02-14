@@ -127,7 +127,9 @@ def compute_knot_vector(degree, n_control_points, u_k, n_fitting_points):
         for j in range(1, n_control_points - degree):
             i = int(j * d)
             alpha = (j * d) - i
-            knot_vector[j + degree] = (1 - alpha) * u_k[i - 1] + alpha * u_k[i]
+            knot_vector[j + degree] = (1 - alpha) * u_k[
+                i - 1, 0
+            ] + alpha * u_k[i, 0]
     return knot_vector
 
 
