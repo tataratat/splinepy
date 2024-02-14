@@ -133,6 +133,20 @@ void init_parameter_space(py::module_& m) {
            [to_list](const PSpace& p, py::list& next) {
              return next + to_list(p);
            })
+      .def("__repr__",
+           [](const PSpace& p) {
+             std::string s{"ParameterSpace ["};
+             const int para_dim = p.ParaDim();
+             const int last{para_dim - 1};
+             for (int i{}; i < para_dim; ++i) {
+               s.append(p.GetKnotVector(i)->StringRepresentation());
+               if (i != last) {
+                 s.append(", ");
+               }
+             }
+             s.append("]");
+             return s;
+           })
       .def("copy", [to_list](const PSpace& p) { return to_list(p); });
 }
 
