@@ -32,7 +32,7 @@ void init_parameter_space(py::module_& m) {
   klasse
       .def(
           "__len__",
-          [](const PSpace& p) { return p->ParaDim(); },
+          [](const PSpace& p) { return p.ParaDim(); },
           "Returns number of parameter dimension.")
 
       .def(
@@ -42,7 +42,7 @@ void init_parameter_space(py::module_& m) {
                 py::return_value_policy::reference_internal,
                 KVPtr*,
                 KVPtr*,
-                KVPtr&>(p->KnotVectorsBegin(), p->KnotVectorsEnd());
+                KVPtr&>(p.KnotVectorsBegin(), p.KnotVectorsEnd());
           },
           py::keep_alive<0, 1>(),
           "Support iterations of element references.")
@@ -50,8 +50,8 @@ void init_parameter_space(py::module_& m) {
       .def(
           "__getitem__",
           [wrap_id](PSpace& p, int i) -> KVPtr& {
-            i = wrap_id(i, p->ParaDim());
-            return p->GetKnotVector(i);
+            i = wrap_id(i, p.ParaDim());
+            return p.GetKnotVector(i);
           },
           py::return_value_policy::reference_internal,
           "int based __getitem__, which returns reference.")
@@ -59,7 +59,7 @@ void init_parameter_space(py::module_& m) {
           "__getitem__",
           [](const PSpace& p, const py::slice& slice) -> py::list {
             std::size_t start{}, stop{}, step{}, slicelength{};
-            if (!slice.compute(static_cast<std::size_t>(p->ParaDim()),
+            if (!slice.compute(static_cast<std::size_t>(p.ParaDim()),
                                &start,
                                &stop,
                                &step,
@@ -68,7 +68,7 @@ void init_parameter_space(py::module_& m) {
             }
             py::list items{};
             for (std::size_t i{}; i < slicelength; ++i) {
-              items.append(p->GetKnotVector(static_cast<int>(start)));
+              items.append(p.GetKnotVector(static_cast<int>(start)));
               start += step;
             }
             return items;
@@ -77,9 +77,9 @@ void init_parameter_space(py::module_& m) {
           "support slice based __getitem__.")
       .def(
           "__setitem__",
-          [wrap_id](PSpace& p, DiffType i, const KVsType new_kv) {
-            i = wrap_id(i, p->ParaDim());
-            auto& p_kv = p->GetKnotVector(i);
+          [wrap_id](PSpace& p, int i, const KVPtr new_kv) {
+            i = wrap_id(i, p.ParaDim());
+            auto& p_kv = p.GetKnotVector(i);
             if (p_kv->GetSize() != new_kv->GetSize()) {
               splinepy::utils::PrintAndThrowError(
                   "Size mismatch of lhs & rhs knot vectors");
@@ -90,9 +90,9 @@ void init_parameter_space(py::module_& m) {
           "Single knot vector assignment with another knot vector.")
       .def(
           "__setitem__",
-          [wrap_id](PSpace& p, DiffType i, const py::array_t<double>& new_kv) {
-            i = wrap_id(i, p->ParaDim());
-            auto& p_kv = p->GetKnotVector(i);
+          [wrap_id](PSpace& p, int i, const py::array_t<double>& new_kv) {
+            i = wrap_id(i, p.ParaDim());
+            auto& p_kv = p.GetKnotVector(i);
             const int kv_size = p_kv->GetSize();
             if (kv_size != new_kv.size()) {
               splinepy::utils::PrintAndThrowError(
