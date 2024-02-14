@@ -35,7 +35,7 @@ class DoubleLattice(_TileBase):
         Parameters
         ----------
         parameters : np.array
-          first entry defines the thickness of the vertical and horizontal 
+          first entry defines the thickness of the vertical and horizontal
           branches
           second entry defines the thickness of the diagonal branches
         parameter_sensitivities: np.ndarray
