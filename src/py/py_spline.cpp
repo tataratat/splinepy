@@ -295,6 +295,11 @@ py::tuple PySpline::CoordinatePointers() {
   }
 }
 
+std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+PySpline::ParameterSpace() {
+  return Core()->SplinepyParameterSpace();
+}
+
 std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
 PySpline::KnotVector(const int para_dim) {
   return Core()->SplinepyKnotVector(para_dim);
@@ -821,6 +826,7 @@ void init_pyspline(py::module& m) {
       .def("current_core_properties",
            &splinepy::py::PySpline::CurrentCoreProperties)
       .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)
+      .def("_parameter_space", &splinepy::py::PySpline::ParameterSpace)
       .def("_knot_vector", &splinepy::py::PySpline::KnotVector)
       .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
       .def("evaluate",
