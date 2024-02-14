@@ -14,6 +14,9 @@ void init_coordinate_pointers(py::module_&);
 // Knot Vector
 void init_knot_vector(py::module_&);
 
+// Parameter Space
+void init_parameter_space(py::module_&);
+
 // Extensions
 void init_spline_extensions(py::module_& m);
 
@@ -37,6 +40,7 @@ PYBIND11_MODULE(splinepy_core, m) {
   splinepy::py::init_pyspline(m);
   splinepy::py::init_coordinate_pointers(m);
   splinepy::py::init_knot_vector(m);
+  splinepy::py::init_parameter_space(m);
   splinepy::py::init_spline_extensions(m);
   splinepy::py::init_spline_reader(m);
   splinepy::py::init_spline_exporter(m);

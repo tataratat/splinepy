@@ -3,6 +3,7 @@ set(PYSPLINEPY_SRCS
     py_coordinate_pointers.cpp
     py_knot_insertion_matrix.cpp
     py_knot_vector.cpp
+    py_parameter_space.cpp
     py_multipatch.cpp
     py_spline.cpp
     py_spline_exporter.cpp
