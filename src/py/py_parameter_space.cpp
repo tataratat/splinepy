@@ -17,7 +17,7 @@ void init_parameter_space(py::module_& m) {
 
   // implementations adapted from pybind11/stl_bind.h
   /// as python supports negative ids, this func brings negative ids to pos
-  auto wrap_id = [](int i, int n) {
+  auto wrap_id = [](int i, int n) -> int {
     if (i < 0) {
       i += n;
     }
@@ -25,6 +25,22 @@ void init_parameter_space(py::module_& m) {
       throw py::index_error();
     }
     return i;
+  };
+
+  auto to_list = [](const PSpace& p) -> py::list {
+    // if this were to be a list, this would mean a shallow copy.
+    // however, within splinepy's implementation, copy() means deepcopy.
+    // so, deepcopy it is.
+    py::list kvs(p.ParaDim());
+    for (int i{}; i < p.ParaDim(); ++i) {
+      KVPtr kv = p.GetKnotVector(i);
+      py::array_t<double> out_kv(kv->GetSize());
+      std::copy_n(kv->GetKnots().data(),
+                  kv->GetKnots().size(),
+                  static_cast<double*>(out_kv.request().ptr));
+      kvs[i] = out_kv;
+    }
+    return kvs;
   };
 
   py::class_<PSpace, std::shared_ptr<PSpace>> klasse(m, "ParameterSpace");
@@ -84,7 +100,8 @@ void init_parameter_space(py::module_& m) {
               splinepy::utils::PrintAndThrowError(
                   "Size mismatch of lhs & rhs knot vectors");
             }
-            // update is simple assignment
+            // update is simple assignment - note that this is reference
+            // this is a same behavir as list
             p_kv = new_kv;
           },
           "Single knot vector assignment with another knot vector.")
@@ -107,7 +124,16 @@ void init_parameter_space(py::module_& m) {
             // sanity check
             p_kv->ThrowIfTooSmallOrNotNonDecreasing();
           },
-          "Single knot vector assignment with an array");
+          "Single knot vector assignment with an array")
+      .def("__add__",
+           [to_list](const PSpace& p, py::list& next) {
+             return to_list(p) + next;
+           })
+      .def("__radd__",
+           [to_list](const PSpace& p, py::list& next) {
+             return next + to_list(p);
+           })
+      .def("copy", [to_list](const PSpace& p) { return to_list(p); });
 }
 
 } // namespace splinepy::py
