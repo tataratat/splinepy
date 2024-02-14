@@ -86,7 +86,7 @@ void init_knot_vector(py::module_& m) {
             if (!slice.compute(kv_size, &start, &stop, &step, &slicelength)) {
               throw py::error_already_set();
             }
-            if (slicelength != value.size()) {
+            if (slicelength != static_cast<std::size_t>(value.size())) {
               splinepy::utils::PrintAndThrowError(
                   "Left and right hand size of slice assignment have "
                   "different sizes.");
