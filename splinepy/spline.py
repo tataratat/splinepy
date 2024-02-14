@@ -827,28 +827,13 @@ class Spline(_SplinepyBase, _core.PySpline):
         knot_vectors: list
         """
         kvs = self._data.get("knot_vectors", None)
-
         if _core.has_core(self):
             if not self.has_knot_vectors:
                 return None
 
-            # check type and early exit if it is core type
-            # False init to return false in all() and any()
-            are_ctypes = [False]
-            if kvs is not None:
-                are_ctypes = [isinstance(kv, _core.KnotVector) for kv in kvs]
-
-            if all(are_ctypes):
-                return kvs
-            elif any(are_ctypes):
-                # this is a mixed, meaning that we have an inplace change
-                # issue #360 this won't catch all the cases until we expose
-                # parameter space -> TODO: expose ParameterSpace
-                _safe_new_core(self, exclude="knot_vectors")
-
-            # get one from the core
-            kvs = [self._knot_vector(i) for i in range(self.para_dim)]
-            self._data["knot_vectors"] = kvs
+            if not isinstance(kvs, _core.ParameterSpace):
+                kvs = self._parameter_space()
+                self._data["knot_vectors"] = kvs
 
         return kvs
 
