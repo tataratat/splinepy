@@ -54,33 +54,22 @@ class DoubleLattice(_TileBase):
         if not ((contact_length > 0.0) and (contact_length < 1.0)):
             raise ValueError("Contact length must be in (0.,1.)")
 
-        # Maintain backwards compatibility
-        if parameter_sensitivities is None:
-            pass
-        elif parameter_sensitivities.shape[1] == 1:
-            _warning("DoubleLattice now expects 2 values")
-            index_second_value = 0
-            self._n_info_per_eval_point = 1
-        if parameters is None:
-            pass
-        elif parameters.shape[1] == 1:
-            _warning("DoubleLattice now expects 2 values")
-            index_second_value = 0
-            self._n_info_per_eval_point = 1
-
         # set to default if nothing is given
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
             parameters = _np.ones((1, 2)) * 0.1
-        else:
-            if not (
-                _np.all(parameters > 0)
-                and _np.all(parameters < 0.5 / (1 + _np.sqrt(2)))
-            ):
-                raise ValueError(
-                    "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
-                )
-            pass
+        # Maintain backwards compatibility
+        elif parameters.shape[1] == 1:
+            _warning("DoubleLattice now expects 2 values")
+            index_second_value = 0
+            self._n_info_per_eval_point = 1
+        if not (
+            _np.all(parameters > 0)
+            and _np.all(parameters < 0.5 / (1 + _np.sqrt(2)))
+        ):
+            raise ValueError(
+                "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
+            )
         self.check_params(parameters)
 
         # Check if user requests derivative splines
@@ -96,15 +85,17 @@ class DoubleLattice(_TileBase):
             # Constant auxiliary values
             if i_derivative == 0:
                 cl = contact_length
-                ppv = parameters[0, 0]  # parameters.shape == [1]
-                ppd = parameters[0, index_second_value]
+                thick_vert_hor = parameters[0, 0]  # parameters.shape == [1]
+                thick_diagonal = parameters[0, index_second_value]
                 v_one_half = 0.5
                 v_one = 1.0
                 v_zero = 0.0
             else:
                 cl = 0.0
-                ppv = parameter_sensitivities[0, 0, i_derivative - 1]
-                ppd = parameter_sensitivities[
+                thick_vert_hor = parameter_sensitivities[
+                    0, 0, i_derivative - 1
+                ]
+                thick_diagonal = parameter_sensitivities[
                     0, index_second_value, i_derivative - 1
                 ]
                 v_one_half = 0.0
@@ -113,15 +104,15 @@ class DoubleLattice(_TileBase):
 
             # Set variables
             a01 = v_zero
-            a02 = ppv
-            a03 = ppv + ppd * _np.sqrt(2)
+            a02 = thick_vert_hor
+            a03 = thick_vert_hor + thick_diagonal * _np.sqrt(2)
             a04 = (v_one - cl) * 0.5
-            a05 = v_one_half - ppd * _np.sqrt(2)
+            a05 = v_one_half - thick_diagonal * _np.sqrt(2)
             a06 = v_one_half
-            a07 = v_one_half + ppd * _np.sqrt(2)
+            a07 = v_one_half + thick_diagonal * _np.sqrt(2)
             a08 = (v_one + cl) * 0.5
-            a09 = v_one - (ppv + ppd * _np.sqrt(2))
-            a10 = v_one - ppv
+            a09 = v_one - (thick_vert_hor + thick_diagonal * _np.sqrt(2))
+            a10 = v_one - thick_vert_hor
             a11 = v_one
             # Init return value
             spline_list = []
