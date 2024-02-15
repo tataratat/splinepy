@@ -257,6 +257,31 @@ class SVGExportTest(c.unittest.TestCase):
                     )
                 )
 
+        # Test Export of gus vertices
+        vertices = c.gus.Vertices(spline.cps)
+        vertices.vertex_data["field"] = c.np.linspace(
+            0, 1, spline.cps.shape[0]
+        )
+
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = c.to_tmpf(tmpd)
+            c.splinepy.io.svg.export(
+                tmpf,
+                vertices,
+                indent=False,
+                box_margins=0.4,
+                background_c="black",
+            )
+
+            with open(tmpf) as tmp_read, open(
+                c.os.path.dirname(__file__) + "/data/svg_vertices.svg"
+            ) as base_file:
+                self.assertTrue(
+                    c.are_stripped_lines_same(
+                        base_file.readlines(), tmp_read.readlines(), True
+                    )
+                )
+
 
 if __name__ == "__main__":
     c.unittest.main()
