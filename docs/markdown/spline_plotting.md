@@ -93,4 +93,4 @@ import vedo
 vedo.settings.default_backend = "k3d"
 ```
 
-After this most functionality of the normal plotting should be available to you. Please write a detailed Issue if you find something that you can plot in a script but not in a notebook. An example notebook is provided in the `gustaf` repository at [ipynb examples](https://github.com/tataratat/gustaf/tree/main/examples/ipynb).
+After this most functionality of the normal plotting should be available to you. Please write a detailed Issue if you find something that you can plot in a script but not in a notebook. An example is provided in the folder `examples/ipynb`.
