@@ -1,3 +1,5 @@
+from functools import wraps as _wraps
+
 import numpy as _np
 from gustaf import Edges as _Edges
 from gustaf import Faces as _Faces
@@ -410,7 +412,7 @@ def spline(spline, para_dim, split_plane):
     spline: Spline / Multipatch
       (`self`-argument if called via extract member of a spline)
     para_dim : int
-      parametric dimension to be extract ted
+      parametric dimension to be extracted
     split_plane : float / tuple<float, float>
       interval or value in parametric space to be extracted from the spline
       representation
@@ -628,27 +630,35 @@ class Extractor:
             raise ValueError("Extractor expects a Spline or Multipatch type")
         self._helpee = spl
 
+    @_wraps(edges)
     def edges(self, *args, **kwargs):
         return edges(self._helpee, *args, **kwargs)
 
+    @_wraps(faces)
     def faces(self, *args, **kwargs):
         return faces(self._helpee, *args, **kwargs)
 
+    @_wraps(volumes)
     def volumes(self, *args, **kwargs):
         return volumes(self._helpee, *args, **kwargs)
 
+    @_wraps(control_points)
     def control_points(self):
         return control_points(self._helpee)
 
+    @_wraps(control_edges)
     def control_edges(self):
         return control_edges(self._helpee)
 
+    @_wraps(control_faces)
     def control_faces(self):
         return control_faces(self._helpee)
 
+    @_wraps(control_points)
     def control_volumes(self):
         return control_volumes(self._helpee)
 
+    @_wraps(control_mesh)
     def control_mesh(self):
         return control_mesh(self._helpee)
 
@@ -670,6 +680,7 @@ class Extractor:
             return [self._helpee]
         return self._helpee.extract_bezier_patches()
 
+    @_wraps(boundaries)
     def boundaries(self, *args, **kwargs):
         return boundaries(self._helpee, *args, **kwargs)
 
@@ -681,12 +692,13 @@ class Extractor:
 
         Parameters
         ----------
-        splitting_plane : int / dictionary (int : (float))
-          if integer : parametric dimension to be extracted
-          if dictionary : list of splitting planes and ranges to be passed
-        interval : float / tuple<float,float>
+        splitting_plane : int or dictionary {int : (float, float))
+          if int : parametric dimension to be extracted
+          if dict : list of splitting planes and ranges to be passed
+        interval : float or tuple<float,float>
           interval or value in parametric space to be extracted from the
           spline representation
+
         Returns
         -------
         spline
@@ -704,17 +716,6 @@ class Extractor:
         else:
             return spline(self._helpee, splitting_plane, interval)
 
+    @_wraps(arrow_data)
     def arrow_data(self, *args, **kwargs):
         return arrow_data(self._helpee, *args, **kwargs)
-
-
-# Use function docstrings in Extractor functions
-Extractor.edges.__doc__ = edges.__doc__
-Extractor.faces.__doc__ = faces.__doc__
-Extractor.volumes.__doc__ = volumes.__doc__
-Extractor.control_points.__doc__ = control_points.__doc__
-Extractor.control_edges.__doc__ = control_edges.__doc__
-Extractor.control_faces.__doc__ = control_faces.__doc__
-Extractor.control_volumes.__doc__ = control_volumes.__doc__
-Extractor.control_mesh.__doc__ = control_mesh.__doc__
-Extractor.boundaries.__doc__ = boundaries.__doc__

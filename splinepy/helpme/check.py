@@ -1,3 +1,5 @@
+from functools import wraps as _wraps
+
 import numpy as _np
 
 
@@ -75,9 +77,6 @@ class Checker:
     def __init__(self, spl):
         self._helpee = spl
 
+    @_wraps(valid_queries)
     def valid_queries(self, queries):
         return valid_queries(self._helpee, queries)
-
-
-# Use function docstrings in Checker functions
-Checker.valid_queries.__doc__ = valid_queries.__doc__
