@@ -692,7 +692,7 @@ class Extractor:
 
         Parameters
         ----------
-        splitting_plane : int or dictionary {int : (float, float))
+        splitting_plane : int or dictionary {int : (float, float)}
           if int : parametric dimension to be extracted
           if dict : list of splitting planes and ranges to be passed
         interval : float or tuple<float,float>
