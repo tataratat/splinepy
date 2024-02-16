@@ -1,5 +1,5 @@
 # Visualizing Splines
-As a new feature SplinePy now also has the ability to directly plot splines. The splines are plotted with the `vedo` library.
+As a new feature splinepy now also has the ability to directly plot splines. The splines are plotted with the library `gustaf` and `vedo`.
 
 The following will give a brief introduction into basic spline creation and visualization.
 
@@ -93,4 +93,4 @@ import vedo
 vedo.settings.default_backend = "k3d"
 ```
 
-After this most functionality of the normal plotting should be available to you. Please write a detailed Issue if you find something that you can plot in a script but not in a notebook. An example is provided in the folder `examples/ipynb`.
+After this most functionality of the normal plotting should be available to you. Please write an issue if you find something that you can plot in a script but not in a notebook. There is one known issue regarding number of Line objects that we can plot (limited to 200 from `vedo`). We are working on a solution, but meanwhile, plotting curves is limited to resolutions of 201; for 2D/3D splines you can turn off `knots` in `show_options`. An example is provided in the folder `examples/ipynb`.
