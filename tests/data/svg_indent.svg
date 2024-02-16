@@ -18,10 +18,10 @@
         <circle cx="1.5" cy="1.5" r="0.1" />
       </g>
       <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
-        <text x="0.5" y="2.5" dx="0.0" dy="0.0">0</text>
-        <text x="1.5" y="2.5" dx="0.0" dy="0.0">1</text>
-        <text x="0.5" y="1.5" dx="0.0" dy="0.0">2</text>
-        <text x="1.5" y="1.5" dx="0.0" dy="0.0">3</text>
+        <text x="0.5" y="2.5" dx="0.2" dy="0.2">0</text>
+        <text x="1.5" y="2.5" dx="0.2" dy="0.2">1</text>
+        <text x="0.5" y="1.5" dx="0.2" dy="0.2">2</text>
+        <text x="1.5" y="1.5" dx="0.2" dy="0.2">3</text>
       </g>
     </g>
   </g>
@@ -43,10 +43,10 @@
         <circle cx="2.5" cy="1.5" r="0.1" />
       </g>
       <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
-        <text x="1.5" y="2.5" dx="0.0" dy="0.0">0</text>
-        <text x="2.5" y="2.5" dx="0.0" dy="0.0">1</text>
-        <text x="1.5" y="1.5" dx="0.0" dy="0.0">2</text>
-        <text x="2.5" y="1.5" dx="0.0" dy="0.0">3</text>
+        <text x="1.5" y="2.5" dx="0.2" dy="0.2">0</text>
+        <text x="2.5" y="2.5" dx="0.2" dy="0.2">1</text>
+        <text x="1.5" y="1.5" dx="0.2" dy="0.2">2</text>
+        <text x="2.5" y="1.5" dx="0.2" dy="0.2">3</text>
       </g>
     </g>
   </g>
@@ -109,18 +109,18 @@
         <circle cx="2.5" cy="0.5" r="0.1" />
       </g>
       <g id="control_point_ids" font-family="sans-serif" font-size="0.1" text-anchor="middle" fill="#000000" stroke="none">
-        <text x="1.5" y="1.5" dx="0.0" dy="0.0">0</text>
-        <text x="2.0" y="1.5" dx="0.0" dy="0.0">1</text>
-        <text x="2.5" y="1.5" dx="0.0" dy="0.0">2</text>
-        <text x="1.5" y="1.25" dx="0.0" dy="0.0">3</text>
-        <text x="2.0" y="1.25" dx="0.0" dy="0.0">4</text>
-        <text x="2.5" y="1.25" dx="0.0" dy="0.0">5</text>
-        <text x="1.5" y="0.75" dx="0.0" dy="0.0">6</text>
-        <text x="2.0" y="0.75" dx="0.0" dy="0.0">7</text>
-        <text x="2.5" y="0.75" dx="0.0" dy="0.0">8</text>
-        <text x="1.5" y="0.5" dx="0.0" dy="0.0">9</text>
-        <text x="2.0" y="0.5" dx="0.0" dy="0.0">10</text>
-        <text x="2.5" y="0.5" dx="0.0" dy="0.0">11</text>
+        <text x="1.5" y="1.5" dx="0.2" dy="0.2">0</text>
+        <text x="2.0" y="1.5" dx="0.2" dy="0.2">1</text>
+        <text x="2.5" y="1.5" dx="0.2" dy="0.2">2</text>
+        <text x="1.5" y="1.25" dx="0.2" dy="0.2">3</text>
+        <text x="2.0" y="1.25" dx="0.2" dy="0.2">4</text>
+        <text x="2.5" y="1.25" dx="0.2" dy="0.2">5</text>
+        <text x="1.5" y="0.75" dx="0.2" dy="0.2">6</text>
+        <text x="2.0" y="0.75" dx="0.2" dy="0.2">7</text>
+        <text x="2.5" y="0.75" dx="0.2" dy="0.2">8</text>
+        <text x="1.5" y="0.5" dx="0.2" dy="0.2">9</text>
+        <text x="2.0" y="0.5" dx="0.2" dy="0.2">10</text>
+        <text x="2.5" y="0.5" dx="0.2" dy="0.2">11</text>
       </g>
     </g>
   </g>

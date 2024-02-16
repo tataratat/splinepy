@@ -14,6 +14,8 @@ except ImportError as err:
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
+from gustaf import Vertices as _Vertices
+
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
 
@@ -236,6 +238,95 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     ).decode("utf-8")
 
 
+def _export_gustaf_object(
+    gus_object, svg_spline_element, box_min_x, box_max_y, **kwargs
+):
+    """
+    Exports gustaf-type objects in svg format
+
+    Parameters
+    """
+    r, g, b = _get_color(gus_object.show_options.get("c", "red"))
+    a = gus_object.show_options.get("alpha", 1.0)
+    radius = gus_object.show_options.get("r", 0.1)
+
+    if isinstance(gus_object, _Vertices):
+        data_name = gus_object.show_options.get("data", None)
+        if data_name is not None:
+            # Retrieve information on colors and values
+            values = gus_object.vertex_data[data_name]
+            v_min = gus_object.show_options.get("vmin", _np.min(values))
+            v_max = gus_object.show_options.get("vmax", _np.max(values))
+            cmap_style = gus_object.show_options.get("cmap", "jet")
+            colors = [
+                _rgb_2_hex(r, g, b)
+                for r, g, b, in _color_map(
+                    values.ravel(), name=cmap_style, vmin=v_min, vmax=v_max
+                )
+            ]
+        else:
+            colors = [_rgb_2_hex(r, g, b)] * gus_object.vertices.shape[0]
+
+        svg_control_points = _ET.SubElement(
+            svg_spline_element,
+            "g",
+            id="control_points",
+        )
+
+        for vertex, color in zip(gus_object.vertices, colors):
+            _ET.SubElement(
+                svg_control_points,
+                "circle",
+                cx=str(vertex[0] - box_min_x),
+                cy=str(box_max_y - vertex[1]),
+                r=str(radius),
+                style=f"fill:{color};fill-opacity:{a}",
+            )
+
+        labels = gus_object.show_options.get("labels", None)
+        if (labels is None) and (
+            gus_object.show_options.get("vertex_ids", None) is not None
+        ):
+            labels = [str(i) for i in range(gus_object.vertices.shape[0])]
+        if labels is not None:
+            svg_labels = _ET.SubElement(
+                svg_spline_element,
+                "g",
+                id="labels",
+            )
+
+            # Set text options
+            svg_labels.attrib["font-family"] = kwargs.get(
+                "font_family", "sans-serif"
+            )
+            svg_labels.attrib["font-size"] = str(kwargs.get("font_size", 0.1))
+            svg_labels.attrib["text-anchor"] = kwargs.get(
+                "text_anchor", "middle"
+            )
+            svg_labels.attrib["fill"] = _rgb_2_hex(
+                *_get_color(kwargs.get("text_color", "k"))
+            )
+            svg_labels.attrib["stroke"] = "none"
+            dx = radius
+
+            for ctp, label in zip(gus_object.vertices, labels):
+                text_element = _ET.SubElement(
+                    svg_labels,
+                    "text",
+                    x=str(ctp[0] - box_min_x),
+                    y=str(box_max_y - ctp[1]),
+                    dx=str(dx),
+                    dy=str(dx),
+                )
+                text_element.text = label
+
+    else:
+        raise NotImplementedError(
+            "Sorry, this feature is still being worked on. So far, svg_export "
+            "is limited to vertices"
+        )
+
+
 def _export_control_mesh(
     spline, svg_spline_element, box_min_x, box_max_y, **kwargs
 ):
@@ -393,7 +484,7 @@ def _export_control_mesh(
         svg_control_point_ids.attrib["stroke"] = "none"
 
         # Text offset
-        dx, dy = 0.0, 0.0
+        dx = spline.show_options.get("control_point_r", 0.02) * 2
 
         for i, ctp in enumerate(spline.control_points):
             text_element = _ET.SubElement(
@@ -402,7 +493,7 @@ def _export_control_mesh(
                 x=str(ctp[0] - box_min_x),
                 y=str(box_max_y - ctp[1]),
                 dx=str(dx),
-                dy=str(dy),
+                dy=str(dx),
             )
             text_element.text = str(i)
 
@@ -881,7 +972,12 @@ def _export_spline(
 
 
 def export(
-    fname, *splines, indent=True, box_margins=0.1, tolerance=None, **kwargs
+    fname,
+    *objects_to_plot,
+    indent=True,
+    box_margins=0.1,
+    tolerance=None,
+    **kwargs,
 ):
     """
     Exports a number of splines into an svg plot
@@ -919,7 +1015,7 @@ def export(
             "spline.svg",
             spline,
             box_margins=0.2,
-            background_c=None,
+            background=None,
         )
 
     results in
@@ -938,7 +1034,7 @@ def export(
     ----------
     fname : string
         name of the output file
-    splines : Spline-Type, list
+    splines : Spline-Type, list, Gustaf-type
         Splines to be exported
     indent: bool
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
@@ -953,7 +1049,7 @@ def export(
     kwargs:
       Specify more output options:
 
-      - background_c (color, string, rgb, None) : background color
+      - background (color, string, rgb, None) : background color
       - linecap ("string"): linecap option for end of lines and connections, see
         https://www.w3.org/TR/SVG2/
         for more information
@@ -984,26 +1080,30 @@ def export(
         raise ValueError("fname argument must be string")
 
     # Check if user passed list
-    if (len(splines) == 1) and isinstance(splines[0], list):
-        splines = splines[0]
+    if (len(objects_to_plot) == 1) and isinstance(objects_to_plot[0], list):
+        objects_to_plot = objects_to_plot[0]
 
-    for spline in splines:
-        if not isinstance(spline, Spline):
-            raise ValueError("Unexpected spline type")
-        if not 1 <= spline.para_dim <= 2:
-            raise ValueError("Only lines and surfaces supported")
-        if not spline.dim == 2:
-            raise ValueError("Only 2D geometries supported")
+    for object in objects_to_plot:
+        if isinstance(object, Spline):
+            if not 1 <= object.para_dim <= 2:
+                raise ValueError("Only lines and surfaces supported")
+            if not object.dim == 2:
+                raise ValueError("Only 2D geometries supported")
+        elif isinstance(object, _Vertices):
+            if not object.vertices.shape[1] == 2:
+                raise ValueError("Only 2D geometries supported")
+        else:
+            raise ValueError("Unexpected spline or gustaf type")
 
     # Determine bounding box of all elements
-    ctps_bounds = splines[0].control_point_bounds
-    for spline in splines[1::]:
-        ctps_bounds[0, :] = _np.minimum(
-            spline.control_point_bounds[0, :], ctps_bounds[0, :]
-        )
-        ctps_bounds[1, :] = _np.maximum(
-            spline.control_point_bounds[1, :], ctps_bounds[1, :]
-        )
+    ctps_bounds = _np.nan * _np.ones((2, 2))
+    for object in objects_to_plot:
+        if isinstance(object, Spline):
+            l_bounds = object.control_point_bounds
+        else:
+            l_bounds = object.bounds()
+        ctps_bounds[0, :] = _np.fmin(l_bounds[0, :], ctps_bounds[0, :])
+        ctps_bounds[1, :] = _np.fmax(l_bounds[1, :], ctps_bounds[1, :])
 
     # Initialize svg element
     svg_data = _ET.Element("svg")
@@ -1024,9 +1124,9 @@ def export(
     svg_data.attrib["viewBox"] = f"0 0 {box_size[0]} {box_size[1]}"
     svg_data.attrib["height"] = str(400)
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
-    background_c = kwargs.get("background_c", "white")
-    if background_c is not None:
-        svg_data.attrib["style"] = f"background-color:{background_c}"
+    background = kwargs.get("background", "white")
+    if background is not None:
+        svg_data.attrib["style"] = f"background-color:{background}"
     svg_data.attrib["xmlns"] = "http://www.w3.org/2000/svg"
     svg_data.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
 
@@ -1035,44 +1135,51 @@ def export(
     box_max_y = ctps_bounds[1, 1] + box_margins
 
     # Write splines in svg file
-    for i, spline in enumerate(splines):
+    for i, object in enumerate(objects_to_plot):
         # Copy spline options from keyword arguments
         # (taken from visualize to ensure conformity)
         orig_show_options = None
         if kwargs:
-            orig_show_options = spline.show_options
-            spline._show_options = spline.__show_option__(spline)
-            orig_show_options.copy_valid_options(spline.show_options)
+            orig_show_options = object.show_options
+            object._show_options = object.__show_option__(object)
+            orig_show_options.copy_valid_options(object.show_options)
             for key, value in kwargs.items():
                 try:
-                    spline.show_options[key] = value
+                    object.show_options[key] = value
                 except BaseException:
                     continue
 
         # Put every spline into a new dedicated group
-        spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
-        _export_spline(
-            spline,
-            spline_group,
-            box_min_x,
-            box_max_y,
-            tolerance=tolerance,
-            **kwargs,
-        )
-        _quiver_plot(
-            spline=spline,
-            svg_spline_element=spline_group,
-            box_min_x=box_min_x,
-            box_max_y=box_max_y,
-            **kwargs,
-        )
-        _export_control_mesh(
-            spline, spline_group, box_min_x, box_max_y, **kwargs
-        )
+
+        if isinstance(object, Spline):
+            spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
+            _export_spline(
+                object,
+                spline_group,
+                box_min_x,
+                box_max_y,
+                tolerance=tolerance,
+                **kwargs,
+            )
+            _quiver_plot(
+                spline=object,
+                svg_spline_element=spline_group,
+                box_min_x=box_min_x,
+                box_max_y=box_max_y,
+                **kwargs,
+            )
+            _export_control_mesh(
+                object, spline_group, box_min_x, box_max_y, **kwargs
+            )
+        else:
+            gus_grounp = _ET.SubElement(svg_data, "g", id="gus_obj_" + str(i))
+            _export_gustaf_object(
+                object, gus_grounp, box_min_x, box_max_y, **kwargs
+            )
 
         # set original options back
         if orig_show_options is not None:
-            spline._show_options = orig_show_options
+            object._show_options = orig_show_options
 
     # Dump into file
     if indent and hasattr(_ET, "indent"):
