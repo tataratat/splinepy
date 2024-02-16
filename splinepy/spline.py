@@ -1495,6 +1495,9 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         None
         """
+        if _settings.CHECK_BOUNDS:
+            self.check.clamped_knot_vector(warning=True)
+
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
             f"Elevated {parametric_dimensions}.-dim. " "degree of the spline."
@@ -1514,6 +1517,9 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         reduced: list
         """
+        if _settings.CHECK_BOUNDS:
+            self.check.clamped_knot_vector(warning=True)
+
         reduced = super().reduce_degrees(
             para_dims=parametric_dimensions,
             tolerance=_default_if_none(tolerance, _settings.TOLERANCE),
