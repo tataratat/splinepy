@@ -15,7 +15,6 @@ except ImportError as err:
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
 from gustaf import Vertices as _Vertices
-from gustaf._base import GustafBase as _GustafBase
 
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
@@ -1090,7 +1089,7 @@ def export(
                 raise ValueError("Only lines and surfaces supported")
             if not object.dim == 2:
                 raise ValueError("Only 2D geometries supported")
-        elif isinstance(object, _GustafBase):
+        elif isinstance(object, _Vertices):
             if not object.vertices.shape[1] == 2:
                 raise ValueError("Only 2D geometries supported")
         else:
