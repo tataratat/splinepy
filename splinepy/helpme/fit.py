@@ -123,13 +123,16 @@ def compute_knot_vector(degree, n_control_points, u_k, n_fitting_points):
         # NURBS Book eq. (9.68) (n_fitting_points = m + 1,
         # n_control_points = n + 1)
         d = (n_fitting_points) / (n_control_points - degree)
+
+        u_k_flat = u_k.flat
+
         # NURBS Book eq. (9.69)
         for j in range(1, n_control_points - degree):
             i = int(j * d)
             alpha = (j * d) - i
-            knot_vector[j + degree] = (1 - alpha) * u_k[
-                i - 1, 0
-            ] + alpha * u_k[i, 0]
+            knot_vector[j + degree] = (1 - alpha) * u_k_flat[
+                i - 1
+            ] + alpha * u_k_flat[i]
     return knot_vector
 
 
