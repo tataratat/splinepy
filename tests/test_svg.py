@@ -245,7 +245,7 @@ class SVGExportTest(c.unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = c.to_tmpf(tmpd)
             c.splinepy.io.svg.export(
-                tmpf, spline, indent=False, box_margins=0.2, background_c=None
+                tmpf, spline, indent=False, box_margins=0.2, background=None
             )
 
             with open(tmpf) as tmp_read, open(
@@ -270,7 +270,7 @@ class SVGExportTest(c.unittest.TestCase):
                 vertices,
                 indent=False,
                 box_margins=0.4,
-                background_c="black",
+                background="black",
             )
 
             with open(tmpf) as tmp_read, open(

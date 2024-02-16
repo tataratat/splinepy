@@ -1016,7 +1016,7 @@ def export(
             "spline.svg",
             spline,
             box_margins=0.2,
-            background_c=None,
+            background=None,
         )
 
     results in
@@ -1050,7 +1050,7 @@ def export(
     kwargs:
       Specify more output options:
 
-      - background_c (color, string, rgb, None) : background color
+      - background (color, string, rgb, None) : background color
       - linecap ("string"): linecap option for end of lines and connections, see
         https://www.w3.org/TR/SVG2/
         for more information
@@ -1100,19 +1100,11 @@ def export(
     ctps_bounds = _np.nan * _np.ones((2, 2))
     for object in objects_to_plot:
         if isinstance(object, Spline):
-            ctps_bounds[0, :] = _np.fmin(
-                object.control_point_bounds[0, :], ctps_bounds[0, :]
-            )
-            ctps_bounds[1, :] = _np.fmax(
-                object.control_point_bounds[1, :], ctps_bounds[1, :]
-            )
+            l_bounds = object.control_point_bounds
         else:
-            ctps_bounds[0, :] = _np.fmin(
-                object.bounds()[0, :], ctps_bounds[0, :]
-            )
-            ctps_bounds[1, :] = _np.fmax(
-                object.bounds()[1, :], ctps_bounds[1, :]
-            )
+            l_bounds = object.bounds()
+        ctps_bounds[0, :] = _np.fmin(l_bounds[0, :], ctps_bounds[0, :])
+        ctps_bounds[1, :] = _np.fmax(l_bounds[1, :], ctps_bounds[1, :])
 
     # Initialize svg element
     svg_data = _ET.Element("svg")
@@ -1133,9 +1125,9 @@ def export(
     svg_data.attrib["viewBox"] = f"0 0 {box_size[0]} {box_size[1]}"
     svg_data.attrib["height"] = str(400)
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
-    background_c = kwargs.get("background_c", "white")
-    if background_c is not None:
-        svg_data.attrib["style"] = f"background-color:{background_c}"
+    background = kwargs.get("background", "white")
+    if background is not None:
+        svg_data.attrib["style"] = f"background-color:{background}"
     svg_data.attrib["xmlns"] = "http://www.w3.org/2000/svg"
     svg_data.attrib["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
 
