@@ -1,3 +1,5 @@
+from functools import wraps as _wraps
+
 import numpy as _np
 from gustaf.utils import arr as _arr
 
@@ -961,21 +963,18 @@ class Creator:
     def __init__(self, spl):
         self._helpee = spl
 
+    @_wraps(extruded)
     def extruded(self, *args, **kwargs):
         return extruded(self._helpee, *args, **kwargs)
 
+    @_wraps(revolved)
     def revolved(self, *args, **kwargs):
         return revolved(self._helpee, *args, **kwargs)
 
+    @_wraps(parametric_view)
     def parametric_view(self, *args, **kwargs):
         return parametric_view(self._helpee, *args, **kwargs)
 
+    @_wraps(determinant_spline)
     def determinant_spline(self, *args, **kwargs):
         return determinant_spline(self._helpee, *args, **kwargs)
-
-
-# Use function docstrings in Creator functions
-Creator.extruded.__doc__ = extruded.__doc__
-Creator.revolved.__doc__ = revolved.__doc__
-Creator.parametric_view.__doc__ = parametric_view.__doc__
-Creator.determinant_spline.__doc__ = determinant_spline.__doc__

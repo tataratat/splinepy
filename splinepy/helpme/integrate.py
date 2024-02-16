@@ -1,3 +1,5 @@
+from functools import wraps as _wraps
+
 import numpy as _np
 
 from splinepy.utils.data import cartesian_product as _cartesian_product
@@ -130,5 +132,6 @@ class Integrator:
     def __init__(self, spl):
         self._helpee = spl
 
+    @_wraps(volume)
     def volume(self, *args, **kwargs):
         return volume(self._helpee, *args, **kwargs)
