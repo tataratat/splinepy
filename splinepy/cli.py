@@ -6,6 +6,26 @@ import splinepy
 from splinepy._version import __version__
 
 
+def convert(args):
+    """Commandline interface functionality keyword convert.
+
+    Convert splines from one format to another. See the io module for more information
+    on what formats are supported for import and export.
+
+    Args:
+        args (namespace): Args namespace from argparse containing the options for
+        convert.
+    """
+    fname = args.input_file
+    from splinepy import io
+
+    loaded = io.load(fname)
+    if not isinstance(loaded, list):
+        loaded = [loaded]
+    if args.output_file:
+        io.export(args.output_file, loaded)
+
+
 def show(args):
     """Commandline interface functionality keyword show.
 
@@ -96,7 +116,7 @@ def entry():
 
     parser_plot = subparsers.add_parser("show", help="Show the given spline.")
     parser_plot.add_argument(
-        "-i", "--input-file", type=str, help="Input file name."
+        "-i", "--input-file", type=str, help="Input file name.", required=True
     )
     parser_plot.add_argument(
         "-o",
@@ -141,6 +161,19 @@ def entry():
         action="store",
         help="Resolution if the spline. Number of interpolated points.",
     )
+    parser_convert = subparsers.add_parser(
+        "convert", help="Convert the given spline."
+    )
+    parser_convert.add_argument(
+        "-i", "--input-file", type=str, help="Input file name.", required=True
+    )
+    parser_convert.add_argument(
+        "-o",
+        "--output-file",
+        type=str,
+        help="Export graphic to file.",
+        required=True,
+    )
     args = parser.parse_args()
 
     if args.version:
@@ -168,6 +201,11 @@ def entry():
             parser_plot.print_help()
             return
         show(args)
+    elif args.command == "convert":
+        if args.input_file is None or args.output_file is None:
+            parser_convert.print_help()
+            return
+        convert(args)
     else:
         parser.print_help()
 
