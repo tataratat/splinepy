@@ -94,7 +94,7 @@ def _get_quadrature_information(spline, orders=None):
         expected_degree = spline.degrees * spline.para_dim + 1
         if spline.is_rational:
             expected_degree += 2
-            spline._logw(
+            spline._logd(
                 "Integration on rational spline is only approximation"
             )
 
@@ -191,15 +191,19 @@ def parametric_function(
     # Calculate Volume
     if spline.has_knot_vectors:
         # positions must be mapped into each knot-element
-        para_view = spline.create.parametric_view()
-        result = 0
+        para_view = spline.create.parametric_view(axes=False)
+
+        # get initial shape
+        initial = function([positions[0]])
+        result = _np.zeros(initial.shape[1])
         for bezier_element in para_view.extract.beziers():
             quad_positions = bezier_element.evaluate(positions)
-            result = result + _np.sum(
-                function(quad_positions)
-                * meas(spline, quad_positions)
-                * weights,
-                axis=1,
+            result += _np.einsum(
+                "ij,i,i->j",
+                function(quad_positions),
+                meas(spline, quad_positions),
+                weights,
+                optimize=True,
             )
 
     else:
