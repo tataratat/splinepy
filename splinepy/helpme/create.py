@@ -490,15 +490,19 @@ def parametric_view(spline, axes=True, conform=False):
         upper_b = bs[1] + bs_diff_001
         axes_config = {
             "xtitle": "u",
-            "ytitle": "v",
             "xrange": [lower_b[0], upper_b[0]],
-            "yrange": [lower_b[1], upper_b[1]],
             "tip_size": 0,
             "xminor_ticks": 3,
-            "yminor_ticks": 3,
             "xygrid": False,
-            "yzgrid": False,
         }
+        if spline.para_dim == 2:
+            axis_config.update(
+            ytitle="v",
+            yrange=[lower_b[1], upper_b[1]],
+            yminor_ticks=3,
+            yzgrid=False,
+            )
+
         if spline.para_dim == 3:
             axes_config.update(ztitle="w")
             axes_config.update(zrange=[lower_b[2], upper_b[2]])
