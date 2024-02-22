@@ -497,10 +497,10 @@ def parametric_view(spline, axes=True, conform=False):
         }
         if spline.para_dim == 2:
             axis_config.update(
-            ytitle="v",
-            yrange=[lower_b[1], upper_b[1]],
-            yminor_ticks=3,
-            yzgrid=False,
+                ytitle="v",
+                yrange=[lower_b[1], upper_b[1]],
+                yminor_ticks=3,
+                yzgrid=False,
             )
 
         if spline.para_dim == 3:
