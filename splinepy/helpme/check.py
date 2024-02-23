@@ -80,12 +80,9 @@ def clamped_knot_vector(spline, warning=True):
 
     for d, kv in zip(degrees, knot_vectors):
         kv_arr = _np.asanyarray(kv)
-        front = (
-            abs(kv_arr[: (d + 1)] - kv_arr[0]) < _settings.TOLERANCE
-        ).all()
-        end = (
-            abs(kv_arr[-(d + 1) :] - kv_arr[-1]) < _settings.TOLERANCE
-        ).all()
+
+        front = all(abs(kv_arr[: (d + 1)] - kv_arr[0]) < _settings.TOLERANCE)
+        end = all(abs(kv_arr[-(d + 1) :] - kv_arr[-1]) < _settings.TOLERANCE)
 
         if not front or not end:
             if warning:
