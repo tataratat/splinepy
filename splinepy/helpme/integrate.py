@@ -199,7 +199,7 @@ def parametric_function(
         for bezier_element in para_view.extract.beziers():
             quad_positions = bezier_element.evaluate(positions)
             result += _np.einsum(
-                "ij,i,i->j",
+                "i...,i,i->...",
                 function(quad_positions),
                 meas(spline, quad_positions),
                 weights,
