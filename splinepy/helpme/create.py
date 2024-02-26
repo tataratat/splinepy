@@ -8,6 +8,53 @@ from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
 
 
+def embedded(spline, new_dimension):
+    """Embed Splines in higher dimensions
+
+    Update the dimensionality of a given spline (by adding zeros to the control
+    point vector)
+
+    Works in both directions
+
+    Parameters
+    ----------
+    spline: Spline
+      (`self`-argument if called via extract member of a spline)
+    new_dimension : integer
+      new physical dimension into which the spline control points will be set
+
+    Returns
+    -------
+    embedded_spline : Spline
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check input type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("Embedded only works for splines")
+
+    if new_dimension < 1:
+        raise ValueError("Cannot reduce dimension below 1")
+
+    if spline.dim > new_dimension:
+        spline_dict = spline.todict()
+        spline_dict["control_points"] = spline_dict["control_points"][
+            :, :new_dimension
+        ]
+        return type(spline)(**spline_dict)
+    elif spline.dim < new_dimension:
+        spline_dict = spline.todict()
+        spline_dict["control_points"] = _np.hstack(
+            (
+                spline_dict["control_points"][:, :new_dimension],
+                _np.zeros((spline.cps.shape[0], new_dimension - spline.dim)),
+            )
+        )
+        return type(spline)(**spline_dict)
+    else:
+        return spline.copy()
+
+
 def extruded(spline, extrusion_vector=None):
     """Extrudes Splines.
 
@@ -966,6 +1013,10 @@ class Creator:
     @_wraps(extruded)
     def extruded(self, *args, **kwargs):
         return extruded(self._helpee, *args, **kwargs)
+
+    @_wraps(embedded)
+    def embedded(self, *args, **kwargs):
+        return embedded(self._helpee, *args, **kwargs)
 
     @_wraps(revolved)
     def revolved(self, *args, **kwargs):
