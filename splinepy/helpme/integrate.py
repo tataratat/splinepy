@@ -400,3 +400,15 @@ class FieldIntegrator(_SplinepyBase):
         ]
 
         return self._jacobian_weights
+
+    @property
+    def assemble_matrix(self, function, dim, matrix=None):
+        """
+        """
+        pass
+
+    @property
+    def assemble_vector(self, function, dim, matrix=None):
+        """
+        """
+        pass
