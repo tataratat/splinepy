@@ -141,7 +141,7 @@ def volume(spline, orders=None):
 
     # Check i_nput type
     if not isinstance(spline, _Spline):
-        raise NotImplementedError("Extrude only works for splines")
+        raise NotImplementedError("integration only works for splines")
 
     # Retrieve aux info
     meas = _get_integral_measure(spline)
@@ -182,7 +182,7 @@ def parametric_function(
 
     # Check i_nput type
     if not isinstance(spline, _Spline):
-        raise NotImplementedError("Extrude only works for splines")
+        raise NotImplementedError("integration only works for splines")
 
     # Retrieve aux info
     meas = _get_integral_measure(spline)
@@ -251,10 +251,6 @@ class Integrator:
     def volume(self, *args, **kwargs):
         return volume(self._helpee, *args, **kwargs)
 
+    @_wraps(parametric_function)
     def parametric_function(self, *args, **kwargs):
         return parametric_function(self._helpee, *args, **kwargs)
-
-
-# Use function docstrings in Extractor functions
-Integrator.volume.__doc__ = volume.__doc__
-Integrator.parametric_function.__doc__ = parametric_function.__doc__
