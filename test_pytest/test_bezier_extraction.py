@@ -7,11 +7,11 @@ import splinepy
 all_splinetypes = ("bspline_3p3d", "nurbs_3p3d", "bspline_2p2d", "nurbs_2p2d")
 
 
-def test_extraction():
+def test_extraction(request):
     """
     test the extraction of beziers
     """
-    rng = np.random.default_rng()
+    rng = request.getfixturevalue("np_rng")
     # Define some splines
     b = splinepy.BSpline(
         knot_vectors=[[0, 0, 0, 1, 2, 2, 3, 4, 4, 4]],

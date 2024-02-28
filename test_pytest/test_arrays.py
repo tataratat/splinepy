@@ -4,12 +4,12 @@ import numpy as np
 import splinepy
 
 
-def test_uniform_query():
+def test_uniform_query(request):
     """
     Test uniform query against gustaf's vertice creation
     """
     for i in range(1, 11):
-        rng = np.random.default_rng()
+        rng = request.getfixturevalue("np_rng")
         l_bound = rng.random(i)
         bounds = [l_bound, l_bound + 1]
         res = rng.integers([3] * i) + 2  # minimum 2
