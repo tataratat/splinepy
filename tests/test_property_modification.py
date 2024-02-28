@@ -194,7 +194,13 @@ class InplaceModificationTest(c.SplineBasedTestCase):
         n.cps[..., :1] = -62.5
         cps_are_synced(n)
 
-        # 8. if you have ideas for use case not listed above, please add!
+        # 8. ufunc
+        c.np.add(n.cps, n.cps, out=n.cps)
+        cps_are_synced(n)
+        c.np.multiply(n.cps, n.cps, out=n.cps)
+        cps_are_synced(n)
+
+        # 9. if you have ideas for use case not listed above, please add!
 
         # now, child arrays
         carr = n.cps[0]
