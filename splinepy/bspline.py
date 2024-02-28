@@ -89,7 +89,7 @@ class BSplineBase(_spline.Spline):
           List of bool. True if the knots are inserted. Otherwise, False
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         if parametric_dimension >= self.para_dim:
             raise ValueError("Invalid parametric dimension to remove knots.")
@@ -166,7 +166,7 @@ class BSplineBase(_spline.Spline):
           insertion for more details
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         if beziers:
             indices, data = _splinepy_core.bezier_extraction_matrix(
@@ -227,7 +227,7 @@ class BSplineBase(_spline.Spline):
           List of bool. True if the knots are Removed. Otherwise, False
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         if parametric_dimension >= self.para_dim:
             raise ValueError("Invalid parametric dimension to remove knots.")
@@ -301,7 +301,7 @@ class BSplineBase(_spline.Spline):
         extracted Beziers : list
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         # this core call makes copy of self and extracts bezier patches.
         return _splinepy_core.extract_bezier_patches(self)

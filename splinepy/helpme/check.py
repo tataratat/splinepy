@@ -57,7 +57,7 @@ def valid_queries(spline, queries):
     return True
 
 
-def clamped_knot_vector(spline, warning=True):
+def clamped_knot_vectors(spline, warning=True):
     """
     Checks if knot vector is clamped. This also referred as open knot vector.
     If spline doesn't have enough information, this will return None.
@@ -122,6 +122,6 @@ class Checker:
     def valid_queries(self, queries):
         return valid_queries(self._helpee, queries)
 
-    @_wraps(clamped_knot_vector)
-    def clamped_knot_vector(self, warning=True):
-        return clamped_knot_vector(self._helpee, warning)
+    @_wraps(clamped_knot_vectors)
+    def clamped_knot_vectors(self, warning=True):
+        return clamped_knot_vectors(self._helpee, warning)
