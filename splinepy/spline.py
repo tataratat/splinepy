@@ -827,18 +827,13 @@ class Spline(_SplinepyBase, _core.PySpline):
         knot_vectors: list
         """
         kvs = self._data.get("knot_vectors", None)
-
         if _core.has_core(self):
             if not self.has_knot_vectors:
                 return None
 
-            # check type and early exit if it is core type
-            if kvs is not None and isinstance(kvs[0], _core.KnotVector):
-                return kvs
-
-            # get one from the core
-            kvs = [self._knot_vector(i) for i in range(self.para_dim)]
-            self._data["knot_vectors"] = kvs
+            if not isinstance(kvs, _core.ParameterSpace):
+                kvs = self._parameter_space()
+                self._data["knot_vectors"] = kvs
 
         return kvs
 
@@ -894,7 +889,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         unique_knots: list
         """
-        if "Bezier" in self.name:
+        if not self.has_knot_vectors:
             self._logd(
                 "Returning parametric_bounds as "
                 "Bezier spline's unique knots."
@@ -903,7 +898,7 @@ class Spline(_SplinepyBase, _core.PySpline):
 
         else:
             self._logd("Retrieving unique knots")
-            return [k.unique() for k in self.knot_vectors]
+            return self.knot_vectors.unique_knots()
 
     @property
     def knot_multiplicities(self):
@@ -1500,6 +1495,9 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         None
         """
+        if _settings.CHECK_BOUNDS:
+            self.check.clamped_knot_vectors(warning=True)
+
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
             f"Elevated {parametric_dimensions}.-dim. " "degree of the spline."
@@ -1519,6 +1517,9 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         reduced: list
         """
+        if _settings.CHECK_BOUNDS:
+            self.check.clamped_knot_vectors(warning=True)
+
         reduced = super().reduce_degrees(
             para_dims=parametric_dimensions,
             tolerance=_default_if_none(tolerance, _settings.TOLERANCE),

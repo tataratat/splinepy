@@ -86,7 +86,7 @@ void init_knot_vector(py::module_& m) {
             if (!slice.compute(kv_size, &start, &stop, &step, &slicelength)) {
               throw py::error_already_set();
             }
-            if (slicelength != value.size()) {
+            if (slicelength != static_cast<std::size_t>(value.size())) {
               splinepy::utils::PrintAndThrowError(
                   "Left and right hand size of slice assignment have "
                   "different sizes.");
@@ -99,21 +99,32 @@ void init_knot_vector(py::module_& m) {
             kv.ThrowIfTooSmallOrNotNonDecreasing();
           },
           "Multiple slice based element assignment.")
+      .def(
+          "__setitem__",
+          [](KnotVector& kv,
+             const py::slice& slice,
+             const py::array_t<double>& value) {
+            std::size_t start{}, stop{}, step{}, slicelength{};
+            const auto kv_size = kv.GetKnots().size();
+            if (!slice.compute(kv_size, &start, &stop, &step, &slicelength)) {
+              throw py::error_already_set();
+            }
+            if (slicelength != static_cast<std::size_t>(value.size())) {
+              splinepy::utils::PrintAndThrowError(
+                  "Left and right hand size of slice assignment have "
+                  "different sizes.");
+            }
+            auto& knots = kv.GetKnots();
+            const double* v_ptr = static_cast<double*>(value.request().ptr);
+            for (std::size_t i{}; i < slicelength; ++i) {
+              knots[start] = v_ptr[i];
+              start += step;
+            }
+            kv.ThrowIfTooSmallOrNotNonDecreasing();
+          },
+          "Multiple slice based element assignment.")
       .def("__repr__",
-           [](const KnotVector& kv) {
-             std::ostringstream s;
-             s << "KnotVector [";
-             int i{}, j{kv.GetSize() - 1};
-             for (const auto& k : kv.GetKnots()) {
-               s << k;
-               if (i != j) {
-                 s << ", ";
-               }
-               ++i;
-             }
-             s << "]";
-             return s.str();
-           })
+           [](const KnotVector& kv) { return kv.StringRepresentation(); })
       .def("scale",
            &KnotVector::Scale,
            py::arg("min"),

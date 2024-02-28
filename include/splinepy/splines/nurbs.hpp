@@ -273,6 +273,11 @@ public:
     }
   }
 
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+  SplinepyParameterSpace() {
+    return Base_::Base_::parameter_space_;
+  };
+
   virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   SplinepyKnotVector(const int p_dim) {
     if (!(p_dim < para_dim)) {

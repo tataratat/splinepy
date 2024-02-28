@@ -7,7 +7,8 @@
 
 namespace bsplinelib::parameter_spaces {
 class KnotVector;
-}
+class ParameterSpaceBase;
+} // namespace bsplinelib::parameter_spaces
 
 namespace splinepy::splines {
 
@@ -131,6 +132,8 @@ public:
                             double* control_points,
                             double* weights) const = 0;
 
+  virtual std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+  SplinepyParameterSpace();
   virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   SplinepyKnotVector(const int p_dim);
 

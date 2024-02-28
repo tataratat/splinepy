@@ -112,7 +112,7 @@ inline std::vector<int> BSplineSupport(const SplineType& spline,
   // fill supports.
   for (int i{}; i < n_total_basis; ++i) {
     supports.push_back(
-        (support_start + support_offset.GetIndex()).GetIndex1d().Get());
+        (support_start + support_offset.GetIndex()).GetIndex1d());
     ++support_offset;
   }
   return supports;
