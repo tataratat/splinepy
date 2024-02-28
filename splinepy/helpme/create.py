@@ -9,12 +9,10 @@ from splinepy.utils.data import make_matrix as _make_matrix
 
 
 def embedded(spline, new_dimension):
-    """Embed Splines in higher dimensions
-
-    Update the dimensionality of a given spline (by adding zeros to the control
-    point vector)
-
-    Works in both directions
+    """Embeds Spline in given dimension.
+    If dim > current_dim, it will add zeros columns to the control points.
+    If dim < current_dim, it takes first n-columns of the control points.
+    If dim == current_dim, it returns a copy.
 
     Parameters
     ----------
