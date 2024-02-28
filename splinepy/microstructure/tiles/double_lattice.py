@@ -57,12 +57,7 @@ class DoubleLattice(_TileBase):
         # set to default if nothing is given
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = _np.ones((1, 2)) * 0.1
-        # Maintain backwards compatibility
-        elif parameters.shape[1] == 1:
-            _warning("DoubleLattice now expects 2 values")
-            index_second_value = 0
-            self._n_info_per_eval_point = 1
+            parameters = _np.ones((1, self._n_info_per_eval_point)) * 0.1
         if not (
             _np.all(parameters > 0)
             and _np.all(parameters < 0.5 / (1 + _np.sqrt(2)))
@@ -70,6 +65,11 @@ class DoubleLattice(_TileBase):
             raise ValueError(
                 "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
             )
+        # Maintain backwards compatibility
+        if parameters.shape[1] == 1:
+            _warning("DoubleLattice now expects 2 values")
+            index_second_value = 0
+            self._n_info_per_eval_point = 1
         self.check_params(parameters)
 
         # Check if user requests derivative splines
