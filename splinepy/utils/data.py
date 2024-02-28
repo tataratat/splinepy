@@ -164,6 +164,11 @@ class PhysicalSpaceArray(_np.ndarray):
         self._sync_source_ptr()
         return sr
 
+    def __array_wrap__(self, *args, **kwargs):
+        sr = super(self.__class__, self).__array_wrap__(*args, **kwargs)
+        self._sync_source_ptr()
+        return sr
+
     def __setitem__(self, key, value):
         # set first. invalid setting will cause error
         sr = super(self.__class__, self).__setitem__(key, value)
