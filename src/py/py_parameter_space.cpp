@@ -4,6 +4,7 @@
 #include <BSplineLib/ParameterSpaces/knot_vector.hpp>
 #include <BSplineLib/ParameterSpaces/parameter_space.hpp>
 
+#include "splinepy/utils/arrays.hpp"
 #include "splinepy/utils/print.hpp"
 
 namespace splinepy::py {
@@ -147,7 +148,52 @@ void init_parameter_space(py::module_& m) {
              s.append("]");
              return s;
            })
-      .def("copy", [to_list](const PSpace& p) { return to_list(p); });
+      .def("copy", [to_list](const PSpace& p) { return to_list(p); })
+      .def("unique_knots", [](const PSpace& p) {
+        py::list unique_knots;
+
+        for (int i{}; i < p.ParaDim(); ++i) {
+          const int degree = p.GetDegree(i);
+          const auto& kv = p.GetKnotVector(i);
+          const auto& knots = kv->GetKnots();
+
+          // create array
+          splinepy::utils::Array<double> u_knots(static_cast<int>(knots.size())
+                                                 - (2 * degree));
+
+          // create a capsule to release data once it's done
+          auto capsule = py::capsule(u_knots.data(), [](void* data) {
+            delete reinterpret_cast<double*>(data);
+          });
+
+          // unlike KnotVector::UniqueKnots, this checks within
+          // valid regions.
+          int n_uk{1};
+          std::unique_copy(
+              knots.begin() + degree,
+              knots.end() - degree,
+              u_knots.data(),
+              [&n_uk](const double& lhs_knot, const double& rhs_knot) {
+                if (std::abs(lhs_knot - rhs_knot)
+                    < bsplinelib::parameter_spaces::kEpsilon) {
+                  return true;
+                } else {
+                  ++n_uk;
+                  return false;
+                };
+              });
+
+          unique_knots.append(
+              py::array_t<double>(n_uk, u_knots.data(), capsule));
+
+          // mark ownership to false.
+          // we can do it in append(), but if that line fails, then it'd
+          // be a memory leak.
+          u_knots.TransferOwnership();
+        }
+
+        return unique_knots;
+      });
 }
 
 } // namespace splinepy::py

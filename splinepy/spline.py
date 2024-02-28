@@ -889,7 +889,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         --------
         unique_knots: list
         """
-        if "Bezier" in self.name:
+        if not self.has_knot_vectors:
             self._logd(
                 "Returning parametric_bounds as "
                 "Bezier spline's unique knots."
@@ -898,7 +898,7 @@ class Spline(_SplinepyBase, _core.PySpline):
 
         else:
             self._logd("Retrieving unique knots")
-            return [k.unique() for k in self.knot_vectors]
+            return self.knot_vectors.unique_knots()
 
     @property
     def knot_multiplicities(self):
