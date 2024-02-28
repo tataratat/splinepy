@@ -1496,7 +1496,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         None
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         super().elevate_degrees(para_dims=parametric_dimensions)
         self._logd(
@@ -1518,7 +1518,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         reduced: list
         """
         if _settings.CHECK_BOUNDS:
-            self.check.clamped_knot_vector(warning=True)
+            self.check.clamped_knot_vectors(warning=True)
 
         reduced = super().reduce_degrees(
             para_dims=parametric_dimensions,
