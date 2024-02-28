@@ -121,6 +121,15 @@ public:
     return data_;
   }
 
+  /// @brief Returns Data pointer and sets ownership to false. No error if this
+  /// wasn't it's own data - then it'd be same as GetData().
+  /// @return
+  constexpr DataType* TransferOwnership() {
+    assert(data_);
+    own_data_ = false;
+    return data_;
+  }
+
   /// @brief reallocates space. After this call, own_data_ should be true
   /// @param size
   constexpr void Reallocate(const IndexType& size) {
