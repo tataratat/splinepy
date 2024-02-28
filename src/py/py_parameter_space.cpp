@@ -158,6 +158,9 @@ void init_parameter_space(py::module_& m) {
           const auto& knots = kv->GetKnots();
 
           // create array
+          // this uses `new` to allocate memory and we can use this with
+          // py::capsule to avoid copy or resize at the end.
+          // See: github.com/pybind/pybind11/issues/1042#issuecomment-325941022
           splinepy::utils::Array<double> u_knots(static_cast<int>(knots.size())
                                                  - (2 * degree));
 
