@@ -1,5 +1,3 @@
-import numpy as np
-
 try:
     from . import common as c
 except BaseException:
@@ -7,6 +5,29 @@ except BaseException:
 
 
 class CreatorTest(c.SplineBasedTestCase):
+    # Test Embedded routines
+    def test_create_embedded(self):
+        """
+        Test embedding for (rational) splines
+        """
+        # make a couple of 2D splines
+        bspline = self.bspline_2p2d()
+        nurbs = self.nurbs_2p2d()
+        embedded_bspline = bspline.create.embedded(3)
+        self.assertTrue(
+            c.np.allclose(
+                bspline.cps[:, :2],
+                embedded_bspline.cps[:, :2],
+            )
+        )
+        embedded_nurbs = nurbs.create.embedded(3)
+        self.assertTrue(
+            c.np.allclose(
+                nurbs.cps[:, :2],
+                embedded_nurbs.cps[:, :2],
+            )
+        )
+
     # Test Extrusion routines
     def test_create_extrude(self):
         """
@@ -29,33 +50,37 @@ class CreatorTest(c.SplineBasedTestCase):
             bspline.create.extruded(extrusion_vector=[1])
 
         # Create a random axis
-        axis = np.random.random(3)
-        x, y, z = np.random.random(3)
+        axis = c.np.random.random(3)
+        x, y, z = c.np.random.random(3)
 
         # Test results
         for spline_g in (bspline, nurbs, rationalbezier, bezier):
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     spline_g.create.extruded(extrusion_vector=axis).evaluate(
                         [[x, y, z]]
                     ),
-                    np.hstack((spline_g.evaluate([[x, y]]), np.zeros((1, 1))))
+                    c.np.hstack(
+                        (spline_g.evaluate([[x, y]]), c.np.zeros((1, 1)))
+                    )
                     + z * axis,
                 )
             )
 
         # Create a random axis
-        axis = np.random.random(3)
-        x, y, z = np.random.random(3)
+        axis = c.np.random.random(3)
+        x, y, z = c.np.random.random(3)
 
         # Test results
         for spline_g in (bspline, nurbs, rationalbezier, bezier):
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     spline_g.create.extruded(extrusion_vector=axis).evaluate(
                         [[x, y, z]]
                     ),
-                    np.hstack((spline_g.evaluate([[x, y]]), np.zeros((1, 1))))
+                    c.np.hstack(
+                        (spline_g.evaluate([[x, y]]), c.np.zeros((1, 1)))
+                    )
                     + z * axis,
                 )
             )
@@ -107,18 +132,18 @@ class CreatorTest(c.SplineBasedTestCase):
 
         # Revolve always around z-axis
         # init rotation matrix
-        r_angle = np.random.random()
-        r_center = np.array([1, 0])
-        cc, ss = np.cos(r_angle), np.sin(r_angle)
-        R = np.array([[cc, -ss, 0], [ss, cc, 0], [0, 0, 1]])
-        R2 = np.array([[cc, -ss], [ss, cc]])
+        r_angle = c.np.random.random()
+        r_center = c.np.array([1, 0])
+        cc, ss = c.np.cos(r_angle), c.np.sin(r_angle)
+        R = c.np.array([[cc, -ss, 0], [ss, cc, 0], [0, 0, 1]])
+        R2 = c.np.array([[cc, -ss], [ss, cc]])
 
         # Test 3D revolutions for bodies
         for spline_g in (bspline, nurbs, rationalbezier, bezier):
-            dim_bumped_cps = np.zeros((spline_g.control_points.shape[0], 1))
+            dim_bumped_cps = c.np.zeros((spline_g.control_points.shape[0], 1))
 
-            ref_sol = np.matmul(
-                np.hstack((spline_g.control_points, dim_bumped_cps)), R.T
+            ref_sol = c.np.matmul(
+                c.np.hstack((spline_g.control_points, dim_bumped_cps)), R.T
             )
 
             revolved_cps = spline_g.create.revolved(
@@ -129,29 +154,29 @@ class CreatorTest(c.SplineBasedTestCase):
             ).control_points
 
             self.assertTrue(
-                np.allclose(revolved_cps[-(len(ref_sol)) :, :], ref_sol),
+                c.np.allclose(revolved_cps[-(len(ref_sol)) :, :], ref_sol),
                 f"{spline_g.whatami} failed revolution",
             )
 
         # Test 2D Revolutions of lines
         for spline_g in (bezier_line, nurbs_line):
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     spline_g.create.revolved(
                         angle=r_angle, degree=False
                     ).control_points[-2:, :],
-                    np.matmul(spline_g.control_points, R2.T),
+                    c.np.matmul(spline_g.control_points, R2.T),
                 )
             )
 
         # Test 2D Revolutions of lines around center
         for spline_g in (bezier_line, nurbs_line):
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     spline_g.create.revolved(
                         angle=r_angle, center=r_center, degree=False
                     ).control_points[-2:, :],
-                    np.matmul(spline_g.control_points - r_center, R2.T)
+                    c.np.matmul(spline_g.control_points - r_center, R2.T)
                     + r_center,
                 ),
                 f"{spline_g.whatami} failed revolution around center",
@@ -317,22 +342,22 @@ class CreatorTest(c.SplineBasedTestCase):
             *self.all_3p3d_splines(),
         ):
             det_spl = c.splinepy.helpme.create.determinant_spline(sp_i)
-            rnd_queries = np.random.random((10, sp_i.dim))
+            rnd_queries = c.np.random.random((10, sp_i.dim))
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     det_spl.evaluate(queries=rnd_queries).ravel(),
-                    np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+                    c.np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
 
         # Splines which are tangled or singular
         for sp_i in (bez_1, bsp_c1_tang, nurbs_eq_w_tang):
             det_spl = c.splinepy.helpme.create.determinant_spline(sp_i)
-            rnd_queries = np.random.random((10, sp_i.dim))
+            rnd_queries = c.np.random.random((10, sp_i.dim))
             self.assertTrue(
-                np.allclose(
+                c.np.allclose(
                     det_spl.evaluate(queries=rnd_queries).ravel(),
-                    np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+                    c.np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
                 )
             )
 
