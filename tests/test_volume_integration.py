@@ -4,7 +4,7 @@ except BaseException:
     import common as c
 
 
-class VolumeIntegrationTest(c.unittest.TestCase):
+class IntegratorTest(c.unittest.TestCase):
     def test_volume_integration_1D(self):
         """
         Test volume integration for splines using numerical integration of the
@@ -31,6 +31,48 @@ class VolumeIntegrationTest(c.unittest.TestCase):
         bspline = bezier.bspline
         bspline.insert_knots(0, c.np.random.rand(10))
         self.assertTrue(c.np.allclose(bezier.integrate.volume(), 2.0))
+
+    def test_volume_integration_embedded(self):
+        """
+        Test volume integration for splines using numerical integration of the
+        Jacobi-Determinant
+        """
+        # Test 1D -> 2D
+        expected_result = 2.0**1.5
+        bezier = c.splinepy.Bezier(
+            degrees=[1], control_points=[[0, 0], [2, 2]]
+        )
+
+        self.assertTrue(
+            c.np.allclose(bezier.integrate.volume(), expected_result)
+        )
+
+        # test for other types same spline
+        self.assertTrue(
+            c.np.allclose(bezier.bspline.integrate.volume(), expected_result)
+        )
+        self.assertTrue(
+            c.np.allclose(
+                bezier.rationalbezier.integrate.volume(), expected_result
+            )
+        )
+        self.assertTrue(
+            c.np.allclose(bezier.nurbs.integrate.volume(), expected_result)
+        )
+
+        # Check if equal after refinement
+        bezier.elevate_degrees([0, 0, 0])
+
+        self.assertTrue(
+            c.np.allclose(bezier.integrate.volume(), expected_result)
+        )
+
+        # Test knot insertion
+        bspline = bezier.bspline
+        bspline.insert_knots(0, c.np.random.rand(10))
+        self.assertTrue(
+            c.np.allclose(bezier.integrate.volume(), expected_result)
+        )
 
     def test_volume_integration_2D(self):
         """
@@ -138,12 +180,11 @@ class VolumeIntegrationTest(c.unittest.TestCase):
     def test_assertions(self):
         """Test the assertions in volume function"""
         bezier = c.splinepy.Bezier(
-            degrees=[1, 2], control_points=c.np.random.rand(6, 3)
+            degrees=[1, 2], control_points=c.np.random.rand(6, 1)
         )
         self.assertRaisesRegex(
             ValueError,
-            "`Volume` of embedded spline depends on projection, "
-            "integration is aborted",
+            "`Volume` not supported if para_dim > dim",
             bezier.integrate.volume,
         )
         bezier = c.splinepy.Bezier(
@@ -154,6 +195,20 @@ class VolumeIntegrationTest(c.unittest.TestCase):
             "Integration order must be array of size para_dim",
             bezier.integrate.volume,
             orders=[2, 4, 5],
+        )
+
+    def test_function_integration(self):
+        def volume_function(x):
+            return c.np.ones((x.shape[0], 1))
+
+        bezier = c.splinepy.Bezier(
+            degrees=[1, 2], control_points=c.np.random.rand(6, 2)
+        )
+        self.assertTrue(
+            c.np.allclose(
+                [bezier.integrate.volume()],
+                bezier.integrate.parametric_function(volume_function),
+            )
         )
 
 
