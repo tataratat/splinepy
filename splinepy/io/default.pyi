@@ -1,0 +1,6 @@
+from _typeshed import Incomplete
+
+extension_to_io: Incomplete
+
+def export(fname, splinepy_obj) -> None: ...
+def load(fname): ...
