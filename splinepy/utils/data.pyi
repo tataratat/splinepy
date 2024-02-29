@@ -1,9 +1,17 @@
 import numpy as _np
 from _typeshed import Incomplete
 from gustaf.helpers.data import DataHolder as _DataHolder
+
 from splinepy._base import SplinepyBase as _SplinepyBase
 
-__all__ = ['PhysicalSpaceArray', '_DataHolder', 'enforce_contiguous_values', 'cartesian_product', 'SplineDataAdaptor', 'SplineData']
+__all__ = [
+    "PhysicalSpaceArray",
+    "_DataHolder",
+    "enforce_contiguous_values",
+    "cartesian_product",
+    "SplineDataAdaptor",
+    "SplineData",
+]
 
 class PhysicalSpaceArray(_np.ndarray):
     def __array_finalize__(self, obj) -> None: ...
@@ -41,19 +49,45 @@ class SplineDataAdaptor(_SplinepyBase):
     parametric_bounds: Incomplete
     function: Incomplete
     locations: Incomplete
-    def __init__(self, data, locations: Incomplete | None = None, function: Incomplete | None = None, parametric_bounds: Incomplete | None = None) -> None: ...
-    def as_vertex_data(self, resolutions: Incomplete | None = None, on: Incomplete | None = None): ...
+    def __init__(
+        self,
+        data,
+        locations: Incomplete | None = None,
+        function: Incomplete | None = None,
+        parametric_bounds: Incomplete | None = None,
+    ) -> None: ...
+    def as_vertex_data(
+        self,
+        resolutions: Incomplete | None = None,
+        on: Incomplete | None = None,
+    ): ...
 
 class SplineData(_DataHolder):
     def __init__(self, helpee) -> None: ...
     def __setitem__(self, key, value) -> None: ...
     def __getitem__(self, key): ...
-    def as_scalar(self, key, resolutions, default: Incomplete | None = None): ...
-    def as_arrow(self, key, resolutions: Incomplete | None = None, on: Incomplete | None = None, default: Incomplete | None = None): ...
+    def as_scalar(
+        self, key, resolutions, default: Incomplete | None = None
+    ): ...
+    def as_arrow(
+        self,
+        key,
+        resolutions: Incomplete | None = None,
+        on: Incomplete | None = None,
+        default: Incomplete | None = None,
+    ): ...
 
 class MultipatchData(SplineData):
     def __init__(self, helpee) -> None: ...
     def __setitem__(self, key, value) -> None: ...
     def __getitem__(self, key): ...
-    def as_scalar(self, key, resolutions, default: Incomplete | None = None): ...
-    def as_arrow(self, key, resolutions: Incomplete | None = None, on: Incomplete | None = None, default: Incomplete | None = None): ...
+    def as_scalar(
+        self, key, resolutions, default: Incomplete | None = None
+    ): ...
+    def as_arrow(
+        self,
+        key,
+        resolutions: Incomplete | None = None,
+        on: Incomplete | None = None,
+        default: Incomplete | None = None,
+    ): ...

@@ -1,8 +1,15 @@
 from _typeshed import Incomplete
+
 from splinepy._base import SplinepyBase as _SplinepyBase
 
 class Microstructure(_SplinepyBase):
-    def __init__(self, deformation_function: Incomplete | None = None, tiling: Incomplete | None = None, microtile: Incomplete | None = None, parametrization_function: Incomplete | None = None) -> None: ...
+    def __init__(
+        self,
+        deformation_function: Incomplete | None = None,
+        tiling: Incomplete | None = None,
+        microtile: Incomplete | None = None,
+        parametrization_function: Incomplete | None = None,
+    ) -> None: ...
     @property
     def deformation_function(self): ...
     @deformation_function.setter
@@ -22,8 +29,16 @@ class Microstructure(_SplinepyBase):
     @property
     def parameter_sensitivity_function(self): ...
     @parameter_sensitivity_function.setter
-    def parameter_sensitivity_function(self, parameter_sensitivity_function) -> None: ...
-    def create(self, closing_face: Incomplete | None = None, knot_span_wise: Incomplete | None = None, macro_sensitivities: Incomplete | None = None, **kwargs): ...
+    def parameter_sensitivity_function(
+        self, parameter_sensitivity_function
+    ) -> None: ...
+    def create(
+        self,
+        closing_face: Incomplete | None = None,
+        knot_span_wise: Incomplete | None = None,
+        macro_sensitivities: Incomplete | None = None,
+        **kwargs,
+    ): ...
     def show(self, use_saved: bool = False, **kwargs): ...
 
 class _UserTile(_SplinepyBase):

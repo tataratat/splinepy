@@ -1,4 +1,5 @@
 from _typeshed import Incomplete
+
 from splinepy import spline as _spline
 
 class BezierBase(_spline.Spline):
@@ -12,7 +13,12 @@ class BezierBase(_spline.Spline):
     def extract_dim(self, dim): ...
 
 class Bezier(BezierBase):
-    def __init__(self, degrees: Incomplete | None = None, control_points: Incomplete | None = None, spline: Incomplete | None = None) -> None: ...
+    def __init__(
+        self,
+        degrees: Incomplete | None = None,
+        control_points: Incomplete | None = None,
+        spline: Incomplete | None = None,
+    ) -> None: ...
     @property
     def bezier(self): ...
     @property

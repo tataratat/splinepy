@@ -1,8 +1,14 @@
 from _typeshed import Incomplete
+
 from splinepy._base import SplinepyBase as _SplinepyBase
 
 class FFD(_SplinepyBase):
-    def __init__(self, mesh: Incomplete | None = None, spline: Incomplete | None = None, padding: Incomplete | None = None) -> None: ...
+    def __init__(
+        self,
+        mesh: Incomplete | None = None,
+        spline: Incomplete | None = None,
+        padding: Incomplete | None = None,
+    ) -> None: ...
     @property
     def mesh(self): ...
     @mesh.setter
