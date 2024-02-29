@@ -2,7 +2,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     kv = [[0, 0, 0, 0.5, 1, 1, 1], [0, 0, 0, 1, 1, 1], [0, 0, 1, 1]]
     cp1 = np.array(
         [
@@ -57,3 +58,7 @@ if __name__ == "__main__":
         *b.basis_and_support(q), b.control_points.shape[0], as_array=True
     )
     print(basis_function_matrix)
+
+
+if __name__ == "__main__":
+    example()
