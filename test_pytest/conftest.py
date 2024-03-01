@@ -333,109 +333,128 @@ def nd_box(dim):
 
 
 @pytest.fixture
-def to_tmpf(tmpd):
-    """given tmpd, returns tmpf"""
-    return os.path.join(tmpd, "nqv248p90")
+def to_tmpf():
+    def _to_tmpf(tmpd):
+        """given tmpd, returns tmpf"""
+        return os.path.join(tmpd, "nqv248p90")
+
+    return _to_tmpf
 
 
 @pytest.fixture
-def are_splines_equal(a, b, print_=False):
-    """returns True if Splines are equivalent"""
-    if a.whatami != b.whatami:
-        return False
-    for req_prop in a.required_properties:
-        if req_prop == "knot_vectors":
-            for aa, bb in zip(a.knot_vectors, b.knot_vectors):
-                if not np.allclose(aa.numpy(), bb.numpy()):
-                    if print_:
-                        print("a.kvs", a.kvs)
-                        print("b.kvs", b.kvs)
-                    return False
-        elif not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
-            if print_:
-                print(f"a.{req_prop}", getattr(a, req_prop))
-                print(f"b.{req_prop}", getattr(b, req_prop))
+def are_splines_equal():
+    def _are_splines_equal(a, b, print_=False):
+        """returns True if Splines are equivalent"""
+        if a.whatami != b.whatami:
             return False
-    return True
+        for req_prop in a.required_properties:
+            if req_prop == "knot_vectors":
+                for aa, bb in zip(a.knot_vectors, b.knot_vectors):
+                    if not np.allclose(aa.numpy(), bb.numpy()):
+                        if print_:
+                            print("a.kvs", a.kvs)
+                            print("b.kvs", b.kvs)
+                        return False
+            elif not np.allclose(getattr(a, req_prop), getattr(b, req_prop)):
+                if print_:
+                    print(f"a.{req_prop}", getattr(a, req_prop))
+                    print(f"b.{req_prop}", getattr(b, req_prop))
+                return False
+        return True
+
+    return _are_splines_equal
 
 
 @pytest.fixture
-def are_items_close(a, b):
-    """returns True if items in a and b are close"""
-    all_close = True
+def are_items_close():
+    def _are_items_close(a, b):
+        """returns True if items in a and b are close"""
+        all_close = True
 
-    for i, (aa, bb) in enumerate(zip(a, b)):
-        this_is_close = all(np.isclose(aa, bb))
-        if not this_is_close:
-            # print to inform
-            print(f"elements in index-{i} are not close")
-            print(f"  from first: {aa}")
-            print(f"  from second: {bb}")
+        for i, (aa, bb) in enumerate(zip(a, b)):
+            this_is_close = all(np.isclose(aa, bb))
+            if not this_is_close:
+                # print to inform
+                print(f"elements in index-{i} are not close")
+                print(f"  from first: {aa}")
+                print(f"  from second: {bb}")
 
-            all_close = False
+                all_close = False
 
-    return all_close
+        return all_close
 
-
-@pytest.fixture
-def are_items_same(a, b):
-    """returns True if items in a and b are same"""
-    all_same = True
-
-    for i, (aa, bb) in enumerate(zip(a, b)):
-        this_is_same = aa == bb
-        if not this_is_same:
-            # print to inform
-            print(f"element in index-{i} are not same")
-            print(f"  from first: {aa}")
-            print(f"  from second: {bb}")
-
-            all_same = False
-
-    return all_same
+    return _are_items_close
 
 
 @pytest.fixture
-def are_stripped_lines_same(a, b, ignore_order=False):
-    """returns True if items in a and b same, preceding and tailing whitespaces
-    are ignored and strings are joined"""
-    all_same = True
+def are_items_same():
+    def _are_items_same(a, b):
+        """returns True if items in a and b are same"""
+        all_same = True
 
-    for i, (line_a, line_b) in enumerate(zip(a, b)):
-        # check stripped string
-        stripped_a, stripped_b = line_a.strip(), line_b.strip()
-        this_is_same = stripped_a == stripped_b
+        for i, (aa, bb) in enumerate(zip(a, b)):
+            this_is_same = aa == bb
+            if not this_is_same:
+                # print to inform
+                print(f"element in index-{i} are not same")
+                print(f"  from first: {aa}")
+                print(f"  from second: {bb}")
 
-        # print general info
-        if not this_is_same:
-            print(f"stripped line at index-{i} are not the same")
-            print(f"  from first: {line_a}")
-            print(f"  from second: {line_b}")
-
-        # give one more chance if ignore_order
-        if not this_is_same and ignore_order:
-            print("  checking again, while ignoring word order:")
-
-            # This is meant for attributes
-            delimiters = r" |\>|\<|\t"
-            splitted_a = list(filter(None, re.split(delimiters, stripped_a)))
-            splitted_b = list(filter(None, re.split(delimiters, stripped_b)))
-            # first, len check
-            len_a, len_b = len(splitted_a), len(splitted_b)
-            if len(splitted_a) != len(splitted_b):
-                print(f"    different word counts: a-{len_a}, b-{len_b}")
                 all_same = False
-            else:
-                # word order
-                a_to_b = []
-                for word_a in splitted_a:
-                    try:
-                        a_to_b.append(splitted_b.index(word_a))
-                    except BaseException:
-                        print(f"    second does not contain ({word_a})")
-                        all_same = False
 
-    return all_same
+        return all_same
+
+    return _are_items_same
+
+
+@pytest.fixture
+def are_stripped_lines_same():
+    def _are_stripped_lines_same(a, b, ignore_order=False):
+        """returns True if items in a and b same, preceding and tailing whitespaces
+        are ignored and strings are joined"""
+        all_same = True
+
+        for i, (line_a, line_b) in enumerate(zip(a, b)):
+            # check stripped string
+            stripped_a, stripped_b = line_a.strip(), line_b.strip()
+            this_is_same = stripped_a == stripped_b
+
+            # print general info
+            if not this_is_same:
+                print(f"stripped line at index-{i} are not the same")
+                print(f"  from first: {line_a}")
+                print(f"  from second: {line_b}")
+
+            # give one more chance if ignore_order
+            if not this_is_same and ignore_order:
+                print("  checking again, while ignoring word order:")
+
+                # This is meant for attributes
+                delimiters = r" |\>|\<|\t"
+                splitted_a = list(
+                    filter(None, re.split(delimiters, stripped_a))
+                )
+                splitted_b = list(
+                    filter(None, re.split(delimiters, stripped_b))
+                )
+                # first, len check
+                len_a, len_b = len(splitted_a), len(splitted_b)
+                if len(splitted_a) != len(splitted_b):
+                    print(f"    different word counts: a-{len_a}, b-{len_b}")
+                    all_same = False
+                else:
+                    # word order
+                    a_to_b = []
+                    for word_a in splitted_a:
+                        try:
+                            a_to_b.append(splitted_b.index(word_a))
+                        except BaseException:
+                            print(f"    second does not contain ({word_a})")
+                            all_same = False
+
+        return all_same
+
+    return _are_stripped_lines_same
 
 
 @pytest.fixture

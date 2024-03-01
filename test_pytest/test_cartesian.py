@@ -5,15 +5,17 @@ import numpy as np
 import splinepy
 
 
-def test_cartesian_product():
+def test_cartesian_product(request):
     """Test cartesian product test"""
 
+    rng = request.getfixturevalue("np_rng")
     # define arrays for cartesian product
     # make different len, but not too long so that test
     # doesn't take too long.
     max_dim = 10
     pool = np.array([0.0, 1.1, 4.4, 8.8, 9.6])
-    queries = [pool[: np.random.randint(2, 5)] for _ in range(max_dim)]
+    queries = [pool[: rng.integers(2, 5)] for _ in range(max_dim)]
+    # queries = [pool[: np.random.randint(2, 5)] for _ in range(max_dim)]
 
     # in case they are all the same, let's change two entries
     queries[-1] = pool
