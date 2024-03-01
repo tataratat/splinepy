@@ -814,8 +814,19 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   int* global_interfaces_ptr =
       static_cast<int*>(global_interfaces.request().ptr);
 
+  // This function is currently only implemented for 2D and 3D applications. For
+  // higher dimensions, please revise the implementation of the generalized
+  // cross product as can be found here:
+  // https://math.stackexchange.com/questions/752774/generalized-cross-product
+  if ((dim_ < 1) || (dim_ > 3)) {
+    splinepy::utils::PrintAndThrowError(
+        "G1-based boundary computation is only supported for 2D and 3D "
+        "multipatches. If this is a feature you require, please consider "
+        "writing an issue on our github");
+  }
+
   // Auxiliary Lambdas to keep code clean
-  // Check if to tangential vectors are g1 (tol > cos(phi))
+  // Check if to normal vectors are g1 (tol > cos(phi))
   auto areG1 = [&tolerance, &dim_](const std::vector<double>& vec0,
                                    const std::vector<double>& vec1) -> bool {
     // Checks in Debug
@@ -833,13 +844,12 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
   };
 
   // Tangential Vector on boundary based on its derivative
-  auto tangential_vector = [&cpp_spline_list, &para_dim_, &dim_](
-                               const int& patch_id,
-                               const int& face_id) -> std::vector<double> {
+  auto normal_vector = [&cpp_spline_list, &para_dim_, &dim_](
+                           const int& patch_id,
+                           const int& face_id) -> std::vector<double> {
     // init return value (are default initialized to 0)
     std::vector<double> para_coord(para_dim_), bounds(2 * para_dim_),
-        tangential_vector(dim_);
-    std::vector<int> orders(para_dim_);
+        normal_vector(dim_), jacobian(dim_ * para_dim_);
 
     // Auxiliary values
     const int axis_dim = face_id / 2;
@@ -852,15 +862,30 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
     for (int i{}; i < para_dim_; i++) {
       if (i == axis_dim) {
         para_coord[i] = bounds[i + is_in_front * para_dim_];
-        orders[i] = 1;
       } else {
         para_coord[i] = .5 * (bounds[i + para_dim_] + bounds[i]);
       }
     }
-    spline->SplinepyDerivative(para_coord.data(),
-                               orders.data(),
-                               tangential_vector.data());
-    return tangential_vector;
+
+    // Compute Jacobian
+    spline->SplinepyJacobian(para_coord.data(), jacobian.data());
+
+    // Compute Cross-Product
+    if (dim_ == 2) {
+      normal_vector[0] = -jacobian[1];
+      normal_vector[1] = jacobian[0];
+    } else if (dim_ == 3) {
+      normal_vector[0] = jacobian[2] * jacobian[5] - jacobian[4] * jacobian[3];
+      normal_vector[1] = jacobian[4] * jacobian[1] - jacobian[0] * jacobian[5];
+      normal_vector[2] = jacobian[0] * jacobian[3] - jacobian[2] * jacobian[1];
+    } else {
+      // This should never happen!
+      splinepy::utils::PrintAndThrowError(
+          "G1-based boundary computation is only supported for 2D and 3D "
+          "multipatches. If this is a feature you require, please consider "
+          "writing an issue on our github");
+    }
+    return normal_vector;
   };
 
   // Start Computations ------------------------------------------------ //
@@ -889,11 +914,11 @@ int AddBoundariesFromContinuity(const py::list& boundary_splines,
           continue;
         }
         // Get tangential vector of current patch
-        const std::vector<double> vec0 = tangential_vector(i, j);
+        const std::vector<double> vec0 = normal_vector(i, j);
 
         // Get corresponding tangential vector of neighbor patch
         const std::vector<double> vec1 =
-            tangential_vector(adjacent_element_id, adjacent_face_id);
+            normal_vector(adjacent_element_id, adjacent_face_id);
 
         // Check tolerance
         const bool is_g1 = areG1(vec0, vec1);
