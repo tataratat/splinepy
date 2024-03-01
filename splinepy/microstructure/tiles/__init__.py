@@ -7,7 +7,7 @@ from splinepy.microstructure.tiles import (
     armadillo,
     chi,
     cross_2d,
-    cross_3d,
+    cross_3d_linear,
     cube_void,
     double_lattice,
     ellips_v_oid,
@@ -22,6 +22,7 @@ from splinepy.microstructure.tiles.armadillo import Armadillo
 from splinepy.microstructure.tiles.chi import Chi
 from splinepy.microstructure.tiles.cross_2d import Cross2D
 from splinepy.microstructure.tiles.cross_3d import Cross3D
+from splinepy.microstructure.tiles.cross_3d_linear import Cross3DLinear
 from splinepy.microstructure.tiles.cube_void import CubeVoid
 from splinepy.microstructure.tiles.double_lattice import DoubleLattice
 from splinepy.microstructure.tiles.ellips_v_oid import EllipsVoid
@@ -38,8 +39,8 @@ __all__ = [
     "armadillo",
     "chi",
     "cross_2d",
-    "cross_3d",
     "cube_void",
+    "cross_3d_linear",
     "double_lattice",
     "ellips_v_oid",
     "hollow_cube",
@@ -52,6 +53,7 @@ __all__ = [
     "Chi",
     "Cross2D",
     "Cross3D",
+    "Cross3DLinear",
     "CubeVoid",
     "DoubleLattice",
     "EllipsVoid",
