@@ -7,22 +7,21 @@ import splinepy
 all_splinetypes = ("bspline_3p3d", "nurbs_3p3d", "bspline_2p2d", "nurbs_2p2d")
 
 
-def test_extraction(request):
+def test_extraction(np_rng):
     """
     test the extraction of beziers
     """
-    rng = request.getfixturevalue("np_rng")
     # Define some splines
     b = splinepy.BSpline(
         knot_vectors=[[0, 0, 0, 1, 2, 2, 3, 4, 4, 4]],
         degrees=[2],
-        control_points=rng.random((7, 2)),
+        control_points=np_rng.random((7, 2)),
     )
     n = splinepy.NURBS(
         knot_vectors=[[0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 4, 4]],
         degrees=[3],
-        control_points=rng.random((8, 2)),
-        weights=rng.random((8, 1)),
+        control_points=np_rng.random((8, 2)),
+        weights=np_rng.random((8, 1)),
     )
 
     # Extract Beziers
@@ -31,7 +30,7 @@ def test_extraction(request):
 
     # Loop over knot_spans and test at random points
     for offset in range(4):
-        queries = rng.random((20, 1))
+        queries = np_rng.random((20, 1))
         assert np.allclose(
             b.evaluate(queries + offset),
             b_beziers[offset].evaluate(queries),
