@@ -128,8 +128,7 @@ def test_composition_sensitivities_on_bsplines(request):
             bspline_dx.cps[cps, dim] -= dx
 
 
-def test_sum(request):
-    rng = request.getfixturevalue("np_rng")
+def test_sum(np_rng, request):
     # Create two splines
     bezier1 = request.getfixturevalue("bezier_2p2d")
     bezier2 = splinepy.Bezier(
@@ -146,7 +145,7 @@ def test_sum(request):
     # Create queries
     n_test_points = 10
     para_dim = 2
-    queries = rng.random((n_test_points, para_dim))
+    queries = np_rng.random((n_test_points, para_dim))
 
     assert np.allclose(
         bezier2.evaluate(queries) + bezier1.evaluate(queries),
@@ -154,8 +153,7 @@ def test_sum(request):
     )
 
 
-def test_multiply(request):
-    rng = request.getfixturevalue("np_rng")
+def test_multiply(np_rng, request):
     # Create two splines
     bezier1 = request.getfixturevalue("bezier_2p2d")
     bezier2 = splinepy.Bezier(
@@ -172,7 +170,7 @@ def test_multiply(request):
     # Create queries
     n_test_points = 10
     para_dim = 2
-    queries = rng.random((n_test_points, para_dim))
+    queries = np_rng.random((n_test_points, para_dim))
 
     assert np.allclose(
         bezier2.evaluate(queries) * bezier1.evaluate(queries),
@@ -180,21 +178,20 @@ def test_multiply(request):
     )
 
 
-def test_close_form_derivative(request):
-    rng = request.getfixturevalue("np_rng")
+def test_close_form_derivative(np_rng):
     # Construct a random spline
     degrees = [5, 5, 5]
     orders = [3, 2, 4]
     bezier = splinepy.Bezier(
         degrees=degrees,
-        control_points=rng.random((np.prod(np.array(degrees) + 1), 3)),
+        control_points=np_rng.random((np.prod(np.array(degrees) + 1), 3)),
     )
     close_form = bezier.derivative_spline(orders)
 
     # Create queries
     n_test_points = 100
     para_dim = bezier.para_dim
-    queries = rng.random((n_test_points, para_dim))
+    queries = np_rng.random((n_test_points, para_dim))
 
     assert np.allclose(
         bezier.derivative(queries, orders),
@@ -208,15 +205,15 @@ def test_close_form_derivative(request):
     n_cps = np.prod(np.array(degrees) + 1)
     rationals = splinepy.RationalBezier(
         degrees=degrees,
-        control_points=rng.random((n_cps, 3)),
-        weights=np.abs(rng.random(n_cps)),
+        control_points=np_rng.random((n_cps, 3)),
+        weights=np.abs(np_rng.random(n_cps)),
     )
     close_form = rationals.derivative_spline(orders)
 
     # Create queries
     n_test_points = 100
     para_dim = rationals.para_dim
-    queries = rng.random((n_test_points, para_dim))
+    queries = np_rng.random((n_test_points, para_dim))
 
     assert np.allclose(
         rationals.derivative(queries, orders),
