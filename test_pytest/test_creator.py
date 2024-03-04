@@ -4,11 +4,22 @@ import pytest
 import splinepy
 
 # frequently used fixtures
-all_splinetypes = (
+all_2p2d_splines = (
     "rational_bezier_2p2d",
     "bezier_2p2d",
     "bspline_2p2d",
     "nurbs_2p2d",
+)
+
+all_splines = (
+    "rational_bezier_2p2d",
+    "bezier_2p2d",
+    "bspline_2p2d",
+    "nurbs_2p2d",
+    "rational_bezier_3p3d",
+    "bezier_3p3d",
+    "bspline_3p3d",
+    "nurbs_3p3d",
 )
 
 
@@ -32,7 +43,7 @@ def test_create_embedded(request):
 
 
 # Test Extrusion routines
-@pytest.mark.parametrize("splinetype", all_splinetypes)
+@pytest.mark.parametrize("splinetype", all_2p2d_splines)
 def test_create_extrude(splinetype, np_rng, request):
     """
     Test extrusion for different input types and arguments
@@ -64,7 +75,7 @@ def test_create_extrude(splinetype, np_rng, request):
 
 
 # Test Revolution Routine
-@pytest.mark.parametrize("splinetype", all_splinetypes)
+@pytest.mark.parametrize("splinetype", all_2p2d_splines)
 def test_create_revolution(splinetype, np_rng, request):
     """
     Test revolution routines for different input types and arguments
@@ -148,3 +159,193 @@ def test_create_revolution(splinetype, np_rng, request):
             ).control_points[-2:, :],
             np.matmul(spline_g.control_points - r_center, R2.T) + r_center,
         ), f"{spline_g.whatami} failed revolution around center"
+
+
+@pytest.mark.parametrize("splinetype", all_splines)
+def test_create_parametric_view(splinetype, request):
+    """test parametric view"""
+
+    def check_parametric_view(spline, conform):
+        p_spl = spline.create.parametric_view(conform=conform)
+
+        # for both conform and pure view
+        # spl's pbounds and para's physbound are same
+        assert np.allclose(
+            p_spl.control_point_bounds, spline.parametric_bounds
+        )
+
+        if conform:
+            # same spline type
+            assert type(p_spl) == type(spline)
+
+            # same degrees
+            assert np.allclose(p_spl.ds, spline.ds)
+
+            # same knot_vectors
+            if spline.has_knot_vectors:
+                for p_kv, kv in zip(p_spl.kvs, spline.kvs):
+                    assert np.allclose(p_kv, kv)
+
+            # same weights
+            if spline.is_rational:
+                assert np.allclose(p_spl.ws, spline.ws)
+
+        else:
+            # degrees are one - subtracting 1 should make it all zero
+            assert not any(p_spl.ds - 1)
+
+            # same unique knots - implies same p_bounds
+            for p_ukv, ukv in zip(p_spl.unique_knots, spline.unique_knots):
+                assert np.allclose(p_ukv, ukv)
+
+    spl = request.getfixturevalue(splinetype)
+    check_parametric_view(spl, False)
+    check_parametric_view(spl, True)
+
+
+def test_determinant_spline(
+    np_rng,
+    bezier_2p2d,
+    bspline_2p2d,
+    bezier_3p3d,
+    rational_bezier_3p3d,
+    bspline_3p3d,
+    nurbs_3p3d,
+):
+    # Bezier splines
+    # arbitrary
+    bez_1 = splinepy.Bezier(
+        degrees=[2], control_points=[[0, 0], [1.0, 0.5], [1, 0]]
+    )
+    bez_1 = splinepy.helpme.create.extruded(bez_1, [0, 2])
+    bez_1 = splinepy.helpme.create.extruded(bez_1, [0, 0, 3])
+
+    # box
+    bez_2 = splinepy.helpme.create.box(3, 3, 3)
+
+    # BSplines
+    # C^0 continuous
+    bsp_c0 = splinepy.BSpline(
+        degrees=[1, 1],
+        knot_vectors=[
+            [0.0, 0.0, 1.0, 5.0, 5.0],
+            [0.0, 0.0, 1.0, 3.0, 3.0],
+        ],
+        control_points=[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [1.0, 0.5],
+            [1.5, 0.5],
+            [0.0, 1.0],
+            [0.5, 1.0],
+            [1.0, 1.0],
+        ],
+    )
+
+    # C^1 Continuous
+    bsp_c1 = splinepy.BSpline(
+        degrees=[3, 1],
+        knot_vectors=[
+            [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
+            [0.0, 0.0, 1.0, 1.0],
+        ],
+        control_points=[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [1.0, -1.0],
+            [2.0, -3.0],
+            [2.5, -3.0],
+            [3.0, -3],
+            [5.0, 5.0],
+            [6.0, 5.0],
+            [7.0, 5.0],
+            [8.0, 5.0],
+            [9.0, 5.0],
+            [10.0, 5.0],
+        ],
+    )
+    bsp_c1 = splinepy.helpme.create.extruded(bsp_c1, [0, 0, 3])
+
+    # CPTS Manipulation for almost tangled spline
+    bsp_c1.control_points[17] = [3, -3, 1.51]
+    bsp_c1.control_points[5] = [3, -3, 1.49]
+
+    bsp_c1_tang = bsp_c1.copy()
+
+    # CPTS Manipulation for slightly tangled spline
+    bsp_c1_tang.control_points[5] = [3, -3, 1.51]
+    bsp_c1_tang.control_points[17] = [3, -3, 1.49]
+
+    # After degree elevation det(J) < 0??
+    bsp_c1.elevate_degrees([0, 1, 1, 2])
+
+    # NURBS
+    nurbs_eq_w = splinepy.NURBS(
+        degrees=[3, 1],
+        knot_vectors=[
+            [0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 4.0, 4.0, 4.0, 4.0],
+            [0.0, 0.0, 1.0, 1.0],
+        ],
+        control_points=[
+            [0.0, 0.0],
+            [0.5, 0.0],
+            [1.0, -1.0],
+            [2.0, -3.0],
+            [2.5, -3.0],
+            [3.0, -3],
+            [5.0, 5.0],
+            [6.0, 5.0],
+            [7.0, 5.0],
+            [8.0, 5.0],
+            [9.0, 5.0],
+            [10.0, 5.0],
+        ],
+        weights=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    )
+
+    nurbs_eq_w = splinepy.helpme.create.extruded(nurbs_eq_w, [0, 0, 3])
+
+    # CPTS Manipulation for almost tangled spline
+    nurbs_eq_w.control_points[5] = [3, -3, 1.49]
+    nurbs_eq_w.control_points[17] = [3, -3, 1.51]
+
+    nurbs_eq_w_tang = nurbs_eq_w.copy()
+    # CPTS Manipulation for slightly tangled spline
+    nurbs_eq_w_tang.control_points[5] = [3, -3, 1.51]
+    nurbs_eq_w_tang.control_points[17] = [3, -3, 1.49]
+
+    # After degree elevation det(J) < 0??
+    nurbs_eq_w.elevate_degrees([0, 0, 1, 2])
+
+    # Splines which are not tangled
+
+    for sp_i in (
+        bez_2,
+        bsp_c0,
+        bsp_c1,
+        nurbs_eq_w,
+        bezier_2p2d,
+        bspline_2p2d,
+        bezier_3p3d,
+        rational_bezier_3p3d,
+        bspline_3p3d,
+        nurbs_3p3d,
+    ):
+        det_spl = splinepy.helpme.create.determinant_spline(sp_i)
+        rnd_queries = np_rng.random((10, sp_i.dim))
+
+        assert np.allclose(
+            det_spl.evaluate(queries=rnd_queries).ravel(),
+            np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+        )
+
+    # Splines which are tangled or singular
+    for sp_i in (bez_1, bsp_c1_tang, nurbs_eq_w_tang):
+        det_spl = splinepy.helpme.create.determinant_spline(sp_i)
+        rnd_queries = np_rng.random((10, sp_i.dim))
+        assert np.allclose(
+            det_spl.evaluate(queries=rnd_queries).ravel(),
+            np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
+        )
