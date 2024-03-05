@@ -120,13 +120,13 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
           inter-patch connectivitiy and boundaries
         """
         # empty list as input will compute interfaces based on input
-        return super().interfaces([])
+        return super().get_interfaces(False)
 
     @interfaces.setter
     def interfaces(self, con):
         """super() checks validity of input"""
         # Assignment
-        super().interfaces(con, False)
+        super().set_interfaces(con)
 
     @property
     def boundaries(self):
@@ -304,7 +304,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         self.tolerance = tolerance
 
         # Enforces computation only if recompute or non-available
-        interfaces = super().interfaces([], recompute)
+        interfaces = super().get_interfaces(recompute)
 
         self._logd("Successfully provided new interfaces using uff algorithm")
 
