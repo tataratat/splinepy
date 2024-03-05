@@ -12,9 +12,19 @@ all_2p2d_splines = (
 )
 
 
+def setUp(request):
+    bspline = request.getfixturevalue("bspline_2p2d")
+    nurbs = request.getfixturevalue("nurbs_2p2d")
+    rational = request.getfixturevalue("rational_bezier_2p2d")
+    bezier = request.getfixturevalue("bezier_2p2d")
+    return bspline, nurbs, rational, bezier
+
+
 def test_basis_and_support(request):
     """Test the correct calculation of the basis functions.
     (.basis_and_support())"""
+
+    bspline, nurbs, _, _ = setUp(request)
 
     # reference solutions
     bspline_ref_basis_functions = np.array(
@@ -121,8 +131,6 @@ def test_basis_and_support(request):
         ]
     )
 
-    bspline = request.getfixturevalue("bspline_2p2d")
-    nurbs = request.getfixturevalue("nurbs_2p2d")
     queries = request.getfixturevalue("get_queries_2D")
 
     # test basis functions
@@ -233,8 +241,7 @@ def test_basis_function_derivatives(np_rng, request):
     q2D = np_rng.random((10, 2))
 
     # Rational Bezier and NURBS are equivalent but use different backends
-    rational = request.getfixturevalue("rational_bezier_2p2d")
-    nurbs = request.getfixturevalue("nurbs_2p2d")
+    _, nurbs, rational, _ = setUp(request)
 
     # increase orders for derivatives
     for _ in range(2):
@@ -296,4 +303,89 @@ def test_basis_function_derivatives(np_rng, request):
     assert np.allclose(
         bezier.basis_derivative_and_support(q2D, [3, 1])[0],
         bspline_c.basis_derivative_and_support(q2D, [3, 1])[0],
+    )
+
+
+def test_partition_of_unity(request, np_rng):
+    """Test the partition of unity of the calculated basis functions."""
+
+    def basis_functions_sum(basis_functions):
+        return basis_functions.sum(axis=1)
+
+    bspline, nurbs, _, _ = setUp(request)
+
+    # use random query points
+    q2D = np_rng.random((10, 2))
+
+    u_bspline = basis_functions_sum(bspline.basis_and_support(q2D)[0])
+    assert np.allclose(u_bspline, np.ones(np.shape(u_bspline)))
+
+    u_nurbs = basis_functions_sum(nurbs.basis_and_support(q2D)[0])
+    assert np.allclose(u_nurbs, np.ones(np.shape(u_nurbs)))
+
+
+def test_evaluate(request):
+    """Test the correct spline evaluation in the physical space.
+    (.evaluate())"""
+
+    bspline, nurbs, rational, bezier = setUp(request)
+
+    # reference solutions
+    bspline_ref_evaluate = np.array(
+        [
+            [-0.019796, 0.04049403],
+            [-0.9996, 0.069675],
+            [2.256, 1.9691],
+            [1.528, 4.0766],
+            [-1.0264, 2.873488],
+        ]
+    )
+    nurbs_ref_evaluate = np.array(
+        [
+            [-1.00989841, 0.01432479],
+            [-1.49984913, 0.02127445],
+            [-0.15941144, 1.0883878],
+            [-0.49948029, 1.62496752],
+            [-1.61951381, 1.15640608],
+        ]
+    )
+    bezier_ref_evaluate = np.array(
+        [
+            [-1.009899, 0.020099],
+            [-1.49985, 0.02985],
+            [-0.209, 1.089],
+            [-0.612, 1.632],
+            [-1.6716, 1.2736],
+        ]
+    )
+    rational_ref_evaluate = np.array(
+        [
+            [-1.00989841, 0.01432479],
+            [-1.49984913, 0.02127445],
+            [-0.15941144, 1.0883878],
+            [-0.49948029, 1.62496752],
+            [-1.61951381, 1.15640608],
+        ]
+    )
+
+    queries = request.getfixturevalue("get_queries_2D")
+    # test evaluation
+    assert np.allclose(
+        bspline.evaluate(queries),
+        bspline_ref_evaluate,
+    )
+
+    assert np.allclose(
+        nurbs.evaluate(queries),
+        nurbs_ref_evaluate,
+    )
+
+    assert np.allclose(
+        bezier.evaluate(queries),
+        bezier_ref_evaluate,
+    )
+
+    assert np.allclose(
+        rational.evaluate(queries),
+        rational_ref_evaluate,
     )
