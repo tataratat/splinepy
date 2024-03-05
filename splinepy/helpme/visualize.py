@@ -78,6 +78,12 @@ _vedo_spline_common_options = (
         "Sampling resolution for spline.",
         (int, list, tuple, _np.ndarray),
     ),
+    _options.Option(
+        "vedo",
+        "lw",
+        "Line width 1D spline." "Applicable to para_dim > 1.",
+        (float,),
+    ),
 )
 
 
@@ -238,7 +244,7 @@ def _sample_spline(spline, res):
     para_dim = spline.para_dim
     if para_dim == 1:
         sp = spline.extract.edges(res)
-        sp.show_options["lw"] = 8
+        sp.show_options["lw"] = spline.show_options.get("lw", 8)
     elif para_dim > 1:
         # we don't return water tight meshes here
         # see (gustaf #120)
