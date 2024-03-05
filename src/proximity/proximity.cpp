@@ -206,7 +206,6 @@ void Proximity::VerboseQuery(
 
   // allocate index arrays
   IndexArray_ clipped(para_dim);
-  IndexArray_ previous_clipped(para_dim);
 
   // search_bounds is parametric bounds here
   spline_.SplinepyParametricBounds(search_bounds.data());

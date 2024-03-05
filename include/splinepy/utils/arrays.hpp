@@ -548,6 +548,12 @@ public:
     assert(len == b.size());
     assert(len == x.size());
 
+#ifndef NDEBUG
+    // Create a copy of the linear system for debugging
+    const auto array_copy = array_;
+    const auto b_copy = b;
+#endif
+
     // partial pivoting and forward reduction
     // since we reorder indices only, we append *_r to reordered ids
     for (IndexType i{0}; i < len; i++) {
@@ -608,7 +614,6 @@ public:
       }
       /* END forward reduction */
     }
-
     // back substitution
     // Loop backwards
     for (SignedIndexType i{len - 1}; i > static_cast<SignedIndexType>(-1);
@@ -621,10 +626,28 @@ public:
       DataType* a_i = &array_(i_r, 0);
       DataType sum{};
       for (IndexType j{i + 1}; j < len; ++j) {
-        sum += a_i[j] * x[row_order_[j]];
+        sum += a_i[j] * x[j];
       }
-      x[i_r] = (b[i_r] - sum) / a_i[i];
+      x[i] = (b[i_r] - sum) / a_i[i];
     }
+
+#ifndef NDEBUG
+    double norm{};
+    for (IndexType i{}; i < len; ++i) {
+      double row_val{};
+      for (IndexType j{}; j < len; ++j) {
+        row_val += array_copy(i, j) * x[j];
+      }
+      row_val -= b_copy[i];
+      norm += row_val * row_val;
+    }
+
+    if (std::sqrt(norm) > 1e-4) {
+      splinepy::utils::PrintAndThrowError(
+          "Solving linear system failed, error is : ",
+          norm);
+    }
+#endif
   }
 };
 
