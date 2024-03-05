@@ -197,9 +197,9 @@ def test_jacobian(np_rng):
 
     # Assuming that the derivative is correct
     test_spline = splinepy.Bezier(
-        degrees=[3, 3], control_points=np_rng.rand(16, 3)
+        degrees=[3, 3], control_points=np_rng.random((16, 3))
     )
-    query = np_rng.rand(1, 2)
+    query = np_rng.random((1, 2))
     jacs = test_spline.jacobian(query)[0]
     expected_jacs = np.vstack(
         (
@@ -212,9 +212,9 @@ def test_jacobian(np_rng):
 
     # Test for scalar valued splines
     test_spline_scalar = splinepy.Bezier(
-        degrees=[3, 3], control_points=np_rng.rand(16, 1)
+        degrees=[3, 3], control_points=np_rng.random((16, 1))
     )
-    query = np_rng.rand(1, 2)
+    query = np_rng.random((1, 2))
     jacs = test_spline_scalar.jacobian(query)[0]
     expected_jacs = np.vstack(
         (
@@ -230,7 +230,7 @@ def test_basis_function_derivatives(np_rng, request):
     """Test the correct evaluation of basis function derivatives"""
     # Cross-testing different libraries
     # use random query points
-    q2D = np_rng.rand(10, 2)
+    q2D = np_rng.random((10, 2))
 
     # Rational Bezier and NURBS are equivalent but use different backends
     rational = request.getfixturevalue("rational_bezier_2p2d")
@@ -265,7 +265,7 @@ def test_basis_function_derivatives(np_rng, request):
     # For polynomial splines
     bezier = request.getfixturevalue("bezier_2p2d")
     bspline_c = splinepy.BSpline(
-        bezier.todict(),
+        **bezier.todict(),
         knot_vectors=[
             [0] * (bezier.degrees[i] + 1) + [1] * (bezier.degrees[i] + 1)
             for i in range(bezier.para_dim)
