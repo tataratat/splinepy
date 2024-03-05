@@ -1186,20 +1186,10 @@ py::array_t<double> PyMultipatch::SubPatchCenters() {
   return sub_patch_centers_;
 }
 
-py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces,
-                                          const bool recompute) {
+py::array_t<int> PyMultipatch::GetInterfaces(const bool recompute) {
   // check if we should set or get
   // set
-  if (interfaces.size() > 0) {
-    // size check
-    splinepy::py::CheckPyArrayShape(
-        interfaces,
-        {static_cast<int>(CorePatches().size()),
-         static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
-        true);
-
-    interfaces_ = interfaces;
-  } else if (interfaces_.size() == 0 || recompute) {
+  if (interfaces_.size() == 0 || recompute) {
     // get, but need to compute since saved member is empty
     interfaces_ =
         InterfacesFromBoundaryCenters(SubPatchCenters(), tolerance_, ParaDim());
@@ -1208,6 +1198,23 @@ py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces,
   // regardless of set/get, it will always return the saved member of
   // current state
   return interfaces_;
+}
+
+void PyMultipatch::SetInterfaces(const py::array_t<int>& interfaces) {
+  // check if we should set or get
+  // set
+  if (interfaces.size() == 0) {
+    splinepy::utils::PrintAndThrowError("No interface information provided");
+  }
+
+  // size check
+  splinepy::py::CheckPyArrayShape(
+      interfaces,
+      {static_cast<int>(CorePatches().size()),
+       static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
+      true);
+
+  interfaces_ = interfaces;
 }
 
 /// @brief Gets IDs of boundary patch
@@ -1219,7 +1226,7 @@ py::array_t<int> PyMultipatch::BoundaryPatchIds() {
 
   // prepare only ingredient - interfaces
   // negative entries in interfaces mean boundary patch
-  auto interfaces = Interfaces({});
+  auto interfaces = GetInterfaces(true);
   const int n_interfaces = interfaces.size();
   const int* interfaces_ptr = static_cast<int*>(interfaces.request().ptr);
 
@@ -1623,10 +1630,12 @@ void init_multipatch(py::module_& m) {
                     &PyMultipatch::SetPatchesDefault)
       .def("sub_multipatch", &PyMultipatch::PySubMultipatch)
       .def("sub_patch_centers", &PyMultipatch::SubPatchCenters)
-      .def("interfaces",
-           &PyMultipatch::Interfaces,
-           py::arg("new_interfaces"),
+      .def("get_interfaces",
+           &PyMultipatch::GetInterfaces,
            py::arg("recompute") = false)
+      .def("set_interfaces",
+           &PyMultipatch::SetInterfaces,
+           py::arg("interfaces"))
       .def("boundary_patch_ids", &PyMultipatch::BoundaryPatchIds)
       .def("boundary_multipatch", &PyMultipatch::PyBoundaryMultipatch)
       .def("evaluate",

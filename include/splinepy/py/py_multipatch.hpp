@@ -367,12 +367,13 @@ public:
   /// @return
   py::array_t<double> SubPatchCenters();
 
-  /// @brief setter and getter for interface info. runs array shape check for
-  /// setter
+  /// @brief setter for interface info. runs array shape check
   /// @param interfaces
+  void SetInterfaces(const py::array_t<int>& interfaces);
+
+  /// @brief getter for interface info. recomputes if unavailable
   /// @param recompute compute even if already available
-  py::array_t<int> Interfaces(const py::array_t<int>& interfaces,
-                              const bool recompute = false);
+  py::array_t<int> GetInterfaces(const bool recompute = false);
 
   /// @brief Gets IDs of boundary patch
   py::array_t<int> BoundaryPatchIds();
