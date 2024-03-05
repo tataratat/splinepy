@@ -1186,7 +1186,8 @@ py::array_t<double> PyMultipatch::SubPatchCenters() {
   return sub_patch_centers_;
 }
 
-py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces) {
+py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces,
+                                          const bool recompute) {
   // check if we should set or get
   // set
   if (interfaces.size() > 0) {
@@ -1198,7 +1199,7 @@ py::array_t<int> PyMultipatch::Interfaces(const py::array_t<int>& interfaces) {
         true);
 
     interfaces_ = interfaces;
-  } else if (interfaces_.size() == 0) {
+  } else if (interfaces_.size() == 0 || recompute) {
     // get, but need to compute since saved member is empty
     interfaces_ =
         InterfacesFromBoundaryCenters(SubPatchCenters(), tolerance_, ParaDim());
@@ -1622,7 +1623,10 @@ void init_multipatch(py::module_& m) {
                     &PyMultipatch::SetPatchesDefault)
       .def("sub_multipatch", &PyMultipatch::PySubMultipatch)
       .def("sub_patch_centers", &PyMultipatch::SubPatchCenters)
-      .def("interfaces", &PyMultipatch::Interfaces)
+      .def("interfaces",
+           &PyMultipatch::Interfaces,
+           py::arg("new_interfaces"),
+           py::arg("recompute") = false)
       .def("boundary_patch_ids", &PyMultipatch::BoundaryPatchIds)
       .def("boundary_multipatch", &PyMultipatch::PyBoundaryMultipatch)
       .def("evaluate",

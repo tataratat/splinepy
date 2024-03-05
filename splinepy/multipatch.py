@@ -126,7 +126,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
     def interfaces(self, con):
         """super() checks validity of input"""
         # Assignment
-        super().interfaces(con)
+        super().interfaces(con, False)
 
     @property
     def boundaries(self):
@@ -277,7 +277,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         """
         return super().sub_patch_centers()
 
-    def determine_interfaces(self, tolerance=None):
+    def determine_interfaces(self, tolerance=None, recompute=False):
         """
         Retrieve interfaces info
 
@@ -287,6 +287,8 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         ----------
         tolerance : double
           normed distance between two neighboring points to be considered equal
+        recompute : bool (False)
+          Enforce recomputation of interfaces
 
         Returns
         -------
@@ -300,7 +302,9 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
 
         # set given tolerance and compute interfaces
         self.tolerance = tolerance
-        interfaces = self.interfaces
+
+        # Enforces computation only if recompute or non-available
+        interfaces = super().interfaces([], recompute)
 
         self._logd("Successfully provided new interfaces using uff algorithm")
 

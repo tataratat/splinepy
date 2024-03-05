@@ -370,7 +370,9 @@ public:
   /// @brief setter and getter for interface info. runs array shape check for
   /// setter
   /// @param interfaces
-  py::array_t<int> Interfaces(const py::array_t<int>& interfaces);
+  /// @param recompute compute even if already available
+  py::array_t<int> Interfaces(const py::array_t<int>& interfaces,
+                              const bool recompute = false);
 
   /// @brief Gets IDs of boundary patch
   py::array_t<int> BoundaryPatchIds();
