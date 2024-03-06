@@ -23,20 +23,9 @@ all_splines = (
 )
 
 
-def setUp(request):
-    bspline = request.getfixturevalue("bspline_2p2d")
-    nurbs = request.getfixturevalue("nurbs_2p2d")
-    rational = request.getfixturevalue("rational_bezier_2p2d")
-    bezier = request.getfixturevalue("bezier_2p2d")
-    return bspline, nurbs, rational, bezier
-
-
-def test_basis_and_support(request, bspline_2p2d, nurbs_2p2d):
+def test_basis_and_support(bspline_2p2d, nurbs_2p2d, get_queries_2D):
     """Test the correct calculation of the basis functions.
     (.basis_and_support())"""
-
-    nurbs = nurbs_2p2d
-    # bspline, nurbs, _, _ = setUp(request)
 
     # reference solutions
     bspline_ref_basis_functions = np.array(
@@ -143,16 +132,14 @@ def test_basis_and_support(request, bspline_2p2d, nurbs_2p2d):
         ]
     )
 
-    queries = request.getfixturevalue("get_queries_2D")
-
     # test basis functions
     assert np.allclose(
-        bspline_2p2d.basis_and_support(queries)[0],
+        bspline_2p2d.basis_and_support(get_queries_2D)[0],
         bspline_ref_basis_functions,
     )
 
     assert np.allclose(
-        nurbs.basis_and_support(queries)[0],
+        nurbs_2p2d.basis_and_support(get_queries_2D)[0],
         nurbs_ref_basis_functions,
     )
 
@@ -246,101 +233,99 @@ def test_jacobian(np_rng):
     assert np.allclose(jacs, expected_jacs)
 
 
-def test_basis_function_derivatives(np_rng, request):
+def test_basis_function_derivatives(
+    np_rng, bezier_2p2d, rational_bezier_2p2d, nurbs_2p2d
+):
     """Test the correct evaluation of basis function derivatives"""
     # Cross-testing different libraries
     # use random query points
     q2D = np_rng.random((10, 2))
 
     # Rational Bezier and NURBS are equivalent but use different backends
-    _, nurbs, rational, _ = setUp(request)
-
     # increase orders for derivatives
     for _ in range(2):
-        rational.elevate_degrees([0, 1])
-        nurbs.elevate_degrees([0, 1])
+        rational_bezier_2p2d.elevate_degrees([0, 1])
+        nurbs_2p2d.elevate_degrees([0, 1])
 
     # Test different derivatives - all have global supports
     assert np.allclose(
-        rational.basis_derivative_and_support(q2D, [1, 0])[0],
-        nurbs.basis_derivative_and_support(q2D, [1, 0])[0],
+        rational_bezier_2p2d.basis_derivative_and_support(q2D, [1, 0])[0],
+        nurbs_2p2d.basis_derivative_and_support(q2D, [1, 0])[0],
     )
 
     assert np.allclose(
-        rational.basis_derivative_and_support(q2D, [1, 0])[1],
-        nurbs.basis_derivative_and_support(q2D, [1, 0])[1],
+        rational_bezier_2p2d.basis_derivative_and_support(q2D, [1, 0])[1],
+        nurbs_2p2d.basis_derivative_and_support(q2D, [1, 0])[1],
     )
 
     assert np.allclose(
-        rational.basis_derivative_and_support(q2D, [3, 2])[0],
-        nurbs.basis_derivative_and_support(q2D, [3, 2])[0],
+        rational_bezier_2p2d.basis_derivative_and_support(q2D, [3, 2])[0],
+        nurbs_2p2d.basis_derivative_and_support(q2D, [3, 2])[0],
     )
 
     assert np.allclose(
-        rational.basis_derivative_and_support(q2D, [1, 3])[0],
-        nurbs.basis_derivative_and_support(q2D, [1, 3])[0],
+        rational_bezier_2p2d.basis_derivative_and_support(q2D, [1, 3])[0],
+        nurbs_2p2d.basis_derivative_and_support(q2D, [1, 3])[0],
     )
 
     # For polynomial splines
-    bezier = request.getfixturevalue("bezier_2p2d")
     bspline_c = splinepy.BSpline(
-        **bezier.todict(),
+        **bezier_2p2d.todict(),
         knot_vectors=[
-            [0] * (bezier.degrees[i] + 1) + [1] * (bezier.degrees[i] + 1)
-            for i in range(bezier.para_dim)
+            [0] * (bezier_2p2d.degrees[i] + 1)
+            + [1] * (bezier_2p2d.degrees[i] + 1)
+            for i in range(bezier_2p2d.para_dim)
         ],
     )
 
     # increase orders for derivatives
     for _i in range(2):
-        bezier.elevate_degrees([0, 1])
+        bezier_2p2d.elevate_degrees([0, 1])
         bspline_c.elevate_degrees([0, 1])
 
     # Test different derivatives - all have global supports
     assert np.allclose(
-        bezier.basis_derivative_and_support(q2D, [0, 1])[0],
+        bezier_2p2d.basis_derivative_and_support(q2D, [0, 1])[0],
         bspline_c.basis_derivative_and_support(q2D, [0, 1])[0],
     )
 
     assert np.allclose(
-        bezier.basis_derivative_and_support(q2D, [0, 1])[1],
+        bezier_2p2d.basis_derivative_and_support(q2D, [0, 1])[1],
         bspline_c.basis_derivative_and_support(q2D, [0, 1])[1],
     )
 
     assert np.allclose(
-        bezier.basis_derivative_and_support(q2D, [2, 3])[0],
+        bezier_2p2d.basis_derivative_and_support(q2D, [2, 3])[0],
         bspline_c.basis_derivative_and_support(q2D, [2, 3])[0],
     )
 
     assert np.allclose(
-        bezier.basis_derivative_and_support(q2D, [3, 1])[0],
+        bezier_2p2d.basis_derivative_and_support(q2D, [3, 1])[0],
         bspline_c.basis_derivative_and_support(q2D, [3, 1])[0],
     )
 
 
-def test_partition_of_unity(request, np_rng):
+def test_partition_of_unity(np_rng, bspline_2p2d, nurbs_2p2d):
     """Test the partition of unity of the calculated basis functions."""
 
     def basis_functions_sum(basis_functions):
         return basis_functions.sum(axis=1)
 
-    bspline, nurbs, _, _ = setUp(request)
-
     # use random query points
     q2D = np_rng.random((10, 2))
 
-    u_bspline = basis_functions_sum(bspline.basis_and_support(q2D)[0])
+    u_bspline = basis_functions_sum(bspline_2p2d.basis_and_support(q2D)[0])
     assert np.allclose(u_bspline, np.ones(np.shape(u_bspline)))
 
-    u_nurbs = basis_functions_sum(nurbs.basis_and_support(q2D)[0])
+    u_nurbs = basis_functions_sum(nurbs_2p2d.basis_and_support(q2D)[0])
     assert np.allclose(u_nurbs, np.ones(np.shape(u_nurbs)))
 
 
-def test_evaluate(request):
+def test_evaluate(
+    bspline_2p2d, bezier_2p2d, nurbs_2p2d, rational_bezier_2p2d, get_queries_2D
+):
     """Test the correct spline evaluation in the physical space.
     (.evaluate())"""
-
-    bspline, nurbs, rational, bezier = setUp(request)
 
     # reference solutions
     bspline_ref_evaluate = np.array(
@@ -380,25 +365,24 @@ def test_evaluate(request):
         ]
     )
 
-    queries = request.getfixturevalue("get_queries_2D")
     # test evaluation
     assert np.allclose(
-        bspline.evaluate(queries),
+        bspline_2p2d.evaluate(get_queries_2D),
         bspline_ref_evaluate,
     )
 
     assert np.allclose(
-        nurbs.evaluate(queries),
+        nurbs_2p2d.evaluate(get_queries_2D),
         nurbs_ref_evaluate,
     )
 
     assert np.allclose(
-        bezier.evaluate(queries),
+        bezier_2p2d.evaluate(get_queries_2D),
         bezier_ref_evaluate,
     )
 
     assert np.allclose(
-        rational.evaluate(queries),
+        rational_bezier_2p2d.evaluate(get_queries_2D),
         rational_ref_evaluate,
     )
 
