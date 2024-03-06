@@ -321,69 +321,67 @@ def test_partition_of_unity(np_rng, bspline_2p2d, nurbs_2p2d):
     assert np.allclose(u_nurbs, np.ones(np.shape(u_nurbs)))
 
 
-def test_evaluate(
-    bspline_2p2d, bezier_2p2d, nurbs_2p2d, rational_bezier_2p2d, get_queries_2D
-):
+@pytest.mark.parametrize(
+    "spline, reference",
+    [
+        (
+            "bspline_2p2d",
+            np.array(
+                [
+                    [-0.019796, 0.04049403],
+                    [-0.9996, 0.069675],
+                    [2.256, 1.9691],
+                    [1.528, 4.0766],
+                    [-1.0264, 2.873488],
+                ]
+            ),
+        ),
+        (
+            "nurbs_2p2d",
+            np.array(
+                [
+                    [-1.00989841, 0.01432479],
+                    [-1.49984913, 0.02127445],
+                    [-0.15941144, 1.0883878],
+                    [-0.49948029, 1.62496752],
+                    [-1.61951381, 1.15640608],
+                ]
+            ),
+        ),
+        (
+            "bezier_2p2d",
+            np.array(
+                [
+                    [-1.009899, 0.020099],
+                    [-1.49985, 0.02985],
+                    [-0.209, 1.089],
+                    [-0.612, 1.632],
+                    [-1.6716, 1.2736],
+                ]
+            ),
+        ),
+        (
+            "rational_bezier_2p2d",
+            np.array(
+                [
+                    [-1.00989841, 0.01432479],
+                    [-1.49984913, 0.02127445],
+                    [-0.15941144, 1.0883878],
+                    [-0.49948029, 1.62496752],
+                    [-1.61951381, 1.15640608],
+                ]
+            ),
+        ),
+    ],
+)
+def test_evaluate(spline, reference, get_queries_2D, request):
     """Test the correct spline evaluation in the physical space.
     (.evaluate())"""
-
-    # reference solutions
-    bspline_ref_evaluate = np.array(
-        [
-            [-0.019796, 0.04049403],
-            [-0.9996, 0.069675],
-            [2.256, 1.9691],
-            [1.528, 4.0766],
-            [-1.0264, 2.873488],
-        ]
-    )
-    nurbs_ref_evaluate = np.array(
-        [
-            [-1.00989841, 0.01432479],
-            [-1.49984913, 0.02127445],
-            [-0.15941144, 1.0883878],
-            [-0.49948029, 1.62496752],
-            [-1.61951381, 1.15640608],
-        ]
-    )
-    bezier_ref_evaluate = np.array(
-        [
-            [-1.009899, 0.020099],
-            [-1.49985, 0.02985],
-            [-0.209, 1.089],
-            [-0.612, 1.632],
-            [-1.6716, 1.2736],
-        ]
-    )
-    rational_ref_evaluate = np.array(
-        [
-            [-1.00989841, 0.01432479],
-            [-1.49984913, 0.02127445],
-            [-0.15941144, 1.0883878],
-            [-0.49948029, 1.62496752],
-            [-1.61951381, 1.15640608],
-        ]
-    )
-
+    spline = request.getfixturevalue(spline)
     # test evaluation
     assert np.allclose(
-        bspline_2p2d.evaluate(get_queries_2D),
-        bspline_ref_evaluate,
-    )
-
-    assert np.allclose(
-        nurbs_2p2d.evaluate(get_queries_2D),
-        nurbs_ref_evaluate,
-    )
-
-    assert np.allclose(
-        bezier_2p2d.evaluate(get_queries_2D),
-        bezier_ref_evaluate,
-    )
-
-    assert np.allclose(
-        rational_bezier_2p2d.evaluate(get_queries_2D),
-        rational_ref_evaluate,
+        spline.evaluate(get_queries_2D),
+        reference,
     )
 
 
