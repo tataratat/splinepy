@@ -2,7 +2,6 @@ import numpy as _np
 
 from splinepy.bezier import Bezier as _Bezier
 from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
-from splinepy.utils.log import warning as _warning
 
 
 class DoubleLattice(_TileBase):
@@ -48,7 +47,6 @@ class DoubleLattice(_TileBase):
         -------
         microtile_list : list(splines)
         """
-        index_second_value = 1
         if not isinstance(contact_length, float):
             raise ValueError("Invalid Type")
         if not ((contact_length > 0.0) and (contact_length < 1.0)):
@@ -57,7 +55,7 @@ class DoubleLattice(_TileBase):
         # set to default if nothing is given
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = _np.ones((1, self._n_info_per_eval_point)) * 0.1
+            parameters = _np.ones((1, 2)) * 0.1
         if not (
             _np.all(parameters > 0)
             and _np.all(parameters < 0.5 / (1 + _np.sqrt(2)))
@@ -65,11 +63,11 @@ class DoubleLattice(_TileBase):
             raise ValueError(
                 "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
             )
-        # Maintain backwards compatibility
+        # raise an error if only one parameter is given,
+        # which was the case in earlier versions
         if parameters.shape[1] == 1:
-            _warning("DoubleLattice now expects 2 values")
-            index_second_value = 0
-            self._n_info_per_eval_point = 1
+            raise ValueError("DoubleLattice now expects 2 values")
+
         self.check_params(parameters)
 
         # Check if user requests derivative splines
@@ -86,7 +84,7 @@ class DoubleLattice(_TileBase):
             if i_derivative == 0:
                 cl = contact_length
                 thick_vert_hor = parameters[0, 0]  # parameters.shape == [1]
-                thick_diagonal = parameters[0, index_second_value]
+                thick_diagonal = parameters[0, 1]
                 v_one_half = 0.5
                 v_one = 1.0
                 v_zero = 0.0
@@ -96,7 +94,7 @@ class DoubleLattice(_TileBase):
                     0, 0, i_derivative - 1
                 ]
                 thick_diagonal = parameter_sensitivities[
-                    0, index_second_value, i_derivative - 1
+                    0, 1, i_derivative - 1
                 ]
                 v_one_half = 0.0
                 v_one = 0.0
