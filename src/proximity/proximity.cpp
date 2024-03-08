@@ -3,6 +3,7 @@
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
 
+#include <iomanip>
 namespace splinepy::proximity {
 
 void Proximity::PlantNewKdTree(const int* resolutions, const int n_thread) {
@@ -108,7 +109,7 @@ void Proximity::FillSplineGradientAndRhs(const RealArray_& guess,
                                gradient_row_view.data());
 
     // fill rhs_i and apply minus here already!
-    rhs[i] = -difference.InnerProduct(gradient_row_view);
+    rhs[i] = -2 * difference.InnerProduct(gradient_row_view);
 
     // reset query to zero
     derivative_query[i] = 0;
@@ -145,7 +146,8 @@ void Proximity::FillLhs(const RealArray_& guess,
                                derivative.data());
 
     // fill lhs_ij
-    lhs(i, j) = difference.InnerProduct(derivative) + spline_gradient_AAt(i, j);
+    lhs(i, j) =
+        2 * (difference.InnerProduct(derivative) + spline_gradient_AAt(i, j));
 
     // reset derivative query
     --derivative_query[i];
@@ -174,16 +176,16 @@ void Proximity::FillLhsLM(const RealArray_& guess,
 
   for (int i{}; i < para_dim; ++i) {
     for (int j{i + 1}; j < para_dim; ++j) {
-      // upper triangle without diagonal
-      lhs(i, j) = spline_gradient_AAt(i, j);
+      // upper triangle without diagonal ( two is to match RHS from Newton)
+      lhs(i, j) = 2 * spline_gradient_AAt(i, j);
       // copy to the lower
       lhs(j, i) = lhs(i, j);
     }
     // diagonal
     if (modified_marquart) {
-      lhs(i, i) = spline_gradient_AAt(i, i) * (1 + lambda);
+      lhs(i, i) = 2 * spline_gradient_AAt(i, i) * (1 + lambda);
     } else {
-      lhs(i, i) = spline_gradient_AAt(i, i) + lambda;
+      lhs(i, i) = 2 * (spline_gradient_AAt(i, i) + lambda);
     }
   }
 }
@@ -319,7 +321,7 @@ void Proximity::VerboseQuery(
     // Calculate RHS before first iteration (remains unchanged by update)
     FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
 
-    for (int i{}; i < max_iter; ++i) {
+    for (int i_iteration{}; i_iteration < max_iter; ++i_iteration) {
       // norm and distance check for convergence
       if (convergence_norm < norm_goal || distance < tolerance) {
         std::cout << "SUCCESS" << std::endl;
@@ -346,7 +348,7 @@ void Proximity::VerboseQuery(
       next_guess.Add(delta_guess);
       next_guess.Clip(lower_bound, upper_bound, clipped);
 
-      // Update delte to clipped delta
+      // Update delete to clipped delta
       delta_guess = next_guess;
       delta_guess.Subtract(current_guess);
 
@@ -386,33 +388,40 @@ void Proximity::VerboseQuery(
 
       const double my_rho = std::max(rho, rho_alt);
 
-      // // Debuging output
-      // std::cout << "Rho : " << rho
-      //           << "\ndistance_squared : " << distance_squared
-      //           << "\nmetric_norm : " << metric_norm
-      //           << "\nformer_distance_squared : " << former_squared_distance
-      //           << "\n|delta_guess| : " << delta_guess.NormL2Squared()
-      //           << std::endl;
+      // // Debugging output
+      std::cout << std::setw(15) << my_rho << " " << std::setw(15)
+                << distance_squared << " " << std::setw(15) << metric_norm
+                << std::setw(15) << former_squared_distance << " "
+                << std::setw(15) << delta_guess.NormL2Squared() << " "
+                << std::setw(15) << lambda << "  " << std::flush;
 
       // If the metric is smaller than the lower bound, the update is
       // rejected and the penelization is increased
-      if (my_rho < lower_bound_LM) {
+      if ((my_rho < lower_bound_LM)
+          // This part is not part of any notes, but it works better somehow.
+          // KKs notes say nowhere that lambda should remain unchanged even if
+          // the value is better than the previous. I added that here
+          && (distance_squared > former_squared_distance)) {
         lambda *= 2.0;
-        std::cout << "+";
+        // std::cout << "+";
         if (lambda > 1e5) {
           break;
         }
         // std::cout << "Rejected ! New Lambda = " << lambda << std::endl;
-        continue;
+        if (distance_squared > former_squared_distance) {
+          std::cout << "Rejected" << std::endl;
+          continue;
+        }
       }
 
+      std::cout << "Accepted" << std::endl;
       // If the metric is bigger than the upper bound the penelization is
       // divided by two
       if (my_rho > upper_bound_LM) {
         lambda *= 0.5;
-        std::cout << "-";
+        // std::cout << "-";
       } else {
-        std::cout << "=";
+        // std::cout << "=";
       }
       // std::cout << "Accepted ! New Lambda = " << lambda << std::endl;
 
