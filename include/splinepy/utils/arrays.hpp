@@ -372,6 +372,43 @@ public:
     }
   }
 
+  /// @brief this[i] *= a
+  /// @param a
+  constexpr void Scale(const DataType& a) {
+    assert(data_);
+
+    for (IndexType i{}; i < size_; ++i) {
+      data_[i] *= a;
+    }
+  }
+
+  /// @brief prints to terminal
+  constexpr void Print() {
+    assert(data_);
+    static_assert(dim < 3, "Print function not implemented for tensors");
+
+    if constexpr (dim == 1) {
+      const auto& height = shape_[0];
+      std::cout << "[ ";
+      for (int i{}; i < height; ++i) {
+        std::cout << data_[i] << " ";
+      }
+      std::cout << "]" << std::endl;
+    } else if (dim == 2) {
+      const auto& height = shape_[0];
+      const auto& width = shape_[1];
+      std::cout << "[";
+      for (int i{}; i < height; ++i) {
+        std::cout << "[ " << data_[i * width];
+        for (int j{1}; j < width; ++j) {
+          std::cout << ", " << data_[i * width + j];
+        }
+        std::cout << "],";
+      }
+      std::cout << " ]" << std::endl;
+    }
+  }
+
   /// @brief c = (this) dot (a).
   /// @tparam Iterable
   /// @param a
@@ -461,13 +498,17 @@ public:
 
   /// @brief L2 norm
   /// @return
-  constexpr DataType NormL2() {
+  constexpr DataType NormL2() { return std::sqrt(NormL2Squared()); }
+
+  /// @brief squared euclidian norm
+  /// @return
+  constexpr DataType NormL2Squared() {
     DataType norm{};
     for (IndexType i{}; i < size_; ++i) {
       const DataType& data_i = data_[i];
       norm += data_i * data_i;
     }
-    return std::sqrt(norm);
+    return norm;
   }
 
   /// @brief returns number of non (exact) zero elements.
