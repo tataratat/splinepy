@@ -264,12 +264,10 @@ void Proximity::VerboseQuery(
   // for now, we take same value for rel_tol
   const double norm_goal = std::max(convergence_norm * tolerance, tolerance);
   // get maxiteration
-  const int max_iter_newton =
-      max_iterations < 0 ? para_dim * 20 : max_iterations;
-  const int max_iter_LM = para_dim * 0;
+  const int max_iter = max_iterations < 0 ? para_dim * 20 : max_iterations;
 
   // newton iterations
-  for (int i{}; i < max_iter_newton; ++i) {
+  for (int i{}; i < max_iter; ++i) {
     // norm and distance check for convergence
     if (convergence_norm < norm_goal || distance < tolerance) {
       break;
@@ -304,8 +302,7 @@ void Proximity::VerboseQuery(
   // Check if converged
   if (convergence_norm > norm_goal && distance > tolerance) {
     // Did not converge, try LM
-    std::cout << "Starting LM" << std::endl;
-
+    std::cout << "START :";
     // Set back to starting point
     current_guess = initial_guess;
     GuessMinusQuery(current_guess, phys_query, current_phys, difference);
@@ -316,17 +313,16 @@ void Proximity::VerboseQuery(
     RealArray_ current_difference = difference;
 
     // Coefficients for Levenberg-Marquart algorithm (empirical)
-    const double lower_bound_LM = 0.2;
-    const double upper_bound_LM = 0.8;
+    const double lower_bound_LM = 0.25;
+    const double upper_bound_LM = 0.75;
 
     // Calculate RHS before first iteration (remains unchanged by update)
     FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
 
-    for (int i{}; i < max_iter_LM; ++i) {
+    for (int i{}; i < max_iter; ++i) {
       // norm and distance check for convergence
       if (convergence_norm < norm_goal || distance < tolerance) {
-        std::cout << "Success LM" << std::endl;
-
+        std::cout << "SUCCESS" << std::endl;
         break;
       }
       // std::cout << "---------------\nIteration : " << i << std::endl;
@@ -338,7 +334,7 @@ void Proximity::VerboseQuery(
                 spline_gradient_AAt,
                 lhs,
                 lambda,
-                true); // test true here
+                false); // test true here
 
       // solve systems using gauss elimination with partial pivoting
       // this will alter lhs in place, but shouldn't reorder rows inplace
@@ -369,6 +365,9 @@ void Proximity::VerboseQuery(
           metric[i] += spline_gradient(i, j) * delta_guess(j);
         }
       }
+      // Konstantins metric
+      const double alt_metric = metric.InnerProduct(current_difference);
+
       // metric.Print();
       metric.Add(current_difference);
       const double metric_norm = metric.NormL2Squared();
@@ -381,6 +380,12 @@ void Proximity::VerboseQuery(
       const double rho = (former_squared_distance - distance_squared)
                          / (former_squared_distance - metric_norm);
 
+      // Konstantin's notes
+      const double rho_alt =
+          -(former_squared_distance - distance_squared) / alt_metric;
+
+      const double my_rho = std::max(rho, rho_alt);
+
       // // Debuging output
       // std::cout << "Rho : " << rho
       //           << "\ndistance_squared : " << distance_squared
@@ -391,16 +396,23 @@ void Proximity::VerboseQuery(
 
       // If the metric is smaller than the lower bound, the update is
       // rejected and the penelization is increased
-      if (rho < lower_bound_LM) {
-        lambda *= 2.;
+      if (my_rho < lower_bound_LM) {
+        lambda *= 2.0;
+        std::cout << "+";
+        if (lambda > 1e5) {
+          break;
+        }
         // std::cout << "Rejected ! New Lambda = " << lambda << std::endl;
         continue;
       }
 
       // If the metric is bigger than the upper bound the penelization is
       // divided by two
-      if (rho > upper_bound_LM) {
+      if (my_rho > upper_bound_LM) {
         lambda *= 0.5;
+        std::cout << "-";
+      } else {
+        std::cout << "=";
       }
       // std::cout << "Accepted ! New Lambda = " << lambda << std::endl;
 
@@ -419,6 +431,9 @@ void Proximity::VerboseQuery(
       FillSplineGradientAndRhs(current_guess, difference, spline_gradient, rhs);
       convergence_norm = rhs.NormL2();
       // std::cout << "\nConvergence Norm : " << convergence_norm << std::endl;
+    }
+    if (convergence_norm > norm_goal && distance > tolerance) {
+      std::cout << "DEFEAT" << std::endl;
     }
   }
 
