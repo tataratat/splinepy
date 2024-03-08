@@ -97,11 +97,20 @@ public:
                                 RealArray2D_& spline_gradient,
                                 RealArray_& rhs) const;
 
+  // Fill LHS of Newton method for critical value search
   void FillLhs(const RealArray_& guess,
                const RealArray_& difference,
                const RealArray2D_& spline_gradient_AAt,
                RealArray3D_& spline_hessian,
                RealArray2D_& lhs) const;
+
+  // Fill LHS of damped Levenberg-Marquart method
+  void FillLhsLM(const RealArray_& guess,
+                 const RealArray_& difference,
+                 const RealArray2D_& spline_gradient_AAt,
+                 RealArray2D_& lhs,
+                 const double& lambda,
+                 const bool& modified_marquart) const;
 
   /// @brief First order fall back
   void FirstOrderFallBack() {}
