@@ -500,7 +500,7 @@ public:
   /// @return
   constexpr DataType NormL2() { return std::sqrt(NormL2Squared()); }
 
-  /// @brief squared euclidian norm
+  /// @brief squared euclidean norm
   /// @return
   constexpr DataType NormL2Squared() {
     DataType norm{};
@@ -594,7 +594,9 @@ public:
     const auto array_copy = array_;
     const auto b_copy = b;
 #endif
-
+    if ((array_(0, 0) * array_(1, 1) - array_(1, 0) * array_(0, 1)) < 1e-12) {
+      std::cout << "Singular Matrix" << std::endl;
+    }
     // partial pivoting and forward reduction
     // since we reorder indices only, we append *_r to reordered ids
     for (IndexType i{0}; i < len; i++) {
