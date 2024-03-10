@@ -232,8 +232,8 @@ void RaiseMismatch(const CoreSplineVector& splist,
 void RaiseMismatch(const CoreSplineVector& splist0,
                    const CoreSplineVector& splist1,
                    const bool name,
-                   const bool para_dim,
-                   const bool dim,
+                   const bool dimensionality,
+                   const int field_dim,
                    const bool degrees,
                    const bool control_mesh_resolutions,
                    const int nthreads) {
@@ -251,7 +251,7 @@ void RaiseMismatch(const CoreSplineVector& splist0,
   if (name) {
     mismatches["name"].resize(nthreads);
   }
-  if (dim) {
+  if (dimensionality) {
     mismatches["dim"].resize(nthreads);
   }
   if (degrees) {
@@ -260,7 +260,7 @@ void RaiseMismatch(const CoreSplineVector& splist0,
   if (control_mesh_resolutions) {
     mismatches["control_mesh_resolutions"].resize(nthreads);
   }
-  if (para_dim || degrees || control_mesh_resolutions) {
+  if (dimensionality || degrees || control_mesh_resolutions) {
     mismatches["para_dim"].resize(nthreads);
   }
 
@@ -279,12 +279,12 @@ void RaiseMismatch(const CoreSplineVector& splist0,
       bool para_dim_matches{true};
 
       // check dims
-      if (para_dim
+      if (dimensionality
           && (spline0->SplinepyParaDim() != spline1->SplinepyParaDim())) {
         mismatches["para_dim"][i_thread].push_back(i);
         para_dim_matches = false;
       }
-      if (dim && (spline0->SplinepyDim() != spline1->SplinepyDim())) {
+      if (dimensionality && (field_dim != spline1->SplinepyDim())) {
         mismatches["dim"][i_thread].push_back(i);
       }
       // null spline should have at least same dims. but nothing else matters.
@@ -1550,7 +1550,7 @@ void PyMultipatch::AddFields(py::list& fields,
                       field_ptrs[i]->core_patches_,
                       check_name,
                       check_dims,
-                      check_dims,
+                      field_dim,
                       check_degrees,
                       check_control_mesh_resolutions,
                       1);
