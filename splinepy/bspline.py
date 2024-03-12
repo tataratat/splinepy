@@ -92,7 +92,7 @@ class BSplineBase(_spline.Spline):
             self.check.clamped_knot_vectors(warning=True)
 
         if parametric_dimension >= self.para_dim:
-            raise ValueError("Invalid parametric dimension to remove knots.")
+            raise ValueError("Invalid parametric dimension to insert knots.")
 
         if isinstance(knots, float):
             knots = [knots]
@@ -121,6 +121,63 @@ class BSplineBase(_spline.Spline):
         self._data = {}
 
         return inserted
+
+    def uniform_refine(
+        self, parametric_dimensions=None, degree_of_refinement=1
+    ):
+        """
+        Refines all knot-spans by subdivision of existing elements
+
+        Parameters
+        ----------
+        parametric_dimensions : list
+            list of parametric dimensions to be refined (default None -> all)
+        degree_of_refinement : int or list
+            number of new knots per knot span
+
+        Returns
+        --------
+            Nothing?
+        """
+
+        def determine_new_knots(knot_vector, degree):
+            kv_unique = _np.unique(knot_vector)
+            kv_diff = _np.diff(kv_unique)
+            new_knots = [
+                kv_unique[:-1] + i * kv_diff / (degree + 1)
+                for i in range(1, degree + 1)
+            ]
+            return _np.sort(_np.concatenate(new_knots))
+
+        if parametric_dimensions is None:
+            parametric_dimensions = _np.arange(0, self.para_dim, 1)
+
+        elif isinstance(parametric_dimensions, int):
+            parametric_dimensions = [parametric_dimensions]
+
+        elif _np.any(parametric_dimensions) >= self.para_dim:
+            raise ValueError("Invalid parametric dimension to insert knots.")
+
+        if isinstance(degree_of_refinement, int):
+            degree_of_refinement = [degree_of_refinement] * len(
+                parametric_dimensions
+            )
+
+        if len(parametric_dimensions) == 0 or len(degree_of_refinement) == 0:
+            raise ValueError(
+                "Invalid value (len = 0) for parametric dimension or degree."
+            )
+
+        elif len(degree_of_refinement) != len(parametric_dimensions):
+            raise ValueError("Dimensions are not the same.")
+
+        for i in range(len(parametric_dimensions)):
+            para_dim = parametric_dimensions[i]
+            knots = determine_new_knots(
+                knot_vector=self.knot_vectors[para_dim],
+                degree=degree_of_refinement[i],
+            )
+            self.insert_knots(para_dim, knots)
 
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
