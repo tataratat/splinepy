@@ -63,10 +63,6 @@ class DoubleLattice(_TileBase):
             raise ValueError(
                 "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
             )
-        # raise an error if only one parameter is given,
-        # which was the case in earlier versions
-        if parameters.shape[1] == 1:
-            raise ValueError("DoubleLattice now expects 2 values")
 
         self.check_params(parameters)
 
