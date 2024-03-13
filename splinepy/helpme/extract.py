@@ -450,6 +450,8 @@ def spline(spline, para_dim, split_plane):
         # Convert float to tuple to facilitate
         split_plane = [split_plane]
 
+    is_interval = len(split_plane) == 2
+
     # Check if is bezier-type
     if not spline.has_knot_vectors:
         spline_copy = spline.nurbs if spline.is_rational else spline.bspline
@@ -462,17 +464,13 @@ def spline(spline, para_dim, split_plane):
         spline_copy.insert_knots(para_dim, split_plane)
 
     # start and end id. indices correspond to [first dim][first appearance]
-    start_id = _np.where(
-        abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[0])
-        < _settings.TOLERANCE
-    )[0][0]
-
-    # Check if boundary
-    if (
-        abs(spline_copy.knot_vectors[para_dim][-1] - split_plane[0])
-        < _settings.TOLERANCE
-    ):
-        start_id -= 1
+    start_id = (
+        _np.where(
+            abs(spline_copy.knot_vectors[para_dim].numpy() - split_plane[0])
+            < _settings.TOLERANCE
+        )[0][-1]
+        - spline_copy.degrees[para_dim]
+    )
 
     end_id = (
         _np.where(
@@ -482,17 +480,16 @@ def spline(spline, para_dim, split_plane):
         - spline_copy.degrees[para_dim]
     )
 
-    # Check if boundary
-    if (
-        abs(spline_copy.knot_vectors[para_dim][-1] - split_plane[-1])
-        < _settings.TOLERANCE
-    ):
-        end_id -= 1
-
     # Use MultiIndex for extraction
     mi = spline_copy.multi_index
     indices = [slice(None, None, None) for _ in range(spline_copy.para_dim)]
-    if start_id == end_id:
+    if not is_interval:
+        # Check if boundary
+        if (
+            abs(spline_copy.knot_vectors[para_dim][-1] - split_plane[-1])
+            < _settings.TOLERANCE
+        ):
+            start_id -= 1
         indices[para_dim] = start_id
     else:
         indices[para_dim] = slice(start_id, end_id, None)
@@ -502,11 +499,11 @@ def spline(spline, para_dim, split_plane):
     spline_info = {}
     spline_info["control_points"] = spline_copy.cps[indices]
     spline_info["degrees"] = spline_copy.degrees.tolist()
-    if start_id == end_id:
+    if not is_interval:
         spline_info["degrees"].pop(para_dim)
     if spline.has_knot_vectors:
         spline_info["knot_vectors"] = spline_copy.knot_vectors.copy()
-        if start_id == end_id:
+        if not is_interval:
             spline_info["knot_vectors"].pop(para_dim)
         else:
             spline_info["knot_vectors"][para_dim] = spline_copy.knot_vectors[
