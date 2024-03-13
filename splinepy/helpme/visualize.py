@@ -608,6 +608,8 @@ def show(spline, **kwargs):
     return _gus.show(things_to_show, **kwargs)
 
 
+#: Corporate Design color scheme for TU Wien, to have it available for animations
+#: and illustrations
 _TUWIEN_COLOR_SCHEME = {
     "blue": (0, 102, 153),
     "black": (0, 0, 0),
@@ -633,7 +635,3 @@ _TUWIEN_COLOR_SCHEME = {
     "yellow_2": (245, 208, 168),
     "yellow_3": (153, 239, 225),
 }
-"""
-Corporate Design color scheme for TU Wien, to have it available for animations
-and illustrations
-"""
