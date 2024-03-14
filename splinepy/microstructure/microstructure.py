@@ -395,7 +395,9 @@ class Microstructure(_SplinepyBase):
             # inserted into it, so we need to apply the matrix constructed
             # earlier
             for i_matrix in range(len(bezier_matrices)):
-                bezier_matrices[i_matrix] @= knot_insertion_matrix
+                bezier_matrices[i_matrix] = (
+                    bezier_matrices[i_matrix] @ knot_insertion_matrix
+                )
         else:
             bezier_matrices = None
 
