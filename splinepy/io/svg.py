@@ -357,8 +357,7 @@ def _export_control_mesh(
     """
 
     # Default behaviour in show is, no mesh and no ids, if no control points
-    if not spline.show_options.get("control_points", True):
-        return None
+    control_point_requested = spline.show_options.get("control_points", True)
 
     svg_mesh = _ET.SubElement(
         svg_spline_element,
@@ -367,7 +366,7 @@ def _export_control_mesh(
     )
 
     # First draw mesh
-    if spline.show_options.get("control_mesh", True):
+    if spline.show_options.get("control_mesh", control_point_requested):
         # Relevant options:
         # - control_mesh_c
         # - control_mesh_lw
@@ -376,7 +375,7 @@ def _export_control_mesh(
         a = spline.show_options.get("control_mesh_alpha", 1.0)
         stroke_width = spline.show_options.get(
             "control_mesh_lw",
-            _np.linalg.norm(_np.diff(spline.control_point_bounds)) * 0.001,
+            _np.linalg.norm(_np.diff(spline.control_point_bounds)) * 0.01,
         )
 
         # Create a new group
@@ -431,7 +430,7 @@ def _export_control_mesh(
                 )
 
     # Then control points
-    if spline.show_options.get("control_points", True):
+    if control_point_requested:
 
         # Relevant options:
         # - control_point_ids
@@ -460,7 +459,7 @@ def _export_control_mesh(
             )
 
     # Lastly IDs
-    if spline.show_options.get("control_point_ids", True):
+    if spline.show_options.get("control_point_ids", control_point_requested):
         # Text Options
         svg_control_point_ids = _ET.SubElement(
             svg_mesh,
@@ -559,6 +558,7 @@ def _quiver_plot(
     arrow_data_field = spline.show_options.get("arrow_data", None)
     if arrow_data_field is None:
         return None
+    arrow_data_scale = spline.show_options.get("arrow_data_scale", 1)
 
     # Use Arrow Data to retrieve spline data (is already scaled)
     arrow_data = spline.extract.arrow_data(arrow_data_field)
@@ -581,10 +581,19 @@ def _quiver_plot(
     rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
 
     # Retrieve information on colors and values
-    v_min = spline.show_options.get("vmin", _np.min(arrow_length))
-    v_max = spline.show_options.get("vmax", _np.max(arrow_length))
-    cmap_style = spline.show_options.get("cmap", "jet")
-    colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
+    arrow_color = spline.show_options.get("arrow_data_color", None)
+    if arrow_color is not None:
+        colors = [_get_color(arrow_color)] * arrow_length.size
+    else:
+        v_min = spline.show_options.get("vmin", _np.min(arrow_length))
+        v_max = spline.show_options.get("vmax", _np.max(arrow_length))
+        cmap_style = spline.show_options.get("cmap", "jet")
+        colors = _color_map(
+            arrow_length / arrow_data_scale,
+            name=cmap_style,
+            vmin=v_min,
+            vmax=v_max,
+        )
 
     # Map arrow control points
     arrow_control_points_ = _np.einsum(
@@ -1134,6 +1143,10 @@ def export(
     box_min_x = ctps_bounds[0, 0] - box_margins
     box_max_y = ctps_bounds[1, 1] + box_margins
 
+    # Quiver plots should always be grouped in the top layer
+    splines_group = _ET.SubElement(svg_data, "g", id="spline_list")
+    quiver_list = _ET.SubElement(svg_data, "g", id="quiver_list")
+
     # Write splines in svg file
     for i, object in enumerate(objects_to_plot):
         # Copy spline options from keyword arguments
@@ -1149,10 +1162,12 @@ def export(
                 except BaseException:
                     continue
 
-        # Put every spline into a new dedicated group
-
         if isinstance(object, Spline):
-            spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
+            # Put every spline and its dedicated information into a new
+            # dedicated group
+            spline_group = _ET.SubElement(
+                splines_group, "g", id="spline" + str(i)
+            )
             _export_spline(
                 object,
                 spline_group,
@@ -1161,15 +1176,15 @@ def export(
                 tolerance=tolerance,
                 **kwargs,
             )
+            _export_control_mesh(
+                object, spline_group, box_min_x, box_max_y, **kwargs
+            )
             _quiver_plot(
                 spline=object,
-                svg_spline_element=spline_group,
+                svg_spline_element=quiver_list,
                 box_min_x=box_min_x,
                 box_max_y=box_max_y,
                 **kwargs,
-            )
-            _export_control_mesh(
-                object, spline_group, box_min_x, box_max_y, **kwargs
             )
         else:
             gus_grounp = _ET.SubElement(svg_data, "g", id="gus_obj_" + str(i))
