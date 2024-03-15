@@ -3,7 +3,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     # 1. Curve fitting
     # Create a function that creates the points for approximation
     def f(x):
@@ -23,7 +24,6 @@ if __name__ == "__main__":
         return np.max(distances), np.mean(distances)
 
     n_sample = 25
-    n_resolution = 3 * n_sample
     x = np.linspace(-1, 1, n_sample)
     fitting_points = np.vstack([x, f(x)]).T.reshape(-1, 2)
     pts = gus.create.vertices.Vertices(fitting_points)
@@ -88,7 +88,6 @@ if __name__ == "__main__":
 
     # 2. Surface fitting
     n_sample = [20, 20]
-    resolution = [3 * n for n in n_sample]
 
     # Create dataset
     x = [np.linspace(-1, 1, n) for n in n_sample]
@@ -180,3 +179,7 @@ if __name__ == "__main__":
         for (cps, surface, errs) in approximated_surfaces
     ]
     gus.show(*gus_list)
+
+
+if __name__ == "__main__":
+    example()

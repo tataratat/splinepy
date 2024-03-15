@@ -4,13 +4,14 @@ import gustaf as gus
 
 import splinepy
 
-WITH_PUPILS = False
-WITH_DARK_BACKGROUND = False
-DARK_WITH_WHITE_OVAL_BACKGROUND = False
-WITH_ALPHA_BACKGROUND = False
 
-if __name__ == "__main__":
-    if WITH_ALPHA_BACKGROUND:
+def example(
+    with_pupiles: bool = False,
+    with_dark_background: bool = False,
+    dark_with_white_oval_background: bool = False,
+    with_alpha_background: bool = False,
+):
+    if with_alpha_background:
         import vedo
 
         vedo.settings.screenshot_transparent_background = 1
@@ -96,20 +97,20 @@ if __name__ == "__main__":
     lower_lip.show_options["knots"] = False
 
     item_to_show = [l_eye, r_eye, upper_lip, inner_mouth, lower_lip]
-    if WITH_PUPILS:
+    if with_pupiles:
         item_to_show += [l_pupil, r_pupil]
 
-    plt = gus.show(
+    gus.show(
         item_to_show,
         lighting="off",
         background="white",
         close=False,
     )
 
-    if WITH_DARK_BACKGROUND:
+    if with_dark_background:
         background = []
 
-        if DARK_WITH_WHITE_OVAL_BACKGROUND:
+        if dark_with_white_oval_background:
             height = 0.6
             width = 0
 
@@ -137,9 +138,13 @@ if __name__ == "__main__":
             l_pupil.show_options["c"] = "black"
             r_pupil.show_options["c"] = "black"
 
-        plt = gus.show(
+        gus.show(
             [*background, *item_to_show],
             lighting="off",
             background="black",
             close=False,
         )
+
+
+if __name__ == "__main__":
+    example()

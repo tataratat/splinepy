@@ -2,7 +2,8 @@ import gustaf as gus
 
 import splinepy as sp
 
-if __name__ == "__main__":
+
+def example():
     # 1.
     # create mesh 2d - extracted from bspline
     mesh_2d = sp.helpme.create.disk(
@@ -68,3 +69,7 @@ if __name__ == "__main__":
     ffd_with_out_mesh.spline = spline_3d
     ffd_with_out_mesh.mesh = volume_3d
     ffd_with_out_mesh.show(title="Setting spline first, then mesh")
+
+
+if __name__ == "__main__":
+    example()

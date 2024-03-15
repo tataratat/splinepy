@@ -3,7 +3,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     line = splinepy.helpme.create.line(
         np.array([[0, 0, 0], [2, 5, 0], [4, 4, 2]])
     )
@@ -40,3 +41,7 @@ if __name__ == "__main__":
 
     sphere = splinepy.helpme.create.sphere(3)
     gus.show(["Sphere", sphere], resolution=50)
+
+
+if __name__ == "__main__":
+    example()

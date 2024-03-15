@@ -2,7 +2,8 @@ import gustaf as gus
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     # create 2p2d nurbs
     s_nurbs = splinepy.Bezier(
         degrees=[2, 1],
@@ -25,3 +26,7 @@ if __name__ == "__main__":
         ["extract.spline({0: [0.4, 0.8], 1: 0.7})", line, s_nurbs],
         ["Extracted spline", line],
     )
+
+
+if __name__ == "__main__":
+    example()

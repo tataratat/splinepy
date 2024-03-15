@@ -2,7 +2,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     # curve
     # define degrees
     ds1 = [1]
@@ -99,3 +100,7 @@ if __name__ == "__main__":
     )
 
     bspline3.show()
+
+
+if __name__ == "__main__":
+    example()

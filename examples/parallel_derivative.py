@@ -10,7 +10,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     # define a bspline
     ds = [2, 2]
     kvs = [
@@ -98,3 +99,7 @@ if __name__ == "__main__":
         np.vstack(res_mp), res_s
     ), "Something went wrong during evaluation"
     assert np.allclose(res_t, res_s), "Something went wrong during evaluation"
+
+
+if __name__ == "__main__":
+    example()

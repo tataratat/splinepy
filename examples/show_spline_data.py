@@ -42,7 +42,7 @@ def bspline2p3d():
     )
 
 
-if __name__ == "__main__":
+def example():
     # turn on debug logs
     # gus.utils.log.configure(debug=True)
 
@@ -280,3 +280,7 @@ if __name__ == "__main__":
             bezier,
         ]
     )
+
+
+if __name__ == "__main__":
+    example()

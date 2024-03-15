@@ -16,15 +16,6 @@ import numpy as np
 
 import splinepy as sp
 
-# Create a random spline surface in 3D
-a = sp.helpme.create.box(1, 1).bspline
-a.elevate_degrees([0, 1, 0, 1])
-a.insert_knots(0, [0.33333, 0.66667])
-a.insert_knots(1, [0.33333, 0.66667])
-a.control_points = np.hstack(
-    [a.cps, np.random.random((a.cps.shape[0], 1)) * 0.5]
-)
-
 
 # Function to create a Callable for the SplineDataAdaptor
 def isophotes_to_direction(normal=None, interval=0.02):
@@ -45,7 +36,7 @@ def isophotes_to_direction(normal=None, interval=0.02):
 
 
 # Gaussian Curvature
-def gaussian_curvature(data, on):
+def gaussian_curvature_f(data, on):
     v1 = data.derivative(on, [1, 0])
     v2 = data.derivative(on, [0, 1])
     v3 = data.derivative(on, [2, 0])
@@ -62,7 +53,7 @@ def gaussian_curvature(data, on):
 
 
 # Mean Curvature
-def mean_curvature(data, on=None):
+def mean_curvature_f(data, on=None):
     v1 = data.derivative(on, [1, 0])
     v2 = data.derivative(on, [0, 1])
     v3 = data.derivative(on, [2, 0])
@@ -83,31 +74,44 @@ def mean_curvature(data, on=None):
     return k_g
 
 
-# Spline Adaptor to plot function
-isophotes = sp.SplineDataAdaptor(
-    a, function=isophotes_to_direction(normal=[0, 0, 1])
-)
-mean_curvature = sp.SplineDataAdaptor(a, function=mean_curvature)
-gaussian_curvature = sp.SplineDataAdaptor(a, function=gaussian_curvature)
+def example():
+    # Create a random spline surface in 3D
+    a = sp.helpme.create.box(1, 1).bspline
+    a.elevate_degrees([0, 1, 0, 1])
+    a.insert_knots(0, [0.33333, 0.66667])
+    a.insert_knots(1, [0.33333, 0.66667])
+    a.control_points = np.hstack(
+        [a.cps, np.random.random((a.cps.shape[0], 1)) * 0.5]
+    )
+    # Spline Adaptor to plot function
+    isophotes = sp.SplineDataAdaptor(
+        a, function=isophotes_to_direction(normal=[0, 0, 1])
+    )
+    mean_curvature = sp.SplineDataAdaptor(a, function=mean_curvature_f)
+    gaussian_curvature = sp.SplineDataAdaptor(a, function=gaussian_curvature_f)
 
-# Set Plot options
-a.spline_data["isophotes"] = isophotes
-a.spline_data["gaussian_curvature"] = gaussian_curvature
-a.spline_data["mean_curvature"] = mean_curvature
-a.show_options["lighting"] = "off"
-a.show_options["control_points"] = False
-a.show_options["knots"] = False
+    # Set Plot options
+    a.spline_data["isophotes"] = isophotes
+    a.spline_data["gaussian_curvature"] = gaussian_curvature
+    a.spline_data["mean_curvature"] = mean_curvature
+    a.show_options["lighting"] = "off"
+    a.show_options["control_points"] = False
+    a.show_options["knots"] = False
 
-# Show Isophotes
-a.show_options["data"] = "isophotes"
-a.show(resolutions=1000, title="Isophotes")
+    # Show Isophotes
+    a.show_options["data"] = "isophotes"
+    a.show(resolutions=1000, title="Isophotes")
 
-# Show Gaussian Curvature
-a.show_options["data"] = "gaussian_curvature"
-a.show_options["scalarbar"] = True
-a.show(resolutions=100, title="Gaussian Curvature")
+    # Show Gaussian Curvature
+    a.show_options["data"] = "gaussian_curvature"
+    a.show_options["scalarbar"] = True
+    a.show(resolutions=100, title="Gaussian Curvature")
 
-# Show Curvature
-a.show_options["data"] = "mean_curvature"
-a.show_options["scalarbar"] = True
-a.show(resolutions=100, title="Mean Curvature")
+    # Show Curvature
+    a.show_options["data"] = "mean_curvature"
+    a.show_options["scalarbar"] = True
+    a.show(resolutions=100, title="Mean Curvature")
+
+
+if __name__ == "__main__":
+    example()

@@ -2,7 +2,8 @@ import numpy as np
 
 import splinepy
 
-if __name__ == "__main__":
+
+def example():
     """
     x1
     *---*---*
@@ -75,3 +76,7 @@ if __name__ == "__main__":
     m.show_options["data"] = "detJ"
     m.show_options["lighting"] = "off"
     m.show()
+
+
+if __name__ == "__main__":
+    example()
