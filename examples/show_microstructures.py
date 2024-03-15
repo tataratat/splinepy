@@ -222,13 +222,36 @@ generator.show(
 
 
 # Classical cross tile 2D
+para_cross = splinepy.Bezier(
+    degrees=[2, 2],
+    control_points=[
+        [0.05],
+        [0.25],
+        [0.35],
+        [0.25],
+        [0.25],
+        [0.2],
+        [0.25],
+        [0.15],
+        [0.15],
+    ],
+)
+
+
+def parameter_function_cross_2d(x):
+    """
+    Parametrization Function (determines branch thickness)
+    """
+    return para_cross.evaluate(x)
+
+
 generator = splinepy.microstructure.Microstructure()
 generator.deformation_function = splinepy.Bezier(
     degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
 )
 generator.microtile = splinepy.microstructure.tiles.Cross2D()
 generator.tiling = [5, 5]
-generator.parametrization_function = parameter_function_double_lattice
+generator.parametrization_function = parameter_function_cross_2d
 ms = generator.create(closing_face="x", center_expansion=1.3)
 generator.show(
     use_saved=True,
