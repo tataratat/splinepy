@@ -126,23 +126,25 @@ class BSplineBase(_spline.Spline):
         self, parametric_dimensions=None, degree_of_refinement=1
     ):
         """
-        Refines all knot-spans by subdivision of existing elements
+        Uniformly refines all knot-spans in given direction(s) by given
+        degree(s). By default, every dimension will be refined with
+        degree of 1.
 
         Parameters
         ----------
-        parametric_dimensions : list
+        parametric_dimensions : int or list
             list of parametric dimensions to be refined (default None -> all)
         degree_of_refinement : int or list
             number of new knots per knot span
 
         Returns
         --------
-            Nothing?
+            - (alters the spline in place)
         """
 
-        def determine_new_knots(knot_vector, degree):
-            kv_unique = _np.unique(knot_vector)
-            kv_diff = _np.diff(kv_unique)
+        def determine_new_knots(kv_unique, kv_diff, degree):
+            if degree == 0:
+                return []
             new_knots = [
                 kv_unique[:-1] + i * kv_diff / (degree + 1)
                 for i in range(1, degree + 1)
@@ -169,12 +171,21 @@ class BSplineBase(_spline.Spline):
             )
 
         elif len(degree_of_refinement) != len(parametric_dimensions):
-            raise ValueError("Dimensions are not the same.")
+            raise ValueError(
+                "Size of degrees and dimensions are not the same."
+            )
+
+        kv_unique = []
+        kv_diff = []
+        for i in range(self.para_dim):
+            kv_unique.append(_np.unique(self.knot_vectors[i]))
+            kv_diff.append(_np.diff(kv_unique[i]))
 
         for i in range(len(parametric_dimensions)):
             para_dim = parametric_dimensions[i]
             knots = determine_new_knots(
-                knot_vector=self.knot_vectors[para_dim],
+                kv_unique=kv_unique[para_dim],
+                kv_diff=kv_diff[para_dim],
                 degree=degree_of_refinement[i],
             )
             self.insert_knots(para_dim, knots)
