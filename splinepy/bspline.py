@@ -160,6 +160,13 @@ class BSplineBase(_spline.Spline):
         elif _np.any(parametric_dimensions) >= self.para_dim:
             raise ValueError("Invalid parametric dimension to insert knots.")
 
+        elif len(_np.unique(parametric_dimensions)) != len(
+            parametric_dimensions
+        ):
+            raise ValueError(
+                "Refinement in one dimension more than once is not admissible"
+            )
+
         if isinstance(degree_of_refinement, int):
             degree_of_refinement = [degree_of_refinement] * len(
                 parametric_dimensions
