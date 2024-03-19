@@ -127,8 +127,8 @@ class BSplineBase(_spline.Spline):
     ):
         """
         Uniformly refines all knot-spans in given direction(s) by given
-        degree(s). By default, every dimension will be refined with
-        degree of 1.
+        degree(s). By default, every dimension will be refined with 1 knot
+        per knot span.
 
         Parameters
         ----------
@@ -142,14 +142,12 @@ class BSplineBase(_spline.Spline):
             - (alters the spline in place)
         """
 
-        def determine_new_knots(kv_unique, kv_diff, degree):
+        def determine_new_knots(kv_unique, degree):
             if degree == 0:
                 return []
-            new_knots = [
-                kv_unique[:-1] + i * kv_diff / (degree + 1)
-                for i in range(1, degree + 1)
-            ]
-            return _np.sort(_np.concatenate(new_knots))
+            kv_diffs = _np.diff(kv_unique) / (degree + 1)
+            new_knots =(kv_diffs.reshape(-1, 1) @ _np.arange(1, degree + 1).reshape(1, -1) + kv_unique[:-1].reshape(-1,1)).ravel()
+            return new_knots
 
         if parametric_dimensions is None:
             parametric_dimensions = _np.arange(0, self.para_dim, 1)
@@ -157,10 +155,10 @@ class BSplineBase(_spline.Spline):
         elif isinstance(parametric_dimensions, int):
             parametric_dimensions = [parametric_dimensions]
 
-        elif _np.any(parametric_dimensions) >= self.para_dim:
+        if _np.any(_np.array(parametric_dimensions) >= self.para_dim):
             raise ValueError("Invalid parametric dimension to insert knots.")
 
-        elif len(_np.unique(parametric_dimensions)) != len(
+        if len(_np.unique(parametric_dimensions)) != len(
             parametric_dimensions
         ):
             raise ValueError(
@@ -182,20 +180,12 @@ class BSplineBase(_spline.Spline):
                 "Size of degrees and dimensions are not the same."
             )
 
-        kv_unique = []
-        kv_diff = []
-        for i in range(self.para_dim):
-            kv_unique.append(_np.unique(self.knot_vectors[i]))
-            kv_diff.append(_np.diff(kv_unique[i]))
-
-        for i in range(len(parametric_dimensions)):
-            para_dim = parametric_dimensions[i]
-            knots = determine_new_knots(
-                kv_unique=kv_unique[para_dim],
-                kv_diff=kv_diff[para_dim],
+        for i, para_dim in enumerate(parametric_dimensions):
+            new_knots = determine_new_knots(
+                kv_unique=self.unique_knots[para_dim],
                 degree=degree_of_refinement[i],
             )
-            self.insert_knots(para_dim, knots)
+            self.insert_knots(para_dim, new_knots)
 
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
