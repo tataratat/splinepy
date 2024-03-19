@@ -10,6 +10,7 @@ import numpy as np
 import splinepy
 
 if __name__ == "__main__":
+    np_rng = np.random.default_rng()
     # define a bspline
     ds = [2, 2]
     kvs = [
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     workers = 4
 
     # form queries
-    qs = [np.random.random((50000, 2)) for _ in range(workers)]
+    qs = [np_rng.random((50000, 2)) for _ in range(workers)]
 
     # full multiprocessing time
     now = tic()
