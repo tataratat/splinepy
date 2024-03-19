@@ -146,7 +146,11 @@ class BSplineBase(_spline.Spline):
             if degree == 0:
                 return []
             kv_diffs = _np.diff(kv_unique) / (degree + 1)
-            new_knots =(kv_diffs.reshape(-1, 1) @ _np.arange(1, degree + 1).reshape(1, -1) + kv_unique[:-1].reshape(-1,1)).ravel()
+            new_knots = (
+                kv_diffs.reshape(-1, 1)
+                @ _np.arange(1, degree + 1).reshape(1, -1)
+                + kv_unique[:-1].reshape(-1, 1)
+            ).ravel()
             return new_knots
 
         if parametric_dimensions is None:
