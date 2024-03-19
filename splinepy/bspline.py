@@ -92,7 +92,7 @@ class BSplineBase(_spline.Spline):
             self.check.clamped_knot_vectors(warning=True)
 
         if parametric_dimension >= self.para_dim:
-            raise ValueError("Invalid parametric dimension to remove knots.")
+            raise ValueError("Invalid parametric dimension to insert knots.")
 
         if isinstance(knots, float):
             knots = [knots]
@@ -121,6 +121,75 @@ class BSplineBase(_spline.Spline):
         self._data = {}
 
         return inserted
+
+    def uniform_refine(
+        self, parametric_dimensions=None, degree_of_refinement=1
+    ):
+        """
+        Uniformly refines all knot-spans in given direction(s) by given
+        degree(s). By default, every dimension will be refined with 1 knot
+        per knot span.
+
+        Parameters
+        ----------
+        parametric_dimensions : int or list
+            list of parametric dimensions to be refined (default None -> all)
+        degree_of_refinement : int or list
+            number of new knots per knot span
+
+        Returns
+        --------
+            - (alters the spline in place)
+        """
+
+        def determine_new_knots(kv_unique, degree):
+            if degree == 0:
+                return []
+            kv_diffs = _np.diff(kv_unique) / (degree + 1)
+            new_knots = (
+                kv_diffs.reshape(-1, 1)
+                @ _np.arange(1, degree + 1).reshape(1, -1)
+                + kv_unique[:-1].reshape(-1, 1)
+            ).ravel()
+            return new_knots
+
+        if parametric_dimensions is None:
+            parametric_dimensions = _np.arange(0, self.para_dim, 1)
+
+        elif isinstance(parametric_dimensions, int):
+            parametric_dimensions = [parametric_dimensions]
+
+        if _np.any(_np.array(parametric_dimensions) >= self.para_dim):
+            raise ValueError("Invalid parametric dimension to insert knots.")
+
+        if len(_np.unique(parametric_dimensions)) != len(
+            parametric_dimensions
+        ):
+            raise ValueError(
+                "Refinement in one dimension more than once is not admissible"
+            )
+
+        if isinstance(degree_of_refinement, int):
+            degree_of_refinement = [degree_of_refinement] * len(
+                parametric_dimensions
+            )
+
+        if len(parametric_dimensions) == 0 or len(degree_of_refinement) == 0:
+            raise ValueError(
+                "Invalid value (len = 0) for parametric dimension or degree."
+            )
+
+        elif len(degree_of_refinement) != len(parametric_dimensions):
+            raise ValueError(
+                "Size of degrees and dimensions are not the same."
+            )
+
+        for i, para_dim in enumerate(parametric_dimensions):
+            new_knots = determine_new_knots(
+                kv_unique=self.unique_knots[para_dim],
+                degree=degree_of_refinement[i],
+            )
+            self.insert_knots(para_dim, new_knots)
 
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
