@@ -6,6 +6,8 @@ import numpy as np
 
 import splinepy as spp
 
+np_rng = np.random.default_rng()
+
 box = spp.helpme.create.box(10, 5).bspline
 box.elevate_degrees([0, 1])
 box.insert_knots(0, [0.5])
@@ -18,7 +20,7 @@ spp.io.svg.export("spline_curve_1.svg", spline_curve)
 rational_spline_curve = spline_curve.nurbs
 rational_spline_curve.elevate_degrees([0, 0])
 rational_spline_curve.insert_knots(0, [0.4, 0.6])
-rational_spline_curve.weights = np.random.random(
+rational_spline_curve.weights = np_rng.random(
     rational_spline_curve.cps.shape[0]
 )
 spp.io.svg.export("spline_curve_3.svg", rational_spline_curve)

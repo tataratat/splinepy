@@ -16,14 +16,13 @@ import numpy as np
 
 import splinepy as sp
 
+np_rng = np.random.default_rng()
 # Create a random spline surface in 3D
 a = sp.helpme.create.box(1, 1).bspline
 a.elevate_degrees([0, 1, 0, 1])
 a.insert_knots(0, [0.33333, 0.66667])
 a.insert_knots(1, [0.33333, 0.66667])
-a.control_points = np.hstack(
-    [a.cps, np.random.random((a.cps.shape[0], 1)) * 0.5]
-)
+a.control_points = np.hstack([a.cps, np_rng.random((a.cps.shape[0], 1)) * 0.5])
 
 
 # Function to create a Callable for the SplineDataAdaptor
