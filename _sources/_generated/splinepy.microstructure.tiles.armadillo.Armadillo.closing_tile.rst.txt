@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.armadillo.Armadillo.closing\_tile
+===============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.armadillo
+
+.. automethod:: Armadillo.closing_tile

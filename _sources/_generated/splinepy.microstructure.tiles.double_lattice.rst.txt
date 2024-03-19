@@ -1,0 +1,33 @@
+.. _splinepy.microstructure.tiles.double_lattice:
+
+splinepy.microstructure.tiles.double\_lattice
+=============================================
+
+.. automodule:: splinepy.microstructure.tiles.double_lattice
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      DoubleLattice
+   
+   
+
+   
+   
+   
+
+
+

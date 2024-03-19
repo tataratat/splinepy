@@ -1,0 +1,47 @@
+.. _splinepy.microstructure.tiles:
+
+splinepy.microstructure.tiles
+=============================
+
+.. automodule:: splinepy.microstructure.tiles
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   splinepy.microstructure.tiles.armadillo
+   splinepy.microstructure.tiles.chi
+   splinepy.microstructure.tiles.cross_2d
+   splinepy.microstructure.tiles.cross_3d
+   splinepy.microstructure.tiles.cross_3d_linear
+   splinepy.microstructure.tiles.cube_void
+   splinepy.microstructure.tiles.double_lattice
+   splinepy.microstructure.tiles.ellips_v_oid
+   splinepy.microstructure.tiles.hollow_cube
+   splinepy.microstructure.tiles.hollow_octagon
+   splinepy.microstructure.tiles.hollow_octagon_extrude
+   splinepy.microstructure.tiles.inverse_cross_3d
+   splinepy.microstructure.tiles.snappy
+   splinepy.microstructure.tiles.tile_base
+

@@ -1,0 +1,37 @@
+.. _splinepy.io.ioutils:
+
+splinepy.io.ioutils
+===================
+
+.. automodule:: splinepy.io.ioutils
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      abs_fname
+      dict_to_spline
+      expand_tabs
+      form_lines
+      make_meaningful
+      next_line
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

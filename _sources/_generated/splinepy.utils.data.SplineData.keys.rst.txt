@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.keys
+===================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.keys

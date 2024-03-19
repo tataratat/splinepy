@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.snappy.Snappy.check\_params
+=========================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.snappy
+
+.. automethod:: Snappy.check_params

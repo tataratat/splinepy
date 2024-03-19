@@ -1,0 +1,35 @@
+.. _splinepy.utils:
+
+splinepy.utils
+==============
+
+.. automodule:: splinepy.utils
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   splinepy.utils.data
+   splinepy.utils.log
+

@@ -1,0 +1,6 @@
+splinepy.io.mfem.export
+=======================
+
+.. currentmodule:: splinepy.io.mfem
+
+.. autofunction:: export

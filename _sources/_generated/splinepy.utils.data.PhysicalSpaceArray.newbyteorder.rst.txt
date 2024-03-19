@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.newbyteorder
+===================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.newbyteorder

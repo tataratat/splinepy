@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.hollow\_cube.HollowCube.check\_params
+===================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_cube
+
+.. automethod:: HollowCube.check_params

@@ -1,0 +1,47 @@
+.. _splinepy.utils.data:
+
+splinepy.utils.data
+===================
+
+.. automodule:: splinepy.utils.data
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      cartesian_product
+      enforce_contiguous
+      enforce_contiguous_values
+      make_matrix
+      uniform_query
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      MultipatchData
+      PhysicalSpaceArray
+      SplineData
+      SplineDataAdaptor
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.snappy.Snappy.check\_param\_derivatives
+=====================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.snappy
+
+.. automethod:: Snappy.check_param_derivatives

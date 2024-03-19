@@ -1,0 +1,173 @@
+splinepy.spline.Spline
+======================
+
+.. currentmodule:: splinepy.spline
+
+.. autoclass:: Spline
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Spline.basis
+     
+     
+       Spline.basis_and_support
+     
+     
+       Spline.basis_derivative
+     
+     
+       Spline.basis_derivative_and_support
+     
+     
+       Spline.clear
+     
+     
+       Spline.copy
+     
+     
+       Spline.current_core_properties
+     
+     
+       Spline.derivative
+     
+     
+       Spline.elevate_degrees
+     
+     
+       Spline.evaluate
+     
+     
+       Spline.export
+     
+     
+       Spline.greville_abscissae
+     
+     
+       Spline.jacobian
+     
+     
+       Spline.mapper
+     
+     
+       Spline.proximities
+     
+     
+       Spline.reduce_degrees
+     
+     
+       Spline.sample
+     
+     
+       Spline.show
+     
+     
+       Spline.showable
+     
+     
+       Spline.support
+     
+     
+       Spline.todict
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         Spline.check
+      
+      
+         Spline.control_mesh_resolutions
+      
+      
+         Spline.control_point_bounds
+      
+      
+         Spline.control_points
+      
+      
+         Spline.cps
+      
+      
+         Spline.create
+      
+      
+         Spline.degrees
+      
+      
+         Spline.dim
+      
+      
+         Spline.ds
+      
+      
+         Spline.extract
+      
+      
+         Spline.has_knot_vectors
+      
+      
+         Spline.integrate
+      
+      
+         Spline.is_rational
+      
+      
+         Spline.knot_multiplicities
+      
+      
+         Spline.knot_vectors
+      
+      
+         Spline.kvs
+      
+      
+         Spline.multi_index
+      
+      
+         Spline.name
+      
+      
+         Spline.para_dim
+      
+      
+         Spline.parametric_bounds
+      
+      
+         Spline.required_properties
+      
+      
+         Spline.show_options
+      
+      
+         Spline.spline_data
+      
+      
+         Spline.unique_knots
+      
+      
+         Spline.weights
+      
+      
+         Spline.whatami
+      
+      
+         Spline.ws
+      
+   
+   

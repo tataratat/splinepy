@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.remove\_knots
+==================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.remove_knots

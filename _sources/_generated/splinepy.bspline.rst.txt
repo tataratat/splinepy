@@ -1,0 +1,34 @@
+.. _splinepy.bspline:
+
+splinepy.bspline
+================
+
+.. automodule:: splinepy.bspline
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      BSpline
+      BSplineBase
+   
+   
+
+   
+   
+   
+
+
+

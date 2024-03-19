@@ -1,0 +1,134 @@
+splinepy.bezier.BezierBase
+==========================
+
+.. currentmodule:: splinepy.bezier
+
+.. autoclass:: BezierBase
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       BezierBase.basis
+     
+     
+       BezierBase.basis_and_support
+     
+     
+       BezierBase.basis_derivative
+     
+     
+       BezierBase.basis_derivative_and_support
+     
+     
+       BezierBase.clear
+     
+     
+       BezierBase.compose
+     
+     
+       BezierBase.composition_derivative
+     
+     
+       BezierBase.copy
+     
+     
+       BezierBase.current_core_properties
+     
+     
+       BezierBase.derivative
+     
+     
+       BezierBase.derivative_spline
+     
+     
+       BezierBase.elevate_degrees
+     
+     
+       BezierBase.evaluate
+     
+     
+       BezierBase.export
+     
+     
+       BezierBase.extract_dim
+     
+     
+       BezierBase.greville_abscissae
+     
+     
+       BezierBase.jacobian
+     
+     
+       BezierBase.mapper
+     
+     
+       BezierBase.proximities
+     
+     
+       BezierBase.reduce_degrees
+     
+     
+       BezierBase.sample
+     
+     
+       BezierBase.show
+     
+     
+       BezierBase.showable
+     
+     
+       BezierBase.split
+     
+     
+       BezierBase.support
+     
+     
+       BezierBase.todict
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   
+   

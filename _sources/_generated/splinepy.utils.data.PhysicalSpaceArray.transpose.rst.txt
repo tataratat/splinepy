@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.transpose
+================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.transpose

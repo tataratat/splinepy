@@ -1,0 +1,793 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.io.cats &#8212; splinepy 0.0.52 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=8f071acd" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../../_static/documentation_options.js?v=73f2ab08"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/io/cats';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">splinepy 0.0.52 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../spline_intro.html">
+                        Introduction to Splines
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+                        Github
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../api_reference.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../spline_intro.html">
+                        Introduction to Splines
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+                        Github
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../api_reference.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">splinepy.io.cats</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.io.cats</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">xml io.</span>
+<span class="sd">Keyword follows RWTH CATS&#39;s spline format.</span>
+<span class="sd">Possibly will be turned into pure python io.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">_ET</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">_python_version</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+
+<span class="kn">from</span> <span class="nn">splinepy.io</span> <span class="kn">import</span> <span class="n">ioutils</span> <span class="k">as</span> <span class="n">_ioutils</span>
+<span class="kn">from</span> <span class="nn">splinepy.utils.log</span> <span class="kn">import</span> <span class="n">debug</span> <span class="k">as</span> <span class="n">_debug</span>
+<span class="kn">from</span> <span class="nn">splinepy.utils.log</span> <span class="kn">import</span> <span class="n">warning</span> <span class="k">as</span> <span class="n">_warning</span>
+
+<span class="c1"># List of spline keywords (bundled here in case they change - many unused)</span>
+<span class="n">CATS_XML_KEY_WORDS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;spline_type&quot;</span><span class="p">:</span> <span class="s2">&quot;SplineType&quot;</span><span class="p">,</span>  <span class="c1"># useless keyword (always one)</span>
+    <span class="s2">&quot;patch&quot;</span><span class="p">:</span> <span class="s2">&quot;SplineEntry&quot;</span><span class="p">,</span>  <span class="c1"># key for new patch in List</span>
+    <span class="s2">&quot;n_patches&quot;</span><span class="p">:</span> <span class="s2">&quot;NumberOfSplines&quot;</span><span class="p">,</span>  <span class="c1"># number of patches</span>
+    <span class="s2">&quot;para_dim&quot;</span><span class="p">:</span> <span class="s2">&quot;splDim&quot;</span><span class="p">,</span>  <span class="c1"># Parametric dimension</span>
+    <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="s2">&quot;spaceDim&quot;</span><span class="p">,</span>  <span class="c1"># Spatial dimension</span>
+    <span class="s2">&quot;field_dim&quot;</span><span class="p">:</span> <span class="s2">&quot;numOfCntrlPntVars&quot;</span><span class="p">,</span>  <span class="c1"># Number of control point variables</span>
+    <span class="s2">&quot;n_ctps&quot;</span><span class="p">:</span> <span class="s2">&quot;numCntrlPnts&quot;</span><span class="p">,</span>  <span class="c1"># Number of control points</span>
+    <span class="s2">&quot;n_element_vars&quot;</span><span class="p">:</span> <span class="s2">&quot;numOfEleVars&quot;</span><span class="p">,</span>  <span class="c1"># Number of element variables</span>
+    <span class="s2">&quot;periodic&quot;</span><span class="p">:</span> <span class="s2">&quot;closed&quot;</span><span class="p">,</span>  <span class="c1"># Is the spline closed? No[0] or yes[1] for each</span>
+    <span class="c1"># parameter direction</span>
+    <span class="s2">&quot;coeff_names&quot;</span><span class="p">:</span> <span class="s2">&quot;cntrlPntVarNames&quot;</span><span class="p">,</span>  <span class="c1"># Names of coefficients</span>
+    <span class="s2">&quot;control_points&quot;</span><span class="p">:</span> <span class="s2">&quot;cntrlPntVars&quot;</span><span class="p">,</span>  <span class="c1"># Actual control points</span>
+    <span class="s2">&quot;conforming_ctps&quot;</span><span class="p">:</span> <span class="s2">&quot;connectedCntrlPnts&quot;</span><span class="p">,</span>  <span class="c1"># Interfaces and conforming</span>
+    <span class="c1"># control points</span>
+    <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="s2">&quot;wght&quot;</span><span class="p">,</span>  <span class="c1"># Weights (every spline is a nurbs)</span>
+    <span class="s2">&quot;degrees&quot;</span><span class="p">:</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>  <span class="c1"># Degrees vector</span>
+    <span class="s2">&quot;knot_vectors&quot;</span><span class="p">:</span> <span class="s2">&quot;kntVecs&quot;</span><span class="p">,</span>  <span class="c1"># Vector of knot vectors</span>
+    <span class="s2">&quot;knot_vector&quot;</span><span class="p">:</span> <span class="s2">&quot;knotVec&quot;</span><span class="p">,</span>  <span class="c1"># individual knot vector</span>
+    <span class="s2">&quot;spline_list&quot;</span><span class="p">:</span> <span class="s2">&quot;SplineList&quot;</span><span class="p">,</span>  <span class="c1"># Global list of patches</span>
+    <span class="s2">&quot;element_variables&quot;</span><span class="p">:</span> <span class="s2">&quot;elmentVars&quot;</span><span class="p">,</span>  <span class="c1"># Variables defined on the element</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.cats.load.html#splinepy.io.cats.load">[docs]</a>
+<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read spline in `.xml` form.</span>
+<span class="sd">    RWTH CATS spline format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    fname: str</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    splines: Multipatch object</span>
+<span class="sd">      Spline Type defined in NAME_TO_TYPE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_read_spline</span><span class="p">(</span><span class="n">xml_element</span><span class="p">):</span>
+        <span class="n">spline_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">xml_element</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;patch&quot;</span><span class="p">]):</span>
+            <span class="n">_debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found unexpected keyword </span><span class="si">{</span><span class="n">xml_element</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">, which will be &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;ignored&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Read required information from Header in xml element</span>
+
+        <span class="n">dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;dim&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">para_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="n">xml_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;para_dim&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ctps_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="n">xml_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;field_dim&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">n_ctps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;n_ctps&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">is_periodic</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">xml_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;periodic&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dim</span><span class="p">,</span> <span class="n">para_dim</span><span class="p">,</span> <span class="n">ctps_dim</span><span class="p">,</span> <span class="n">n_ctps</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Not enough information provided for xml-element &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">xml_element</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">ctps_dim</span> <span class="o">&gt;</span> <span class="n">dim</span><span class="p">:</span>
+            <span class="n">_debug</span><span class="p">(</span>
+                <span class="s2">&quot;Spline seems to contain field information, but field &quot;</span>
+                <span class="s2">&quot;retrieval is not implemented. All non-geometry info will be &quot;</span>
+                <span class="s2">&quot;ignored&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_periodic</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Periodic splines are not (yet) supported. Try saving your &quot;</span>
+                <span class="s2">&quot;spline by repeating first and last control points.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">xml_element</span><span class="p">:</span>
+            <span class="c1"># We ignore most keywords at the moment</span>
+            <span class="k">if</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;coeff_names&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">_debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Will use the following control point vars as control &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;point coordinates : </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="n">dim</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Control points</span>
+            <span class="k">elif</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+                    <span class="n">info</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ctps_dim</span><span class="p">)[:,</span> <span class="p">:</span><span class="n">dim</span><span class="p">]</span>
+
+            <span class="c1"># degrees</span>
+            <span class="k">elif</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+                    <span class="n">info</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">para_dim</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Conflicting information provided. Got &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spline_dict</span><span class="p">[</span><span class="s1">&#39;degrees&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> degrees, but &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;parametric dimension is </span><span class="si">{</span><span class="n">para_dim</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># weights</span>
+            <span class="k">elif</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+                    <span class="n">info</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># knot vectors</span>
+            <span class="k">elif</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">child_info</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;knot_vector&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">child_info</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                        <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;Redundant item in knot_vectors block of xml&quot;</span><span class="p">)</span>
+                    <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">_np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+                            <span class="n">child_info</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># All other keywords will be ignored for the moment</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring keyword </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spline_dict</span>
+
+    <span class="c1"># Parse  XML file</span>
+    <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing xml-file &#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&#39; ...&quot;</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+    <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;XML-file parsed start conversion&quot;</span><span class="p">)</span>
+    <span class="n">list_of_splines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;spline_list&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;spline_type&quot;</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown SplineType &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s1">&#39;spline_type&#39;</span><span class="p">]]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">n_patches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;n_patches&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">patch_element</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="n">list_of_splines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_read_spline</span><span class="p">(</span><span class="n">patch_element</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unused xml-keyword </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found a total of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="sa">f</span><span class="s2">&quot;BSplines and NURBS&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_patches</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span><span class="si">}</span><span class="s2"> splines, but expected to find &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_patches</span><span class="si">}</span><span class="s2"> patches&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Return splines</span>
+    <span class="k">return</span> <span class="n">_ioutils</span><span class="o">.</span><span class="n">dict_to_spline</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.cats.export.html#splinepy.io.cats.export">[docs]</a>
+<span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save spline as `.xml`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    fname: str</span>
+<span class="sd">      Export file name</span>
+<span class="sd">    multipatch: Multipatch / list</span>
+<span class="sd">      Splines to be exported</span>
+<span class="sd">    indent: bool</span>
+<span class="sd">      Option for pretty printing</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">splinepy.multipatch</span> <span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+    <span class="kn">from</span> <span class="nn">splinepy.spline</span> <span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+    <span class="c1"># First transform spline-data into a multipatch-data if required</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">spline_list</span><span class="p">),</span> <span class="n">_Spline</span><span class="p">):</span>
+        <span class="c1"># Transform to list</span>
+        <span class="n">spline_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">spline_list</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="c1"># @todo: current implementation only exports geometry, export fields</span>
+        <span class="k">if</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">_warning</span><span class="p">(</span><span class="s2">&quot;Fields are not supported yet&quot;</span><span class="p">)</span>
+        <span class="c1"># Transform to multipatch</span>
+        <span class="n">spline_list</span> <span class="o">=</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">patches</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;export Function expects list for multipatch argument&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Start a list of a list of patches</span>
+    <span class="n">spline_list_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span>
+        <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;spline_list&quot;</span><span class="p">],</span>
+        <span class="n">SplineType</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">**</span><span class="p">{</span><span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;n_patches&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline_list</span><span class="p">))},</span>
+    <span class="p">)</span>
+
+    <span class="c1"># licked it so its ours</span>
+    <span class="n">spline_list_element</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="n">_ET</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span>
+            <span class="s2">&quot;generated by splinepy https://github.com/tataratat/splinepy&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">new_line_char</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">indent</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span>
+
+    <span class="c1"># All Splines (patches) are written into the spline list as entries</span>
+    <span class="k">for</span> <span class="n">spline</span> <span class="ow">in</span> <span class="n">spline_list</span><span class="p">:</span>
+        <span class="c1"># Convert to non-bezier type (might make unnecessary copy)</span>
+        <span class="n">patch</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">nurbs</span> <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">is_rational</span> <span class="k">else</span> <span class="n">spline</span><span class="o">.</span><span class="n">bspline</span>
+
+        <span class="c1"># Write spline header</span>
+        <span class="n">patch_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">spline_list_element</span><span class="p">,</span>
+            <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;patch&quot;</span><span class="p">],</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;para_dim&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;dim&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;field_dim&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;n_ctps&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="n">patch</span><span class="o">.</span><span class="n">cps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;n_element_vars&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;periodic&quot;</span><span class="p">]:</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Variable names (@todo fields)</span>
+        <span class="n">control_point_var_names</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">patch_element</span><span class="p">,</span>
+            <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;coeff_names&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># These are usually hard coded variable names in xns or feafa</span>
+        <span class="c1"># x y z t seems to only matter. see issue #257</span>
+        <span class="n">cp_varnames</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;y&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;t&quot;</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;x</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">patch</span><span class="o">.</span><span class="n">dim</span><span class="p">)],</span>
+        <span class="p">]</span>
+        <span class="n">control_point_var_names</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cp_varnames</span><span class="p">[:</span> <span class="n">patch</span><span class="o">.</span><span class="n">dim</span><span class="p">])</span>
+
+        <span class="c1"># Control point variables</span>
+        <span class="n">control_points_elements</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">patch_element</span><span class="p">,</span>
+            <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">control_points_elements</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">new_line_char</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">patch</span><span class="o">.</span><span class="n">cps</span>
+        <span class="p">)</span>
+
+        <span class="c1"># degrees</span>
+        <span class="n">degrees_elements</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">patch_element</span><span class="p">,</span>
+            <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">degrees_elements</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">deg</span><span class="p">)</span> <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">patch</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+
+        <span class="c1"># knot-vectors</span>
+        <span class="n">knot_vectors_elements</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">patch_element</span><span class="p">,</span>
+            <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">kv</span> <span class="ow">in</span> <span class="n">patch</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">:</span>
+            <span class="n">knot_vector_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">knot_vectors_elements</span><span class="p">,</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;knot_vector&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">knot_vector_element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kv</span><span class="p">)</span>
+
+        <span class="c1"># weights if rational</span>
+        <span class="k">if</span> <span class="n">patch</span><span class="o">.</span><span class="n">is_rational</span><span class="p">:</span>
+            <span class="n">weights_elements</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">patch_element</span><span class="p">,</span>
+                <span class="n">CATS_XML_KEY_WORDS</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">weights_elements</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">patch</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Beautify and export</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">_python_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">indent</span><span class="p">:</span>
+        <span class="c1"># Pretty printing xml with indent only exists in version &gt; 3.9</span>
+        <span class="n">_ET</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">spline_list_element</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">_python_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">indent</span><span class="p">:</span>
+        <span class="n">_debug</span><span class="p">(</span>
+            <span class="s2">&quot;Indented xml output is only supported from &gt; python3.9.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Output will not be indented.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Current python version: </span><span class="si">{</span><span class="n">_python_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">file_content</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">spline_list_element</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

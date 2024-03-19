@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.knot\_insertion\_matrix
+================================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.knot_insertion_matrix

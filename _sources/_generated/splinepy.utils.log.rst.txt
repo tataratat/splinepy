@@ -1,0 +1,36 @@
+.. _splinepy.utils.log:
+
+splinepy.utils.log
+==================
+
+.. automodule:: splinepy.utils.log
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      configure
+      debug
+      info
+      prepend_log
+      warning
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

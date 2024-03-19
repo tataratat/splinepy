@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.orientations
+====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: orientations

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.core\_ref\_count
+========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: core_ref_count

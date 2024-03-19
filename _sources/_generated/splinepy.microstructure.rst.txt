@@ -1,0 +1,35 @@
+.. _splinepy.microstructure:
+
+splinepy.microstructure
+=======================
+
+.. automodule:: splinepy.microstructure
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   splinepy.microstructure.microstructure
+   splinepy.microstructure.tiles
+

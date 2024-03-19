@@ -1,0 +1,44 @@
+splinepy.microstructure.tiles.armadillo.Armadillo
+=================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.armadillo
+
+.. autoclass:: Armadillo
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Armadillo.check_param_derivatives
+     
+     
+       Armadillo.check_params
+     
+     
+       Armadillo.closing_tile
+     
+     
+       Armadillo.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

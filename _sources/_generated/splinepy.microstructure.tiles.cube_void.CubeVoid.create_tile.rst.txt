@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.cube\_void.CubeVoid.create\_tile
+==============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cube_void
+
+.. automethod:: CubeVoid.create_tile

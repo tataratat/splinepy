@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.hollow\_octagon.HollowOctagon.check\_params
+=========================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_octagon
+
+.. automethod:: HollowOctagon.check_params
