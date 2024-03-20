@@ -70,6 +70,7 @@ class SVGExportTest(c.unittest.TestCase):
                 [bez_el0, rbz_el1, bsp_el2, nur_el3],
                 indent=False,
                 box_margins=0.7,
+                font_family="sans-serif",
             )
 
             with open(tmpf) as tmp_read, open(
@@ -90,6 +91,7 @@ class SVGExportTest(c.unittest.TestCase):
                 nur_el3,
                 indent=False,
                 box_margins=0.7,
+                font_family="sans-serif",
             )
 
             with open(tmpf) as tmp_read, open(
@@ -120,6 +122,7 @@ class SVGExportTest(c.unittest.TestCase):
                     control_mesh_c="purple",
                     control_point_c="black",
                     control_mesh_lw=0.05,
+                    font_family="sans-serif",
                 )
 
                 with open(tmpf) as tmp_read, open(
