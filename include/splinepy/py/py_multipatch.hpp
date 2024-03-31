@@ -376,14 +376,17 @@ public:
   py::array_t<int> GetInterfaces(const bool recompute = false);
 
   /// @brief Gets IDs of boundary patch
-  py::array_t<int> BoundaryPatchIds();
+  /// @param bid boundary ID to be extracted
+  py::array_t<int> BoundaryPatchIds(const int bid);
 
   /// @brief Gets boundary multi patch
-  std::shared_ptr<PyMultipatch> BoundaryMultipatch();
+  /// @param bid boundary ID to be extracted
+  std::shared_ptr<PyMultipatch> BoundaryMultipatch(const int bid);
 
   /// @brief returns derived class of boundary multi patch
+  /// @param bid boundary ID to be extracted
   /// @return
-  py::object PyBoundaryMultipatch();
+  py::object PyBoundaryMultipatch(const int bid);
 
   /// @brief Evaluate at query points
   /// @param queries Query points
