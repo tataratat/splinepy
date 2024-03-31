@@ -428,7 +428,7 @@ class Cross2D(_TileBase):
         self.check_params(parameters)
 
         if not (_np.all(parameters > 0) and _np.all(parameters < max_radius)):
-            raise ValueError(f"Thickness out of range (0, {center_expansion})")
+            raise ValueError(f"Thickness out of range (0, {max_radius})")
 
         self.check_param_derivatives(parameter_sensitivities)
 
