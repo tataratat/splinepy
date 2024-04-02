@@ -80,7 +80,7 @@ def _spline_to_ET(
             field_mask = _np.arange(len(multipatch.fields))
         supports = _np.array(
             [
-                (i, j, 0)
+                (i, k, 0)
                 for j, k in enumerate(field_mask)
                 for i, v in enumerate(multipatch.fields[k].patches)
                 if v is not None
