@@ -86,7 +86,7 @@ def testNURBS(np_rng):
     with pytest.raises(
         RuntimeError,
         match=r"SPLINEPY ERROR - Zero dimensional data points "
-        r"cannot constitute a spline.",
+        r"can not constitute a spline.",
     ):
         splinepy.NURBS(
             degrees=[1],
