@@ -303,9 +303,28 @@ def export(
         f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
     )
 
-    interface_data = _ET.SubElement(multipatch_element, "interfaces")
+    ###
+    # Individual spline data
+    ###
+    # Export fields first, as all necessary information is already available
+    if export_fields:
+        field_xml = _copy.deepcopy(xml_data)
+        _spline_to_ET(
+            field_xml,
+            multipatch,
+            index_offset,
+            fields_only=True,
+            as_base64=as_base64,
+            field_mask=field_mask,
+        )
+        if int(_python_version.split(".")[1]) >= 9 and indent:
+            _ET.indent(field_xml)
+        file_content = _ET.tostring(field_xml)
+        with open(fname + ".fields.xml", "wb") as f:
+            f.write(file_content)
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
+    interface_data = _ET.SubElement(multipatch_element, "interfaces")
     global_interface_id = _np.where(multipatch.interfaces.ravel() >= 0)[0]
 
     if global_interface_id.size == 0:
@@ -380,26 +399,6 @@ def export(
                         for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
                     ]
                 )
-
-    ###
-    # Individual spline data
-    ###
-    # Export fields first, as all necessary information is already available
-    if export_fields:
-        field_xml = _copy.deepcopy(xml_data)
-        _spline_to_ET(
-            field_xml,
-            multipatch,
-            index_offset,
-            fields_only=True,
-            as_base64=as_base64,
-            field_mask=field_mask,
-        )
-        if int(_python_version.split(".")[1]) >= 9 and indent:
-            _ET.indent(field_xml)
-        file_content = _ET.tostring(field_xml)
-        with open(fname + ".fields.xml", "wb") as f:
-            f.write(file_content)
 
     _spline_to_ET(
         xml_data,
