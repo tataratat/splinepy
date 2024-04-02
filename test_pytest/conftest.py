@@ -145,6 +145,13 @@ def dict_nurbs_2p2d(get_2d_control_points_nurbs):
     }
 
 
+@pytest.fixture
+def nurbs_2p2d_quarter_circle(dict_nurbs_2p2d):
+    """explicit function for quarter circle
+    in case n2p2d changes in the future..."""
+    return dict_nurbs_2p2d
+
+
 #
 @pytest.fixture
 def dict_bezier_2p2d(get_2d_control_points_nurbs):
@@ -300,36 +307,42 @@ def nurbs_3p3d(get_3d_control_points, get_knotvectors_3):
 
 
 @pytest.fixture
-def raster(bounds, resolutions):
-    """prepares raster points using np.meshgrid"""
-    l_bounds, u_bounds = bounds[0], bounds[1]
-    pts = np.meshgrid(
-        *[
-            np.linspace(lo, up, re)
-            for lo, up, re in zip(l_bounds, u_bounds, resolutions)
-        ],
-        indexing="ij",
-    )
-    # return pts
-    return np.hstack([p.reshape(-1, 1) for p in pts[::-1]])
+def raster():
+    def _raster(bounds, resolutions):
+        """prepares raster points using np.meshgrid"""
+        l_bounds, u_bounds = bounds[0], bounds[1]
+        pts = np.meshgrid(
+            *[
+                np.linspace(lo, up, re)
+                for lo, up, re in zip(l_bounds, u_bounds, resolutions)
+            ],
+            indexing="ij",
+        )
+        # return pts
+        return np.hstack([p.reshape(-1, 1) for p in pts[::-1]])
+
+    return _raster
 
 
 @pytest.fixture
-def nd_box(dim):
-    """creates simple box in n-d"""
-    ds = [1 for _ in range(dim)]
-    cps = raster(
-        [[0 for _ in range(dim)], [1 for _ in range(dim)]],
-        [2 for _ in range(dim)],
-    )
-    kvs = [[0, 0, 1, 1] for _ in range(dim)]
-    ws = np.ones((len(cps), 1))
-    return {
-        "degrees": ds,
-        "control_points": cps,
-        "knot_vectors": kvs,
-        "weights": ws,
-    }
+def nd_box(raster):
+    def _nd_box(dim):
+        """creates simple box in n-d"""
+        ds = [1 for _ in range(dim)]
+        cps = raster(
+            [[0 for _ in range(dim)], [1 for _ in range(dim)]],
+            [2 for _ in range(dim)],
+        )
+        kvs = [[0, 0, 1, 1] for _ in range(dim)]
+        ws = np.ones((len(cps), 1))
+        return {
+            "degrees": ds,
+            "control_points": cps,
+            "knot_vectors": kvs,
+            "weights": ws,
+        }
+
+    return _nd_box
 
 
 @pytest.fixture
