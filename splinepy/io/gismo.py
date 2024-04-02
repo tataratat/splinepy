@@ -109,10 +109,14 @@ def _spline_to_ET(
             [" ".join([str(xx) for xx in x]) for x in supports]
         )
 
+    id_count = -1
     for id, spline in enumerate(multipatch.patches):
         if fields_only:
             # Check supports
             support = supports[supports[:, 0] == id, 1]
+            if support.size == 0:
+                continue
+            id_count += 1
             coefs = _np.hstack(
                 [
                     multipatch.fields[j].patches[id].control_points
@@ -124,6 +128,7 @@ def _spline_to_ET(
                     [multipatch.fields[j][id].weights for j in support]
                 )
         else:
+            id_count = id
             coefs = spline.control_points
             if "weights" in spline.required_properties:
                 weights = spline.weights
@@ -150,7 +155,7 @@ def _spline_to_ET(
         spline_element = _ET.SubElement(
             root,
             "Geometry",
-            id=str(id + index_offset),
+            id=str(id_count + index_offset),
             type="Tensor" + type_name + str(spline.para_dim),
         )
 
@@ -209,6 +214,7 @@ def _spline_to_ET(
         )
         coords.text = _array_to_text(coefs, True, as_base64)
 
+    return id_count
 
 def export(
     fname,
@@ -299,9 +305,9 @@ def export(
     patch_range = _ET.SubElement(
         multipatch_element, "patches", type="id_range"
     )
-    patch_range.text = (
-        f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
-    )
+    # patch_range.text = (
+    #     f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
+    # )
 
     ###
     # Individual spline data
@@ -309,7 +315,8 @@ def export(
     # Export fields first, as all necessary information is already available
     if export_fields:
         field_xml = _copy.deepcopy(xml_data)
-        _spline_to_ET(
+
+        n_patches = _spline_to_ET(
             field_xml,
             multipatch,
             index_offset,
@@ -317,11 +324,25 @@ def export(
             as_base64=as_base64,
             field_mask=field_mask,
         )
+        field_xml.find("MultiPatch").find("patches").text = (
+        f"{index_offset} " f"{n_patches+ index_offset}"
+        )
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
         file_content = _ET.tostring(field_xml)
         with open(fname + ".fields.xml", "wb") as f:
             f.write(file_content)
+
+    n_patches = _spline_to_ET(
+        xml_data,
+        multipatch,
+        index_offset,
+        as_base64=as_base64,
+    )
+    assert(n_patches + 1 == len(multipatch.patches))
+    patch_range.text = (
+        f"{index_offset} " f"{n_patches + index_offset}"
+    )
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
     interface_data = _ET.SubElement(multipatch_element, "interfaces")
@@ -399,13 +420,6 @@ def export(
                         for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
                     ]
                 )
-
-    _spline_to_ET(
-        xml_data,
-        multipatch,
-        index_offset,
-        as_base64=as_base64,
-    )
 
     # Add additional options to the xml file
     if options is not None:
