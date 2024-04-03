@@ -137,7 +137,7 @@ def _write_png(bitmap, as_base64=True):
         return pure_data
 
 
-def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
+def _export_spline_field(spline, svg_element, box_min_x, box_max_y, **kwargs):
     """
     Export a spline's data-field as a pixel-bitmap. The pixel density is based
     on the sample resolution, (10 * resolution). The image is embedded in b64
@@ -193,7 +193,15 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         bg=(255, 255, 255),
         axes=0,
     )
-    plotter.show(sampled_spline.showable(), zoom="tightest")
+    showable = sampled_spline.showable()
+
+    # Discretize colors
+    if kwargs.get("n_colors", None) is not None:
+        n_colors = kwargs.get("n_colors", None)
+        cmap_key = spline.show_options.get("cmap", "jet")
+        showable.cmap(cmap_key, n_colors=n_colors)
+
+    plotter.show(showable, zoom="tightest")
 
     # Extract bounding box
     x_min, y_min, x_max, y_max = sampled_spline.bounds().ravel()
@@ -695,7 +703,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     # Temporary
     r, g, b = _get_color(kwargs.get("scalarbar_c", "k"))
     a = 1.0
-    stroke_width = kwargs.get("scalarbar_stroke_width", "k")
+    stroke_width = kwargs.get("scalarbar_stroke_width", box_size[0] * 0.002)
 
     # Prepare auxiliary values
     scalarbar_height = scalarbar_width / scalarbar_aspect_ratio
@@ -717,7 +725,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     box.show_options["cmap"] = cmap
     box.show_options["vmin"] = vmin
     box.show_options["vmax"] = vmax
-    _export_spline_field(box, svg_scalarbar, 0, box_size[1])
+    _export_spline_field(box, svg_scalarbar, 0, box_size[1], **kwargs)
 
     # Add tickmarks
     svg_tick_marks = _ET.SubElement(
@@ -739,7 +747,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     if kwargs.get("font_family", None) is not None:
         svg_tick_labels.attrib["font-family"] = kwargs["font_family"]
     svg_tick_labels.attrib["font-size"] = str(
-        kwargs.get("scalarbar_font_size", 0.1)
+        kwargs.get("scalarbar_font_size", stroke_width * 20)
     )
     svg_tick_labels.attrib["text-anchor"] = kwargs.get("text_anchor", "middle")
     svg_tick_labels.attrib["fill"] = _rgb_2_hex(
@@ -747,7 +755,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     )
     svg_tick_labels.attrib["stroke"] = "none"
     # Text offset
-    dx = kwargs.get("scalarbar_tick_distance", 0.1)
+    dx = kwargs.get("scalarbar_tick_distance", stroke_width * 10)
 
     # Create Ticks
     tick_marks = _np.linspace(vmin, vmax, number_of_ticks)
@@ -979,7 +987,9 @@ def _export_spline(
     if spline.show_options.get("data", None) is not None:
 
         # spline.show()
-        _export_spline_field(spline, svg_spline, box_min_x, box_max_y)
+        _export_spline_field(
+            spline, svg_spline, box_min_x, box_max_y, **kwargs
+        )
 
     else:
         # Export is done in 2 stages
@@ -1390,7 +1400,7 @@ def export(
         if orig_show_options is not None:
             object._show_options = orig_show_options
     if scalarbar:
-        _add_scalar_bar(svg_data, box_size, box_margins, **kwargs)
+        _add_scalar_bar(svg_data, box_size, **kwargs)
 
     # Dump into file
     if indent and hasattr(_ET, "indent"):
