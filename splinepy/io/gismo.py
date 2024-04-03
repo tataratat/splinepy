@@ -109,6 +109,8 @@ def _spline_to_ET(
             [" ".join([str(xx) for xx in x]) for x in supports]
         )
 
+    # set to -1 since loop starts with id_count += 1, therefore the first
+    # patch starts with id = 0
     id_count = -1
     for id, spline in enumerate(multipatch.patches):
         if fields_only:
@@ -216,6 +218,7 @@ def _spline_to_ET(
 
     return id_count
 
+
 def export(
     fname,
     multipatch=None,
@@ -305,9 +308,6 @@ def export(
     patch_range = _ET.SubElement(
         multipatch_element, "patches", type="id_range"
     )
-    # patch_range.text = (
-    #     f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
-    # )
 
     ###
     # Individual spline data
@@ -325,7 +325,7 @@ def export(
             field_mask=field_mask,
         )
         field_xml.find("MultiPatch").find("patches").text = (
-        f"{index_offset} " f"{n_patches+ index_offset}"
+            f"{index_offset} " f"{n_patches + index_offset}"
         )
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
@@ -339,10 +339,11 @@ def export(
         index_offset,
         as_base64=as_base64,
     )
-    assert(n_patches + 1 == len(multipatch.patches))
-    patch_range.text = (
-        f"{index_offset} " f"{n_patches + index_offset}"
-    )
+
+    if n_patches + 1 != len(multipatch.patches):
+        raise RuntimeError("Help - some patches were not recognised")
+
+    patch_range.text = f"{index_offset} " f"{n_patches + index_offset}"
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
     interface_data = _ET.SubElement(multipatch_element, "interfaces")
