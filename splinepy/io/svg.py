@@ -199,7 +199,9 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y, **kwargs):
     if kwargs.get("n_colors", None) is not None:
         n_colors = kwargs.get("n_colors", None)
         cmap_key = spline.show_options.get("cmap", "jet")
-        showable.cmap(cmap_key, n_colors=n_colors)
+        vmin = kwargs.get("vmin", spline.show_options.get("vmin", None))
+        vmax = kwargs.get("vmax", spline.show_options.get("vmax", None))
+        showable.cmap(cmap_key, vmin=vmin, vmax=vmax, n_colors=n_colors)
 
     plotter.show(showable, zoom="tightest")
 
