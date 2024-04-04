@@ -275,6 +275,7 @@ def _process_scalar_field(spline, data, sampled_spline, res):
             "scalarbar3d",
             "cmap",
             "cmap_alpha",
+            "cmap_n_colors",
         )
         spline.show_options.copy_valid_options(
             sampled_spline.show_options, keys
