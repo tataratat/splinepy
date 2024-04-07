@@ -69,11 +69,13 @@ def test_composition():
     test_splines(surface_rational, inner_rational)
 
 
-def test_composition_sensitivities_on_bsplines(request):
+def test_composition_sensitivities_on_bsplines(bspline_2p2d):
     """Combine Composition sensitivities with BSpline extraction"""
 
-    # Initialize outer functions
-    bspline = request.getfixturevalue("bspline_2p2d")
+    # Initialize outer function
+    bspline = bspline_2p2d
+
+    # Initialize inner function
     inner_function = splinepy.Bezier(
         degrees=[1, 1],
         control_points=[
@@ -128,9 +130,9 @@ def test_composition_sensitivities_on_bsplines(request):
             bspline_dx.cps[cps, dim] -= dx
 
 
-def test_sum(np_rng, request):
+def test_sum(np_rng, bezier_2p2d):
     # Create two splines
-    bezier1 = request.getfixturevalue("bezier_2p2d")
+    bezier1 = bezier_2p2d
     bezier2 = splinepy.Bezier(
         degrees=[1, 1],
         control_points=[
@@ -153,9 +155,9 @@ def test_sum(np_rng, request):
     )
 
 
-def test_multiply(np_rng, request):
+def test_multiply(np_rng, bezier_2p2d):
     # Create two splines
-    bezier1 = request.getfixturevalue("bezier_2p2d")
+    bezier1 = bezier_2p2d
     bezier2 = splinepy.Bezier(
         degrees=[1, 1],
         control_points=[

@@ -1,11 +1,13 @@
 import numpy as np
 
 
-def test_c_contiguous_array_input(request):
+def test_c_contiguous_array_input(
+    spline_types_as_list, get_spline_dictionaries
+):
     """Test whether cpp sides receives contiguous array"""
 
-    splinelist = request.getfixturevalue("spline_types_as_list")
-    splinedict = request.getfixturevalue("get_spline_dictionaries")
+    splinelist = spline_types_as_list
+    splinedict = get_spline_dictionaries
 
     for spl, properties in zip(
         splinelist,

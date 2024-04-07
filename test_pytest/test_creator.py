@@ -23,21 +23,19 @@ all_splines = (
 )
 
 
-def test_create_embedded(request):
+def test_create_embedded(bspline_2p2d, nurbs_2p2d):
     """
     Test embedding for (rational) splines
     """
-    # make a couple of 2D splines
-    bspline = request.getfixturevalue("bspline_2p2d")
-    nurbs = request.getfixturevalue("nurbs_2p2d")
-    embedded_bspline = bspline.create.embedded(3)
+
+    embedded_bspline = bspline_2p2d.create.embedded(3)
     assert np.allclose(
-        bspline.cps[:, :2],
+        bspline_2p2d.cps[:, :2],
         embedded_bspline.cps[:, :2],
     )
-    embedded_nurbs = nurbs.create.embedded(3)
+    embedded_nurbs = nurbs_2p2d.create.embedded(3)
     assert np.allclose(
-        nurbs.cps[:, :2],
+        nurbs_2p2d.cps[:, :2],
         embedded_nurbs.cps[:, :2],
     )
 
