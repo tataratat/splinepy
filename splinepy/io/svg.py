@@ -40,7 +40,104 @@ def _rgb_2_hex(r, g, b):
     return f"#{int(255 * r):02x}{int(255 * g):02x}{int(255 * b):02x}"
 
 
-def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
+def _write_png(bitmap, as_base64=True):
+    """
+    Write PNG data from a buffer.
+
+    This function is taken from
+    https://stackoverflow.com/questions/56564977/
+
+    Nitesh Menon's answer with some comments added to it
+
+    Replacing this by an external library like PIL or imageio is a @todo
+    still.
+
+    Parameters
+    ----------
+    bitmap : np.ndarray
+        Picture with dimensions (width, height, 4) as RGBA image
+    as_base64 : bool
+        Write into readable base64 format
+
+    Returns
+    -------
+    png : string
+        Base64 encoded String with png data
+    """
+    import base64
+    import struct  # Packing data
+    import zlib  # Compression
+
+    # Extract data
+    buf = bytearray(bitmap)
+    if (
+        (bitmap.ndim != 3)
+        or (bitmap.shape[2] != 4)
+        or (bitmap.dtype is not _np.dtype("uint8"))
+    ):
+        raise ValueError("Was expecting bitmap in RGBA format")
+    width = bitmap.shape[1]
+    height = bitmap.shape[0]
+
+    # Reverse the vertical line order and add null bytes at the start
+    width_byte_4 = width * 4
+
+    # Note: Contrary to the original post, the array is not concatenated in
+    # reverse but in the original order (modified by jzwar)
+    raw_data = b"".join(
+        # Add a null byte and concatenate the raw data
+        b"\x00" + buf[span : (span + width_byte_4)]
+        # Iterate over the buffer
+        for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
+    )
+
+    def png_pack(png_tag, data):
+        """
+        Pack PNG data into a chunk according to png standard.
+
+        Parameters:
+        png_tag : bytes
+            PNG tag identifier.
+        data : bytes
+            Data to be packed.
+
+        Returns
+        -------
+        bytes
+            Packed PNG chunk.
+        """
+        chunk_head = png_tag + data  # Concatenate the tag and data
+        return (
+            # Pack the length of chunk
+            struct.pack("!I", len(data))
+            +
+            # Concatenate the chunk header
+            chunk_head
+            +
+            # Pack CRC-32 checksum
+            struct.pack("!I", 0xFFFFFFFF & zlib.crc32(chunk_head))
+        )
+
+    pure_data = b"".join(
+        [
+            b"\x89PNG\r\n\x1a\n",  # PNG file signature
+            png_pack(
+                b"IHDR", struct.pack("!2I5B", width, height, 8, 6, 0, 0, 0)
+            ),  # PNG header chunk
+            # PNG data chunk (compressed)
+            png_pack(b"IDAT", zlib.compress(raw_data, 9)),
+            png_pack(b"IEND", b""),  # PNG end chunk
+        ]
+    )
+
+    # Return encoded
+    if as_base64:
+        return base64.b64encode(pure_data)
+    else:
+        return pure_data
+
+
+def _export_spline_field(spline, svg_element, box_min_x, box_max_y, **kwargs):
     """
     Export a spline's data-field as a pixel-bitmap. The pixel density is based
     on the sample resolution, (10 * resolution). The image is embedded in b64
@@ -66,102 +163,6 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
     """
 
     from splinepy.helpme.visualize import _process_scalar_field, _sample_spline
-
-    def _write_png(bitmap, as_base64=True):
-        """
-        Write PNG data from a buffer.
-
-        This function is taken from
-        https://stackoverflow.com/questions/56564977/
-
-        Nitesh Menon's answer with some comments added to it
-
-        Replacing this by an external library like PIL or imageio is a @todo
-        still.
-
-        Parameters
-        ----------
-        bitmap : np.ndarray
-          Picture with dimensions (width, height, 4) as RGBA image
-        as_base64 : bool
-          Write into readable base64 format
-
-        Returns
-        -------
-        png : string
-          Base64 encoded String with png data
-        """
-        import base64
-        import struct  # Packing data
-        import zlib  # Compression
-
-        # Extract data
-        buf = bytearray(bitmap)
-        if (
-            (bitmap.ndim != 3)
-            or (bitmap.shape[2] != 4)
-            or (bitmap.dtype is not _np.dtype("uint8"))
-        ):
-            raise ValueError("Was expecting bitmap in RGBA format")
-        width = bitmap.shape[1]
-        height = bitmap.shape[0]
-
-        # Reverse the vertical line order and add null bytes at the start
-        width_byte_4 = width * 4
-
-        # Note: Contrary to the original post, the array is not concatenated in
-        # reverse but in the original order (modified by jzwar)
-        raw_data = b"".join(
-            # Add a null byte and concatenate the raw data
-            b"\x00" + buf[span : (span + width_byte_4)]
-            # Iterate over the buffer
-            for span in range(0, (height - 1) * width_byte_4 + 1, width_byte_4)
-        )
-
-        def png_pack(png_tag, data):
-            """
-            Pack PNG data into a chunk according to png standard.
-
-            Parameters:
-            png_tag : bytes
-              PNG tag identifier.
-            data : bytes
-              Data to be packed.
-
-            Returns
-            -------
-            bytes
-              Packed PNG chunk.
-            """
-            chunk_head = png_tag + data  # Concatenate the tag and data
-            return (
-                # Pack the length of chunk
-                struct.pack("!I", len(data))
-                +
-                # Concatenate the chunk header
-                chunk_head
-                +
-                # Pack CRC-32 checksum
-                struct.pack("!I", 0xFFFFFFFF & zlib.crc32(chunk_head))
-            )
-
-        pure_data = b"".join(
-            [
-                b"\x89PNG\r\n\x1a\n",  # PNG file signature
-                png_pack(
-                    b"IHDR", struct.pack("!2I5B", width, height, 8, 6, 0, 0, 0)
-                ),  # PNG header chunk
-                # PNG data chunk (compressed)
-                png_pack(b"IDAT", zlib.compress(raw_data, 9)),
-                png_pack(b"IEND", b""),  # PNG end chunk
-            ]
-        )
-
-        # Return encoded
-        if as_base64:
-            return base64.b64encode(pure_data)
-        else:
-            return pure_data
 
     # Sample the spline
     resolution = spline.show_options.get("resolutions", 100)
@@ -192,7 +193,17 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y):
         bg=(255, 255, 255),
         axes=0,
     )
-    plotter.show(sampled_spline.showable(), zoom="tightest")
+    showable = sampled_spline.showable()
+
+    # Discretize colors
+    if kwargs.get("n_colors", None) is not None:
+        n_colors = kwargs.get("n_colors", None)
+        cmap_key = spline.show_options.get("cmap", "jet")
+        vmin = kwargs.get("vmin", spline.show_options.get("vmin", None))
+        vmax = kwargs.get("vmax", spline.show_options.get("vmax", None))
+        showable.cmap(cmap_key, vmin=vmin, vmax=vmax, n_colors=n_colors)
+
+    plotter.show(showable, zoom="tightest")
 
     # Extract bounding box
     x_min, y_min, x_max, y_max = sampled_spline.bounds().ravel()
@@ -296,9 +307,9 @@ def _export_gustaf_object(
             )
 
             # Set text options
-            svg_labels.attrib["font-family"] = kwargs.get(
-                "font_family", "sans-serif"
-            )
+            if kwargs.get("font_family", None) is not None:
+                svg_labels.attrib["font-family"] = kwargs["font_family"]
+
             svg_labels.attrib["font-size"] = str(kwargs.get("font_size", 0.1))
             svg_labels.attrib["text-anchor"] = kwargs.get(
                 "text_anchor", "middle"
@@ -357,8 +368,7 @@ def _export_control_mesh(
     """
 
     # Default behaviour in show is, no mesh and no ids, if no control points
-    if not spline.show_options.get("control_points", True):
-        return None
+    control_point_requested = spline.show_options.get("control_points", True)
 
     svg_mesh = _ET.SubElement(
         svg_spline_element,
@@ -367,7 +377,7 @@ def _export_control_mesh(
     )
 
     # First draw mesh
-    if spline.show_options.get("control_mesh", True):
+    if spline.show_options.get("control_mesh", control_point_requested):
         # Relevant options:
         # - control_mesh_c
         # - control_mesh_lw
@@ -376,7 +386,7 @@ def _export_control_mesh(
         a = spline.show_options.get("control_mesh_alpha", 1.0)
         stroke_width = spline.show_options.get(
             "control_mesh_lw",
-            _np.linalg.norm(_np.diff(spline.control_point_bounds)) * 0.001,
+            _np.linalg.norm(_np.diff(spline.control_point_bounds)) * 0.01,
         )
 
         # Create a new group
@@ -431,7 +441,7 @@ def _export_control_mesh(
                 )
 
     # Then control points
-    if spline.show_options.get("control_points", True):
+    if control_point_requested:
 
         # Relevant options:
         # - control_point_ids
@@ -460,7 +470,7 @@ def _export_control_mesh(
             )
 
     # Lastly IDs
-    if spline.show_options.get("control_point_ids", True):
+    if spline.show_options.get("control_point_ids", control_point_requested):
         # Text Options
         svg_control_point_ids = _ET.SubElement(
             svg_mesh,
@@ -469,9 +479,8 @@ def _export_control_mesh(
         )
 
         # Set text options
-        svg_control_point_ids.attrib["font-family"] = kwargs.get(
-            "font_family", "sans-serif"
-        )
+        if kwargs.get("font_family", None) is not None:
+            svg_control_point_ids.attrib["font-family"] = kwargs["font_family"]
         svg_control_point_ids.attrib["font-size"] = str(
             kwargs.get("font_size", 0.1)
         )
@@ -528,7 +537,7 @@ def _quiver_plot(
     kwargs :
       Optional for arrow sizing,
       `{"arrow_width", "arrow_head_width", "arrow_head_length",
-      "arrow_headaxis_length"}`
+      "arrow_headaxis_length", "arrow_data_tolerance"}`
 
     Returns
     -------
@@ -540,6 +549,7 @@ def _quiver_plot(
     arrow_head_width = kwargs.get("arrow_head_width", 0.3)
     arrow_head_length = kwargs.get("arrow_head_length", 0.5)
     arrow_headaxis_length = kwargs.get("arrow_headaxis_length", 0.45)
+    cut_off_tolerance = kwargs.get("arrow_data_tolerance", tolerance)
 
     # Create a default arrow along x-axis with length 1 that will be scaled
     # down accordingly
@@ -560,14 +570,27 @@ def _quiver_plot(
     if arrow_data_field is None:
         return None
 
-    # Use Arrow Data to retrieve spline data (is already scaled)
+    # Save original scale for set back
+    original_scale = spline.show_options.get("arrow_data_scale", None)
+    spline.show_options["arrow_data_scale"] = 1
+
+    # Use Arrow Data to retrieve spline data (prevent from scaling)
     arrow_data = spline.extract.arrow_data(arrow_data_field)
     positions = arrow_data.vertices[arrow_data.edges[:, 0]]
     directions = arrow_data.vertices[arrow_data.edges[:, 1]] - positions
 
+    # Set back data to original options
+    if original_scale is None:
+        spline.show_options.pop("arrow_data_scale")
+    else:
+        spline.show_options["arrow_data_scale"] = original_scale
+
+    # Retrieve scaling
+    arrow_data_scale = spline.show_options.get("arrow_data_scale", 1)
+
     # Discard all points that are below the tolerance
     arrow_length = _np.linalg.norm(directions, axis=1)
-    over_tolerance = arrow_length > tolerance
+    over_tolerance = arrow_length > cut_off_tolerance
     directions = directions[over_tolerance]
     positions = positions[over_tolerance]
     arrow_length = arrow_length[over_tolerance]
@@ -581,10 +604,19 @@ def _quiver_plot(
     rotation_matrices[:, 1, 1] = rotation_matrices[:, 0, 0]
 
     # Retrieve information on colors and values
-    v_min = spline.show_options.get("vmin", _np.min(arrow_length))
-    v_max = spline.show_options.get("vmax", _np.max(arrow_length))
-    cmap_style = spline.show_options.get("cmap", "jet")
-    colors = _color_map(arrow_length, name=cmap_style, vmin=v_min, vmax=v_max)
+    arrow_color = spline.show_options.get("arrow_data_color", None)
+    if arrow_color is not None:
+        colors = [_get_color(arrow_color)] * arrow_length.size
+    else:
+        v_min = spline.show_options.get("vmin", _np.min(arrow_length))
+        v_max = spline.show_options.get("vmax", _np.max(arrow_length))
+        cmap_style = spline.show_options.get("cmap", "jet")
+        colors = _color_map(
+            arrow_length,
+            name=cmap_style,
+            vmin=v_min,
+            vmax=v_max,
+        )
 
     # Map arrow control points
     arrow_control_points_ = _np.einsum(
@@ -593,6 +625,8 @@ def _quiver_plot(
         default_arrow_control_points_,
         arrow_length,
     )
+    # Scaling
+    arrow_control_points_ *= arrow_data_scale
 
     # Create a new group
     svg_quiver = _ET.SubElement(
@@ -618,6 +652,150 @@ def _quiver_plot(
         )
 
     return None
+
+
+def _add_scalar_bar(svg_element, box_size, **kwargs):
+    """
+    All sizes passed as kwargs are in relation to the screen window
+
+    Parameters
+    ----------
+    svg_element : ElementTree
+      Parent Element in the svg file
+    box_size : tuple<float>
+      Total size (in relative coordinate system) of the  picture
+
+    kwargs:
+      Specify more output options:
+
+      - background (color, string, rgb, None) : background color
+      - n_ticks : (int) Number of Tick mars
+      - vmin : (float) Minimum Value - Required for colorbar
+      - vmax : (float) Maximum Value - Required for colorbar
+      - cmap : (color map string) Defaults to "jet"
+      - scalarbar_width : (float) Width of the colorbar relative to picture
+      - scalarbar_aspect_ratio : (float) Aspect ratio of colorbar
+      - scalarbar_offset : (float) reserved space below picture
+      - scalarbar_stroke_width : (float) boundary width
+      - scalarbar_tick_distance: (float)distance from tick marks to colorbar
+      - scalarbar_font_size : (float)
+    """
+    # Prepare group
+    svg_scalarbar = _ET.SubElement(
+        svg_element,
+        "g",
+        id="scalarbar",
+    )
+
+    # Scalar bar consists of 3 components
+    # 1. Bar
+    # 2. Tickmarks
+    # 3. Ticks
+
+    # Tick marks
+    number_of_ticks = kwargs.get("n_ticks", 3)
+    vmin = kwargs["vmin"]
+    vmax = kwargs["vmax"]
+    cmap = kwargs.get("cmap", "jet")
+
+    scalarbar_width = kwargs.get("scalarbar_width", 0.4)
+    scalarbar_aspect_ratio = kwargs.get("scalarbar_aspect_ratio", 10)
+    scalarbar_offset = kwargs["scalarbar_offset"]
+
+    # Temporary
+    r, g, b = _get_color(kwargs.get("scalarbar_c", "k"))
+    a = 1.0
+    stroke_width = kwargs.get("scalarbar_stroke_width", box_size[0] * 0.002)
+
+    # Prepare auxiliary values
+    scalarbar_height = scalarbar_width / scalarbar_aspect_ratio
+    min_x = box_size[0] * (1 - scalarbar_width) / 2
+    max_x = box_size[0] * (1 + scalarbar_width) / 2
+    center_y = box_size[1] * (scalarbar_offset) / (1 + 2 * scalarbar_offset)
+    min_y = center_y + box_size[0] * scalarbar_height / 2
+    max_y = center_y - box_size[0] * scalarbar_height / 2
+
+    # Create bar (Using existing framework)
+    from splinepy.bezier import Bezier as _Bezier
+    from splinepy.helpme.create import box as _Box
+
+    box = _Box(max_x - min_x, max_y - min_y)
+    box.cps[:] += [min_x, min_y]
+    scalar_values = _Bezier([1, 0], [[vmin], [vmax]])
+    box.spline_data["bar"] = scalar_values
+    box.show_options["data"] = "bar"
+    box.show_options["cmap"] = cmap
+    box.show_options["vmin"] = vmin
+    box.show_options["vmax"] = vmax
+    _export_spline_field(box, svg_scalarbar, 0, box_size[1], **kwargs)
+
+    # Add tickmarks
+    svg_tick_marks = _ET.SubElement(
+        svg_scalarbar,
+        "g",
+        id="tick_mark_lines",
+        style=(
+            f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+            f"stroke-width:{stroke_width};stroke-linecap:round"
+        ),
+    )
+    svg_tick_labels = _ET.SubElement(
+        svg_scalarbar,
+        "g",
+        id="svg_tick_labels",
+    )
+
+    # Set text options
+    if kwargs.get("font_family", None) is not None:
+        svg_tick_labels.attrib["font-family"] = kwargs["font_family"]
+    svg_tick_labels.attrib["font-size"] = str(
+        kwargs.get("scalarbar_font_size", stroke_width * 20)
+    )
+    svg_tick_labels.attrib["text-anchor"] = kwargs.get("text_anchor", "middle")
+    svg_tick_labels.attrib["fill"] = _rgb_2_hex(
+        *_get_color(kwargs.get("text_color", "k"))
+    )
+    svg_tick_labels.attrib["stroke"] = "none"
+    # Text offset
+    dx = kwargs.get("scalarbar_tick_distance", stroke_width * 10)
+
+    # Create Ticks
+    tick_marks = _np.linspace(vmin, vmax, number_of_ticks)
+    tick_mark_positions = _np.linspace(min_x, max_x, number_of_ticks)
+
+    # Separate groups for ticks
+    _ET.SubElement(
+        svg_tick_marks,
+        "polyline",
+        points=" ".join(
+            [
+                str(xx) + "," + str(box_size[1] - xy)
+                for (xx, xy) in box.cps[[0, 1, 3, 2]]
+            ]
+        ),
+    )
+
+    for mark, position in zip(tick_marks, tick_mark_positions):
+        # Draw a line
+        _ET.SubElement(
+            svg_tick_marks,
+            "line",
+            x1=str(position),
+            x2=str(position),
+            y1=str(box_size[1] - max_y),
+            y2=str(box_size[1] - max_y + 1.5 * (max_y - min_y)),
+        )
+        text_element = _ET.SubElement(
+            svg_tick_labels,
+            "text",
+            x=str(position),
+            y=str(box_size[1] - max_y + 1.5 * (max_y - min_y)),
+            dx=str(0),
+            dy=str(-dx),
+        )
+        text_element.text = str(mark)
+
+    pass
 
 
 def _export_spline(
@@ -811,7 +989,9 @@ def _export_spline(
     if spline.show_options.get("data", None) is not None:
 
         # spline.show()
-        _export_spline_field(spline, svg_spline, box_min_x, box_max_y)
+        _export_spline_field(
+            spline, svg_spline, box_min_x, box_max_y, **kwargs
+        )
 
     else:
         # Export is done in 2 stages
@@ -1053,11 +1233,12 @@ def export(
       - linecap ("string"): linecap option for end of lines and connections, see
         https://www.w3.org/TR/SVG2/
         for more information
-      - font_family (string): Font for control point ids
+      - font_family (string): Font for control point ids (optional)
       - font_size (float): Size of control point ids
       - text_anchor (string): position of the control point ids relative to
         point
       - text_color (color, string, rgb) : control point id color
+      - arrow_data_tolerance : (float) Cutt off for arrows that are too small
       - arrow_width (float): Arrow options see
         https://matplotlib.org/stable/_images/quiver_sizes.svg
       - arrow_head_width (float) : Arrow options see
@@ -1066,6 +1247,17 @@ def export(
         https://matplotlib.org/stable/_images/quiver_sizes.svg
       - arrow_headaxis_length (float) : Arrow options see
         https://matplotlib.org/stable/_images/quiver_sizes.svg
+      - scalarbar : (bool) Print colorbar below figure
+      - n_ticks : (int) Number of Tick mars
+      - vmin : (float) Minimum Value - Required for colorbar
+      - vmax : (float) Maximum Value - Required for colorbar
+      - cmap : (color map string) Defaults to "jet"
+      - scalarbar_width : (float) Width of the colorbar relative to picture
+      - scalarbar_aspect_ratio : (float) Aspect ratio of colorbar
+      - scalarbar_offset : (float) reserved space below picture
+      - scalarbar_stroke_width : (float) boundary width
+      - scalarbar_tick_distance: (float)distance from tick marks to colorbar
+      - scalarbar_font_size : (float)
 
     Returns
     -------
@@ -1105,6 +1297,22 @@ def export(
         ctps_bounds[0, :] = _np.fmin(l_bounds[0, :], ctps_bounds[0, :])
         ctps_bounds[1, :] = _np.fmax(l_bounds[1, :], ctps_bounds[1, :])
 
+    # Check if user requested scalarbar
+    scalarbar = kwargs.get("scalarbar", False)
+
+    # These are all scalarbar positioning statements that can be user-modified
+    kwargs["scalarbar_offset"] = kwargs.get("scalarbar_offset", 0.1)
+    scalarbar_offset = kwargs["scalarbar_offset"]
+    # Check if required arguments have been passed
+    if scalarbar and (
+        (kwargs.get("vmin", None) is None)
+        or (kwargs.get("vmax", None) is None)
+    ):
+        raise ValueError(
+            "`vmin` and `vmax` must be passed alon with scalarbar to ensure"
+            " same color scheme for all splines"
+        )
+
     # Initialize svg element
     svg_data = _ET.Element("svg")
 
@@ -1117,10 +1325,17 @@ def export(
     )
 
     # Set the box margins and svg options globally
-    box_size = (
+    box_size = [
         ctps_bounds[1, 0] - ctps_bounds[0, 0] + 2 * box_margins,
         ctps_bounds[1, 1] - ctps_bounds[0, 1] + 2 * box_margins,
-    )
+    ]
+    # Make space for scalarbar
+    if scalarbar:
+        box_size[1] *= 1 + scalarbar_offset * 2
+
+    # Convert to tuple to prevent overwrite
+    box_size = tuple(box_size)
+
     svg_data.attrib["viewBox"] = f"0 0 {box_size[0]} {box_size[1]}"
     svg_data.attrib["height"] = str(400)
     svg_data.attrib["width"] = str(400 / box_size[1] * box_size[0])
@@ -1133,6 +1348,10 @@ def export(
     # Determine offsets
     box_min_x = ctps_bounds[0, 0] - box_margins
     box_max_y = ctps_bounds[1, 1] + box_margins
+
+    # Quiver plots should always be grouped in the top layer
+    splines_group = _ET.SubElement(svg_data, "g", id="spline_list")
+    quiver_list = _ET.SubElement(svg_data, "g", id="quiver_list")
 
     # Write splines in svg file
     for i, object in enumerate(objects_to_plot):
@@ -1149,10 +1368,12 @@ def export(
                 except BaseException:
                     continue
 
-        # Put every spline into a new dedicated group
-
         if isinstance(object, Spline):
-            spline_group = _ET.SubElement(svg_data, "g", id="spline" + str(i))
+            # Put every spline and its dedicated information into a new
+            # dedicated group
+            spline_group = _ET.SubElement(
+                splines_group, "g", id="spline" + str(i)
+            )
             _export_spline(
                 object,
                 spline_group,
@@ -1161,15 +1382,15 @@ def export(
                 tolerance=tolerance,
                 **kwargs,
             )
+            _export_control_mesh(
+                object, spline_group, box_min_x, box_max_y, **kwargs
+            )
             _quiver_plot(
                 spline=object,
-                svg_spline_element=spline_group,
+                svg_spline_element=quiver_list,
                 box_min_x=box_min_x,
                 box_max_y=box_max_y,
                 **kwargs,
-            )
-            _export_control_mesh(
-                object, spline_group, box_min_x, box_max_y, **kwargs
             )
         else:
             gus_grounp = _ET.SubElement(svg_data, "g", id="gus_obj_" + str(i))
@@ -1180,6 +1401,8 @@ def export(
         # set original options back
         if orig_show_options is not None:
             object._show_options = orig_show_options
+    if scalarbar:
+        _add_scalar_bar(svg_data, box_size, **kwargs)
 
     # Dump into file
     if indent and hasattr(_ET, "indent"):
