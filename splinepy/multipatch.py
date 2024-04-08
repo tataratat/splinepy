@@ -155,7 +155,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
 
         return boundary_list
 
-    def boundary_multipatch(self, nthreads=None):
+    def boundary_multipatch(self, bid=-1, nthreads=None):
         """Extract all boundary patches of a given Multipatch system as splines
 
         Parameters
@@ -163,6 +163,8 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         nthreads : int
           Number of threads to be used for extraction, defaults to
           settings.NTHREADS
+        bid : int
+          boundary id to extract, (default all if bid<0)
 
         Returns
         -------
@@ -176,7 +178,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         previous_nthreads = self.n_default_threads
         self.n_default_threads = nthreads
 
-        b_patches = super().boundary_multipatch()
+        b_patches = super().boundary_multipatch(bid)
 
         self.n_default_threads = previous_nthreads
 

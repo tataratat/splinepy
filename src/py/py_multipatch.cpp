@@ -1218,47 +1218,69 @@ void PyMultipatch::SetInterfaces(const py::array_t<int>& interfaces) {
 }
 
 /// @brief Gets IDs of boundary patch
-py::array_t<int> PyMultipatch::BoundaryPatchIds() {
+/// @param bid specicif boundary id (-1) : all
+py::array_t<int> PyMultipatch::BoundaryPatchIds(const int bid) {
   // return if it exists
-  if (boundary_patch_ids_.size() != 0) {
+  std::cout << "Boundary.size() " << boundary_patch_ids_.size() << std::endl;
+  if (bid < 0 && boundary_patch_ids_.size() != 0) {
+    std::cout << boundary_patch_ids_.size() << std::endl;
     return boundary_patch_ids_;
   }
 
   // prepare only ingredient - interfaces
   // negative entries in interfaces mean boundary patch
-  auto interfaces = GetInterfaces(true);
+  auto interfaces = GetInterfaces(false);
   const int n_interfaces = interfaces.size();
   const int* interfaces_ptr = static_cast<int*>(interfaces.request().ptr);
 
   // create new array
-  boundary_patch_ids_ = py::array_t<int>(n_interfaces);
+  py::array_t<int> boundary_patch_ids(n_interfaces);
   int* boundary_patch_ids_ptr =
-      static_cast<int*>(boundary_patch_ids_.request().ptr);
+      static_cast<int*>(boundary_patch_ids.request().ptr);
 
   // add ids of negative interface entries
   int j{};
-  for (int i{}; i < n_interfaces; ++i) {
-    if (interfaces_ptr[i] < 0) {
-      boundary_patch_ids_ptr[j] = i;
-      ++j;
+
+  if (bid < 0) {
+    // Extract all boundaries
+    for (int i{}; i < n_interfaces; ++i) {
+      if (interfaces_ptr[i] < 0) {
+        boundary_patch_ids_ptr[j] = i;
+        ++j;
+      }
+    }
+  } else {
+    // Extract specific boundary
+    for (int i{}; i < n_interfaces; ++i) {
+      if (interfaces_ptr[i] == -bid) {
+        boundary_patch_ids_ptr[j] = i;
+        ++j;
+      }
     }
   }
 
   // resize ids
-  boundary_patch_ids_.resize({j}, false);
+  boundary_patch_ids.resize({j}, false);
 
-  return boundary_patch_ids_;
+  // Store as default (all)
+  if (bid < 0) {
+    boundary_patch_ids_ = std::move(boundary_patch_ids);
+    return boundary_patch_ids_;
+  }
+
+  return boundary_patch_ids;
 }
 
 /// @brief Gets boundary multi patch
-std::shared_ptr<PyMultipatch> PyMultipatch::BoundaryMultipatch() {
+/// @param bid boundary ID to be extracted
+std::shared_ptr<PyMultipatch> PyMultipatch::BoundaryMultipatch(const int bid) {
   // return early if exists
-  if (boundary_multipatch_) {
+  if (bid < 0 && boundary_multipatch_) {
     return boundary_multipatch_;
   }
 
   // get boundary_patch_ids;
-  auto boundary_pid = BoundaryPatchIds();
+  const auto& boundary_pid = BoundaryPatchIds(bid);
   int* boundary_pid_ptr = static_cast<int*>(boundary_pid.request().ptr);
   const int n_boundary_pid = boundary_pid.size();
 
@@ -1284,20 +1306,30 @@ std::shared_ptr<PyMultipatch> PyMultipatch::BoundaryMultipatch() {
                                     n_default_threads_);
 
   // create return patch
-  boundary_multipatch_ = std::make_shared<PyMultipatch>();
-  boundary_multipatch_->patches_ = ToPySplineList(boundary_core_patches);
-  boundary_multipatch_->core_patches_ = std::move(boundary_core_patches);
+  std::shared_ptr<PyMultipatch> boundary_multipatch =
+      std::make_shared<PyMultipatch>();
+  boundary_multipatch->patches_ = ToPySplineList(boundary_core_patches);
+  boundary_multipatch->core_patches_ = std::move(boundary_core_patches);
 
-  return boundary_multipatch_;
+  // Save if all boundaries are stored
+  if (bid < 0) {
+    boundary_multipatch_ = boundary_multipatch;
+  }
+
+  return boundary_multipatch;
 }
 
 /// @brief returns derived class of boundary multi patch
 /// @return
-py::object PyMultipatch::PyBoundaryMultipatch() {
-  if (py_boundary_multipatch_.is_none()) {
-    py_boundary_multipatch_ = ToDerived(BoundaryMultipatch());
+py::object PyMultipatch::PyBoundaryMultipatch(const int bid) {
+  if (bid < 0) {
+    if (py_boundary_multipatch_.is_none()) {
+      py_boundary_multipatch_ = ToDerived(BoundaryMultipatch(bid));
+    }
+    return py_boundary_multipatch_;
+  } else {
+    return ToDerived(BoundaryMultipatch(bid));
   }
-  return py_boundary_multipatch_;
 }
 
 py::array_t<double> PyMultipatch::Evaluate(py::array_t<double> queries,
@@ -1636,8 +1668,12 @@ void init_multipatch(py::module_& m) {
       .def("set_interfaces",
            &PyMultipatch::SetInterfaces,
            py::arg("interfaces"))
-      .def("boundary_patch_ids", &PyMultipatch::BoundaryPatchIds)
-      .def("boundary_multipatch", &PyMultipatch::PyBoundaryMultipatch)
+      .def("boundary_patch_ids",
+           &PyMultipatch::BoundaryPatchIds,
+           py::arg("bid") = -1)
+      .def("boundary_multipatch",
+           &PyMultipatch::PyBoundaryMultipatch,
+           py::arg("bid") = -1)
       .def("evaluate",
            &PyMultipatch::Evaluate,
            py::arg("queries"),

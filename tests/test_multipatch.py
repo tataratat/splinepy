@@ -210,6 +210,21 @@ class MultipatchTest(c.unittest.TestCase):
             ).all()
         )
 
+        # Test boundary multipatch extraction
+        default_bmp = multipatch.boundary_multipatch()
+        self.assertEqual(len(default_bmp.patches), 16)
+        bmp_1 = multipatch.boundary_multipatch(1)
+        self.assertEqual(len(bmp_1.patches), 2)
+        boundary_1 = []
+        for i_patch, i_face in zip(*multipatch.boundaries[0]):
+            boundary_1.append(
+                *multipatch.patches[i_patch].extract.boundaries([i_face])
+            )
+        for patch_0, patch_1 in zip(boundary_1, bmp_1.patches):
+            self.assertTrue(c.are_splines_equal(patch_0, patch_1))
+
+        self.assertTrue(len(multipatch.boundary_patch_ids(8)) == 0)
+
 
 if __name__ == "__main__":
     c.unittest.main()
