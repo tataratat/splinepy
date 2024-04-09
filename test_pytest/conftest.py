@@ -286,8 +286,7 @@ def are_items_close():
         all_close = True
 
         for i, (aa, bb) in enumerate(zip(a, b)):
-            this_is_close = all(np.isclose(aa, bb))
-            if not this_is_close:
+            if not all(np.isclose(aa, bb)):
                 # print to inform
                 print(f"elements in index-{i} are not close")
                 print(f"  from first: {aa}")
@@ -307,8 +306,7 @@ def are_items_same():
         all_same = True
 
         for i, (aa, bb) in enumerate(zip(a, b)):
-            this_is_same = aa == bb
-            if not this_is_same:
+            if aa != bb:
                 # print to inform
                 print(f"element in index-{i} are not same")
                 print(f"  from first: {aa}")
@@ -331,16 +329,15 @@ def are_stripped_lines_same():
         for i, (line_a, line_b) in enumerate(zip(a, b)):
             # check stripped string
             stripped_a, stripped_b = line_a.strip(), line_b.strip()
-            this_is_same = stripped_a == stripped_b
 
             # print general info
-            if not this_is_same:
+            if stripped_a != stripped_b:
                 print(f"stripped line at index-{i} are not the same")
                 print(f"  from first: {line_a}")
                 print(f"  from second: {line_b}")
 
             # give one more chance if ignore_order
-            if not this_is_same and ignore_order:
+            if stripped_a != stripped_b and ignore_order:
                 print("  checking again, while ignoring word order:")
 
                 # This is meant for attributes
