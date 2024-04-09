@@ -1,9 +1,5 @@
 import numpy as np
 
-# def setUp():
-#   bspline = bspline_2p2d()
-#   nurbs = nurbs_2p2d()
-
 
 def test_insert_knot(np_rng, are_items_close, bspline_2p2d, nurbs_2p2d):
     """Test the knot insertion function (.insert_knot())."""
