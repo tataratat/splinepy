@@ -85,10 +85,13 @@ lint.select = [
   "NPY",         # numpy specific rules
   "I",           # isort specific rules
   "UP",          # pyupdate specific rules
-  "C400","C401","C402","C403","C404","C405" # additional pyupgrade rules
+  "C400","C401","C402","C403","C404","C405", # additional pyupgrade rules
+  "FURB",        # refurb items
+  "YTT",         # flake8 check version comparison mistakes
+  "A",           # flake8-builtins
 ]
 lint.fixable = ["ALL"]
-target-version = "py37"
+target-version = "py38"
 lint.ignore = [
     "PLR2004", # TODO!
     "PLR0912", # Too many branches
@@ -103,6 +106,7 @@ lint.ignore = [
 "examples/*.py" = ["T201"]
 "tests/common.py" = ["T201"]
 "splinepy/cli.py" = ["T201"]
+"splinepy/io/**" = ["A001"]
 
 [tool.codespell]
 ignore-words-list = "connec,tye,ned"

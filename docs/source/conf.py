@@ -11,7 +11,7 @@ import splinepy
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "splinepy"
-copyright = "2022, Jaewook Lee"
+copyright = "2022, Jaewook Lee"  # noqa A001
 author = "Jaewook Lee"
 release = splinepy.__version__
 
