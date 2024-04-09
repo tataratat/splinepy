@@ -1,37 +1,42 @@
 import numpy as np
+import pytest
+
+# used fixtures for parametrization
+all_2D_splinetypes = (
+    "bspline_2p2d",
+    "nurbs_2p2d",
+    "bezier_2p2d",
+    "rational_bezier_2p2d",
+)
 
 
-def test_c_contiguous_array_input(
-    spline_types_as_list, get_spline_dictionaries
-):
+@pytest.mark.parametrize("splinetype", all_2D_splinetypes)
+def test_c_contiguous_array_input(splinetype, request):
     """Test whether cpp sides receives contiguous array"""
 
-    splinelist = spline_types_as_list
-    splinedict = get_spline_dictionaries
+    # define spline and its properties
+    spl = request.getfixturevalue(splinetype)
+    properties = spl.todict()
 
-    for spl, properties in zip(
-        splinelist,
-        splinedict,
-    ):
-        # make f contiguous
-        f_contig_orig = np.asarray(properties["control_points"], order="F")
-        assert not f_contig_orig.flags["C_CONTIGUOUS"]
-        assert f_contig_orig.flags["F_CONTIGUOUS"]
+    # make f contiguous
+    f_contig_orig = np.asarray(properties["control_points"], order="F")
+    assert not f_contig_orig.flags["C_CONTIGUOUS"]
+    assert f_contig_orig.flags["F_CONTIGUOUS"]
 
-        # set non contiguous array as prop
-        properties["control_points"] = f_contig_orig
+    # set non contiguous array as prop
+    properties["control_points"] = f_contig_orig
 
-        # check round_trip cps
-        round_trip_cps = spl.cps
+    # check round_trip cps
+    round_trip_cps = spl.cps
 
-        # they should be the same
-        assert np.allclose(round_trip_cps, properties["control_points"])
+    # they should be the same
+    assert np.allclose(round_trip_cps, properties["control_points"])
 
-        # test setter
-        # make sure this array is still not c contiguous
-        assert not f_contig_orig.flags["C_CONTIGUOUS"]
+    # test setter
+    # make sure this array is still not c contiguous
+    assert not f_contig_orig.flags["C_CONTIGUOUS"]
 
-        spl.cps = f_contig_orig  # setter
+    spl.cps = f_contig_orig  # setter
 
-        assert spl.cps.flags["C_CONTIGUOUS"]
-        assert np.allclose(spl.cps, properties["control_points"])
+    assert spl.cps.flags["C_CONTIGUOUS"]
+    assert np.allclose(spl.cps, properties["control_points"])
