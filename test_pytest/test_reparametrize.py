@@ -13,7 +13,7 @@ all_3p3d_splines = (
 
 
 @pytest.mark.parametrize("splinetype", all_3p3d_splines)
-def test_permute_parametric_axes(request, splinetype, get_queries_3D):
+def test_permute_parametric_axes(request, splinetype, queries_3D):
     """
     test permute
     """
@@ -36,7 +36,7 @@ def test_permute_parametric_axes(request, splinetype, get_queries_3D):
     perm = splinepy.helpme.reparametrize.permute_parametric_axes(
         spline, permutation, inplace=False
     )
-    queries = np.asarray(get_queries_3D)
+    queries = np.asarray(queries_3D)
 
     assert np.allclose(
         spline.evaluate(queries),
@@ -48,7 +48,7 @@ def test_permute_parametric_axes(request, splinetype, get_queries_3D):
     splinepy.helpme.reparametrize.permute_parametric_axes(
         perm, permutation, inplace=True
     )
-    queries = np.asarray(get_queries_3D)
+    queries = np.asarray(queries_3D)
 
     assert np.allclose(
         spline.evaluate(queries),

@@ -23,7 +23,7 @@ all_splines = (
 )
 
 
-def test_basis_and_support(bspline_2p2d, nurbs_2p2d, get_queries_2D):
+def test_basis_and_support(bspline_2p2d, nurbs_2p2d, queries_2D):
     """Test the correct calculation of the basis functions.
     (.basis_and_support())"""
 
@@ -134,12 +134,12 @@ def test_basis_and_support(bspline_2p2d, nurbs_2p2d, get_queries_2D):
 
     # test basis functions
     assert np.allclose(
-        bspline_2p2d.basis_and_support(get_queries_2D)[0],
+        bspline_2p2d.basis_and_support(queries_2D)[0],
         bspline_ref_basis_functions,
     )
 
     assert np.allclose(
-        nurbs_2p2d.basis_and_support(get_queries_2D)[0],
+        nurbs_2p2d.basis_and_support(queries_2D)[0],
         nurbs_ref_basis_functions,
     )
 
@@ -374,18 +374,18 @@ def test_partition_of_unity(np_rng, bspline_2p2d, nurbs_2p2d):
         ),
     ],
 )
-def test_evaluate(spline, reference, get_queries_2D, request):
+def test_evaluate(spline, reference, queries_2D, request):
     """Test the correct spline evaluation in the physical space.
     (.evaluate())"""
     spline = request.getfixturevalue(spline)
     # test evaluation
     assert np.allclose(
-        spline.evaluate(get_queries_2D),
+        spline.evaluate(queries_2D),
         reference,
     )
 
 
-def test_derivative(bspline_2p2d, nurbs_2p2d, get_queries_2D, np_rng):
+def test_derivative(bspline_2p2d, nurbs_2p2d, queries_2D, np_rng):
     """Test the correct calculation of the first derivative.
     (.derivative())"""
 
@@ -414,12 +414,12 @@ def test_derivative(bspline_2p2d, nurbs_2p2d, get_queries_2D, np_rng):
 
     # test derivative evaluation
     assert np.allclose(
-        bspline_2p2d.derivative(get_queries_2D, o1),
+        bspline_2p2d.derivative(queries_2D, o1),
         bspline_ref_derivative,
     )
 
     assert np.allclose(
-        nurbs_2p2d.derivative(get_queries_2D, o1),
+        nurbs_2p2d.derivative(queries_2D, o1),
         nurbs_ref_derivative,
     )
 
