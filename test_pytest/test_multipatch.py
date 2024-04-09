@@ -60,19 +60,18 @@ def test_interfaces():
     # Determine connectivities
     single_p_multipatch.determine_interfaces()
     multipatch.determine_interfaces()
-    assert (
-        single_p_multipatch.interfaces
-        == np.array([[1, 0, -1, -1]], dtype=int).all()
+    assert np.all(
+        single_p_multipatch.interfaces == np.array([[1, 0, -1, -1]], dtype=int)
     )
 
-    assert (
+    assert np.all(
         multipatch.interfaces
         == np.array(
             # Global Face IDs and their connectivity
             # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
             [[-1, 4, 11, -1], [1, -1, -1, -1], [-1, -1, -1, 2]],
             dtype=int,
-        ).all()
+        )
     )
 
 
@@ -88,38 +87,38 @@ def test_boundaries():
         return points[:, 0] < 0.1
 
     multipatch.boundary_from_function(west_side)
-    assert (
+    assert np.all(
         multipatch.interfaces
         == np.array(
             # Global Face IDs and their connectivity
             # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
             [[-2, 4, 11, -1], [1, -1, -1, -1], [-2, -1, -1, 2]],
             dtype=int,
-        ).all()
+        )
     )
 
     multipatch.set_boundary([0, 1], [3, 3], 3)
     multipatch.set_boundary([1], [1])
-    assert (
+    assert np.all(
         multipatch.interfaces
         == np.array(
             # Global Face IDs and their connectivity
             # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
             [[-2, 4, 11, -3], [1, -4, -1, -3], [-2, -1, -1, 2]],
             dtype=int,
-        ).all()
+        )
     )
 
     # Delete all boundaries and determine new ones based on continuity
     multipatch.boundaries_from_continuity()
-    assert (
+    assert np.all(
         multipatch.interfaces
         == np.array(
             # Global Face IDs and their connectivity
             # [0  1   2   3]  [4   5   6   7]   [8   9  10  11]
             [[-1, 4, 11, -2], [1, -3, -4, -5], [-1, -6, -7, 2]],
             dtype=int,
-        ).all()
+        )
     )
 
 
@@ -190,7 +189,7 @@ def test_interfaces_and_boundaries():
     # Multipatch
     multipatch = splinepy.Multipatch([b1, b2, b3, b4])
     multipatch.boundaries_from_continuity()
-    assert (
+    assert np.all(
         multipatch.interfaces
         == np.array(
             [
@@ -200,5 +199,5 @@ def test_interfaces_and_boundaries():
                 [15, -5, 6, -6, -4, -3],
             ],
             dtype=int,
-        ).all()
+        )
     )
