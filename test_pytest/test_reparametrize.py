@@ -55,6 +55,7 @@ def test_permute_parametric_axes(request, splinetype, queries_3D):
         perm.evaluate(queries[:, permutation]),
     ), f"{perm.whatami} failed to permute inplace."
 
+
 @pytest.mark.parametrize("splinetype", all_3p3d_splines)
 def test_flip_axes(splinetype, request, queries_3D):
     """
@@ -77,9 +78,9 @@ def test_flip_axes(splinetype, request, queries_3D):
     )
 
     assert np.allclose(
-            spline.evaluate(queries),
-            new_spline.evaluate(flipped_queries),
-        ), f"{spline.whatami} failed to flip axis."
+        spline.evaluate(queries),
+        new_spline.evaluate(flipped_queries),
+    ), f"{spline.whatami} failed to flip axis."
 
     # in place
     spline_copy = spline.copy()
@@ -88,9 +89,11 @@ def test_flip_axes(splinetype, request, queries_3D):
     )
 
     # Check if truly in place
-    assert new_spline2 is spline_copy, f"Operation has not been performed in place"
-    
+    assert (
+        new_spline2 is spline_copy
+    ), "Operation has not been performed in place"
+
     assert np.allclose(
-            new_spline2.evaluate(queries),
-            new_spline.evaluate(queries),
-        ), f"{spline.whatami} failed to flip axis."
+        new_spline2.evaluate(queries),
+        new_spline.evaluate(queries),
+    ), f"{spline.whatami} failed to flip axis."
