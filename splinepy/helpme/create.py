@@ -50,7 +50,8 @@ def embedded(spline, new_dimension):
         )
         return type(spline)(**spline_dict)
     else:
-        return spline.copy()
+        # use todict() to avoid unnecessary data copies from `copy()`
+        return type(spline)(**spline.todict())
 
 
 def extruded(spline, extrusion_vector=None):
