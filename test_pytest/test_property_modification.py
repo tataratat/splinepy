@@ -20,17 +20,17 @@ def cps_are_synced(spl):
 
 
 def test_inplace_change_degrees(
-    dict_bezier_2p2d,
-    dict_rational_bezier_2p2d,
-    dict_bspline_2p2d,
-    dict_nurbs_2p2d,
+    bezier_2p2d,
+    rational_bezier_2p2d,
+    bspline_2p2d,
+    nurbs_2p2d,
 ):
     """inplace change of degrees should not be allowed if core spline is
     initialized"""
-    z = dict_bezier_2p2d
-    r = dict_rational_bezier_2p2d
-    b = dict_bspline_2p2d
-    n = dict_nurbs_2p2d
+    z = bezier_2p2d.todict()
+    r = rational_bezier_2p2d.todict()
+    b = bspline_2p2d.todict()
+    n = nurbs_2p2d.todict()
 
     Z, R, B, N = (
         splinepy.Bezier,
@@ -124,9 +124,9 @@ def test_inplace_change_control_points(nd_box):
             assert s_ws is s.weights
 
 
-def test_inplace_change_weights(nurbs_2p2d_quarter_circle):
+def test_inplace_change_weights(nurbs_2p2d):
     """test inplace change of weights by comparing quarter circle"""
-    n_q_circle = nurbs_2p2d_quarter_circle
+    n_q_circle = nurbs_2p2d.todict()
     res = [4] * 2
     # init rational
     n = splinepy.NURBS(**n_q_circle)
@@ -153,9 +153,9 @@ def test_inplace_change_weights(nurbs_2p2d_quarter_circle):
     assert np.allclose(z.sample(res), n.sample(res))
 
 
-def test_physical_space_array(nurbs_2p2d_quarter_circle):
+def test_physical_space_array(nurbs_2p2d):
     """tests if physical space array is syncing correctly."""
-    n = splinepy.NURBS(**nurbs_2p2d_quarter_circle)
+    n = splinepy.NURBS(**nurbs_2p2d.todict())
 
     # all setitem cases
     # 1.
