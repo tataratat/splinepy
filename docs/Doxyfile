@@ -18,7 +18,7 @@ SORT_MEMBERS_CTORS_1ST = YES
 WARNINGS               = YES
 WARN_NO_PARAMDOC       = YES
 WARN_LOGFILE           = doxygen_warnings.txt
-INPUT                  = ../cpp/splinepy
+INPUT                  = ../include/splinepy
 RECURSIVE              = YES
 EXCLUDE_PATTERNS       = */tests/* \
                          */data/* \
