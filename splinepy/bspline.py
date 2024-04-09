@@ -122,9 +122,7 @@ class BSplineBase(_spline.Spline):
 
         return inserted
 
-    def uniform_refine(
-        self, parametric_dimensions=None, degree_of_refinement=1
-    ):
+    def uniform_refine(self, para_dims=None, n_knots=1):
         """
         Uniformly refines all knot-spans in given direction(s) by given
         degree(s). By default, every dimension will be refined with 1 knot
@@ -132,62 +130,67 @@ class BSplineBase(_spline.Spline):
 
         Parameters
         ----------
-        parametric_dimensions : int or list
+        para_dims : int or list
             list of parametric dimensions to be refined (default None -> all)
-        degree_of_refinement : int or list
+        n_knots : int or list
             number of new knots per knot span
 
         Returns
         --------
-            - (alters the spline in place)
+            None (alters the spline in place)
         """
 
-        def determine_new_knots(kv_unique, degree):
-            if degree == 0:
+        def determine_new_knots(kv_unique, n_knots):
+            if n_knots == 0:
                 return []
-            kv_diffs = _np.diff(kv_unique) / (degree + 1)
+            kv_diffs = _np.diff(kv_unique) / (n_knots + 1)
             new_knots = (
                 kv_diffs.reshape(-1, 1)
-                @ _np.arange(1, degree + 1).reshape(1, -1)
+                @ _np.arange(1, n_knots + 1).reshape(1, -1)
                 + kv_unique[:-1].reshape(-1, 1)
             ).ravel()
             return new_knots
 
-        if parametric_dimensions is None:
-            parametric_dimensions = _np.arange(0, self.para_dim, 1)
+        # if no para_dim is given - assume that each dimension is refined
+        if para_dims is None:
+            para_dims = _np.arange(0, self.para_dim, 1)
 
-        elif isinstance(parametric_dimensions, int):
-            parametric_dimensions = [parametric_dimensions]
+        # if an integer is given, make it a list
+        elif isinstance(para_dims, int):
+            para_dims = [para_dims]
 
-        if _np.any(_np.array(parametric_dimensions) >= self.para_dim):
+        # check if only valid para_dims are given
+        if _np.any(_np.array(para_dims) >= self.para_dim):
             raise ValueError("Invalid parametric dimension to insert knots.")
 
-        if len(_np.unique(parametric_dimensions)) != len(
-            parametric_dimensions
-        ):
+        # multiple refinements in one dimension are not valid
+        if len(_np.unique(para_dims)) != len(para_dims):
             raise ValueError(
                 "Refinement in one dimension more than once is not admissible"
             )
 
-        if isinstance(degree_of_refinement, int):
-            degree_of_refinement = [degree_of_refinement] * len(
-                parametric_dimensions
-            )
+        # if an integer is given, assume that each given dimension should be
+        # equally refined - make it a list and apply it to all para_dims
+        if isinstance(n_knots, int):
+            n_knots = [n_knots] * len(para_dims)
 
-        if len(parametric_dimensions) == 0 or len(degree_of_refinement) == 0:
+        # check if an empty list is given as input and raise an error
+        if len(para_dims) == 0 or len(n_knots) == 0:
             raise ValueError(
                 "Invalid value (len = 0) for parametric dimension or degree."
             )
 
-        elif len(degree_of_refinement) != len(parametric_dimensions):
+        # check if the lengths of both lists are equal
+        elif len(n_knots) != len(para_dims):
             raise ValueError(
                 "Size of degrees and dimensions are not the same."
             )
 
-        for i, para_dim in enumerate(parametric_dimensions):
+        # determine new knots for each para_dim and insert the knots
+        for i, para_dim in enumerate(para_dims):
             new_knots = determine_new_knots(
                 kv_unique=self.unique_knots[para_dim],
-                degree=degree_of_refinement[i],
+                n_knots=n_knots[i],
             )
             self.insert_knots(para_dim, new_knots)
 
