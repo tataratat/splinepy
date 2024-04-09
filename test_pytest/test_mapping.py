@@ -146,9 +146,12 @@ def test_cross_evaluation_of_different_implementations():
 
 def test_check_assertions():
     mapper = geo.solution_field_rando.mapper(geo.askew_spline2D)
-    with pytest.raises():
+    with pytest.raises(
+        ValueError,
+        match=r"Divergence can only be performed "
+        r"on vector fields with para_dim = dim",
+    ):
         mapper.divergence(geo.query_points2D)
-        raise Exception("Query-Points-Divergence-Exception")
 
 
 def test_first_order_derivatives_analytical():
