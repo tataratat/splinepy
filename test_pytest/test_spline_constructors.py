@@ -4,7 +4,7 @@ import pytest
 import splinepy
 
 
-def testBSplines(np_rng):
+def test_BSplines(np_rng):
     """
     Perform checks on BSpline class
     """
@@ -60,7 +60,7 @@ def testBSplines(np_rng):
         )
 
 
-def testNURBS(np_rng):
+def test_NURBS(np_rng):
     """
     Perform checks on Nurbs class
     """
@@ -134,7 +134,7 @@ def testNURBS(np_rng):
         )
 
 
-def testBezier():
+def test_Bezier():
     """Feed Bezier constructor with random data and see if the errors are
     meaningful"""
     # First create a reasonable spline
@@ -172,7 +172,7 @@ def testBezier():
         )
 
 
-def testRationalBezier(np_rng):
+def test_RationalBezier(np_rng):
     """Feed Bezier constructor with random data and see if the errors are
     meaningful"""
     # First create a reasonable spline
