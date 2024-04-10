@@ -137,7 +137,7 @@ class BSplineBase(_spline.Spline):
 
         Returns
         --------
-            None (alters the spline in place)
+        None
         """
 
         def determine_new_knots(kv_unique, n_knots):
