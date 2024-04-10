@@ -6,103 +6,120 @@ import pytest
 import splinepy
 
 
-class Geometry:
-    def __init__(self):
-        """Define geometries the function will be mapped to
-
-        Create three simple geometries, two where results are known, and one
-        with no zero entries in the jacobian.
-
-        Functions will be 2D and 3D only
-        """
-        self.scaling_factors = 1 / np.array([2.0, 0.3, 1.5])
-        self.scaling3D = splinepy.Bezier(
-            degrees=[1, 1, 1],
-            control_points=[
-                [0.0, 0.0, 0.0],
-                [2.0, 0.0, 0.0],
-                [0.0, 0.3, 0.0],
-                [2.0, 0.3, 0.0],
-                [0.0, 0.0, 1.5],
-                [2.0, 0.0, 1.5],
-                [0.0, 0.3, 1.5],
-                [2.0, 0.3, 1.5],
-            ],
-        )
-        # Spline that rotates field by 0.17 radiants
-        self.cc, self.ss = np.cos(0.17), np.sin(0.17)
-        self.rotation_matrix = np.array(
-            ((self.cc, -self.ss), (self.ss, self.cc))
-        )
-        self.rotating2D = splinepy.Bezier(
-            degrees=[1, 1],
-            control_points=[
-                [0, 0],
-                [1, 0],
-                [0, 1],
-                [1, 1],
-            ],
-        )
-        self.rotating2D.control_points = np.einsum(
-            "ij,qj->qi", self.rotation_matrix, self.rotating2D.control_points
-        )
-
-        # Complicated spline
-        self.askew_spline2D = splinepy.BSpline(
-            degrees=[2, 2],
-            control_points=[
-                [0.0, 0.0],
-                [1.0, 0.5],
-                [2.0, 0.2],
-                [0.5, 1.5],
-                [1.0, 1.5],
-                [1.5, 1.5],
-                [0.0, 3.0],
-                [1.0, 2.5],
-                [2.0, 3.0],
-            ],
-            knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
-        )
-
-        # Two solution fields
-        self.solution_field_mono3D = splinepy.Bezier(
-            degrees=[2, 1, 1], control_points=np.ones((12, 1)) * 0.2
-        )
-        self.solution_field_rando = splinepy.Bezier(
-            degrees=[2, 1],
-            control_points=np.random.default_rng().random((6, 1)),
-        )
-        self.solution_field_rando2D = splinepy.Bezier(
-            degrees=[2, 1],
-            control_points=np.random.default_rng().random((6, 2)),
-        )
-
-        self.query_points2D = np.random.default_rng().random((13, 2))
-        self.query_points3D = np.random.default_rng().random((17, 3))
+@pytest.fixture
+def scaling3D():
+    return splinepy.Bezier(
+        degrees=[1, 1, 1],
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [2.0, 0.0, 0.0],
+            [0.0, 0.3, 0.0],
+            [2.0, 0.3, 0.0],
+            [0.0, 0.0, 1.5],
+            [2.0, 0.0, 1.5],
+            [0.0, 0.3, 1.5],
+            [2.0, 0.3, 1.5],
+        ],
+    )
 
 
-# initialize geo variable
-geo = Geometry()
+@pytest.fixture
+def rotation_matrix():
+    cc, ss = np.cos(0.17), np.sin(0.17)
+    return np.array(((cc, -ss), (ss, cc)))
 
 
-def test_cross_evaluation_of_different_implementations():
+@pytest.fixture
+def rotating2D(rotation_matrix):
+    rotating2D = splinepy.Bezier(
+        degrees=[1, 1],
+        control_points=[
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [1, 1],
+        ],
+    )
+    rotating2D.control_points = np.einsum(
+        "ij,qj->qi", rotation_matrix, rotating2D.control_points
+    )
+    return rotating2D
+
+
+@pytest.fixture
+def askew_spline2D():
+    return splinepy.BSpline(
+        degrees=[2, 2],
+        control_points=[
+            [0.0, 0.0],
+            [1.0, 0.5],
+            [2.0, 0.2],
+            [0.5, 1.5],
+            [1.0, 1.5],
+            [1.5, 1.5],
+            [0.0, 3.0],
+            [1.0, 2.5],
+            [2.0, 3.0],
+        ],
+        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+    )
+
+
+@pytest.fixture
+def solution_field_mono3D():
+    return splinepy.Bezier(
+        degrees=[2, 1, 1], control_points=np.ones((12, 1)) * 0.2
+    )
+
+
+@pytest.fixture
+def solution_field_rando(np_rng):
+    return splinepy.Bezier(
+        degrees=[2, 1],
+        control_points=np_rng.random((6, 1)),
+    )
+
+
+@pytest.fixture
+def solution_field_rando2D(np_rng):
+    return splinepy.Bezier(
+        degrees=[2, 1],
+        control_points=np_rng.random((6, 2)),
+    )
+
+
+@pytest.fixture
+def query_points2D(np_rng):
+    return np_rng.random((13, 2))
+
+
+@pytest.fixture
+def query_points3D(np_rng):
+    return np_rng.random((17, 3))
+
+
+def test_cross_evaluation_of_different_implementations(
+    solution_field_rando2D,
+    askew_spline2D,
+    query_points2D,
+):
     """Divergence and Laplacian are implemented differently when gradients
     are called at the same time
     """
 
     # Test Basis functions first
-    mapper = geo.solution_field_rando2D.mapper(geo.askew_spline2D)
+    mapper = solution_field_rando2D.mapper(askew_spline2D)
     bf_results = mapper.basis_function_derivatives(
-        geo.query_points2D, gradient=True, hessian=True, laplacian=True
+        query_points2D, gradient=True, hessian=True, laplacian=True
     )
     bf_gradient, support_gradient = mapper.basis_gradient_and_support(
-        geo.query_points2D
+        query_points2D
     )
     bf_hessian, support_hessian = mapper.basis_hessian_and_support(
-        geo.query_points2D
+        query_points2D
     )
     bf_laplace, support_laplacian = mapper.basis_laplacian_and_support(
-        geo.query_points2D
+        query_points2D
     )
 
     # Laplacian is computed differently depending on function call
@@ -117,17 +134,17 @@ def test_cross_evaluation_of_different_implementations():
 
     # Try field values
     results = mapper.field_derivatives(
-        geo.query_points2D,
+        query_points2D,
         gradient=True,
         divergence=True,
         hessian=True,
         laplacian=True,
         basis_function_values=True,
     )
-    laplacian = mapper.laplacian(geo.query_points2D)
-    divergence = mapper.divergence(geo.query_points2D)
-    gradient = mapper.gradient(geo.query_points2D)
-    hessian = mapper.hessian(geo.query_points2D)
+    laplacian = mapper.laplacian(query_points2D)
+    divergence = mapper.divergence(query_points2D)
+    gradient = mapper.gradient(query_points2D)
+    hessian = mapper.hessian(query_points2D)
 
     # Divergence and laplacian have different implementations
     assert np.allclose(results["laplacian"], laplacian)
@@ -144,78 +161,88 @@ def test_cross_evaluation_of_different_implementations():
     )
 
 
-def test_check_assertions():
-    mapper = geo.solution_field_rando.mapper(geo.askew_spline2D)
+def test_check_assertions(
+    askew_spline2D, query_points2D, solution_field_rando
+):
+    mapper = solution_field_rando.mapper(askew_spline2D)
     with pytest.raises(
         ValueError,
         match=r"Divergence can only be performed "
         r"on vector fields with para_dim = dim",
     ):
-        mapper.divergence(geo.query_points2D)
+        mapper.divergence(query_points2D)
 
 
-def test_first_order_derivatives_analytical():
-    mapper2D = geo.solution_field_rando.mapper(geo.rotating2D)
-    mapper3D = geo.solution_field_mono3D.mapper(geo.scaling3D)
-    bf_gradient, support = mapper2D.basis_gradient_and_support(
-        geo.query_points2D
-    )
+def test_first_order_derivatives_analytical(
+    solution_field_rando,
+    rotating2D,
+    solution_field_mono3D,
+    scaling3D,
+    query_points2D,
+    query_points3D,
+    rotation_matrix,
+):
+    mapper2D = solution_field_rando.mapper(rotating2D)
+    mapper3D = solution_field_mono3D.mapper(scaling3D)
+    bf_gradient, support = mapper2D.basis_gradient_and_support(query_points2D)
     (
         bf_reference0,
         supportb,
-    ) = geo.solution_field_rando.basis_derivative_and_support(
-        geo.query_points2D, [1, 0]
+    ) = solution_field_rando.basis_derivative_and_support(
+        query_points2D, [1, 0]
     )
     (
         bf_reference1,
         supportb,
-    ) = geo.solution_field_rando.basis_derivative_and_support(
-        geo.query_points2D, [0, 1]
+    ) = solution_field_rando.basis_derivative_and_support(
+        query_points2D, [0, 1]
     )
     bf_reference = np.dstack((bf_reference0, bf_reference1))
 
     assert np.allclose(support, supportb)
 
     # Rotate bf_reference
-    bf_reference = np.einsum("ij,qsj->qsi", geo.rotation_matrix, bf_reference)
+    bf_reference = np.einsum("ij,qsj->qsi", rotation_matrix, bf_reference)
 
     assert np.allclose(bf_gradient, bf_reference)
 
-    bf_gradient, support = mapper3D.basis_gradient_and_support(
-        geo.query_points3D
-    )
+    bf_gradient, support = mapper3D.basis_gradient_and_support(query_points3D)
     (
         bf_reference0,
         supportb,
-    ) = geo.solution_field_mono3D.basis_derivative_and_support(
-        geo.query_points3D, [1, 0, 0]
+    ) = solution_field_mono3D.basis_derivative_and_support(
+        query_points3D, [1, 0, 0]
     )
     (
         bf_reference1,
         supportb,
-    ) = geo.solution_field_mono3D.basis_derivative_and_support(
-        geo.query_points3D, [0, 1, 0]
+    ) = solution_field_mono3D.basis_derivative_and_support(
+        query_points3D, [0, 1, 0]
     )
     (
         bf_reference2,
         supportb,
-    ) = geo.solution_field_mono3D.basis_derivative_and_support(
-        geo.query_points3D, [0, 0, 1]
+    ) = solution_field_mono3D.basis_derivative_and_support(
+        query_points3D, [0, 0, 1]
     )
     bf_reference = np.dstack((bf_reference0, bf_reference1, bf_reference2))
-    bf_reference = np.einsum("qsi,i->qsi", bf_reference, geo.scaling_factors)
+    bf_reference = np.einsum(
+        "qsi,i->qsi",
+        bf_reference,
+        1 / np.array([2.0, 0.3, 1.5]),
+    )
     assert np.allclose(bf_gradient, bf_reference)
 
 
-def test_second_order_analytical():
-    mapper2D = geo.solution_field_rando.mapper(geo.rotating2D)
-    bf_hessian, support = mapper2D.basis_hessian_and_support(
-        geo.query_points2D
-    )
+def test_second_order_analytical(
+    solution_field_rando, rotating2D, query_points2D, rotation_matrix
+):
+    mapper2D = solution_field_rando.mapper(rotating2D)
+    bf_hessian, support = mapper2D.basis_hessian_and_support(query_points2D)
     bf_reference = np.zeros(
         (
-            geo.query_points2D.shape[0],
-            np.prod(geo.solution_field_rando.degrees + 1),
+            query_points2D.shape[0],
+            np.prod(solution_field_rando.degrees + 1),
             2,
             2,
         )
@@ -224,20 +251,20 @@ def test_second_order_analytical():
     (
         bf_reference[:, :, 0, 0],
         supportb,
-    ) = geo.solution_field_rando.basis_derivative_and_support(
-        geo.query_points2D, [2, 0]
+    ) = solution_field_rando.basis_derivative_and_support(
+        query_points2D, [2, 0]
     )
     (
         bf_reference[:, :, 1, 0],
         supportb,
-    ) = geo.solution_field_rando.basis_derivative_and_support(
-        geo.query_points2D, [1, 1]
+    ) = solution_field_rando.basis_derivative_and_support(
+        query_points2D, [1, 1]
     )
     (
         bf_reference[:, :, 1, 1],
         supportc,
-    ) = geo.solution_field_rando.basis_derivative_and_support(
-        geo.query_points2D, [0, 2]
+    ) = solution_field_rando.basis_derivative_and_support(
+        query_points2D, [0, 2]
     )
     bf_reference[:, :, 0, 1] = bf_reference[:, :, 1, 0]
 
@@ -246,17 +273,17 @@ def test_second_order_analytical():
     # Rotate bf_reference
     bf_reference = np.einsum(
         "ij,qsjk,kl->qsil",
-        geo.rotation_matrix,
+        rotation_matrix,
         bf_reference,
-        geo.rotation_matrix.T,
+        rotation_matrix.T,
     )
 
     assert np.allclose(bf_hessian, bf_reference)
 
 
-def test_second_order_fd(np_rng):
+def test_second_order_fd(np_rng, askew_spline2D, solution_field_rando2D):
     "Use proximity to get points on askew geometry and approcimate hessian"
-    mapper = geo.solution_field_rando2D.mapper(geo.askew_spline2D)
+    mapper = solution_field_rando2D.mapper(askew_spline2D)
     center_point_reference = np_rng.random((1, 2)) * 0.8 + 0.1
     dx = 1e-4
 
@@ -276,7 +303,7 @@ def test_second_order_fd(np_rng):
     )
 
     # Compute aux values for FD
-    center_point = geo.askew_spline2D.evaluate(center_point_reference)
+    center_point = askew_spline2D.evaluate(center_point_reference)
     center_point = np.repeat(center_point, 9, axis=0)
     center_point += np.array(
         [
@@ -292,15 +319,15 @@ def test_second_order_fd(np_rng):
         ]
     )
     # Approximate points in the physical domain
-    center_point_parametric = geo.askew_spline2D.proximities(
+    center_point_parametric = askew_spline2D.proximities(
         center_point,
         initial_guess_sample_resolutions=[10, 10],
         tolerance=1e-12,
     )
-    bfv, support = geo.solution_field_rando2D.basis_and_support(
+    bfv, support = solution_field_rando2D.basis_and_support(
         center_point_parametric
     )
-    values = geo.solution_field_rando2D.evaluate(center_point_parametric)
+    values = solution_field_rando2D.evaluate(center_point_parametric)
 
     assert np.allclose(
         center_point_parametric[4, :],
