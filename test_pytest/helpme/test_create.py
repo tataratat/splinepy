@@ -147,7 +147,7 @@ def test_create_revolution(splinetype, np_rng, request):
                 angle=r_angle, degree=False
             ).control_points[-2:, :],
             np.matmul(spline_g.control_points, R2.T),
-        ), f"{spline_g.whatami} failed revolution around center"
+        ), f"{spline_g.whatami} failed revolve"
 
     # Test 2D Revolutions of lines around center
     for spline_g in (bezier_line, nurbs_line):
