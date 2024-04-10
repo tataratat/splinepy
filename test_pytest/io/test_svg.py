@@ -72,7 +72,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_noindent.svg"
+            os.path.dirname(__file__) + "/../data/svg_noindent.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -90,7 +90,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_noindent.svg"
+            os.path.dirname(__file__) + "/../data/svg_noindent.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -118,7 +118,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
             )
 
             with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__) + "/data/svg_indent.svg"
+                os.path.dirname(__file__) + "/../data/svg_indent.svg"
             ) as base_file:
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
@@ -169,7 +169,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_data_field.svg"
+            os.path.dirname(__file__) + "/../data/svg_data_field.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -198,7 +198,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_arrow_data.svg"
+            os.path.dirname(__file__) + "/../data/svg_arrow_data.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -236,7 +236,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_mini_example.svg"
+            os.path.dirname(__file__) + "/../data/svg_mini_example.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -257,7 +257,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/svg_vertices.svg"
+            os.path.dirname(__file__) + "/../data/svg_vertices.svg"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True

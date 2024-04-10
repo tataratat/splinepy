@@ -44,7 +44,7 @@ def test_mfem_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/mfem_cartesian_2d.mesh"
+            os.path.dirname(__file__) + "/../data/mfem_cartesian_2d.mesh"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -124,7 +124,7 @@ def test_mfem_export(to_tmpf, are_stripped_lines_same):
         )
 
         with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__) + "/data/mfem_cartesian_3d.mesh"
+            os.path.dirname(__file__) + "/../data/mfem_cartesian_3d.mesh"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True

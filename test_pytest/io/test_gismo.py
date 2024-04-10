@@ -76,7 +76,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
         with open(tmpf) as tmp_read, open(
             os.path.dirname(__file__)
-            + "/data/gismo_noindent_nolabels_ascii_2d.xml"
+            + "/../data/gismo_noindent_nolabels_ascii_2d.xml"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -95,7 +95,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
             with open(tmpf) as tmp_read, open(
                 os.path.dirname(__file__)
-                + "/data/gismo_indent_nolabels_ascii_2d.xml"
+                + "/../data/gismo_indent_nolabels_ascii_2d.xml"
             ) as base_file:
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
@@ -115,7 +115,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
         with open(tmpf) as tmp_read, open(
             os.path.dirname(__file__)
-            + "/data/gismo_noindent_labels_ascii_2d.xml"
+            + "/../data/gismo_noindent_labels_ascii_2d.xml"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -134,7 +134,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
             with open(tmpf) as tmp_read, open(
                 os.path.dirname(__file__)
-                + "/data/gismo_indent_labels_ascii_2d.xml"
+                + "/../data/gismo_indent_labels_ascii_2d.xml"
             ) as base_file:
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
@@ -236,7 +236,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
         with open(tmpf) as tmp_read, open(
             os.path.dirname(__file__)
-            + "/data/gismo_noindent_nolabels_ascii_3d.xml"
+            + "/../data/gismo_noindent_nolabels_ascii_3d.xml"
         ) as base_file:
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
@@ -255,7 +255,7 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
 
             with open(tmpf) as tmp_read, open(
                 os.path.dirname(__file__)
-                + "/data/gismo_indent_nolabels_ascii_3d.xml"
+                + "/../data/gismo_indent_nolabels_ascii_3d.xml"
             ) as base_file:
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
