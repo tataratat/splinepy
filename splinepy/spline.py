@@ -1565,8 +1565,11 @@ class Spline(_SplinepyBase, _core.PySpline):
         if ext == ".iges":
             _io.iges.export(fname, [self])
 
+        elif ext == ".cats":
+            _io.cats.export(fname.replace(".cats", ".xml"), [self])
+
         elif ext == ".xml":
-            _io.xml.export(fname, [self])
+            _io.gismo.export(fname, [self])
 
         elif ext == ".itd":
             _io.irit.export(fname, [self])
@@ -1644,12 +1647,12 @@ class Spline(_SplinepyBase, _core.PySpline):
     def copy(self, saved_data=True):
         """
         Returns deepcopy of stored data and newly initialized self.
+        Shallow copies are made for `spline_data`.
 
         Parameters
         -----------
         saved_data: bool
-          Default is True. calls deepcopy on saved data excluding
-          coordinate_references
+          Default is True. calls deepcopy on saved data
 
         Returns
         --------
@@ -1665,6 +1668,10 @@ class Spline(_SplinepyBase, _core.PySpline):
                 if k in required_properties:
                     continue
                 new._data[k] = _copy.deepcopy(v)
+
+            # copy show_options and shallow copy spline_data
+            self.show_options.copy_valid_options(new.show_options)
+            new.spline_data._saved = self.spline_data._saved.copy()
 
         return new
 
