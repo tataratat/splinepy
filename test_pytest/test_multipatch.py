@@ -1,61 +1,60 @@
 import numpy as np
+import pytest
 
 import splinepy
 
 
-class SplineSetup:
-    def __init__(self):
-        # Spline that points to itself
-        self._self_referencing_spline = splinepy.Bezier(
-            degrees=[3, 1],
-            control_points=[
-                [0, 0],
-                [2, 3],
-                [-2, 3],
-                [0, 0],
-                [0, 1],
-                [1, 2],
-                [-1, 2],
-                [0, 1],
-            ],
-        )
-
-        # List of splinewith with this topology
-        #
-        #  o ---- o ---- o
-        #  |   0  |   1  |
-        #  o ---- o ---- o
-        #  |   2  |
-        #  o ---- o
-        #
-        self._rect_arc_1 = splinepy.Bezier(
-            [2, 1], [[0, 0], [1, 0], [2, 0], [0, 1], [1, 2], [2, 1]]
-        )
-        self._rect_arc_2 = splinepy.Bezier(
-            [1, 1], [[2, 0], [3, 0], [2, 1], [3, 1]]
-        )
-        self._rect_arc_3 = splinepy.Bezier(
-            [2, 1], [[0, -1], [1, -2], [2, -1], [0, 0], [1, 0], [2, 0]]
-        )
-        self._list_of_splines = [
-            self._rect_arc_1,
-            self._rect_arc_2,
-            self._rect_arc_3,
-        ]
+@pytest.fixture
+def self_referencing_spline():
+    # Spline that points to itself
+    return splinepy.Bezier(
+        degrees=[3, 1],
+        control_points=[
+            [0, 0],
+            [2, 3],
+            [-2, 3],
+            [0, 0],
+            [0, 1],
+            [1, 2],
+            [-1, 2],
+            [0, 1],
+        ],
+    )
 
 
-spline = SplineSetup()
+@pytest.fixture
+def rotated_l_splines():
+    # List of splinewith with this topology
+    #
+    #  o ---- o ---- o
+    #  |   0  |   1  |
+    #  o ---- o ---- o
+    #  |   2  |
+    #  o ---- o
+    #
+    rect_arc_1 = splinepy.Bezier(
+        [2, 1], [[0, 0], [1, 0], [2, 0], [0, 1], [1, 2], [2, 1]]
+    )
+    rect_arc_2 = splinepy.Bezier([1, 1], [[2, 0], [3, 0], [2, 1], [3, 1]])
+    rect_arc_3 = splinepy.Bezier(
+        [2, 1], [[0, -1], [1, -2], [2, -1], [0, 0], [1, 0], [2, 0]]
+    )
+    return [
+        rect_arc_1,
+        rect_arc_2,
+        rect_arc_3,
+    ]
 
 
-def test_interfaces():
+def test_interfaces(self_referencing_spline, rotated_l_splines):
     """ """
     # init multipatch with multiple splines
     multipatch = splinepy.Multipatch()
-    multipatch.patches = spline._list_of_splines
+    multipatch.patches = rotated_l_splines
 
     # init multipatch with single spline
     single_p_multipatch = splinepy.Multipatch()
-    single_p_multipatch.patches = [spline._self_referencing_spline]
+    single_p_multipatch.patches = [self_referencing_spline]
 
     # Determine connectivities
     single_p_multipatch.determine_interfaces()
@@ -75,11 +74,11 @@ def test_interfaces():
     )
 
 
-def test_boundaries():
+def test_boundaries(rotated_l_splines):
     """ """
     # init multipatch with multiple splines
     multipatch = splinepy.Multipatch()
-    multipatch.patches = spline._list_of_splines
+    multipatch.patches = rotated_l_splines
     multipatch.determine_interfaces()
 
     # Using a function
