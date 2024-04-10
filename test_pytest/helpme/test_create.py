@@ -147,7 +147,7 @@ def test_create_revolution(splinetype, np_rng, request):
                 angle=r_angle, degree=False
             ).control_points[-2:, :],
             np.matmul(spline_g.control_points, R2.T),
-        )
+        ), f"{spline_g.whatami} failed revolution around center"
 
     # Test 2D Revolutions of lines around center
     for spline_g in (bezier_line, nurbs_line):
@@ -319,17 +319,22 @@ def test_determinant_spline(
 
     # Splines which are not tangled
 
-    for sp_i in (
-        bez_2,
-        bsp_c0,
-        bsp_c1,
-        nurbs_eq_w,
-        bezier_2p2d,
-        bspline_2p2d,
-        bezier_3p3d,
-        rational_bezier_3p3d,
-        bspline_3p3d,
-        nurbs_3p3d,
+    for idx, sp_i in enumerate(
+        [
+            bez_2,
+            bsp_c0,
+            bsp_c1,
+            nurbs_eq_w,
+            bezier_2p2d,
+            bspline_2p2d,
+            bezier_3p3d,
+            rational_bezier_3p3d,
+            bspline_3p3d,
+            nurbs_3p3d,
+            bez_1,
+            bsp_c1_tang,
+            nurbs_eq_w_tang,
+        ]
     ):
         det_spl = splinepy.helpme.create.determinant_spline(sp_i)
         rnd_queries = np_rng.random((10, sp_i.dim))
@@ -337,13 +342,4 @@ def test_determinant_spline(
         assert np.allclose(
             det_spl.evaluate(queries=rnd_queries).ravel(),
             np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
-        )
-
-    # Splines which are tangled or singular
-    for sp_i in (bez_1, bsp_c1_tang, nurbs_eq_w_tang):
-        det_spl = splinepy.helpme.create.determinant_spline(sp_i)
-        rnd_queries = np_rng.random((10, sp_i.dim))
-        assert np.allclose(
-            det_spl.evaluate(queries=rnd_queries).ravel(),
-            np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
-        )
+        ), f"{sp_i.whatami} at index {idx} failed determinant spline"
