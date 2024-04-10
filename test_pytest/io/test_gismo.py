@@ -2,6 +2,7 @@ import os
 import tempfile
 from sys import version as python_version
 
+import numpy as np
 import pytest
 
 import splinepy
@@ -283,3 +284,231 @@ def test_gismo_export_3D_indented(
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
+
+
+def test_gismo_import(to_tmpf, are_splines_equal):
+    """
+    Test gismo export routine
+    """
+    if int(python_version.split(".")[1]) < 8:
+        splinepy.utils.log.info(
+            "gismo export is only tested here from python3.8+. "
+            "Skipping test, because current version is: "
+            f"{python_version}"
+        )
+        return True
+
+    # Define some splines
+    bsp_el2 = splinepy.BSpline(
+        degrees=[1, 1],
+        control_points=[[0, 0], [1, 0], [0, 1], [1, 1]],
+        knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]],
+    )
+    nur_el3 = splinepy.NURBS(
+        degrees=[1, 1],
+        control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
+        weights=[1, 1, 1, 1],
+        knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]],
+    )
+
+    # Make it more tricky
+    bsp_el2.elevate_degrees(0)
+    bsp_el2.elevate_degrees(1)
+    nur_el3.elevate_degrees(0)
+    nur_el3.elevate_degrees(1)
+    bsp_el2.insert_knots(1, [0.5])
+    nur_el3.insert_knots(1, [0.5])
+
+    # Test Output against input
+    multipatch_geometry = splinepy.Multipatch([bsp_el2, nur_el3])
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=multipatch_geometry,
+            indent=False,
+            labeled_boundaries=False,
+        )
+        multipatch_geometry_loaded = splinepy.io.gismo.load(
+            tmpf, load_options=False
+        )
+        assert all(
+            are_splines_equal(a, b)
+            for a, b in zip(
+                multipatch_geometry.patches,
+                multipatch_geometry_loaded.patches,
+            )
+        )
+
+        assert np.allclose(
+            multipatch_geometry.interfaces,
+            multipatch_geometry_loaded.interfaces,
+        )
+
+        # Now with modified boundaries
+        multipatch_geometry.boundaries_from_continuity()
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=multipatch_geometry,
+            indent=False,
+            labeled_boundaries=True,
+        )
+        multipatch_geometry_loaded = splinepy.io.gismo.load(
+            tmpf, load_options=False
+        )
+        assert all(
+            are_splines_equal(a, b)
+            for a, b in zip(
+                multipatch_geometry.patches,
+                multipatch_geometry_loaded.patches,
+            )
+        )
+
+        assert np.allclose(
+            multipatch_geometry.interfaces,
+            multipatch_geometry_loaded.interfaces,
+        )
+
+
+def test_gismo_import_with_options(to_tmpf, are_splines_equal):
+    """
+    Test gismo export routine
+    """
+    if int(python_version.split(".")[1]) < 8:
+        splinepy.utils.log.info(
+            "gismo export is only tested here from python3.8+. "
+            "Skipping test, because current version is: "
+            f"{python_version}"
+        )
+        return True
+
+    # Define some splines
+    bsp_el2 = splinepy.BSpline(
+        degrees=[1, 1],
+        control_points=[[0, 0], [1, 0], [0, 1], [1, 1]],
+        knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]],
+    )
+    nur_el3 = splinepy.NURBS(
+        degrees=[1, 1],
+        control_points=[[1, 0], [2, 0], [1, 1], [2, 1]],
+        weights=[1, 1, 1, 1],
+        knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1]],
+    )
+
+    # Make it more tricky
+    bsp_el2.elevate_degrees(0)
+    bsp_el2.elevate_degrees(1)
+    nur_el3.elevate_degrees(0)
+    nur_el3.elevate_degrees(1)
+    bsp_el2.insert_knots(1, [0.5])
+    nur_el3.insert_knots(1, [0.5])
+
+    # Test Output against input
+    multipatch_geometry = splinepy.Multipatch([bsp_el2, nur_el3])
+
+    # Set some options
+    gismo_options = [
+        {
+            "tag": "OptionNumber1",
+            "attributes": {"Mambo": "No. 5", "id": "5"},
+            "text": "One, two, three, four, five\nEverybody in the car, "
+            "so come on, let's ride",
+            "children": [
+                {
+                    "tag": "AnotherOne",
+                    "text": "0 ,0",
+                    "attributes": {},
+                    "children": [],
+                }
+            ],
+        }
+    ]
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=multipatch_geometry,
+            indent=False,
+            labeled_boundaries=False,
+            options=gismo_options,
+        )
+        (
+            multipatch_geometry_loaded,
+            gismo_options_loaded,
+        ) = splinepy.io.gismo.load(tmpf, load_options=True)
+        assert all(
+            are_splines_equal(a, b)
+            for a, b in zip(
+                multipatch_geometry.patches,
+                multipatch_geometry_loaded.patches,
+            )
+        )
+
+        assert np.allclose(
+            multipatch_geometry.interfaces,
+            multipatch_geometry_loaded.interfaces,
+        )
+
+        assert gismo_options_loaded == gismo_options
+
+
+def test_gismo_io_binary(
+    np_rng, to_tmpf, are_stripped_lines_same, are_splines_equal
+):
+    """Test the base64 io-routines"""
+    # We test this with just one (big, 3D) spline
+    nurbs = splinepy.NURBS(
+        degrees=[1, 1, 1],
+        knot_vectors=[[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]],
+        control_points=np.ones((8, 3)),
+        weights=np.ones((8, 1)),
+    )
+    nurbs.elevate_degrees([0, 1, 2, 2])
+    np.random.default_rng(19284918)
+    for i in range(3):
+        nurbs.insert_knots(i, np_rng.random(4))
+
+    # Randomize points
+    nurbs.cps = np_rng.random(nurbs.cps.shape)
+    nurbs.weights = np_rng.random(nurbs.weights.shape)
+
+    # Create a multipatch geometry
+    multipatch_geometry = splinepy.Multipatch([nurbs])
+
+    # Export
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=multipatch_geometry,
+            indent=False,
+            labeled_boundaries=False,
+            as_base64=True,
+        )
+        (
+            multipatch_geometry_loaded,
+            gismo_options_loaded,
+        ) = splinepy.io.gismo.load(tmpf, load_options=True)
+
+        with open(tmpf) as tmp_read, open(
+            os.path.dirname(os.path.dirname(__file__))
+            + "/data/gismo_noindent_nolabels_b64_3d.xml"
+        ) as base_file:
+            assert are_stripped_lines_same(
+                base_file.readlines(), tmp_read.readlines(), True
+            )
+
+        assert all(
+            are_splines_equal(a, b)
+            for a, b in zip(
+                multipatch_geometry.patches,
+                multipatch_geometry_loaded.patches,
+            )
+        )
+
+        assert np.allclose(
+            multipatch_geometry.interfaces,
+            multipatch_geometry_loaded.interfaces,
+        )
