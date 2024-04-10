@@ -31,6 +31,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_mdinclude",
+    "breathe",
 ]
 
 
@@ -39,6 +40,8 @@ exclude_patterns = []
 
 pygments_style = "sphinx"
 
+breathe_projects = {"splinepy": ".build/doxygenxml/"}
+breathe_default_project = "splinepy"
 
 # -- Options for HTML output -------------------------------------------------
 
