@@ -47,9 +47,12 @@ class BezierExtractionTest(c.SplineBasedTestCase):
         test = c.splinepy.BSpline(
             degrees=[0, 0],
             control_points=[
-                [0], [1], [2], [3],
+                [0],
+                [1],
+                [2],
+                [3],
             ],
-            knot_vectors=[[0, .5, 1], [0, .5, 1]]
+            knot_vectors=[[0, 0.5, 1], [0, 0.5, 1]],
         )
         for i, patch in enumerate(test.extract.beziers()):
             self.assertTrue(c.np.allclose(test.cps[i], patch.cps[0]))

@@ -88,6 +88,20 @@ def _spline_to_ET(
             dtype=_np.int64,
         )
 
+        # Sanity check (see error message)
+        if _np.unique(supports[:, 1]).size != _np.max(supports[:, 1]) + 1:
+            raise ValueError(
+                "The requested field(s) can not be exported, because the patch "
+                "ids of the field support (i.e., where the fields are non-zero)"
+                " is not contiguous. This can be the case, if a field is only "
+                "non-zero on patches [0,1,4]. This case is currently not "
+                "supported. If required, it is possible to (1) change the input"
+                " routine and export a patch-mapping (former patch id to new "
+                "patch id or (2) add zero-valued splines to fill the gaps. "
+                "Please feel free to write an issue on github.com/taratat/"
+                "splinepy for additional information."
+            )
+
         # Very unintuitive solution to counting the support ids #indextrick
         indices = _np.argsort(supports[:, 0], kind="stable")
         counter = _np.arange(supports.shape[0])
