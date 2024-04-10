@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 # for parametrization used fixtures
 all_2p2d_splines = (
@@ -24,19 +23,21 @@ def convert_and_compare_samples(spline, conversion_list):
         assert type(converted).__qualname__.lower().startswith(convert_to)
 
 
-@pytest.mark.parametrize("splinetype", all_2p2d_splines)
-def test_conversion(splinetype, request):
-    spline = request.getfixturevalue(splinetype)
+def test_bezier_conversion(bezier_2p2d):
+    test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
+    convert_and_compare_samples(bezier_2p2d, test_conversions)
 
-    if splinetype == "bezier_2p2d":
-        test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
-    elif splinetype == "rational_bezier_2p2d":
-        test_conversions = ["rationalbezier", "nurbs"]
-    elif splinetype == "bspline_2p2d":
-        test_conversions = ["bspline", "nurbs"]
-    elif splinetype == "nurbs_2p2d":
-        test_conversions = ["nurbs"]
-    else:
-        pytest.fail()
 
-    convert_and_compare_samples(spline, test_conversions)
+def test_rational_bezier_conversion(rational_bezier_2p2d):
+    test_conversions = ["rationalbezier", "nurbs"]
+    convert_and_compare_samples(rational_bezier_2p2d, test_conversions)
+
+
+def test_bspline_conversion(bspline_2p2d):
+    test_conversions = ["bspline", "nurbs"]
+    convert_and_compare_samples(bspline_2p2d, test_conversions)
+
+
+def test_nurbs_conversion(nurbs_2p2d):
+    test_conversions = ["nurbs"]
+    convert_and_compare_samples(nurbs_2p2d, test_conversions)
