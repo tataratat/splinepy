@@ -2,25 +2,13 @@ import os
 import tempfile
 from sys import version as python_version
 
+import pytest
+
 import splinepy
 
 
-def test_gismo_export(to_tmpf, are_stripped_lines_same):
-    """
-    Test gismo export routine
-    """
-    if int(python_version.split(".")[1]) < 8:
-        splinepy.utils.log.info(
-            "gismo export is only tested here from python3.8+. "
-            "Skipping test, because current version is: "
-            f"{python_version}"
-        )
-        return True
-
-    ###########
-    # 2D Mesh #
-    ###########
-    # Define some splines
+@pytest.fixture
+def gismo_2D_multipatch():
     bez_el0 = splinepy.Bezier(
         degrees=[1, 1], control_points=[[0, 0], [1, 0], [0, 1], [1, 1]]
     )
@@ -64,87 +52,11 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
     multipatch.boundary_from_function(is_bottom)
     multipatch.boundary_from_function(is_top)
 
-    # Test Output
-    with tempfile.TemporaryDirectory() as tmpd:
-        tmpf = to_tmpf(tmpd)
-        splinepy.io.gismo.export(
-            tmpf,
-            multipatch=multipatch,
-            indent=False,
-            labeled_boundaries=False,
-        )
+    return multipatch
 
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__)
-            + "/../data/gismo_noindent_nolabels_ascii_2d.xml"
-        ) as base_file:
-            assert are_stripped_lines_same(
-                base_file.readlines(), tmp_read.readlines(), True
-            )
 
-    # for python version > 3.9, test indented version
-    if int(python_version.split(".")[1]) >= 9:
-        with tempfile.TemporaryDirectory() as tmpd:
-            tmpf = to_tmpf(tmpd)
-            splinepy.io.gismo.export(
-                tmpf,
-                multipatch=multipatch,
-                indent=True,
-                labeled_boundaries=False,
-            )
-
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_indent_nolabels_ascii_2d.xml"
-            ) as base_file:
-                assert are_stripped_lines_same(
-                    base_file.readlines(), tmp_read.readlines(), True
-                )
-
-    ########################
-    # 2D Mesh - new format #
-    ########################
-    with tempfile.TemporaryDirectory() as tmpd:
-        tmpf = to_tmpf(tmpd)
-        splinepy.io.gismo.export(
-            tmpf,
-            multipatch=multipatch,
-            indent=False,
-            labeled_boundaries=True,
-        )
-
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__)
-            + "/../data/gismo_noindent_labels_ascii_2d.xml"
-        ) as base_file:
-            assert are_stripped_lines_same(
-                base_file.readlines(), tmp_read.readlines(), True
-            )
-
-    # for python version > 3.9, test indented version
-    if int(python_version.split(".")[1]) >= 9:
-        with tempfile.TemporaryDirectory() as tmpd:
-            tmpf = to_tmpf(tmpd)
-            splinepy.io.gismo.export(
-                tmpf,
-                multipatch=multipatch,
-                indent=True,
-                labeled_boundaries=True,
-            )
-
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_indent_labels_ascii_2d.xml"
-            ) as base_file:
-                assert are_stripped_lines_same(
-                    base_file.readlines(), tmp_read.readlines(), True
-                )
-
-    ###########
-    # 3D Mesh #
-    ###########
-
-    # Test Also 3D Meshes
+@pytest.fixture
+def gismo_multipatch_3D():
     bez_el0 = splinepy.Bezier(
         degrees=[1, 1, 1],
         control_points=[
@@ -223,13 +135,120 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
     )
     multipatch.boundary_from_function(is_bottom)
     multipatch.boundary_from_function(is_top)
+    return multipatch
+
+
+def test_gismo_export_2D(
+    to_tmpf, gismo_2D_multipatch, are_stripped_lines_same
+):
+    """
+    Test gismo export routine for 2D
+    """
+    ###########
+    # 2D Mesh #
+    ###########
+    # Define some splines
+
+    # Test Output
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=gismo_2D_multipatch,
+            indent=False,
+            labeled_boundaries=False,
+        )
+
+        with open(tmpf) as tmp_read, open(
+            os.path.dirname(__file__)
+            + "/../data/gismo_noindent_nolabels_ascii_2d.xml"
+        ) as base_file:
+            assert are_stripped_lines_same(
+                base_file.readlines(), tmp_read.readlines(), True
+            )
+
+
+def test_gismo_export_2D_indented(
+    gismo_2D_multipatch, to_tmpf, are_stripped_lines_same
+):
+    # for python version > 3.9, test indented version
+    if int(python_version.split(".")[1]) >= 9:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = to_tmpf(tmpd)
+            splinepy.io.gismo.export(
+                tmpf,
+                multipatch=gismo_2D_multipatch,
+                indent=True,
+                labeled_boundaries=False,
+            )
+
+            with open(tmpf) as tmp_read, open(
+                os.path.dirname(__file__)
+                + "/../data/gismo_indent_nolabels_ascii_2d.xml"
+            ) as base_file:
+                assert are_stripped_lines_same(
+                    base_file.readlines(), tmp_read.readlines(), True
+                )
+
+
+def test_gismo_export_2D_labels(
+    gismo_2D_multipatch, to_tmpf, are_stripped_lines_same
+):
+    ########################
+    # 2D Mesh - new format #
+    ########################
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.gismo.export(
+            tmpf,
+            multipatch=gismo_2D_multipatch,
+            indent=False,
+            labeled_boundaries=True,
+        )
+
+        with open(tmpf) as tmp_read, open(
+            os.path.dirname(__file__)
+            + "/../data/gismo_noindent_labels_ascii_2d.xml"
+        ) as base_file:
+            assert are_stripped_lines_same(
+                base_file.readlines(), tmp_read.readlines(), True
+            )
+
+
+def test_gismo_export_2D_labels_indented(
+    gismo_2D_multipatch, to_tmpf, are_stripped_lines_same
+):
+    # for python version > 3.9, test indented version
+    if int(python_version.split(".")[1]) >= 9:
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = to_tmpf(tmpd)
+            splinepy.io.gismo.export(
+                tmpf,
+                multipatch=gismo_2D_multipatch,
+                indent=True,
+                labeled_boundaries=True,
+            )
+
+            with open(tmpf) as tmp_read, open(
+                os.path.dirname(__file__)
+                + "/../data/gismo_indent_labels_ascii_2d.xml"
+            ) as base_file:
+                assert are_stripped_lines_same(
+                    base_file.readlines(), tmp_read.readlines(), True
+                )
+
+
+def test_gismo_export_3D(
+    gismo_multipatch_3D, to_tmpf, are_stripped_lines_same
+):
+    # Test Also 3D Meshes
 
     # Test output
     with tempfile.TemporaryDirectory() as tmpd:
         tmpf = to_tmpf(tmpd)
         splinepy.io.gismo.export(
             tmpf,
-            multipatch=multipatch,
+            multipatch=gismo_multipatch_3D,
             indent=False,
             labeled_boundaries=False,
         )
@@ -242,13 +261,17 @@ def test_gismo_export(to_tmpf, are_stripped_lines_same):
                 base_file.readlines(), tmp_read.readlines(), True
             )
 
+
+def test_gismo_export_3D_indented(
+    gismo_multipatch_3D, to_tmpf, are_stripped_lines_same
+):
     # for python version > 3.9, test indented version
     if int(python_version.split(".")[1]) >= 9:
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = to_tmpf(tmpd)
             splinepy.io.gismo.export(
                 tmpf,
-                multipatch=multipatch,
+                multipatch=gismo_multipatch_3D,
                 indent=True,
                 labeled_boundaries=False,
             )
