@@ -192,8 +192,7 @@ ExtractControlMeshSlice(const SplineType& spline,
  */
 std::vector<std::vector<int>>
 ExtractBezierPatchIDs(const std::vector<std::vector<int>>& knot_multiplicities,
-                      const int* degrees,
-                      const int* n_patches_per_para_dim);
+                      const int* degrees);
 /**
  * @brief Extracts Bezier patches of a B-Spline/NURBS type
  *
@@ -221,7 +220,6 @@ ExtractBezierPatches(const SplineType& spline) {
   std::array<int, para_dim> degrees{};
   input.SplinepyCurrentProperties(degrees.data(), nullptr, nullptr, nullptr);
 
-  std::array<int, para_dim> n_patches_per_para_dim{};
   std::array<int, para_dim> n_ctps_per_para_dim{};
 
   // Identify all internal knots and the number of required Bezier patches
@@ -233,9 +231,6 @@ ExtractBezierPatches(const SplineType& spline) {
     // Extract internal knots
     const auto bezier_information =
         parameter_space.DetermineBezierExtractionKnots(pd_query);
-    n_patches_per_para_dim[i_p_dim] = std::get<0>(bezier_information);
-    n_ctps_per_para_dim[i_p_dim] =
-        n_patches_per_para_dim[i_p_dim] * degrees[i_p_dim] + 1;
     const auto& required_knot_insertions = std::get<1>(bezier_information);
 
     // Insert knot into the copy of the spline before extraction
@@ -247,9 +242,7 @@ ExtractBezierPatches(const SplineType& spline) {
 
   // Retrieve id information
   const std::vector<std::vector<int>>& ids =
-      ExtractBezierPatchIDs(input.SplinepyKnotMultiplicities(),
-                            degrees.data(),
-                            n_patches_per_para_dim.data());
+      ExtractBezierPatchIDs(input.SplinepyKnotMultiplicities(), degrees.data());
 
   // Number of total patches
   const int n_total_patches = ids.size();

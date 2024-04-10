@@ -385,8 +385,6 @@ py::tuple BezierExtractionMatrices(const std::shared_ptr<PySpline>& spline,
 
   // Here we compute the individual components that are required to initialize
   // the sparse matrices in the python frontend
-  std::vector<int> n_patches_per_dimension{};
-  n_patches_per_dimension.reserve(n_para_dims);
   // numpy view to call ComputeGlobalKnotInsertionMatrix
   py::array_t<int> np_degrees(degrees.size(), degrees.data(), py::none());
   for (int parametric_dimension{}; parametric_dimension < n_para_dims;
@@ -400,9 +398,6 @@ py::tuple BezierExtractionMatrices(const std::shared_ptr<PySpline>& spline,
     const auto& new_kv = create_new_knot_vector(tmp_kv,
                                                 degrees[parametric_dimension],
                                                 new_knots);
-    n_patches_per_dimension.push_back(
-        (new_kv.size() - degrees[parametric_dimension] - 2)
-        / degrees[parametric_dimension]);
 
     // Add data to list
     list_of_tuples.append(ComputeGlobalKnotInsertionMatrix(tmp_kvs,
@@ -428,8 +423,7 @@ py::tuple BezierExtractionMatrices(const std::shared_ptr<PySpline>& spline,
   // matrix.
   const auto& list_of_ids =
       splines::helpers::ExtractBezierPatchIDs(knot_multiplicities,
-                                              degrees.data(),
-                                              n_patches_per_dimension.data());
+                                              degrees.data());
   const int n_patches = list_of_ids.size();
   const int n_ctps_per_patch = list_of_ids[0].size();
   py::array_t<int> bezier_ctps_ids(n_ctps_per_patch * n_patches);
