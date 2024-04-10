@@ -409,3 +409,63 @@ def test_extract_arrow_data(np_rng):
     assert np.allclose(
         direction, sample * spline.show_options["arrow_data_scale"]
     )
+
+
+def test_extract_spline():
+    """Spline from spline extraction"""
+    spline = splinepy.Bezier(
+        degrees=[4],
+        control_points=[
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [2, 1],
+            [2, 2],
+        ],
+    )
+
+    queries = np.linspace(0, 1, 4).reshape(-1, 1)
+    for interval in [[0.0, 0.3], [0.2, 0.5], [0.6, 1.0]]:
+        new_spline = spline.extract.spline(0, interval)
+        linear_projection = queries * (interval[1] - interval[0]) + interval[0]
+        assert np.allclose(
+            spline.evaluate(linear_projection),
+            new_spline.evaluate(queries),
+        )
+
+    spline = splinepy.Bezier(
+        degrees=[2, 2],
+        control_points=[
+            [0, 0],
+            [2, 1],
+            [4, 0],
+            [0, 2],
+            [2, 3],
+            [4, 2],
+            [0, 4],
+            [2, 5],
+            [4, 4],
+        ],
+    )
+    queries = splinepy.utils.data.cartesian_product(
+        [np.linspace(0, 1, 4) for _ in range(2)]
+    )
+
+    for axis in [0, 1]:
+        for interval in [[0.0, 0.3], [0.2, 0.5], [0.6, 1.0], 0.0, 0.4, 1.0]:
+            new_spline = spline.extract.spline(axis, interval)
+            linear_projection = queries.copy()
+            if isinstance(interval, list):
+                linear_projection[:, axis] = (
+                    linear_projection[:, axis] * (interval[1] - interval[0])
+                    + interval[0]
+                )
+                new_spline_queries = queries.copy()
+            else:
+                linear_projection[:, axis] = interval
+                new_spline_queries = queries[:, (axis + 1) % 2].reshape(-1, 1)
+
+            assert np.allclose(
+                spline.evaluate(linear_projection),
+                new_spline.evaluate(new_spline_queries),
+            )
