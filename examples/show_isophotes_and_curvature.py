@@ -96,7 +96,7 @@ a.spline_data["mean_curvature"] = mean_curvature
 a.show_options["lighting"] = "off"
 a.show_options["control_points"] = False
 a.show_options["knots"] = False
-# a.show_options["cmap_n_colors"] = 2
+a.show_options["cmap_n_colors"] = 2
 a.show_options["cmap"] = "turbo"
 
 # Show Isophotes
