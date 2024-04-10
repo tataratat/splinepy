@@ -46,17 +46,9 @@ def test_extraction(np_rng):
 def test_extraction_matrices(splinetype, np_rng, request):
     spline = request.getfixturevalue(splinetype)
 
-    if "3d" in splinetype:
-        spline.elevate_degrees([0, 1, 2])
-        spline.insert_knots(0, np_rng.random(3))
-        spline.insert_knots(1, np_rng.random(3))
-        spline.insert_knots(2, np_rng.random(3))
-    elif "2d" in splinetype:
-        spline.elevate_degrees([0, 1])
-        spline.insert_knots(0, np_rng.random(3))
-        spline.insert_knots(1, np_rng.random(3))
-    else:
-        pytest.fail()
+    spline.elevate_degrees(list(range(spline.para_dim)))
+    for i in range(spline.para_dim):
+        spline.insert_knots(i, np_rng.random(3))
 
     n_matrices = spline.knot_insertion_matrix(beziers=True)
     beziers_n = spline.extract_bezier_patches()
