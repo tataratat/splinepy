@@ -3,7 +3,7 @@ import tempfile
 import splinepy
 
 
-def test_npz_import(to_tmpf, are_splines_equal):
+def test_npz_io(to_tmpf, are_splines_equal):
     """
     Test npz export-import routine
     """
