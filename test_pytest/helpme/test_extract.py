@@ -176,7 +176,7 @@ def test_extract_faces(np_rng):
     assert np.allclose(
         np.sort(expected_faces.centers(), axis=0),
         np.sort(faces.centers(), axis=0),
-    ), "Wrong"
+    )
 
 
 def test_extract_volumes():
