@@ -89,7 +89,8 @@ def _spline_to_ET(
         )
 
         # Sanity check (see error message)
-        if _np.unique(supports[:, 1]).size != _np.max(supports[:, 1]) + 1:
+        n_patches_in_support = _np.max(supports[:, 0]) + 1
+        if _np.unique(supports[:, 0]).size != n_patches_in_support:
             raise ValueError(
                 "The requested field(s) can not be exported, because the patch "
                 "ids of the field support (i.e., where the fields are non-zero)"
@@ -122,17 +123,15 @@ def _spline_to_ET(
         design_v_support.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in supports]
         )
+    else:
+        n_patches_in_support = len(multipatch.patches)
 
-    # set to -1 since loop starts with id_count += 1, therefore the first
-    # patch starts with id = 0
-    id_count = -1
     for id, spline in enumerate(multipatch.patches):
         if fields_only:
             # Check supports
             support = field_mask[supports[supports[:, 0] == id, 1]]
             if support.size == 0:
                 continue
-            id_count += 1
             coefs = _np.hstack(
                 [
                     multipatch.fields[j].patches[id].control_points
@@ -144,7 +143,6 @@ def _spline_to_ET(
                     [multipatch.fields[j][id].weights for j in support]
                 )
         else:
-            id_count = id
             coefs = spline.control_points
             if "weights" in spline.required_properties:
                 weights = spline.weights
@@ -171,7 +169,7 @@ def _spline_to_ET(
         spline_element = _ET.SubElement(
             root,
             "Geometry",
-            id=str(id_count + index_offset),
+            id=str(id + index_offset),
             type="Tensor" + type_name + str(spline.para_dim),
         )
 
@@ -230,7 +228,7 @@ def _spline_to_ET(
         )
         coords.text = _array_to_text(coefs, True, as_base64)
 
-    return id_count
+    return n_patches_in_support
 
 
 def export(
@@ -416,7 +414,7 @@ def export(
             field_mask=field_mask,
         )
         field_xml.find("MultiPatch").find("patches").text = (
-            f"{index_offset} " f"{n_patches + index_offset}"
+            f"{index_offset} " f"{n_patches - 1  + index_offset}"
         )
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
@@ -431,10 +429,10 @@ def export(
         as_base64=as_base64,
     )
 
-    if n_patches + 1 != len(multipatch.patches):
+    if n_patches != len(multipatch.patches):
         raise RuntimeError("Help - some patches were not recognised")
 
-    patch_range.text = f"{index_offset} " f"{n_patches + index_offset}"
+    patch_range.text = f"{index_offset} " f"{n_patches - 1 + index_offset}"
 
     # Add additional options to the xml file
     if options is not None:
