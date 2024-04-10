@@ -121,7 +121,7 @@ def test_boundaries(rotated_l_splines):
     )
 
 
-def test_interfaces_and_boundaries():
+def test_interfaces_and_boundaries(are_splines_equal):
     # 2 --- 3 1 --- 0
     # |  1  | |  3  |
     # 0 --- 1 3 --- 2
@@ -200,3 +200,18 @@ def test_interfaces_and_boundaries():
             dtype=int,
         )
     )
+
+    # Test boundary multipatch extraction
+    default_bmp = multipatch.boundary_multipatch()
+    assert len(default_bmp.patches) == 16
+    bmp_1 = multipatch.boundary_multipatch(1)
+    assert len(bmp_1.patches) == 2
+    boundary_1 = []
+    for i_patch, i_face in zip(*multipatch.boundaries[0]):
+        boundary_1.append(
+            *multipatch.patches[i_patch].extract.boundaries([i_face])
+        )
+    for patch_0, patch_1 in zip(boundary_1, bmp_1.patches):
+        assert are_splines_equal(patch_0, patch_1)
+
+    assert len(multipatch.boundary_patch_ids(8)) == 0
