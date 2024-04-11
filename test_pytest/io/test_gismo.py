@@ -454,9 +454,7 @@ def test_gismo_import_with_options(to_tmpf, are_splines_equal):
         assert gismo_options_loaded == gismo_options
 
 
-def test_gismo_io_binary(
-    np_rng, to_tmpf, are_stripped_lines_same, are_splines_equal
-):
+def test_gismo_io_binary(to_tmpf, are_stripped_lines_same, are_splines_equal):
     """Test the base64 io-routines"""
     # We test this with just one (big, 3D) spline
     nurbs = splinepy.NURBS(
@@ -466,7 +464,7 @@ def test_gismo_io_binary(
         weights=np.ones((8, 1)),
     )
     nurbs.elevate_degrees([0, 1, 2, 2])
-    np.random.default_rng(19284918)
+    np_rng = np.random.RandomState(19284918)
     for i in range(3):
         nurbs.insert_knots(i, np_rng.random(4))
 
