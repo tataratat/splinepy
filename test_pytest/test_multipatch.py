@@ -215,3 +215,22 @@ def test_interfaces_and_boundaries(are_splines_equal):
         assert are_splines_equal(patch_0, patch_1)
 
     assert len(multipatch.boundary_patch_ids(8)) == 0
+
+
+def test_add_fields():
+    """Test the evaluation and addition to field with setup checks"""
+    # Create splines to form multipatch object and "solution" field
+    b1 = splinepy.helpme.create.box(1, 2).bspline
+    b2 = splinepy.helpme.create.box(2, 2).bspline
+    b2.insert_knots(0, [0.2, 0.5])
+    b2.cps[:] += [1, 0]
+
+    # 2D field
+    two_dim_field = [b1, b2]
+    geometry = splinepy.Multipatch([b.create.embedded(3) for b in [b1, b2]])
+    # Field dimension is 2 so should raise
+    with pytest.raises(RuntimeError) as _:
+        geometry.add_fields([two_dim_field], field_dim=1)
+    # Success
+    geometry.add_fields([two_dim_field], field_dim=2)
+    geometry.add_fields([geometry.patches], field_dim=3)

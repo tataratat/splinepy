@@ -32,14 +32,6 @@ def test_orientation():
     e_s = splinepy.Bezier(
         degrees=[1, 1], control_points=[[2, 1], [1, 1], [2, 0], [1, 0]]
     )
-
-    # Provide connectivity data
-    spline_list = [a_s, b_s, c_s, d_s, e_s]
-    start_ids = [0, 0, 0, 0]
-    start_face_ids = [1, 3, 0, 2]
-    neighbor_ids = [1, 2, 3, 4]
-    neighbor_face_ids = [2, 2, 1, 2]
-
     # Expected Values
     expected_interfaces = [
         [13, 6, 18, 10],
