@@ -137,16 +137,16 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
 /// @param pyspline_end Spline object from end///to which is mapped
 /// @param boundary_end Boundary ID of adjacent spline
 /// @param tolerance Tolerance
-/// @param int_mappings_ptr (output) integer mappings
-/// @param bool_orientations_ptr (output) axis alignment
+/// @param mappings_ptr (output) integer mappings
+/// @param orientations_ptr (output) axis alignment
 void GetInterfaceOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
     const int& boundary_end,
     const double& tolerance,
-    int* int_mappings_ptr,
-    bool* bool_orientations_ptr);
+    int* mappings_ptr,
+    int* orientations_ptr);
 
 /// @brief Extract all Boundary Patches and store them in a python list
 ///
@@ -212,7 +212,7 @@ public:
   py::array_t<int> interfaces_;
 
   /// interface orientations that define mapping of parametric axis
-  py::array_t<int> orientations_;
+  py::array_t<int> interface_orientations_;
 
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
