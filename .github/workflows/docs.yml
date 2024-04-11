@@ -18,7 +18,9 @@ jobs:
         python-version: "3.10"
 
     - name: install dependencies
-      run: pip install numpy
+      run: |
+        pip install numpy
+        sudo apt-get install doxygen
 
     - name: build splinepy linux
       run: CC=clang-14 CXX=clang++-14 pip install ".[test]" -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
@@ -29,6 +31,7 @@ jobs:
 
     - name: build docs
       run: |
+        cd docs && doxygen && cd ..
         pip install -r ./docs/requirements.txt
         python docs/source/handle_markdown.py
         sphinx-build -W -b html docs/source docs/build
