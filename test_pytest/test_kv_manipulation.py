@@ -1,5 +1,7 @@
 import numpy as np
 
+import splinepy
+
 
 def test_insert_knot(np_rng, are_items_close, bspline_2p2d, nurbs_2p2d):
     """Test the knot insertion function (.insert_knot())."""
@@ -137,3 +139,47 @@ def test_remove_knot(np_rng, are_items_close, bspline_2p2d, nurbs_2p2d):
     )
 
     assert np.allclose(nurbs_2p2d.evaluate(q2D), nurbs_original.evaluate(q2D))
+
+
+def test_uniform_refine():
+    """test uniform refine from bspline families by
+    checking resulting number of elements"""
+
+    # create single element bspline
+    b = splinepy.helpme.create.box(1, 2, 3).bspline
+    n = b.nurbs
+
+    for spline in [b, n]:
+        # check default - one subdivision
+        spline.uniform_refine()
+        unique_knots1 = spline.unique_knots
+        n_elem1 = 1
+        for uk in unique_knots1:
+            n_elem1 *= len(uk) - 1
+
+        assert n_elem1 == 2**3
+
+        # add different numbers
+        n_knots = [1, 2, 3]
+        spline.uniform_refine(n_knots=n_knots)
+        unique_knots2 = spline.unique_knots
+        n_elem2 = 1
+        for uk in unique_knots2:
+            n_elem2 *= len(uk) - 1
+
+        # compute what it should be
+        n_elem2_ref = 1
+        for uk, nk in zip(unique_knots1, n_knots):
+            n_elem2_ref *= (len(uk) - 1) * (nk + 1)
+
+        assert n_elem2_ref == n_elem2
+
+        # try only one axis
+        n_knots = [2]
+        p_dim = [0]
+        spline.uniform_refine(p_dim, n_knots)
+        unique_knots3 = spline.unique_knots
+        n_elem3 = 1
+        for uk in unique_knots3:
+            n_elem3 *= len(uk) - 1
+        assert n_elem2 * (n_knots[0] + 1) == n_elem3
