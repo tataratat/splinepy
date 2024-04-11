@@ -58,6 +58,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
     bez_el0.show_options["control_mesh_c"] = "orange"
     bez_el0.show_options["knot_c"] = "blue"
     bsp_el2.show_options["control_point_ids"] = False
+    nur_el3.show_options["knots"] = False
 
     # Test Output
     with tempfile.TemporaryDirectory() as tmpd:
@@ -69,6 +70,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
             [bez_el0, rbz_el1, bsp_el2, nur_el3],
             indent=False,
             box_margins=0.7,
+            font_family="sans-serif",
         )
 
         with open(tmpf) as tmp_read, open(
@@ -87,6 +89,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
             nur_el3,
             indent=False,
             box_margins=0.7,
+            font_family="sans-serif",
         )
 
         with open(tmpf) as tmp_read, open(
@@ -115,6 +118,7 @@ def test_svg_export(to_tmpf, are_stripped_lines_same):
                 control_mesh_c="purple",
                 control_point_c="black",
                 control_mesh_lw=0.05,
+                font_family="sans-serif",
             )
 
             with open(tmpf) as tmp_read, open(
