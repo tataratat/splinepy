@@ -25,7 +25,7 @@ jobs:
 
     - name: test
       run: |
-        pytest
+        pytest tests
 
     - name: build docs
       run: |

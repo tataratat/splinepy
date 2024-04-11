@@ -2,18 +2,10 @@ import contextlib
 import os
 import re
 
-import gustaf as gus
 import numpy as np
 import pytest
 
 import splinepy
-
-__all__ = [
-    "pytest",
-    "np",
-    "splinepy",
-    "gus",
-]
 
 
 def error_log(*args):

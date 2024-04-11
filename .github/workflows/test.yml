@@ -39,4 +39,4 @@ jobs:
 
     - name: test
       run: |
-        cd tests && pytest
+        cd tests && pytest .
