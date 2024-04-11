@@ -139,6 +139,24 @@ class BSplineBase(_spline.Spline):
         --------
         None
         """
+        # if no para_dim is given - assume that each dimension is refined
+        if para_dims is None:
+            para_dims = range(self.para_dim)
+
+        # if an integer is given, make it a list
+        elif isinstance(para_dims, int):
+            para_dims = [para_dims]
+
+        # if an integer is given, assume that each given dimension should be
+        # equally refined - make it a list and apply it to all para_dims
+        if isinstance(n_knots, int):
+            n_knots = [n_knots] * len(para_dims)
+
+        # check if the lengths of both lists are equal
+        if len(n_knots) != len(para_dims):
+            raise ValueError(
+                "Size of degrees and dimensions are not the same."
+            )
 
         def determine_new_knots(kv_unique, n_knots):
             if n_knots == 0:
@@ -151,46 +169,12 @@ class BSplineBase(_spline.Spline):
             ).ravel()
             return new_knots
 
-        # if no para_dim is given - assume that each dimension is refined
-        if para_dims is None:
-            para_dims = _np.arange(0, self.para_dim, 1)
-
-        # if an integer is given, make it a list
-        elif isinstance(para_dims, int):
-            para_dims = [para_dims]
-
-        # check if only valid para_dims are given
-        if _np.any(_np.array(para_dims) >= self.para_dim):
-            raise ValueError("Invalid parametric dimension to insert knots.")
-
-        # multiple refinements in one dimension are not valid
-        if len(_np.unique(para_dims)) != len(para_dims):
-            raise ValueError(
-                "Refinement in one dimension more than once is not admissible"
-            )
-
-        # if an integer is given, assume that each given dimension should be
-        # equally refined - make it a list and apply it to all para_dims
-        if isinstance(n_knots, int):
-            n_knots = [n_knots] * len(para_dims)
-
-        # check if an empty list is given as input and raise an error
-        if len(para_dims) == 0 or len(n_knots) == 0:
-            raise ValueError(
-                "Invalid value (len = 0) for parametric dimension or degree."
-            )
-
-        # check if the lengths of both lists are equal
-        elif len(n_knots) != len(para_dims):
-            raise ValueError(
-                "Size of degrees and dimensions are not the same."
-            )
-
         # determine new knots for each para_dim and insert the knots
-        for i, para_dim in enumerate(para_dims):
+        for para_dim, n_k in zip(para_dims, n_knots):
             new_knots = determine_new_knots(
+                # recompute unique to allow duplicating para_dims.
                 kv_unique=self.unique_knots[para_dim],
-                n_knots=n_knots[i],
+                n_knots=n_k,
             )
             self.insert_knots(para_dim, new_knots)
 
