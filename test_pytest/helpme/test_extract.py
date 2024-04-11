@@ -469,3 +469,40 @@ def test_extract_spline():
                 spline.evaluate(linear_projection),
                 new_spline.evaluate(new_spline_queries),
             )
+
+
+@pytest.mark.parametrize(
+    "spline",
+    (
+        "rational_bezier_2p2d",
+        "bezier_2p2d",
+        "bspline_2p2d",
+        "nurbs_2p2d",
+        "rational_bezier_3p3d",
+        "bezier_3p3d",
+        "bspline_3p3d",
+        "nurbs_3p3d",
+    ),
+)
+def test_extract_bases(spline, request):
+    # skip 3d splines for minimal builds
+    if splinepy.splinepy_core.is_minimal() and "3d" in spline:
+        return None
+
+    spline = request.getfixturevalue(spline)
+
+    # prepare query
+    res = 10
+    query_res = [res] * spline.para_dim
+    q = splinepy.utils.data.uniform_query(spline.parametric_bounds, query_res)
+
+    # prepare reference values
+    basis, support = spline.basis_and_support(q)
+    mat = np.zeros((len(q), len(spline.cps)))
+    np.put_along_axis(mat, support, basis, axis=1)
+
+    # get bases
+    bases = spline.extract.bases()
+
+    for i, b in enumerate(bases):
+        assert np.allclose(b.evaluate(q)[:, -1], mat[:, i])
