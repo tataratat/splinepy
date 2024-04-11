@@ -92,7 +92,7 @@ class BSplineBase(_spline.Spline):
             self.check.clamped_knot_vectors(warning=True)
 
         if parametric_dimension >= self.para_dim:
-            raise ValueError("Invalid parametric dimension to remove knots.")
+            raise ValueError("Invalid parametric dimension to insert knots.")
 
         if isinstance(knots, float):
             knots = [knots]
@@ -121,6 +121,63 @@ class BSplineBase(_spline.Spline):
         self._data = {}
 
         return inserted
+
+    def uniform_refine(self, para_dims=None, n_knots=1):
+        """
+        Uniformly refines all knot-spans in given direction(s) by given
+        degree(s). By default, every dimension will be refined with 1 knot
+        per knot span.
+
+        Parameters
+        ----------
+        para_dims : int or list
+            list of parametric dimensions to be refined (default None -> all)
+        n_knots : int or list
+            number of new knots per knot span
+
+        Returns
+        --------
+        None
+        """
+        # if no para_dim is given - assume that each dimension is refined
+        if para_dims is None:
+            para_dims = range(self.para_dim)
+
+        # if an integer is given, make it a list
+        elif isinstance(para_dims, int):
+            para_dims = [para_dims]
+
+        # if an integer is given, assume that each given dimension should be
+        # equally refined - make it a list and apply it to all para_dims
+        if isinstance(n_knots, int):
+            n_knots = [n_knots] * len(para_dims)
+
+        # check if the lengths of both lists are equal
+        if len(n_knots) != len(para_dims):
+            raise ValueError(
+                f"Size mismatch between para_dims ({para_dims}) "
+                f"and n_knots ({n_knots})."
+            )
+
+        def determine_new_knots(kv_unique, n_knots):
+            if n_knots == 0:
+                return []
+            kv_diffs = _np.diff(kv_unique) / (n_knots + 1)
+            new_knots = (
+                kv_diffs.reshape(-1, 1)
+                @ _np.arange(1, n_knots + 1).reshape(1, -1)
+                + kv_unique[:-1].reshape(-1, 1)
+            ).ravel()
+            return new_knots
+
+        # determine new knots for each para_dim and insert the knots
+        for para_dim, n_k in zip(para_dims, n_knots):
+            new_knots = determine_new_knots(
+                # recompute unique to allow duplicating para_dims.
+                kv_unique=self.unique_knots[para_dim],
+                n_knots=n_k,
+            )
+            self.insert_knots(para_dim, new_knots)
 
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
