@@ -1,6 +1,6 @@
 PROJECT_NAME           = "splinepy"
 PROJECT_BRIEF          = "Library for Bezier, Rational Bezier, BSpline and NURBS of arbitrary dimensions and degrees"
-OUTPUT_DIRECTORY       = ./build
+OUTPUT_DIRECTORY       = ./build/doxy
 ALWAYS_DETAILED_SEC    = YES
 FULL_PATH_NAMES        = NO
 QT_AUTOBRIEF           = YES
