@@ -608,7 +608,7 @@ def arrow_data(spline, adata_name):
     return as_edges
 
 
-def bases(spline, ids=None):
+def bases(spline, ids=None, parametric_view=True):
     """
     Creates spline that represents basis functions of given ids.
     Parametric bounds equals to the given spline.
@@ -632,8 +632,13 @@ def bases(spline, ids=None):
         raise TypeError(f"Bases ids ({type(ids)}) should be a list.")
 
     # first, create conforming parametric view
-    conform_para_view = spline.create.parametric_view(axes=False, conform=True)
-    base_basis = conform_para_view.create.embedded(spline.para_dim + 1)
+    if parametric_view:
+        conform_para_view = spline.create.parametric_view(
+            axes=False, conform=True
+        )
+        base_basis = conform_para_view.create.embedded(spline.para_dim + 1)
+    else:
+        base_basis = spline.create.embedded(spline.dim + 1)
 
     # for template, the last axis should be all zero
     # also, set control point show_option to False
@@ -645,6 +650,7 @@ def bases(spline, ids=None):
     for i in ids:
         basis_i = base_basis.copy()
         basis_i.control_points[i, -1] = 1.0
+        basis_i.show_options["c"] = int(i)
         basis_splines.append(basis_i)
 
     return basis_splines
