@@ -40,43 +40,29 @@ def test_orientation():
     neighbor_ids = [1, 2, 3, 4]
     neighbor_face_ids = [2, 2, 1, 2]
 
-    # Determine orientation single thread
-    (
-        axis_mapping,
-        axis_orientation,
-    ) = splinepy.splinepy_core.orientations(
-        spline_list,
-        start_ids,
-        start_face_ids,
-        neighbor_ids,
-        neighbor_face_ids,
-        0.00001,
-        1,
-    )
-
-    # Check results
-    expected_mappings = [[1, 0], [0, 1], [0, 1], [0, 1]]
-    expected_orientations = [
-        [True, True],
-        [True, True],
-        [True, False],
-        [False, False],
+    # Expected Values
+    expected_interfaces = [
+        [13, 6, 18, 10],
+        [-1, -1, 1, -1],
+        [-1, -1, 3, -1],
+        [-1, 0, -1, -1],
+        [-1, -1, 2, -1],
     ]
-    assert np.all(expected_mappings == axis_mapping)
-    assert np.all(expected_orientations == axis_orientation)
 
-    # Repeat with multithread execution
-    (
-        axis_mapping,
-        axis_orientation,
-    ) = splinepy.splinepy_core.orientations(
-        spline_list,
-        start_ids,
-        start_face_ids,
-        neighbor_ids,
-        neighbor_face_ids,
-        0.00001,
-        3,
-    )
-    assert np.all(expected_mappings == axis_mapping)
-    assert np.all(expected_orientations == axis_orientation)
+    expected_orientations = [
+        [0, 0, 3, 1, 0, 1, 1, 0],
+        [0, 1, 1, 2, 1, 0, 1, 1],
+        [0, 2, 4, 2, 0, 1, 0, 0],
+        [0, 3, 2, 2, 0, 1, 1, 1],
+    ]
+
+    # Provide connectivity data
+    mp = splinepy.Multipatch([a_s, b_s, c_s, d_s, e_s])
+
+    # First compare interfaces to what is expected
+    interfaces = mp.interfaces
+    assert np.all(interfaces == expected_interfaces)
+
+    # Then check orientations
+    orientations = mp.interface_orientations()
+    assert np.all(orientations == expected_orientations)
