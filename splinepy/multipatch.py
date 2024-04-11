@@ -148,7 +148,7 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
           multipatch object
         """
         return super().interface_orientations(
-            tolerance=_default_if_none(nthreads, _settings.TOLERANCE),
+            tolerance=_default_if_none(tolerance, _settings.TOLERANCE),
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 

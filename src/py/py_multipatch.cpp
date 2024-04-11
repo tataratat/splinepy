@@ -685,13 +685,11 @@ py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
   // get para dim of the first patch
   int para_dim = ParaDim();
 
-  // Pointer request() for interfaces
   const int n_faces_per_element = 2 * para_dim;
   const int n_entries_per_line = 4 + 2 * para_dim;
 
   // Make sure Interfaces are available
-  GetInterfaces(false);
-  const int* interfaces_ptr = static_cast<int*>(interfaces_.request().ptr);
+  const int* interfaces_ptr = static_cast<int*>(GetInterfaces(false).request().ptr);
 
   // Loop over interfaces to compute number of interfaces (This is generally not
   // time critical as comparisons are much more expensive)
@@ -705,7 +703,7 @@ py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
     }
   }
 
-  orientations_ = py::array_t<int>(number_of_interfaces * (4 + para_dim * 2));
+  orientations_ = py::array_t<int>({number_of_interfaces, (4 + para_dim * 2)});
   int* orientations_ptr = static_cast<int*>(orientations_.request().ptr);
 
   // Second loop to fill the interface information
@@ -759,7 +757,6 @@ py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
                                     n_threads);
 
   // Resize and return
-  orientations_.resize({number_of_interfaces, n_entries_per_line});
 
   return orientations_;
 }
