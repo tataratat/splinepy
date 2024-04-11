@@ -1,3 +1,4 @@
+import contextlib
 import os
 import re
 
@@ -341,7 +342,7 @@ def are_stripped_lines_same():
                 print("  checking again, while ignoring word order:")
 
                 # This is meant for attributes
-                delimiters = r" |\>|\<|\t"
+                delimiters = r" |\>|\<|\t|,"
                 splitted_a = list(
                     filter(None, re.split(delimiters, stripped_a))
                 )
@@ -356,12 +357,30 @@ def are_stripped_lines_same():
                 else:
                     # word order
                     a_to_b = []
+                    nums_b = None
                     for word_a in splitted_a:
                         try:
                             a_to_b.append(splitted_b.index(word_a))
                         except BaseException:
-                            print(f"    second does not contain ({word_a})")
-                            all_same = False
+                            try:
+                                num_a = float(word_a)
+                            except ValueError:
+                                pass
+                            else:
+                                if nums_b is None:
+                                    nums_b = []
+                                    for idx, num_b in enumerate(splitted_b):
+                                        with contextlib.suppress(ValueError):
+                                            nums_b.append((idx, float(num_b)))
+                                for idx, num_b in nums_b:
+                                    if np.isclose(num_a, num_b):
+                                        a_to_b.append(idx)
+                                        break
+                                else:
+                                    print(
+                                        f"    second does not contain ({word_a})"
+                                    )
+                                    all_same = False
 
         return all_same
 
