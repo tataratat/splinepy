@@ -4,24 +4,39 @@ namespace splinepy::splines::helpers {
 
 std::vector<std::vector<int>>
 ExtractBezierPatchIDs(const std::vector<std::vector<int>>& knot_multiplicities,
-                      const int* degrees,
-                      const int* n_patches_per_para_dim) {
+                      const int* degrees) {
 
   const int para_dim = knot_multiplicities.size();
-
-  // Number of total patches and ctps per patch
-  int n_total_patches = n_patches_per_para_dim[0];
-  int n_ctps_per_patch = degrees[0] + 1;
 
   // Offsets for start values of individual patches
   std::vector<std::size_t> bezier_index_offsets{};
   bezier_index_offsets.reserve(para_dim);
   bezier_index_offsets.push_back(1);
+  std::vector<std::size_t> control_mesh_resolution(para_dim);
+  std::vector<std::size_t> n_patches_per_para_dim(para_dim);
+
+  control_mesh_resolution[0] = std::accumulate(knot_multiplicities[0].begin(),
+                                               knot_multiplicities[0].end(),
+                                               static_cast<std::size_t>(0))
+                               - degrees[0] - 1;
+  n_patches_per_para_dim[0] = knot_multiplicities[0].size() - 1;
+
+  // Number of total patches and ctps per patch
+  int n_total_patches = n_patches_per_para_dim[0];
+  int n_ctps_per_patch = degrees[0] + 1;
+
   for (int i_para_dim{1}; i_para_dim < para_dim; i_para_dim++) {
+    n_patches_per_para_dim[i_para_dim] =
+        knot_multiplicities[i_para_dim].size() - 1;
     n_total_patches *= n_patches_per_para_dim[i_para_dim];
     n_ctps_per_patch *= degrees[i_para_dim] + 1;
     bezier_index_offsets.push_back(bezier_index_offsets[i_para_dim - 1]
                                    * (degrees[i_para_dim - 1] + 1));
+    control_mesh_resolution[i_para_dim] =
+        std::accumulate(knot_multiplicities[i_para_dim].begin(),
+                        knot_multiplicities[i_para_dim].end(),
+                        static_cast<std::size_t>(0))
+        - degrees[i_para_dim] - 1;
   }
 
   // Init return values
@@ -68,8 +83,7 @@ ExtractBezierPatchIDs(const std::vector<std::vector<int>>& knot_multiplicities,
         global_id += (local_id + patch_ctp_id_offsets[i_para_dim])
                      * n_ctps_in_previous_layers;
         // Multiply to index offset
-        n_ctps_in_previous_layers *=
-            n_patches_per_para_dim[i_para_dim] * degrees[i_para_dim] + 1;
+        n_ctps_in_previous_layers *= control_mesh_resolution[i_para_dim];
       }
       ids.push_back(global_id);
     }

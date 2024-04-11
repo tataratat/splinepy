@@ -88,6 +88,21 @@ def _spline_to_ET(
             dtype=_np.int64,
         )
 
+        # Sanity check (see error message)
+        n_patches_in_support = _np.max(supports[:, 0]) + 1
+        if _np.unique(supports[:, 0]).size != n_patches_in_support:
+            raise ValueError(
+                "The requested field(s) can not be exported, because the patch "
+                "ids of the field support (i.e., where the fields are non-zero)"
+                " is not contiguous. This can be the case, if a field is only "
+                "non-zero on patches [0,1,4]. This case is currently not "
+                "supported. If required, it is possible to (1) change the input"
+                " routine and export a patch-mapping (former patch id to new "
+                "patch id or (2) add zero-valued splines to fill the gaps. "
+                "Please feel free to write an issue on github.com/taratat/"
+                "splinepy for additional information."
+            )
+
         # Very unintuitive solution to counting the support ids #indextrick
         indices = _np.argsort(supports[:, 0], kind="stable")
         counter = _np.arange(supports.shape[0])
@@ -108,11 +123,15 @@ def _spline_to_ET(
         design_v_support.text = "\n".join(
             [" ".join([str(xx) for xx in x]) for x in supports]
         )
+    else:
+        n_patches_in_support = len(multipatch.patches)
 
     for id, spline in enumerate(multipatch.patches):
         if fields_only:
             # Check supports
-            support = supports[supports[:, 0] == id, 1]
+            support = field_mask[supports[supports[:, 0] == id, 1]]
+            if support.size == 0:
+                continue
             coefs = _np.hstack(
                 [
                     multipatch.fields[j].patches[id].control_points
@@ -209,6 +228,8 @@ def _spline_to_ET(
         )
         coords.text = _array_to_text(coefs, True, as_base64)
 
+    return n_patches_in_support
+
 
 def export(
     fname,
@@ -299,13 +320,9 @@ def export(
     patch_range = _ET.SubElement(
         multipatch_element, "patches", type="id_range"
     )
-    patch_range.text = (
-        f"{index_offset} " f"{len(multipatch.patches) - 1 + index_offset}"
-    )
-
-    interface_data = _ET.SubElement(multipatch_element, "interfaces")
 
     # Retrieve all interfaces (negative numbers refer to boundaries)
+    interface_data = _ET.SubElement(multipatch_element, "interfaces")
     global_interface_id = _np.where(multipatch.interfaces.ravel() >= 0)[0]
 
     if global_interface_id.size == 0:
@@ -387,7 +404,8 @@ def export(
     # Export fields first, as all necessary information is already available
     if export_fields:
         field_xml = _copy.deepcopy(xml_data)
-        _spline_to_ET(
+
+        n_patches = _spline_to_ET(
             field_xml,
             multipatch,
             index_offset,
@@ -395,18 +413,26 @@ def export(
             as_base64=as_base64,
             field_mask=field_mask,
         )
+        field_xml.find("MultiPatch").find("patches").text = (
+            f"{index_offset} " f"{n_patches - 1  + index_offset}"
+        )
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
         file_content = _ET.tostring(field_xml)
         with open(fname + ".fields.xml", "wb") as f:
             f.write(file_content)
 
-    _spline_to_ET(
+    n_patches = _spline_to_ET(
         xml_data,
         multipatch,
         index_offset,
         as_base64=as_base64,
     )
+
+    if n_patches != len(multipatch.patches):
+        raise RuntimeError("Help - some patches were not recognised")
+
+    patch_range.text = f"{index_offset} " f"{n_patches - 1 + index_offset}"
 
     # Add additional options to the xml file
     if options is not None:

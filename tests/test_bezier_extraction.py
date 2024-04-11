@@ -42,6 +42,21 @@ class BezierExtractionTest(c.SplineBasedTestCase):
                 )
             )
 
+    def test_extraction_0th_degree(self):
+        """Edge case for 0th degree"""
+        test = c.splinepy.BSpline(
+            degrees=[0, 0],
+            control_points=[
+                [0],
+                [1],
+                [2],
+                [3],
+            ],
+            knot_vectors=[[0, 0.5, 1], [0, 0.5, 1]],
+        )
+        for i, patch in enumerate(test.extract.beziers()):
+            self.assertTrue(c.np.allclose(test.cps[i], patch.cps[0]))
+
     def test_extraction_matrices_bspline_3D(self):
         """Create matrices to extract splines"""
         # Init b-splines
