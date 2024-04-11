@@ -402,7 +402,7 @@ def test_evaluate(spline, reference, queries_2D, request):
         ),
     ],
 )
-def test_derivative(spline, reference, queries_2D, np_rng, request):
+def test_derivative(spline, reference, queries_2D, request):
     """Test the correct calculation of the first derivative.
     (.derivative())"""
     spline = request.getfixturevalue(spline)
@@ -416,6 +416,9 @@ def test_derivative(spline, reference, queries_2D, np_rng, request):
         reference,
     )
 
+
+def test_higher_order_derivatives(np_rng):
+    """Tests higher order derivatives of the spline functions."""
     # Test higher order derivatives against each other
     max_deg = 5
     dim = 3

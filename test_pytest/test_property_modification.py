@@ -19,37 +19,21 @@ def cps_are_synced(spl):
     )
 
 
-def test_inplace_change_degrees(
-    bezier_2p2d,
-    rational_bezier_2p2d,
-    bspline_2p2d,
-    nurbs_2p2d,
-):
+@pytest.mark.parametrize("splinetype", all_2p2d_splines)
+def test_inplace_change_degrees_para(splinetype, request):
     """inplace change of degrees should not be allowed if core spline is
     initialized"""
-    z = bezier_2p2d.todict()
-    r = rational_bezier_2p2d.todict()
-    b = bspline_2p2d.todict()
-    n = nurbs_2p2d.todict()
+    spline = request.getfixturevalue(splinetype)
 
-    Z, R, B, N = (
-        splinepy.Bezier,
-        splinepy.RationalBezier,
-        splinepy.BSpline,
-        splinepy.NURBS,
-    )
+    spline_dict = spline.todict()
+    s = spline.__class__()
+    s.degrees = spline_dict["degrees"]
+    s.degrees += 1
 
-    for props, SClass in zip((z, r, b, n), (Z, R, B, N)):
-        # test no core spline
-        # this should be fine
-        s = SClass()
-        s.degrees = props["degrees"]
+    # this shoundn't be fine
+    s._new_core(**spline_dict)
+    with pytest.raises(ValueError):
         s.degrees += 1
-
-        # this shoundn't be fine
-        s._new_core(**props)
-        with pytest.raises(ValueError):
-            s.degrees += 1
 
 
 def test_inplace_change_knot_vectors(nd_box, raster):
@@ -107,21 +91,25 @@ def test_inplace_change_control_points(nd_box):
         orig = s.copy()
 
         # check if we are good to start
-        assert np.allclose(orig.sample(res), s.sample(res))
+        assert np.allclose(
+            orig.sample(res), s.sample(res)
+        ), f"{s.whatami} failed"
 
         # hold reference to control points
         s_cps = s.control_points
         # modify cps
         s.control_points /= 2
-        assert np.allclose(orig.sample(res) / 2, s.sample(res))
+        assert np.allclose(
+            orig.sample(res) / 2, s.sample(res)
+        ), f"{s.whatami} failed"
         # check if they are still the same array
-        assert s_cps is s.control_points
+        assert s_cps is s.control_points, f"{s.whatami} failed"
 
         # modify ws
         if s.is_rational:
             s_ws = s.weights
             s.weights *= 0.5
-            assert s_ws is s.weights
+            assert s_ws is s.weights, f"{s.whatami} failed"
 
 
 def test_inplace_change_weights(nurbs_2p2d):
