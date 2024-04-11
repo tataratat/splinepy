@@ -155,7 +155,8 @@ class BSplineBase(_spline.Spline):
         # check if the lengths of both lists are equal
         if len(n_knots) != len(para_dims):
             raise ValueError(
-                "Size of degrees and dimensions are not the same."
+                f"Size mismatch between para_dims ({para_dims}) "
+                f"and n_knots ({n_knots})."
             )
 
         def determine_new_knots(kv_unique, n_knots):
