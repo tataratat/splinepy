@@ -608,6 +608,54 @@ def arrow_data(spline, adata_name):
     return as_edges
 
 
+def bases(spline, ids=None, parametric_view=True):
+    """
+    Creates spline that represents basis functions of given ids.
+    Parametric bounds equals to the given spline.
+
+    Parameters
+    ----------
+    spline: Spline
+    ids: list
+      Supports ids of basis functions. Default is None and returns all supports
+
+    Returns
+    -------
+    basis_splines: list
+    """
+    # if none, extract all
+    if ids is None:
+        ids = _np.arange(len(spline.control_points))
+
+    # type check
+    if not isinstance(ids, (list, tuple, _np.ndarray)):
+        raise TypeError(f"Bases ids ({type(ids)}) should be a list.")
+
+    # first, create conforming parametric view
+    if parametric_view:
+        conform_para_view = spline.create.parametric_view(
+            axes=False, conform=True
+        )
+        base_basis = conform_para_view.create.embedded(spline.para_dim + 1)
+    else:
+        base_basis = spline.create.embedded(spline.dim + 1)
+
+    # for template, the last axis should be all zero
+    # also, set control point show_option to False
+    base_basis.control_points[:, -1] = 0.0
+    base_basis.show_options["control_points"] = False
+
+    # loop and e
+    basis_splines = []
+    for i in ids:
+        basis_i = base_basis.copy()
+        basis_i.control_points[i, -1] = 1.0
+        basis_i.show_options["c"] = int(i)
+        basis_splines.append(basis_i)
+
+    return basis_splines
+
+
 class Extractor:
     """Helper class to allow direct extraction from spline obj (BSpline or
     NURBS). Internal use only.
@@ -716,3 +764,7 @@ class Extractor:
     @_wraps(arrow_data)
     def arrow_data(self, *args, **kwargs):
         return arrow_data(self._helpee, *args, **kwargs)
+
+    @_wraps(bases)
+    def bases(self, *args, **kwargs):
+        return bases(self._helpee, *args, **kwargs)
