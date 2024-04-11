@@ -137,34 +137,16 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
 /// @param pyspline_end Spline object from end///to which is mapped
 /// @param boundary_end Boundary ID of adjacent spline
 /// @param tolerance Tolerance
-/// @param int_mappings_ptr (output) integer mappings
-/// @param bool_orientations_ptr (output) axis alignment
-void GetBoundaryOrientation(
+/// @param mappings_ptr (output) integer mappings
+/// @param orientations_ptr (output) axis alignment
+void GetInterfaceOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
     const int& boundary_end,
     const double& tolerance,
-    int* int_mappings_ptr,
-    bool* bool_orientations_ptr);
-
-/// @brief Get the Boundary Orientations object
-///
-/// @param spline_list
-/// @param base_id
-/// @param base_face_id
-/// @param neighbor_id
-/// @param neighbor_face_id
-/// @param tolerance
-/// @param n_threads
-/// @return py::tuple
-py::tuple GetBoundaryOrientations(const py::list& spline_list,
-                                  const py::array_t<int>& base_id,
-                                  const py::array_t<int>& base_face_id,
-                                  const py::array_t<int>& neighbor_id,
-                                  const py::array_t<int>& neighbor_face_id,
-                                  const double tolerance,
-                                  const int n_threads);
+    int* mappings_ptr,
+    int* orientations_ptr);
 
 /// @brief Extract all Boundary Patches and store them in a python list
 ///
@@ -228,6 +210,9 @@ public:
   /// patch-to-patch connectivity information
   /// shape: (n_patches, n_boundary_elements)
   py::array_t<int> interfaces_;
+
+  /// interface orientations that define mapping of parametric axis
+  py::array_t<int> interface_orientations_;
 
   /// shape: (n_patches,)
   py::array_t<int> boundary_ids_;
@@ -374,6 +359,14 @@ public:
   /// @brief getter for interface info. recomputes if unavailable
   /// @param recompute compute even if already available
   py::array_t<int> GetInterfaces(const bool recompute = false);
+
+  /// @brief Get the Boundary Orientations object
+  ///
+  /// @param tolerance
+  /// @param n_threads
+  /// @return py::tuple
+  py::array_t<int> GetInterfaceOrientations(const double tolerance,
+                                            const int n_threads);
 
   /// @brief Gets IDs of boundary patch
   /// @param bid boundary ID to be extracted

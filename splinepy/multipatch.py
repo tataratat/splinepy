@@ -128,6 +128,30 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
         # Assignment
         super().set_interfaces(con)
 
+    def interface_orientations(self, tolerance=None, nthreads=None):
+        """
+        Determine orientation between adjacent splines which is required, e.g.,
+        for gismo export and orientation check
+
+        Parameters
+        ----------
+        tolerance : double
+          normed distance between two neighboring points to be considered equal
+        nthreads : int
+          Number of threads to be used for extraction, defaults to
+          settings.NTHREADS
+
+        Returns
+        -------
+        interface_orientations : np.array (np.int64)
+          description of the orientations between adjacent splines in a
+          multipatch object
+        """
+        return super().interface_orientations(
+            tolerance=_default_if_none(tolerance, _settings.TOLERANCE),
+            nthreads=_default_if_none(nthreads, _settings.NTHREADS),
+        )
+
     @property
     def boundaries(self):
         """

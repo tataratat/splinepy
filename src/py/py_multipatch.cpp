@@ -565,14 +565,14 @@ InterfacesFromBoundaryCenters(const py::array_t<double>& py_center_vertices,
                                      tolerance);
 }
 
-void GetBoundaryOrientation(
+void GetInterfaceOrientation(
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_start,
     const int& boundary_start,
     const std::shared_ptr<splinepy::splines::SplinepyBase>& pyspline_end,
     const int& boundary_end,
     const double& tolerance,
-    int* int_mappings_ptr,
-    bool* bool_orientations_ptr) {
+    int* mappings_ptr,
+    int* orientations_ptr) {
   // Init return values and get auxiliary data
   const int& para_dim_ = pyspline_start->SplinepyParaDim();
   const int& dim_ = pyspline_start->SplinepyDim();
@@ -598,13 +598,13 @@ void GetBoundaryOrientation(
   const bool boundary_start_orientation = (boundary_start % 2) == 0;
   const int boundary_end_p_dim = static_cast<int>(boundary_end / 2);
   const bool boundary_end_orientation = (boundary_end % 2) == 0;
-  int_mappings_ptr[boundary_start_p_dim] = boundary_end_p_dim;
+  mappings_ptr[boundary_start_p_dim] = boundary_end_p_dim;
   // Note: Here might be a discrepancy with gismo's orientation, and it needs to
   // be checked in the future. I am awaiting a response from gismo developers,
   // it is poosible the orientation of the interface edge might be flipped
   // (bugfix: negate the following expression)
-  bool_orientations_ptr[boundary_start_p_dim] =
-      (boundary_start_orientation ^ boundary_end_orientation);
+  orientations_ptr[boundary_start_p_dim] =
+      (boundary_start_orientation ^ boundary_end_orientation) ? 1 : 0;
 
   /// Compare jacobians for remaining entries
   // Calculate Parametric bounds
@@ -664,69 +664,105 @@ void GetBoundaryOrientation(
       // Check angle
       const double cos_angle = abs(dot_p / std::sqrt(norm_s * norm_e));
       if (cos_angle > (1. - tolerance)) {
-        int_mappings_ptr[i_pd] = j;
-        bool_orientations_ptr[i_pd] = (dot_p > 0);
+        mappings_ptr[i_pd] = j;
+        orientations_ptr[i_pd] = (dot_p > 0) ? 1 : 0;
         break;
       }
     }
   }
 }
 
-py::tuple GetBoundaryOrientations(const py::list& spline_list,
-                                  const py::array_t<int>& base_id,
-                                  const py::array_t<int>& base_face_id,
-                                  const py::array_t<int>& neighbor_id,
-                                  const py::array_t<int>& neighbor_face_id,
-                                  const double tolerance,
-                                  const int n_threads) {
-  // Basic Checks
-  // Check if all have same size
-  if (!((base_id.size() == base_face_id.size())
-        && (neighbor_id.size() == neighbor_face_id.size())
-        && (base_id.size() == neighbor_face_id.size()))) {
-    splinepy::utils::PrintAndThrowError(
-        "The ID arrays need to be of same size, please check for "
-        "consistencies.");
+py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
+                                                        const int n_threads) {
+
+  // Check if already exists
+  if (interface_orientations_.size() != 0) {
+    return interface_orientations_;
   }
 
-  // Auxiliary data
-  const int* base_id_ptr = static_cast<int*>(base_id.request().ptr);
-  const int* base_face_id_ptr = static_cast<int*>(base_face_id.request().ptr);
-  const int* neighbor_id_ptr = static_cast<int*>(neighbor_id.request().ptr);
-  const int* neighbor_face_id_ptr =
-      static_cast<int*>(neighbor_face_id.request().ptr);
-  const auto cpp_spline_list = ToCoreSplineVector(spline_list);
-  const int n_connections = base_id.size();
+  int n_patches = patches_.size();
 
-  const int para_dim_ = cpp_spline_list[0]->SplinepyParaDim();
+  // get para dim of the first patch
+  int para_dim = ParaDim();
 
-  py::array_t<int> int_mapping(n_connections * para_dim_);
-  int* int_mapping_ptr = static_cast<int*>(int_mapping.request().ptr);
-  py::array_t<bool> bool_orientations(n_connections * para_dim_);
-  bool* bool_orientations_ptr =
-      static_cast<bool*>(bool_orientations.request().ptr);
+  const int n_faces_per_element = 2 * para_dim;
+  // 4 includes - patch id start, face id start, patch id end, face id end
+  const int n_entries_per_line = 4 + 2 * para_dim;
+
+  // Make sure Interfaces are available
+  const int* interfaces_ptr =
+      static_cast<int*>(GetInterfaces(false).request().ptr);
+
+  // Loop over interfaces to compute number of interfaces (This is generally not
+  // time critical as comparisons are much more expensive)
+  int number_of_interfaces{};
+  for (int i_interface{}; i_interface < interfaces_.size(); i_interface++) {
+    if (interfaces_ptr[i_interface] >= 0) {
+      // interface found
+      if (interfaces_ptr[i_interface] > i_interface) {
+        number_of_interfaces++;
+      }
+    }
+  }
+
+  interface_orientations_ =
+      py::array_t<int>({number_of_interfaces, n_entries_per_line});
+  int* orientations_ptr =
+      static_cast<int*>(interface_orientations_.request().ptr);
+
+  // Second loop to fill the interface information
+  int i_connection{};
+  for (int i_interface{}; i_interface < interfaces_.size(); i_interface++) {
+    if (interfaces_ptr[i_interface] >= 0) {
+      // interface found
+      if (interfaces_ptr[i_interface] > i_interface) {
+        orientations_ptr[i_connection * n_entries_per_line + 0] =
+            i_interface / n_faces_per_element;
+        orientations_ptr[i_connection * n_entries_per_line + 1] =
+            i_interface % n_faces_per_element; // std::div
+        orientations_ptr[i_connection * n_entries_per_line + 2] =
+            interfaces_ptr[i_interface] / n_faces_per_element;
+        orientations_ptr[i_connection * n_entries_per_line + 3] =
+            interfaces_ptr[i_interface] % n_faces_per_element; // std::div
+        i_connection++;
+      }
+    }
+  }
+
+  // Sanity check
+  assert(i_connection == number_of_interfaces);
+
+  const auto cpp_spline_list = ToCoreSplineVector(patches_, n_threads);
 
   // Provide lambda for multithread execution
   auto get_orientation = [&](const int start, const int end, int) {
     for (int i{start}; i < end; ++i) {
-      GetBoundaryOrientation(cpp_spline_list[base_id_ptr[i]],
-                             base_face_id_ptr[i],
-                             cpp_spline_list[neighbor_id_ptr[i]],
-                             neighbor_face_id_ptr[i],
-                             tolerance,
-                             &int_mapping_ptr[i * para_dim_],
-                             &bool_orientations_ptr[i * para_dim_]);
+      // Assign connections (start and end faces)
+      const int& patch_id_start = orientations_ptr[i * n_entries_per_line + 0];
+      const int& face_id_start = orientations_ptr[i * n_entries_per_line + 1];
+      const int& patch_id_end = orientations_ptr[i * n_entries_per_line + 2];
+      const int& face_id_end = orientations_ptr[i * n_entries_per_line + 3];
+
+      // Determine the mappings
+      GetInterfaceOrientation(
+          cpp_spline_list[patch_id_start],
+          face_id_start,
+          cpp_spline_list[patch_id_end],
+          face_id_end,
+          tolerance,
+          &orientations_ptr[i * n_entries_per_line + 4],
+          &orientations_ptr[i * n_entries_per_line + 4 + para_dim]);
     }
   };
 
   // Execute in parallel
-  splinepy::utils::NThreadExecution(get_orientation, n_connections, n_threads);
+  splinepy::utils::NThreadExecution(get_orientation,
+                                    number_of_interfaces,
+                                    n_threads);
 
   // Resize and return
-  int_mapping.resize({n_connections, para_dim_});
-  bool_orientations.resize({n_connections, para_dim_});
 
-  return py::make_tuple(int_mapping, bool_orientations);
+  return interface_orientations_;
 }
 
 py::list ExtractAllBoundarySplines(const py::list& spline_list,
@@ -1015,6 +1051,7 @@ void PyMultipatch::Clear() {
   boundary_patch_ids_ = py::array_t<int>();
   boundary_multipatch_ = nullptr;
   interfaces_ = py::array_t<int>();
+  interface_orientations_ = py::array_t<int>();
   boundary_ids_ = py::array_t<int>();
   sub_patch_centers_ = py::array_t<double>();
   field_multipatches_ = py::list();
@@ -1193,6 +1230,8 @@ py::array_t<int> PyMultipatch::GetInterfaces(const bool recompute) {
     // get, but need to compute since saved member is empty
     interfaces_ =
         InterfacesFromBoundaryCenters(SubPatchCenters(), tolerance_, ParaDim());
+    // Reinit orientations_ as no longer valid
+    interface_orientations_ = py::array_t<int>();
   }
 
   // regardless of set/get, it will always return the saved member of
@@ -1213,6 +1252,9 @@ void PyMultipatch::SetInterfaces(const py::array_t<int>& interfaces) {
       {static_cast<int>(CorePatches().size()),
        static_cast<int>(CorePatches()[0]->SplinepyParaDim() * 2)},
       true);
+
+  // Reinit interface_orientations_ as no longer valid
+  interface_orientations_ = py::array_t<int>();
 
   interfaces_ = interfaces;
 }
@@ -1620,15 +1662,6 @@ void init_multipatch(py::module_& m) {
         py::arg("splines"),
         py::arg("interfaces"),
         py::arg("nthreads") = 1);
-  m.def("orientations",
-        &splinepy::py::GetBoundaryOrientations,
-        py::arg("splines"),
-        py::arg("base_ids"),
-        py::arg("base_face_ids"),
-        py::arg("neighbor_ids"),
-        py::arg("neighbor_face_ids"),
-        py::arg("tolerance"),
-        py::arg("nthreads") = 1);
   m.def("boundaries_from_continuity",
         &splinepy::py::AddBoundariesFromContinuity,
         py::arg("boundary_splines"),
@@ -1691,6 +1724,10 @@ void init_multipatch(py::module_& m) {
            py::arg("checK_control_mesh_resolutions"),
            py::arg("nthreads"))
       .def("fields", &PyMultipatch::GetFields)
+      .def("interface_orientations",
+           &PyMultipatch::GetInterfaceOrientations,
+           py::arg("tolerance"),
+           py::arg("nthreads") = 1)
       //.def("", &PyMultipatch::)
       ;
 }
