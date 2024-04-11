@@ -290,14 +290,6 @@ def test_gismo_import(to_tmpf, are_splines_equal):
     """
     Test gismo export routine
     """
-    if int(python_version.split(".")[1]) < 8:
-        splinepy.utils.log.info(
-            "gismo export is only tested here from python3.8+. "
-            "Skipping test, because current version is: "
-            f"{python_version}"
-        )
-        return True
-
     # Define some splines
     bsp_el2 = splinepy.BSpline(
         degrees=[1, 1],
