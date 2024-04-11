@@ -59,7 +59,7 @@ input = "splinepy/_version.py"
 
 [tool.cibuildwheel]
 test-extras = ["test"]
-test-command = "python -m pytest"
+test-command = "python -m pytest {project}/tests"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "arm64"]
