@@ -64,3 +64,19 @@ def test_extraction_matrices(splinetype, np_rng, request):
             assert np.allclose(b.control_points, m @ spline.control_points)
         else:
             pytest.fail()
+
+
+def test_extraction_0th_degree():
+    """Edge case for 0th degree"""
+    test = splinepy.BSpline(
+        degrees=[0, 0],
+        control_points=[
+            [0],
+            [1],
+            [2],
+            [3],
+        ],
+        knot_vectors=[[0, 0.5, 1], [0, 0.5, 1]],
+    )
+    for i, patch in enumerate(test.extract.beziers()):
+        assert np.allclose(test.cps[i], patch.cps[0])
