@@ -124,7 +124,7 @@ line-length = 75
 minversion = "6.0"
 addopts = "-ra"
 testpaths = [
-    "test_pytest",
+    "tests",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:jupyter_client",
