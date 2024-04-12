@@ -108,15 +108,6 @@ cats_indent_export = [
 
 def test_cats_export(to_tmpf, are_items_same, are_stripped_lines_same):
     """Test cats export routine"""
-
-    if int(python_version.split(".")[1]) < 8:
-        splinepy.utils.log.info(
-            "cats export is only tested here from python3.8+. "
-            "Skipping test, because current version is: "
-            f"{python_version}"
-        )
-        return True
-
     ###########
     # 2D Mesh #
     ###########
