@@ -59,7 +59,7 @@ input = "splinepy/_version.py"
 
 [tool.cibuildwheel]
 test-extras = ["test"]
-test-command = "python -m pytest {project}/tests"
+test-command = "pytest {project}/tests"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "arm64"]
@@ -121,7 +121,7 @@ line-length = 75
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra"
+addopts = "-ra --import-mode=append"
 testpaths = [
     "tests",
 ]
