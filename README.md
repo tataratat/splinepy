@@ -16,8 +16,7 @@ pip install splinepy
 ```
 
 
-Of course, you can install it directly from the source.
-In addition to the aforementioned compilers, this requires a cmake3.16+. If you don't have `cmake`, the easiest way to install it would be: `pip install cmake`.
+You can install it directly from the source:
 ```bash
 git clone git@github.com:tataratat/splinepy.git
 cd splinepy
@@ -26,60 +25,138 @@ pip install -e .
 ```
 
 ## Quick start
+### 1. Create a spline
+Here, we will create a [NURBS](https://tataratat.github.io/splinepy/_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS) for the following example. Alternatively, we can also create [Bezier](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier), [RationalBezier](https://tataratat.github.io/splinepy/_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier), and [BSpline](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline).
+
 ```python
 import splinepy
-import numpy as np
 
-# Initialize bspline with any array-like input
-bspline = splinepy.BSpline(
+# Initialize nurbs with any array-like input
+nurbs = splinepy.NURBS(
     degrees=[2, 1],
     knot_vectors=[
-        [0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0],
+        [0, 0, 0, 1, 1, 1],
+        [0, 0, 1, 1],
     ],
     control_points=[
-        [0.0, 0.0],  # [0, 0] (control grid index)
-        [0.5, 0.0],  # [1, 0]
-        [1.0, 0.0],  # [2, 0]
-        [0.0, 1.0],  # [0, 1]
-        [0.5, 1.0],  # [1, 1]
-        [1.0, 1.0],  # [2, 1]
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
+    ],
+    weights=[
+        [1.0],
+        [2**-0.5],
+        [1.0],
+        [1.0],
+        [2**-0.5],
+        [1.0],
     ],
 )
 
-# We always store control points in 2D arrays with shape
-# (total_number_of_control_points, physical_dimension).
-# The indexing of the control grid is defined by iterating
-# lower-indexed dimensions first. But if you prefer a
-# grid-like structure, try
-multi_index = bspline.multi_index
-grid_cps = np.empty(bspline.control_points.shape)
-grid_cps[multi_index[0, 0]] = [0.0, 0.0]
-grid_cps[multi_index[1, 0]] = [0.5, 0.0]
-grid_cps[multi_index[2, 0], 0] = 1.0
-# which also supports ranges
-grid_cps[multi_index[:, 0], 1] = 0.0
-grid_cps[multi_index[:, 1], 1] = 1.0
-grid_cps[multi_index[:, 1], 0] = [0.0, 0.5, 1.0]
+# vizusalize
+nurbs.show()
+```
 
-assert np.allclose(bspline.control_points, grid_cps)
+### 2. Modifications
+All the splines can be modified. For example, by:
+1. directly accessing properties,
+2. [elevating degrees](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees),
+3. [inserting knots](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.insert_knots.html#splinepy.bspline.BSplineBase.insert_knots),
+4. [reducing degrees](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.reduce_degrees.html) and [removing knots](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.remove_knots.html) with a specified tolerance
 
-# Evaluate spline mapping.
-# First, let's form parametric coordinate queries
+*Note: currently {2, 3, 4} are limited to BSpline families.*
+```python
+# start with a copy of the original spline
+modified = nurbs.copy()
+
+# manipulate control points
+# 1. all at once
+modified.control_points /= 2.0
+# 2. indexwise (flat indexing)
+modified.control_points[[3, 4, 5]] *= [1.3, 2.]
+# 3. with grid-like indexing using multi_index helper
+multi_index = modified.multi_index
+modified.control_points[multi_index[0, 1]] = [-.1, -.1]
+modified.control_points[multi_index[2, :]] += [2., .1]
+
+modified.show()  # visualize Nr. 1
+
+# elevate degrees and insert knots
+modified.elevate_degrees([0, 1])
+modified.show()  # visualize Nr. 2
+
+modified.insert_knots(1, [.5])
+modified.show()  # visualize Nr. 3
+```
+
+### 3. Evaluate
+You can evaluate spline's basis functions, mapping, and their derivatives by giving parametric coordinate queries.
+They should be 2D array-like objects and functions return 2D np.ndarray.
+```python
+# first, create parametric coordinate queries
 queries = [
     [0.1, 0.2],  # first query
     [0.4, 0.5],  # second query
     [0.1156, 0.9091],  # third query
 ]
-physical_coords = bspline.evaluate(queries)
 
-# we can also execute this in parallel using multithread
-# executions on c++ side (for heavy multi-queries scenarios)
-physical_coords_parallel = bspline.evaluate(queries, nthreads=2)
-
-# this holds
-assert np.allclose(physical_coords, physical_coords_parallel)
+# evaluate basis, spline and derivatives.
+# for derivatives, specify order per parametric dimension.
+basis = nurbs.basis(queries)
+basis_derivative = nurbs.basis_derivative(queries, [1, 1])
+physical_coordinates = nurbs.evaluate(queries)
+physical_derivatives = nurbs.derivative(queries, [2, 0])
 ```
+Many of `splinepy`'s multi-query functions can be executed in parallal usiung multithread executions on c++ side. For that, set either global flag or pass `nthreads` argument.
+```python
+p_basis0 = nurbs.basis(queries, nthreads=2)
+# or
+splinepy.settings.NTHREADS = 3
+p_basis1 = nurbs.basis(queries)
+```
+
+### 4. Helper Modules
+There's a list of helper modules under the namespace `splinepy.helpme` to boost prototyping efficiencies. Please checkout the full list [here](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html)!
+
+#### 4.1 Create
+[splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on existing spline. For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create)
+```python
+# basic shapes
+splinepy.show(
+    ["arc", splinepy.helpme.create.arc(radius=3, angle=70)],
+    ["box", splinepy.helpme.create.box(1, 2, 3)],  # length per dim
+    ["circle", splinepy.helpme.create.circle(radius=2)],
+    ["sphere", splinepy.helpme.create.sphere(outer_radius=2)],
+    [
+        "disk",
+        splinepy.helpme.create.disk(outer_radius=3, inner_radius=2, angle=256),
+    ],
+    [
+        "torus",
+        splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5),
+    ],
+)
+```
+
+```python
+# derived shapes
+splinepy.show(
+    ["extruded", nurbs.create.extruded(extrusion_vector=[1, 2, 3])],
+    [
+        "revolved",
+        nurbs.create.revolved(
+            axis=[1, 0, 0],
+            center=[-1, -1, 0],
+            angle=50,
+        ),
+    ],
+)
+```
+
+
 You can also try `splinepy` online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
 
 ## Feature Summary
