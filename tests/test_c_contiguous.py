@@ -1,44 +1,42 @@
-try:
-    from . import common as c
-except BaseException:
-    import common as c
+import numpy as np
+import pytest
+
+# used fixtures for parametrization
+all_2D_splinetypes = (
+    "bspline_2p2d",
+    "nurbs_2p2d",
+    "bezier_2p2d",
+    "rational_bezier_2p2d",
+)
 
 
-class ContiguousArrayInputTest(c.unittest.TestCase):
-    def test_c_contiguous_array_input(self):
-        """
-        Test whether cpp sides receives contiguous array
-        """
+@pytest.mark.parametrize("splinetype", all_2D_splinetypes)
+def test_c_contiguous_array_input(splinetype, request):
+    """Test whether cpp sides receives contiguous array"""
 
-        for spl, properties in zip(
-            c.spline_types_as_list(),
-            c.get_spline_dictionaries(),
-        ):
-            # make f contiguous
-            f_contig_orig = c.np.asarray(
-                properties["control_points"], order="F"
-            )
-            assert not f_contig_orig.flags["C_CONTIGUOUS"]
-            assert f_contig_orig.flags["F_CONTIGUOUS"]
+    # define spline and its properties
+    spl = request.getfixturevalue(splinetype)
+    properties = spl.todict()
 
-            # set non contiguous array as prop
-            properties["control_points"] = f_contig_orig
+    # make f contiguous
+    f_contig_orig = np.asarray(properties["control_points"], order="F")
+    assert not f_contig_orig.flags["C_CONTIGUOUS"]
+    assert f_contig_orig.flags["F_CONTIGUOUS"]
 
-            # check round_trip cps
-            round_trip_cps = spl.cps
+    # set non contiguous array as prop
+    properties["control_points"] = f_contig_orig
 
-            # they should be the same
-            assert c.np.allclose(round_trip_cps, properties["control_points"])
+    # check round_trip cps
+    round_trip_cps = spl.cps
 
-            # test setter
-            # make sure this array is still not c contiguous
-            assert not f_contig_orig.flags["C_CONTIGUOUS"]
+    # they should be the same
+    assert np.allclose(round_trip_cps, properties["control_points"])
 
-            spl.cps = f_contig_orig  # setter
+    # test setter
+    # make sure this array is still not c contiguous
+    assert not f_contig_orig.flags["C_CONTIGUOUS"]
 
-            assert spl.cps.flags["C_CONTIGUOUS"]
-            assert c.np.allclose(spl.cps, properties["control_points"])
+    spl.cps = f_contig_orig  # setter
 
-
-if __name__ == "__main__":
-    c.unittest.main()
+    assert spl.cps.flags["C_CONTIGUOUS"]
+    assert np.allclose(spl.cps, properties["control_points"])

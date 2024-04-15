@@ -1,7 +1,12 @@
-try:
-    from . import common as c
-except BaseException:
-    import common as c
+import numpy as np
+
+# for parametrization used fixtures
+all_2p2d_splines = (
+    "bezier_2p2d",
+    "rational_bezier_2p2d",
+    "bspline_2p2d",
+    "nurbs_2p2d",
+)
 
 
 def convert_and_compare_samples(spline, conversion_list):
@@ -12,41 +17,27 @@ def convert_and_compare_samples(spline, conversion_list):
         ref_sample = spline.sample(sample_res)
 
         # check same sample result
-        assert c.np.allclose(ref_sample, converted.sample(sample_res))
+        assert np.allclose(ref_sample, converted.sample(sample_res))
 
         # check same type
         assert type(converted).__qualname__.lower().startswith(convert_to)
 
 
-class SplineTypeConversionTest(c.SplineBasedTestCase):
-    def setUp(self):
-        [
-            self.bspline,
-            self.nurbs,
-            self.bezier,
-            self.rational_bezier,
-        ] = c.spline_types_as_list()
-
-    def test_bezier_conversions(self):
-        test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
-
-        convert_and_compare_samples(self.bezier, test_conversions)
-
-    def test_rational_bezier_conversions(self):
-        test_conversions = ["rationalbezier", "nurbs"]
-
-        convert_and_compare_samples(self.rational_bezier, test_conversions)
-
-    def test_bspline_conversions(self):
-        test_conversions = ["bspline", "nurbs"]
-
-        convert_and_compare_samples(self.bspline, test_conversions)
-
-    def test_nurbs_conversions(self):
-        test_conversions = ["nurbs"]
-
-        convert_and_compare_samples(self.nurbs, test_conversions)
+def test_bezier_conversion(bezier_2p2d):
+    test_conversions = ["bezier", "rationalbezier", "bspline", "nurbs"]
+    convert_and_compare_samples(bezier_2p2d, test_conversions)
 
 
-if __name__ == "__main__":
-    c.unittest.main()
+def test_rational_bezier_conversion(rational_bezier_2p2d):
+    test_conversions = ["rationalbezier", "nurbs"]
+    convert_and_compare_samples(rational_bezier_2p2d, test_conversions)
+
+
+def test_bspline_conversion(bspline_2p2d):
+    test_conversions = ["bspline", "nurbs"]
+    convert_and_compare_samples(bspline_2p2d, test_conversions)
+
+
+def test_nurbs_conversion(nurbs_2p2d):
+    test_conversions = ["nurbs"]
+    convert_and_compare_samples(nurbs_2p2d, test_conversions)
