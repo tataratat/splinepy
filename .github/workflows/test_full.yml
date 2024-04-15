@@ -27,7 +27,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: build splinepy
-      run: pip install -e".[test]" -v
+      run: pip install ".[test]" -v
 
     - name: test
       run: |
