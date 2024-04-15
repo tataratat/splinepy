@@ -18,79 +18,6 @@ def np_rng():
     return np.random.default_rng()
 
 
-@pytest.fixture
-def get_2d_control_points_b_spline():
-    return [
-        [0, 0],
-        [0, 1],
-        [1, 1.5],
-        [3, 1.5],
-        [-1, 0],
-        [-1, 2],
-        [1, 4],
-        [3, 4],
-        [-2, 0],
-        [-2, 2],
-        [1, 5],
-        [3, 5],
-    ]
-
-
-@pytest.fixture
-def get_2d_control_points_nurbs():
-    return [
-        [-1.0, 0.0],
-        [-1.0, 1.0],
-        [0.0, 1.0],
-        [-2.0, 0.0],
-        [-2.0, 2.0],
-        [0.0, 2.0],
-    ]
-
-
-@pytest.fixture
-def get_2d_control_points_bezier():
-    return [
-        [-1.0, 0.0],
-        [-1.0, 1.0],
-        [0.0, 1.0],
-        [-2.0, 0.0],
-        [-2.0, 2.0],
-        [0.0, 2.0],
-    ]
-
-
-@pytest.fixture
-def get_3d_control_points():
-    return [
-        [0.0, 0.0, 0.0],
-        [1.0, 0.0, 0.0],
-        [0.0, 1.0, 0.0],
-        [1.0, 1.0, 0.0],
-        [0.0, -1.0, 1.0],
-        [1.0, 0.0, 1.0],
-        [-1.0, 1.0, 2.0],
-        [2.0, 2.0, 2.0],
-    ]
-
-
-@pytest.fixture
-def get_knotvectors_2():
-    return [
-        [0, 0, 0, 0.5, 1, 1, 1],
-        [0, 0, 0, 1, 1, 1],
-    ]
-
-
-@pytest.fixture
-def get_knotvectors_3():
-    return [
-        [0.0, 0.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0],
-    ]
-
-
 # query points
 @pytest.fixture
 def queries_2D():
@@ -117,24 +44,47 @@ def queries_3D():
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
 @pytest.fixture
-def bspline_2p2d(get_knotvectors_2, get_2d_control_points_b_spline):
+def bspline_2p2d():
     return splinepy.BSpline(
         degrees=[2, 2],
-        knot_vectors=get_knotvectors_2,
-        control_points=get_2d_control_points_b_spline,
+        knot_vectors=[
+            [0, 0, 0, 0.5, 1, 1, 1],
+            [0, 0, 0, 1, 1, 1],
+        ],
+        control_points=[
+            [0, 0],
+            [0, 1],
+            [1, 1.5],
+            [3, 1.5],
+            [-1, 0],
+            [-1, 2],
+            [1, 4],
+            [3, 4],
+            [-2, 0],
+            [-2, 2],
+            [1, 5],
+            [3, 5],
+        ],
     )
 
 
 # half-half circle.
 @pytest.fixture
-def nurbs_2p2d(get_2d_control_points_nurbs):
+def nurbs_2p2d():
     return splinepy.NURBS(
         degrees=[2, 1],
         knot_vectors=[
             [0, 0, 0, 1, 1, 1],
             [0, 0, 1, 1],
         ],
-        control_points=get_2d_control_points_nurbs,
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         weights=[
             [1.0],
             [2**-0.5],
@@ -147,18 +97,32 @@ def nurbs_2p2d(get_2d_control_points_nurbs):
 
 
 @pytest.fixture
-def bezier_2p2d(get_2d_control_points_nurbs):
+def bezier_2p2d():
     return splinepy.Bezier(
         degrees=[2, 1],
-        control_points=get_2d_control_points_nurbs,
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
     )
 
 
 @pytest.fixture
-def rational_bezier_2p2d(get_2d_control_points_bezier):
+def rational_bezier_2p2d():
     return splinepy.RationalBezier(
         degrees=[2, 1],
-        control_points=get_2d_control_points_bezier,
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
         weights=[
             [1.0],
             [2**-0.5],
@@ -171,37 +135,82 @@ def rational_bezier_2p2d(get_2d_control_points_bezier):
 
 
 @pytest.fixture
-def bezier_3p3d(get_3d_control_points):
+def bezier_3p3d():
     return splinepy.Bezier(
-        degrees=[1, 1, 1], control_points=get_3d_control_points
+        degrees=[1, 1, 1],
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, -1.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [-1.0, 1.0, 2.0],
+            [2.0, 2.0, 2.0],
+        ],
     )
 
 
 @pytest.fixture
-def rational_bezier_3p3d(get_3d_control_points):
+def rational_bezier_3p3d():
     return splinepy.RationalBezier(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points,
-        weights=[1.0] * len(get_3d_control_points),
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, -1.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [-1.0, 1.0, 2.0],
+            [2.0, 2.0, 2.0],
+        ],
+        weights=[1.0] * 8,
     )
 
 
 @pytest.fixture
-def bspline_3p3d(get_3d_control_points, get_knotvectors_3):
+def bspline_3p3d():
     return splinepy.BSpline(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points,
-        knot_vectors=get_knotvectors_3,
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, -1.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [-1.0, 1.0, 2.0],
+            [2.0, 2.0, 2.0],
+        ],
+        knot_vectors=[
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+        ],
     )
 
 
 @pytest.fixture
-def nurbs_3p3d(get_3d_control_points, get_knotvectors_3):
+def nurbs_3p3d():
     return splinepy.NURBS(
         degrees=[1, 1, 1],
-        control_points=get_3d_control_points,
-        weights=[1.0] * len(get_3d_control_points),
-        knot_vectors=get_knotvectors_3,
+        control_points=[
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, -1.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [-1.0, 1.0, 2.0],
+            [2.0, 2.0, 2.0],
+        ],
+        weights=[1.0] * 8,
+        knot_vectors=[
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 1.0, 1.0],
+        ],
     )
 
 
