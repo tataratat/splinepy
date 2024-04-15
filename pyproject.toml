@@ -33,7 +33,7 @@ content-type = "text/markdown"
 
 [project.optional-dependencies]
 all = ["gustaf[all]>=0.0.22"]
-test = ["funi>=0.0.1"]
+test = ["funi>=0.0.1", "pytest"]
 
 [project.scripts]
 splinepy = "splinepy.cli:entry"
@@ -59,7 +59,7 @@ input = "splinepy/_version.py"
 
 [tool.cibuildwheel]
 test-extras = ["test"]
-test-command = "python -m unittest discover {project}/tests -v"
+test-command = "python -m pytest {project}/tests"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "arm64"]
@@ -118,3 +118,13 @@ exclude = "third_party"
 
 [tool.blackdoc]
 line-length = 75
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:jupyter_client",
+]

@@ -30,14 +30,13 @@ jobs:
     - name: build splinepy minimal/debug/warning
       if: matrix.os != 'windows-latest'
       run: |
-        pip install . -v --config-settings=cmake.args="-DSPLINEPY_MORE=OFF;-DSPLINEPY_ENABLE_WARNINGS=ON" --config-settings=cmake.build-type="Debug"
+        pip install -e ".[test]" -v --config-settings=cmake.args="-DSPLINEPY_MORE=OFF;-DSPLINEPY_ENABLE_WARNINGS=ON" --config-settings=cmake.build-type="Debug"
 
     - name: build splinepy windows
       if: matrix.os == 'windows-latest'
       run: |
-        pip install . -v --config-settings=cmake.args="-DSPLINEPY_MORE=OFF"
+        pip install -e ".[test]" -v --config-settings=cmake.args="-DSPLINEPY_MORE=OFF"
 
     - name: test
       run: |
-        pip install funi>=0.0.1
-        cd tests && python3 -m unittest discover . -v
+        pytest tests

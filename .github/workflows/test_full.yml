@@ -27,9 +27,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: build splinepy
-      run: pip install -e. -v
+      run: pip install -e".[test]" -v
 
     - name: test
       run: |
-        pip install funi>=0.0.1
-        cd tests && python3 -m unittest discover . -v
+        pytest
