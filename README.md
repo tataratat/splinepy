@@ -24,6 +24,9 @@ git submodule update --init --recursive
 pip install -e .
 ```
 
+## Documentation
+
+
 ## Quick start
 ### 1. Create a spline
 Here, we will create a [NURBS](https://tataratat.github.io/splinepy/_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS) for the following example. Alternatively, we can also create [Bezier](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier), [RationalBezier](https://tataratat.github.io/splinepy/_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier), and [BSpline](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline).
@@ -253,77 +256,67 @@ microstructure.tiling = [2, 3]
 
 microstructure.show()
 
-# extract only generated parts
+# extract only generated parts as multipatch
 generated = microstructure.create()
 ```
+
 Please take a look at [this example](https://github.com/tataratat/splinepy/blob/main/examples/show_microstructures.py) for a broad overview of what microstructures can do!
 
 
 ### 6. Multipatch
+In practice, including `Microstructure`s, it is common to work with multiple patches.
+For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch) class, equipped with various useful functionalities:
+- patch interface identification
+- boundary patch identification
+- boundary asignment with various options
+- subpatch / boundary patch extraction
+```python
+# use previously generated microtiles
+interface_info_array = generated.interface
+
+# Mark boundaries to set boundary conditions
+# In case of micro structure, you can use outer spline's boundary
+def is_left_bdr(x):
+    left = nurbs.extract.boundaries()[3]
+    return (left.proximities(x, return_verbose=True)[3] < 1e-5).ravel()
+
+generated.boundary_from_function(is_left_bdr, boundary_id=1)
 
 
+splinepy.show(
+    ["All", generated],
+    ["Boundaries", generated.boundary_multipatch()],
+    ["Boundary 1", generated.boundary_multipatch(1)]
+)
+
+# export for the solver
+splinepy.io.gismo.export("microstructure.xml", generated)
+```
+
+
+### 7. Input/output and vector graphics
+`splinepy` supports various [IO formats](https://tataratat.github.io/splinepy/_generated/splinepy.io.html).
+Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow seamless transition to analysis.
+```python
+# export
+splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
+
+# load
+quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
+```
+[svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves smoothness of splines for publications / documentations.
+```python
+splinepy.io.svg.export("nurbs.svg", nurbs)
+```
+
+## Try online
 You can also try `splinepy` online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
 
-## Feature Summary
-For details, please take a look at the [documentation](https://tataratat.github.io/splinepy).
-Most of the functions are vectorized and capable of multithread executions.
+## Contributing
+`splinepy` welcomes any form of contributions!
+Write us an [issue](https://github.com/tataratat/splinepy/issues)
+Contribution guidelines can be found [here](https://tataratat.github.io/splinepy/CONTRIBUTING.html).
 
-### Splines
-__Any type of spline is capable of:__
-- computing spline mappings, derivatives, partial derivatives, jacobian, basis functions, basis function derivatives, basis function partial derivatives, and proximity (point inversion, nearest mapping search),
-- degree elevation,
-- extracting boundary splines, and
-- visualization (see [visualizing with splinepy](docs/markdown/spline_plotting.md)).
 
-In addition to the common features, __Bezier and Rational Bezier__ can:
-- add/multiply two splines,
-- split itself into multiple patches,
-- create derivative splines, and
-- compose an inner spline into an outer spline and compute its composition derivative
 
-and __BSpline and NURBS__ can:
-- reduce degrees,
-- insert and remove knots, and
-- extract bezier patches.
-
-Some __BSpline fitting__ routines from [The NURBS Book](https://link.springer.com/book/10.1007/978-3-642-97385-7):
-- curve interpolation/approximation
-- surface interpolation/approximation
-
-### Multipatch
-Splinepy offers a common interface for multipatch geometries, i.e., geometries consisting of multiple, individual splines of arbitrary types. This concept is used for complex geometries and for Isogeometric Analysis. __Multipatch__ objects have the following functionalities:
- - determine patch-interfaces automatically
- - identification of boundary faces
- - boundary assignment using different techniques, relying either on the boundary position or on the continuity in between patches
- - Boundary extraction
-
-### IO
-Available in `splinepy.io`.
-
-| Formats | Description                                                                                                                                          |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| iges    | Loads/Exports splines from an [IGES](https://en.wikipedia.org/wiki/IGES) file                                                                        |
-| irit    | [IRIT](https://www.cs.technion.ac.il/~irit/) compatible format                                                                                       |
-| json    | (Custom) easy-to-read format, supports base64 encoding.                                                                                              |
-| mfem    | [MFEM](https://mfem.org) compatible `.mesh` format. Supports structured multi-patch splines in `controlpoints_cartesian` and 2D single-patch splines |
-| gismo   | [GISMO](https://gismo.github.io) compatible `.xml` format                                                                                            |
-| npz     | Based on np.savez()                                                                                                                                  |
-| svg     | Exports spline to svg representation. Limited to 2D geometric splines. Adheres to many of the show_options.                                          |
-| xml     | [RWTH CATS](https://www.cats.rwth-aachen.de/) spline format                                                                                          |
-
-## Dependencies
-The following are direct dependencies for `splinepy`. Please feel free to check out the repositories linked.
-
-| Package | Description                                             | Python | C++ |
-| ------- | ------------------------------------------------------- | :----: | :---: |
-| [pybind11](https://github.com/pybind/pybind11) | Binds c++ and python | X | X |
-| [SplineLib](https://github.com/tataratat/SplineLib) | Main functionalities for BSplines and NURBS |    | X |
-| [bezman](https://github.com/tataratat/bezman)       | Main functionalities for Beziers and rational Beziers |    | X |
-| [napf](https://github.com/tataratat/napf)           | Creates k-d trees that provide initial guess for proximity search. Wraps [nanoflann](https://github.com/jlblancoc/nanoflann) |   | X |
-| [numpy](https://numpy.org) | Fast array data storage and manipulation | X |   |
-| [gustaf](https://github.com/tataratat/gustaf) | Conversion to mesh representation, visualization, and helpers | X |  |
-| [scipy](https://scipy.org) | (Optional) Creates sparse matrices, where applicable | X |   |
-| [cmake](https://cmake.org) | Platform independent build system for c++ implementations |   | X |
-| [setuptools](https://setuptools.pypa.io/en/latest/) | Build python package  | X |  |
-| [wheel](https://wheel.readthedocs.io/en/stable/)    | Implementation of python binary packaging standard | X | X |
-| [cibuildwheel](https://cibuildwheel.readthedocs.io/en/stable/) | Builds and tests wheels on CI server | X | X |
+## References
