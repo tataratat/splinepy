@@ -120,41 +120,146 @@ p_basis1 = nurbs.basis(queries)
 
 ### 4. Helper Modules
 There's a list of helper modules under the namespace `splinepy.helpme` to boost prototyping efficiencies. Please checkout the full list [here](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html)!
+Here are some highlights.
 
 #### 4.1 Create
-[splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on existing spline. For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create)
+[splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on existing spline.
 ```python
-# basic shapes
+# basic splines
+box = splinepy.helpme.create.box(1, 2, 3)  # length per dim
+disk = splinepy.helpme.create.disk(outer_radius=3, inner_radius=2, angle=256)
+torus = splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5)
+
+splinepy.show(["arc", arc], ["disk", disk], ["torus", torus])
+```
+For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create).
+```python
+# based on existing splines
+extruded = nurbs.create.extruded(extrusion_vector=[1, 2, 3])
+revolved = nurbs.create.revolved(axis=[1, 0, 0], center=[-1, -1, 0], angle=50)
+
+splinepy.show(["extruded", extruded], ["revolved", revolved])
+```
+
+### 4.2 Extract
+Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as [gustaf](https://tataratat.github.io/gustaf/index.html) object)
+```python
+# extract meshes as gustaf objects
+control_mesh = nurbs.extract.control_mesh()
+control_points = nurbs.extract.control_points()
+mesh = nurbs.extract.faces()
+
 splinepy.show(
-    ["arc", splinepy.helpme.create.arc(radius=3, angle=70)],
-    ["box", splinepy.helpme.create.box(1, 2, 3)],  # length per dim
-    ["circle", splinepy.helpme.create.circle(radius=2)],
-    ["sphere", splinepy.helpme.create.sphere(outer_radius=2)],
-    [
-        "disk",
-        splinepy.helpme.create.disk(outer_radius=3, inner_radius=2, angle=256),
-    ],
-    [
-        "torus",
-        splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5),
-    ],
+    ["control mesh", control_mesh],
+    ["control points", control_points],
+    ["spline", mesh]
+)
+```
+or part of splines from an existing spline using [spline.extract](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.extract.html#splinepy.spline.Spline.extract).
+```python
+# extract splines
+boundaries = nurbs.extract.boundaries()
+partial = nurbs.extract.spline(0, [.5, .78])
+partial_partial = nurbs.extract.spline(0, [.1, .3]).extract.spline(1, [.65, .9])
+bases = nurbs.extract.bases() # basis functions as splines
+# insert knots to increase number of bezier patches
+inserted = nurbs.insert_knots(0, [.13, .87])
+beziers_patches = inserted.extract.beziers()
+
+splinepy.show(
+    ["boundaries and part of splines", boundaries, partial, partial_partial],
+    ["beziers", beziers_patches],
+    ["bases", bases],
 )
 ```
 
+#### 4.3 Free-form deformation
 ```python
-# derived shapes
+import gustaf as gus
+
+# create gustaf mesh (alternatively, you can load mesh files)
+mesh = gus.Faces(
+    vertices=[[0, 0], [2, 0], [0, 1], [2, 2]],
+    faces=[[0, 1, 2], [1, 3, 2]]
+)
+
+# initialize ffd and move control points
+ffd = splinepy.FFD(mesh=mesh)
+ffd.spline.control_points[3] += 1
+
+ffd.show()
+
+# get deformed mesh - FFD.mesh attribute deforms mesh before returning
+deformed = ffd.mesh
+```
+
+#### 4.4 Fitting
+You can [fit](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit) your point data using splines.
+```python
+data = [[-1, 0], [-0.707, 0.707], [0, 1], [-2, 0], [-1.414, 1.414], [0, 2]]
+
+curve, residual_curve = splinepy.helpme.fit.curve(data, degree=3)
+# you can also use any existing spline's basis
+surface, residual_surface = splinepy.helpme.fit.surface(
+    data, size=[3, 2], fitting_spline=nurbs
+)
+
 splinepy.show(
-    ["extruded", nurbs.create.extruded(extrusion_vector=[1, 2, 3])],
-    [
-        "revolved",
-        nurbs.create.revolved(
-            axis=[1, 0, 0],
-            center=[-1, -1, 0],
-            angle=50,
-        ),
-    ],
+    [gus.Vertices(data), curve, surface]
 )
 ```
+
+#### 4.5 Mapper
+[Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
+This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem ((see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py)) for a full solution):
+```python
+# create solution spline
+solution_field = nurbs.create.embedded(1)
+
+# refine
+solution_field.elevate_degrees([0, 1])
+solution_field.uniform_refinement(n_knots=[4, 4])
+
+# create matrix using mapper
+# collocation points at greville abcissae
+mapper = solution_field.mapper(reference=nurbs)
+laplacian, support = mapper.basis_laplacian_and_support(
+    solution_field.greville_abcissae()
+,
+laplacian_matrix = splinepy.utils.data.make_matrix(
+    laplacian,
+    support,
+    n_cols=solution_field.control_points.shape[0],
+)
+```
+
+### 5. Microstructure
+(Rational) Bezier splines in `splinepy` are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into an another spline (outer spline/function) in exact fashion.
+We can systematically perform this to create certain shapes that consists of multiple inner splines.
+The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
+`splinepy` has several tiles that are ready to use:
+```python
+splinepy.show(*splinepy.microstructure.tile_lib.everything())
+```
+
+```python
+# create microstructure generator
+microstructure = splinepy.Microstructure()
+# set outer spline and a (micro) tile
+microstructure.deformation_function = nurbs
+microstructure.microtile = splinepy.microstructure.tile_lib["Cross3D"]()
+# tiling determines tile resolutions within each bezier patch
+microstructure.tiling = [2, 3]
+
+microstructure.show()
+
+# extract only generated parts
+generated = microstructure.create()
+```
+Please take a look at [this example](https://github.com/tataratat/splinepy/blob/main/examples/show_microstructures.py) for a broad overview of what microstructures can do!
+
+
+### 6. Multipatch
 
 
 You can also try `splinepy` online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
