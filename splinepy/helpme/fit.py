@@ -491,16 +491,16 @@ def surface(
             )
         # extract spline in each direction (knot_vectors, weights etc.
         # of original spline), works for all type of splines!
-        # extraction point is mid-point of parametric bounds
-        para_bounds = fitting_spline.parametric_bounds
-        fitting_splines[0] = fitting_spline.extract.spline(
-            0,
-            (para_bounds[0, 0] + para_bounds[1, 0]) / 2,
-        )
-        fitting_splines[1] = fitting_spline.extract.spline(
-            1,
-            (para_bounds[0, 1] + para_bounds[1, 1]) / 2,
-        )
+        fitting_splines = fitting_spline.extract.boundaries([2, 0])
+
+        # overwrite n_control_points
+        if n_control_points is not None:
+            _log.info("Ignoring n_control_points, as fitting_spline is given")
+        if degrees is not None:
+            _log.info("Ignoring degrees, as fitting_spline is given")
+
+        n_control_points = fitting_spline.control_mesh_resolutions
+        degrees = fitting_spline.degrees
 
     u_k = [None, None]
 
