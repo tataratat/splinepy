@@ -5,28 +5,27 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class InverseCross3D(_TileBase):
+    """Simple inverse crosstile to tile with linear-quadratic branches and
+    a trilinear center spline.
+
+    Class that provides necessary functions to create inverse microtile,
+    that can be used to describe the domain surrounding cross-tile
+    microstructure.
+    """
+
     _dim = 3
     _para_dim = 3
-
-    def __init__(self):
-        """Simple inverse crosstile to tile with linear-quadratic branches and
-        a trilinear center spline.
-
-        Class that provides necessary functions to create inverse microtile,
-        that can be used to describe the domain surrounding cross-tile
-        microstructure.
-        """
-        self._evaluation_points = _np.array(
-            [
-                [0.0, 0.5, 0.5],
-                [1.0, 0.5, 0.5],
-                [0.5, 0.0, 0.5],
-                [0.5, 1.0, 0.5],
-                [0.5, 0.5, 0.0],
-                [0.5, 0.5, 1.0],
-            ]
-        )
-        self._n_info_per_eval_point = 1
+    _evaluation_points = _np.array(
+        [
+            [0.0, 0.5, 0.5],
+            [1.0, 0.5, 0.5],
+            [0.5, 0.0, 0.5],
+            [0.5, 1.0, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.5, 1.0],
+        ]
+    )
+    _n_info_per_eval_point = 1
 
     def _closing_tile(
         self,

@@ -5,23 +5,22 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class Cross3DLinear(_TileBase):
+    """Simple crosstile with tri-linear branches and a tri-linear
+    center spline."""
+
     _dim = 3
     _para_dim = 3
-
-    def __init__(self):
-        """Simple crosstile with tri-linear branches and a tri-linear
-        center spline."""
-        self._evaluation_points = _np.array(
-            [
-                [0.0, 0.5, 0.5],
-                [1.0, 0.5, 0.5],
-                [0.5, 0.0, 0.5],
-                [0.5, 1.0, 0.5],
-                [0.5, 0.5, 0.0],
-                [0.5, 0.5, 1.0],
-            ]
-        )
-        self._n_info_per_eval_point = 1
+    _evaluation_points = _np.array(
+        [
+            [0.0, 0.5, 0.5],
+            [1.0, 0.5, 0.5],
+            [0.5, 0.0, 0.5],
+            [0.5, 1.0, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.5, 1.0],
+        ]
+    )
+    _n_info_per_eval_point = 1
 
     def _closing_tile(
         self,

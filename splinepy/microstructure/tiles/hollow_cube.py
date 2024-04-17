@@ -5,23 +5,22 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class HollowCube(_TileBase):
+    """A 3D box with a hollow cube inside"""
+
     _dim = 3
     _para_dim = 3
-
-    def __init__(self):
-        """Simple tile - looks like a nut"""
-        self._evaluation_points = _np.array(
-            [
-                [0.0, 0.5, 0.5],
-                [1.0, 0.5, 0.5],
-                [0.5, 0.0, 0.5],
-                [0.5, 1.0, 0.5],
-                [0.5, 0.5, 0.0],
-                [0.5, 0.5, 1.0],
-                [0.5, 0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 1
+    _evaluation_points = _np.array(
+        [
+            [0.0, 0.5, 0.5],
+            [1.0, 0.5, 0.5],
+            [0.5, 0.0, 0.5],
+            [0.5, 1.0, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.5, 1.0],
+            [0.5, 0.5, 0.5],
+        ]
+    )
+    _n_info_per_eval_point = 1
 
     def create_tile(
         self,

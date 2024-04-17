@@ -5,21 +5,20 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class Cross2D(_TileBase):
+    """Simple crosstile with linear-quadratic branches and a bilinear
+    center spline."""
+
     _dim = 2
     _para_dim = 2
-
-    def __init__(self):
-        """Simple crosstile with linear-quadratic branches and a bilinear
-        center spline."""
-        self._evaluation_points = _np.array(
-            [
-                [0.0, 0.5],
-                [1.0, 0.5],
-                [0.5, 0.0],
-                [0.5, 1.0],
-            ]
-        )
-        self._n_info_per_eval_point = 1
+    _evaluation_points = _np.array(
+        [
+            [0.0, 0.5],
+            [1.0, 0.5],
+            [0.5, 0.0],
+            [0.5, 1.0],
+        ]
+    )
+    _n_info_per_eval_point = 1
 
     def _closing_tile(
         self,
