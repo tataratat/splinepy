@@ -231,7 +231,8 @@ splinepy.show(
 ```
 
 #### 4.5 Mapper
-![laplacian](docs/source/_static/readme_matrix.png)
+ <p align="center"><img src="docs/source/_static/readme_matrix.png" width="70%" title="laplacian"></p>
+
 [Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
 This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem ((see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py)) for a full solution):
 ```python
@@ -324,7 +325,8 @@ splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
 # load
 quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
 ```
-![nurbs_svg](docs/source/_static/nurbs.svg)
+ <p align="center"><img src="docs/source/_static/nurbs.svg" width="50%" title="nurbs_svg"></p>
+
 
 [svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves smoothness of splines for publications / documentations. Try to zoom in!
 ```python
