@@ -234,7 +234,7 @@ splinepy.show(
  <p align="center"><img src="docs/source/_static/readme_matrix.png" width="70%" title="laplacian"></p>
 
 [Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
-This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem ((see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py)) for a full solution):
+This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem - see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py) for a full solution:
 ```python
 # create solution spline
 solution_field = nurbs.create.embedded(1)
@@ -264,13 +264,15 @@ splinepy has several tiles that are ready to use:
 ```python
 splinepy.show(*splinepy.tile_lib.everything())
 ```
+
 ![microstructures](docs/source/_static/readme_microstructure.png)
+
 ```python
 # create microstructure generator
 microstructure = splinepy.Microstructure()
 # set outer spline and a (micro) tile
 microstructure.deformation_function = nurbs
-microstructure.microtile = splinepy.tile_lib["Cross2D"]()
+microstructure.microtile = splinepy.tile_lib.Cross2D()
 # tiling determines tile resolutions within each bezier patch
 microstructure.tiling = [5, 3]
 
@@ -285,7 +287,7 @@ Please take a look at [this example](https://github.com/tataratat/splinepy/blob/
 
 ### 6. Multipatch
 ![multipatch](docs/source/_static/readme_multipatch.png)
-In practice, including `Microstructure`s, it is common to work with multiple patches.
+In practice, including [Microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s, it is common to work with multiple patches.
 For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch) class, equipped with various useful functionalities:
 - patch interface identification
 - boundary patch identification
@@ -302,7 +304,6 @@ def is_left_bdr(x):
     return (left.proximities(x, return_verbose=True)[3] < 1e-8).ravel()
 
 generated.boundary_from_function(is_left_bdr, boundary_id=5)
-
 
 splinepy.show(
     ["All", generated],
