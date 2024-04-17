@@ -285,7 +285,7 @@ dim_2 = splinepy.TileLib.by_dim(dim=2)
 microstructure = splinepy.Microstructure()
 # set outer spline and a (micro) tile
 microstructure.deformation_function = nurbs
-microstructure.microtile = splinepy.TileLib["Cross2D"]
+microstructure.microtile = splinepy.TileLib.get("Cross2D")
 # tiling determines tile resolutions within each bezier patch
 microstructure.tiling = [5, 3]
 

@@ -193,7 +193,7 @@ class TileLib(_SplinepyBase):
         show(*to_show, **kwargs)
 
     @classmethod
-    def __getitem__(cls, key):
+    def get(cls, key):
         cls._summarize()
 
         if key in cls._tile_types:
