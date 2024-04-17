@@ -184,11 +184,11 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
 
         Parameters
         ----------
+        bid : int
+          boundary id to extract, (default all if bid<0)
         nthreads : int
           Number of threads to be used for extraction, defaults to
           settings.NTHREADS
-        bid : int
-          boundary id to extract, (default all if bid<0)
 
         Returns
         -------

@@ -690,6 +690,9 @@ class Microstructure(_SplinepyBase):
         microtile = self.microtile.create_tile(**kwargs)
         deformation_function = self.deformation_function
 
+        # turn off control points for clarity
+        microstructure.show_options["control_points"] = False
+
         # Show in vedo
         return _gus.show(
             ["Deformation Function", deformation_function],
