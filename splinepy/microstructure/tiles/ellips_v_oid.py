@@ -17,9 +17,10 @@ class EllipsVoid(_TileBase):
     See create_tile for more information
     """
 
+    _dim = 3
+    _para_dim = 3
+
     def __init__(self):
-        self._dim = 3
-        self._para_dim = 3
         self._evaluation_points = _np.array(
             [
                 [0.5, 0.5, 0.5],
