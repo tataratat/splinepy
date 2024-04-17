@@ -121,7 +121,7 @@ class TileLib(_SplinepyBase):
                     cls._3d[a] = obj
 
     @classmethod
-    def dimension(cls, para_dim=None, dim=None):
+    def by_dim(cls, para_dim=None, dim=None):
         """
         Returns names of tiles that satisfies dimension inputs.
         Per default, it returns list of all the name of available tiles.
@@ -191,3 +191,13 @@ class TileLib(_SplinepyBase):
             kwargs["control_points"] = False
 
         show(*to_show, **kwargs)
+
+    @classmethod
+    def __getitem__(cls, key):
+        cls._summarize()
+
+        if key in cls._tile_types:
+            # return initialized as they don't expect any variables
+            return cls._tile_types[key]()
+
+        raise KeyError(f"{key}-tile does not exist.")
