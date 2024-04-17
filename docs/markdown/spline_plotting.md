@@ -1,86 +1,66 @@
-# Visualizing Splines
-As a new feature splinepy now also has the ability to directly plot splines. The splines are plotted with the library `gustaf` and `vedo`.
+# Spline visualization
+The splines are plotted using `gustaf` and `vedo` library.
 
-The following will give a brief introduction into basic spline creation and visualization.
+The following will give a brief introduction into spline visualization and its options.
 
 ## Creating a basic NURBS
-For example here we will be creating a hollow disk of 120 degrees explicitly as a
-NURBS.
+![NURBS](../source/_static/readme_nurbs.png)
+For example here we will be creating nurbs with array-like inputs.
 ```python
 import splinepy
 
-# create a 2D NURBS disk and visualize
+# Initialize nurbs with any array-like input
 nurbs = splinepy.NURBS(
-    degrees=[1, 2],
-    knot_vectors=[[0, 0, 1, 1], [0, 0, 0, 1, 1, 2, 2, 2]],
+    degrees=[2, 1],
+    knot_vectors=[
+        [0, 0, 0, 1, 1, 1],
+        [0, 0, 1, 1],
+    ],
     control_points=[
-        [5.00000000e-01, 0.00000000e00],
-        [1.00000000e00, 0.00000000e00],
-        [5.00000000e-01, 2.88675135e-01],
-        [1.00000000e00, 5.77350269e-01],
-        [2.50000000e-01, 4.33012702e-01],
-        [5.00000000e-01, 8.66025404e-01],
-        [0.00000000e00, 5.77350269e-01],
-        [0.00000000e00, 1.15470054e00],
-        [-2.50000000e-01, 4.33012702e-01],
-        [-5.00000000e-01, 8.66025404e-01],
+        [-1.0, 0.0],
+        [-1.0, 1.0],
+        [0.0, 1.0],
+        [-2.0, 0.0],
+        [-2.0, 2.0],
+        [0.0, 2.0],
     ],
     weights=[
         [1.0],
-        [1.0],
-        [0.8660254],
-        [0.8660254],
+        [2**-0.5],
         [1.0],
         [1.0],
-        [0.8660254],
-        [0.8660254],
-        [1.0],
+        [2**-0.5],
         [1.0],
     ],
 )
 
+# vizusalize
 nurbs.show()
 ```
-![NURBS](../source/_static/nurbs.png)
 
-## Creation of common geometries
 
-You might think well this is a lot of code and you are right, that is
-why splinepy provides powerful functions to create splines on the fly. To show
-this next the same geometry is created with a single command.
+## Setting show_options
+![plotting_show_options](../source/_static/plotting_show_options.png)
+You can also customize visualization by setting ***show_options***:
 ```python
-easy_disk = splinepy.helpme.create.disk(
-    outer_radius=1,
-    inner_radius=0.5,
-    angle=120,
-    n_knot_spans=2,
-)
+nurbs.show_options["c"] = "pink"
+nurbs.show_options["control_point_ids"] = False
 
-gus.show(
-    ["Handmade disk", nurbs],
-    ["Easy disk", easy_disk],
-)
+# You can use `update()` to set multiple options at once
+# As visualization runs through mesh based engines, you can set sampling
+# resolutions per dimension.
+# In case of int, it will apply that for all dimension
+nurbs.show_options.update(control_mesh_c="green", resolutions=[201, 3])
+
+nurbs.show()
 ```
-![Disk creation](../source/_static/compare_disks.png)
-That was much easier. Feel free to peruse the helpful functions in `splinepy.helmpe`.
 
-## Expanding into 3D
-You can also extrude and revolve spline with the build in Creator class.
-
-```python
-extruded = nurbs.create.extruded(extrusion_vector=[0, 0, 1])
-revolved = nurbs.create.revolved(axis=[1, 0, 0], angle=70)
-
-gus.show(
-    ["Extruded NURBS", extruded],
-    ["Revolved NURBS", revolved],
-)
-```
-![Extruded and revolved nurbs](../source/_static/extrude_revolve.png)
+## Plotting data on spline
+![plotting_data](../source/_static/plotting_data.png)
 
 This does not need to be only from 2D->3D but can also be from 1D->2D etc.
 
-This is just the beginning of what you can do with the given plotting and creation capabilities in this library. Please look into the [examples folder](https://github.com/tataratat/splinepy/tree/main/examples) to see more capabilities.
+This is just the beginning of what you can do with the given plotting and creation capabilities in this library. Please look into the <a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a> to see more capabilities.
 
 
 ## Notebook plotting
