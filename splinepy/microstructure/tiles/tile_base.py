@@ -143,7 +143,7 @@ class TileBase(_SplinepyBase):
 
         Parameters
         ----------
-        kwargs: **kwargs
+        **kwargs: kwargs
 
         Returns
         -------
