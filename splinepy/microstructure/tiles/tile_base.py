@@ -132,3 +132,23 @@ class TileBase(_SplinepyBase):
             )
 
         return True
+
+    def create_tile(self, **kwargs):
+        """Tile creation interface for derived classes.
+        All types should implement this.
+
+        Parameters
+        ----------
+        kwargs: **kwargs
+
+        Returns
+        -------
+        tiles: list
+          List of splines that create a tile
+        derivatives: list<list<Spline>> or None
+          List of list of splines that represents parameter sensitivities.
+          If it is not implemented, returns None.
+        """
+        raise NotImplementedError(
+            f"create_tile() not implemented for {type(self)}"
+        )
