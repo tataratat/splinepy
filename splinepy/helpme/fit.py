@@ -284,6 +284,8 @@ def curve(
     residual:float
         residual (coefficient_matrix @ control_points - fitting_points)
     """
+    fitting_points = _np.asanyarray(fitting_points)
+
     # calculate n_fitting_points due to multiple usage
     n_fitting_points = fitting_points.shape[0]
 
@@ -480,6 +482,8 @@ def surface(
     residual: float
         residual (coefficient_matrix @ control_points - fitting_points)
     """
+    fitting_points = _np.asanyarray(fitting_points)
+
     # initialize list for fitting splines
     # structure is needed due to function calls later
     fitting_splines = [None, None]
