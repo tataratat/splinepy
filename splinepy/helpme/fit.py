@@ -497,6 +497,8 @@ def surface(
 
         n_control_points = fitting_spline.control_mesh_resolutions
         degrees = fitting_spline.degrees
+    else:
+        fitting_spline = _settings.NAME_TO_TYPE["BSpline"]()
 
     u_k = [None, None]
 
@@ -593,16 +595,18 @@ def surface(
             fitted_spline_v.control_points
         )
 
-    fitted_spline = _settings.NAME_TO_TYPE["BSpline"](
-        degrees=degrees,
-        knot_vectors=[
+    fitted_spline = type(fitting_spline)()
+    fitted_spline.degrees = degrees
+    fitted_spline.control_points = interim_control_points[
+        mi_interim_cps[: n_control_points[0], : n_control_points[1]]
+    ]
+    if "knot_vectors" in fitted_spline.required_properties:
+        fitted_spline.knot_vectors = [
             fitted_spline_u.knot_vectors[0],
             fitted_spline_v.knot_vectors[0],
-        ],
-        control_points=interim_control_points[
-            mi_interim_cps[: n_control_points[0], : n_control_points[1]]
-        ],
-    )
+        ]
+    if "weights" in fitted_spline.required_properties:
+        fitted_spline.weights = fitting_spline.weights
 
     residual = _np.linalg.norm(
         (_np.linalg.norm(residual_u), _np.linalg.norm(residual_v))
