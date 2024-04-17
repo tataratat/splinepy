@@ -290,7 +290,9 @@ def curve(
     n_fitting_points = fitting_points.shape[0]
 
     if associated_queries is not None:
-        u_k = associated_queries
+        u_k = _np.asanyarray(associated_queries)
+        if u_k.shape[1] != 1:
+            raise ValueError("Associated queries need to have (-1, 1) shape")
 
     else:
         u_k = parameterize(
@@ -299,111 +301,101 @@ def curve(
             centripetal=centripetal,
         )[0]
 
-    # check dimension of associated queries
-    if associated_queries is not None and associated_queries.shape[1] != 1:
-        raise ValueError("Dimension of associated_queries must be 1")
-
     if fitting_spline is not None:
-        # Sanity checks for fitting_spline mit raises
-        # check compatibility of dimensions
-        if fitting_points.shape[1] != fitting_spline.dim:
-            raise ValueError(
-                "Physical dimension of fitting_spline "
-                "and fitting_points do not match!"
-            )
-
+        # spline dimension check
         if fitting_spline.para_dim != 1:
             raise ValueError(
-                "parametric dimension of fitting_spline "
-                "for curve-fit must be 1!"
+                "parametric dimension of fitting_spline must be 1!"
             )
 
-        if degree is not None:
-            _log.warning("Ignore/Overwrite degrees (fitting_spline given).")
+        # some values maybe ignored.
+        _log.debug(
+            "degrees, n_control_points, or knot_vector maybe ignored as "
+            "fitting_spline given."
+        )
         degree = fitting_spline.degrees[0]
-
-        if n_control_points is not None:
-            _log.warning(
-                "Ignore/Overwrite n_control_points (fitting_spline given)."
-            )
-        n_control_points = fitting_spline.control_points.shape[0]
-
+        n_control_points = len(fitting_spline.control_points)
+        knot_vector = getattr(fitting_spline, "knot_vectors", None)
         if knot_vector is not None:
-            _log.warning(
-                "Ignore/Overwrite knot_vector (fitting_spline given)."
-            )
-        knot_vector = fitting_spline.knot_vectors[0]
-
+            knot_vector = knot_vector[0]
+        fitting_spline = fitting_spline.copy()
     else:
-        # sanity checks for given values
-        if (
-            degree is not None
-            and n_control_points is not None
-            and knot_vector is not None
-        ):
-            _log.warning(
-                "Problem is over specified:n_control_points will be "
-                "calculated with degree and knot_vector"
+        # empty init of default fitting spline
+        fitting_spline = _settings.NAME_TO_TYPE["BSpline"]()
+
+    # sanity checks for given values
+    if (
+        degree is not None
+        and n_control_points is not None
+        and knot_vector is not None
+    ):
+        _log.debug(
+            "Problem is over specified: n_control_points will be "
+            "calculated with degree and knot_vector"
+        )
+        n_control_points = len(knot_vector) - degree - 1
+
+    elif degree is None:
+        if knot_vector is not None and n_control_points is not None:
+            _log.debug(
+                "Neither degree nor knot_vector was given. Degree was "
+                "calculated with knot_vector and n_control_points."
+            )
+            degree = len(knot_vector) - n_control_points - 1
+
+        else:
+            raise ValueError(
+                "Neither degree nor knot_vector was given "
+                "and n_control_points or knot_vector is None "
+                "-> unable to calculate degree."
+            )
+
+    elif n_control_points is None:
+        if knot_vector is not None:
+            _log.debug(
+                "n_control_points was not given and therefore calculated "
+                "with knot_vector and degree"
             )
             n_control_points = len(knot_vector) - degree - 1
-
-        elif degree is None:
-            if knot_vector is not None and n_control_points is not None:
-                _log.debug(
-                    "Neither degree nor fitting_vector was given. Degree was "
-                    "calculated with knot_vector and n_control_points."
-                )
-                degree = len(knot_vector) - n_control_points - 1
-
-            else:
-                raise ValueError(
-                    "Neither degree nor fitting_vector was given "
-                    "and n_control_points or knot_vector is None "
-                    "-> unable to calculate degree."
-                )
-
-        elif n_control_points is None:
-            if knot_vector is not None:
-                _log.debug(
-                    "n_control_points was not given and therefore calculated "
-                    "with knot_vector and degree"
-                )
-                n_control_points = len(knot_vector) - degree - 1
-            else:
-                _log.warning(
-                    "Neither n_control_points nor fitting_vector was given "
-                    "and degree or knot_vector is None "
-                    "-> set n_control_points = n_fitting_points ."
-                )
-                n_control_points = n_fitting_points
-
-        if knot_vector is None:
-            if degree >= n_control_points:
-                raise ValueError(
-                    "Given degree must be lower than n_control_points!"
-                )
-
-            knot_vector = compute_knot_vector(
-                degree=degree,
-                n_control_points=n_control_points,
-                u_k=u_k,
-                n_fitting_points=n_fitting_points,
+        else:
+            _log.debug(
+                "Neither n_control_points nor knot_vector was given "
+                "and degree or knot_vector is None "
+                "-> set n_control_points = n_fitting_points ."
             )
+            n_control_points = n_fitting_points
 
-        # build fitting_spline
-        control_points = _np.empty((n_control_points, fitting_points.shape[1]))
-
-        fitting_spline = _settings.NAME_TO_TYPE["BSpline"](
-            degrees=[degree],
-            knot_vectors=[knot_vector],
-            control_points=control_points,
-        )
+    # degree check
+    if degree >= n_control_points:
+        raise ValueError("Given degree must be lower than n_control_points!")
 
     # check number of fitting_points and control points
     if n_control_points > n_fitting_points:
         raise ValueError(
             "(n_fitting_points >=  n_control_points) not satisfied!"
         )
+
+    # in case of bez
+    if (
+        fitting_spline.knot_vectors is None
+        and "Bezier" not in type(fitting_spline).__qualname__
+    ):
+        fitting_spline.knot_vectors = [
+            compute_knot_vector(
+                degree=degree,
+                n_control_points=n_control_points,
+                u_k=u_k,
+                n_fitting_points=n_fitting_points,
+            )
+        ]
+
+    # build fitting_spline
+    if fitting_spline.control_points is None:
+        fitting_spline.control_points = _np.empty(
+            (n_control_points, fitting_points.shape[1])
+        )
+    if fitting_spline.degrees is None:
+        fitting_spline.degrees = [degree]
 
     # solve system for control points
     residual = solve_for_control_points(
