@@ -117,7 +117,7 @@ basis_derivative = nurbs.basis_derivative(queries, [1, 1])
 physical_coordinates = nurbs.evaluate(queries)
 physical_derivatives = nurbs.derivative(queries, [2, 0])
 ```
-Many of `splinepy`'s multi-query functions can be executed in parallal usiung multithread executions on c++ side. For that, set either global flag or pass `nthreads` argument.
+Many of splinepy's multi-query functions can be executed in parallal usiung multithread executions on c++ side. For that, set either global flag or pass `nthreads` argument.
 ```python
 p_basis0 = nurbs.basis(queries, nthreads=2)
 # or
@@ -257,10 +257,10 @@ laplacian_matrix = splinepy.utils.data.make_matrix(
 ```
 
 ### 5. Microstructure
-(Rational) Bezier splines in `splinepy` are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into an another spline (outer spline/function) in exact fashion.
+(Rational) Bezier splines in splinepy are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into an another spline (outer spline/function) in exact fashion.
 We can systematically perform this to create certain shapes that consists of multiple inner splines.
 The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
-`splinepy` has several tiles that are ready to use:
+splinepy has several tiles that are ready to use:
 ```python
 splinepy.show(*splinepy.tile_lib.everything())
 ```
@@ -316,7 +316,7 @@ splinepy.io.gismo.export("microstructure.xml", generated)
 
 
 ### 7. Input/output and vector graphics
-`splinepy` supports various [IO formats](https://tataratat.github.io/splinepy/_generated/splinepy.io.html).
+splinepy supports various [IO formats](https://tataratat.github.io/splinepy/_generated/splinepy.io.html).
 Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow seamless transition to analysis.
 ```python
 # export
@@ -334,10 +334,10 @@ splinepy.io.svg.export("nurbs.svg", nurbs)
 ```
 
 ## Try online
-You can also try `splinepy` online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
+You can also try splinepy online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
 
 ## Contributing
-`splinepy` welcomes any form of contributions!
+splinepy welcomes any form of contributions!
 Write us an [issue](https://github.com/tataratat/splinepy/issues)
 Contribution guidelines can be found [here](https://tataratat.github.io/splinepy/CONTRIBUTING.html).
 
