@@ -29,6 +29,8 @@ pip install -e .
 
 ## Quick start
 ### 1. Create a spline
+ <p align="center"><img src="docs/source/_static/readme_nurbs.png" width="70%" title="nurbs"></p>
+
 Here, we will create a [NURBS](https://tataratat.github.io/splinepy/_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS) for the following example. Alternatively, we can also create [Bezier](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier), [RationalBezier](https://tataratat.github.io/splinepy/_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier), and [BSpline](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline).
 
 ```python
@@ -64,6 +66,7 @@ nurbs.show()
 ```
 
 ### 2. Modifications
+![modifications](docs/source/_static/readme_modifications.png)
 All the splines can be modified. For example, by:
 1. directly accessing properties,
 2. [elevating degrees](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees),
@@ -98,6 +101,7 @@ modified.show()  # visualize Nr. 3
 ### 3. Evaluate
 You can evaluate spline's basis functions, mapping, and their derivatives by giving parametric coordinate queries.
 They should be 2D array-like objects and functions return 2D np.ndarray.
+![evaluate](docs/source/_static/readme_evaluate.png)
 ```python
 # first, create parametric coordinate queries
 queries = [
@@ -126,6 +130,7 @@ There's a list of helper modules under the namespace `splinepy.helpme` to boost 
 Here are some highlights.
 
 #### 4.1 Create
+![create_basic](docs/source/_static/readme_create_basic.png)
 [splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on existing spline.
 ```python
 # basic splines
@@ -135,6 +140,7 @@ torus = splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5)
 
 splinepy.show(["box", box], ["disk", disk], ["torus", torus])
 ```
+![create_derived](docs/source/_static/readme_create_derived.png)
 For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create).
 ```python
 # based on existing splines
@@ -145,6 +151,7 @@ splinepy.show(["extruded", extruded], ["revolved", revolved])
 ```
 
 ### 4.2 Extract
+![extract_mesh](docs/source/_static/readme_extract_mesh.png)
 Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as [gustaf](https://tataratat.github.io/gustaf/index.html) object)
 ```python
 # extract meshes as gustaf objects
@@ -158,6 +165,7 @@ splinepy.show(
     ["spline", mesh]
 )
 ```
+![extract_spline](docs/source/_static/readme_extract_spline.png)
 or part of splines from an existing spline using [spline.extract](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.extract.html#splinepy.spline.Spline.extract).
 ```python
 # extract splines
@@ -178,10 +186,13 @@ splinepy.show(
 ```
 
 #### 4.3 Free-form deformation
+![ffd](docs/source/_static/readme_ffd.png)
+Together with mesh types of [gustaf](https://tataratat.github.io/gustaf), we can perform [free-form deformation](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.ffd.FFD.html)
 ```python
 import gustaf as gus
 
 # create gustaf mesh using extract.spline()
+# or use gustaf's io functions (gustaf.io)
 mesh = splinepy.helpme.create.torus(2, 1).extract.faces([100, 100, 100])
 
 # initialize ffd and move control points
@@ -196,6 +207,7 @@ deformed = ffd.mesh
 ```
 
 #### 4.4 Fitting
+![fit](docs/source/_static/readme_fit.png)
 You can [fit](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit) your point data using splines.
 ```python
 
@@ -219,6 +231,7 @@ splinepy.show(
 ```
 
 #### 4.5 Mapper
+![laplacian](docs/source/_static/readme_matrix.png)
 [Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
 This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem ((see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py)) for a full solution):
 ```python
@@ -250,7 +263,7 @@ The resulting shapes are called [microstructure](https://tataratat.github.io/spl
 ```python
 splinepy.show(*splinepy.tile_lib.everything())
 ```
-
+![microstructures](docs/source/_static/readme_microstructure.png)
 ```python
 # create microstructure generator
 microstructure = splinepy.Microstructure()
@@ -270,6 +283,7 @@ Please take a look at [this example](https://github.com/tataratat/splinepy/blob/
 
 
 ### 6. Multipatch
+![multipatch](docs/source/_static/readme_multipatch.png)
 In practice, including `Microstructure`s, it is common to work with multiple patches.
 For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch) class, equipped with various useful functionalities:
 - patch interface identification
@@ -310,7 +324,9 @@ splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
 # load
 quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
 ```
-[svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves smoothness of splines for publications / documentations.
+![nurbs_svg](docs/source/_static/nurbs.svg)
+
+[svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves smoothness of splines for publications / documentations. Try to zoom in!
 ```python
 splinepy.io.svg.export("nurbs.svg", nurbs)
 ```
