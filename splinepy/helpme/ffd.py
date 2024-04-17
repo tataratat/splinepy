@@ -314,6 +314,7 @@ class FFD(_SplinepyBase):
             ],
             ["Deformed Mesh", things_to_show["mesh"]],
             title=title,
+            **kwargs,
         )
 
     def showable(self, **kwargs):

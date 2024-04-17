@@ -82,7 +82,7 @@ modified.control_points /= 2.0
 modified.control_points[[3, 4, 5]] *= [1.3, 2.]
 # 3. with grid-like indexing using multi_index helper
 multi_index = modified.multi_index
-modified.control_points[multi_index[0, 1]] = [-.1, -.1]
+modified.control_points[multi_index[0, 1]] = [-1.5, -.3]
 modified.control_points[multi_index[2, :]] += [2., .1]
 
 modified.show()  # visualize Nr. 1
@@ -133,7 +133,7 @@ box = splinepy.helpme.create.box(1, 2, 3)  # length per dim
 disk = splinepy.helpme.create.disk(outer_radius=3, inner_radius=2, angle=256)
 torus = splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5)
 
-splinepy.show(["arc", arc], ["disk", disk], ["torus", torus])
+splinepy.show(["box", box], ["disk", disk], ["torus", torus])
 ```
 For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create).
 ```python
@@ -166,7 +166,8 @@ partial = nurbs.extract.spline(0, [.5, .78])
 partial_partial = nurbs.extract.spline(0, [.1, .3]).extract.spline(1, [.65, .9])
 bases = nurbs.extract.bases() # basis functions as splines
 # insert knots to increase number of bezier patches
-inserted = nurbs.insert_knots(0, [.13, .87])
+inserted = nurbs.copy()
+inserted.insert_knots(0, [.13, .87])
 beziers_patches = inserted.extract.beziers()
 
 splinepy.show(
@@ -180,15 +181,13 @@ splinepy.show(
 ```python
 import gustaf as gus
 
-# create gustaf mesh (alternatively, you can load mesh files)
-mesh = gus.Faces(
-    vertices=[[0, 0], [2, 0], [0, 1], [2, 2]],
-    faces=[[0, 1, 2], [1, 3, 2]]
-)
+# create gustaf mesh using extract.spline()
+mesh = splinepy.helpme.create.torus(2, 1).extract.faces([100, 100, 100])
 
 # initialize ffd and move control points
 ffd = splinepy.FFD(mesh=mesh)
-ffd.spline.control_points[3] += 1
+multi_index = ffd.spline.multi_index
+ffd.spline.control_points[multi_index[-1,:,-1]] += [3, .5, .1]
 
 ffd.show()
 
@@ -199,16 +198,23 @@ deformed = ffd.mesh
 #### 4.4 Fitting
 You can [fit](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit) your point data using splines.
 ```python
-data = [[-1, 0], [-0.707, 0.707], [0, 1], [-2, 0], [-1.414, 1.414], [0, 2]]
 
-curve, residual_curve = splinepy.helpme.fit.curve(data, degree=3)
+data = [[-0.955,  0.293], [-0.707,  0.707], [-0.293,  0.955],
+        [-1.911,  0.587], [-1.414,  1.414], [-0.587,  1.911]]
+
+curve, residual_curve = splinepy.helpme.fit.curve(data, degree=2)
 # you can also use any existing spline's basis
 surface, residual_surface = splinepy.helpme.fit.surface(
     data, size=[3, 2], fitting_spline=nurbs
 )
 
+# set visuals for data
+d = gus.Vertices(data)
+d.show_options.update(c="blue", r=15)
+
 splinepy.show(
-    [gus.Vertices(data), curve, surface]
+    ["curve fit", d, curve],
+    ["surface fit", d, surface],
 )
 ```
 
@@ -221,14 +227,14 @@ solution_field = nurbs.create.embedded(1)
 
 # refine
 solution_field.elevate_degrees([0, 1])
-solution_field.uniform_refinement(n_knots=[4, 4])
+solution_field.uniform_refine(n_knots=[4, 4])
 
 # create matrix using mapper
 # collocation points at greville abcissae
 mapper = solution_field.mapper(reference=nurbs)
 laplacian, support = mapper.basis_laplacian_and_support(
-    solution_field.greville_abcissae()
-,
+    solution_field.greville_abscissae()
+)
 laplacian_matrix = splinepy.utils.data.make_matrix(
     laplacian,
     support,
@@ -242,7 +248,7 @@ We can systematically perform this to create certain shapes that consists of mul
 The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
 `splinepy` has several tiles that are ready to use:
 ```python
-splinepy.show(*splinepy.microstructure.tile_lib.everything())
+splinepy.show(*splinepy.tile_lib.everything())
 ```
 
 ```python
@@ -250,9 +256,9 @@ splinepy.show(*splinepy.microstructure.tile_lib.everything())
 microstructure = splinepy.Microstructure()
 # set outer spline and a (micro) tile
 microstructure.deformation_function = nurbs
-microstructure.microtile = splinepy.microstructure.tile_lib["Cross3D"]()
+microstructure.microtile = splinepy.tile_lib["Cross2D"]()
 # tiling determines tile resolutions within each bezier patch
-microstructure.tiling = [2, 3]
+microstructure.tiling = [5, 3]
 
 microstructure.show()
 
@@ -268,25 +274,25 @@ In practice, including `Microstructure`s, it is common to work with multiple pat
 For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch) class, equipped with various useful functionalities:
 - patch interface identification
 - boundary patch identification
-- boundary asignment with various options
+- boundary assignment with various options
 - subpatch / boundary patch extraction
 ```python
 # use previously generated microtiles
-interface_info_array = generated.interface
+interface_info_array = generated.interfaces
 
 # Mark boundaries to set boundary conditions
 # In case of micro structure, you can use outer spline's boundary
 def is_left_bdr(x):
     left = nurbs.extract.boundaries()[3]
-    return (left.proximities(x, return_verbose=True)[3] < 1e-5).ravel()
+    return (left.proximities(x, return_verbose=True)[3] < 1e-8).ravel()
 
-generated.boundary_from_function(is_left_bdr, boundary_id=1)
+generated.boundary_from_function(is_left_bdr, boundary_id=5)
 
 
 splinepy.show(
     ["All", generated],
     ["Boundaries", generated.boundary_multipatch()],
-    ["Boundary 1", generated.boundary_multipatch(1)]
+    ["Boundary 5", generated.boundary_multipatch(5)]
 )
 
 # export for the solver
