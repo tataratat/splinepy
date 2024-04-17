@@ -8,11 +8,13 @@ class TileBase(_SplinepyBase):
     Base class for tile objects
     """
 
+    _dim = None
+    _para_dim = None
+
     def __init__(self):
         """
         Init Values to None
         """
-        self._dim = None
         self._evaluation_points = None
         self._n_info_per_eval_point = None
 
@@ -36,8 +38,9 @@ class TileBase(_SplinepyBase):
             )
         return self._evaluation_points
 
+    @classmethod
     @property
-    def dim(self):
+    def dim(cls):
         """Returns dimensionality in physical space of the Microtile.
 
         Parameters
@@ -48,14 +51,15 @@ class TileBase(_SplinepyBase):
         -------
         dim : int
         """
-        if self._dim is None:
+        if cls._dim is None:
             raise TypeError(
                 "Inherited Tile-types need to provide _dim, see documentation."
             )
-        return self._dim
+        return cls._dim
 
+    @classmethod
     @property
-    def para_dim(self):
+    def para_dim(cls):
         """Returns dimensionality in parametric space of the Microtile.
 
         Parameters
@@ -66,11 +70,11 @@ class TileBase(_SplinepyBase):
         -------
         para_dim : int
         """
-        if self._para_dim is None:
+        if cls._para_dim is None:
             raise TypeError(
                 "Inherited Tile-types need to provide _para_dim, see documentation."
             )
-        return self._para_dim
+        return cls._para_dim
 
     def check_params(self, params):
         """Checks if the parameters have the correct format and shape
