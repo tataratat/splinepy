@@ -5,15 +5,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class Snappy(_TileBase):
+    """Snap-through tile consisting of a thin truss and a thick truss that
+    collide into each other"""
+
     _dim = 2
     _para_dim = 2
-
-    def __init__(self):
-        """Snap-through tile consisting of a thin truss and a thick truss that
-        collide into each other"""
-        # Dummy point
-        self._evaluation_points = _np.array([[0.5, 0.5]])
-        self._n_info_per_eval_point = 1
+    # dummpy values - not used
+    _evaluation_points = _np.array([[0.5, 0.5]])
+    _n_info_per_eval_point = 1
 
     def _closing_tile(
         self,

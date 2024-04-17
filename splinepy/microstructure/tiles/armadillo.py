@@ -5,22 +5,17 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class Armadillo(_TileBase):
-    _dim = 3
+    """
+    Tile in the in a shape of a multisided dice, where every side connects
+    to the neighbor tile in the center of the surface
+    """
+
     _para_dim = 3
+    _dim = 3
+    _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
+    _n_info_per_eval_point = 1
 
-    def __init__(self):
-        """
-        Tile in the in a shape of a multisided dice, where every side connects
-        to the neighbor tile in the center of the surface
-        """
-        self._evaluation_points = _np.array(
-            [
-                [0.5, 0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 1
-
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,  # TODO
