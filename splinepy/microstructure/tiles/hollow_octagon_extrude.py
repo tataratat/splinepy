@@ -5,17 +5,12 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class HollowOctagonExtrude(_TileBase):
+    """Simple tile - looks like a nut, but in 3D"""
+
     _dim = 3
     _para_dim = 3
-
-    def __init__(self):
-        """Simple tile - looks like a nut, but in 3D"""
-        self._evaluation_points = _np.array(
-            [
-                [0.5, 0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 1
+    _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
+    _n_info_per_eval_point = 1
 
     def create_tile(
         self,
