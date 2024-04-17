@@ -25,6 +25,10 @@ pip install -e .
 ```
 
 ## Documentation
+Here are links to related documentations for the library:
+- [Documentation home](https://tataratat.github.io/splinepy)
+- [Introduction to splines](https://tataratat.github.io/splinepy/spline_intro.html#introduction-to-splines)
+- [Spline visualization guides]()
 
 
 ## Quick start
@@ -260,7 +264,10 @@ laplacian_matrix = splinepy.utils.data.make_matrix(
 (Rational) Bezier splines in splinepy are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into an another spline (outer spline/function) in exact fashion.
 We can systematically perform this to create certain shapes that consists of multiple inner splines.
 The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
+
+![tiles](docs/source/_static/readme_tiles.png)
 splinepy has several tiles that are ready to use:
+
 ```python
 splinepy.show(*splinepy.tile_lib.everything())
 ```
@@ -339,9 +346,5 @@ You can also try splinepy online by clicking the [Binder](https://mybinder.org/v
 
 ## Contributing
 splinepy welcomes any form of contributions!
-Write us an [issue](https://github.com/tataratat/splinepy/issues)
+Feel free to write us an [issue](https://github.com/tataratat/splinepy/issues) or start a [discussion](https://github.com/tataratat/splinepy/discussions).
 Contribution guidelines can be found [here](https://tataratat.github.io/splinepy/CONTRIBUTING.html).
-
-
-
-## References
