@@ -176,10 +176,7 @@ def solve_for_control_points(
         rhs = fitting_points.copy()
 
         fitting_spline.control_points[0] = rhs[0]
-        # [-1] index doesn't work -> therefore actual index is used
-        fitting_spline.control_points[
-            fitting_spline.control_points.shape[0] - 1
-        ] = rhs[-1]
+        fitting_spline.control_points[-1] = rhs[-1]
 
         if fitting_spline.control_points.shape[0] == 2:
             # control points equal to endpoints (straight line)

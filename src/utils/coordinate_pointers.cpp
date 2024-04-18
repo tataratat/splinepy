@@ -1,20 +1,15 @@
 #include "splinepy/utils/coordinate_pointers.hpp"
 
-#include "splinepy/utils/print.hpp"
-
 namespace splinepy::utils {
 
-int ControlPointPointers::Len() const { return coordinate_begins_.size(); }
-
-int ControlPointPointers::Dim() const {
-  assert(dim_ > 0);
-  return dim_;
-}
-
-void ControlPointPointers::SetRow(const int id, const double* values) {
+void ControlPointPointers::SetRow(const int id_, const double* values) {
   if (invalid_) {
     return;
   }
+
+  // allow negative id
+  const int len = Len();
+  const int id = WrapId(id_, len);
 
   if (for_rational_) {
     const double& weight = *(weight_pointers_->weights_[id]);
@@ -65,16 +60,14 @@ void ControlPointPointers::Sync(const double* values) {
   }
 }
 
-int WeightPointers::Len() const { return weights_.size(); }
-int WeightPointers::Dim() const {
-  assert(dim_ > 0);
-  return dim_;
-}
-
-void WeightPointers::SetRow(const int id, double const& value) {
+void WeightPointers::SetRow(const int id_, double const& value) {
   if (invalid_) {
     return;
   }
+
+  // allow negative id
+  const int len = Len();
+  const int id = WrapId(id_, len);
 
   if (auto cpp = control_point_pointers_.lock()) {
     // adjustment factor - new value divided by previous factor;

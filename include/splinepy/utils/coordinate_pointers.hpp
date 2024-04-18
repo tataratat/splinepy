@@ -4,7 +4,25 @@
 #include <memory>
 #include <vector>
 
+#include "splinepy/utils/print.hpp"
+
 namespace splinepy::utils {
+
+/// Function to support negative indexing
+template<typename IndexType, typename SizeType>
+IndexType WrapId(IndexType i, const SizeType n) {
+  if (i < 0) {
+    i += n;
+  }
+
+#ifndef NDEBUG
+  if (i < 0 || (SizeType) i >= n) {
+    splinepy::utils::PrintAndThrowError("Index out of range");
+  }
+#endif
+
+  return i;
+};
 
 /// Forward declaration, as ControlPointPointers has it as member.
 struct WeightPointers;
@@ -43,10 +61,13 @@ struct ControlPointPointers {
   bool invalid_{false};
 
   /// Returns Number of control points
-  int Len() const;
+  int Len() const { return coordinate_begins_.size(); }
 
   /// Returns dimension
-  int Dim() const;
+  int Dim() const {
+    assert(dim_ > 0);
+    return dim_;
+  };
 
   /// Set a single row
   void SetRow(const int id, const double* values);
@@ -81,10 +102,13 @@ struct WeightPointers {
   bool invalid_{false};
 
   /// Number of weights. Same as number of control points
-  int Len() const;
+  int Len() const { return weights_.size(); }
 
   /// Dimension. Always one.
-  int Dim() const;
+  int Dim() const {
+    assert(dim_ > 0);
+    return dim_;
+  };
 
   /// Sets one row entry. It updates weights
   /// and adjusts weighted control points.
@@ -107,13 +131,13 @@ void ControlPointPointers::SetRows(const int* ids,
     return;
   }
   const auto dim = Dim();
+  const auto len = Len();
 
   if (for_rational_) {
     const auto& weights = weight_pointers_->weights_;
-
     for (int i{}; i < n_rows; ++i) {
       // get id
-      const auto& current_id = ids[i];
+      const auto current_id = WrapId(ids[i], len);
       // get destinations and sources
       auto* current_coord = coordinate_begins_[current_id];
       const double* current_value;
@@ -132,7 +156,7 @@ void ControlPointPointers::SetRows(const int* ids,
   } else {
     for (int i{}; i < n_rows; ++i) {
       // get id
-      const auto& current_id = ids[i];
+      const auto current_id = WrapId(ids[i], len);
       // get destinations and sources
       auto* current_coord = coordinate_begins_[current_id];
       const double* current_value;
