@@ -13,14 +13,14 @@ void PrintInfo(Args&&... args) {
   std::cout << "\n";
 }
 
-/// debug printer - first argument is bool, so <on, off> is switchable.
+/// debug printer - only for debug build
 template<typename... Args>
-void PrintDebug(bool on, Args&&... args) {
-  if (on) {
-    std::cout << "SPLINEPY DEBUG - ";
-    ((std::cout << std::forward<Args>(args) << " "), ...);
-    std::cout << "\n";
-  }
+void PrintDebug(Args&&... args) {
+#ifndef NDEBUG
+  std::cout << "SPLINEPY DEBUG - ";
+  ((std::cout << std::forward<Args>(args) << " "), ...);
+  std::cout << "\n";
+#endif
 }
 
 template<typename... Args>
