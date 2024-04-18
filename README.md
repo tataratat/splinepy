@@ -28,7 +28,7 @@ pip install -e .
 Here are links to related documentations for the library:
 - [Documentation home](https://tataratat.github.io/splinepy)
 - [Introduction to splines](https://tataratat.github.io/splinepy/spline_intro.html#introduction-to-splines)
-- [Spline visualization guides]()
+- [Spline visualization guides](emptyfornow)
 
 
 ## Quick start
