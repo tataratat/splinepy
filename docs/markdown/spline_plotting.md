@@ -1,11 +1,14 @@
-# Spline visualization
-The splines are plotted using `gustaf` and `vedo` library.
+# Visualization
+One of the highlights of splinepy is that we can visualize splines.
+Most of the classes have their own `show()` function to visualize current state of each object.
+Visualizations utilize mesh types and data structures of [gustaf](https://tataratat.github.io/gustaf/).
+Then, actual rendering happens with [vedo](https://vedo.embl.es) - a powerful scientific analysis and visualization library - check them out for details!
 
-The following will give a brief introduction into spline visualization and its options.
+The following will give a brief introduction to spline visualization.
 
 ## Creating a basic NURBS
 ![NURBS](../source/_static/readme_nurbs.png)
-For example here we will be creating nurbs with array-like inputs.
+Here, we start by creating a NURBS object with array-like inputs.
 ```python
 import splinepy
 
@@ -75,6 +78,7 @@ nurbs.show()  # Nr. 1
 # at the same time, you can plot vector data
 # the keyword here is "arrow_data"
 nurbs.show_options["arrow_data"] = "coords"
+
 # by default, this will place an arrow at each sampling location which most of
 # the time is too many. With "arrow_data_on", you can specify locations
 nurbs.show_options["arrow_data_on"] = splinepy.uniform_query(
@@ -88,7 +92,7 @@ nurbs.show()  # Nr. 3
 ```
 
 ## Examples
-Please take a look at the <a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a> to see more capabilities.
+Take a look at the <a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a> for more!
 
 
 ## Notebook plotting
