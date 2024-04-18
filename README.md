@@ -25,7 +25,7 @@ pip install -e .
 ```
 
 ## Documentation
-Here are links to related documentations for the library:
+Here are links to related documentation for the library:
 - [Documentation home](https://tataratat.github.io/splinepy)
 - [Introduction to splines](https://tataratat.github.io/splinepy/spline_intro.html#introduction-to-splines)
 - [Spline visualization guides](emptyfornow)
@@ -71,7 +71,7 @@ nurbs.show()
 
 ### 2. Modifications
 ![modifications](docs/source/_static/readme_modifications.png)
-All the splines can be modified. For example, by:
+All the splines can be modified. For example, by
 1. directly accessing properties,
 2. [elevating degrees](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees),
 3. [inserting knots](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.insert_knots.html#splinepy.bspline.BSplineBase.insert_knots),
@@ -121,7 +121,7 @@ basis_derivative = nurbs.basis_derivative(queries, [1, 1])
 physical_coordinates = nurbs.evaluate(queries)
 physical_derivatives = nurbs.derivative(queries, [2, 0])
 ```
-Many of splinepy's multi-query functions can be executed in parallal usiung multithread executions on c++ side. For that, set either global flag or pass `nthreads` argument.
+Many of splinepy's multi-query functions can be executed in parallel using multithread executions on c++ side. For that, set either the global flag or pass the `nthreads` argument.
 ```python
 p_basis0 = nurbs.basis(queries, nthreads=2)
 # or
@@ -130,7 +130,7 @@ p_basis1 = nurbs.basis(queries)
 ```
 
 ### 4. Helper Modules
-There's a list of helper modules under the namespace `splinepy.helpme` to boost prototyping efficiencies. Please checkout the full list [here](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html)!
+There's a list of helper modules under the namespace `splinepy.helpme` to boost prototyping efficiencies. Please check out the full list [here](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html)!
 Here are some highlights.
 
 #### 4.1 Create
@@ -156,7 +156,7 @@ splinepy.show(["extruded", extruded], ["revolved", revolved])
 
 ### 4.2 Extract
 ![extract_mesh](docs/source/_static/readme_extract_mesh.png)
-Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as [gustaf](https://tataratat.github.io/gustaf/index.html) object)
+Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as a [gustaf](https://tataratat.github.io/gustaf/index.html) object)
 ```python
 # extract meshes as gustaf objects
 control_mesh = nurbs.extract.control_mesh()
@@ -238,7 +238,7 @@ splinepy.show(
  <p align="center"><img src="docs/source/_static/readme_matrix.png" width="70%" title="laplacian"></p>
 
 [Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
-This is especially useful for trying collocation methods. Here, we show how you can create a left handside matrix for a laplace problem - see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py) for a full solution:
+This is especially useful for trying collocation methods. Here, we show how you can create a left hand side matrix for a laplace problem - see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py) for a full solution:
 ```python
 # create solution spline
 solution_field = nurbs.create.embedded(1)
@@ -261,8 +261,8 @@ laplacian_matrix = splinepy.utils.data.make_matrix(
 ```
 
 ### 5. Microstructure
-(Rational) Bezier splines in splinepy are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into an another spline (outer spline/function) in exact fashion.
-We can systematically perform this to create certain shapes that consists of multiple inner splines.
+(Rational) Bezier splines in splinepy are capable of [composition](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose), where you can place a spline (inner spline/function) into another spline (outer spline/function) in an exact fashion.
+We can systematically perform this to create certain shapes that consist of multiple inner splines.
 The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
 
 ![tiles](docs/source/_static/readme_tiles.png)
@@ -342,7 +342,7 @@ quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
  <p align="center"><img src="docs/source/_static/nurbs.svg" width="50%" title="nurbs_svg"></p>
 
 
-[svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves smoothness of splines for publications / documentations. Try to zoom in!
+[svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves the smoothness of splines for publications/documentation. Try to zoom in!
 ```python
 splinepy.io.svg.export("nurbs.svg", nurbs)
 ```
