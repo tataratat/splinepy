@@ -37,6 +37,7 @@ precommit run -a
 ## Local documentation build
 ```bash
 pip install -r docs/requirements.txt
+python3 docs/markdown/extra_docs.py
 python3 docs/source/handle_markdown.py
 sphinx-build -b html docs/source docs/build -E
 # you can now open `docs/build/index.html` with your browser
