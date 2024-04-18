@@ -14,6 +14,7 @@ Author: Clemens Fricke
 import os
 import pathlib
 import re
+import warnings
 
 # Path to this file.
 file_path = os.path.abspath(os.path.dirname(__file__))
@@ -121,6 +122,13 @@ def process_file(
     links = get_markdown_links(content)
 
     for item in links:
+        if not item[1].strip():
+            warnings.warn(
+                f"Empty link in `{file}`. Link name `{item[0]}` link path "
+                f"`{item[1]}`. Will ignore link.",
+                stacklevel=3,
+            )
+            continue
         if item[1].startswith(("http", "#")):  # skip http links and anchors
             if "badge" in item[1]:
                 continue
