@@ -231,6 +231,77 @@ def solve_for_control_points(
     return residual
 
 
+def _validate_specifications(n_query, degree, n_control_points, knot_vector):
+    """Given main values of fitting, validates degree and n_control_points.
+    If there's mismatch between expected value and given value, values will be
+    overwritten."""
+    # sanity checks for given values
+    if degree is not None and knot_vector is not None:
+        expected_ncps = len(knot_vector) - degree - 1
+        if n_control_points is not None and n_control_points != expected_ncps:
+            _log.error(
+                f"n_control_points should be {expected_ncps}. Overwriting."
+            )
+
+        n_control_points = expected_ncps
+
+    if knot_vector is not None and n_control_points is not None:
+        expected_degree = len(knot_vector) - n_control_points - 1
+        if degree is not None and degree != expected_degree:
+            _log.error(f"degree should be {expected_degree}. Overwriting.")
+
+        degree = expected_degree
+
+    # we need degree
+    if degree is None:
+        raise ValueError(
+            "Not enough input to determine degree. Please set degree."
+        )
+
+    # no n_control point -> same as query and this will be interpolation
+    if n_control_points is None:
+        n_control_points = n_query
+
+    # degree check
+    if degree >= n_control_points:
+        raise ValueError("Given degree must be lower than n_control_points!")
+
+    # check number of fitting_points and control points
+    if n_control_points > n_query:
+        raise ValueError(
+            "(n_fitting_points >=  n_control_points) not satisfied!"
+        )
+
+    return degree, n_control_points
+
+
+def _prepare_default_bspline1d(
+    fitting_points, degree, n_control_points, knot_vector, u_k
+):
+    n_queries = len(fitting_points)
+
+    # validate values. may raise if there's conflict.
+    degree, n_control_points = _validate_specifications(
+        n_queries, degree, n_control_points, knot_vector
+    )
+
+    # empty init of default fitting spline
+    fitting_spline = _settings.NAME_TO_TYPE["BSpline"](
+        [degree],
+        [
+            compute_knot_vector(
+                degree=degree,
+                n_control_points=n_control_points,
+                u_k=u_k,
+                n_fitting_points=n_queries,
+            )
+        ],
+        _np.empty((n_control_points, fitting_points.shape[1])),
+    )
+
+    return fitting_spline
+
+
 def curve(
     fitting_points,
     degree=None,
@@ -249,39 +320,30 @@ def curve(
 
     Parameters
     ----------
-    fitting_points:(m + 1 x dim) array
+    fitting_points: (m, dim) array
         points to be interpolated/approximated
-
-    degree:int
+    degree: int
         degree of spline
-
-    n_control_points:int
+    n_control_points: int
         number of control points
-
-    knot_vector:list
+    knot_vector: list
         desired knot vector of spline
-
-    fitting_spline:spline
+    fitting_spline: Spline
         spline used for interpolation/approximation
-
-    associated_queries:(n x 1) array
+    associated_queries: (n, 1) np.ndarray
         values where the spline will be evaluated
-
-    centripetal:bool (default = True)
+    centripetal: bool (default = True)
         if True -> centripetal parameterization will be used
-
-    interpolate_endpoints:bool
+    interpolate_endpoints: bool
         if True -> endpoints are interpolated
-
-    verbose_outputs:
+    verbose_outputs: dict
         returns additional information as dict
 
     Returns
     -------
-    fitted_spline:spline
+    fitted_spline: Spline
         interpolated/approximated spline
-
-    residual:float
+    residual: float
         residual (coefficient_matrix @ control_points - fitting_points)
     """
     fitting_points = _np.asanyarray(fitting_points)
@@ -289,6 +351,7 @@ def curve(
     # calculate n_fitting_points due to multiple usage
     n_fitting_points = fitting_points.shape[0]
 
+    # determine evaluation points to build a linear system
     if associated_queries is not None:
         u_k = _np.asanyarray(associated_queries)
         if u_k.shape[1] != 1:
@@ -301,6 +364,7 @@ def curve(
             centripetal=centripetal,
         )[0]
 
+    # create fitting_spline
     if fitting_spline is not None:
         # spline dimension check
         if fitting_spline.para_dim != 1:
@@ -313,89 +377,15 @@ def curve(
             "degrees, n_control_points, or knot_vector maybe ignored as "
             "fitting_spline given."
         )
-        degree = fitting_spline.degrees[0]
-        n_control_points = len(fitting_spline.control_points)
-        knot_vector = getattr(fitting_spline, "knot_vectors", None)
-        if knot_vector is not None:
-            knot_vector = knot_vector[0]
+
+        # create copy, as we will set control points directly
         fitting_spline = fitting_spline.copy()
+
     else:
-        # empty init of default fitting spline
-        fitting_spline = _settings.NAME_TO_TYPE["BSpline"]()
-
-    # sanity checks for given values
-    if (
-        degree is not None
-        and n_control_points is not None
-        and knot_vector is not None
-    ):
-        _log.debug(
-            "Problem is over specified: n_control_points will be "
-            "calculated with degree and knot_vector"
+        # create bspline based on specifications
+        fitting_spline = _prepare_default_bspline1d(
+            fitting_points, degree, n_control_points, knot_vector, u_k
         )
-        n_control_points = len(knot_vector) - degree - 1
-
-    elif degree is None:
-        if knot_vector is not None and n_control_points is not None:
-            _log.debug(
-                "Neither degree nor knot_vector was given. Degree was "
-                "calculated with knot_vector and n_control_points."
-            )
-            degree = len(knot_vector) - n_control_points - 1
-
-        else:
-            raise ValueError(
-                "Neither degree nor knot_vector was given "
-                "and n_control_points or knot_vector is None "
-                "-> unable to calculate degree."
-            )
-
-    elif n_control_points is None:
-        if knot_vector is not None:
-            _log.debug(
-                "n_control_points was not given and therefore calculated "
-                "with knot_vector and degree"
-            )
-            n_control_points = len(knot_vector) - degree - 1
-        else:
-            _log.debug(
-                "Neither n_control_points nor knot_vector was given "
-                "and degree or knot_vector is None "
-                "-> set n_control_points = n_fitting_points ."
-            )
-            n_control_points = n_fitting_points
-
-    # degree check
-    if degree >= n_control_points:
-        raise ValueError("Given degree must be lower than n_control_points!")
-
-    # check number of fitting_points and control points
-    if n_control_points > n_fitting_points:
-        raise ValueError(
-            "(n_fitting_points >=  n_control_points) not satisfied!"
-        )
-
-    # in case of bez
-    if (
-        fitting_spline.knot_vectors is None
-        and "Bezier" not in type(fitting_spline).__qualname__
-    ):
-        fitting_spline.knot_vectors = [
-            compute_knot_vector(
-                degree=degree,
-                n_control_points=n_control_points,
-                u_k=u_k,
-                n_fitting_points=n_fitting_points,
-            )
-        ]
-
-    # build fitting_spline
-    if fitting_spline.control_points is None:
-        fitting_spline.control_points = _np.empty(
-            (n_control_points, fitting_points.shape[1])
-        )
-    if fitting_spline.degrees is None:
-        fitting_spline.degrees = [degree]
 
     # solve system for control points
     residual = solve_for_control_points(
@@ -414,6 +404,7 @@ def curve(
             "associated_queries": u_k,
             "residual": residual,
         }
+
     return fitting_spline, residual
 
 
@@ -439,24 +430,18 @@ def surface(
     ----------
     fitting_points: (m + 1 x dim) array
         points to be interpolated/approximated
-
     degrees: array-like (int int)
         degree of fitted spline in both directions
-
     n_control_points: array-like (int, int)
         number of control points in each direction
-
     knot_vectors: list of lists [list list]
         knot vectors of fitted spline in both directions
-
     fitting_spline: spline
         spline used for interpolation/approximation
         must have parametric dimension of 2
-
     associated_queries: list of lists [list list]
         values where the splines will be evaluated (both directions!)
         will only be used if knot_vectors or fitting_spline is also given!
-
     centripetal: bool (default = True)
         if True -> centripetal parameterization will be used
 
@@ -488,13 +473,6 @@ def surface(
         # extract spline in each direction (knot_vectors, weights etc.
         # of original spline), works for all type of splines!
         fitting_splines = fitting_spline.extract.boundaries([2, 0])
-
-        # overwrite n_control_points
-        if n_control_points is not None:
-            _log.info("Ignoring n_control_points, as fitting_spline is given")
-        if degrees is not None:
-            _log.info("Ignoring degrees, as fitting_spline is given")
-
         n_control_points = fitting_spline.control_mesh_resolutions
         degrees = fitting_spline.degrees
     else:
