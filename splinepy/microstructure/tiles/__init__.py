@@ -4,7 +4,6 @@ Interface for tools and generators creating simple microstructures.
 """
 
 # required in TileLib
-from splinepy._base import SplinepyBase as _SplinepyBase
 from splinepy.microstructure.tiles import (
     armadillo,
     chi,
@@ -36,6 +35,7 @@ from splinepy.microstructure.tiles.hollow_octagon_extrude import (
 from splinepy.microstructure.tiles.inverse_cross_3d import InverseCross3D
 from splinepy.microstructure.tiles.snappy import Snappy
 from splinepy.microstructure.tiles.tile_base import TileBase
+from splinepy.utils import log as _log
 
 __all__ = [
     "armadillo",
@@ -65,139 +65,137 @@ __all__ = [
     "InverseCross3D",
     "Snappy",
     "TileBase",
+    "by_dim",
+    "everything",
+    "show",
+    "get",
 ]
 
 
-class TileLib(_SplinepyBase):
-    """Class that provides easier access available tiles.
-    All the member functions are classmethods, meaning you can access them
-    directly through the class.
+def _summarize_tiles():
     """
+    Get and save tile types
+    """
+    tile_types = {}
+    d1 = {}
+    d2 = {}
+    d3 = {}
 
-    __slots__ = ()
+    # loop subclasses and classify
+    for SubClass in TileBase.__subclasses__():
+        key = SubClass.__qualname__
+        # save types and sort with direction
+        tile_types[key] = SubClass
+        dim = SubClass.dim
+        if dim == 1:
+            d1[key] = SubClass
+        elif dim == 2:
+            d2[key] = SubClass
+        elif dim == 3:
+            d3[key] = SubClass
 
-    _tile_types = None
+    return tile_types, d1, d2, d3
 
-    # physical dimensions
-    _1d = None
-    _2d = None
-    _3d = None
 
-    @classmethod
-    def _summarize(cls):
-        """
-        Get and save tile types
-        """
-        if cls._tile_types is not None:
-            return None
+_tile_types, _1d, _2d, _3d = _summarize_tiles()
 
-        import inspect
 
-        cls._tile_types = {}
-        cls._1d = {}
-        cls._2d = {}
-        cls._3d = {}
-        for a in __all__:
-            # eval to turn str into object
-            obj = eval(a)
+def by_dim(para_dim=None, dim=None):
+    """
+    Returns names of tiles that satisfies dimension inputs.
+    Per default, it returns list of all the name of available tiles.
 
-            # if not class, not interested
-            if not inspect.isclass(obj):
-                continue
+    Parameters
+    ----------
+    para_dim: int
+    dim: int
 
-            # if TileBase, also not interested
-            if obj is TileBase:
-                continue
+    Returns
+    -------
+    tiles: dict<str, type>
+        dict of tile names and types that fulfills dimension inputs.
+    """
+    # initialize pool of tiles
+    pool = _tile_types.copy() if dim is None else eval(f"_{int(dim)}d").copy()
 
-            # is class, and subclass of TileBase, but not TileBase
-            if issubclass(obj, TileBase):
-                # save types and sort with direction
-                cls._tile_types[a] = obj
-                if obj.dim == 1:
-                    cls._1d[a] = obj
-                elif obj.dim == 2:
-                    cls._2d[a] = obj
-                elif obj.dim == 3:
-                    cls._3d[a] = obj
+    # filter
+    if para_dim is not None:
+        para_dim = int(para_dim)
+        filtered = {}
+        for key, value in pool.items():
+            if value.para_dim == para_dim:
+                filtered[key] = value
 
-    @classmethod
-    def by_dim(cls, para_dim=None, dim=None):
-        """
-        Returns names of tiles that satisfies dimension inputs.
-        Per default, it returns list of all the name of available tiles.
+        # overwrite pool with filtered
+        pool = filtered
 
-        Parameters
-        ----------
-        para_dim: int
-        dim: int
+    if len(pool) == 0:
+        _log.error(
+            "Tiles does not exist with given dimension combination - ",
+            f"(para_dim {para_dim}, dim {dim})",
+        )
 
-        Returns
-        -------
-        tiles: dict<str, type>
-          dict of tile names and types that fulfills dimension inputs.
-        """
-        cls._summarize()
+    return pool
 
-        # initialize pool of tiles
-        pool = None
-        if dim is None:
-            pool = cls._tile_types.copy()
-        else:
-            # cast int and copy
-            pool = getattr(cls, f"_{int(dim)}d").copy()
 
-        # filter
-        if para_dim is not None:
-            para_dim = int(para_dim)
-            filtered = {}
-            for key, value in pool.items():
-                if value.para_dim == para_dim:
-                    filtered[key] = value
+def everything():
+    """
+    Returns all predefined tiles.
 
-            # overwrite pool with filtered
-            pool = filtered
+    Parameters
+    ----------
+    None
 
-        if len(pool) == 0:
-            cls._loge(
-                "Tiles does not exist with given dimension combination - ",
-                f"(para_dim {para_dim}, dim {dim})",
-            )
+    Returns
+    -------
+    tiles: dict<str, type>
+    """
+    return _tile_types.copy()
 
-        return pool
 
-    @classmethod
-    def everything(cls):
-        """
-        Returns all available
-        """
-        cls._summarize()
-        return cls._tile_types.copy()
+def show(**kwargs):
+    """
+    Shows name and default tile (with default parameter values).
 
-    @classmethod
-    def show(cls, **kwargs):
-        """
-        Shows name and default tile (with default parameter values).
-        """
-        from splinepy import Multipatch, show
+    Parameters
+    ----------
+    **kwargs: kwargs
+      show options that splinepy.show() accepts
 
-        cls._summarize()
+    Returns
+    -------
+    show: Any
+      show() return based on **kwargs. Look gus.show() documentations.
+    """
+    from splinepy import Multipatch, show
 
-        to_show = []
-        for key, value in cls._tile_types.items():
-            to_show.append([key, Multipatch(value().create_tile()[0])])
+    to_show = []
+    for key, value in _tile_types.items():
+        to_show.append([key, Multipatch(value().create_tile()[0])])
 
-        # turn off control points if kwargs doesn't have it
-        if not any(k.startswith("control") for k in kwargs):
-            kwargs["control_points"] = False
+    # turn off control points if kwargs doesn't have it
+    if not any(k.startswith("control") for k in kwargs):
+        kwargs["control_points"] = False
 
-        show(*to_show, **kwargs)
+    return show(*to_show, **kwargs)
 
-    @classmethod
-    def get(cls, key):
-        cls._summarize()
 
-        if key in cls._tile_types:
-            # return initialized as they don't expect any variables
-            return cls._tile_types[key]()
+def get(key):
+    """
+    Returns initialized tile object based that corresponds to given str key.
 
-        raise KeyError(f"{key}-tile does not exist.")
+    Parameters
+    ----------
+    key: str
+      Name of a tile in str
+
+    Returns
+    -------
+    tile: TileBase
+      Initialized, derived tile.
+    """
+    if key in _tile_types:
+        # return initialized as they don't expect any variables
+        return _tile_types[key]()
+
+    raise KeyError(f"{key}-tile does not exist.")

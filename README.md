@@ -268,14 +268,14 @@ The resulting shapes are called [microstructure](https://tataratat.github.io/spl
 ![tiles](docs/source/_static/readme_tiles.png)
 splinepy has several tiles that are ready to use.
 Implementations of available tiles can be found [here](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html).
-However, it is easier to access them through [TileLib](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.TileLib.html):
+However, it is easier to access them through [module functions](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html):
 
 ```python
-splinepy.TileLib.show()
+splinepy.microstructure.tiles.show()
 
 # get specific dimensions as dict
-para_2_dim_2 = splinepy.TileLib.by_dim(para_dim=2, dim=2)
-dim_2 = splinepy.TileLib.by_dim(dim=2)
+para_2_dim_2 = splinepy.microstructure.tiles.by_dim(para_dim=2, dim=2)
+dim_2 = splinepy.microstructure.tiles.by_dim(dim=2)
 ```
 
 ![microstructures](docs/source/_static/readme_microstructure.png)
@@ -285,7 +285,7 @@ dim_2 = splinepy.TileLib.by_dim(dim=2)
 microstructure = splinepy.Microstructure()
 # set outer spline and a (micro) tile
 microstructure.deformation_function = nurbs
-microstructure.microtile = splinepy.TileLib.get("Cross2D")
+microstructure.microtile = splinepy.microstructure.tiles.get("Cross2D")
 # tiling determines tile resolutions within each bezier patch
 microstructure.tiling = [5, 3]
 
