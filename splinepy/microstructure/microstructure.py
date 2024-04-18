@@ -135,6 +135,11 @@ class Microstructure(_SplinepyBase):
         if hasattr(self, "_microtile"):
             return self._microtile
         else:
+            self._logi(
+                "microtile is empty. "
+                "Please checkout splinepy.microstructure.tiles.show() for "
+                "predefined tile collections."
+            )
             return None
 
     @microtile.setter
