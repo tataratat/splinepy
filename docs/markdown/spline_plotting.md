@@ -55,12 +55,40 @@ nurbs.show_options.update(control_mesh_c="green", resolutions=[201, 3])
 nurbs.show()
 ```
 
+
 ## Plotting data on spline
 ![plotting_data](../source/_static/plotting_data.png)
+You can easily plot data on splines.
+Scalar data can be represented with a colormap and vector data can be represented with arrows.
+You can take a look at [this example](https://github.com/tataratat/splinepy/blob/main/examples/show_spline_data.py) for detailed introduction.
+```python
+# set data - we will plot self spline, which will plot coordinates
+nurbs.spline_data["coords"] = nurbs
 
-This does not need to be only from 2D->3D but can also be from 1D->2D etc.
+# then, set in show_options the name of the data
+# "data" keyword will process any data as scalar - in case of vector data,
+# it will take the norms
+nurbs.show_options["data"] = "coords"
+nurbs.show_options["scalarbar3d"] = True
+nurbs.show()  # Nr. 1
 
-This is just the beginning of what you can do with the given plotting and creation capabilities in this library. Please look into the <a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a> to see more capabilities.
+# at the same time, you can plot vector data
+# the keyword here is "arrow_data"
+nurbs.show_options["arrow_data"] = "coords"
+# by default, this will place an arrow at each sampling location which most of
+# the time is too many. With "arrow_data_on", you can specify locations
+nurbs.show_options["arrow_data_on"] = splinepy.uniform_query(
+    nurbs.parametric_bounds, [7, 5]
+)
+nurbs.show()  # Nr. 2
+
+# to turn off, just set None or pop()
+nurbs.show_options.pop("data")
+nurbs.show()  # Nr. 3
+```
+
+## Examples
+Please take a look at the <a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a> to see more capabilities.
 
 
 ## Notebook plotting

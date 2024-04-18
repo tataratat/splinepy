@@ -17,16 +17,17 @@ if __name__ == "__main__":
     md_path = os.path.abspath(os.path.join(here, "..", "md"))
     os.makedirs(md_path, exist_ok=True)
 
-    # 1. Show options.
+    # 1. append show options to visualization
     with open(
-        os.path.abspath(os.path.join(here, "..", "md", "show_options.md")), "w"
+        os.path.abspath(os.path.join(here, "spline_plotting.md")), "a"
     ) as f:
+        f.write("## List of show_options\n")
         derived = [
             spp.helpme.visualize.SplineShowOption,
             spp.helpme.visualize.MultipatchShowOption,
         ]
         for cls in derived:
-            f.write(f"## {cls.__qualname__}\n\n")
+            f.write(f"### {cls.__qualname__}\n\n")
             for option in cls._valid_options.values():
                 t_str = str(option.allowed_types)
                 t_str = (
