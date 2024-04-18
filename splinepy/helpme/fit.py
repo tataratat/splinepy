@@ -18,19 +18,17 @@ def parameterize(fitting_points, size, centripetal):
 
     Parameters
     ----------
-    fitting_points:(m + 1 x dim) array
-        points to be interpolated/approximated
-
-    size:array-like
-        number of points per parametric dimension
-
-    centripetal:bool
-        if True -> centripetal parameterization will be used
+    fitting_points:(n, dim) array-like
+      points to be interpolated/approximated
+    size: array-like
+      number of points per parametric dimension
+    centripetal: bool
+      if True -> centripetal parameterization will be used
 
     Returns
     -------
-    parametric_coordinates:array-like
-        array containing parameterization values per parametric dimension
+    parametric_coordinates: list<np.ndarray>
+      array containing parameterization values per parametric dimension
     """
 
     def parameterize_line(fitting_points, n_fitting_points, centripetal):
@@ -86,22 +84,19 @@ def compute_knot_vector(degree, n_control_points, u_k, n_fitting_points):
 
     Parameters
     ----------
-    degree:int
-        degree of spline
-
-    n_control_points:int
-        number of control points
-
-    u_k:(n x 1) array-like
-        array containing parameterization values
-
-    n_fitting_points:int
-        number of fitting_points
+    degree: int
+      degree of spline
+    n_control_points: int
+      number of control points
+    u_k: (n, 1) array-like
+      array containing parameterization values
+    n_fitting_points: int
+      number of fitting_points
 
     Returns
     -------
-    knot_vector:((degree + n_control_points + 1) x 1) array
-        array containing knots of spline
+    knot_vector: (degree + n_control_points + 1, 1) np.ndarray
+      array containing knots of spline
     """
     # initialize with m = n + p + 1
     knot_vector = _np.empty(degree + n_control_points + 1)
@@ -146,13 +141,10 @@ def solve_for_control_points(
     ----------
     fitting_points:(m + 1 x dim) array
         points to be interpolated/approximated
-
     fitting_spline:spline
         spline used for interpolation/approximation
-
     queries:(n x 1) array
         parametric values where the spline will be evaluated
-
     interpolate_endpoints:bool
         if True -> endpoints are interpolated
 
@@ -269,17 +261,16 @@ def _validate_specifications(n_query, degree, n_control_points, knot_vector):
     # check number of fitting_points and control points
     if n_control_points > n_query:
         raise ValueError(
-            "(n_fitting_points >=  n_control_points) not satisfied!"
+            f"(n_fitting_points({n_query}) >= "
+            f"n_control_points({n_control_points})) not satisfied!"
         )
 
     return degree, n_control_points
 
 
-def _prepare_default_bspline1d(
-    fitting_points, degree, n_control_points, knot_vector, u_k
+def _prepare_default_bspline1pd(
+    n_queries, dim, degree, n_control_points, knot_vector, u_k
 ):
-    n_queries = len(fitting_points)
-
     # validate values. may raise if there's conflict.
     degree, n_control_points = _validate_specifications(
         n_queries, degree, n_control_points, knot_vector
@@ -296,7 +287,7 @@ def _prepare_default_bspline1d(
                 n_fitting_points=n_queries,
             )
         ],
-        _np.empty((n_control_points, fitting_points.shape[1])),
+        _np.empty((n_control_points, dim)),
     )
 
     return fitting_spline
@@ -383,8 +374,8 @@ def curve(
 
     else:
         # create bspline based on specifications
-        fitting_spline = _prepare_default_bspline1d(
-            fitting_points, degree, n_control_points, knot_vector, u_k
+        fitting_spline = _prepare_default_bspline1pd(
+            *fitting_points.shape, degree, n_control_points, knot_vector, u_k
         )
 
     # solve system for control points
@@ -442,12 +433,10 @@ def surface(
     associated_queries: list of lists [list list]
         values where the splines will be evaluated (both directions!)
         will only be used if knot_vectors or fitting_spline is also given!
-    centripetal: bool (default = True)
-        if True -> centripetal parameterization will be used
-
+    centripetal: bool
+        Default is True. if True -> centripetal parameterization will be used
     interpolate_endpoints: bool
         if True -> endpoints are interpolated
-
     verbose_outputs:
         returns additional information as dict
 
@@ -455,31 +444,14 @@ def surface(
     -------
     fitted_spline: spline
         interpolated/approximated spline
-
     residual: float
         residual (coefficient_matrix @ control_points - fitting_points)
     """
     fitting_points = _np.asanyarray(fitting_points)
+    dim = fitting_points.shape[1]
 
-    # initialize list for fitting splines
-    # structure is needed due to function calls later
-    fitting_splines = [None, None]
-    if fitting_spline is not None:
-        if fitting_spline.para_dim != 2:
-            raise ValueError(
-                "If fitting spline is given as one spline, "
-                "parametric dimension must be 2!"
-            )
-        # extract spline in each direction (knot_vectors, weights etc.
-        # of original spline), works for all type of splines!
-        fitting_splines = fitting_spline.extract.boundaries([2, 0])
-        n_control_points = fitting_spline.control_mesh_resolutions
-        degrees = fitting_spline.degrees
-    else:
-        fitting_spline = _settings.NAME_TO_TYPE["BSpline"]()
-
+    # get evaluation locations
     u_k = [None, None]
-
     if associated_queries is not None and (
         knot_vectors is not None or fitting_spline is not None
     ):
@@ -491,42 +463,73 @@ def surface(
             raise ValueError(
                 "Associated queries in each direction must have dimension 1!"
             )
-        u_k[0] = _np.array(associated_queries[0])
-        u_k[1] = _np.array(associated_queries[1])
+        u_k[0] = _np.asanyarray(associated_queries[0])
+        u_k[1] = _np.asanyarray(associated_queries[1])
 
     else:
         u_k = parameterize(
             fitting_points=fitting_points, size=size, centripetal=centripetal
         )
 
-    if knot_vectors is None:
-        knot_vectors = [None, None]
+    # initialize list for fitting splines
+    # structure is needed due to function calls later
+    fitting_splines = [None, None]
+    if fitting_spline is None:
+        # initialize knot_vectors
+        if knot_vectors is None:
+            knot_vectors = [None, None]
+        if degrees is None:
+            degrees = [None, None]
+        if n_control_points is None:
+            n_control_points = [None, None]
 
-    # curve fit for every j in n_points_v
-    interim_control_points = _np.empty(
-        (n_control_points[0] * size[1], fitting_points.shape[1])
-    )
-    residual_u = _np.empty(size[1])
+        # create base spline for each direction
+        spline_u = _prepare_default_bspline1pd(
+            size[0],
+            dim,
+            degrees[0],
+            n_control_points[0],
+            knot_vectors[0],
+            u_k[0],
+        )
+        spline_v = _prepare_default_bspline1pd(
+            size[1],
+            dim,
+            degrees[1],
+            n_control_points[1],
+            knot_vectors[1],
+            u_k[1],
+        )
+        fitting_splines = [spline_u, spline_v]
+        fitted_spline = type(spline_u)(
+            [*spline_u.ds, *spline_v.ds],
+            [*spline_u.kvs, *spline_v.kvs],
+            _np.empty((len(spline_u.cps) * len(spline_v.cps), dim)),
+        )
+
+    else:
+        if fitting_spline.para_dim != 2:
+            raise ValueError(
+                "If fitting spline is given as one spline, "
+                "parametric dimension must be 2!"
+            )
+        # extract spline in each direction (knot_vectors, weights etc.
+        # of original spline), works for all type of splines!
+        fitting_splines = fitting_spline.extract.boundaries([2, 0])
+        fitted_spline = fitting_spline.copy()
+
+    n_control_points = fitted_spline.control_mesh_resolutions
+
+    # index helpers
     mi_pts = MultiIndex(size)
     mi_interim_cps = MultiIndex((n_control_points[0], size[1]))
 
-    # first spline is fitted with given values
-    fitted_spline_u, residual_u[0] = curve(
-        fitting_points=fitting_points[mi_pts[:, 0]],
-        degree=degrees[0],
-        n_control_points=n_control_points[0],
-        knot_vector=knot_vectors[0],
-        fitting_spline=fitting_splines[0],
-        associated_queries=u_k[0],
-        centripetal=centripetal,
-        interpolate_endpoints=interpolate_endpoints,
-    )
-
-    interim_control_points[mi_interim_cps[:, 0]] = (
-        fitted_spline_u.control_points
-    )
-
-    for v in range(1, size[1]):
+    # loop first dim
+    # curve fit for every j in n_points_v
+    interim_control_points = _np.empty((n_control_points[0] * size[1], dim))
+    residual_u = _np.empty(size[1])
+    fitted_spline_u = fitting_splines[0]
+    for v in range(size[1]):
         # previously fitted spline is used for the other fits
         fitted_spline_u, residual_u[v] = curve(
             fitting_points=fitting_points[mi_pts[:, v]],
@@ -540,26 +543,11 @@ def surface(
             fitted_spline_u.control_points
         )
 
+    # loop second dim
     # curve fit for every k in n_control_points_u
     residual_v = _np.empty(n_control_points[0])
-
-    # first spline is fitted with given values
-    fitted_spline_v, residual_v[0] = curve(
-        fitting_points=interim_control_points[mi_interim_cps[0, :]],
-        degree=degrees[1],
-        n_control_points=n_control_points[1],
-        knot_vector=knot_vectors[1],
-        fitting_spline=fitting_splines[1],
-        associated_queries=u_k[1],
-        centripetal=centripetal,
-        interpolate_endpoints=interpolate_endpoints,
-    )
-
-    interim_control_points[mi_interim_cps[0, : n_control_points[1]]] = (
-        fitted_spline_v.control_points
-    )
-
-    for u in range(1, n_control_points[0]):
+    fitted_spline_v = fitting_splines[1]
+    for u in range(n_control_points[0]):
         # previously fitted spline is used for the other fits
         fitted_spline_v, residual_v[u] = curve(
             fitting_points=interim_control_points[mi_interim_cps[u, :]],
@@ -573,18 +561,10 @@ def surface(
             fitted_spline_v.control_points
         )
 
-    fitted_spline = type(fitting_spline)()
-    fitted_spline.degrees = degrees
+    # copy
     fitted_spline.control_points = interim_control_points[
         mi_interim_cps[: n_control_points[0], : n_control_points[1]]
     ]
-    if "knot_vectors" in fitted_spline.required_properties:
-        fitted_spline.knot_vectors = [
-            fitted_spline_u.knot_vectors[0],
-            fitted_spline_v.knot_vectors[0],
-        ]
-    if "weights" in fitted_spline.required_properties:
-        fitted_spline.weights = fitting_spline.weights
 
     residual = _np.linalg.norm(
         (_np.linalg.norm(residual_u), _np.linalg.norm(residual_v))
