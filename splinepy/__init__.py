@@ -19,7 +19,6 @@ from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.helpme.ffd import FFD
 from splinepy.microstructure.microstructure import Microstructure
-from splinepy.microstructure.tiles import TileLib
 from splinepy.multipatch import Multipatch
 from splinepy.nurbs import NURBS
 from splinepy.rational_bezier import RationalBezier
