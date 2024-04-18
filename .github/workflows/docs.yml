@@ -30,6 +30,7 @@ jobs:
     - name: build docs
       run: |
         pip install -r ./docs/requirements.txt
+        python docs/markdown/extra_docs.py
         python docs/source/handle_markdown.py
         sphinx-build -W -b html docs/source docs/build
 
