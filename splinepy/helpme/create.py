@@ -298,6 +298,42 @@ def revolved(
     return type(spline)(**spline_dict)
 
 
+def swept(cross_section, trajectory, nsections):
+    """Sweeps a cross-section along a trajectory
+
+    Parameters
+    ----------
+    crossection : Spline
+      Cross-section to be swept
+    trajectory : Spline
+      Trajectory along which the cross-section is swept
+    nsections : int
+      Number of sections trajectory is divided into
+
+    Returns
+    -------
+    swept_spline : Spline
+      Spline resulting from the sweep
+    """
+
+    from splinepy.spline import Spline as _Spline
+
+    # Check input type
+    if not isinstance(cross_section, _Spline):
+        raise NotImplementedError("Sweeps only works for splines")
+    if not isinstance(trajectory, _Spline):
+        raise NotImplementedError("Sweeps only works for splines")
+
+    # Check if trajectory is a curve
+    if trajectory.dim != 1:
+        raise ValueError("Trajectory must be a curve")
+
+    # dummy variable for nsections
+    _ = nsections
+
+    # IMPLEMENTATION OF SWEEPING SURFACE
+
+
 def from_bounds(parametric_bounds, physical_bounds):
     """Creates a minimal spline with given parametric bounds, physical bounds.
     Physical bounds can have less or equal number of

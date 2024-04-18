@@ -1,0 +1,69 @@
+import gustaf as gus
+import numpy as np
+
+import splinepy
+
+if __name__ == "__main__":
+    # trajectory
+    # define degrees
+    ds1 = [2]
+    # define knot vectors
+    kvs1 = [[0.0, 0.0, 0.0, 1.0, 1.0, 1.0]]
+    # define control points
+    cps1 = np.array(
+        [
+            [0.0, 0.0, 0.0],
+            [3.0, 1.0, 0.0],
+            [4.0, 0.0, 0.0],
+        ]
+    )
+    # init trajectory as bspline
+    trajectory = splinepy.BSpline(
+        degrees=ds1,
+        knot_vectors=kvs1,
+        control_points=cps1,
+    )
+    # show
+    # trajectory.show()
+
+    # cross section
+    # define degrees
+    ds1 = [1]
+
+    # define knot vectors
+    kvs1 = [[0.0, 0.0, 1.0, 1.0]]
+
+    # define control points
+    cps1 = np.array(
+        [
+            [0.0, 0.0, -1.0],
+            [0.0, 0.0, 1.0],
+        ]
+    )
+
+    # init cross section as bspline
+    cross_section = splinepy.BSpline(
+        degrees=ds1,
+        knot_vectors=kvs1,
+        control_points=cps1,
+    )
+
+    def der(data, on):
+        return data.derivative(on, [1])
+
+    trajectory.spline_data["der"] = splinepy.SplineDataAdaptor(
+        trajectory, function=der
+    )
+    trajectory.show_options["arrow_data"] = "der"
+    trajectory.show_options["arrow_data_on"] = np.linspace(0, 1, 20).reshape(
+        -1, 1
+    )
+
+    derivative = trajectory.derivative([[0.5], [1]], [1])
+    print(derivative)
+
+    gus.show(
+        ["Trajectory", trajectory],
+        ["Cross section", cross_section],
+        resolution=50,
+    )
