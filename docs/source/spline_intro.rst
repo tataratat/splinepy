@@ -6,6 +6,6 @@ Introduction to Splines
 
 
 -----------------------------
-Creating and Plotting Splines
+Spline visualization
 -----------------------------
 .. mdinclude:: ../md/spline_plotting.md
