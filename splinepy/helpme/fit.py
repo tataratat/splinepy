@@ -5,6 +5,7 @@ from splinepy.helpme.multi_index import MultiIndex
 from splinepy.utils import log as _log
 from splinepy.utils.data import has_scipy as _has_scipy
 from splinepy.utils.data import make_matrix as _make_matrix
+from splinepy.utils.data import cartesian_product as _cartesian_product
 
 if _has_scipy:
     from scipy.sparse.linalg import spsolve as _spsolve
@@ -63,17 +64,30 @@ def parameterize(fitting_points, size, centripetal):
         parametric_coordinates = [u_k]
     else:
         parametric_coordinates = []
-        for k in range(n_dimensions):
+        range_per_dim = [_np.arange(s) for s in size]
+        for k in list(range(n_dimensions)):
             u_k = _np.zeros((size[k], 1))
             entry_indices = [slice(None) for _ in range(n_dimensions)]
-            for i in range(size[1 - k]):
-                entry_indices[1 - k] = i
+            n_slice = size.copy()
+            n_slice.pop(k)
+            rpd = range_per_dim.copy()
+            rpd.pop(k)
+            queries = _cartesian_product(rpd, reverse=True)
+            #for i in range(_np.prod(n_slice)):
+            for query in queries:
+                i = 0
+                for j in range(n_dimensions):
+                    if j == k: continue
+                    entry_indices[j] = query[i]
+                    i += 1
+                print(tuple(entry_indices))
                 u_k += parameterize_line(
                     fitting_points=fitting_points[mi[tuple(entry_indices)]],
                     n_fitting_points=size[k],
                     centripetal=centripetal,
                 )
-            parametric_coordinates.append(u_k / size[1 - k])
+            parametric_coordinates.append(u_k / _np.prod(n_slice))
+        #parametric_coordinates = parametric_coordinates[::-1]
 
     return parametric_coordinates
 
@@ -98,6 +112,7 @@ def compute_knot_vector(degree, n_control_points, u_k, n_fitting_points):
     knot_vector: (degree + n_control_points + 1, 1) np.ndarray
       array containing knots of spline
     """
+    print("u_k", u_k)
     # initialize with m = n + p + 1
     knot_vector = _np.empty(degree + n_control_points + 1)
 
