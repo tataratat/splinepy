@@ -45,66 +45,38 @@ def parameterize(fitting_points, size, centripetal):
         if centripetal:
             chord_lengths = _np.sqrt(chord_lengths)
 
-        total_chord_length = _np.sum(chord_lengths, axis=axis)
-        chord_lengths = chord_lengths.reshape(n_points - 1, -1)
+        # indices for total chord_reshapes
+        chord_lengths_shape = list(chord_lengths.shape)
+        chord_lengths_shape[axis] = 1
 
-        u_k[1:] = _np.mean(
-            _np.cumsum(chord_lengths, axis=0) / total_chord_length.ravel(),
-            axis=1,
+        total_chord_length = _np.sum(chord_lengths, axis=axis).reshape(
+            *chord_lengths_shape
         )
+        chord_lengths /= total_chord_length
+
+        # Compute cumulated sum
+        if chord_lengths.ndim == 1:
+            u_k[1:] = _np.cumsum(chord_lengths, axis=axis)
+        else:
+            # Indices for slices
+            mean_slicer = list(range(fitting_points.ndim))
+            mean_slicer.pop(axis)
+            mean_slicer = tuple(mean_slicer)
+            # Higher dimensional (surface ++)
+            u_k[1:] = _np.mean(
+                _np.cumsum(chord_lengths, axis=axis),
+                axis=mean_slicer,
+            )
         u_k[0] = 0.0
-
-        return u_k.reshape(-1, 1)
-
-    def parameterize_line(fitting_points, centripetal):
-        u_k = _np.empty((len(fitting_points), 1))
-
-        chord_lengths = _np.linalg.norm(
-            _np.diff(fitting_points, axis=0), axis=1
-        )
-
-        if centripetal:
-            chord_lengths = _np.sqrt(chord_lengths)
-
-        total_chord_length = _np.sum(chord_lengths)
-
-        chord_lengths = chord_lengths / total_chord_length
-        u_k[0] = 0.0
+        # Numerical inaccuracies where an issue with the last value sometimes
         u_k[-1] = 1.0
 
-        u_k[1:-1] = _np.cumsum(chord_lengths[:-1]).reshape(-1, 1)
         return u_k.reshape(-1, 1)
-
-    def parametrize_surface(reorganized_queries, centripetal):
-        sizes = reorganized_queries.shape[:2]
-        dim = reorganized_queries.shape[-1]
-        u_ks = []
-        for i in range(2):
-            tmp = []
-            for j in range(sizes[i]):
-                select = [slice(None)] * 2
-                select[i] = j
-                tmp.append(
-                    parameterize_line(
-                        reorganized_queries[tuple(select)].reshape(-1, dim),
-                        centripetal,
-                    )
-                )
-            u_ks.append(_np.mean(tmp, axis=0))
-
-        return u_ks
 
     mi = MultiIndex(size)
 
     # Loop over all dimensions and append each para_coords to list
-    dim = len(size)
-    if dim == 1:
-        return [parameterize_line(fitting_points, centripetal)]
-
     reorganized = fitting_points[mi._raveled_indices]
-    if dim == 2:
-        return parametrize_surface(reorganized, centripetal)
-
     parametric_coordinates = []
     for k in range(len(size)):
         parametric_coordinates.append(
