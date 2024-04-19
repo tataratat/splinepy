@@ -260,6 +260,10 @@ def _validate_specifications(n_query, degree, n_control_points, knot_vector):
 
     # no n_control point -> same as query and this will be interpolation
     if n_control_points is None:
+        _log.debug(
+            "n_control_points not specified. "
+            "Setting it the same as the number of queries"
+        )
         n_control_points = n_query
 
     # degree check
