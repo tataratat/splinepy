@@ -165,7 +165,7 @@ def show(**kwargs):
     Returns
     -------
     show: Any
-      show() return based on **kwargs. Look gus.show() documentations.
+      show() return based on kwargs. Look gus.show() documentations.
     """
     from splinepy import Multipatch, show
 
