@@ -110,7 +110,7 @@ lint.ignore = [
 
 [tool.codespell]
 ignore-words-list = "connec,tye,ned"
-skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*,./tests/data/*.svg"
+skip="./docs/source/_generated/**,./docs/build/*,./build/*,./third_party/*,./tests/data/*.svg,*.html,*.js"
 
 [tool.black]
 line-length = 79

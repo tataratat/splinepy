@@ -11,7 +11,13 @@ class InverseCross3D(_TileBase):
     Class that provides necessary functions to create inverse microtile,
     that can be used to describe the domain surrounding cross-tile
     microstructure.
-    """
+
+    .. raw:: html
+
+        <p><a href="../_static/InverseCross3D.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/InverseCross3D.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3
