@@ -10,7 +10,7 @@ class Snappy(_TileBase):
 
     _dim = 2
     _para_dim = 2
-    # dummpy values - not used
+    # dummy values - not used
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 1
 
