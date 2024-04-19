@@ -31,49 +31,40 @@ def parameterize(fitting_points, size, centripetal):
       array containing parameterization values per parametric dimension
     """
 
-    def parameterize_line(fitting_points, n_fitting_points, centripetal):
-        u_k = _np.empty((n_fitting_points, 1))
+    def parametrize_line(reorganized_queries, axis, centripetal):
+        """parameterize_line all at once.
+        Expects with-MultiIndex-Reorganized points"""
+        n_points = reorganized_queries.shape[axis]
+        u_k = _np.empty(n_points)
 
+        # norm from axis -1 as last axis is dim.
         chord_lengths = _np.linalg.norm(
-            _np.diff(fitting_points, axis=0), axis=1
+            _np.diff(reorganized_queries, axis=axis), axis=-1
         )
 
         if centripetal:
             chord_lengths = _np.sqrt(chord_lengths)
 
-        total_chord_length = _np.sum(chord_lengths)
+        total_chord_length = _np.sum(chord_lengths, axis=axis)
+        chord_lengths = chord_lengths.reshape(n_points - 1, -1)
 
-        chord_lengths = chord_lengths / total_chord_length
+        u_k[1:] = _np.mean(
+            _np.cumsum(chord_lengths, axis=0) / total_chord_length.ravel(),
+            axis=1,
+        )
         u_k[0] = 0.0
-        u_k[-1] = 1.0
 
-        u_k[1:-1] = _np.cumsum(chord_lengths[:-1]).reshape(-1, 1)
         return u_k.reshape(-1, 1)
 
     mi = MultiIndex(size)
 
     # Loop over all dimensions and append each para_coords to list
-    n_dimensions = len(size)
-    if n_dimensions == 1:
-        u_k = parameterize_line(
-            fitting_points=fitting_points,
-            n_fitting_points=size[0],
-            centripetal=centripetal,
+    parametric_coordinates = []
+    reorganized = fitting_points[mi._raveled_indices]
+    for k in range(len(size)):
+        parametric_coordinates.append(
+            parametrize_line(reorganized, k, centripetal)
         )
-        parametric_coordinates = [u_k]
-    else:
-        parametric_coordinates = []
-        for k in range(n_dimensions):
-            u_k = _np.zeros((size[k], 1))
-            entry_indices = [slice(None) for _ in range(n_dimensions)]
-            for i in range(size[1 - k]):
-                entry_indices[1 - k] = i
-                u_k += parameterize_line(
-                    fitting_points=fitting_points[mi[tuple(entry_indices)]],
-                    n_fitting_points=size[k],
-                    centripetal=centripetal,
-                )
-            parametric_coordinates.append(u_k / size[1 - k])
 
     return parametric_coordinates
 
