@@ -31,7 +31,7 @@ def parameterize(fitting_points, size, centripetal):
       array containing parameterization values per parametric dimension
     """
 
-    def parametrize_line(reorganized_queries, axis, centripetal):
+    def parametrize_to_line(reorganized_queries, axis, centripetal):
         """parameterize_line all at once.
         Expects with-MultiIndex-Reorganized points"""
         n_points = reorganized_queries.shape[axis]
@@ -56,14 +56,59 @@ def parameterize(fitting_points, size, centripetal):
 
         return u_k.reshape(-1, 1)
 
+    def parameterize_line(fitting_points, centripetal):
+        u_k = _np.empty((len(fitting_points), 1))
+
+        chord_lengths = _np.linalg.norm(
+            _np.diff(fitting_points, axis=0), axis=1
+        )
+
+        if centripetal:
+            chord_lengths = _np.sqrt(chord_lengths)
+
+        total_chord_length = _np.sum(chord_lengths)
+
+        chord_lengths = chord_lengths / total_chord_length
+        u_k[0] = 0.0
+        u_k[-1] = 1.0
+
+        u_k[1:-1] = _np.cumsum(chord_lengths[:-1]).reshape(-1, 1)
+        return u_k.reshape(-1, 1)
+
+    def parametrize_surface(reorganized_queries, centripetal):
+        sizes = reorganized_queries.shape[:2]
+        dim = reorganized_queries.shape[-1]
+        u_ks = []
+        for i in range(2):
+            tmp = []
+            for j in range(sizes[i]):
+                select = [slice(None)] * 2
+                select[i] = j
+                tmp.append(
+                    parameterize_line(
+                        reorganized_queries[tuple(select)].reshape(-1, dim),
+                        centripetal,
+                    )
+                )
+            u_ks.append(_np.mean(tmp, axis=0))
+
+        return u_ks
+
     mi = MultiIndex(size)
 
     # Loop over all dimensions and append each para_coords to list
-    parametric_coordinates = []
+    dim = len(size)
+    if dim == 1:
+        return [parameterize_line(fitting_points, centripetal)]
+
     reorganized = fitting_points[mi._raveled_indices]
+    if dim == 2:
+        return parametrize_surface(reorganized, centripetal)
+
+    parametric_coordinates = []
     for k in range(len(size)):
         parametric_coordinates.append(
-            parametrize_line(reorganized, k, centripetal)
+            parametrize_to_line(reorganized, k, centripetal)
         )
 
     return parametric_coordinates
