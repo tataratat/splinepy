@@ -13,7 +13,13 @@ class CubeVoid(_TileBase):
     Used in ADAMM test case for Hutchinson.
 
     See create_tile for more information
-    """
+
+    .. raw:: html
+
+        <p><a href="../_static/CubeVoid.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/CubeVoid.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3

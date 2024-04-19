@@ -7,7 +7,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 class DoubleLattice(_TileBase):
     """
     Lattice base cell, consisting of a rectangle with two diagonals in the
-    center"""
+    center.
+
+    .. raw:: html
+
+        <p><a href="../_static/DoubleLattice.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/DoubleLattice.html" />
+
+    """  # noqa: E501
 
     _dim = 2
     _para_dim = 2

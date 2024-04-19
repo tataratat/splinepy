@@ -6,7 +6,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 class Snappy(_TileBase):
     """Snap-through tile consisting of a thin truss and a thick truss that
-    collide into each other"""
+    collide into each other.
+
+    .. raw:: html
+
+        <p><a href="../_static/Snappy.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/Snappy.html" />
+
+    """  # noqa: E501
 
     _dim = 2
     _para_dim = 2

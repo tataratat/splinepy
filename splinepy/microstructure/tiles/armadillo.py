@@ -6,9 +6,15 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 class Armadillo(_TileBase):
     """
-    Tile in the in a shape of a multisided dice, where every side connects
-    to the neighbor tile in the center of the surface
-    """
+    Tile in the in a shape of a multi sided dice, where every side connects
+    to the neighbor tile in the center of the surface.
+
+    .. raw:: html
+
+        <p><a href="../_static/Armadillo.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/Armadillo.html" />
+
+    """  # noqa: E501
 
     _para_dim = 3
     _dim = 3
@@ -24,6 +30,8 @@ class Armadillo(_TileBase):
         **kwargs,  # noqa ARG002
     ):
         """Create a closing tile to match with closed surface.
+
+        The tile will look like this.
 
         Parameters
         ----------

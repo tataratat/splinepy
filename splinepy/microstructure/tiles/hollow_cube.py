@@ -5,7 +5,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class HollowCube(_TileBase):
-    """A 3D box with a hollow cube inside"""
+    """A 3D box with a hollow cube inside.
+
+    .. raw:: html
+
+        <p><a href="../_static/HollowCube.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/HollowCube.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3

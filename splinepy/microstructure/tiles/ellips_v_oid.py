@@ -15,7 +15,13 @@ class EllipsVoid(_TileBase):
     Used in ADAMM test case for Hutchinson.
 
     See create_tile for more information
-    """
+
+    .. raw:: html
+
+        <p><a href="../_static/EllipsVoid.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/EllipsVoid.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3

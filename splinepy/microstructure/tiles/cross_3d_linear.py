@@ -6,7 +6,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 class Cross3DLinear(_TileBase):
     """Simple crosstile with tri-linear branches and a tri-linear
-    center spline."""
+    center spline.
+
+    .. raw:: html
+
+        <p><a href="../_static/Cross3DLinear.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/Cross3DLinear.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3

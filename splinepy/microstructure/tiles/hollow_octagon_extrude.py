@@ -5,7 +5,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class HollowOctagonExtrude(_TileBase):
-    """Simple tile - looks like a nut, but in 3D"""
+    """Simple tile - looks like a nut, but in 3D.
+
+    .. raw:: html
+
+        <p><a href="../_static/HollowOctagonExtrude.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/HollowOctagonExtrude.html" />
+
+    """  # noqa: E501
 
     _dim = 3
     _para_dim = 3
