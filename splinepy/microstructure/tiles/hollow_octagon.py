@@ -5,7 +5,14 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class HollowOctagon(_TileBase):
-    """Simple tile - looks like a nut"""
+    """Simple tile - looks like a nut
+
+    .. raw:: html
+
+        <p><a href="../_static/HollowOctagon.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/HollowOctagon.html" />
+
+    """  # noqa: E501
 
     _dim = 2
     _para_dim = 2
