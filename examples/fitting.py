@@ -91,15 +91,22 @@ if __name__ == "__main__":
     resolution = [3 * n for n in n_sample]
 
     # Create dataset
-    x = [np.linspace(-1, 1, n) for n in n_sample]
-    xx, yy = np.meshgrid(x[0], x[1])
+    queries = splinepy.cartesian_product(
+        [np.linspace(-1, 1, n) for n in n_sample]
+    )
 
-    def h(x, y):
-        return -0.9 * (x**3) + 0.7 * y**2 + x * y + 0.1 * np.sin(5 * x)
+    def target_function(x):
+        return np.hstack(
+            [
+                x,
+                -0.9 * (x[:, :1] ** 3)
+                + 0.7 * x[:, 1:2] ** 2
+                + x[:, :1] * x[:, 1:2]
+                + 0.1 * np.sin(5 * x[:, :1]),
+            ]
+        )
 
-    fitting_points = np.vstack(
-        (xx.flatten(), yy.flatten(), h(xx, yy).flatten())
-    ).T
+    fitting_points = target_function(queries)
 
     interpolated_surface, _ = splinepy.helpme.fit.surface(
         fitting_points=fitting_points,
@@ -180,3 +187,20 @@ if __name__ == "__main__":
         for (cps, surface, errs) in approximated_surfaces
     ]
     gus.show(*gus_list)
+
+    # Unevenly spaced ctps
+    uneven_queries = splinepy.cartesian_product(
+        [(np.linspace(0, 1, 15)), np.square(np.linspace(0, 1, 20))]
+    )
+    fitting_points = target_function(uneven_queries)
+    interpolated_surface, _ = splinepy.helpme.fit.surface(
+        fitting_points=fitting_points,
+        size=[15, 20],
+        n_control_points=[4, 4],
+        degrees=[3, 3],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    pts = gus.create.vertices.Vertices(fitting_points)
+    pts.show_options["c"] = "blue"
+    pts.show_options["r"] = 10
+    splinepy.show(interpolated_surface, pts)
