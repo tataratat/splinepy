@@ -154,7 +154,6 @@ There's a list of helper modules under the namespace `splinepy.helpme` to boost 
 Here are some highlights.
 
 #### 4.1 Create
-![create_basic](docs/source/_static/readme_create_basic.png)
 [splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on the existing spline.
 ```python
 # basic splines
@@ -164,7 +163,7 @@ torus = splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5)
 
 splinepy.show(["box", box], ["disk", disk], ["torus", torus])
 ```
-![create_derived](docs/source/_static/readme_create_derived.png)
+![create_basic](docs/source/_static/readme_create_basic.png)
 For the latter, you can directly access such functions through [spline.create](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create).
 ```python
 # based on existing splines
@@ -173,9 +172,9 @@ revolved = nurbs.create.revolved(axis=[1, 0, 0], center=[-1, -1, 0], angle=50)
 
 splinepy.show(["extruded", extruded], ["revolved", revolved])
 ```
+![create_derived](docs/source/_static/readme_create_derived.png)
 
 ### 4.2 Extract
-![extract_mesh](docs/source/_static/readme_extract_mesh.png)
 Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as a [gustaf](https://tataratat.github.io/gustaf/index.html) object)
 ```python
 # extract meshes as gustaf objects
@@ -189,7 +188,7 @@ splinepy.show(
     ["spline", mesh]
 )
 ```
-![extract_spline](docs/source/_static/readme_extract_spline.png)
+![extract_mesh](docs/source/_static/readme_extract_mesh.png)
 or part of splines from an existing spline using [spline.extract](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.extract.html#splinepy.spline.Spline.extract).
 ```python
 # extract splines
@@ -208,6 +207,7 @@ splinepy.show(
     ["bases", bases],
 )
 ```
+![extract_spline](docs/source/_static/readme_extract_spline.png)
 
 #### 4.3 Free-form deformation
 ![ffd](docs/source/_static/readme_ffd.png)
@@ -285,21 +285,24 @@ laplacian_matrix = splinepy.utils.data.make_matrix(
 We can systematically perform this to create certain shapes that consist of multiple inner splines.
 The resulting shapes are called [microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s and the inner spline that serves as a basis shape is called [tile](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase).
 
-![tiles](docs/source/_static/readme_tiles.png)
+
 splinepy has several tiles that are ready to use.
 Implementations of available tiles can be found [here](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html).
 However, it is easier to access them through [module functions](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html):
-
 ```python
 splinepy.microstructure.tiles.show()
+```
+![tiles](docs/source/_static/readme_tiles.png)
 
+You can also filter the available tiles by their parametric and geometric dimensions:
+```python
 # get specific dimensions as dict
 para_2_dim_2 = splinepy.microstructure.tiles.by_dim(para_dim=2, dim=2)
+
 dim_2 = splinepy.microstructure.tiles.by_dim(dim=2)
 ```
 
-![microstructures](docs/source/_static/readme_microstructure.png)
-
+The composition can then be created as follows:
 ```python
 # create microstructure generator
 microstructure = splinepy.Microstructure()
@@ -314,6 +317,8 @@ microstructure.show()
 # extract only generated parts as multipatch
 generated = microstructure.create()
 ```
+![microstructures](docs/source/_static/readme_microstructure.png)
+
 
 Please take a look at [this example](https://github.com/tataratat/splinepy/blob/main/examples/show_microstructures.py) for a broad overview of what microstructures can do!
 
