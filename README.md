@@ -128,6 +128,26 @@ p_basis0 = nurbs.basis(queries, nthreads=2)
 splinepy.settings.NTHREADS = 3
 p_basis1 = nurbs.basis(queries)
 ```
+We also implemented [point inversion](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.proximities.html#splinepy-spline-spline-proximities) for splines.
+```python
+# see docs for options
+para_coordinates = nurbs.proximities(physical_coordinates)
+
+import numpy as np
+assert np.allclose(queries, para_coordinates)
+```
+In cases, where you may have to compute derivatives at the inverted locations or you just want to know more information about the search, you can set the keyword `return_verbose=True`:
+```python
+(
+    parametric_coordinates,
+    physical_coordindates,
+    physical_difference,
+    distance,
+    convergence_norm,
+    first_derivatives,
+    second_derivatives,
+) = nurbs.proximities(physical_coordinates, return_verbose=True)
+```
 
 ### 4. Helper Modules
 There's a list of helper modules under the namespace `splinepy.helpme` to boost prototyping efficiencies. Please check out the full list [here](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html)!
@@ -161,10 +181,10 @@ Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/
 # extract meshes as gustaf objects
 control_mesh = nurbs.extract.control_mesh()
 control_points = nurbs.extract.control_points()
-mesh = nurbs.extract.faces()
+mesh = nurbs.extract.faces([201, 33])  # specify sample resolutions
 
 splinepy.show(
-    ["control mesh", control_mesh],
+    ["control mesh", control_mesh.to_edges()],
     ["control points", control_points],
     ["spline", mesh]
 )
