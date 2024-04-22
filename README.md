@@ -28,7 +28,7 @@ pip install -e .
 Here are links to related documentation for the library:
 - [Documentation home](https://tataratat.github.io/splinepy)
 - [Introduction to splines](https://tataratat.github.io/splinepy/spline_intro.html#introduction-to-splines)
-- [Spline visualization](https://tataratat.github.io/splinepy/spline_intro.html#spline-visualization)
+- [Spline visualization](https://tataratat.github.io/splinepy/spline_intro.html#visualizing-splines)
 
 
 ## Quick start
@@ -155,7 +155,7 @@ Here are some highlights.
 
 #### 4.1 Create
 ![create_basic](docs/source/_static/readme_create_basic.png)
-[splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on existing spline.
+[splinepy.helpme.create](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create) module can help you create several primitive shapes and another spline based on the existing spline.
 ```python
 # basic splines
 box = splinepy.helpme.create.box(1, 2, 3)  # length per dim
@@ -351,7 +351,7 @@ splinepy.io.gismo.export("microstructure.xml", generated)
 
 ### 7. Input/output and vector graphics
 splinepy supports various [IO formats](https://tataratat.github.io/splinepy/_generated/splinepy.io.html).
-Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow seamless transition to analysis.
+Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow a seamless transition to analysis.
 ```python
 # export
 splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
