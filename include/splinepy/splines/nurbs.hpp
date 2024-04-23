@@ -88,6 +88,7 @@ public:
   /// length, as well as the length of control_points/weights.
   /// @param control_points
   /// @param weights
+  /// @param dim
   static Base_ CreateBase(const int* degrees,
                           const std::vector<std::vector<double>>& knot_vectors,
                           double* control_points,
@@ -147,6 +148,7 @@ public:
   /// @param knot_vectors
   /// @param control_points
   /// @param weights
+  /// @param dim
   Nurbs(const int* degrees,
         const std::vector<std::vector<double>>& knot_vectors,
         double* control_points,

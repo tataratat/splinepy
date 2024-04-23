@@ -145,13 +145,12 @@ public:
   py::tuple CoordinatePointers();
 
   /// @brief Returns ParameterSpace meant to be
-  /// called library internally to prepare @property
-  /// @return
+  /// called library internally to prepare @property ParameterSpaceBase
   std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
   ParameterSpace();
 
   /// Returns knot vector of given dimension. meant to be
-  /// called library internally to prepare @property
+  /// called library internally to prepare @property KnotVector
   std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   KnotVector(const int para_dim);
 

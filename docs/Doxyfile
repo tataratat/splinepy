@@ -18,7 +18,9 @@ SORT_MEMBERS_CTORS_1ST = YES
 WARNINGS               = YES
 WARN_NO_PARAMDOC       = YES
 WARN_LOGFILE           = doxygen_warnings.txt
-INPUT                  = ../include/splinepy
+INPUT                  = ../include/splinepy \
+                         ../README.md \
+                         ../docs/markdown/spline_plotting.md
 RECURSIVE              = YES
 EXCLUDE_PATTERNS       = */tests/* \
                          */data/* \
@@ -32,7 +34,6 @@ EXCLUDE_PATTERNS       = */tests/* \
 EXAMPLE_RECURSIVE      = YES
 USE_MDFILE_AS_MAINPAGE = ../README.md
 SOURCE_BROWSER         = YES
-CLANG_OPTIONS          =
 USE_MATHJAX            = YES
 MATHJAX_RELPATH        = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/
 GENERATE_LATEX         = NO
