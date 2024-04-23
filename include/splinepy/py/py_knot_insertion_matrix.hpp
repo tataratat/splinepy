@@ -43,7 +43,7 @@ ComputeKnotInsertionMatrixAndKnotSpan(const py::array_t<double>& old_kv,
  * the start spline
  * @param degrees degrees along all parametric dimensions
  * @param parametric_dimension where knots are to be inserted
- * @param new_kvs new knots
+ * @param new_knots new knots
  * @param tolerance tolerance for identifying individual knots
  * @return py::tuple to create new matrix
  */

@@ -104,6 +104,7 @@ public:
 
   /// @brief Get global IDs
   /// @param grid_resolutions
+  /// @param dim
   /// @param plane_normal_axis
   /// @param plane_id
   static Vector_<int> IdsOnHyperPlane(const int* grid_resolutions,

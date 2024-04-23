@@ -73,8 +73,8 @@ void RaiseMismatch(const CoreSplineVector& splist,
 /// @param splist0
 /// @param splist1
 /// @param name
-/// @param para_dim
-/// @param dim
+/// @param dimensionality
+/// @param field_dim
 /// @param degrees
 /// @param control_mesh_resolutions
 /// @param nthreads
@@ -101,6 +101,7 @@ void RaiseMismatch(const CoreSplineVector& splist0,
  * @tparam boolean check_orientation to check if neighboring elements match
  *                          structured grid
  * @param face_center_vertices vertices in the centers of spline-surfaces
+ * @param parametric_dimension parametric dimension
  * @param metric used for preordering the vertices along a line
  * @param tolerance tolerance (distance between two vertices that are joined)
 
@@ -396,6 +397,7 @@ public:
 
   /// @brief Adds fields
   /// @param fields
+  /// @param field_dim
   /// @param check_name
   /// @param check_dims
   /// @param check_degrees
