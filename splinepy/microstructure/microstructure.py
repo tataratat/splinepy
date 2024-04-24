@@ -563,11 +563,17 @@ class Microstructure(_SplinepyBase):
                 # To avoid unnecessary constructions (if a parameter
                 # sensitivity evaluates to zero), perform only those that are
                 # in the support of a specific design variable
+                # support = _np.where(
+                #     _np.any(_np.any(tile_sensitivities != 0.0, axis=(0,1)), axis=0)
+                # )[0]
+                # anti_support = _np.where(
+                #     _np.any(_np.all(tile_sensitivities == 0.0, axis=(0,1)), axis=0)
+                # )[0]
                 support = _np.where(
-                    _np.any(_np.any(tile_sensitivities != 0.0, axis=0), axis=0)
+                    _np.any(tile_sensitivities != 0.0, axis=(0, 1))
                 )[0]
                 anti_support = _np.where(
-                    _np.any(_np.all(tile_sensitivities == 0.0, axis=0), axis=0)
+                    _np.all(tile_sensitivities == 0.0, axis=(0, 1))
                 )[0]
                 tile_sens_on_support = tile_sensitivities[:, :, support]
             else:
