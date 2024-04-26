@@ -462,6 +462,8 @@ void Proximity::VerboseQuery(
   // Newton didn't work. Try LevenbergMarquart
   // reset current_guess to initial_guess as it expects that
   data.current_guess = data.initial_guess;
+  // set max iteration higher
+  data.options.max_iter *= 10;
   LevenbergMarquart(data);
   FillHessian(spline_, data.current_guess, data.spline_hessian);
 }
