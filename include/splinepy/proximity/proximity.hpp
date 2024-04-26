@@ -81,11 +81,11 @@ public:
       /// @param spline_gradient
       /// @param delta_guess
       /// @param metric
-      void Metric(const RealArray2D_& spline_gradient,
-                  const RealArray_& delta_guess,
+      void Metric(const RealArray2D_& spline_gradient_,
+                  const RealArray_& delta_guess_,
                   RealArray_& metric) const {
         for (int i{}; i < metric.size(); ++i) {
-          metric[i] = delta_guess.InnerProduct(&spline_gradient(i, 0));
+          metric[i] = delta_guess_.InnerProduct(&spline_gradient_(i, 0));
         }
       }
     } LM; // levenbergMarquart specific data
