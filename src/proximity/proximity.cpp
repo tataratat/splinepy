@@ -184,6 +184,9 @@ void Proximity::d2Jdu2(const RealArray_& guess,
 }
 
 void Proximity::ComputeCostAndDerivatives(SearchData& data, int depth) const {
+  // magic negative will set to the highest depth we use.
+  depth = (depth < 0) ? 2 : depth;
+
   if (depth > -1) {
     data.status.J = J(data.current_guess,
                       data.phys_query,
@@ -216,30 +219,6 @@ void Proximity::ComputeStatus(SearchData& data,
   data.status.distance = std::sqrt(data.status.squared_distance);
   data.status.J = 0.5 * data.status.squared_distance;
   data.status.convergence_norm = data.djdu.NormL2();
-}
-
-void Proximity::FillLhsLM(const RealArray_& guess,
-                          const RealArray_& difference,
-                          const RealArray2D_& spline_gradient_AAt,
-                          RealArray2D_& lhs,
-                          const double& lambda,
-                          const bool& modified_marquart) const {
-  const int para_dim = guess.size();
-
-  for (int i{}; i < para_dim; ++i) {
-    for (int j{i + 1}; j < para_dim; ++j) {
-      // upper triangle without diagonal ( two is to match RHS from Newton)
-      lhs(i, j) = 2 * spline_gradient_AAt(i, j);
-      // copy to the lower
-      lhs(j, i) = lhs(i, j);
-    }
-    // diagonal
-    if (modified_marquart) {
-      lhs(i, i) = 2 * spline_gradient_AAt(i, i) * (1 + lambda);
-    } else {
-      lhs(i, i) = 2 * (spline_gradient_AAt(i, i) + lambda);
-    }
-  }
 }
 
 void Proximity::FindSearchBound(SearchData& data, const bool tight) const {
@@ -352,12 +331,17 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
   PrepareIterationLevenbergMarquart(data);
   ComputeStatus(data, false);
 
+  // set initial previous value
   data.LM.prev_J = data.status.J;
+
+  // set convergence goal based on the first round
+  data.options.convergence_goal = ConvergenceGoal(data.status.convergence_norm,
+                                                  data.options.tolerance,
+                                                  data.options.tolerance);
 
   int i{};
   RealArray_ prev_guess(data.para_dim);
   RealArray_ metric(data.para_dim);
-  double alt_metric;
   while (i < data.options.max_iter) {
     if (data.IsConverged()) {
       break;
@@ -414,7 +398,6 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
     // if rho is too big, decrease lambda
     if (chosen_rho > data.LM.upper_bound) {
       data.LM.lambda *= 0.5;
-      // i think this should have "continue" here - double check!
     }
 
     // we are here, because lambda is not modified
@@ -480,157 +463,7 @@ void Proximity::VerboseQuery(
   // reset current_guess to initial_guess as it expects that
   data.current_guess = data.initial_guess;
   LevenbergMarquart(data);
-
   FillHessian(spline_, data.current_guess, data.spline_hessian);
-
-  // // Check if converged
-  // if (convergence_norm > norm_goal && distance > tolerance) {
-  //   // Did not converge, try LM
-  //   std::cout << "START :";
-  //   // Set back to starting point
-  //   current_guess = initial_guess;
-  //   GuessMinusQuery(current_guess, phys_query, current_phys, difference);
-
-  //   // Set auxiliary values
-  //   double lambda = 1.;
-  //   double former_squared_distance = difference.NormL2Squared();
-  //   RealArray_ current_difference = difference;
-
-  //   // Coefficients for Levenberg-Marquart algorithm (empirical)
-  //   const double lower_bound_LM = 0.25;
-  //   const double upper_bound_LM = 0.75;
-
-  //   // Calculate RHS before first iteration (remains unchanged by update)
-  //   FillSplineGradientAndRhs(current_guess, difference, spline_gradient,
-  //   rhs);
-
-  //   for (int i_iteration{}; i_iteration < max_iter; ++i_iteration) {
-  //     // norm and distance check for convergence
-  //     if (convergence_norm < norm_goal || distance < tolerance) {
-  //       std::cout << "SUCCESS" << std::endl;
-  //       break;
-  //     }
-  //     // std::cout << "---------------\nIteration : " << i << std::endl;
-
-  //     // Compute J^T J (Jacobian is transposed gradient)
-  //     spline_gradient.AAt(spline_gradient_AAt);
-  //     FillLhsLM(current_guess,
-  //               current_difference,
-  //               spline_gradient_AAt,
-  //               lhs,
-  //               lambda,
-  //               false); // test true here
-
-  //     // solve systems using gauss elimination with partial pivoting
-  //     // this will alter lhs in place, but shouldn't reorder rows inplace
-  //     system.Solve(rhs, delta_guess);
-
-  //     // Decide whether or not to accept the next value by computing the
-  //     metric
-  //     // for rho
-  //     RealArray_ next_guess = current_guess;
-  //     next_guess.Add(delta_guess);
-  //     next_guess.Clip(lower_bound, upper_bound, clipped);
-
-  //     // Update delete to clipped delta
-  //     delta_guess = next_guess;
-  //     delta_guess.Subtract(current_guess);
-
-  //     // Compute || F(x) + J^T * dX ||^2
-  //     RealArray_ metric(delta_guess.size());
-
-  //     // Inner product not supported for matrices
-  //     // std::cout << "Delta Guess : ";
-  //     // delta_guess.Print();
-  //     // std::cout << "J^T : ";
-  //     // spline_gradient.Print();
-  //     // std::cout << " J^T dX :";
-  //     for (int i{}; i < para_dim; ++i) {
-  //       metric[i] = spline_gradient(i, 0) * delta_guess(0);
-  //       for (int j{1}; j < dim; ++j) {
-  //         metric[i] += spline_gradient(i, j) * delta_guess(j);
-  //       }
-  //     }
-  //     // Konstantins metric
-  //     const double alt_metric = metric.InnerProduct(current_difference);
-
-  //     // metric.Print();
-  //     metric.Add(current_difference);
-  //     const double metric_norm = metric.NormL2Squared();
-
-  //     // Compute || F(x + dX) ||^2
-  //     GuessMinusQuery(next_guess, phys_query, current_phys, difference);
-  //     const double distance_squared = difference.NormL2Squared();
-
-  //     // Compute Rho
-  //     const double rho = (former_squared_distance - distance_squared)
-  //                        / (former_squared_distance - metric_norm);
-
-  //     // Konstantin's notes
-  //     const double rho_alt =
-  //         -(former_squared_distance - distance_squared) / alt_metric;
-
-  //     const double my_rho = std::max(rho, rho_alt);
-
-  //     // // Debugging output
-  //     std::cout << std::setw(15) << my_rho << " " << std::setw(15)
-  //               << distance_squared << " " << std::setw(15) << metric_norm
-  //               << std::setw(15) << former_squared_distance << " "
-  //               << std::setw(15) << delta_guess.NormL2Squared() << " "
-  //               << std::setw(15) << lambda << "  " << std::flush;
-
-  //     // If the metric is smaller than the lower bound, the update is
-  //     // rejected and the penelization is increased
-  //     if ((my_rho < lower_bound_LM)
-  //         // This part is not part of any notes, but it works better somehow.
-  //         // KKs notes say nowhere that lambda should remain unchanged even
-  //         if
-  //         // the value is better than the previous. I added that here
-  //         && (distance_squared > former_squared_distance)) {
-  //       lambda *= 2.0;
-  //       // std::cout << "+";
-  //       if (lambda > 1e5) {
-  //         break;
-  //       }
-  //       // std::cout << "Rejected ! New Lambda = " << lambda << std::endl;
-  //       if (distance_squared > former_squared_distance) {
-  //         std::cout << "Rejected" << std::endl;
-  //         continue;
-  //       }
-  //     }
-
-  //     std::cout << "Accepted" << std::endl;
-  //     // If the metric is bigger than the upper bound the penelization is
-  //     // divided by two
-  //     if (my_rho > upper_bound_LM) {
-  //       lambda *= 0.5;
-  //       // std::cout << "-";
-  //     } else {
-  //       // std::cout << "=";
-  //     }
-  //     // std::cout << "Accepted ! New Lambda = " << lambda << std::endl;
-
-  //     // If lower < rho < upper it is accepted and lambda is not modified
-  //     // update values
-  //     former_squared_distance = distance_squared;
-  //     current_difference = difference;
-  //     current_guess = next_guess;
-
-  //     // evaluate cost at current guess
-  //     distance = std::sqrt(former_squared_distance);
-
-  //     // assemble for next iteration
-  //     // this also count as rhs/lhs at current guess, which fills derivatives
-  //     // for return
-  //     FillSplineGradientAndRhs(current_guess, difference, spline_gradient,
-  //     rhs); convergence_norm = rhs.NormL2();
-  //     // std::cout << "\nConvergence Norm : " << convergence_norm <<
-  //     std::endl;
-  //   }
-  //   if (convergence_norm > norm_goal && distance > tolerance) {
-  //     std::cout << "DEFEAT" << std::endl;
-  //   }
-  // }
 }
 
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
