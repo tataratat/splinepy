@@ -349,6 +349,12 @@ public:
   /// @param aux
   void FindSearchBound(SearchData& aux, const bool tight = false) const;
 
+  /// @brief implements scaling factor using line search adapted from
+  /// https://github.com/LLNL/ExaConstit/blob/exaconstit-dev/src/mechanics_solver.cpp
+  /// @param aux
+  /// @return
+  double LineSearchUpdate(SearchData& aux) const;
+
   /// @brief Prepares lhs and rhs of newton iteration
   void PrepareIterationNewton(SearchData& aux) const;
 

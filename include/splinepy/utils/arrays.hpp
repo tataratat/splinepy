@@ -396,6 +396,20 @@ public:
     }
   }
 
+  /// @brief this[i] += a * b[i]. Refer to mfem::Vector::Add()
+  /// @tparam Iterable
+  /// @param a
+  /// @param b
+  template<typename Iterable>
+  constexpr void Add(const DataType& a, const Iterable& b) {
+    assert(a.size() == size_);
+    assert(data_);
+
+    for (IndexType i{}; i < size_; ++i) {
+      data_[i] += a * b[i];
+    }
+  }
+
   /// @brief this[i] -= a[i]
   /// @tparam Iterable
   /// @param a
@@ -547,6 +561,30 @@ public:
     }
   }
 };
+
+/// @brief d[i] = a[i] + b * c[i]
+/// @tparam IterableA
+/// @tparam IterableC
+/// @tparam IterableD
+/// @param a
+/// @param b
+/// @param c
+template<typename IterableA,
+         typename IterableC,
+         typename ScalarTypeB,
+         typename IterableD>
+inline void
+Add(const IterableA& a, const ScalarTypeB b, const IterableC& c, IterableD& d) {
+
+  assert(a.size() == c.size());
+  assert(c.size() == d.size());
+
+  const auto len = d.size();
+
+  for (std::remove_const_t<decltype(len)> i{}; i < len; ++i) {
+    d[i] = a[i] + b * c[i];
+  }
+}
 
 /// @brief c[i] = a[i] - b[i]
 /// @tparam IterableA

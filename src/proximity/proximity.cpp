@@ -241,6 +241,49 @@ void Proximity::FindSearchBound(SearchData& data, const bool tight) const {
   }
 }
 
+double Proximity::LineSearchUpdate(SearchData& data) const {
+  RealArray_ orig_guess = data.current_guess;
+  RealArray_ orig_delta = data.delta_guess;
+
+  const double q1 = data.status.J; // this should be from previous iteration
+
+  // Try current full step
+  UpdateAndClip(data);
+  // get actual delta guess, in case it is clipped
+  // we will consider this as our full step
+  if (data.clipped.NonZeros()) {
+    splinepy::utils::Subtract(orig_guess, data.current_guess, data.delta_guess);
+  }
+
+  // get residual of full step
+  ComputeCostAndDerivatives(data, 1);
+  ComputeStatus(data, false);
+  const double q3 = data.status.J;
+
+  // get one from half step and get residual
+  data.current_guess.Add(-.5, data.delta_guess);
+  ComputeCostAndDerivatives(data, 1);
+  ComputeStatus(data, false);
+
+  const double q2 = data.status.J;
+
+  const double eps = (3.0 * q1 - 4.0 * q2 + q3) / (4.0 * (q1 - 2.0 * q2 + q3));
+
+  double beta;
+  if ((q1 - 2.0 * q2 + q3) > 0 && eps > 0 && eps < 1) {
+    beta = eps;
+  } else if (q3 < q1) {
+    beta = 1.0;
+  } else {
+    beta = 0.05;
+  }
+
+  // use beta to update
+  splinepy::utils::Add(orig_guess, beta, data.delta_guess, data.current_guess);
+
+  return beta;
+}
+
 void Proximity::PrepareIterationNewton(SearchData& data) const {
 
   // newton requires hessian
@@ -278,7 +321,8 @@ void Proximity::Newton(SearchData& data) const {
     lhs.Solve(rhs, data.delta_guess);
 
     // x_n+1 = x_n + delta_x
-    UpdateAndClip(data);
+    // UpdateAndClip(data);
+    LineSearchUpdate(data);
 
     // Prepare next step and compute status
     PrepareIterationNewton(data);
@@ -459,11 +503,11 @@ void Proximity::VerboseQuery(
     return;
   }
 
-  // Newton didn't work. Try LevenbergMarquart
-  // reset current_guess to initial_guess as it expects that
-  data.current_guess = data.initial_guess;
-  LevenbergMarquart(data);
-  FillHessian(spline_, data.current_guess, data.spline_hessian);
+  // // Newton didn't work. Try LevenbergMarquart
+  // // reset current_guess to initial_guess as it expects that
+  // data.current_guess = data.initial_guess;
+  // LevenbergMarquart(data);
+  // FillHessian(spline_, data.current_guess, data.spline_hessian);
 }
 
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
