@@ -97,6 +97,8 @@ public:
 
   constexpr IndexType size() const { return size_; }
 
+  constexpr bool OwnsData() const { return own_data_; }
+
   constexpr void DestroyData() {
     if (own_data_ && data_) {
       delete[] data_;
@@ -106,9 +108,36 @@ public:
     own_data_ = false;
   }
 
+  /// @brief clears current data and sets given pointer as beginning of data
+  /// @param data_pointer
   constexpr void SetData(DataType* data_pointer) {
     DestroyData();
     data_ = data_pointer;
+  }
+
+  /// @brief clears current data and sets given pointer as beginning of data
+  /// sets shape of the array at the same time.
+  /// @param data_pointer
+  /// @param ...shape
+  template<typename... Ts>
+  constexpr void SetData(DataType* data_pointer, const Ts&... shape) {
+    DestroyData();
+    data_ = data_pointer;
+    SetShape(shape...);
+  }
+
+  /// @brief similar to SetData, but checks if data_pointer is nullptr. If it is
+  /// nullptr, it will reallocate instead.
+  /// @param data_pointer
+  /// @param ...shape
+  template<typename... Ts>
+  constexpr void SetOrReallocateData(DataType* data_pointer,
+                                     const Ts&... shape) {
+    if (data_pointer) {
+      SetData(data_pointer, shape...);
+    } else {
+      Reallocate(shape...);
+    }
   }
 
   constexpr DataType* GetData() {
@@ -145,6 +174,14 @@ public:
     if constexpr (dim == 1) {
       shape_[0] = size;
     }
+  }
+
+  /// @brief reallocate based on shape
+  /// @param ...shape
+  template<typename... Ts>
+  constexpr void Reallocate(const Ts&... shape) {
+    SetShape(shape...); // computes size_
+    Reallocate(size_);
   }
 
   template<typename... Ts>
@@ -372,43 +409,6 @@ public:
     }
   }
 
-  /// @brief this[i] *= a
-  /// @param a
-  constexpr void Scale(const DataType& a) {
-    assert(data_);
-
-    for (IndexType i{}; i < size_; ++i) {
-      data_[i] *= a;
-    }
-  }
-
-  /// @brief prints to terminal
-  constexpr void Print() {
-    assert(data_);
-    static_assert(dim < 3, "Print function not implemented for tensors");
-
-    if constexpr (dim == 1) {
-      const auto& height = shape_[0];
-      std::cout << "[ ";
-      for (int i{}; i < height; ++i) {
-        std::cout << data_[i] << " ";
-      }
-      std::cout << "]" << std::endl;
-    } else if (dim == 2) {
-      const auto& height = shape_[0];
-      const auto& width = shape_[1];
-      std::cout << "[";
-      for (int i{}; i < height; ++i) {
-        std::cout << "[ " << data_[i * width];
-        for (int j{1}; j < width; ++j) {
-          std::cout << ", " << data_[i * width + j];
-        }
-        std::cout << "],";
-      }
-      std::cout << " ]" << std::endl;
-    }
-  }
-
   /// @brief c = (this) dot (a).
   /// @tparam Iterable
   /// @param a
@@ -418,6 +418,22 @@ public:
     static_assert(dim == 1,
                   "inner product is only applicable for dim=1 Array.");
     assert(a.size() == size_);
+    assert(data_);
+
+    DataType dot{};
+    for (IndexType i{}; i < size_; ++i) {
+      dot += a[i] * data_[i];
+    }
+
+    return dot;
+  }
+
+  /// @brief c = (this) dot (*a). Assumes a is at least as long as this.
+  /// @param a
+  /// @return
+  constexpr DataType InnerProduct(const DataType* a) const {
+    static_assert(dim == 1,
+                  "inner product is only applicable for dim=1 Array.");
     assert(data_);
 
     DataType dot{};
@@ -522,6 +538,14 @@ public:
     }
     return n;
   }
+
+  /// @brief flip sign of each elements
+  constexpr void FlipSign() {
+    for (IndexType i{}; i < size_; ++i) {
+      auto& data_i = data_[i];
+      data_i = -data_i;
+    }
+  }
 };
 
 /// @brief c[i] = a[i] - b[i]
@@ -559,7 +583,7 @@ protected:
   RowOrderArray_ row_order_;
 
 public:
-  Matrix(DataArray_& array) : array_(array) {
+  explicit Matrix(DataArray_& array) : array_(array) {
     const IndexType& height = array.Shape()[0];
     // alloc n_rows
     row_order_.Reallocate(height);
@@ -594,9 +618,7 @@ public:
     const auto array_copy = array_;
     const auto b_copy = b;
 #endif
-    if ((array_(0, 0) * array_(1, 1) - array_(1, 0) * array_(0, 1)) < 1e-12) {
-      std::cout << "Singular Matrix" << std::endl;
-    }
+
     // partial pivoting and forward reduction
     // since we reorder indices only, we append *_r to reordered ids
     for (IndexType i{0}; i < len; i++) {
@@ -693,6 +715,21 @@ public:
 #endif
   }
 };
+
+template<typename DataType, typename IndexType>
+void CopyUpperToLowerTriangle(Array<DataType, 3, IndexType>& arr3d) {
+  const auto& shape = arr3d.Shape();
+
+  if (shape[0] != shape[1]) {
+    splinepy::utils::PrintAndThrowError("Array does not have a squared shape.");
+  }
+
+  for (int i{}; i < shape[0]; ++i) {
+    for (int j{i + 1}; j < shape[1]; ++j) {
+      std::copy_n(&arr3d(i, j, 0), shape[2], &arr3d(j, i, 0));
+    }
+  }
+}
 
 /// @brief Gauss elimination with partial pivoting to find x from (A x = b)
 /// @tparam para_dim
