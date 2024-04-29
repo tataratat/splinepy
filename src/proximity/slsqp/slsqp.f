@@ -37,8 +37,8 @@ C
       SUBROUTINE slsqp (m, meq, la, n, x, xl, xu, f, c, g, a,
      *                  acc, iter, mode, w, l_w, jw, l_jw,
      *                  alpha, f0, gs, h1, h2, h3, h4, t, t0, tol,
-     *                  iexact, incons, ireset, itermx, line, 
-     *                  n1, n2, n3)
+     *                  iexact, incons, ireset, itermx, line,
+     *                  n1, n2, n3) bind(c)
 
 C   SLSQP       S EQUENTIAL  L EAST  SQ UARES  P ROGRAMMING
 C            TO SOLVE GENERAL NONLINEAR OPTIMIZATION PROBLEMS
@@ -73,7 +73,7 @@ C*                                                                     *
 C*    M              IS THE TOTAL NUMBER OF CONSTRAINTS, M .GE. 0      *
 C*    MEQ            IS THE NUMBER OF EQUALITY CONSTRAINTS, MEQ .GE. 0 *
 C*    LA             SEE A, LA .GE. MAX(M,1)                           *
-C*    N              IS THE NUMBER OF VARIBLES, N .GE. 1               *
+C*    N              IS THE NUMBER OF VARIABLES, N .GE. 1               *
 C*  * X()            X() STORES THE CURRENT ITERATE OF THE N VECTOR X  *
 C*                   ON ENTRY X() MUST BE INITIALIZED. ON EXIT X()     *
 C*                   STORES THE SOLUTION VECTOR X IF MODE = 0.         *
@@ -263,15 +263,15 @@ C   PREPARE DATA FOR CALLING SQPBDY  -  INITIAL ADDRESSES IN W
       CALL slsqpb  (m, meq, la, n, x, xl, xu, f, c, g, a, acc, iter,
      * mode, w(ir), w(il), w(ix), w(im), w(is), w(iu), w(iv), w(iw), jw,
      * alpha, f0, gs, h1, h2, h3, h4, t, t0, tol,
-     * iexact, incons, ireset, itermx, line, 
+     * iexact, incons, ireset, itermx, line,
      * n1, n2, n3)
- 
+
       END
 
       SUBROUTINE slsqpb (m, meq, la, n, x, xl, xu, f, c, g, a, acc,
      *                   iter, mode, r, l, x0, mu, s, u, v, w, iw,
      *                   alpha, f0, gs, h1, h2, h3, h4, t, t0, tol,
-     *                   iexact, incons, ireset, itermx, line, 
+     *                   iexact, incons, ireset, itermx, line,
      *                   n1, n2, n3)
 
 C   NONLINEAR PROGRAMMING BY SOLVING SEQUENTIALLY QUADRATIC PROGRAMS
@@ -825,7 +825,7 @@ C     DIM(JW):   MAX(MG,L)
 C     ON ENTRY, THE USER HAS TO PROVIDE THE ARRAYS C, D, E, F, G, AND H.
 C     ON RETURN, ALL ARRAYS WILL BE CHANGED BY THE SUBROUTINE.
 C     X     STORES THE SOLUTION VECTOR
-C     XNORM STORES THE RESIDUUM OF THE SOLUTION IN EUCLIDIAN NORM
+C     XNORM STORES THE RESIDUUM OF THE SOLUTION IN EUCLIDEAN NORM
 C     W     STORES THE VECTOR OF LAGRANGE MULTIPLIERS IN ITS FIRST
 C           MC+MG ELEMENTS
 C     MODE  IS A SUCCESS-FAILURE FLAG WITH THE FOLLOWING MEANINGS:
@@ -957,7 +957,7 @@ C     DIM(JW):   LG
 C     ON ENTRY, THE USER HAS TO PROVIDE THE ARRAYS E, F, G, AND H.
 C     ON RETURN, ALL ARRAYS WILL BE CHANGED BY THE SUBROUTINE.
 C     X     STORES THE SOLUTION VECTOR
-C     XNORM STORES THE RESIDUUM OF THE SOLUTION IN EUCLIDIAN NORM
+C     XNORM STORES THE RESIDUUM OF THE SOLUTION IN EUCLIDEAN NORM
 C     W     STORES THE VECTOR OF LAGRANGE MULTIPLIERS IN ITS FIRST
 C           MG ELEMENTS
 C     MODE  IS A SUCCESS-FAILURE FLAG WITH THE FOLLOWING MEANINGS:
@@ -1030,7 +1030,7 @@ C     REMARK: G(),H() WILL NOT BE CHANGED DURING CALCULATIONS BY LDP
 
 C     X()          ON ENTRY X() NEED NOT BE INITIALIZED.
 C                  ON EXIT X() STORES THE SOLUTION VECTOR X IF MODE=1.
-C     XNORM        ON EXIT XNORM STORES THE EUCLIDIAN NORM OF THE
+C     XNORM        ON EXIT XNORM STORES THE EUCLIDEAN NORM OF THE
 C                  SOLUTION VECTOR IF COMPUTATION IS SUCCESSFUL
 C     W()          W IS A ONE DIMENSIONAL WORKING SPACE, THE LENGTH
 C                  OF WHICH SHOULD BE AT LEAST (M+2)*(N+1) + 2*M
@@ -1328,7 +1328,7 @@ C                      DOUBLE SUBSCRIPTED.
 C     TAU              ABSOLUTE TOLERANCE PARAMETER FOR PSEUDORANK
 C                      DETERMINATION, PROVIDED BY THE USER.
 C     KRANK            PSEUDORANK OF A, SET BY THE SUBROUTINE.
-C     RNORM            ON EXIT, RNORM(J) WILL CONTAIN THE EUCLIDIAN
+C     RNORM            ON EXIT, RNORM(J) WILL CONTAIN THE EUCLIDEAN
 C                      NORM OF THE RESIDUAL VECTOR FOR THE PROBLEM
 C                      DEFINED BY THE J-TH COLUMN VECTOR OF THE ARRAY B.
 C     H(), G()         ARRAYS OF WORKING SPACE OF LENGTH >= N.
