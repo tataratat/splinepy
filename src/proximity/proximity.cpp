@@ -3,6 +3,8 @@
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
 
+#include "splinepy/proximity/slsqp/slsqp.hpp"
+
 namespace splinepy::proximity {
 
 void Proximity::PlantNewKdTree(const int* resolutions, const int n_thread) {
@@ -411,6 +413,112 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
   }
 }
 
+void Proximity::PrepareIterationSlsqp(SearchData& d) const {
+  // mode 0: this is first
+  if (d.SLSQP.mode == 0) {
+    ComputeCostAndDerivatives(d, 1);
+    ComputeStatus(d, false); // strictly not required
+    d.SLSQP.CopyDerivative(d.djdu);
+    d.SLSQP.f = d.status.J;
+  } else if (d.SLSQP.mode == 1) {
+    ComputeCostAndDerivatives(d, 0);
+    d.SLSQP.f = d.status.J;
+  } else if (d.SLSQP.mode == -1) {
+    ComputeCostAndDerivatives(d, 1);
+    d.SLSQP.CopyDerivative(d.djdu);
+  }
+}
+
+void Proximity::Slsqp(SearchData& d) const {
+  d.status.stop_iteration = 0;
+
+  // initialize options
+  d.SLSQP.m = 0;
+  d.SLSQP.meq = 0;
+  d.SLSQP.la = std::max(d.SLSQP.m, 1);
+  d.SLSQP.n = d.para_dim;
+  d.SLSQP.x = d.current_guess.data(); //
+  d.SLSQP.xl = d.lower_bound.data();
+  d.SLSQP.xu = d.upper_bound.data();
+  d.SLSQP.f = d.status.J;    //
+  d.SLSQP.c = nullptr;       // no constraints
+  d.SLSQP.AllocateAndSetG(); // sets g.
+  d.SLSQP.g = d.djdu.data(); // we need to append 0.0 if this throws error
+  d.SLSQP.a = nullptr;
+  d.SLSQP.acc = d.options.tolerance;
+  d.SLSQP.iter = d.options.max_iter;
+  d.SLSQP.mode = 0;        // initialize
+  d.SLSQP.SetWorkSpaces(); // also sets lw
+  d.SLSQP.alpha = 0.0;
+  d.SLSQP.f0 = 0.0;
+  d.SLSQP.gs = 0.0;
+  d.SLSQP.h1 = 0.0;
+  d.SLSQP.h2 = 0.0;
+  d.SLSQP.h3 = 0.0;
+  d.SLSQP.h4 = 0.0;
+  d.SLSQP.t = 0.0;
+  d.SLSQP.t0 = 0.0;
+  d.SLSQP.tol = 0.0;
+  d.SLSQP.iexact = 0;
+  d.SLSQP.incons = 0;
+  d.SLSQP.ireset = 0;
+  d.SLSQP.itermx = 0;
+  d.SLSQP.line = 0;
+  d.SLSQP.n1 = 0;
+  d.SLSQP.n2 = 0;
+  d.SLSQP.n3 = 0;
+
+  PrepareIterationSlsqp(d);
+
+  int i{};
+  while (true) {
+    // call slsqp
+    slsqp(&d.SLSQP.m,
+          &d.SLSQP.meq,
+          &d.SLSQP.la,
+          &d.SLSQP.n,
+          d.SLSQP.x,
+          d.SLSQP.xl,
+          d.SLSQP.xu,
+          &d.SLSQP.f,
+          d.SLSQP.c,
+          d.SLSQP.g,
+          d.SLSQP.a,
+          &d.SLSQP.acc,
+          &d.SLSQP.iter,
+          &d.SLSQP.mode,
+          d.SLSQP.w,
+          &d.SLSQP.l_w,
+          d.SLSQP.jw,
+          &d.SLSQP.l_jw,
+          &d.SLSQP.alpha,
+          &d.SLSQP.f0,
+          &d.SLSQP.gs,
+          &d.SLSQP.h1,
+          &d.SLSQP.h2,
+          &d.SLSQP.h3,
+          &d.SLSQP.h4,
+          &d.SLSQP.t,
+          &d.SLSQP.t0,
+          &d.SLSQP.tol,
+          &d.SLSQP.iexact,
+          &d.SLSQP.incons,
+          &d.SLSQP.ireset,
+          &d.SLSQP.itermx,
+          &d.SLSQP.line,
+          &d.SLSQP.n1,
+          &d.SLSQP.n2,
+          &d.SLSQP.n3);
+
+    PrepareIterationSlsqp(d);
+
+    if (std::abs(d.SLSQP.mode) != 1) {
+      break;
+    }
+    d.status.stop_iteration = ++i;
+  }
+}
+
 void Proximity::VerboseQuery(
     const double* query,
     const double& tolerance,
@@ -457,6 +565,14 @@ void Proximity::VerboseQuery(
       splinepy::utils::CopyUpperToLowerTriangle(data.spline_hessian);
     }
     return;
+  }
+
+  data.current_guess = data.initial_guess;
+  Slsqp(data);
+  if (data.IsConverged()) {
+    if (!data.spline_hessian.OwnsData()) {
+      FillHessian(spline_, data.current_guess, data.spline_hessian);
+    }
   }
 
   // Newton didn't work. Try LevenbergMarquart
