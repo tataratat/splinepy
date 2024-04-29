@@ -23,7 +23,6 @@ jobs:
         CIBW_ARCHS: ${{ matrix.arch }}
         CIBW_BUILD: ${{ matrix.cw_build }}
         CIBW_TEST_SKIP: "*-macosx_arm64"
-        FC: "gfortran"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
 
     - uses: actions/upload-artifact@v3
