@@ -27,10 +27,16 @@ set(SPLINEPY_MORE_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier9.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier10.cpp)
 
+set(SPLINEPY_SLSQP_SRCS ${PROJECT_SOURCE_DIR}/src/proximity/slsqp/slsqp.f)
+
 # extend src for high dim splines
 if(SPLINEPY_MORE)
   set(SPLINEPY_SRCS ${SPLINEPY_SRCS} ${SPLINEPY_MORE_SRCS})
 endif(SPLINEPY_MORE)
+
+add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
+add_library(splinepy::slsqp ALIAS slsqp)
+target_compile_options(slsqp PRIVATE -O3 -std=legacy)
 
 # target
 add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
@@ -49,7 +55,7 @@ endif()
 
 # link
 target_link_libraries(splinepy PUBLIC bezman napf BSplineLib::splines
-                                      BSplineLib::input_output)
+                                      BSplineLib::input_output slsqp)
 
 # explicit?
 if(SPLINEPY_BUILD_EXPLICIT)
@@ -82,6 +88,14 @@ configure_package_config_file(
 # install main target
 install(
   TARGETS splinepy
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  LIBRARY DESTINATION ${lib_dest}
+  ARCHIVE DESTINATION ${lib_dest}
+  INCLUDES
+  DESTINATION "${incl_dest}")
+
+install(
+  TARGETS slsqp
   EXPORT "${TARGETS_EXPORT_NAME}"
   LIBRARY DESTINATION ${lib_dest}
   ARCHIVE DESTINATION ${lib_dest}

@@ -90,6 +90,77 @@ public:
       }
     } LM; // levenbergMarquart specific data
 
+    struct {
+      int m;      // n constraints
+      int meq;    // n equality constraints
+      int la;     // max(m, 1)
+      int n;      // n variables
+      double* x;  // current guess
+      double* xl; // lower bounds
+      double* xu; // upper bounds
+      double f;   // value of objective
+      double* c;  // m vector of c constraints
+      double* g;  // partials of objective
+      double* a;  // m x n constraint normals
+      double acc; // abs(acc) is accuracy
+      int iter;   // max iter
+      int mode;   // mode -> see slsqp.f. 0 for entry
+      double* w;  // work space -> see slsqp.f. need allocating
+      int l_w;
+      int* jw;
+      int l_jw;
+      double alpha;
+      double f0;
+      double gs;
+      double h1;
+      double h2;
+      double h3;
+      double h4;
+      double t;
+      double t0;
+      double tol;
+      int iexact;
+      int incons;
+      int ireset;
+      int itermx;
+      int line;
+      int n1;
+      int n2;
+      int n3;
+
+      RealArray_ w_arr;
+      IndexArray_ jw_arr; // int array
+      RealArray_ der_arr; //
+
+      void SetWorkSpaces() {
+        const int n1_ = n + 1;
+        const int mineq = m - meq + n1 + n1;
+        const int w_size = (3 * n1 + m) * (n1 + 1)
+                           + (n1 - meq + 1) * (mineq + 2) + 2 * mineq
+                           + (n1 + mineq) * (n1 - meq) + 2 * meq + n1
+                           + (((n + 1) * n) / 2) + 2 * m + 3 * n + 3 * n1 + 1;
+
+        // set w and lw
+        w_arr.Reallocate(w_size);
+        w = w_arr.data();
+        l_w = w_size;
+
+        // set jw and l_jw
+        jw_arr.Reallocate(mineq);
+        jw = jw_arr.data();
+        l_jw = mineq;
+      }
+
+      void AllocateAndSetG() {
+        der_arr.Reallocate(n + 1);
+        der_arr[n - 1] = 0.0;
+        g = der_arr.data();
+      }
+      void CopyDerivative(const RealArray_& der) {
+        std::copy_n(der.data(), n, g);
+      }
+    } SLSQP; // slsqp specific data
+
     // view array
     ConstRealArray_ phys_query;
     // either view or allocated
@@ -364,6 +435,13 @@ public:
   /// for newton. Uses PrepareIterationLevenbergMarquart()
   /// @param aux
   void LevenbergMarquart(SearchData& aux) const;
+
+  /// @brief Prepares lhs and rhs of slsqp iteration and other parameters
+  void PrepareIterationSlsqp(SearchData& aux) const;
+
+  /// @brief Performs slsqp iterations using PrepareIterationSlsqp
+  /// @param aux
+  void Slsqp(SearchData& aux) const;
 
   /// @brief Given physical coordinate, finds closest parametric coordinate.
   /// Always takes initial guess based on kdtree.
