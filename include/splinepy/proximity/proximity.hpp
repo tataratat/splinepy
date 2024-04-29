@@ -134,11 +134,11 @@ public:
 
       void SetWorkSpaces() {
         const int n1_ = n + 1;
-        const int mineq = m - meq + n1 + n1;
-        const int w_size = (3 * n1 + m) * (n1 + 1)
-                           + (n1 - meq + 1) * (mineq + 2) + 2 * mineq
-                           + (n1 + mineq) * (n1 - meq) + 2 * meq + n1
-                           + (((n + 1) * n) / 2) + 2 * m + 3 * n + 3 * n1 + 1;
+        const int mineq = m - meq + n1_ + n1_;
+        const int w_size = (3 * n1_ + m) * (n1_ + 1)
+                           + (n1_ - meq + 1) * (mineq + 2) + 2 * mineq
+                           + (n1_ + mineq) * (n1_ - meq) + 2 * meq + n1_
+                           + (((n + 1) * n) / 2) + 2 * m + 3 * n + 3 * n1_ + 1;
 
         // set w and lw
         w_arr.Reallocate(w_size);
