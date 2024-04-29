@@ -36,7 +36,7 @@ endif(SPLINEPY_MORE)
 
 add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
 add_library(splinepy::slsqp ALIAS slsqp)
-target_compile_options(slsqp PRIVATE -O3 -std=legacy)
+target_compile_options(slsqp PRIVATE -std=legacy -O3 -fPIC)
 
 # target
 add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
