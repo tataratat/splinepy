@@ -26,6 +26,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - uses: fortran-lang/setup-fortran@v1
+      id: setup-fortran
+      with:
+        compiler: gcc
+        version: 11
+
     - name: build splinepy
       run: pip install ".[test]" -v
 

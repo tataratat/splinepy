@@ -17,6 +17,12 @@ jobs:
       with:
         python-version: "3.10"
 
+    - uses: fortran-lang/setup-fortran@v1
+      id: setup-fortran
+      with:
+        compiler: gcc
+        version: 11
+
     - name: install dependencies
       run: pip install numpy
 
