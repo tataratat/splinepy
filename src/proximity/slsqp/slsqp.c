@@ -6,9 +6,9 @@
 
 /* Table of constant values */
 
-static int c__0 = 0;
-static int c__1 = 1;
-static int c__2 = 2;
+const static int c__0 = 0;
+const static int c__1 = 1;
+const static int c__2 = 2;
 
 /*      ALGORITHM 733, COLLECTED ALGORITHMS FROM ACM. */
 /*      TRANSACTIONS ON MATHEMATICAL SOFTWARE, */
@@ -431,12 +431,12 @@ el/6725 */
                              int* n3) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
-  static double alfmin = .1;
-  static double hun = 100.;
-  static double ten = 10.;
-  static double two = 2.;
+  const double zero = 0.;
+  const double one = 1.;
+  const double alfmin = .1;
+  const double hun = 100.;
+  const double ten = 10.;
+  const double two = 2.;
 
   /* System generated locals */
   int a_dim1, a_offset, i__1, i__2;
@@ -874,8 +874,8 @@ L330:
                           int* mode) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
+  const double zero = 0.;
+  const double one = 1.;
 
   /* System generated locals */
   int a_dim1, a_offset, i__1, i__2;
@@ -1143,8 +1143,8 @@ L330:
                            int* mode) {
   /* Initialized data */
 
-  static double epmach = 2.22e-16;
-  static double zero = 0.;
+  const double epmach = 2.22e-16;
+  const double zero = 0.;
 
   /* System generated locals */
   int c_dim1, c_offset, e_dim1, e_offset, g_dim1, g_offset, i__1, i__2, i__3;
@@ -1463,8 +1463,8 @@ L75:
                           int* mode) {
   /* Initialized data */
 
-  static double epmach = 2.22e-16;
-  static double one = 1.;
+  const double epmach = 2.22e-16;
+  const double one = 1.;
 
   /* System generated locals */
   int e_dim1, e_offset, g_dim1, g_offset, i__1, i__2, i__3;
@@ -1641,8 +1641,8 @@ L50:
                           int* mode) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
+  const double zero = 0.;
+  const double one = 1.;
 
   /* System generated locals */
   int g_dim1, g_offset, i__1, i__2;
@@ -1804,9 +1804,9 @@ L50:
                            int* mode) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
-  static double factor = .01;
+  const double zero = 0.;
+  const double one = 1.;
+  const double factor = .01;
 
   /* System generated locals */
   int a_dim1, a_offset, i__1, i__2;
@@ -2125,8 +2125,8 @@ L290:
                            int* ip) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double factor = .001;
+  const double zero = 0.;
+  const double factor = .001;
 
   /* System generated locals */
   int a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
@@ -2407,8 +2407,8 @@ L270:
                           int* ncv) {
   /* Initialized data */
 
-  static double one = 1.;
-  static double zero = 0.;
+  const double one = 1.;
+  const double zero = 0.;
 
   /* System generated locals */
   int u_dim1, u_offset, i__1, i__2;
@@ -2540,10 +2540,10 @@ L80:
 ldl_(int* n, double* a, double* z__, double* sigma, double* w) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
-  static double four = 4.;
-  static double epmach = 2.22e-16;
+  const double zero = 0.;
+  const double one = 1.;
+  const double four = 4.;
+  const double epmach = 2.22e-16;
 
   /* System generated locals */
   int i__1, i__2;
@@ -2676,9 +2676,9 @@ L280:
 double linmin_(int* mode, double* ax, double* bx, double* f, double* tol) {
   /* Initialized data */
 
-  static double c__ = .381966011;
-  static double eps = 1.5e-8;
-  static double zero = 0.;
+  const double c__ = .381966011;
+  const double eps = 1.5e-8;
+  const double zero = 0.;
 
   /* System generated locals */
   double ret_val, d__1;
@@ -3075,8 +3075,8 @@ L60:
 double dnrm1_(int* n, double* x, int* i__, int* j) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
+  const double zero = 0.;
+  const double one = 1.;
 
   /* System generated locals */
   int i__1;
@@ -3138,10 +3138,10 @@ double dnrm1_(int* n, double* x, int* i__, int* j) {
 double dnrm2___(int* n, double* dx, int* incx) {
   /* Initialized data */
 
-  static double zero = 0.;
-  static double one = 1.;
-  static double cutlo = 8.232e-11;
-  static double cuthi = 1.304e19;
+  const double zero = 0.;
+  const double one = 1.;
+  const double cutlo = 8.232e-11;
+  const double cuthi = 1.304e19;
 
   /* System generated locals */
   int i__1, i__2;
@@ -3353,8 +3353,8 @@ L20:
 /* Subroutine */ int dsrotg_(double* da, double* db, double* c__, double* s) {
   /* Initialized data */
 
-  static double one = 1.;
-  static double zero = 0.;
+  const double one = 1.;
+  const double zero = 0.;
 
   /* System generated locals */
   double d__1, d__2;
