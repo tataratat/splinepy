@@ -1,4 +1,4 @@
-#include "splinepy/proximity/slsqp/slsqp.hpp"
+#include "splinepy/proximity/slsqp/slsqp.h"
 
 #ifdef __cplusplus
 #include <cmath>

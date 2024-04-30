@@ -3,7 +3,7 @@
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
 
-#include "splinepy/proximity/slsqp/slsqp.hpp"
+#include "splinepy/proximity/slsqp/slsqp.h"
 
 namespace splinepy::proximity {
 
