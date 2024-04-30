@@ -1,5 +1,14 @@
+#include "splinepy/proximity/slsqp/slsqp.hpp"
+
+#ifdef __cplusplus
+#include <cmath>
+using std::fabs, std::sqrt, std::copysign;
+#else
+
 /* fabs, sqrt, copysign */
 #include <math.h>
+
+#endif
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -85,47 +94,6 @@ el/6725 */
 
   /* Local variables */
   int il, im, ir, is, iu, iv, iw, ix, mineq;
-  extern /* Subroutine */ int slsqpb_(int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      int*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      double*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*);
 
   /*   SLSQP       S EQUENTIAL  L EAST  SQ UARES  P ROGRAMMING */
   /*            TO SOLVE GENERAL NONLINEAR OPTIMIZATION PROBLEMS */
@@ -344,91 +312,91 @@ el/6725 */
   iu = is + *n1;
   iv = iu + *n1;
   iw = iv + *n1;
-  slsqpb_(m,
-          meq,
-          la,
-          n,
-          &x[1],
-          &xl[1],
-          &xu[1],
-          f,
-          &c__[1],
-          &g[1],
-          &a[a_offset],
-          acc,
-          iter,
-          mode,
-          &w[ir],
-          &w[il],
-          &w[ix],
-          &w[im],
-          &w[is],
-          &w[iu],
-          &w[iv],
-          &w[iw],
-          &jw[1],
-          alpha,
-          f0,
-          gs,
-          h1,
-          h2,
-          h3,
-          h4,
-          t,
-          t0,
-          tol,
-          iexact,
-          incons,
-          ireset,
-          itermx,
-          line,
-          n1,
-          n2,
-          n3);
+  slsqpb(m,
+         meq,
+         la,
+         n,
+         &x[1],
+         &xl[1],
+         &xu[1],
+         f,
+         &c__[1],
+         &g[1],
+         &a[a_offset],
+         acc,
+         iter,
+         mode,
+         &w[ir],
+         &w[il],
+         &w[ix],
+         &w[im],
+         &w[is],
+         &w[iu],
+         &w[iv],
+         &w[iw],
+         &jw[1],
+         alpha,
+         f0,
+         gs,
+         h1,
+         h2,
+         h3,
+         h4,
+         t,
+         t0,
+         tol,
+         iexact,
+         incons,
+         ireset,
+         itermx,
+         line,
+         n1,
+         n2,
+         n3);
   return 0;
 } /* slsqp_ */
 
-/* Subroutine */ int slsqpb_(int* m,
-                             int* meq,
-                             int* la,
-                             int* n,
-                             double* x,
-                             double* xl,
-                             double* xu,
-                             double* f,
-                             double* c__,
-                             double* g,
-                             double* a,
-                             double* acc,
-                             int* iter,
-                             int* mode,
-                             double* r__,
-                             double* l,
-                             double* x0,
-                             double* mu,
-                             double* s,
-                             double* u,
-                             double* v,
-                             double* w,
-                             int* iw,
-                             double* alpha,
-                             double* f0,
-                             double* gs,
-                             double* h1,
-                             double* h2,
-                             double* h3,
-                             double* h4,
-                             double* t,
-                             double* t0,
-                             double* tol,
-                             int* iexact,
-                             int* incons,
-                             int* ireset,
-                             int* itermx,
-                             int* line,
-                             int* n1,
-                             int* n2,
-                             int* n3) {
+/* Subroutine */ int slsqpb(int* m,
+                            int* meq,
+                            int* la,
+                            int* n,
+                            double* x,
+                            double* xl,
+                            double* xu,
+                            double* f,
+                            double* c__,
+                            double* g,
+                            double* a,
+                            double* acc,
+                            int* iter,
+                            int* mode,
+                            double* r__,
+                            double* l,
+                            double* x0,
+                            double* mu,
+                            double* s,
+                            double* u,
+                            double* v,
+                            double* w,
+                            int* iw,
+                            double* alpha,
+                            double* f0,
+                            double* gs,
+                            double* h1,
+                            double* h2,
+                            double* h3,
+                            double* h4,
+                            double* t,
+                            double* t0,
+                            double* tol,
+                            int* iexact,
+                            int* incons,
+                            int* ireset,
+                            int* itermx,
+                            int* line,
+                            int* n1,
+                            int* n2,
+                            int* n3) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -443,31 +411,8 @@ el/6725 */
   double d__1, d__2;
 
   /* Local variables */
-  extern /* Subroutine */ int dscal_sl__(int*, double*, double*, int*),
-      daxpy_sl__(int*, double*, double*, int*, double*, int*);
   int i__, j, k;
-  extern /* Subroutine */ int ldl_(int*, double*, double*, double*, double*),
-      lsq_(int*,
-           int*,
-           int*,
-           int*,
-           int*,
-           double*,
-           double*,
-           double*,
-           double*,
-           double*,
-           double*,
-           double*,
-           double*,
-           double*,
-           int*,
-           int*);
-  extern double dnrm2___(int*, double*, int*);
   int badlin;
-  extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
-  extern double linmin_(int*, double*, double*, double*, double*),
-      ddot_sl__(int*, double*, int*, double*, int*);
 
   /*   NONLINEAR PROGRAMMING BY SOLVING SEQUENTIALLY QUADRATIC PROGRAMS */
   /*        -  L1 - LINE SEARCH,  POSITIVE DEFINITE  BFGS UPDATE  - */
@@ -522,8 +467,8 @@ L100:
   *n3 = *n2 + 1;
   s[1] = zero;
   mu[1] = zero;
-  dcopy___(n, &s[1], &c__0, &s[1], &c__1);
-  dcopy___(m, &mu[1], &c__0, &mu[1], &c__1);
+  dcopy(n, &s[1], &c__0, &s[1], &c__1);
+  dcopy(m, &mu[1], &c__0, &mu[1], &c__1);
 /*   RESET BFGS MATRIX */
 L110:
   ++(*ireset);
@@ -531,7 +476,7 @@ L110:
     goto L255;
   }
   l[1] = zero;
-  dcopy___(n2, &l[1], &c__0, &l[1], &c__1);
+  dcopy(n2, &l[1], &c__0, &l[1], &c__1);
   j = 1;
   i__1 = *n;
   for (i__ = 1; i__ <= i__1; ++i__) {
@@ -547,29 +492,29 @@ L130:
     goto L330;
   }
   /*   SEARCH DIRECTION AS SOLUTION OF QP - SUBPROBLEM */
-  dcopy___(n, &xl[1], &c__1, &u[1], &c__1);
-  dcopy___(n, &xu[1], &c__1, &v[1], &c__1);
+  dcopy(n, &xl[1], &c__1, &u[1], &c__1);
+  dcopy(n, &xu[1], &c__1, &v[1], &c__1);
   d__1 = -one;
-  daxpy_sl__(n, &d__1, &x[1], &c__1, &u[1], &c__1);
+  daxpy_sl(n, &d__1, &x[1], &c__1, &u[1], &c__1);
   d__1 = -one;
-  daxpy_sl__(n, &d__1, &x[1], &c__1, &v[1], &c__1);
+  daxpy_sl(n, &d__1, &x[1], &c__1, &v[1], &c__1);
   *h4 = one;
-  lsq_(m,
-       meq,
-       n,
-       n3,
-       la,
-       &l[1],
-       &g[1],
-       &a[a_offset],
-       &c__[1],
-       &u[1],
-       &v[1],
-       &s[1],
-       &r__[1],
-       &w[1],
-       &iw[1],
-       mode);
+  lsq(m,
+      meq,
+      n,
+      n3,
+      la,
+      &l[1],
+      &g[1],
+      &a[a_offset],
+      &c__[1],
+      &u[1],
+      &v[1],
+      &s[1],
+      &r__[1],
+      &w[1],
+      &iw[1],
+      mode);
   /*   AUGMENTED PROBLEM FOR INCONSISTENT LINEARIZATION */
 
   /*   If it turns out that the original SQP problem is inconsistent, */
@@ -595,7 +540,7 @@ L130:
       /* L140: */
     }
     s[1] = zero;
-    dcopy___(n, &s[1], &c__0, &s[1], &c__1);
+    dcopy(n, &s[1], &c__0, &s[1], &c__1);
     *h3 = zero;
     g[*n1] = zero;
     l[*n3] = hun;
@@ -604,22 +549,22 @@ L130:
     v[*n1] = one;
     *incons = 0;
   L150:
-    lsq_(m,
-         meq,
-         n1,
-         n3,
-         la,
-         &l[1],
-         &g[1],
-         &a[a_offset],
-         &c__[1],
-         &u[1],
-         &v[1],
-         &s[1],
-         &r__[1],
-         &w[1],
-         &iw[1],
-         mode);
+    lsq(m,
+        meq,
+        n1,
+        n3,
+        la,
+        &l[1],
+        &g[1],
+        &a[a_offset],
+        &c__[1],
+        &u[1],
+        &v[1],
+        &s[1],
+        &r__[1],
+        &w[1],
+        &iw[1],
+        mode);
     *h4 = one - s[*n1];
     if (*mode == 4) {
       l[*n3] = ten * l[*n3];
@@ -637,12 +582,12 @@ L130:
   /*   UPDATE MULTIPLIERS FOR L1-TEST */
   i__1 = *n;
   for (i__ = 1; i__ <= i__1; ++i__) {
-    v[i__] = g[i__] - ddot_sl__(m, &a[i__ * a_dim1 + 1], &c__1, &r__[1], &c__1);
+    v[i__] = g[i__] - ddot_sl(m, &a[i__ * a_dim1 + 1], &c__1, &r__[1], &c__1);
     /* L160: */
   }
   *f0 = *f;
-  dcopy___(n, &x[1], &c__1, &x0[1], &c__1);
-  *gs = ddot_sl__(n, &g[1], &c__1, &s[1], &c__1);
+  dcopy(n, &x[1], &c__1, &x0[1], &c__1);
+  *gs = ddot_sl(n, &g[1], &c__1, &s[1], &c__1);
   *h1 = fabs(*gs);
   *h2 = zero;
   i__1 = *m;
@@ -696,9 +641,9 @@ L130:
 L190:
   ++(*line);
   *h3 = *alpha * *h3;
-  dscal_sl__(n, alpha, &s[1], &c__1);
-  dcopy___(n, &x0[1], &c__1, &x[1], &c__1);
-  daxpy_sl__(n, &one, &s[1], &c__1, &x[1], &c__1);
+  dscal_sl(n, alpha, &s[1], &c__1);
+  dcopy(n, &x0[1], &c__1, &x[1], &c__1);
+  daxpy_sl(n, &one, &s[1], &c__1, &x[1], &c__1);
   *mode = 1;
   goto L330;
 L200:
@@ -712,13 +657,13 @@ L200:
 /*   EXACT LINESEARCH */
 L210:
   if (*line != 3) {
-    *alpha = linmin_(line, &alfmin, &one, t, tol);
-    dcopy___(n, &x0[1], &c__1, &x[1], &c__1);
-    daxpy_sl__(n, alpha, &s[1], &c__1, &x[1], &c__1);
+    *alpha = linmin(line, &alfmin, &one, t, tol);
+    dcopy(n, &x0[1], &c__1, &x[1], &c__1);
+    daxpy_sl(n, alpha, &s[1], &c__1, &x[1], &c__1);
     *mode = 1;
     goto L330;
   }
-  dscal_sl__(n, alpha, &s[1], &c__1);
+  dscal_sl(n, alpha, &s[1], &c__1);
   goto L240;
 /*   CALL FUNCTIONS AT CURRENT X */
 L220:
@@ -757,7 +702,7 @@ L240:
     *h3 += max(d__1, *h1);
     /* L250: */
   }
-  if (((d__1 = *f - *f0, fabs(d__1)) < *acc || dnrm2___(n, &s[1], &c__1) < *acc)
+  if (((d__1 = *f - *f0, fabs(d__1)) < *acc || dnrm2(n, &s[1], &c__1) < *acc)
       && *h3 < *acc && !badlin && *f == *f) {
     *mode = 0;
   } else {
@@ -779,7 +724,7 @@ L255:
     *h3 += max(d__1, *h1);
     /* L256: */
   }
-  if (((d__1 = *f - *f0, fabs(d__1)) < *tol || dnrm2___(n, &s[1], &c__1) < *tol)
+  if (((d__1 = *f - *f0, fabs(d__1)) < *tol || dnrm2(n, &s[1], &c__1) < *tol)
       && *h3 < *tol && !badlin && *f == *f) {
     *mode = 0;
   } else {
@@ -791,7 +736,7 @@ L255:
 L260:
   i__1 = *n;
   for (i__ = 1; i__ <= i__1; ++i__) {
-    u[i__] = g[i__] - ddot_sl__(m, &a[i__ * a_dim1 + 1], &c__1, &r__[1], &c__1)
+    u[i__] = g[i__] - ddot_sl(m, &a[i__ * a_dim1 + 1], &c__1, &r__[1], &c__1)
              - v[i__];
     /* L270: */
   }
@@ -831,47 +776,47 @@ L260:
     v[i__] += *h1;
     /* L320: */
   }
-  *h1 = ddot_sl__(n, &s[1], &c__1, &u[1], &c__1);
-  *h2 = ddot_sl__(n, &s[1], &c__1, &v[1], &c__1);
+  *h1 = ddot_sl(n, &s[1], &c__1, &u[1], &c__1);
+  *h2 = ddot_sl(n, &s[1], &c__1, &v[1], &c__1);
   *h3 = *h2 * .2;
   if (*h1 < *h3) {
     *h4 = (*h2 - *h3) / (*h2 - *h1);
     *h1 = *h3;
-    dscal_sl__(n, h4, &u[1], &c__1);
+    dscal_sl(n, h4, &u[1], &c__1);
     d__1 = one - *h4;
-    daxpy_sl__(n, &d__1, &v[1], &c__1, &u[1], &c__1);
+    daxpy_sl(n, &d__1, &v[1], &c__1, &u[1], &c__1);
   }
   if (*h1 == 0. || *h2 == 0.) {
     /*         Singular update: reset hessian. */
     goto L110;
   }
   d__1 = one / *h1;
-  ldl_(n, &l[1], &u[1], &d__1, &v[1]);
+  ldl(n, &l[1], &u[1], &d__1, &v[1]);
   d__1 = -one / *h2;
-  ldl_(n, &l[1], &v[1], &d__1, &u[1]);
+  ldl(n, &l[1], &v[1], &d__1, &u[1]);
   /*   END OF MAIN ITERATION */
   goto L130;
 /*   END OF SLSQPB */
 L330:
   return 0;
-} /* slsqpb_ */
+} /* slsqpb */
 
-/* Subroutine */ int lsq_(int* m,
-                          int* meq,
-                          int* n,
-                          int* nl,
-                          int* la,
-                          double* l,
-                          double* g,
-                          double* a,
-                          double* b,
-                          double* xl,
-                          double* xu,
-                          double* x,
-                          double* y,
-                          double* w,
-                          int* jw,
-                          int* mode) {
+/* Subroutine */ int lsq(const int* m,
+                         const int* meq,
+                         const int* n,
+                         const int* nl,
+                         const int* la,
+                         const double* l,
+                         const double* g,
+                         const double* a,
+                         const double* b,
+                         const double* xl,
+                         const double* xu,
+                         double* x,
+                         double* y,
+                         double* w,
+                         int* jw,
+                         int* mode) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -881,38 +826,13 @@ L330:
   int a_dim1, a_offset, i__1, i__2;
   double d__1;
 
-  /* Builtin functions */
-  double sqrt(double);
-
   /* Local variables */
-  extern /* Subroutine */ int dscal_sl__(int*, double*, double*, int*);
   int i__, j, i1, i2, i3, i4, m1, n1, n2, n3, ic, id, ie, if__, ig, ih, il, ip,
       iw;
   double diag;
-  extern /* Subroutine */ int lsei_(double*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    int*,
-                                    int*),
-      bound_(int*, double*, double*, double*);
   int mineq;
   double xnorm;
-  extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
   int nancnt;
-  extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*   MINIMIZE with respect to X */
   /*             ||E*X - F|| */
@@ -987,15 +907,15 @@ L330:
     i1 = n1 - i__;
     diag = sqrt(l[i2]);
     w[i3] = zero;
-    dcopy___(&i1, &w[i3], &c__0, &w[i3], &c__1);
+    dcopy(&i1, &w[i3], &c__0, &w[i3], &c__1);
     i__2 = i1 - n2;
-    dcopy___(&i__2, &l[i2], &c__1, &w[i3], n);
+    dcopy(&i__2, &l[i2], &c__1, &w[i3], n);
     i__2 = i1 - n2;
-    dscal_sl__(&i__2, &diag, &w[i3], n);
+    dscal_sl(&i__2, &diag, &w[i3], n);
     w[i3] = diag;
     i__2 = i__ - 1;
     w[if__ - 1 + i__] =
-        (g[i__] - ddot_sl__(&i__2, &w[i4], &c__1, &w[if__], &c__1)) / diag;
+        (g[i__] - ddot_sl(&i__2, &w[i4], &c__1, &w[if__], &c__1)) / diag;
     i2 = i2 + i1 - n2;
     i3 += n1;
     i4 += *n;
@@ -1004,24 +924,24 @@ L330:
   if (n2 == 1) {
     w[i3] = l[*nl];
     w[i4] = zero;
-    dcopy___(&n3, &w[i4], &c__0, &w[i4], &c__1);
+    dcopy(&n3, &w[i4], &c__0, &w[i4], &c__1);
     w[if__ - 1 + *n] = zero;
   }
   d__1 = -one;
-  dscal_sl__(n, &d__1, &w[if__], &c__1);
+  dscal_sl(n, &d__1, &w[if__], &c__1);
   ic = if__ + *n;
   id = ic + *meq * *n;
   if (*meq > 0) {
     /*  RECOVER MATRIX C FROM UPPER PART OF A */
     i__1 = *meq;
     for (i__ = 1; i__ <= i__1; ++i__) {
-      dcopy___(n, &a[i__ + a_dim1], la, &w[ic - 1 + i__], meq);
+      dcopy(n, &a[i__ + a_dim1], la, &w[ic - 1 + i__], meq);
       /* L20: */
     }
     /*  RECOVER VECTOR D FROM UPPER PART OF B */
-    dcopy___(meq, &b[1], &c__1, &w[id], &c__1);
+    dcopy(meq, &b[1], &c__1, &w[id], &c__1);
     d__1 = -one;
-    dscal_sl__(meq, &d__1, &w[id], &c__1);
+    dscal_sl(meq, &d__1, &w[id], &c__1);
   }
   ig = id + *meq;
   /*  RECOVER MATRIX G FROM LOWER PART OF A */
@@ -1031,7 +951,7 @@ L330:
   if (mineq > 0) {
     i__1 = mineq;
     for (i__ = 1; i__ <= i__1; ++i__) {
-      dcopy___(n, &a[*meq + i__ + a_dim1], la, &w[ig - 1 + i__], &m1);
+      dcopy(n, &a[*meq + i__ + a_dim1], la, &w[ig - 1 + i__], &m1);
       /* L30: */
     }
   }
@@ -1040,9 +960,9 @@ L330:
   if (mineq > 0) {
     /*  RECOVER H FROM LOWER PART OF B */
     /*  The vector H(mineq+2*n) is stored at w(ih) */
-    dcopy___(&mineq, &b[*meq + 1], &c__1, &w[ih], &c__1);
+    dcopy(&mineq, &b[*meq + 1], &c__1, &w[ih], &c__1);
     d__1 = -one;
-    dscal_sl__(&mineq, &d__1, &w[ih], &c__1);
+    dscal_sl(&mineq, &d__1, &w[ih], &c__1);
   }
   /*  AUGMENT MATRIX G BY +I AND -I, AND, */
   /*  AUGMENT VECTOR H BY XL AND XU */
@@ -1086,27 +1006,27 @@ L330:
   }
   i__1 = max(1, *meq);
   i__2 = m1 - nancnt;
-  lsei_(&w[ic],
-        &w[id],
-        &w[ie],
-        &w[if__],
-        &w[ig],
-        &w[ih],
-        &i__1,
-        meq,
-        n,
-        n,
-        &m1,
-        &i__2,
-        n,
-        &x[1],
-        &xnorm,
-        &w[iw],
-        &jw[1],
-        mode);
+  lsei(&w[ic],
+       &w[id],
+       &w[ie],
+       &w[if__],
+       &w[ig],
+       &w[ih],
+       &i__1,
+       meq,
+       n,
+       n,
+       &m1,
+       &i__2,
+       n,
+       &x[1],
+       &xnorm,
+       &w[iw],
+       &jw[1],
+       mode);
   if (*mode == 1) {
     /*   restore Lagrange multipliers (only for user-defined variables) */
-    dcopy___(m, &w[iw], &c__1, &y[1], &c__1);
+    dcopy(m, &w[iw], &c__1, &y[1], &c__1);
     /*   set rest of the multipliers to nan (they are not used) */
     if (n3 > 0) {
       y[*m + 1] = 0.;
@@ -1118,29 +1038,29 @@ L330:
       }
     }
   }
-  bound_(n, &x[1], &xl[1], &xu[1]);
+  bound(n, &x[1], &xl[1], &xu[1]);
   /*   END OF SUBROUTINE LSQ */
   return 0;
-} /* lsq_ */
+} /* lsq */
 
-/* Subroutine */ int lsei_(double* c__,
-                           double* d__,
-                           double* e,
-                           double* f,
-                           double* g,
-                           double* h__,
-                           int* lc,
-                           int* mc,
-                           int* le,
-                           int* me,
-                           int* lg,
-                           int* mg,
-                           int* n,
-                           double* x,
-                           double* xnrm,
-                           double* w,
-                           int* jw,
-                           int* mode) {
+/* Subroutine */ int lsei(double* c__,
+                          double* d__,
+                          double* e,
+                          double* f,
+                          double* g,
+                          double* h__,
+                          const int* lc,
+                          const int* mc,
+                          const int* le,
+                          const int* me,
+                          const int* lg,
+                          const int* mg,
+                          const int* n,
+                          double* x,
+                          double* xnrm,
+                          double* w,
+                          int* jw,
+                          int* mode) {
   /* Initialized data */
 
   const double epmach = 2.22e-16;
@@ -1150,56 +1070,12 @@ L330:
   int c_dim1, c_offset, e_dim1, e_offset, g_dim1, g_offset, i__1, i__2, i__3;
   double d__1;
 
-  /* Builtin functions */
-  double sqrt(double);
-
   /* Local variables */
   int i__, j, k, l;
   double t;
-  extern /* Subroutine */ int h12_(int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   double*,
-                                   int*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*,
-                                   int*);
   int ie, if__, ig, iw, mc1;
-  extern /* Subroutine */ int lsi_(double*,
-                                   double*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   double*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*),
-      hfti_(double*,
-            int*,
-            int*,
-            int*,
-            double*,
-            int*,
-            int*,
-            double*,
-            int*,
-            double*,
-            double*,
-            double*,
-            int*);
   int krank;
   double rnorm[1];
-  extern double dnrm2___(int*, double*, int*);
-  extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
-  extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*     FOR MODE=1, THE SUBROUTINE RETURNS THE SOLUTION X OF */
   /*     EQUALITY & INEQUALITY CONSTRAINED LEAST SQUARES PROBLEM LSEI : */
@@ -1273,42 +1149,42 @@ L330:
     j = min(i__2, *lc);
     i__2 = i__ + 1;
     i__3 = *mc - i__;
-    h12_(&c__1,
-         &i__,
-         &i__2,
-         n,
-         &c__[i__ + c_dim1],
-         lc,
-         &w[iw + i__],
-         &c__[j + c_dim1],
-         lc,
-         &c__1,
-         &i__3);
+    h12(&c__1,
+        &i__,
+        &i__2,
+        n,
+        &c__[i__ + c_dim1],
+        lc,
+        &w[iw + i__],
+        &c__[j + c_dim1],
+        lc,
+        &c__1,
+        &i__3);
     i__2 = i__ + 1;
-    h12_(&c__2,
-         &i__,
-         &i__2,
-         n,
-         &c__[i__ + c_dim1],
-         lc,
-         &w[iw + i__],
-         &e[e_offset],
-         le,
-         &c__1,
-         me);
+    h12(&c__2,
+        &i__,
+        &i__2,
+        n,
+        &c__[i__ + c_dim1],
+        lc,
+        &w[iw + i__],
+        &e[e_offset],
+        le,
+        &c__1,
+        me);
     /* L10: */
     i__2 = i__ + 1;
-    h12_(&c__2,
-         &i__,
-         &i__2,
-         n,
-         &c__[i__ + c_dim1],
-         lc,
-         &w[iw + i__],
-         &g[g_offset],
-         lg,
-         &c__1,
-         mg);
+    h12(&c__2,
+        &i__,
+        &i__2,
+        n,
+        &c__[i__ + c_dim1],
+        lc,
+        &w[iw + i__],
+        &g[g_offset],
+        lg,
+        &c__1,
+        mg);
   }
   /*  SOLVE C*X=D AND MODIFY F */
   *mode = 6;
@@ -1318,14 +1194,14 @@ L330:
       goto L75;
     }
     i__1 = i__ - 1;
-    x[i__] = (d__[i__] - ddot_sl__(&i__1, &c__[i__ + c_dim1], lc, &x[1], &c__1))
+    x[i__] = (d__[i__] - ddot_sl(&i__1, &c__[i__ + c_dim1], lc, &x[1], &c__1))
              / c__[i__ + i__ * c_dim1];
     /* L15: */
   }
   *mode = 1;
   w[mc1] = zero;
   i__2 = *mg - *mc;
-  dcopy___(&i__2, &w[mc1], &c__0, &w[mc1], &c__1);
+  dcopy(&i__2, &w[mc1], &c__0, &w[mc1], &c__1);
   if (*mc == *n) {
     goto L50;
   }
@@ -1333,18 +1209,18 @@ L330:
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L20: */
     w[if__ - 1 + i__] =
-        f[i__] - ddot_sl__(mc, &e[i__ + e_dim1], le, &x[1], &c__1);
+        f[i__] - ddot_sl(mc, &e[i__ + e_dim1], le, &x[1], &c__1);
   }
   /*  STORE TRANSFORMED E & G */
   i__2 = *me;
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L25: */
-    dcopy___(&l, &e[i__ + mc1 * e_dim1], le, &w[ie - 1 + i__], me);
+    dcopy(&l, &e[i__ + mc1 * e_dim1], le, &w[ie - 1 + i__], me);
   }
   i__2 = *mg;
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L30: */
-    dcopy___(&l, &g[i__ + mc1 * g_dim1], lg, &w[ig - 1 + i__], mg);
+    dcopy(&l, &g[i__ + mc1 * g_dim1], lg, &w[ig - 1 + i__], mg);
   }
   if (*mg > 0) {
     goto L40;
@@ -1353,23 +1229,23 @@ L330:
   *mode = 7;
   k = max(*le, *n);
   t = sqrt(epmach);
-  hfti_(&w[ie],
-        me,
-        me,
-        &l,
-        &w[if__],
-        &k,
-        &c__1,
-        &t,
-        &krank,
-        rnorm,
-        &w[1],
-        &w[l + 1],
-        &jw[1]);
+  hfti(&w[ie],
+       me,
+       me,
+       &l,
+       &w[if__],
+       &k,
+       &c__1,
+       &t,
+       &krank,
+       rnorm,
+       &w[1],
+       &w[l + 1],
+       &jw[1]);
   /*  HFTI IS MORE GENERIC, BUT WE ONLY CALL IT WITH NB=1, SO RETRIEVE THE */
   /*  SINGLE VALUE WE NEED FROM RNORM HERE */
   *xnrm = rnorm[0];
-  dcopy___(&l, &w[if__], &c__1, &x[mc1], &c__1);
+  dcopy(&l, &w[if__], &c__1, &x[mc1], &c__1);
   if (krank != l) {
     goto L75;
   }
@@ -1380,26 +1256,26 @@ L40:
   i__2 = *mg;
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L45: */
-    h__[i__] -= ddot_sl__(mc, &g[i__ + g_dim1], lg, &x[1], &c__1);
+    h__[i__] -= ddot_sl(mc, &g[i__ + g_dim1], lg, &x[1], &c__1);
   }
-  lsi_(&w[ie],
-       &w[if__],
-       &w[ig],
-       &h__[1],
-       me,
-       me,
-       mg,
-       mg,
-       &l,
-       &x[mc1],
-       xnrm,
-       &w[mc1],
-       &jw[1],
-       mode);
+  lsi(&w[ie],
+      &w[if__],
+      &w[ig],
+      &h__[1],
+      me,
+      me,
+      mg,
+      mg,
+      &l,
+      &x[mc1],
+      xnrm,
+      &w[mc1],
+      &jw[1],
+      mode);
   if (*mc == 0) {
     goto L75;
   }
-  t = dnrm2___(mc, &x[1], &c__1);
+  t = dnrm2(mc, &x[1], &c__1);
   *xnrm = sqrt(*xnrm * *xnrm + t * t);
   if (*mode != 1) {
     goto L75;
@@ -1409,58 +1285,58 @@ L50:
   i__2 = *me;
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L55: */
-    f[i__] = ddot_sl__(n, &e[i__ + e_dim1], le, &x[1], &c__1) - f[i__];
+    f[i__] = ddot_sl(n, &e[i__ + e_dim1], le, &x[1], &c__1) - f[i__];
   }
   i__2 = *mc;
   for (i__ = 1; i__ <= i__2; ++i__) {
     /* L60: */
-    d__[i__] = ddot_sl__(me, &e[i__ * e_dim1 + 1], &c__1, &f[1], &c__1)
-               - ddot_sl__(mg, &g[i__ * g_dim1 + 1], &c__1, &w[mc1], &c__1);
+    d__[i__] = ddot_sl(me, &e[i__ * e_dim1 + 1], &c__1, &f[1], &c__1)
+               - ddot_sl(mg, &g[i__ * g_dim1 + 1], &c__1, &w[mc1], &c__1);
   }
   for (i__ = *mc; i__ >= 1; --i__) {
     /* L65: */
     i__2 = i__ + 1;
-    h12_(&c__2,
-         &i__,
-         &i__2,
-         n,
-         &c__[i__ + c_dim1],
-         lc,
-         &w[iw + i__],
-         &x[1],
-         &c__1,
-         &c__1,
-         &c__1);
+    h12(&c__2,
+        &i__,
+        &i__2,
+        n,
+        &c__[i__ + c_dim1],
+        lc,
+        &w[iw + i__],
+        &x[1],
+        &c__1,
+        &c__1,
+        &c__1);
   }
   for (i__ = *mc; i__ >= 1; --i__) {
     /* Computing MIN */
     i__2 = i__ + 1;
     j = min(i__2, *lc);
     i__2 = *mc - i__;
-    w[i__] = (d__[i__]
-              - ddot_sl__(&i__2, &c__[j + i__ * c_dim1], &c__1, &w[j], &c__1))
-             / c__[i__ + i__ * c_dim1];
+    w[i__] =
+        (d__[i__] - ddot_sl(&i__2, &c__[j + i__ * c_dim1], &c__1, &w[j], &c__1))
+        / c__[i__ + i__ * c_dim1];
     /* L70: */
   }
 /*  END OF SUBROUTINE LSEI */
 L75:
   return 0;
-} /* lsei_ */
+} /* lsei */
 
-/* Subroutine */ int lsi_(double* e,
-                          double* f,
-                          double* g,
-                          double* h__,
-                          int* le,
-                          int* me,
-                          int* lg,
-                          int* mg,
-                          int* n,
-                          double* x,
-                          double* xnorm,
-                          double* w,
-                          int* jw,
-                          int* mode) {
+/* Subroutine */ int lsi(double* e,
+                         double* f,
+                         double* g,
+                         double* h__,
+                         const int* le,
+                         const int* me,
+                         const int* lg,
+                         const int* mg,
+                         const int* n,
+                         double* x,
+                         double* xnorm,
+                         double* w,
+                         int* jw,
+                         int* mode) {
   /* Initialized data */
 
   const double epmach = 2.22e-16;
@@ -1470,41 +1346,9 @@ L75:
   int e_dim1, e_offset, g_dim1, g_offset, i__1, i__2, i__3;
   double d__1;
 
-  /* Builtin functions */
-  double sqrt(double);
-
   /* Local variables */
-  extern /* Subroutine */ int daxpy_sl__(int*,
-                                         double*,
-                                         double*,
-                                         int*,
-                                         double*,
-                                         int*);
   int i__, j;
   double t;
-  extern /* Subroutine */ int h12_(int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   double*,
-                                   int*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*,
-                                   int*),
-      ldp_(double*,
-           int*,
-           int*,
-           int*,
-           double*,
-           double*,
-           double*,
-           double*,
-           int*,
-           int*);
-  extern double dnrm2___(int*, double*, int*),
-      ddot_sl__(int*, double*, int*, double*, int*);
 
   /*     FOR MODE=1, THE SUBROUTINE RETURNS THE SOLUTION X OF */
   /*     INEQUALITY CONSTRAINED LINEAR LEAST SQUARES PROBLEM: */
@@ -1558,30 +1402,30 @@ L75:
     j = min(i__2, *n);
     i__2 = i__ + 1;
     i__3 = *n - i__;
-    h12_(&c__1,
-         &i__,
-         &i__2,
-         me,
-         &e[i__ * e_dim1 + 1],
-         &c__1,
-         &t,
-         &e[j * e_dim1 + 1],
-         &c__1,
-         le,
-         &i__3);
+    h12(&c__1,
+        &i__,
+        &i__2,
+        me,
+        &e[i__ * e_dim1 + 1],
+        &c__1,
+        &t,
+        &e[j * e_dim1 + 1],
+        &c__1,
+        le,
+        &i__3);
     /* L10: */
     i__2 = i__ + 1;
-    h12_(&c__2,
-         &i__,
-         &i__2,
-         me,
-         &e[i__ * e_dim1 + 1],
-         &c__1,
-         &t,
-         &f[1],
-         &c__1,
-         &c__1,
-         &c__1);
+    h12(&c__2,
+        &i__,
+        &i__2,
+        me,
+        &e[i__ * e_dim1 + 1],
+        &c__1,
+        &t,
+        &f[1],
+        &c__1,
+        &c__1,
+        &c__1);
   }
   /*  TRANSFORM G AND H TO GET LEAST DISTANCE PROBLEM */
   *mode = 5;
@@ -1596,49 +1440,49 @@ L75:
       i__3 = j - 1;
       g[i__ + j * g_dim1] =
           (g[i__ + j * g_dim1]
-           - ddot_sl__(&i__3, &g[i__ + g_dim1], lg, &e[j * e_dim1 + 1], &c__1))
+           - ddot_sl(&i__3, &g[i__ + g_dim1], lg, &e[j * e_dim1 + 1], &c__1))
           / e[j + j * e_dim1];
     }
     /* L30: */
-    h__[i__] -= ddot_sl__(n, &g[i__ + g_dim1], lg, &f[1], &c__1);
+    h__[i__] -= ddot_sl(n, &g[i__ + g_dim1], lg, &f[1], &c__1);
   }
   /*  SOLVE LEAST DISTANCE PROBLEM */
-  ldp_(&g[g_offset], lg, mg, n, &h__[1], &x[1], xnorm, &w[1], &jw[1], mode);
+  ldp(&g[g_offset], lg, mg, n, &h__[1], &x[1], xnorm, &w[1], &jw[1], mode);
   if (*mode != 1) {
     goto L50;
   }
   /*  SOLUTION OF ORIGINAL PROBLEM */
-  daxpy_sl__(n, &one, &f[1], &c__1, &x[1], &c__1);
+  daxpy_sl(n, &one, &f[1], &c__1, &x[1], &c__1);
   for (i__ = *n; i__ >= 1; --i__) {
     /* Computing MIN */
     i__2 = i__ + 1;
     j = min(i__2, *n);
     /* L40: */
     i__2 = *n - i__;
-    x[i__] = (x[i__] - ddot_sl__(&i__2, &e[i__ + j * e_dim1], le, &x[j], &c__1))
+    x[i__] = (x[i__] - ddot_sl(&i__2, &e[i__ + j * e_dim1], le, &x[j], &c__1))
              / e[i__ + i__ * e_dim1];
   }
   /* Computing MIN */
   i__2 = *n + 1;
   j = min(i__2, *me);
   i__2 = *me - *n;
-  t = dnrm2___(&i__2, &f[j], &c__1);
+  t = dnrm2(&i__2, &f[j], &c__1);
   *xnorm = sqrt(*xnorm * *xnorm + t * t);
 /*  END OF SUBROUTINE LSI */
 L50:
   return 0;
-} /* lsi_ */
+} /* lsi */
 
-/* Subroutine */ int ldp_(double* g,
-                          int* mg,
-                          int* m,
-                          int* n,
-                          double* h__,
-                          double* x,
-                          double* xnorm,
-                          double* w,
-                          int* index,
-                          int* mode) {
+/* Subroutine */ int ldp(const double* g,
+                         const int* mg,
+                         const int* m,
+                         const int* n,
+                         const double* h__,
+                         double* x,
+                         double* xnorm,
+                         double* w,
+                         int* index,
+                         int* mode) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -1649,30 +1493,10 @@ L50:
   double d__1;
 
   /* Local variables */
-  extern /* Subroutine */ int daxpy_sl__(int*,
-                                         double*,
-                                         double*,
-                                         int*,
-                                         double*,
-                                         int*);
   int i__, j, n1, if__, iw, iy, iz;
   double fac;
-  extern /* Subroutine */ int nnls_(double*,
-                                    int*,
-                                    int*,
-                                    int*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    double*,
-                                    int*,
-                                    int*);
   double rnorm;
-  extern double dnrm2___(int*, double*, int*);
-  extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
   int iwdual;
-  extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*                     T */
   /*     MINIMIZE   1/2 X X    SUBJECT TO   G * X >= H. */
@@ -1719,7 +1543,7 @@ L50:
   /*  STATE DUAL PROBLEM */
   *mode = 1;
   x[1] = zero;
-  dcopy___(n, &x[1], &c__0, &x[1], &c__1);
+  dcopy(n, &x[1], &c__0, &x[1], &c__1);
   *xnorm = zero;
   if (*m == 0) {
     goto L50;
@@ -1750,17 +1574,17 @@ L50:
   iy = iz + n1;
   iwdual = iy + *m;
   /*  SOLVE DUAL PROBLEM */
-  nnls_(&w[1],
-        &n1,
-        &n1,
-        m,
-        &w[if__],
-        &w[iy],
-        &rnorm,
-        &w[iwdual],
-        &w[iz],
-        &index[1],
-        mode);
+  nnls(&w[1],
+       &n1,
+       &n1,
+       m,
+       &w[if__],
+       &w[iy],
+       &rnorm,
+       &w[iwdual],
+       &w[iz],
+       &index[1],
+       mode);
   if (*mode != 1) {
     goto L50;
   }
@@ -1769,7 +1593,7 @@ L50:
     goto L50;
   }
   /*  COMPUTE SOLUTION OF PRIMAL PROBLEM */
-  fac = one - ddot_sl__(m, &h__[1], &c__1, &w[iy], &c__1);
+  fac = one - ddot_sl(m, &h__[1], &c__1, &w[iy], &c__1);
   d__1 = one + fac;
   if (!(d__1 - one > zero)) {
     goto L50;
@@ -1779,29 +1603,29 @@ L50:
   i__1 = *n;
   for (j = 1; j <= i__1; ++j) {
     /* L40: */
-    x[j] = fac * ddot_sl__(m, &g[j * g_dim1 + 1], &c__1, &w[iy], &c__1);
+    x[j] = fac * ddot_sl(m, &g[j * g_dim1 + 1], &c__1, &w[iy], &c__1);
   }
-  *xnorm = dnrm2___(n, &x[1], &c__1);
+  *xnorm = dnrm2(n, &x[1], &c__1);
   /*  COMPUTE LAGRANGE MULTIPLIERS FOR PRIMAL PROBLEM */
   w[1] = zero;
-  dcopy___(m, &w[1], &c__0, &w[1], &c__1);
-  daxpy_sl__(m, &fac, &w[iy], &c__1, &w[1], &c__1);
+  dcopy(m, &w[1], &c__0, &w[1], &c__1);
+  daxpy_sl(m, &fac, &w[iy], &c__1, &w[1], &c__1);
 /*  END OF SUBROUTINE LDP */
 L50:
   return 0;
-} /* ldp_ */
+} /* ldp */
 
-/* Subroutine */ int nnls_(double* a,
-                           int* mda,
-                           int* m,
-                           int* n,
-                           double* b,
-                           double* x,
-                           double* rnorm,
-                           double* w,
-                           double* z__,
-                           int* index,
-                           int* mode) {
+/* Subroutine */ int nnls(double* a,
+                          const int* mda,
+                          const int* m,
+                          const int* n,
+                          double* b,
+                          double* x,
+                          double* rnorm,
+                          double* w,
+                          double* z__,
+                          int* index,
+                          int* mode) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -1813,38 +1637,15 @@ L50:
   double d__1;
 
   /* Local variables */
-  extern /* Subroutine */ int daxpy_sl__(int*,
-                                         double*,
-                                         double*,
-                                         int*,
-                                         double*,
-                                         int*);
   double c__;
   int i__, j, k, l;
   double s, t;
-  extern /* Subroutine */ int h12_(int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   double*,
-                                   int*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*,
-                                   int*);
   int ii, jj, ip, iz, jz;
   double up;
   int iz1, iz2, npp1, iter;
   double wmax, alpha, asave;
   int itmax, izmax, nsetp;
-  extern /* Subroutine */ int
-  dsrot_(int*, double*, int*, double*, int*, double*, double*);
   double unorm;
-  extern double dnrm2___(int*, double*, int*);
-  extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*),
-      dsrotg_(double*, double*, double*, double*);
-  extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*     C.L.LAWSON AND R.J.HANSON, JET PROPULSION LABORATORY: */
   /*     'SOLVING LEAST SQUARES PROBLEMS'. PRENTICE-HALL.1974 */
@@ -1912,7 +1713,7 @@ L50:
   nsetp = 0;
   npp1 = 1;
   x[1] = zero;
-  dcopy___(n, &x[1], &c__0, &x[1], &c__1);
+  dcopy(n, &x[1], &c__0, &x[1], &c__1);
 /* STEP TWO (COMPUTE DUAL VARIABLES) */
 /* .....ENTRY LOOP A */
 L110:
@@ -1924,7 +1725,7 @@ L110:
     j = index[iz];
     /* L120: */
     i__2 = *m - nsetp;
-    w[j] = ddot_sl__(&i__2, &a[npp1 + j * a_dim1], &c__1, &b[npp1], &c__1);
+    w[j] = ddot_sl(&i__2, &a[npp1 + j * a_dim1], &c__1, &b[npp1], &c__1);
   }
 /* STEP THREE (TEST DUAL VARIABLES) */
 L130:
@@ -1948,36 +1749,36 @@ L130:
   /* STEP FOUR (TEST INDEX J FOR LINEAR DEPENDENCY) */
   asave = a[npp1 + j * a_dim1];
   i__2 = npp1 + 1;
-  h12_(&c__1,
-       &npp1,
-       &i__2,
-       m,
-       &a[j * a_dim1 + 1],
-       &c__1,
-       &up,
-       &z__[1],
-       &c__1,
-       &c__1,
-       &c__0);
-  unorm = dnrm2___(&nsetp, &a[j * a_dim1 + 1], &c__1);
+  h12(&c__1,
+      &npp1,
+      &i__2,
+      m,
+      &a[j * a_dim1 + 1],
+      &c__1,
+      &up,
+      &z__[1],
+      &c__1,
+      &c__1,
+      &c__0);
+  unorm = dnrm2(&nsetp, &a[j * a_dim1 + 1], &c__1);
   t = factor * (d__1 = a[npp1 + j * a_dim1], fabs(d__1));
   d__1 = unorm + t;
   if (d__1 - unorm <= zero) {
     goto L150;
   }
-  dcopy___(m, &b[1], &c__1, &z__[1], &c__1);
+  dcopy(m, &b[1], &c__1, &z__[1], &c__1);
   i__2 = npp1 + 1;
-  h12_(&c__2,
-       &npp1,
-       &i__2,
-       m,
-       &a[j * a_dim1 + 1],
-       &c__1,
-       &up,
-       &z__[1],
-       &c__1,
-       &c__1,
-       &c__1);
+  h12(&c__2,
+      &npp1,
+      &i__2,
+      m,
+      &a[j * a_dim1 + 1],
+      &c__1,
+      &up,
+      &z__[1],
+      &c__1,
+      &c__1,
+      &c__1);
   if (z__[npp1] / a[npp1 + j * a_dim1] > zero) {
     goto L160;
   }
@@ -1987,7 +1788,7 @@ L150:
   goto L130;
 /* STEP FIVE (ADD COLUMN) */
 L160:
-  dcopy___(m, &z__[1], &c__1, &b[1], &c__1);
+  dcopy(m, &z__[1], &c__1, &b[1], &c__1);
   index[iz] = index[iz1];
   index[iz1] = j;
   ++iz1;
@@ -1997,22 +1798,22 @@ L160:
   for (jz = iz1; jz <= i__2; ++jz) {
     jj = index[jz];
     /* L170: */
-    h12_(&c__2,
-         &nsetp,
-         &npp1,
-         m,
-         &a[j * a_dim1 + 1],
-         &c__1,
-         &up,
-         &a[jj * a_dim1 + 1],
-         &c__1,
-         mda,
-         &c__1);
+    h12(&c__2,
+        &nsetp,
+        &npp1,
+        m,
+        &a[j * a_dim1 + 1],
+        &c__1,
+        &up,
+        &a[jj * a_dim1 + 1],
+        &c__1,
+        mda,
+        &c__1);
   }
   k = min(npp1, *mda);
   w[j] = zero;
   i__2 = *m - nsetp;
-  dcopy___(&i__2, &w[j], &c__0, &a[k + j * a_dim1], &c__1);
+  dcopy(&i__2, &w[j], &c__0, &a[k + j * a_dim1], &c__1);
 /* STEP SIX (SOLVE LEAST SQUARES SUB-PROBLEM) */
 /* .....ENTRY LOOP B */
 L180:
@@ -2021,7 +1822,7 @@ L180:
       goto L190;
     }
     d__1 = -z__[ip + 1];
-    daxpy_sl__(&ip, &d__1, &a[jj * a_dim1 + 1], &c__1, &z__[1], &c__1);
+    daxpy_sl(&ip, &d__1, &a[jj * a_dim1 + 1], &c__1, &z__[1], &c__1);
   L190:
     jj = index[ip];
     /* L200: */
@@ -2071,13 +1872,13 @@ L250:
   for (j = jj; j <= i__2; ++j) {
     ii = index[j];
     index[j - 1] = ii;
-    dsrotg_(&a[j - 1 + ii * a_dim1], &a[j + ii * a_dim1], &c__, &s);
+    dsrotg(&a[j - 1 + ii * a_dim1], &a[j + ii * a_dim1], &c__, &s);
     t = a[j - 1 + ii * a_dim1];
-    dsrot_(n, &a[j - 1 + a_dim1], mda, &a[j + a_dim1], mda, &c__, &s);
+    dsrot(n, &a[j - 1 + a_dim1], mda, &a[j + a_dim1], mda, &c__, &s);
     a[j - 1 + ii * a_dim1] = t;
     a[j + ii * a_dim1] = zero;
     /* L260: */
-    dsrot_(&c__1, &b[j - 1], &c__1, &b[j], &c__1, &c__, &s);
+    dsrot(&c__1, &b[j - 1], &c__1, &b[j], &c__1, &c__, &s);
   }
   npp1 = nsetp;
   --nsetp;
@@ -2094,35 +1895,35 @@ L250:
     }
     /* L270: */
   }
-  dcopy___(m, &b[1], &c__1, &z__[1], &c__1);
+  dcopy(m, &b[1], &c__1, &z__[1], &c__1);
   goto L180;
 /* STEP TWELVE (SOLUTION) */
 L280:
   k = min(npp1, *m);
   i__2 = *m - nsetp;
-  *rnorm = dnrm2___(&i__2, &b[k], &c__1);
+  *rnorm = dnrm2(&i__2, &b[k], &c__1);
   if (npp1 > *m) {
     w[1] = zero;
-    dcopy___(n, &w[1], &c__0, &w[1], &c__1);
+    dcopy(n, &w[1], &c__0, &w[1], &c__1);
   }
 /* END OF SUBROUTINE NNLS */
 L290:
   return 0;
-} /* nnls_ */
+} /* nnls */
 
-/* Subroutine */ int hfti_(double* a,
-                           int* mda,
-                           int* m,
-                           int* n,
-                           double* b,
-                           int* mdb,
-                           int* nb,
-                           double* tau,
-                           int* krank,
-                           double* rnorm,
-                           double* h__,
-                           double* g,
-                           int* ip) {
+/* Subroutine */ int hfti(double* a,
+                          const int* mda,
+                          const int* m,
+                          const int* n,
+                          double* b,
+                          const int* mdb,
+                          const int* nb,
+                          const double* tau,
+                          int* krank,
+                          double* rnorm,
+                          double* h__,
+                          double* g,
+                          int* ip) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -2134,22 +1935,9 @@ L290:
 
   /* Local variables */
   int i__, j, k, l;
-  extern /* Subroutine */ int h12_(int*,
-                                   int*,
-                                   int*,
-                                   int*,
-                                   double*,
-                                   int*,
-                                   double*,
-                                   double*,
-                                   int*,
-                                   int*,
-                                   int*);
   int jb, kp1;
   double tmp, hmax;
   int lmax, ldiag;
-  extern double dnrm2___(int*, double*, int*),
-      ddot_sl__(int*, double*, int*, double*, int*);
 
   /*     RANK-DEFICIENT LEAST SQUARES ALGORITHM AS DESCRIBED IN: */
   /*     C.L.LAWSON AND R.J.HANSON, JET PROPULSION LABORATORY, 1973 JUN 12 */
@@ -2256,30 +2044,30 @@ L290:
     i__ = min(i__2, *n);
     i__2 = j + 1;
     i__3 = *n - j;
-    h12_(&c__1,
-         &j,
-         &i__2,
-         m,
-         &a[j * a_dim1 + 1],
-         &c__1,
-         &h__[j],
-         &a[i__ * a_dim1 + 1],
-         &c__1,
-         mda,
-         &i__3);
+    h12(&c__1,
+        &j,
+        &i__2,
+        m,
+        &a[j * a_dim1 + 1],
+        &c__1,
+        &h__[j],
+        &a[i__ * a_dim1 + 1],
+        &c__1,
+        mda,
+        &i__3);
     /* L80: */
     i__2 = j + 1;
-    h12_(&c__2,
-         &j,
-         &i__2,
-         m,
-         &a[j * a_dim1 + 1],
-         &c__1,
-         &h__[j],
-         &b[b_offset],
-         &c__1,
-         mdb,
-         nb);
+    h12(&c__2,
+        &j,
+        &i__2,
+        m,
+        &a[j * a_dim1 + 1],
+        &c__1,
+        &h__[j],
+        &b[b_offset],
+        &c__1,
+        mdb,
+        nb);
   }
   /*   DETERMINE PSEUDORANK */
   i__2 = ldiag;
@@ -2300,7 +2088,7 @@ L110:
   for (jb = 1; jb <= i__2; ++jb) {
     /* L130: */
     i__1 = *m - k;
-    rnorm[jb] = dnrm2___(&i__1, &b[kp1 + jb * b_dim1], &c__1);
+    rnorm[jb] = dnrm2(&i__1, &b[kp1 + jb * b_dim1], &c__1);
   }
   if (k > 0) {
     goto L160;
@@ -2322,17 +2110,17 @@ L160:
   for (i__ = k; i__ >= 1; --i__) {
     /* L170: */
     i__2 = i__ - 1;
-    h12_(&c__1,
-         &i__,
-         &kp1,
-         n,
-         &a[i__ + a_dim1],
-         mda,
-         &g[i__],
-         &a[a_offset],
-         mda,
-         &c__1,
-         &i__2);
+    h12(&c__1,
+        &i__,
+        &kp1,
+        n,
+        &a[i__ + a_dim1],
+        mda,
+        &g[i__],
+        &a[a_offset],
+        mda,
+        &c__1,
+        &i__2);
   }
 L180:
   i__2 = *nb;
@@ -2345,11 +2133,11 @@ L180:
       /* L210: */
       i__1 = k - i__;
       b[i__ + jb * b_dim1] = (b[i__ + jb * b_dim1]
-                              - ddot_sl__(&i__1,
-                                          &a[i__ + j * a_dim1],
-                                          mda,
-                                          &b[j + jb * b_dim1],
-                                          &c__1))
+                              - ddot_sl(&i__1,
+                                        &a[i__ + j * a_dim1],
+                                        mda,
+                                        &b[j + jb * b_dim1],
+                                        &c__1))
                              / a[i__ + i__ * a_dim1];
     }
     /*   COMPLETE SOLUTION VECTOR */
@@ -2364,17 +2152,17 @@ L180:
     i__1 = k;
     for (i__ = 1; i__ <= i__1; ++i__) {
       /* L230: */
-      h12_(&c__2,
-           &i__,
-           &kp1,
-           n,
-           &a[i__ + a_dim1],
-           mda,
-           &g[i__],
-           &b[jb * b_dim1 + 1],
-           &c__1,
-           mdb,
-           &c__1);
+      h12(&c__2,
+          &i__,
+          &kp1,
+          n,
+          &a[i__ + a_dim1],
+          mda,
+          &g[i__],
+          &b[jb * b_dim1 + 1],
+          &c__1,
+          mdb,
+          &c__1);
     }
   /*   REORDER SOLUTION ACCORDING TO PREVIOUS COLUMN INTERCHANGES */
   L240:
@@ -2392,19 +2180,19 @@ L180:
 L270:
   *krank = k;
   return 0;
-} /* hfti_ */
+} /* hfti */
 
-/* Subroutine */ int h12_(int* mode,
-                          int* lpivot,
-                          int* l1,
-                          int* m,
-                          double* u,
-                          int* iue,
-                          double* up,
-                          double* c__,
-                          int* ice,
-                          int* icv,
-                          int* ncv) {
+/* Subroutine */ int h12(const int* mode,
+                         const int* lpivot,
+                         const int* l1,
+                         const int* m,
+                         double* u,
+                         const int* iue,
+                         double* up,
+                         double* c__,
+                         const int* ice,
+                         const int* icv,
+                         const int* ncv) {
   /* Initialized data */
 
   const double one = 1.;
@@ -2413,9 +2201,6 @@ L270:
   /* System generated locals */
   int u_dim1, u_offset, i__1, i__2;
   double d__1;
-
-  /* Builtin functions */
-  double sqrt(double);
 
   /* Local variables */
   double b;
@@ -2534,10 +2319,10 @@ L40:
   }
 L80:
   return 0;
-} /* h12_ */
+} /* h12 */
 
 /* Subroutine */ int
-ldl_(int* n, double* a, double* z__, double* sigma, double* w) {
+ldl(const int* n, double* a, double* z__, const double* sigma, double* w) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -2671,9 +2456,13 @@ L220:
 L280:
   return 0;
   /* END OF LDL */
-} /* ldl_ */
+} /* ldl */
 
-double linmin_(int* mode, double* ax, double* bx, double* f, double* tol) {
+double linmin(int* mode,
+              const double* ax,
+              const double* bx,
+              const double* f,
+              const double* tol) {
   /* Initialized data */
 
   const double c__ = .381966011;
@@ -2854,11 +2643,15 @@ L90:
 L100:
   return ret_val;
   /*  END OF LINMIN */
-} /* linmin_ */
+} /* linmin */
 
 /* ## Following a selection from BLAS Level 1 */
-/* Subroutine */ int
-daxpy_sl__(int* n, double* da, double* dx, int* incx, double* dy, int* incy) {
+/* Subroutine */ int daxpy_sl(const int* n,
+                              const double* da,
+                              const double* dx,
+                              const int* incx,
+                              double* dy,
+                              const int* incy) {
   /* System generated locals */
   int i__1;
 
@@ -2926,10 +2719,13 @@ L40:
     /* L50: */
   }
   return 0;
-} /* daxpy_sl__ */
+} /* daxpy_sl */
 
-/* Subroutine */ int
-dcopy___(int* n, double* dx, int* incx, double* dy, int* incy) {
+/* Subroutine */ int dcopy(const int* n,
+                           const double* dx,
+                           const int* incx,
+                           double* dy,
+                           const int* incy) {
   /* System generated locals */
   int i__1;
 
@@ -2997,9 +2793,13 @@ L40:
     /* L50: */
   }
   return 0;
-} /* dcopy___ */
+} /* dcopy */
 
-double ddot_sl__(int* n, double* dx, int* incx, double* dy, int* incy) {
+double ddot_sl(const int* n,
+               const double* dx,
+               const int* incx,
+               const double* dy,
+               const int* incy) {
   /* System generated locals */
   int i__1;
   double ret_val;
@@ -3070,9 +2870,9 @@ L40:
 L60:
   ret_val = dtemp;
   return ret_val;
-} /* ddot_sl__ */
+} /* ddot_sl */
 
-double dnrm1_(int* n, double* x, int* i__, int* j) {
+double dnrm1(const int* n, const double* x, const int* i__, const int* j) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -3081,9 +2881,6 @@ double dnrm1_(int* n, double* x, int* i__, int* j) {
   /* System generated locals */
   int i__1;
   double ret_val, d__1, d__2, d__3;
-
-  /* Builtin functions */
-  double sqrt(double);
 
   /* Local variables */
   int k;
@@ -3133,9 +2930,9 @@ double dnrm1_(int* n, double* x, int* i__, int* j) {
   sum = sqrt(sum);
   ret_val = snormx * sum;
   return ret_val;
-} /* dnrm1_ */
+} /* dnrm1 */
 
-double dnrm2___(int* n, double* dx, int* incx) {
+double dnrm2(const int* n, const double* dx, const int* incx) {
   /* Initialized data */
 
   const double zero = 0.;
@@ -3289,15 +3086,15 @@ L200:
   ret_val = xmax * sqrt(sum);
 L300:
   return ret_val;
-} /* dnrm2___ */
+} /* dnrm2 */
 
-/* Subroutine */ int dsrot_(int* n,
-                            double* dx,
-                            int* incx,
-                            double* dy,
-                            int* incy,
-                            double* c__,
-                            double* s) {
+/* Subroutine */ int dsrot(const int* n,
+                           double* dx,
+                           const int* incx,
+                           double* dy,
+                           const int* incy,
+                           const double* c__,
+                           const double* s) {
   /* System generated locals */
   int i__1;
 
@@ -3348,9 +3145,9 @@ L20:
     /* L30: */
   }
   return 0;
-} /* dsrot_ */
+} /* dsrot */
 
-/* Subroutine */ int dsrotg_(double* da, double* db, double* c__, double* s) {
+/* Subroutine */ int dsrotg(double* da, double* db, double* c__, double* s) {
   /* Initialized data */
 
   const double one = 1.;
@@ -3394,9 +3191,10 @@ L20:
   *da = r__;
   *db = z__;
   return 0;
-} /* dsrotg_ */
+} /* dsrotg */
 
-/* Subroutine */ int dscal_sl__(int* n, double* da, double* dx, int* incx) {
+/* Subroutine */ int
+dscal_sl(const int* n, const double* da, double* dx, const int* incx) {
   /* System generated locals */
   int i__1, i__2;
 
@@ -3452,9 +3250,10 @@ L40:
     /* L50: */
   }
   return 0;
-} /* dscal_sl__ */
+} /* dscal_sl */
 
-/* Subroutine */ int bound_(int* n, double* x, double* xl, double* xu) {
+/* Subroutine */ int
+bound(const int* n, double* x, const double* xl, const double* xu) {
   /* System generated locals */
   int i__1;
 
@@ -3477,4 +3276,4 @@ L40:
     }
   }
   return 0;
-} /* bound_ */
+} /* bound */
