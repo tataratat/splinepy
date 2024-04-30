@@ -3143,12 +3143,6 @@ double dnrm2___(int* n, double* dx, int* incx) {
   static double cutlo = 8.232e-11;
   static double cuthi = 1.304e19;
 
-  /* Format strings */
-  static char fmt_30[] = "";
-  static char fmt_50[] = "";
-  static char fmt_70[] = "";
-  static char fmt_110[] = "";
-
   /* System generated locals */
   int i__1, i__2;
   double ret_val, d__1;
@@ -3158,9 +3152,6 @@ double dnrm2___(int* n, double* dx, int* incx) {
   double sum, xmax;
   int next;
   double hitest;
-
-  /* Assigned format variables */
-  static char* next_fmt;
 
   /* Parameter adjustments */
   --dx;
@@ -3205,7 +3196,6 @@ double dnrm2___(int* n, double* dx, int* incx) {
   goto L300;
 L10:
   next = 0;
-  next_fmt = fmt_30;
   sum = zero;
   nn = *n * *incx;
   /*                       BEGIN MAIN LOOP */
@@ -3226,7 +3216,6 @@ L30:
     goto L85;
   }
   next = 1;
-  next_fmt = fmt_50;
   xmax = zero;
 /*                        PHASE 1.  SUM IS ZERO */
 L50:
@@ -3238,13 +3227,11 @@ L50:
   }
   /*                        PREPARE FOR PHASE 2. */
   next = 2;
-  next_fmt = fmt_70;
   goto L105;
 /*                        PREPARE FOR PHASE 4. */
 L100:
   i__ = j;
   next = 3;
-  next_fmt = fmt_110;
   sum = sum / dx[i__] / dx[i__];
 L105:
   xmax = (d__1 = dx[i__], fabs(d__1));
