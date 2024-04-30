@@ -27,7 +27,7 @@ set(SPLINEPY_MORE_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier9.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier10.cpp)
 
-set(SPLINEPY_SLSQP_SRCS ${PROJECT_SOURCE_DIR}/src/proximity/slsqp/slsqp.f)
+set(SPLINEPY_SLSQP_SRCS ${PROJECT_SOURCE_DIR}/src/proximity/slsqp/slsqp.c)
 
 # extend src for high dim splines
 if(SPLINEPY_MORE)
@@ -36,7 +36,7 @@ endif(SPLINEPY_MORE)
 
 add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
 add_library(splinepy::slsqp ALIAS slsqp)
-target_compile_options(slsqp PRIVATE -std=legacy -O3 -fPIC)
+target_compile_options(slsqp PRIVATE -O3 -fPIC)
 
 # target
 add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
