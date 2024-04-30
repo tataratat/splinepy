@@ -84,7 +84,7 @@ el/6725 */
   int a_dim1, a_offset, i__1, i__2;
 
   /* Local variables */
-  static int il, im, ir, is, iu, iv, iw, ix, mineq;
+  int il, im, ir, is, iu, iv, iw, ix, mineq;
   extern /* Subroutine */ int slsqpb_(int*,
                                       int*,
                                       int*,
@@ -445,7 +445,7 @@ el/6725 */
   /* Local variables */
   extern /* Subroutine */ int dscal_sl__(int*, double*, double*, int*),
       daxpy_sl__(int*, double*, double*, int*, double*, int*);
-  static int i__, j, k;
+  int i__, j, k;
   extern /* Subroutine */ int ldl_(int*, double*, double*, double*, double*),
       lsq_(int*,
            int*,
@@ -464,7 +464,7 @@ el/6725 */
            int*,
            int*);
   extern double dnrm2___(int*, double*, int*);
-  static int badlin;
+  int badlin;
   extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
   extern double linmin_(int*, double*, double*, double*, double*),
       ddot_sl__(int*, double*, int*, double*, int*);
@@ -886,9 +886,9 @@ L330:
 
   /* Local variables */
   extern /* Subroutine */ int dscal_sl__(int*, double*, double*, int*);
-  static int i__, j, i1, i2, i3, i4, m1, n1, n2, n3, ic, id, ie, if__, ig, ih,
-      il, ip, iw;
-  static double diag;
+  int i__, j, i1, i2, i3, i4, m1, n1, n2, n3, ic, id, ie, if__, ig, ih, il, ip,
+      iw;
+  double diag;
   extern /* Subroutine */ int lsei_(double*,
                                     double*,
                                     double*,
@@ -908,10 +908,10 @@ L330:
                                     int*,
                                     int*),
       bound_(int*, double*, double*, double*);
-  static int mineq;
-  static double xnorm;
+  int mineq;
+  double xnorm;
   extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
-  static int nancnt;
+  int nancnt;
   extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*   MINIMIZE with respect to X */
@@ -1154,8 +1154,8 @@ L330:
   double sqrt(double);
 
   /* Local variables */
-  static int i__, j, k, l;
-  static double t;
+  int i__, j, k, l;
+  double t;
   extern /* Subroutine */ int h12_(int*,
                                    int*,
                                    int*,
@@ -1167,7 +1167,7 @@ L330:
                                    int*,
                                    int*,
                                    int*);
-  static int ie, if__, ig, iw, mc1;
+  int ie, if__, ig, iw, mc1;
   extern /* Subroutine */ int lsi_(double*,
                                    double*,
                                    double*,
@@ -1195,8 +1195,8 @@ L330:
             double*,
             double*,
             int*);
-  static int krank;
-  static double rnorm[1];
+  int krank;
+  double rnorm[1];
   extern double dnrm2___(int*, double*, int*);
   extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
   extern double ddot_sl__(int*, double*, int*, double*, int*);
@@ -1480,8 +1480,8 @@ L75:
                                          int*,
                                          double*,
                                          int*);
-  static int i__, j;
-  static double t;
+  int i__, j;
+  double t;
   extern /* Subroutine */ int h12_(int*,
                                    int*,
                                    int*,
@@ -1655,8 +1655,8 @@ L50:
                                          int*,
                                          double*,
                                          int*);
-  static int i__, j, n1, if__, iw, iy, iz;
-  static double fac;
+  int i__, j, n1, if__, iw, iy, iz;
+  double fac;
   extern /* Subroutine */ int nnls_(double*,
                                     int*,
                                     int*,
@@ -1668,10 +1668,10 @@ L50:
                                     double*,
                                     int*,
                                     int*);
-  static double rnorm;
+  double rnorm;
   extern double dnrm2___(int*, double*, int*);
   extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*);
-  static int iwdual;
+  int iwdual;
   extern double ddot_sl__(int*, double*, int*, double*, int*);
 
   /*                     T */
@@ -1819,9 +1819,9 @@ L50:
                                          int*,
                                          double*,
                                          int*);
-  static double c__;
-  static int i__, j, k, l;
-  static double s, t;
+  double c__;
+  int i__, j, k, l;
+  double s, t;
   extern /* Subroutine */ int h12_(int*,
                                    int*,
                                    int*,
@@ -1833,14 +1833,14 @@ L50:
                                    int*,
                                    int*,
                                    int*);
-  static int ii, jj, ip, iz, jz;
-  static double up;
-  static int iz1, iz2, npp1, iter;
-  static double wmax, alpha, asave;
-  static int itmax, izmax, nsetp;
+  int ii, jj, ip, iz, jz;
+  double up;
+  int iz1, iz2, npp1, iter;
+  double wmax, alpha, asave;
+  int itmax, izmax, nsetp;
   extern /* Subroutine */ int
   dsrot_(int*, double*, int*, double*, int*, double*, double*);
-  static double unorm;
+  double unorm;
   extern double dnrm2___(int*, double*, int*);
   extern /* Subroutine */ int dcopy___(int*, double*, int*, double*, int*),
       dsrotg_(double*, double*, double*, double*);
@@ -2133,7 +2133,7 @@ L290:
   double d__1;
 
   /* Local variables */
-  static int i__, j, k, l;
+  int i__, j, k, l;
   extern /* Subroutine */ int h12_(int*,
                                    int*,
                                    int*,
@@ -2145,9 +2145,9 @@ L290:
                                    int*,
                                    int*,
                                    int*);
-  static int jb, kp1;
-  static double tmp, hmax;
-  static int lmax, ldiag;
+  int jb, kp1;
+  double tmp, hmax;
+  int lmax, ldiag;
   extern double dnrm2___(int*, double*, int*),
       ddot_sl__(int*, double*, int*, double*, int*);
 
@@ -2418,11 +2418,11 @@ L270:
   double sqrt(double);
 
   /* Local variables */
-  static double b;
-  static int i__, j, i2, i3, i4;
-  static double cl, sm;
-  static int incr;
-  static double clinv;
+  double b;
+  int i__, j, i2, i3, i4;
+  double cl, sm;
+  int incr;
+  double clinv;
 
   /*     C.L.LAWSON AND R.J.HANSON, JET PROPULSION LABORATORY, 1973 JUN 12 */
   /*     TO APPEAR IN 'SOLVING LEAST SQUARES PROBLEMS', PRENTICE-HALL, 1974 */
@@ -2549,10 +2549,10 @@ ldl_(int* n, double* a, double* z__, double* sigma, double* w) {
   int i__1, i__2;
 
   /* Local variables */
-  static int i__, j;
-  static double t, u, v;
-  static int ij;
-  static double tp, beta, gamma, alpha, delta;
+  int i__, j;
+  double t, u, v;
+  int ij;
+  double tp, beta, gamma, alpha, delta;
 
   /*   LDL     LDL' - RANK-ONE - UPDATE */
   /*   PURPOSE: */
@@ -2684,8 +2684,7 @@ double linmin_(int* mode, double* ax, double* bx, double* f, double* tol) {
   double ret_val, d__1;
 
   /* Local variables */
-  static double a, b, d__, e, m, p, q, r__, u, v, w, x, fu, fv, fw, fx, tol1,
-      tol2;
+  double a, b, d__, e, m, p, q, r__, u, v, w, x, fu, fv, fw, fx, tol1, tol2;
 
   /*   LINMIN  LINESEARCH WITHOUT DERIVATIVES */
   /*   PURPOSE: */
@@ -2864,7 +2863,7 @@ daxpy_sl__(int* n, double* da, double* dx, int* incx, double* dy, int* incy) {
   int i__1;
 
   /* Local variables */
-  static int i__, m, ix, iy, mp1;
+  int i__, m, ix, iy, mp1;
 
   /*     CONSTANT TIMES A VECTOR PLUS A VECTOR. */
   /*     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE. */
@@ -2935,7 +2934,7 @@ dcopy___(int* n, double* dx, int* incx, double* dy, int* incy) {
   int i__1;
 
   /* Local variables */
-  static int i__, m, ix, iy, mp1;
+  int i__, m, ix, iy, mp1;
 
   /*     COPIES A VECTOR, X, TO A VECTOR, Y. */
   /*     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE. */
@@ -3006,8 +3005,8 @@ double ddot_sl__(int* n, double* dx, int* incx, double* dy, int* incy) {
   double ret_val;
 
   /* Local variables */
-  static int i__, m, ix, iy, mp1;
-  static double dtemp;
+  int i__, m, ix, iy, mp1;
+  double dtemp;
 
   /*     FORMS THE DOT PRODUCT OF TWO VECTORS. */
   /*     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE. */
@@ -3087,8 +3086,8 @@ double dnrm1_(int* n, double* x, int* i__, int* j) {
   double sqrt(double);
 
   /* Local variables */
-  static int k;
-  static double sum, temp, scale, snormx;
+  int k;
+  double sum, temp, scale, snormx;
 
   /* Parameter adjustments */
   --x;
@@ -3154,14 +3153,11 @@ double dnrm2___(int* n, double* dx, int* incx) {
   int i__1, i__2;
   double ret_val, d__1;
 
-  /* Builtin functions */
-  double sqrt(double);
-
   /* Local variables */
-  static int i__, j, nn;
-  static double sum, xmax;
-  static int next;
-  static double hitest;
+  int i__, j, nn;
+  double sum, xmax;
+  int next;
+  double hitest;
 
   /* Assigned format variables */
   static char* next_fmt;
@@ -3319,8 +3315,8 @@ L300:
   int i__1;
 
   /* Local variables */
-  static int i__, ix, iy;
-  static double dtemp;
+  int i__, ix, iy;
+  double dtemp;
 
   /*     APPLIES A PLANE ROTATION. */
   /*     JACK DONGARRA, LINPACK, 3/11/78. */
@@ -3377,7 +3373,7 @@ L20:
   double d__1, d__2;
 
   /* Local variables */
-  static double r__, z__, roe, scale;
+  double r__, z__, roe, scale;
 
   /*     CONSTRUCT GIVENS PLANE ROTATION. */
   /*     JACK DONGARRA, LINPACK, 3/11/78. */
@@ -3418,7 +3414,7 @@ L20:
   int i__1, i__2;
 
   /* Local variables */
-  static int i__, m, mp1, nincx;
+  int i__, m, mp1, nincx;
 
   /*     SCALES A VECTOR BY A CONSTANT. */
   /*     USES UNROLLED LOOPS FOR INCREMENT EQUAL TO ONE. */
@@ -3476,7 +3472,7 @@ L40:
   int i__1;
 
   /* Local variables */
-  static int i__;
+  int i__;
 
   /* Parameter adjustments */
   --xu;
