@@ -119,6 +119,12 @@ install(
   FILES_MATCHING
   PATTERN "*.hpp")
 
+install(
+  DIRECTORY "${PROJECT_SOURCE_DIR}/include/splinepy"
+  DESTINATION ${incl_dest} # target directory
+  FILES_MATCHING
+  PATTERN "*.h")
+
 # inline files - keep tree
 install(
   DIRECTORY "${PROJECT_SOURCE_DIR}/include/splinepy"
