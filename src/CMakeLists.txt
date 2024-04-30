@@ -37,6 +37,9 @@ endif(SPLINEPY_MORE)
 add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
 add_library(splinepy::slsqp ALIAS slsqp)
 target_compile_options(slsqp PRIVATE -O3 -fPIC)
+target_include_directories(
+  slsqp PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+               $<INSTALL_INTERFACE:${incl_dest}>)
 
 # target
 add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
