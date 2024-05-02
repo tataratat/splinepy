@@ -213,10 +213,10 @@ public:
   /// Proximity query (verbose)
   py::tuple Proximities(py::array_t<double> queries,
                         py::array_t<int> initial_guess_sample_resolutions,
-                        double tolerance,
+                        const double tolerance,
                         const int max_iterations,
-                        bool aggresive_search_bounds,
-                        int nthreads);
+                        const bool aggresive_search_bounds,
+                        const int nthreads);
 
   /// (multiple) Degree elevation
   void ElevateDegrees(py::array_t<int> para_dims);
