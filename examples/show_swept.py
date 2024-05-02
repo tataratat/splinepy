@@ -27,14 +27,6 @@ if __name__ == "__main__":
     # define sections along trajectory
     nsect = len(kvs1[0])-ds1[0]-1
 
-    # compute parameter values for inserting cross sections
-    par_value = np.zeros((nsect,1))
-    for i in range(nsect):
-        par_value[i][0] = (kvs1[0][i+1]+kvs1[0][i+2])/2
-
-    # evaluate trajectory at these parameter values
-    evals = trajectory.evaluate(par_value)
- 
     # cross section
     # define degrees
     ds_cs = [1]
@@ -57,26 +49,10 @@ if __name__ == "__main__":
         control_points=cps_cs,
     )
 
-    # set cross section CPs along trajectory
-    cps_eval = []
-    for eval_point in evals:
-        # for-loop representing the nr. of cross section CPs
-        # note: only working for this special case
-        for i in range(len(cps_cs)): 
-            current_cps = []
-            current_cps.append(eval_point[0])
-            current_cps.append(eval_point[1])
-            current_cps.append(cps_cs[i][2])
-            cps_eval.append(current_cps)
-
-    fitting_points = np.array(cps_eval)
-    
-    # fit surface
-    interpolated_surface, _ = splinepy.helpme.fit.surface(
-        fitting_points=fitting_points,
-        size=[2, 3],
-        n_control_points=[2, 3],
-        degrees=[1, 2],
+    interpolated_surface = splinepy.helpme.create.swept(
+        trajectory=trajectory,
+        cross_section=cross_section,
+        nsections=nsect,
     )
     
     # testing derivative and evaluation
