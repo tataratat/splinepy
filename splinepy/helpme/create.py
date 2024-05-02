@@ -332,12 +332,14 @@ def swept(cross_section, trajectory, nsections):
         # local directions in global coordinates
         x = traj.derivative([[v]], [1]) / _np.linalg.norm(traj.derivative([[v]], [1]) )
         z = _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])) / _np.linalg.norm(_np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])))
-        y = _np.cross(x,z)
-        # transformation matrix
-        A = []
-        A = _np.vstack((x, y, z))
+        y = _np.cross(z,x)
+        # transformation matrix from global to local coordinates
+        T = []
+        T = _np.vstack((x, y, z))
+        # transformation matrix from local to global coordinates
+        A = _np.linalg.inv(T)
         return A
-        
+      
     A = transformation_matrix(trajectory, 0)
     print(A)
 
@@ -349,7 +351,7 @@ def swept(cross_section, trajectory, nsections):
     # evaluate trajectory at these parameter values
     evals = trajectory.evaluate(par_value)
 
-    # set cross section CPs along trajectory
+    # set cross section evaluation points along trajectory
     cps_eval = []
     for eval_point in evals:
         # for-loop representing the nr. of cross section CPs

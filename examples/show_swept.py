@@ -54,7 +54,7 @@ if __name__ == "__main__":
         cross_section=cross_section,
         nsections=nsect,
     )
-    
+
     # testing derivative and evaluation
     # derivative = trajectory.derivative([[0.5], [1]], [1])
     # evals = trajectory.evaluate([[0.5]])
@@ -70,6 +70,9 @@ if __name__ == "__main__":
     trajectory.show_options["arrow_data_on"] = np.linspace(0, 1, 20).reshape(
         -1, 1
     )
+    trajectory.show_options["control_mesh"] = False
+    cross_section.show_options["control_mesh"] = False
+    interpolated_surface.show_options["control_mesh"] = False
 
     gus.show(
         ["Trajectory", trajectory],
