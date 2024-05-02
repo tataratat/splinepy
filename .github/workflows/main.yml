@@ -6,7 +6,7 @@ on:
 
 jobs:
   macos_wheel:
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       matrix:
         arch: [x86_64]
@@ -30,7 +30,7 @@ jobs:
         retention-days: 2
 
   macos_wheel-m1:
-    runs-on: macos-latest
+    runs-on: macos-14
     strategy:
       matrix:
         arch: [arm64]
