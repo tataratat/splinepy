@@ -66,8 +66,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       -Wno-unused-variable
       -Wzero-as-null-pointer-constant)
 else()
-  message(WARNING "Unsupported compiler."
-                  "splinepy is tested with GNU and Clang.")
+  message(WARNING "Untested compiler. splinepy is tested with GNU and Clang.")
 endif()
 
 # for warning we extend flags
