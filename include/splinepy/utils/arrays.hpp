@@ -514,11 +514,11 @@ public:
 
   /// @brief L2 norm
   /// @return
-  constexpr DataType NormL2() { return std::sqrt(NormL2Squared()); }
+  constexpr DataType NormL2() const { return std::sqrt(NormL2Squared()); }
 
   /// @brief squared euclidean norm
   /// @return
-  constexpr DataType NormL2Squared() {
+  constexpr DataType NormL2Squared() const {
     DataType norm{};
     for (IndexType i{}; i < size_; ++i) {
       const DataType& data_i = data_[i];
