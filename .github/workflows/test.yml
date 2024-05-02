@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10"]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v4
@@ -27,13 +27,6 @@ jobs:
 
     - name: install dependencies
       run: pip install numpy
-
-    - name: build splinepy minimal/debug/warning
-      uses: fortran-lang/setup-fortran@v1
-      id: setup-fortran
-      with:
-        compiler: gcc
-        version: 11
 
     - name: build
       run: |
