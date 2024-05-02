@@ -36,7 +36,9 @@ endif(SPLINEPY_MORE)
 
 add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
 add_library(splinepy::slsqp ALIAS slsqp)
-target_compile_options(slsqp PRIVATE -O3 -fPIC)
+# as we don't really want to edit the source, we don't to add warning flags
+target_compile_options(slsqp PRIVATE -fPIC ${SPLINEPY_OPTIMIZATION_FLAGS})
+target_compile_definitions(slsqp PRIVATE ${SPLINEPY_DEFS})
 target_include_directories(
   slsqp PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                $<INSTALL_INTERFACE:${incl_dest}>)
