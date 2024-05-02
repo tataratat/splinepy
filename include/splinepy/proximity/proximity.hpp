@@ -73,7 +73,7 @@ struct SearchData {
   /// @brief SLSQP specific search data. members are organized in the same order
   /// as the function call
   struct SLSQPData {
-    /// n constratins, n equality constraints, max(m, 1), n variables
+    /// n constraints, n equality constraints, max(m, 1), n variables
     int m, meq, la, n;
 
     /// current guess, lower bounds, upper bounds,

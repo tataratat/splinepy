@@ -214,7 +214,7 @@ public:
   py::tuple Proximities(py::array_t<double> queries,
                         py::array_t<int> initial_guess_sample_resolutions,
                         double tolerance,
-                        int max_iterations,
+                        const int max_iterations,
                         bool aggresive_search_bounds,
                         int nthreads);
 
