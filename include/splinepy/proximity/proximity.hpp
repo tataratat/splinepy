@@ -384,7 +384,7 @@ public:
   /// @param[in] query
   /// @param[in] tolerance
   /// @param[in] max_iterations
-  /// @param[in] aggressive_bounds
+  /// @param[in] tight_bounds
   /// @param[out] final_guess (para_dim)
   /// @param[out] nearest (dim)
   /// @param[out] nearest_minus_query (dim)
@@ -395,7 +395,7 @@ public:
   void VerboseQuery(const double* query,
                     const double& tolerance,
                     const int& max_iterations,
-                    const bool aggressive_bounds,
+                    const bool tight_bounds,
                     double* final_guess,
                     double* nearest /* spline(final_guess) */,
                     double* nearest_minus_query /* difference */,
