@@ -6,7 +6,7 @@ from gustaf.utils import arr as _arr
 from splinepy import settings as _settings
 from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
-
+from splinepy.helpme.fit import surface
 
 def embedded(spline, new_dimension):
     """Embeds Spline in given dimension.
@@ -324,15 +324,38 @@ def swept(cross_section, trajectory, nsections):
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweeps only works for splines")
 
-    # Check if trajectory is a curve
-    if trajectory.dim != 1:
-        raise ValueError("Trajectory must be a curve")
+    # compute parameter values for inserting cross sections
+    par_value = _np.zeros((nsections,1))
+    for i in range(nsections):
+        par_value[i][0] = (trajectory.knot_vectors[0][i+1]+trajectory.knot_vectors[0][i+2])/2
 
-    # dummy variable for nsections
-    _ = nsections
+    # evaluate trajectory at these parameter values
+    evals = trajectory.evaluate(par_value)
 
-    # IMPLEMENTATION OF SWEEPING SURFACE
+    # set cross section CPs along trajectory
+    cps_eval = []
+    for eval_point in evals:
+        # for-loop representing the nr. of cross section CPs
+        # note: only working for this special case
+        for i in range(len(cross_section.control_points)): 
+            current_cps = []
+            current_cps.append(eval_point[0])
+            current_cps.append(eval_point[1])
+            current_cps.append(cross_section.control_points[i][2])
+            cps_eval.append(current_cps)
 
+    fitting_points = _np.array(cps_eval)
+    
+    # fit surface
+    interpolated_surface, _ = surface(
+        fitting_points=fitting_points,
+        size=[2, 3],
+        n_control_points=[2, 3],
+        degrees=[1, 2],
+    )
+
+    return interpolated_surface
+    
 
 def from_bounds(parametric_bounds, physical_bounds):
     """Creates a minimal spline with given parametric bounds, physical bounds.
