@@ -1454,8 +1454,8 @@ class Spline(_SplinepyBase, _core.PySpline):
         queries = _utils.data.enforce_contiguous(queries, dtype="float64")
 
         # set small tolerance.
-        if tolerance is None and _settings.TOLERANCE > 1.0e-18:
-            tolerance = 1e-18
+        if tolerance is None and _settings.TOLERANCE > 1.0e-15:
+            tolerance = 1e-15
 
         verbose_info = super().proximities(
             queries=queries,

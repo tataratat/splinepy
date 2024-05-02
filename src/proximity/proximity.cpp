@@ -25,7 +25,8 @@ void SearchData::SLSQPData::Setup(SearchData& d) {
   g = g_space.data(); // before calling, ccall CopyDerivativce() to fill this
 
   a = nullptr;
-  acc = d.options.tolerance;
+  // since SLSQP uses true J value, we adjust the tolerance accordingly
+  acc = d.options.tolerance * d.options.tolerance * 0.5;
   iter = d.options.max_iter;
   mode = 0; // initialize
 
@@ -549,8 +550,16 @@ void Proximity::Slsqp(SearchData& d) const {
   d.SLSQP.Setup(d);
   PrepareIterationSlsqp(d);
 
+  ComputeStatus(d, false);
+
+  // set convergence goal based on the first round
+  d.options.convergence_goal = ConvergenceGoal(d.status.convergence_norm,
+                                               d.options.tolerance,
+                                               d.options.tolerance);
+
   int i{};
   while (true) {
+
     // call slsqp
     slsqp(&d.SLSQP.m,
           &d.SLSQP.meq,
@@ -594,8 +603,15 @@ void Proximity::Slsqp(SearchData& d) const {
     if (std::abs(d.SLSQP.mode) != 1) {
       break;
     }
+
     d.status.stop_iteration = ++i;
   }
+
+  // compute status for further pipeline
+  // once slsqp finds solution within the tolernace, it evaluates g once more
+  // so we probably don't need to recompute.
+  // just to be safe.
+  ComputeStatus(d, true);
 }
 
 void Proximity::VerboseQuery(
@@ -643,7 +659,6 @@ void Proximity::VerboseQuery(
     if (!data.spline_hessian.OwnsData()) {
       splinepy::utils::CopyUpperToLowerTriangle(data.spline_hessian);
     }
-    splinepy::utils::PrintInfo("Newton!");
     return;
   }
 
@@ -654,7 +669,6 @@ void Proximity::VerboseQuery(
     if (!data.spline_hessian.OwnsData()) {
       FillHessian(spline_, data.current_guess, data.spline_hessian);
     }
-    splinepy::utils::PrintInfo("SLSQP");
     return;
   }
 
@@ -665,7 +679,6 @@ void Proximity::VerboseQuery(
   data.options.max_iter *= 5;
   LevenbergMarquart(data);
   FillHessian(spline_, data.current_guess, data.spline_hessian);
-  splinepy::utils::PrintInfo("LM");
 }
 
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
