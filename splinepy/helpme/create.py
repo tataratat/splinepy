@@ -324,6 +324,23 @@ def swept(cross_section, trajectory, nsections):
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweeps only works for splines")
 
+    # compute transformation matrix 
+    # parameters: trajectory traj and parametric value v
+    def transformation_matrix(traj, v):
+        # origin of local coordinate system
+        o = traj.evaluate([[v]])
+        # local directions in global coordinates
+        x = traj.derivative([[v]], [1]) / _np.linalg.norm(traj.derivative([[v]], [1]) )
+        z = _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])) / _np.linalg.norm(_np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])))
+        y = _np.cross(x,z)
+        # transformation matrix
+        A = []
+        A = _np.vstack((x, y, z))
+        return A
+        
+    A = transformation_matrix(trajectory, 0)
+    print(A)
+
     # compute parameter values for inserting cross sections
     par_value = _np.zeros((nsections,1))
     for i in range(nsections):
