@@ -336,9 +336,10 @@ void Proximity::ComputeStatus(SearchData& data,
 }
 
 void Proximity::FindSearchBound(SearchData& data, const bool tight) const {
+  spline_.SplinepyParametricBounds(data.search_bounds.data());
+
+  // set search bounds to para bounds and early exit
   if (!tight) {
-    // set search bounds to para bounds and early exit
-    spline_.SplinepyParametricBounds(data.search_bounds.data());
     return;
   }
 
@@ -618,7 +619,7 @@ void Proximity::VerboseQuery(
     const double* query,
     const double& tolerance,
     const int& max_iterations,
-    const bool aggressive_bounds,
+    const bool tight_bounds,
     double* final_guess,
     double* nearest /* spline(final_guess) */,
     double* nearest_minus_query /* difference */,
@@ -647,7 +648,7 @@ void Proximity::VerboseQuery(
   MakeInitialGuess(data);
 
   // set bounds
-  FindSearchBound(data, aggressive_bounds);
+  FindSearchBound(data, tight_bounds);
 
   // we first start with Newton
   Newton(data);

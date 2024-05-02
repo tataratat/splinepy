@@ -200,7 +200,7 @@ public:
   virtual void SplinepyVerboseProximity(const double* query,
                                         const double& tolerance,
                                         const int& max_iterations,
-                                        const bool aggressive_bounds,
+                                        const bool tight_bounds,
                                         double* para_coord,
                                         double* phys_coord,
                                         double* phys_diff,

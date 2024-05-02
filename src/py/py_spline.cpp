@@ -874,7 +874,7 @@ void init_pyspline(py::module& m) {
            py::arg("initial_guess_sample_resolutions"),
            py::arg("tolerance"),
            py::arg("max_iterations") = -1,
-           py::arg("aggressive_search_bounds") = false,
+           py::arg("tight_search_bounds") = false,
            py::arg("nthreads") = 1)
       .def("elevate_degrees",
            &splinepy::py::PySpline::ElevateDegrees,
