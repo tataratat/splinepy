@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12.0)
 project(
   splinepy
   VERSION 0.0.2
-  LANGUAGES CXX)
+  LANGUAGES C CXX)
 
 # build options
 option(SPLINEPY_COMPILE_BSPLINELIB "Compile bsplinelib together." ON)
@@ -66,8 +66,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       -Wno-unused-variable
       -Wzero-as-null-pointer-constant)
 else()
-  message(WARNING "Unsupported compiler."
-                  "splinepy is tested with GNU and Clang.")
+  message(WARNING "Untested compiler. splinepy is tested with GNU and Clang.")
 endif()
 
 # for warning we extend flags

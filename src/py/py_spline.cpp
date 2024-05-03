@@ -661,10 +661,10 @@ py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
 py::tuple
 PySpline::Proximities(py::array_t<double> queries,
                       py::array_t<int> initial_guess_sample_resolutions,
-                      double tolerance,
-                      int max_iterations,
-                      bool aggresive_search_bounds,
-                      int nthreads) {
+                      const double tolerance,
+                      const int max_iterations,
+                      const bool aggresive_search_bounds,
+                      const int nthreads) {
   CheckPyArrayShape(queries, {-1, dim_}, true);
   CheckPyArraySize(initial_guess_sample_resolutions, para_dim_);
 
@@ -673,13 +673,14 @@ PySpline::Proximities(py::array_t<double> queries,
   const int ppd = para_dim_ * pd;
 
   // prepare results
-  py::array_t<double> para_coord(n_queries * para_dim_);
-  py::array_t<double> phys_coord(n_queries * dim_);
-  py::array_t<double> phys_diff(n_queries * dim_);
-  py::array_t<double> distance(n_queries);
-  py::array_t<double> convergence_norm(n_queries);
-  py::array_t<double> first_derivatives(n_queries * pd);
-  py::array_t<double> second_derivatives(n_queries * ppd);
+  py::array_t<double> para_coord({n_queries, para_dim_});
+  py::array_t<double> phys_coord({n_queries, dim_});
+  py::array_t<double> phys_diff({n_queries, dim_});
+  py::array_t<double> distance({n_queries, 1});
+  py::array_t<double> convergence_norm({n_queries, 1});
+  py::array_t<double> first_derivatives({n_queries, para_dim_, dim_});
+  py::array_t<double> second_derivatives(
+      {n_queries, para_dim_, para_dim_, dim_});
 
   // prepare lambda for nthread exe
   double* queries_ptr = static_cast<double*>(queries.request().ptr);
@@ -745,14 +746,6 @@ PySpline::Proximities(py::array_t<double> queries,
   }
 
   splinepy::utils::NThreadExecution(proximities, n_queries, nthreads);
-
-  para_coord.resize({n_queries, para_dim_});
-  phys_coord.resize({n_queries, para_dim_});
-  phys_diff.resize({n_queries, dim_});
-  distance.resize({n_queries, 1});
-  convergence_norm.resize({n_queries, 1});
-  first_derivatives.resize({n_queries, para_dim_, dim_});
-  second_derivatives.resize({n_queries, para_dim_, para_dim_, dim_});
 
   return py::make_tuple(para_coord,
                         phys_coord,
@@ -874,7 +867,7 @@ void init_pyspline(py::module& m) {
            py::arg("initial_guess_sample_resolutions"),
            py::arg("tolerance"),
            py::arg("max_iterations") = -1,
-           py::arg("aggressive_search_bounds") = false,
+           py::arg("tight_search_bounds") = false,
            py::arg("nthreads") = 1)
       .def("elevate_degrees",
            &splinepy::py::PySpline::ElevateDegrees,

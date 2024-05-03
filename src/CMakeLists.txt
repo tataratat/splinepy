@@ -27,10 +27,21 @@ set(SPLINEPY_MORE_SRCS
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier9.cpp
     ${PROJECT_SOURCE_DIR}/src/splines/create/rational_bezier10.cpp)
 
+set(SPLINEPY_SLSQP_SRCS ${PROJECT_SOURCE_DIR}/src/proximity/slsqp/slsqp.c)
+
 # extend src for high dim splines
 if(SPLINEPY_MORE)
   set(SPLINEPY_SRCS ${SPLINEPY_SRCS} ${SPLINEPY_MORE_SRCS})
 endif(SPLINEPY_MORE)
+
+add_library(slsqp ${SPLINEPY_SLSQP_SRCS})
+add_library(splinepy::slsqp ALIAS slsqp)
+# as we don't really want to edit the source, we don't to add warning flags
+target_compile_options(slsqp PRIVATE -fPIC ${SPLINEPY_OPTIMIZATION_FLAGS})
+target_compile_definitions(slsqp PRIVATE ${SPLINEPY_DEFS})
+target_include_directories(
+  slsqp PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+               $<INSTALL_INTERFACE:${incl_dest}>)
 
 # target
 add_library(splinepy ${SPLINEPY_LIB_TYPE} ${SPLINEPY_SRCS})
@@ -49,7 +60,7 @@ endif()
 
 # link
 target_link_libraries(splinepy PUBLIC bezman napf BSplineLib::splines
-                                      BSplineLib::input_output)
+                                      BSplineLib::input_output slsqp)
 
 # explicit?
 if(SPLINEPY_BUILD_EXPLICIT)
@@ -88,6 +99,14 @@ install(
   INCLUDES
   DESTINATION "${incl_dest}")
 
+install(
+  TARGETS slsqp
+  EXPORT "${TARGETS_EXPORT_NAME}"
+  LIBRARY DESTINATION ${lib_dest}
+  ARCHIVE DESTINATION ${lib_dest}
+  INCLUDES
+  DESTINATION "${incl_dest}")
+
 # config files
 install(FILES "${project_config}" "${version_config}" DESTINATION "${cfg_dest}")
 install(
@@ -101,6 +120,12 @@ install(
   DESTINATION ${incl_dest} # target directory
   FILES_MATCHING
   PATTERN "*.hpp")
+
+install(
+  DIRECTORY "${PROJECT_SOURCE_DIR}/include/splinepy"
+  DESTINATION ${incl_dest} # target directory
+  FILES_MATCHING
+  PATTERN "*.h")
 
 # inline files - keep tree
 install(

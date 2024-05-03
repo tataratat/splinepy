@@ -8,6 +8,13 @@
 
 namespace splinepy::proximity {
 
+using RealArray = splinepy::utils::Array<double>;
+using RealArray2D = splinepy::utils::Array<double, 2>;
+using RealArray3D = splinepy::utils::Array<double, 3>;
+using IndexArray = splinepy::utils::Array<int>;
+using ConstRealArray = splinepy::utils::Array<const double>;
+using LhsMatrix = splinepy::utils::Matrix<double, int>;
+
 /// @brief compute convergence goal based on first norm and tolerances.
 /// @tparam T
 /// @param first_norm
@@ -18,6 +25,172 @@ template<typename T>
 T ConvergenceGoal(const T& first_norm, const T& rel_tol, const T& abs_tol) {
   return std::max(first_norm * rel_tol, abs_tol);
 }
+
+/// struct to hold temporary data during the search.
+/// This should allow easier transition to fallback methods.
+struct SearchData {
+  int para_dim;
+  int dim;
+
+  // view array
+  ConstRealArray phys_query;
+  // either view or allocated
+  RealArray current_guess;
+  RealArray current_phys;
+  RealArray difference;
+  RealArray2D spline_gradient;
+  RealArray3D spline_hessian;
+
+  // local allocated
+  RealArray initial_guess;
+  RealArray2D d2jdu2;
+  RealArray djdu;
+  RealArray delta_guess;
+  RealArray2D spline_gradient_AAt;
+  RealArray2D search_bounds;
+  RealArray lower_bound; // view to search bounds
+  RealArray upper_bound; // view to search bounds
+  IndexArray clipped;
+
+  /// lhs matrix based on 2D array. Created by search methods
+  std::unique_ptr<LhsMatrix> lhs_matrix;
+
+  struct {
+    double J; // .5 distance^2
+    double distance;
+    double squared_distance;
+    double convergence_norm;
+    int stop_iteration;
+  } status;
+
+  struct {
+    int max_iter;
+    double tolerance;
+    // this should be set by calling ComputeConvergenceGoal()
+    double convergence_goal;
+  } options;
+
+  /// @brief SLSQP specific search data. members are organized in the same order
+  /// as the function call
+  struct SLSQPData {
+    /// n constraints, n equality constraints, max(m, 1), n variables
+    int m, meq, la, n;
+
+    /// current guess, lower bounds, upper bounds,
+    double *x, *xl, *xu;
+
+    /// value or objective (J)
+    double f;
+
+    /// m vector of constraints, partials of objective, m x n constraint normals
+    double *c, *g, *a; // m vector of c constraints
+
+    /// abs(acc) is accuracy
+    double acc; // abs(acc) is accuracy
+
+    /// max iteration and mode (see slsqp.c. 0 is for entry)
+    int iter, mode;
+
+    /// work spaces. SLSQPData::Setup() call should take care of this
+    double* w; // work space -> see slsqp.f. need allocating
+    int l_w;
+    int* jw;
+    int l_jw;
+
+    /// slsqp internal variables
+    double alpha, f0, gs, h1, h2, h3, h4, t, t0, tol;
+    int iexact, incons, ireset, itermx, line, n1, n2, n3;
+
+    /// @brief space
+    RealArray w_space;
+    IndexArray jw_space; // int array
+    RealArray g_space;   // n + 1 array
+
+    /// @brief proximity specific setup for SLSQP
+    void Setup(SearchData& data);
+
+    void CopyDerivative(const RealArray& der) { std::copy_n(der.data(), n, g); }
+  } SLSQP;
+
+  /// @brief Levenberg-Marquart specific search data
+  struct LMData {
+    double lambda;
+    double prev_J;
+    bool modified_update;
+    double lower_bound;
+    double upper_bound;
+    RealArray metric;
+    RealArray prev_guess;
+
+    void Setup(SearchData& data) {
+      metric.Reallocate(data.para_dim);
+      prev_guess.Reallocate(data.para_dim);
+    }
+
+    /// @brief Computes || F(x) + J^T * dX ||^2
+    /// @param spline_gradient
+    /// @param delta_guess
+    /// @param metric
+    RealArray& Metric(const RealArray2D& spline_gradient_,
+                      const RealArray& delta_guess_) {
+      for (int i{}; i < metric.size(); ++i) {
+        metric[i] = delta_guess_.InnerProduct(&spline_gradient_(i, 0));
+      }
+      return metric;
+    }
+  } LM;
+
+  SearchData(const int para_dim,
+             const int dim,
+             const double tolerance,
+             const int max_iter,
+             const double* query,
+             double* final_guess,
+             double* nearest,
+             double* nearest_minus_query,
+             double* first_derivatives,
+             double* second_derivatives) {
+    Setup(para_dim,
+          dim,
+          tolerance,
+          max_iter,
+          query,
+          final_guess,
+          nearest,
+          nearest_minus_query,
+          first_derivatives,
+          second_derivatives);
+  }
+
+  void Setup(const int para_dim_,
+             const int dim_,
+             const double tolerance,
+             const int max_iter,
+             const double* query,
+             double* final_guess,
+             double* nearest,
+             double* nearest_minus_query,
+             double* first_derivatives,
+             double* second_derivatives);
+
+  /// solvable lhs matrix - in mfem this is called Mult(rhs)
+  LhsMatrix& Lhs() {
+    if (!lhs_matrix) {
+      splinepy::utils::PrintAndThrowError("lhs not set!");
+    }
+    return *lhs_matrix;
+  }
+
+  LhsMatrix& Lhs(RealArray2D& arr) {
+    lhs_matrix = std::make_unique<LhsMatrix>(arr);
+    return *lhs_matrix;
+  }
+
+  bool IsConverged() {
+    return (status.convergence_norm < options.convergence_goal
+            || status.distance < options.tolerance);
+  }
+};
 
 /*!
  * A helper class to perform proximity operations for splines.
@@ -38,180 +211,13 @@ public:
   /// @brief metric is L2 and this returns squared distance
   using Tree_ = napf::ArrayTree<double, double, int, 2>;
 
-  using RealArray_ = splinepy::utils::Array<double>;
-  using RealArray2D_ = splinepy::utils::Array<double, 2>;
-  using RealArray3D_ = splinepy::utils::Array<double, 3>;
-  using IndexArray_ = splinepy::utils::Array<int>;
-
-  // for non-writable views
-  using ConstRealArray_ = splinepy::utils::Array<const double>;
-
-  using LhsMatrix_ = splinepy::utils::Matrix<double, int>;
-
-  /// struct to hold temporary data during the search.
-  /// This should allow easier transition to fallback methods.
-  struct SearchData {
-    int para_dim;
-    int dim;
-
-    struct {
-      double J; // .5 distance^2
-      double distance;
-      double squared_distance;
-      double convergence_norm;
-      int stop_iteration;
-    } status;
-
-    struct {
-      int max_iter;
-      double tolerance;
-      // this should be set by calling ComputeConvergenceGoal()
-      double convergence_goal;
-    } options;
-
-    struct {
-      double lambda;
-      double prev_J;
-      bool modified_update;
-      double lower_bound;
-      double upper_bound;
-      RealArray_ candidate;
-
-      /// @brief Computes || F(x) + J^T * dX ||^2
-      /// @param spline_gradient
-      /// @param delta_guess
-      /// @param metric
-      void Metric(const RealArray2D_& spline_gradient_,
-                  const RealArray_& delta_guess_,
-                  RealArray_& metric) const {
-        for (int i{}; i < metric.size(); ++i) {
-          metric[i] = delta_guess_.InnerProduct(&spline_gradient_(i, 0));
-        }
-      }
-    } LM; // levenbergMarquart specific data
-
-    // view array
-    ConstRealArray_ phys_query;
-    // either view or allocated
-    RealArray_ current_guess;
-    RealArray_ current_phys;
-    RealArray_ difference;
-    RealArray2D_ spline_gradient;
-    RealArray3D_ spline_hessian;
-
-    // local allocated
-    RealArray_ initial_guess;
-    RealArray2D_ d2jdu2;
-    RealArray_ djdu;
-    RealArray_ delta_guess;
-    RealArray2D_ spline_gradient_AAt;
-    RealArray2D_ search_bounds;
-    RealArray_ lower_bound; // view to search bounds
-    RealArray_ upper_bound; // view to search bounds
-    IndexArray_ clipped;
-
-    /// lhs matrix based on 2D array. Created by search methods
-    std::unique_ptr<LhsMatrix_> lhs_matrix;
-
-    SearchData(const int para_dim,
-               const int dim,
-               const double tolerance,
-               const int max_iter,
-               const double* query,
-               double* final_guess,
-               double* nearest,
-               double* nearest_minus_query,
-               double* first_derivatives,
-               double* second_derivatives) {
-      Setup(para_dim,
-            dim,
-            tolerance,
-            max_iter,
-            query,
-            final_guess,
-            nearest,
-            nearest_minus_query,
-            first_derivatives,
-            second_derivatives);
-    }
-
-    void Setup(const int para_dim_,
-               const int dim_,
-               const double tolerance,
-               const int max_iter,
-               const double* query,
-               double* final_guess,
-               double* nearest,
-               double* nearest_minus_query,
-               double* first_derivatives,
-               double* second_derivatives) {
-
-      para_dim = para_dim_;
-      dim = dim_;
-
-      options.tolerance = tolerance;
-      options.max_iter = (max_iter < 0) ? para_dim * 20 : max_iter;
-      options.convergence_goal = 0.0;
-
-      // initialize values;
-      status.J = -1.0;
-      status.distance = -1.0;
-      status.squared_distance = -1.0;
-      status.convergence_norm = -1.0;
-
-      phys_query.SetData(query, dim);
-
-      current_guess.SetOrReallocateData(final_guess, para_dim);
-      current_phys.SetOrReallocateData(nearest, dim);
-      difference.SetOrReallocateData(nearest_minus_query, dim);
-      spline_gradient.SetOrReallocateData(first_derivatives, para_dim, dim);
-      spline_hessian.SetOrReallocateData(second_derivatives,
-                                         para_dim,
-                                         para_dim,
-                                         dim);
-
-      // allocate aux real arrays
-      initial_guess.Reallocate(para_dim);
-      d2jdu2.Reallocate(para_dim, para_dim);
-      djdu.Reallocate(para_dim);
-      delta_guess.Reallocate(para_dim);
-      spline_gradient_AAt.Reallocate(para_dim, para_dim);
-      search_bounds.Reallocate(2, para_dim);
-
-      // get pointers to beginning of each bound
-      lower_bound.SetData(search_bounds.begin(), para_dim);
-      upper_bound.SetData(search_bounds.begin() + para_dim, para_dim);
-
-      // allocate index arrays
-      clipped.Reallocate(para_dim);
-    }
-
-    /// solvable lhs matrix - in mfem this is called Mult(rhs)
-    LhsMatrix_& LhsMatrix() {
-      if (!lhs_matrix) {
-        splinepy::utils::PrintAndThrowError("lhs not set!");
-      }
-      return *lhs_matrix;
-    }
-
-    LhsMatrix_& LhsMatrix(RealArray2D_& arr) {
-      lhs_matrix = std::make_unique<LhsMatrix_>(arr);
-      return *lhs_matrix;
-    }
-
-    bool IsConverged() {
-      return (status.convergence_norm < options.convergence_goal
-              || status.distance < options.tolerance);
-    }
-  };
-
 protected:
   // helpee spline
   const splinepy::splines::SplinepyBase& spline_;
 
   // kdtree related variables
   splinepy::utils::GridPoints grid_points_;
-  RealArray_ sampled_spline_;
+  RealArray sampled_spline_;
   std::unique_ptr<Cloud_> cloud_;
   std::unique_ptr<Tree_> kdtree_;
 
@@ -236,9 +242,9 @@ public:
   /// @param guess
   /// @param query
   /// @param difference
-  void GuessMinusQuery(const RealArray_& guess,
-                       const ConstRealArray_& query,
-                       RealArray_& difference) const;
+  void GuessMinusQuery(const RealArray& guess,
+                       const ConstRealArray& query,
+                       RealArray& difference) const;
 
   /// @brief difference = spline(guess) - query.
   /// This returns spline(guess)
@@ -246,15 +252,15 @@ public:
   /// @param query
   /// @param guess_phys
   /// @param difference
-  void GuessMinusQuery(const RealArray_& guess,
-                       const ConstRealArray_& query,
-                       RealArray_& guess_phys,
-                       RealArray_& difference) const;
+  void GuessMinusQuery(const RealArray& guess,
+                       const ConstRealArray& query,
+                       RealArray& guess_phys,
+                       RealArray& difference) const;
 
   /// @brief make initial guess - returns nearest neighbor from k-d tree
   /// @param goal
   /// @param guess
-  void MakeInitialGuess(const ConstRealArray_& goal, RealArray_& guess) const;
+  void MakeInitialGuess(const ConstRealArray& goal, RealArray& guess) const;
 
   /// @brief make initial guess - returns nearest neighbor from k-d tree.
   /// Initial guess is saved to both initial_guess and current_guess
@@ -273,20 +279,20 @@ public:
   /// @param guess_phys
   /// @param difference
   /// @return
-  double J(const RealArray_& guess,
-           const ConstRealArray_& query,
-           RealArray_& guess_phys,
-           RealArray_& difference) const;
+  double J(const RealArray& guess,
+           const ConstRealArray& query,
+           RealArray& guess_phys,
+           RealArray& difference) const;
 
   /// @brief Fills dJ/du
   /// @param guess
   /// @param difference
   /// @param spline_gradient
   /// @param djdu
-  void dJdu(const RealArray_& guess,
-            const RealArray_& difference,
-            RealArray2D_& spline_gradient,
-            RealArray_& djdu) const;
+  void dJdu(const RealArray& guess,
+            const RealArray& difference,
+            RealArray2D& spline_gradient,
+            RealArray& djdu) const;
 
   /// @brief Fills hessian of J
   /// @param guess
@@ -294,11 +300,11 @@ public:
   /// @param spline_gradient_AAt
   /// @param spline_hessian
   /// @param lhs
-  void d2Jdu2(const RealArray_& guess,
-              const RealArray_& difference,
-              const RealArray2D_& spline_gradient_AAt,
-              RealArray3D_& spline_hessian,
-              RealArray2D_& d2jdu2) const;
+  void d2Jdu2(const RealArray& guess,
+              const RealArray& difference,
+              const RealArray2D& spline_gradient_AAt,
+              RealArray3D& spline_hessian,
+              RealArray2D& d2jdu2) const;
 
   /// @brief computes J and its derivatives based on the value of depth. depth
   /// == 1 -> jacobian, dept > 1 -> jacobian & hessian. Negative value is
@@ -323,24 +329,24 @@ public:
    * @param[out] spline_gradient
    * @param[out] rhs
    */
-  void FillSplineGradientAndRhs(const RealArray_& guess,
-                                const RealArray_& difference,
-                                RealArray2D_& spline_gradient,
-                                RealArray_& rhs) const;
+  void FillSplineGradientAndRhs(const RealArray& guess,
+                                const RealArray& difference,
+                                RealArray2D& spline_gradient,
+                                RealArray& rhs) const;
 
   /// Fill LHS of Newton method for critical value search
   /// Note that only upper triangle is filled for spline hessian
-  void FillLhs(const RealArray_& guess,
-               const RealArray_& difference,
-               const RealArray2D_& spline_gradient_AAt,
-               RealArray3D_& spline_hessian,
-               RealArray2D_& lhs) const;
+  void FillLhs(const RealArray& guess,
+               const RealArray& difference,
+               const RealArray2D& spline_gradient_AAt,
+               RealArray3D& spline_hessian,
+               RealArray2D& lhs) const;
 
   // Fill LHS of damped Levenberg-Marquart method
-  void FillLhsLM(const RealArray_& guess,
-                 const RealArray_& difference,
-                 const RealArray2D_& spline_gradient_AAt,
-                 RealArray2D_& lhs,
+  void FillLhsLM(const RealArray& guess,
+                 const RealArray& difference,
+                 const RealArray2D& spline_gradient_AAt,
+                 RealArray2D& lhs,
                  const double& lambda,
                  const bool& modified_marquart) const;
 
@@ -365,13 +371,20 @@ public:
   /// @param aux
   void LevenbergMarquart(SearchData& aux) const;
 
+  /// @brief Prepares lhs and rhs of slsqp iteration and other parameters
+  void PrepareIterationSlsqp(SearchData& aux) const;
+
+  /// @brief Performs slsqp iterations using PrepareIterationSlsqp
+  /// @param aux
+  void Slsqp(SearchData& aux) const;
+
   /// @brief Given physical coordinate, finds closest parametric coordinate.
   /// Always takes initial guess based on kdtree.
   ///
   /// @param[in] query
   /// @param[in] tolerance
   /// @param[in] max_iterations
-  /// @param[in] aggressive_bounds
+  /// @param[in] tight_bounds
   /// @param[out] final_guess (para_dim)
   /// @param[out] nearest (dim)
   /// @param[out] nearest_minus_query (dim)
@@ -382,7 +395,7 @@ public:
   void VerboseQuery(const double* query,
                     const double& tolerance,
                     const int& max_iterations,
-                    const bool aggressive_bounds,
+                    const bool tight_bounds,
                     double* final_guess,
                     double* nearest /* spline(final_guess) */,
                     double* nearest_minus_query /* difference */,
@@ -397,7 +410,7 @@ public:
 /// @param at
 /// @param hess
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
-                 const Proximity::RealArray_& at,
-                 Proximity::RealArray3D_& hess);
+                 const RealArray& at,
+                 RealArray3D& hess);
 
 } // namespace splinepy::proximity

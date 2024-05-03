@@ -3,14 +3,128 @@
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
 
+#include "splinepy/proximity/slsqp/slsqp.h"
+
 namespace splinepy::proximity {
+
+void SearchData::SLSQPData::Setup(SearchData& d) {
+  // initialize options
+  m = 0;
+  meq = 0;
+  la = 1;
+  n = d.para_dim;
+  x = d.current_guess.data(); //
+  xl = d.lower_bound.data();
+  xu = d.upper_bound.data();
+  f = d.status.J; //
+  c = nullptr;    // no constraints
+
+  // allocate and set g
+  g_space.Reallocate(n + 1);
+  g_space[n] = 0.0;
+  g = g_space.data(); // before calling, ccall CopyDerivativce() to fill this
+
+  a = nullptr;
+  // since SLSQP uses true J value, we adjust the tolerance accordingly
+  acc = d.options.tolerance * d.options.tolerance * 0.5;
+  iter = d.options.max_iter;
+  mode = 0; // initialize
+
+  // set workspace
+  const int n1_ = n + 1;
+  const int mineq = m - meq + n1_ + n1_;
+  const int w_size = (3 * n1_ + m) * (n1_ + 1) + (n1_ - meq + 1) * (mineq + 2)
+                     + 2 * mineq + (n1_ + mineq) * (n1_ - meq) + 2 * meq + n1_
+                     + (((n + 1) * n) / 2) + 2 * m + 3 * n + 3 * n1_ + 1;
+
+  // set w and lw
+  w_space.Reallocate(w_size);
+  w = w_space.data();
+  l_w = w_size;
+
+  // set jw and l_jw
+  jw_space.Reallocate(mineq);
+  jw = jw_space.data();
+  l_jw = mineq;
+
+  // internal states
+  alpha = 0.0;
+  f0 = 0.0;
+  gs = 0.0;
+  h1 = 0.0;
+  h2 = 0.0;
+  h3 = 0.0;
+  h4 = 0.0;
+  t = 0.0;
+  t0 = 0.0;
+  tol = 0.0;
+  iexact = 0;
+  incons = 0;
+  ireset = 0;
+  itermx = 0;
+  line = 0;
+  n1 = 0;
+  n2 = 0;
+  n3 = 0;
+}
+
+void SearchData::Setup(const int para_dim_,
+                       const int dim_,
+                       const double tolerance,
+                       const int max_iter,
+                       const double* query,
+                       double* final_guess,
+                       double* nearest,
+                       double* nearest_minus_query,
+                       double* first_derivatives,
+                       double* second_derivatives) {
+
+  para_dim = para_dim_;
+  dim = dim_;
+
+  options.tolerance = tolerance;
+  options.max_iter = (max_iter < 0) ? para_dim * 20 : max_iter;
+  options.convergence_goal = 0.0;
+
+  // initialize values;
+  status.J = -1.0;
+  status.distance = -1.0;
+  status.squared_distance = -1.0;
+  status.convergence_norm = -1.0;
+
+  phys_query.SetData(query, dim);
+
+  current_guess.SetOrReallocateData(final_guess, para_dim);
+  current_phys.SetOrReallocateData(nearest, dim);
+  difference.SetOrReallocateData(nearest_minus_query, dim);
+  spline_gradient.SetOrReallocateData(first_derivatives, para_dim, dim);
+  spline_hessian.SetOrReallocateData(second_derivatives,
+                                     para_dim,
+                                     para_dim,
+                                     dim);
+
+  // allocate aux real arrays
+  initial_guess.Reallocate(para_dim);
+  d2jdu2.Reallocate(para_dim, para_dim);
+  djdu.Reallocate(para_dim);
+  delta_guess.Reallocate(para_dim);
+  spline_gradient_AAt.Reallocate(para_dim, para_dim);
+  search_bounds.Reallocate(2, para_dim);
+
+  // get pointers to beginning of each bound
+  lower_bound.SetData(search_bounds.begin(), para_dim);
+  upper_bound.SetData(search_bounds.begin() + para_dim, para_dim);
+
+  // allocate index arrays
+  clipped.Reallocate(para_dim);
+}
 
 void Proximity::PlantNewKdTree(const int* resolutions, const int n_thread) {
   const int para_dim = spline_.SplinepyParaDim();
   const int dim = spline_.SplinepyDim();
 
   // get parametric bounds
-  RealArray_ parametric_bounds(para_dim * 2);
+  RealArray parametric_bounds(para_dim * 2);
   spline_.SplinepyParametricBounds(parametric_bounds.data());
 
   // create grid_points
@@ -23,7 +137,7 @@ void Proximity::PlantNewKdTree(const int* resolutions, const int n_thread) {
 
   // lambda function to allow n-thread execution
   auto sample_coordinates = [&](const int begin, const int end, int) {
-    RealArray_ query(para_dim);
+    RealArray query(para_dim);
     double* query_data = query.data();
 
     for (int i{begin}; i < end; ++i) {
@@ -48,25 +162,25 @@ void Proximity::PlantNewKdTree(const int* resolutions, const int n_thread) {
   kdtree_ = std::make_unique<Tree_>(dim, *cloud_, params);
 }
 
-void Proximity::GuessMinusQuery(const RealArray_& guess,
-                                const ConstRealArray_& query,
-                                RealArray_& difference) const {
+void Proximity::GuessMinusQuery(const RealArray& guess,
+                                const ConstRealArray& query,
+                                RealArray& difference) const {
   // evaluate guess and sett to difference
   spline_.SplinepyEvaluate(guess.data(), difference.data());
   // subtract query from evaluated guess
   difference.Subtract(query);
 }
 
-void Proximity::GuessMinusQuery(const RealArray_& guess,
-                                const ConstRealArray_& query,
-                                RealArray_& guess_phys,
-                                RealArray_& difference) const {
+void Proximity::GuessMinusQuery(const RealArray& guess,
+                                const ConstRealArray& query,
+                                RealArray& guess_phys,
+                                RealArray& difference) const {
   spline_.SplinepyEvaluate(guess.data(), guess_phys.data());
   splinepy::utils::Subtract(guess_phys, query, difference);
 }
 
-void Proximity::MakeInitialGuess(const ConstRealArray_& goal,
-                                 RealArray_& guess) const {
+void Proximity::MakeInitialGuess(const ConstRealArray& goal,
+                                 RealArray& guess) const {
   if (!kdtree_) {
     // hate to be aggressive, but here it is.
     splinepy::utils::PrintAndThrowError("to use InitialGuess::Kdtree option,"
@@ -91,26 +205,26 @@ void Proximity::UpdateAndClip(SearchData& data) const {
   data.current_guess.Clip(data.lower_bound, data.upper_bound, data.clipped);
 };
 
-double Proximity::J(const RealArray_& guess,
-                    const ConstRealArray_& query,
-                    RealArray_& guess_phys,
-                    RealArray_& difference) const {
+double Proximity::J(const RealArray& guess,
+                    const ConstRealArray& query,
+                    RealArray& guess_phys,
+                    RealArray& difference) const {
   GuessMinusQuery(guess, query, guess_phys, difference);
   return 0.5 * difference.NormL2Squared();
 }
 
-void Proximity::dJdu(const RealArray_& guess,
-                     const RealArray_& difference,
-                     RealArray2D_& spline_gradient,
-                     RealArray_& djdu) const {
+void Proximity::dJdu(const RealArray& guess,
+                     const RealArray& difference,
+                     RealArray2D& spline_gradient,
+                     RealArray& djdu) const {
   const int para_dim = guess.size();
   const int dim = difference.size();
 
-  IndexArray_ derivative_query(para_dim);
+  IndexArray derivative_query(para_dim);
   derivative_query.Fill(0);
 
   // this is just to view and apply inner product
-  RealArray_ gradient_row_view;
+  RealArray gradient_row_view;
   gradient_row_view.SetShape(dim);
 
   for (int i{}; i < para_dim; ++i) {
@@ -133,19 +247,19 @@ void Proximity::dJdu(const RealArray_& guess,
   }
 }
 
-void Proximity::d2Jdu2(const RealArray_& guess,
-                       const RealArray_& difference,
-                       const RealArray2D_& spline_gradient_AAt,
-                       RealArray3D_& spline_hessian,
-                       RealArray2D_& d2jdu2) const {
+void Proximity::d2Jdu2(const RealArray& guess,
+                       const RealArray& difference,
+                       const RealArray2D& spline_gradient_AAt,
+                       RealArray3D& spline_hessian,
+                       RealArray2D& d2jdu2) const {
   const int para_dim = guess.size();
   const int dim = difference.size();
 
-  IndexArray_ derivative_query(para_dim);
+  IndexArray derivative_query(para_dim);
   derivative_query.Fill(0);
 
   // derivative result is a view to the hessian array
-  RealArray_ derivative;
+  RealArray derivative;
   derivative.SetShape(dim);
 
   // lambda to compute each element
@@ -222,9 +336,10 @@ void Proximity::ComputeStatus(SearchData& data,
 }
 
 void Proximity::FindSearchBound(SearchData& data, const bool tight) const {
+  spline_.SplinepyParametricBounds(data.search_bounds.data());
+
+  // set search bounds to para bounds and early exit
   if (!tight) {
-    // set search bounds to para bounds and early exit
-    spline_.SplinepyParametricBounds(data.search_bounds.data());
     return;
   }
 
@@ -255,7 +370,7 @@ void Proximity::Newton(SearchData& data) const {
   data.status.stop_iteration = 0;
 
   /// set lhs matrix to d2jdu2
-  auto& lhs = data.LhsMatrix(data.d2jdu2);
+  auto& lhs = data.Lhs(data.d2jdu2);
   auto& rhs = data.djdu;
 
   // first round
@@ -320,7 +435,7 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
 
   // for lhs we will use AAt matrix. Modifications may be made to diagonal
   // entries
-  auto& lhs = data.LhsMatrix(data.spline_gradient_AAt);
+  auto& lhs = data.Lhs(data.spline_gradient_AAt);
   auto& rhs = data.djdu;
 
   // before first round, initialize some options
@@ -340,8 +455,7 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
                                                   data.options.tolerance);
 
   int i{};
-  RealArray_ prev_guess(data.para_dim);
-  RealArray_ metric(data.para_dim);
+  data.LM.Setup(data);
   while (i < data.options.max_iter) {
     if (data.IsConverged()) {
       break;
@@ -350,17 +464,17 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
     lhs.Solve(rhs, data.delta_guess);
 
     // update the save original_guess before updating
-    prev_guess = data.current_guess;
+    data.LM.prev_guess = data.current_guess;
     UpdateAndClip(data);
 
     // get actual delta guess, in case it is clipped
     if (data.clipped.NonZeros()) {
-      data.delta_guess = prev_guess;
+      data.delta_guess = data.LM.prev_guess;
       data.delta_guess.Subtract(data.current_guess);
     }
 
     // compute two different metrics and take bigger one
-    data.LM.Metric(data.spline_gradient, data.delta_guess, metric);
+    auto& metric = data.LM.Metric(data.spline_gradient, data.delta_guess);
     const double metric2 = metric.InnerProduct(data.difference);
 
     metric.Add(data.difference);
@@ -388,7 +502,7 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
         }
 
         // we continue -> set current_guess back to previous guess
-        data.current_guess = prev_guess;
+        data.current_guess = data.LM.prev_guess;
         PrepareIterationLevenbergMarquart(data);
         ComputeStatus(data, false);
         continue;
@@ -411,11 +525,101 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
   }
 }
 
+void Proximity::PrepareIterationSlsqp(SearchData& d) const {
+  // precautious step based on
+  // https://github.com/scipy/scipy/issues/11403
+  d.current_guess.Clip(d.lower_bound, d.upper_bound, d.clipped);
+
+  // mode 0: this is first
+  if (d.SLSQP.mode == 0) {
+    ComputeCostAndDerivatives(d, 1);
+    ComputeStatus(d, false); // strictly not required
+    d.SLSQP.CopyDerivative(d.djdu);
+    d.SLSQP.f = d.status.J;
+  } else if (d.SLSQP.mode == 1) {
+    ComputeCostAndDerivatives(d, 0);
+    d.SLSQP.f = d.status.J;
+  } else if (d.SLSQP.mode == -1) {
+    ComputeCostAndDerivatives(d, 1);
+    d.SLSQP.CopyDerivative(d.djdu);
+  }
+}
+
+void Proximity::Slsqp(SearchData& d) const {
+  d.status.stop_iteration = 0;
+
+  d.SLSQP.Setup(d);
+  PrepareIterationSlsqp(d);
+
+  ComputeStatus(d, false);
+
+  // set convergence goal based on the first round
+  d.options.convergence_goal = ConvergenceGoal(d.status.convergence_norm,
+                                               d.options.tolerance,
+                                               d.options.tolerance);
+
+  int i{};
+  while (true) {
+
+    // call slsqp
+    slsqp(&d.SLSQP.m,
+          &d.SLSQP.meq,
+          &d.SLSQP.la,
+          &d.SLSQP.n,
+          d.SLSQP.x,
+          d.SLSQP.xl,
+          d.SLSQP.xu,
+          &d.SLSQP.f,
+          d.SLSQP.c,
+          d.SLSQP.g,
+          d.SLSQP.a,
+          &d.SLSQP.acc,
+          &d.SLSQP.iter,
+          &d.SLSQP.mode,
+          d.SLSQP.w,
+          &d.SLSQP.l_w,
+          d.SLSQP.jw,
+          &d.SLSQP.l_jw,
+          &d.SLSQP.alpha,
+          &d.SLSQP.f0,
+          &d.SLSQP.gs,
+          &d.SLSQP.h1,
+          &d.SLSQP.h2,
+          &d.SLSQP.h3,
+          &d.SLSQP.h4,
+          &d.SLSQP.t,
+          &d.SLSQP.t0,
+          &d.SLSQP.tol,
+          &d.SLSQP.iexact,
+          &d.SLSQP.incons,
+          &d.SLSQP.ireset,
+          &d.SLSQP.itermx,
+          &d.SLSQP.line,
+          &d.SLSQP.n1,
+          &d.SLSQP.n2,
+          &d.SLSQP.n3);
+
+    PrepareIterationSlsqp(d);
+
+    if (std::abs(d.SLSQP.mode) != 1) {
+      break;
+    }
+
+    d.status.stop_iteration = ++i;
+  }
+
+  // compute status for further pipeline
+  // once slsqp finds solution within the tolernace, it evaluates g once more
+  // so we probably don't need to recompute.
+  // just to be safe.
+  ComputeStatus(d, true);
+}
+
 void Proximity::VerboseQuery(
     const double* query,
     const double& tolerance,
     const int& max_iterations,
-    const bool aggressive_bounds,
+    const bool tight_bounds,
     double* final_guess,
     double* nearest /* spline(final_guess) */,
     double* nearest_minus_query /* difference */,
@@ -444,7 +648,7 @@ void Proximity::VerboseQuery(
   MakeInitialGuess(data);
 
   // set bounds
-  FindSearchBound(data, aggressive_bounds);
+  FindSearchBound(data, tight_bounds);
 
   // we first start with Newton
   Newton(data);
@@ -459,26 +663,36 @@ void Proximity::VerboseQuery(
     return;
   }
 
+  data.current_guess = data.initial_guess;
+  data.options.max_iter *= 5;
+  Slsqp(data);
+  if (data.IsConverged()) {
+    if (!data.spline_hessian.OwnsData()) {
+      FillHessian(spline_, data.current_guess, data.spline_hessian);
+    }
+    return;
+  }
+
   // Newton didn't work. Try LevenbergMarquart
   // reset current_guess to initial_guess as it expects that
   data.current_guess = data.initial_guess;
   // set max iteration higher
-  data.options.max_iter *= 10;
+  data.options.max_iter *= 5;
   LevenbergMarquart(data);
   FillHessian(spline_, data.current_guess, data.spline_hessian);
 }
 
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
-                 const Proximity::RealArray_& at,
-                 Proximity::RealArray3D_& hess) {
+                 const RealArray& at,
+                 RealArray3D& hess) {
   const int para_dim = hess.Shape()[1];
   const int dim = hess.Shape()[2];
 
-  Proximity::IndexArray_ derivative_query(para_dim);
+  IndexArray derivative_query(para_dim);
   derivative_query.Fill(0);
 
   // derivative result is a view to the hessian array
-  Proximity::RealArray_ derivative;
+  RealArray derivative;
   derivative.SetShape(dim);
 
   auto compute = [&](const int& i, const int& j) {
