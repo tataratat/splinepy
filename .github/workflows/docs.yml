@@ -29,9 +29,13 @@ jobs:
       run: |
         pytest
 
-    - name: build docs
+    - name: doxygen
       run: |
-        cd docs && doxygen && cd ..
+        cd docs
+        doxygen Doxyfile
+
+    - name: sphinx
+      run: |
         pip install -r ./docs/requirements.txt
         python docs/source/handle_markdown.py
         sphinx-build -W -b html docs/source docs/build
