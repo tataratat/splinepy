@@ -1,6 +1,7 @@
 """Create gus"""
 
 import gustaf as gus
+import numpy as np
 
 import splinepy
 
@@ -115,10 +116,24 @@ if __name__ == "__main__":
 
             x_shift = 0.3
             y_shift = -0.02
+            cps = np.array([[0.0, 0.0], [0.0, height]])
+            weights = np.ones([cps.shape[0]])
+            knots = np.repeat([0.0, 1.0], 2)
+            proto = splinepy.NURBS(
+                degrees=[1],
+                control_points=cps,
+                weights=weights,
+                knot_vectors=[knots],
+            )
+            proto_ = proto.copy()
+            proto_.control_points *= -1
+            left_half_sphere = proto.create.revolved(angle=180)
+
+            right_half_sphere = proto_.create.revolved(angle=180)
 
             background = [
-                splinepy.helpme.create.disk(height),
-                splinepy.helpme.create.disk(height),
+                left_half_sphere,
+                right_half_sphere,
                 splinepy.helpme.create.box(width + 2 * x_shift, 2 * height),
             ]
             for spline in background:
@@ -130,7 +145,8 @@ if __name__ == "__main__":
             background[2].cps += [-x_shift, -height + y_shift]
             for elem in background:
                 elem.show_options["c"] = "white"
-                elem.show_options["alpha"] = 0.25
+                if WITH_ALPHA_BACKGROUND:
+                    elem.show_options["alpha"] = 0.25
         else:
             l_eye.show_options["c"] = "white"
             r_eye.show_options["c"] = "white"

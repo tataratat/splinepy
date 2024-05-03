@@ -33,7 +33,6 @@ Here are links to related documentation for the library:
 
 ## Quick start
 ### 1. Create a spline
- <p align="center"><img src="docs/source/_static/readme_nurbs.png" width="70%" title="nurbs"></p>
 
 Here, we will create a [NURBS](https://tataratat.github.io/splinepy/_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS) for the following example. Alternatively, we can also create [Bezier](https://tataratat.github.io/splinepy/_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier), [RationalBezier](https://tataratat.github.io/splinepy/_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier), and [BSpline](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline).
 
@@ -68,9 +67,9 @@ nurbs = splinepy.NURBS(
 # vizusalize
 nurbs.show()
 ```
+ <p align="center"><img src="docs/source/_static/readme_nurbs.png" width="70%" title="nurbs"></p>
 
 ### 2. Modifications
-![modifications](docs/source/_static/readme_modifications.png)
 All the splines can be modified. For example, by
 1. directly accessing properties,
 2. [elevating degrees](https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees),
@@ -101,6 +100,8 @@ modified.show()  # visualize Nr. 2
 modified.insert_knots(1, [.5])
 modified.show()  # visualize Nr. 3
 ```
+
+![modifications](docs/source/_static/readme_modifications.png)
 
 ### 3. Evaluate
 You can evaluate spline's basis functions, mapping, and their derivatives by giving parametric coordinate queries.
@@ -210,7 +211,6 @@ splinepy.show(
 ![extract_spline](docs/source/_static/readme_extract_spline.png)
 
 #### 4.3 Free-form deformation
-![ffd](docs/source/_static/readme_ffd.png)
 Together with mesh types of [gustaf](https://tataratat.github.io/gustaf), we can perform [free-form deformation](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.ffd.FFD.html)
 ```python
 import gustaf as gus
@@ -230,8 +230,9 @@ ffd.show()
 deformed = ffd.mesh
 ```
 
+![ffd](docs/source/_static/readme_ffd.png)
+
 #### 4.4 Fitting
-![fit](docs/source/_static/readme_fit.png)
 You can [fit](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit) your point data using splines.
 ```python
 
@@ -254,11 +255,14 @@ splinepy.show(
 )
 ```
 
+![fit](docs/source/_static/readme_fit.png)
+
 #### 4.5 Mapper
- <p align="center"><img src="docs/source/_static/readme_matrix.png" width="70%" title="laplacian"></p>
 
 [Mapper](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper) class is a geometric mapping helper that brings expression and derivatives into the physical domain.
 This is especially useful for trying collocation methods. Here, we show how you can create a left hand side matrix for a laplace problem - see [this example](https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py) for a full solution:
+ <p align="center"><img src="docs/source/_static/readme_matrix.png" width="70%" title="laplacian"></p>
+
 ```python
 # create solution spline
 solution_field = nurbs.create.embedded(1)
@@ -324,7 +328,6 @@ Please take a look at [this example](https://github.com/tataratat/splinepy/blob/
 
 
 ### 6. Multipatch
-![multipatch](docs/source/_static/readme_multipatch.png)
 In practice, including [Microstructure](https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure)s, it is common to work with multiple patches.
 For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch) class, equipped with various useful functionalities:
 - patch interface identification
@@ -353,10 +356,11 @@ splinepy.show(
 splinepy.io.gismo.export("microstructure.xml", generated)
 ```
 
+![multipatch](docs/source/_static/readme_multipatch.png)
 
 ### 7. Input/output and vector graphics
 splinepy supports various [IO formats](https://tataratat.github.io/splinepy/_generated/splinepy.io.html).
-Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow a seamless transition to analysis.
+Most notably, [gismo](https://github.com/gismo/gismo) and [mfem](https://github.com/mfem/mfem) formats allow a seamless transition to analysis. In addition splinepy is also able to import and export the `iges` format. Specifically, `Type 126` (B-Spline curve) and `Type 128` (B-Spline surface).
 ```python
 # export
 splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
