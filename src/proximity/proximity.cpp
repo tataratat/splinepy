@@ -173,8 +173,8 @@ void Proximity::GuessMinusQuery(const RealArray& guess,
 
 void Proximity::GuessMinusQuery(const RealArray& guess,
                                 const ConstRealArray& query,
-                                RealArray& guess_phys,
-                                RealArray& difference) const {
+                                RealArray& difference,
+                                RealArray& guess_phys) const {
   spline_.SplinepyEvaluate(guess.data(), guess_phys.data());
   splinepy::utils::Subtract(guess_phys, query, difference);
 }
@@ -207,16 +207,16 @@ void Proximity::UpdateAndClip(SearchData& data) const {
 
 double Proximity::J(const RealArray& guess,
                     const ConstRealArray& query,
-                    RealArray& guess_phys,
-                    RealArray& difference) const {
-  GuessMinusQuery(guess, query, guess_phys, difference);
+                    RealArray& difference,
+                    RealArray& guess_phys) const {
+  GuessMinusQuery(guess, query, difference, guess_phys);
   return 0.5 * difference.NormL2Squared();
 }
 
 void Proximity::dJdu(const RealArray& guess,
                      const RealArray& difference,
-                     RealArray2D& spline_gradient,
-                     RealArray& djdu) const {
+                     RealArray& djdu,
+                     RealArray2D& spline_gradient) const {
   const int para_dim = guess.size();
   const int dim = difference.size();
 
@@ -250,8 +250,8 @@ void Proximity::dJdu(const RealArray& guess,
 void Proximity::d2Jdu2(const RealArray& guess,
                        const RealArray& difference,
                        const RealArray2D& spline_gradient_AAt,
-                       RealArray3D& spline_hessian,
-                       RealArray2D& d2jdu2) const {
+                       RealArray2D& d2jdu2,
+                       RealArray3D& spline_hessian) const {
   const int para_dim = guess.size();
   const int dim = difference.size();
 
@@ -304,12 +304,12 @@ void Proximity::ComputeCostAndDerivatives(SearchData& data, int depth) const {
   if (depth > -1) {
     data.status.J = J(data.current_guess,
                       data.phys_query,
-                      data.current_phys,
-                      data.difference);
+                      data.difference,
+                      data.current_phys);
   }
 
   if (depth > 0) {
-    dJdu(data.current_guess, data.difference, data.spline_gradient, data.djdu);
+    dJdu(data.current_guess, data.difference, data.djdu, data.spline_gradient);
   }
 
   if (depth > 1) {
@@ -317,8 +317,8 @@ void Proximity::ComputeCostAndDerivatives(SearchData& data, int depth) const {
     d2Jdu2(data.current_guess,
            data.difference,
            data.spline_gradient_AAt,
-           data.spline_hessian,
-           data.d2jdu2);
+           data.d2jdu2,
+           data.spline_hessian);
   }
 }
 
