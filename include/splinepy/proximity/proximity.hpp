@@ -249,12 +249,12 @@ public:
   /// This returns spline(guess)
   /// @param guess
   /// @param query
-  /// @param guess_phys
   /// @param difference
+  /// @param guess_phys
   void GuessMinusQuery(const RealArray& guess,
                        const ConstRealArray& query,
-                       RealArray& guess_phys,
-                       RealArray& difference) const;
+                       RealArray& difference,
+                       RealArray& guess_phys) const;
 
   /// @brief make initial guess - returns nearest neighbor from k-d tree
   /// @param goal
@@ -271,38 +271,42 @@ public:
   void UpdateAndClip(SearchData& data) const;
 
   /// @brief returns J = .5 * distance^2. Where distance is norm of difference.
-  /// Difference is defined as || query - spline(guess_phys) ||
+  /// Difference is defined as || query - spline(guess) ||. Byproducts,
+  /// difference and guess_phys (=spline(guess)) are also returned.  Used in
+  /// ComputeCostAndDerivatives() and corresponds to depth=0.
   /// @param guess
   /// @param query
-  /// @param guess_phys
   /// @param difference
-  /// @return
+  /// @param guess_phys
+  /// @return J
   double J(const RealArray& guess,
            const ConstRealArray& query,
-           RealArray& guess_phys,
-           RealArray& difference) const;
+           RealArray& difference,
+           RealArray& guess_phys) const;
 
-  /// @brief Fills dJ/du
+  /// @brief Fills dJ/du and a byproduct spline_gradient (dS/du). Used in
+  /// ComputeCostAndDerivatives() and corresponds to depth=1.
   /// @param guess
   /// @param difference
-  /// @param spline_gradient
   /// @param djdu
+  /// @param spline_gradient
   void dJdu(const RealArray& guess,
             const RealArray& difference,
-            RealArray2D& spline_gradient,
-            RealArray& djdu) const;
+            RealArray& djdu,
+            RealArray2D& spline_gradient) const;
 
-  /// @brief Fills hessian of J
+  /// @brief Fills hessian of J (d2J/du2) and a byproduct spline_hessian
+  /// (d2S/du2). Used in ComputeCostAndDerivatives() and corresponds to depth=2.
   /// @param guess
   /// @param difference
   /// @param spline_gradient_AAt
+  /// @param d2jdu2
   /// @param spline_hessian
-  /// @param lhs
   void d2Jdu2(const RealArray& guess,
               const RealArray& difference,
               const RealArray2D& spline_gradient_AAt,
-              RealArray3D& spline_hessian,
-              RealArray2D& d2jdu2) const;
+              RealArray2D& d2jdu2,
+              RealArray3D& spline_hessian) const;
 
   /// @brief computes J and its derivatives based on the value of depth. depth
   /// == 1 -> jacobian, dept > 1 -> jacobian & hessian. Negative value is
