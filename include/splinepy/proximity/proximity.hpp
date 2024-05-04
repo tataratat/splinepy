@@ -263,13 +263,12 @@ public:
 
   /// @brief make initial guess - returns nearest neighbor from k-d tree.
   /// Initial guess is saved to both initial_guess and current_guess
-  /// @param goal
-  /// @param guess
-  void MakeInitialGuess(SearchData& aux) const;
+  /// @param data
+  void MakeInitialGuess(SearchData& data) const;
 
   /// @brief updates current_guess with delta_guess and clips result
-  /// @param aux
-  void UpdateAndClip(SearchData& aux) const;
+  /// @param data
+  void UpdateAndClip(SearchData& data) const;
 
   /// @brief returns J = .5 * distance^2. Where distance is norm of difference.
   /// Difference is defined as || query - spline(guess_phys) ||
@@ -308,44 +307,44 @@ public:
   /// @brief computes J and its derivatives based on the value of depth. depth
   /// == 1 -> jacobian, dept > 1 -> jacobian & hessian. Negative value is
   /// considered as highest depth we can compute (currently hessian)
-  /// @param aux
+  /// @param data
   /// @param depth
-  void ComputeCostAndDerivatives(SearchData& aux, int depth) const;
+  void ComputeCostAndDerivatives(SearchData& data, int depth) const;
 
   /// @brief Computes status in SearchData based on current values in
   /// SearchData. If recompute_costs==true, it will compute the cost and its
   /// derivative again and store it.
-  /// @param aux
+  /// @param data
   /// @param recompute_costs
-  void ComputeStatus(SearchData& aux, const bool recompute_costs) const;
+  void ComputeStatus(SearchData& data, const bool recompute_costs) const;
 
   /// @brief resets search bounds to spline's parametric bounds. if tight==true,
   /// current_guess +- grid_points_'s sampling step size.
-  /// @param aux
-  void FindSearchBound(SearchData& aux, const bool tight = false) const;
+  /// @param data
+  void FindSearchBound(SearchData& data, const bool tight = false) const;
 
   /// @brief Prepares lhs and rhs of newton iteration
-  void PrepareIterationNewton(SearchData& aux) const;
+  void PrepareIterationNewton(SearchData& data) const;
 
   /// @brief Performs newton iterations using PrepareIterationNewton
-  /// @param aux
-  void Newton(SearchData& aux) const;
+  /// @param data
+  void Newton(SearchData& data) const;
 
   /// @brief Prepares lhs and rhs of LM iteration
-  /// @param aux
-  void PrepareIterationLevenbergMarquart(SearchData& aux) const;
+  /// @param data
+  void PrepareIterationLevenbergMarquart(SearchData& data) const;
 
   /// @brief Levenberg-Marquart method. Intended to be used as a fallback method
   /// for newton. Uses PrepareIterationLevenbergMarquart()
-  /// @param aux
-  void LevenbergMarquart(SearchData& aux) const;
+  /// @param data
+  void LevenbergMarquart(SearchData& data) const;
 
   /// @brief Prepares lhs and rhs of slsqp iteration and other parameters
-  void PrepareIterationSlsqp(SearchData& aux) const;
+  void PrepareIterationSlsqp(SearchData& data) const;
 
   /// @brief Performs slsqp iterations using PrepareIterationSlsqp
-  /// @param aux
-  void Slsqp(SearchData& aux) const;
+  /// @param data
+  void Slsqp(SearchData& data) const;
 
   /// @brief Given physical coordinate, finds closest parametric coordinate.
   /// Always takes initial guess based on kdtree.
