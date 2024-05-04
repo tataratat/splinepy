@@ -319,36 +319,6 @@ public:
   /// @param recompute_costs
   void ComputeStatus(SearchData& aux, const bool recompute_costs) const;
 
-  /*!
-   * Builds RHS and fills spline_gradient, which is also required in LHS.
-   * RHS is what's internally called as "df_dxi"
-   *
-   * @param[in] guess current parametric coordinate guess
-   * @param[in] difference result of `GuessMinusQuery()`
-   * @param[out] spline_gradient
-   * @param[out] rhs
-   */
-  void FillSplineGradientAndRhs(const RealArray& guess,
-                                const RealArray& difference,
-                                RealArray2D& spline_gradient,
-                                RealArray& rhs) const;
-
-  /// Fill LHS of Newton method for critical value search
-  /// Note that only upper triangle is filled for spline hessian
-  void FillLhs(const RealArray& guess,
-               const RealArray& difference,
-               const RealArray2D& spline_gradient_AAt,
-               RealArray3D& spline_hessian,
-               RealArray2D& lhs) const;
-
-  // Fill LHS of damped Levenberg-Marquart method
-  void FillLhsLM(const RealArray& guess,
-                 const RealArray& difference,
-                 const RealArray2D& spline_gradient_AAt,
-                 RealArray2D& lhs,
-                 const double& lambda,
-                 const bool& modified_marquart) const;
-
   /// @brief resets search bounds to spline's parametric bounds. if tight==true,
   /// current_guess +- grid_points_'s sampling step size.
   /// @param aux
