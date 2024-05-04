@@ -128,9 +128,8 @@ struct SearchData {
     }
 
     /// @brief Computes || F(x) + J^T * dX ||^2
-    /// @param spline_gradient
-    /// @param delta_guess
-    /// @param metric
+    /// @param spline_gradient_
+    /// @param delta_guess_
     RealArray& Metric(const RealArray2D& spline_gradient_,
                       const RealArray& delta_guess_) {
       for (int i{}; i < metric.size(); ++i) {
@@ -314,7 +313,7 @@ public:
   void ComputeCostAndDerivatives(SearchData& aux, int depth) const;
 
   /// @brief Computes status in SearchData based on current values in
-  /// SearchData. If recompute_cose==true, it will compute the cost and its
+  /// SearchData. If recompute_costs==true, it will compute the cost and its
   /// derivative again and store it.
   /// @param aux
   /// @param recompute_costs
