@@ -707,7 +707,6 @@ void Proximity::VerboseQuery(
 
   // Newton and Slsqp didn't work. Try LevenbergMarquart
   keep_best_and_did_it_improve();
-  data.current_guess = data.initial_guess;
   // set max iteration higher
   data.options.max_iter *= 5;
   LevenbergMarquart(data);
