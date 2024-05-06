@@ -3,6 +3,7 @@ from functools import wraps as _wraps
 import numpy as _np
 from gustaf.utils import arr as _arr
 
+import splinepy
 from splinepy import settings as _settings
 from splinepy.helpme.fit import surface
 from splinepy.utils import log as _log
@@ -359,6 +360,7 @@ def swept(cross_section, trajectory, nsections):
 
     # set cross section evaluation points along trajectory
     cps_eval = []
+    cs_evals = []
     for index, eval_point in enumerate(evals):
         # evaluate transformation matrix for each trajectory point
         A = transformation_matrix(trajectory, par_value[index][0])
@@ -374,7 +376,23 @@ def swept(cross_section, trajectory, nsections):
             # append control point to list
             cps_eval.append(normal_cscp)
 
-    fitting_points = _np.array(cps_eval)
+        cross_sec_placed_cps = _np.array(cps_eval)
+        number_of_cps_we_take = len(cross_section.control_points)
+        new_cross_section = splinepy.BSpline(
+            degrees=cross_section.degrees,
+            knot_vectors=cross_section.knot_vectors,
+            control_points=cross_sec_placed_cps[
+                index
+                * number_of_cps_we_take : (index + 1)
+                * number_of_cps_we_take
+            ],
+        )
+
+        # take care, this has to be the same as the nr of CPs each CS for now
+        evaluations = new_cross_section.evaluate([[0], [0.33], [0.66], [1]])
+        cs_evals.append(evaluations)
+
+    fitting_points = _np.array(cs_evals).reshape(-1, 3)
 
     # fit surface
     interpolated_surface, _ = surface(
