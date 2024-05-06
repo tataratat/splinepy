@@ -2,8 +2,6 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-import glob
-import os
 
 import splinepy
 
@@ -34,7 +32,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_mdinclude",
-    "breathe",
 ]
 
 
@@ -42,23 +39,6 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 pygments_style = "sphinx"
-
-
-include_path = os.path.join(os.path.dirname(__file__), "../../include")
-files = glob.glob(
-    os.path.join(include_path, "**/**/**/**/*.hpp"), recursive=True
-)
-l_inc = len(include_path)
-files_path = []
-for f in files:
-    files_path.append(os.path.relpath(f, include_path))
-
-doxygenxml_path = os.path.join(
-    os.path.dirname(__file__), "../build/doxy/doxygenxml"
-)
-breathe_projects = {"splinepy": doxygenxml_path}
-breathe_default_project = "splinepy"
-breathe_projects_source = {"splinepy": (include_path, files_path)}
 
 # -- Options for HTML output -------------------------------------------------
 

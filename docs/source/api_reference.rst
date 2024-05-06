@@ -15,14 +15,11 @@ Overview
 Python API
 ----------
 .. toctree::
+
    python_api
 
 C++ API
 -------
-.. toctree::
-
-   Spline classes <cpp_api>
-
 .. raw:: html
 
    <a href='doxy/html/index.html'>Full documentation (doxygen)</a>
