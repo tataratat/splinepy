@@ -25,20 +25,22 @@ if __name__ == "__main__":
     )
 
     # define sections along trajectory
-    nsect = len(kvs1[0])-ds1[0]-1
+    nsect = len(kvs1[0]) - ds1[0] - 1
 
     # cross section
     # define degrees
-    ds_cs = [1]
+    ds_cs = [2]
 
     # define knot vectors
-    kvs_cs = [[0.0, 0.0, 1.0, 1.0]]
+    kvs_cs = [[0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]]
 
     # define control points
     cps_cs = np.array(
         [
-            [0.0, 0.0, -1.0],
-            [0.0, 0.0, 1.0],
+            [0.0, 0.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [2.0, 0.0, 0.0],
+            [3.0, 1.0, 0.0],
         ]
     )
 

@@ -4,9 +4,10 @@ import numpy as _np
 from gustaf.utils import arr as _arr
 
 from splinepy import settings as _settings
+from splinepy.helpme.fit import surface
 from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
-from splinepy.helpme.fit import surface
+
 
 def embedded(spline, new_dimension):
     """Embeds Spline in given dimension.
@@ -324,57 +325,73 @@ def swept(cross_section, trajectory, nsections):
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweeps only works for splines")
 
-    # compute transformation matrix 
+    # compute transformation matrix
     # parameters: trajectory traj and parametric value v
     def transformation_matrix(traj, v):
-        # origin of local coordinate system
-        o = traj.evaluate([[v]])
         # local directions in global coordinates
-        x = traj.derivative([[v]], [1]) / _np.linalg.norm(traj.derivative([[v]], [1]) )
-        z = _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])) / _np.linalg.norm(_np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])))
-        y = _np.cross(z,x)
+        x = traj.derivative([[v]], [1]) / _np.linalg.norm(
+            traj.derivative([[v]], [1])
+        )
+        z = _np.cross(
+            traj.derivative([[v]], [1]), traj.derivative([[v]], [2])
+        ) / _np.linalg.norm(
+            _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2]))
+        )
+        y = _np.cross(z, x)
         # transformation matrix from global to local coordinates
         T = []
         T = _np.vstack((x, y, z))
         # transformation matrix from local to global coordinates
         A = _np.linalg.inv(T)
+        A = _np.negative(A)
         return A
-      
-    A = transformation_matrix(trajectory, 0)
-    print(A)
 
     # compute parameter values for inserting cross sections
-    par_value = _np.zeros((nsections,1))
+    par_value = _np.zeros((nsections, 1))
     for i in range(nsections):
-        par_value[i][0] = (trajectory.knot_vectors[0][i+1]+trajectory.knot_vectors[0][i+2])/2
+        par_value[i][0] = (
+            trajectory.knot_vectors[0][i + 1]
+            + trajectory.knot_vectors[0][i + 2]
+        ) / 2
 
     # evaluate trajectory at these parameter values
     evals = trajectory.evaluate(par_value)
 
     # set cross section evaluation points along trajectory
     cps_eval = []
-    for eval_point in evals:
-        # for-loop representing the nr. of cross section CPs
-        # note: only working for this special case
-        for i in range(len(cross_section.control_points)): 
-            current_cps = []
-            current_cps.append(eval_point[0])
-            current_cps.append(eval_point[1])
-            current_cps.append(cross_section.control_points[i][2])
-            cps_eval.append(current_cps)
+    for index, eval_point in enumerate(evals):
+        # evaluate transformation matrix for each trajectory point
+        A = transformation_matrix(trajectory, par_value[index][0])
+        for cscp in cross_section.control_points:
+            # rotation matrix for 90 degrees around y-axis
+            R = _np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
+            # rotate cross section in trajectory direction
+            normal_cscp = _np.dot(R, cscp)
+            # transform cross section to global coordinates
+            normal_cscp = _np.dot(A, normal_cscp)
+            # translate cross section to trajectory point
+            normal_cscp = normal_cscp + eval_point
+            # append control point to list
+            cps_eval.append(normal_cscp)
 
     fitting_points = _np.array(cps_eval)
-    
+
     # fit surface
     interpolated_surface, _ = surface(
         fitting_points=fitting_points,
-        size=[2, 3],
-        n_control_points=[2, 3],
-        degrees=[1, 2],
+        size=[
+            len(cross_section.control_points),
+            len(trajectory.control_points),
+        ],
+        n_control_points=[
+            len(cross_section.control_points),
+            len(trajectory.control_points),
+        ],
+        degrees=[int(cross_section.degrees), int(trajectory.degrees)],
     )
 
     return interpolated_surface
-    
+
 
 def from_bounds(parametric_bounds, physical_bounds):
     """Creates a minimal spline with given parametric bounds, physical bounds.
