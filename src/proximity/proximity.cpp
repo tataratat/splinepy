@@ -668,7 +668,7 @@ void Proximity::VerboseQuery(
   data.current_guess = data.initial_guess;
   data.options.max_iter *= 5;
   Slsqp(data);
-  if (data.IsConverged()) {
+  if (data.IsConverged() || data.SLSQP.mode == 0) {
     if (!data.spline_hessian.OwnsData()) {
       FillHessian(spline_, data.current_guess, data.spline_hessian);
     }
