@@ -1,9 +1,8 @@
 #include "splinepy/proximity/proximity.hpp"
+#include "splinepy/proximity/slsqp/slsqp.h"
 #include "splinepy/splines/helpers/properties.hpp"
 #include "splinepy/utils/nthreads.hpp"
 #include "splinepy/utils/print.hpp"
-
-#include "splinepy/proximity/slsqp/slsqp.h"
 
 namespace splinepy::proximity {
 
@@ -649,6 +648,40 @@ void Proximity::VerboseQuery(
   // initial guess and set it as current guess
   MakeInitialGuess(data);
 
+  // we want to keep the best result
+  ComputeCostAndDerivatives(data, 0); // computes J
+  double best_J = data.status.J;
+  RealArray best_guess(data.initial_guess);
+  auto keep_best_and_did_it_improve = [&best_J, &best_guess, &data]() -> bool {
+    // current guess is better - use the new one
+    if (best_J > data.status.J) {
+      best_guess = data.current_guess;
+      best_J = data.status.J;
+      return true;
+    }
+
+    // previous guess was better - set back
+    data.current_guess = best_guess;
+    best_J = data.status.J;
+    return false;
+  };
+
+  // return preps
+  auto fill_hessian_and_metrics =
+      [&data, &distance, &convergence_norm, this](const bool compute) {
+        if (!data.spline_hessian.OwnsData()) {
+          if (compute) {
+            FillHessian(spline_, data.current_guess, data.spline_hessian);
+          } else {
+            splinepy::utils::CopyUpperToLowerTriangle(data.spline_hessian);
+          }
+        }
+
+        // metrics
+        distance = data.status.distance;
+        convergence_norm = data.status.convergence_norm;
+      };
+
   // set bounds
   FindSearchBound(data, tight_bounds);
 
@@ -657,31 +690,35 @@ void Proximity::VerboseQuery(
 
   // newton converged - just fill lower triangle of the second_derivative
   if (data.IsConverged()) {
-    // we only need to fill data if hessian array belongs to the function caller
-    // otherwise, it means it's created within this function and so don't care.
-    if (!data.spline_hessian.OwnsData()) {
-      splinepy::utils::CopyUpperToLowerTriangle(data.spline_hessian);
-    }
+    // after newton, we just need to copy upper to lower triangle
+    fill_hessian_and_metrics(false);
     return;
   }
 
-  data.current_guess = data.initial_guess;
+  // newton didn't converge. prepare SLSQP
+  keep_best_and_did_it_improve();
   data.options.max_iter *= 5;
   Slsqp(data);
+  // check
   if (data.IsConverged() || data.SLSQP.mode == 0) {
-    if (!data.spline_hessian.OwnsData()) {
-      FillHessian(spline_, data.current_guess, data.spline_hessian);
-    }
+    fill_hessian_and_metrics(true);
     return;
   }
 
   // Newton and Slsqp didn't work. Try LevenbergMarquart
-  // reset current_guess to initial_guess as it expects that
+  keep_best_and_did_it_improve();
   data.current_guess = data.initial_guess;
   // set max iteration higher
   data.options.max_iter *= 5;
   LevenbergMarquart(data);
-  FillHessian(spline_, data.current_guess, data.spline_hessian);
+
+  // if it is improved, recompute all
+  if (keep_best_and_did_it_improve()) {
+    ComputeStatus(data, true); // this should fill grad
+  }
+
+  // finally, hessian and metrics
+  fill_hessian_and_metrics(true);
 }
 
 void FillHessian(const splinepy::splines::SplinepyBase& spline,
