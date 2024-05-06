@@ -496,8 +496,10 @@ void Proximity::LevenbergMarquart(SearchData& data) const {
       if (data.status.J > data.LM.prev_J) {
         data.LM.lambda *= 2.0;
         // if it gets too big, exit
-        // TODO: better "too big" number
+        // if lambda is between 2^13 and 2^14, we exit
         if (data.LM.lambda > 1.e5) {
+          // status needs re-evaluation at updated location
+          ComputeStatus(data, true);
           break;
         }
 
