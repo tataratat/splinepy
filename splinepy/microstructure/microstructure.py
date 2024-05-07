@@ -721,7 +721,7 @@ class Microstructure(_SplinepyBase):
         """
         if (
             (self.deformation_function is None)
-            or (self.microtile is None)
+            or (getattr(self, "_microtile", None) is None)
             or (self.tiling is None)
         ):
             self._logd(
