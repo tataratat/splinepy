@@ -43,7 +43,7 @@ repos:
   rev: v18.1.3
   hooks:
   - id: clang-format
-    types_or: [c++]
+    types_or: [c, c++]
 
 - repo: https://github.com/cheshirekow/cmake-format-precommit
   rev: "v0.6.13"

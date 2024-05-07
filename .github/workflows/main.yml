@@ -6,10 +6,10 @@ on:
 
 jobs:
   macos_wheel:
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       matrix:
-        arch: [x86_64, arm64]
+        arch: [x86_64]
         cw_build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
 
     steps:
@@ -21,7 +21,30 @@ jobs:
       env:
         CIBW_ARCHS: ${{ matrix.arch }}
         CIBW_BUILD: ${{ matrix.cw_build }}
-        CIBW_TEST_SKIP: "*-macosx_arm64"
+        SPLINEPY_GITHUB_ACTIONS_BUILD: True
+        SKBUILD_INSTALL_COMPONENTS: PythonModule
+
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./wheelhouse/*.whl
+        retention-days: 2
+
+  macos_wheel-m1:
+    runs-on: macos-14
+    strategy:
+      matrix:
+        arch: [arm64]
+        cw_build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: build wheels
+      uses: pypa/cibuildwheel@v2.16.5
+      env:
+        CIBW_ARCHS: ${{ matrix.arch }}
+        CIBW_BUILD: ${{ matrix.cw_build }}
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
         SKBUILD_INSTALL_COMPONENTS: PythonModule
 

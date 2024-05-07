@@ -1395,7 +1395,7 @@ class Spline(_SplinepyBase, _core.PySpline):
         initial_guess_sample_resolutions=None,
         tolerance=None,
         max_iterations=-1,
-        aggressive_search_bounds=False,
+        tight_search_bounds=False,
         nthreads=None,
         return_verbose=False,
     ):
@@ -1425,7 +1425,7 @@ class Spline(_SplinepyBase, _core.PySpline):
           Convergence criteria. Currently for both distance and residual
         max_iterations: int
           Default is (para_dim * 20)
-        aggressive_search_bounds: bool
+        tight_search_bounds: bool
           Default is False.
           Set search bound to aabb of direct neighbors from the sample grid.
         nthreads: int
@@ -1454,8 +1454,8 @@ class Spline(_SplinepyBase, _core.PySpline):
         queries = _utils.data.enforce_contiguous(queries, dtype="float64")
 
         # set small tolerance.
-        if tolerance is None and _settings.TOLERANCE > 1.0e-18:
-            tolerance = 1e-18
+        if tolerance is None and _settings.TOLERANCE > 1.0e-14:
+            tolerance = 1e-14
 
         verbose_info = super().proximities(
             queries=queries,
@@ -1465,7 +1465,7 @@ class Spline(_SplinepyBase, _core.PySpline):
             ),
             tolerance=tolerance,
             max_iterations=max_iterations,
-            aggressive_search_bounds=aggressive_search_bounds,
+            tight_search_bounds=tight_search_bounds,
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 
