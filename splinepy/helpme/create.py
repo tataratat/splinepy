@@ -229,9 +229,9 @@ def revolved(
     # Rotation is always performed in half steps
     PI = _np.pi
     minimum_n_knot_spans = int(
-        _np.ceil(_np.abs((angle + _settings.TOLERANCE) / PI))
+        _np.ceil((abs(angle) + abs(_settings.TOLERANCE)) / PI)
     )
-    if (n_knot_spans) is None or (n_knot_spans < minimum_n_knot_spans):
+    if n_knot_spans is None or (n_knot_spans < minimum_n_knot_spans):
         n_knot_spans = minimum_n_knot_spans
 
     if "Bezier" in spline.name and n_knot_spans > 1:
