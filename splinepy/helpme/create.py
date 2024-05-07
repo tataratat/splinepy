@@ -203,7 +203,7 @@ def revolved(
     # Update angle
     if angle is None:
         spline._logd("No angle given for the revolution. Using 360 degrees.")
-        angle = 360
+        angle = 360 if degree else _np.pi * 2
 
     if degree:
         angle = _np.radians(angle)
