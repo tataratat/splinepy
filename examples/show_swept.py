@@ -51,10 +51,15 @@ if __name__ == "__main__":
         control_points=cps_cs,
     )
 
+    # user should define the normal vector of the cross section
+    cs_nv = np.array([0, 0, 1])
+
+    # create interpolated surface
     interpolated_surface = splinepy.helpme.create.swept(
         trajectory=trajectory,
         cross_section=cross_section,
         nsections=nsect,
+        cross_section_normal=cs_nv,
     )
 
     # testing derivative and evaluation
