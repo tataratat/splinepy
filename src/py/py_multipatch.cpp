@@ -1259,8 +1259,6 @@ void PyMultipatch::SetInterfaces(const py::array_t<int>& interfaces) {
   interfaces_ = interfaces;
 }
 
-/// @brief Gets IDs of boundary patch
-/// @param bid specicif boundary id (-1) : all
 py::array_t<int> PyMultipatch::BoundaryPatchIds(const int bid) {
   // return if it exists
   if (bid < 0 && boundary_patch_ids_.size() != 0) {
