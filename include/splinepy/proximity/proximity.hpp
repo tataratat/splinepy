@@ -325,6 +325,7 @@ public:
   /// @brief resets search bounds to spline's parametric bounds. if tight==true,
   /// current_guess +- grid_points_'s sampling step size.
   /// @param data
+  /// @param tight
   void FindSearchBound(SearchData& data, const bool tight = false) const;
 
   /// @brief Prepares lhs and rhs of newton iteration

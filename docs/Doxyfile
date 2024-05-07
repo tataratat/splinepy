@@ -1,6 +1,6 @@
 PROJECT_NAME           = "splinepy"
 PROJECT_BRIEF          = "Library for Bezier, Rational Bezier, BSpline and NURBS of arbitrary dimensions and degrees"
-OUTPUT_DIRECTORY       = ./doxydocs
+OUTPUT_DIRECTORY       = ./build/doxy
 ALWAYS_DETAILED_SEC    = YES
 FULL_PATH_NAMES        = NO
 QT_AUTOBRIEF           = YES
@@ -18,7 +18,9 @@ SORT_MEMBERS_CTORS_1ST = YES
 WARNINGS               = YES
 WARN_NO_PARAMDOC       = YES
 WARN_LOGFILE           = doxygen_warnings.txt
-INPUT                  = ../cpp/splinepy
+INPUT                  = ../include/splinepy \
+                         ../src \
+                         ./markdown/cpp_readme.md
 RECURSIVE              = YES
 EXCLUDE_PATTERNS       = */tests/* \
                          */data/* \
@@ -30,9 +32,8 @@ EXCLUDE_PATTERNS       = */tests/* \
                          */third_party/* \
                          *.dox
 EXAMPLE_RECURSIVE      = YES
-USE_MDFILE_AS_MAINPAGE = ../README.md
+USE_MDFILE_AS_MAINPAGE = ./markdown/cpp_readme.md
 SOURCE_BROWSER         = YES
-CLANG_OPTIONS          =
 USE_MATHJAX            = YES
 MATHJAX_RELPATH        = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/
 GENERATE_LATEX         = NO

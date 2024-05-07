@@ -151,6 +151,7 @@ public:
   /// @param degrees
   /// @param knot_vectors
   /// @param control_points
+  /// @param dim
   BSpline(const int* degrees,
           const std::vector<std::vector<double>>& knot_vectors,
           double* control_points,

@@ -15,4 +15,11 @@ Overview
 Python API
 ----------
 .. toctree::
+
    python_api
+
+C++ API
+-------
+.. raw:: html
+
+   <a href='doxy/html/index.html'>Full documentation (doxygen)</a>

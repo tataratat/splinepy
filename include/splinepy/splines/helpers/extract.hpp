@@ -185,9 +185,6 @@ ExtractControlMeshSlice(const SplineType& spline,
  *
  * @param knot_multiplicities multiplicies of each unique knot per dim
  * @param degrees pointer to degrees vector
- * @param n_patches_per_para_dim pointer to vector with same dimension that
- * represents the number of patches within the B-Spline type along a respective
- * parametric dimension
  * @return std::vector<std::vector<int>>
  */
 std::vector<std::vector<int>>
@@ -198,7 +195,7 @@ ExtractBezierPatchIDs(const std::vector<std::vector<int>>& knot_multiplicities,
  *
  * @tparam as_base flag to determine input type avoid circular dependency
  * @tparam SplineType Spline-type (NURBS of BSpline)
- * @param input spline to be separated
+ * @param spline spline to be separated
  * @return auto vector of Bezier types, either Rational or polynomial
  */
 template<typename SplineType>

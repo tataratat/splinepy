@@ -2,6 +2,7 @@
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+
 import splinepy
 
 # sys.path.insert(0, os.path.abspath("../../"))
@@ -38,7 +39,6 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 pygments_style = "sphinx"
-
 
 # -- Options for HTML output -------------------------------------------------
 
