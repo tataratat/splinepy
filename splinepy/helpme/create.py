@@ -334,6 +334,7 @@ def swept(
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweeps only works for splines")
 
+    # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
 
@@ -349,6 +350,7 @@ def swept(
         ) / _np.linalg.norm(
             _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2]))
         )
+        # check if z is pointing in the right direction
         if z[0][2] < 0:
             z = -z
         y = _np.cross(z, x)
@@ -372,7 +374,6 @@ def swept(
                 [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
             ]
         )
-
         return A, R
 
     # compute parameter values for inserting cross sections
@@ -386,7 +387,7 @@ def swept(
     # evaluate trajectory at these parameter values
     evals = trajectory.evaluate(par_value)
 
-    # find a center of the cross section
+    # translate cross section to origin
     cs_center = cross_section.evaluate([[0.5]]).flatten()
     cross_section.control_points = cross_section.control_points - cs_center
 
@@ -418,22 +419,24 @@ def swept(
             ],
         )
 
-        # take care, this has to be the same as the nr of CPs each CS for now
-        evaluations = new_cross_section.evaluate([[0], [0.33], [0.66], [1]])
+        # evaluate cross section at parameter values
+        evaluations = new_cross_section.evaluate(
+            [[0], [0.25], [0.5], [0.75], [1]]
+        )
         cs_evals.append(evaluations)
 
     fitting_points = _np.array(cs_evals).reshape(-1, 3)
 
-    # fit surface
+    # fit surface - take care of size and n_control_points --> not sure yet
     interpolated_surface, _ = surface(
         fitting_points=fitting_points,
         size=[
-            len(cross_section.control_points),
-            len(trajectory.control_points),
+            len(evaluations),
+            nsections,
         ],
         n_control_points=[
-            len(cross_section.control_points),
-            len(trajectory.control_points),
+            len(evaluations),
+            nsections,
         ],
         degrees=[int(cross_section.degrees), int(trajectory.degrees)],
     )
