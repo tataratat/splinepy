@@ -144,13 +144,13 @@ public:
   /// For non-rational splines, only the former.
   py::tuple CoordinatePointers();
 
-  /// @brief Returns ParameterSpace meant to be
-  /// called library internally to prepare @property ParameterSpaceBase
+  /// @brief Returns ParameterSpace. meant to be called library internally to
+  /// prepare ParameterSpaceBase (forms knot_vectors)
   std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
   ParameterSpace();
 
-  /// Returns knot vector of given dimension. meant to be
-  /// called library internally to prepare @property KnotVector
+  /// Returns knot vector of given dimension. meant to be called library
+  /// internally to prepare KnotVector (forms each elements in knot_vectors)
   std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
   KnotVector(const int para_dim);
 
