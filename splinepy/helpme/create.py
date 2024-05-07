@@ -300,7 +300,12 @@ def revolved(
     return type(spline)(**spline_dict)
 
 
-def swept(cross_section, trajectory, nsections):
+def swept(
+    cross_section,
+    trajectory,
+    nsections,
+    cross_section_normal=None,
+):
     """Sweeps a cross-section along a trajectory
 
     Parameters
@@ -311,6 +316,9 @@ def swept(cross_section, trajectory, nsections):
       Trajectory along which the cross-section is swept
     nsections : int
       Number of sections trajectory is divided into
+    cross_section_normal : np.ndarray
+      Normal vector of the cross-section
+      Default is [0, 0, 1]
 
     Returns
     -------
@@ -326,6 +334,9 @@ def swept(cross_section, trajectory, nsections):
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweeps only works for splines")
 
+    if cross_section_normal is None:
+        cross_section_normal = _np.array([0, 0, 1])
+
     # compute transformation matrix
     # parameters: trajectory traj and parametric value v
     def transformation_matrix(traj, v):
@@ -338,14 +349,31 @@ def swept(cross_section, trajectory, nsections):
         ) / _np.linalg.norm(
             _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2]))
         )
+        if z[0][2] < 0:
+            z = -z
         y = _np.cross(z, x)
         # transformation matrix from global to local coordinates
         T = []
         T = _np.vstack((x, y, z))
+
         # transformation matrix from local to global coordinates
         A = _np.linalg.inv(T)
-        A = _np.negative(A)
-        return A
+
+        # rotation matrix around y
+        angle_of_x = _np.arctan2(x[0][2], x[0][0])
+        angle_of_cs_normal = _np.arctan2(
+            cross_section_normal[2], cross_section_normal[0]
+        )
+        rotation_angle = angle_of_cs_normal - angle_of_x
+        R = _np.array(
+            [
+                [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
+                [0, 1, 0],
+                [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
+            ]
+        )
+
+        return A, R
 
     # compute parameter values for inserting cross sections
     par_value = _np.zeros((nsections, 1))
@@ -358,15 +386,17 @@ def swept(cross_section, trajectory, nsections):
     # evaluate trajectory at these parameter values
     evals = trajectory.evaluate(par_value)
 
+    # find a center of the cross section
+    cs_center = cross_section.evaluate([[0.5]]).flatten()
+    cross_section.control_points = cross_section.control_points - cs_center
+
     # set cross section evaluation points along trajectory
     cps_eval = []
     cs_evals = []
     for index, eval_point in enumerate(evals):
         # evaluate transformation matrix for each trajectory point
-        A = transformation_matrix(trajectory, par_value[index][0])
+        A, R = transformation_matrix(trajectory, par_value[index][0])
         for cscp in cross_section.control_points:
-            # rotation matrix for 90 degrees around y-axis
-            R = _np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
             # rotate cross section in trajectory direction
             normal_cscp = _np.dot(R, cscp)
             # transform cross section to global coordinates
