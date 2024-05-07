@@ -1,13 +1,11 @@
- ![txt_logo](docs/source/_static/splinepy_name.png)
+![txt_logo](docs/source/_static/splinepy_name.png)
 **splinepy - Library for prototyping spline geometries of arbitrary dimensions and degrees, and IGA**
-![gallery](docs/source/_static/gallery.png)
 
 [![workflow](https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg)](https://github.com/tataratat/splinepy/actions)
 [![PyPI version](https://badge.fury.io/py/splinepy.svg)](https://badge.fury.io/py/splinepy)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tataratat/try-splinepy/main)
 
-splinepy is a python library for splines of arbitrary dimensions and degrees.
-The library supports Bezier, Rational Bezier, BSpline and NURBS with fast and easy-to-use APIs.
+![gallery](docs/source/_static/gallery.png)
 
 ## Install guide
 splinepy wheels are available for python3.8+ for MacOS, Linux, and Windows:
