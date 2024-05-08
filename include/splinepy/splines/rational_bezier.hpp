@@ -78,7 +78,7 @@ public:
 
   /// @brief  Base (copy) constructor
   /// @param rhs
-  RationalBezier(const Base_& rhs) : Base_(rhs){};
+  RationalBezier(const Base_& rhs) : Base_(rhs) {};
 
   /// @brief Inherited constructor
   using Base_::Base_;

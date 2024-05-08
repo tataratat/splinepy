@@ -222,7 +222,7 @@ protected:
 
 public:
   /// Constructor. As a spline helper class, always need a spline.
-  Proximity(const splinepy::splines::SplinepyBase& spline) : spline_(spline){};
+  Proximity(const splinepy::splines::SplinepyBase& spline) : spline_(spline) {};
 
   /*!
    * Plants a kdtree with given resolution.
