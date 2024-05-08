@@ -15,55 +15,56 @@ class EllipsVoid(_TileBase):
     Used in ADAMM test case for Hutchinson.
 
     See create_tile for more information
-    """
 
-    def __init__(self):
-        self._dim = 3
-        self._para_dim = 3
-        self._evaluation_points = _np.array(
-            [
-                [0.5, 0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 4
+    .. raw:: html
 
-        # Aux values
-        c0 = 0.5 / 3**0.5
-        aux_1 = 3**0.5 / 2 * 0.5
-        aux_0 = aux_1 * 2
-        self._sphere_ctps = _np.array(
-            [
-                [-c0, -c0, -c0],
-                [0, -aux_1, -aux_1],
-                [c0, -c0, -c0],
-                [-aux_1, 0, -aux_1],
-                [0, 0, -aux_0],
-                [aux_1, 0, -aux_1],
-                [-c0, c0, -c0],
-                [0, aux_1, -aux_1],
-                [c0, c0, -c0],
-                # Second layer
-                [-aux_1, -aux_1, 0],
-                [0, -aux_0, 0],
-                [aux_1, -aux_1, 0],
-                [-aux_0, 0, 0],
-                [0, 0, 0],
-                [aux_0, 0, 0],
-                [-aux_1, aux_1, 0],
-                [0, aux_0, 0],
-                [aux_1, aux_1, 0],
-                # Third layer
-                [-c0, -c0, c0],
-                [0, -aux_1, aux_1],
-                [c0, -c0, c0],
-                [-aux_1, 0, aux_1],
-                [0, 0, aux_0],
-                [aux_1, 0, aux_1],
-                [-c0, c0, c0],
-                [0, aux_1, aux_1],
-                [c0, c0, c0],
-            ]
-        )
+        <p><a href="../_static/EllipsVoid.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/EllipsVoid.html" />
+
+    """  # noqa: E501
+
+    _dim = 3
+    _para_dim = 3
+    _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
+    _n_info_per_eval_point = 4
+
+    # Aux values
+    _c0 = 0.5 / 3**0.5
+    _aux_1 = 3**0.5 / 2 * 0.5
+    _aux_0 = _aux_1 * 2
+    _sphere_ctps = _np.array(
+        [
+            [-_c0, -_c0, -_c0],
+            [0, -_aux_1, -_aux_1],
+            [_c0, -_c0, -_c0],
+            [-_aux_1, 0, -_aux_1],
+            [0, 0, -_aux_0],
+            [_aux_1, 0, -_aux_1],
+            [-_c0, _c0, -_c0],
+            [0, _aux_1, -_aux_1],
+            [_c0, _c0, -_c0],
+            # Second layer
+            [-_aux_1, -_aux_1, 0],
+            [0, -_aux_0, 0],
+            [_aux_1, -_aux_1, 0],
+            [-_aux_0, 0, 0],
+            [0, 0, 0],
+            [_aux_0, 0, 0],
+            [-_aux_1, _aux_1, 0],
+            [0, _aux_0, 0],
+            [_aux_1, _aux_1, 0],
+            # Third layer
+            [-_c0, -_c0, _c0],
+            [0, -_aux_1, _aux_1],
+            [_c0, -_c0, _c0],
+            [-_aux_1, 0, _aux_1],
+            [0, 0, _aux_0],
+            [_aux_1, 0, _aux_1],
+            [-_c0, _c0, _c0],
+            [0, _aux_1, _aux_1],
+            [_c0, _c0, _c0],
+        ]
+    )
 
     def _rotation_matrix_x(self, angle):
         cc, ss = _np.cos(angle), _np.sin(angle)

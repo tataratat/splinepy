@@ -18,11 +18,17 @@ from splinepy._version import __version__
 from splinepy.bezier import Bezier
 from splinepy.bspline import BSpline
 from splinepy.helpme.ffd import FFD
+from splinepy.microstructure.microstructure import Microstructure
 from splinepy.multipatch import Multipatch
 from splinepy.nurbs import NURBS
 from splinepy.rational_bezier import RationalBezier
 from splinepy.spline import Spline
-from splinepy.utils.data import SplineDataAdaptor
+from splinepy.utils.data import (
+    SplineDataAdaptor,
+    cartesian_product,
+    make_matrix,
+    uniform_query,
+)
 
 # set NAME_TO_TYPE
 settings.NAME_TO_TYPE = settings.__splinepy_name_to_type__()
@@ -70,4 +76,9 @@ __all__ = [
     "FFD",
     "to_derived",
     "show",
+    "Microstructure",
+    "TileLib",
+    "cartesian_product",
+    "make_matrix",
+    "uniform_query",
 ]

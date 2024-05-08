@@ -8,18 +8,33 @@ class TileBase(_SplinepyBase):
     Base class for tile objects
     """
 
-    def __init__(self):
-        """
-        Init Values to None
-        """
-        self._dim = None
-        self._evaluation_points = None
-        self._n_info_per_eval_point = None
+    _dim = None
+    _para_dim = None
+    _evaluation_points = None
+    _n_info_per_eval_point = None
 
+    def __init__(self):
+        if type(self) is TileBase:
+            raise TypeError(
+                "Can't initialize a TileBase class! Please use one of the "
+                f"derived classes: {TileBase.__subclasses__()}"
+            )
+
+    @classmethod
+    def _raise_if_not_set_else_return(cls, attr_name):
+        attr = getattr(cls, attr_name, None)
+        if attr is None and cls is not TileBase:
+            raise NotImplementedError(
+                f"Inherited Tile-types need to provide {attr_name}, see "
+                "documentation."
+            )
+        return attr
+
+    @classmethod
     @property
-    def evaluation_points(self):
+    def evaluation_points(cls):
         """Positions in the parametrization function to be evaluated when tile
-        " "is constructed prior to composition.
+        is constructed prior to composition.
 
         Parameters
         ----------
@@ -29,15 +44,11 @@ class TileBase(_SplinepyBase):
         -------
         evaluation_points : np.ndarray(6,3)
         """
-        if self._evaluation_points is None:
-            raise TypeError(
-                "Inherited Tile-types need to provide _evaluation_points, see "
-                "documentation."
-            )
-        return self._evaluation_points
+        return cls._raise_if_not_set_else_return("_evaluation_points")
 
+    @classmethod
     @property
-    def dim(self):
+    def dim(cls):
         """Returns dimensionality in physical space of the Microtile.
 
         Parameters
@@ -48,14 +59,11 @@ class TileBase(_SplinepyBase):
         -------
         dim : int
         """
-        if self._dim is None:
-            raise TypeError(
-                "Inherited Tile-types need to provide _dim, see documentation."
-            )
-        return self._dim
+        return cls._raise_if_not_set_else_return("_dim")
 
+    @classmethod
     @property
-    def para_dim(self):
+    def para_dim(cls):
         """Returns dimensionality in parametric space of the Microtile.
 
         Parameters
@@ -66,11 +74,7 @@ class TileBase(_SplinepyBase):
         -------
         para_dim : int
         """
-        if self._para_dim is None:
-            raise TypeError(
-                "Inherited Tile-types need to provide _para_dim, see documentation."
-            )
-        return self._para_dim
+        return cls._raise_if_not_set_else_return("_para_dim")
 
     def check_params(self, params):
         """Checks if the parameters have the correct format and shape
@@ -132,3 +136,23 @@ class TileBase(_SplinepyBase):
             )
 
         return True
+
+    def create_tile(self, **kwargs):
+        """Tile creation interface for derived classes.
+        All types should implement this.
+
+        Parameters
+        ----------
+        **kwargs: kwargs
+
+        Returns
+        -------
+        tiles: list
+          List of splines that create a tile
+        derivatives: list<list<Spline>> or None
+          List of list of splines that represents parameter sensitivities.
+          If it is not implemented, returns None.
+        """
+        raise NotImplementedError(
+            f"create_tile() not implemented for {type(self)}"
+        )

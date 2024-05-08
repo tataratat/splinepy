@@ -135,6 +135,11 @@ class Microstructure(_SplinepyBase):
         if hasattr(self, "_microtile"):
             return self._microtile
         else:
+            self._logi(
+                "microtile is empty. "
+                "Please checkout splinepy.microstructure.tiles.show() for "
+                "predefined tile collections."
+            )
             return None
 
     @microtile.setter
@@ -690,6 +695,9 @@ class Microstructure(_SplinepyBase):
         microtile = self.microtile.create_tile(**kwargs)
         deformation_function = self.deformation_function
 
+        # turn off control points for clarity
+        microstructure.show_options["control_points"] = False
+
         # Show in vedo
         return _gus.show(
             ["Deformation Function", deformation_function],
@@ -713,7 +721,7 @@ class Microstructure(_SplinepyBase):
         """
         if (
             (self.deformation_function is None)
-            or (self.microtile is None)
+            or (getattr(self, "_microtile", None) is None)
             or (self.tiling is None)
         ):
             self._logd(

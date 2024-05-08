@@ -13,31 +13,32 @@ class CubeVoid(_TileBase):
     Used in ADAMM test case for Hutchinson.
 
     See create_tile for more information
-    """
 
-    def __init__(self):
-        self._dim = 3
-        self._para_dim = 3
-        self._evaluation_points = _np.array(
-            [
-                [0.5, 0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 4
+    .. raw:: html
 
-        # Aux values
-        self._sphere_ctps = _np.array(
-            [
-                [-0.5, -0.5, -0.5],
-                [0.5, -0.5, -0.5],
-                [-0.5, 0.5, -0.5],
-                [0.5, 0.5, -0.5],
-                [-0.5, -0.5, 0.5],
-                [0.5, -0.5, 0.5],
-                [-0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-            ]
-        )
+        <p><a href="../_static/CubeVoid.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/CubeVoid.html" />
+
+    """  # noqa: E501
+
+    _dim = 3
+    _para_dim = 3
+    _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
+    _n_info_per_eval_point = 4
+
+    # Aux values
+    _sphere_ctps = _np.array(
+        [
+            [-0.5, -0.5, -0.5],
+            [0.5, -0.5, -0.5],
+            [-0.5, 0.5, -0.5],
+            [0.5, 0.5, -0.5],
+            [-0.5, -0.5, 0.5],
+            [0.5, -0.5, 0.5],
+            [-0.5, 0.5, 0.5],
+            [0.5, 0.5, 0.5],
+        ]
+    )
 
     def _rotation_matrix_x(self, angle):
         cc, ss = _np.cos(angle), _np.sin(angle)

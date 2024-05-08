@@ -14,6 +14,7 @@ Author: Clemens Fricke
 import os
 import pathlib
 import re
+import warnings
 
 # Path to this file.
 file_path = os.path.abspath(os.path.dirname(__file__))
@@ -32,6 +33,23 @@ def get_markdown_links(line: str) -> str:
         str: Markdown links.
     """
     possible = re.findall(r"\[(.*?)\]\((.*?)\)", line)
+    return possible if possible else ""
+
+
+def get_special_links(line: str) -> list[tuple[str, str]]:
+    """Get the special links from a string.
+
+    Args:
+        line (str): text.
+
+    Returns:
+        List[tuple[str, str]]: Special links.
+    """
+
+    possible = [
+        x[::-1]
+        for x in re.findall(r"<img src=\"(.*?)\".*title=\"(.*?)\">", line)
+    ]
     return possible if possible else ""
 
 
@@ -121,6 +139,13 @@ def process_file(
     links = get_markdown_links(content)
 
     for item in links:
+        if not item[1].strip():
+            warnings.warn(
+                f"Empty link in `{file}`. Link name `{item[0]}` link path "
+                f"`{item[1]}`. Will ignore link.",
+                stacklevel=3,
+            )
+            continue
         if item[1].startswith(("http", "#")):  # skip http links and anchors
             if "badge" in item[1]:
                 continue
@@ -151,6 +176,24 @@ def process_file(
                 pathlib.Path(item[1]).resolve().relative_to(common_sub_path)
             )
         content = content.replace(item[1], str(new_path))
+
+    # super special links (just special images) that the sphinx markdown
+    # parser won't correctly handle since they are in html tags.
+    special_links = get_special_links(content)
+    for item in special_links:
+        if not item[0].strip():
+            warnings.warn(
+                f"Empty link in `{file}`. Link name `{item[1]}` link path "
+                f"`{item[0]}`. Will ignore link.",
+                stacklevel=3,
+            )
+            continue
+        if item[0].startswith("http"):  # skip http links and anchors
+            continue
+        else:
+            # just link to static folder in docs
+            new_path = "_static/" + str(pathlib.Path(item[1]).name)
+            content = content.replace(item[1], str(new_path))
 
     os.chdir(original_cwd)
 

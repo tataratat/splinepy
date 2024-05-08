@@ -5,18 +5,21 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 
 
 class DoubleLattice(_TileBase):
-    def __init__(self):
-        """
-        Lattice base cell, consisting of a rectangle with two diagonals in the
-        center"""
-        self._dim = 2
-        self._para_dim = 2
-        self._evaluation_points = _np.array(
-            [
-                [0.5, 0.5],
-            ]
-        )
-        self._n_info_per_eval_point = 2
+    """
+    Lattice base cell, consisting of a rectangle with two diagonals in the
+    center.
+
+    .. raw:: html
+
+        <p><a href="../_static/DoubleLattice.html">Fullscreen</a>.</p>
+        <embed type="text/html" width="100%" height="400" src="../_static/DoubleLattice.html" />
+
+    """  # noqa: E501
+
+    _dim = 2
+    _para_dim = 2
+    _evaluation_points = _np.array([[0.5, 0.5]])
+    _n_info_per_eval_point = 2
 
     def create_tile(
         self,
