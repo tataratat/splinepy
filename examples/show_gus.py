@@ -125,11 +125,8 @@ if __name__ == "__main__":
                 weights=weights,
                 knot_vectors=[knots],
             )
-            proto_ = proto.copy()
-            proto_.control_points *= -1
             left_half_sphere = proto.create.revolved(angle=180)
-
-            right_half_sphere = proto_.create.revolved(angle=180)
+            right_half_sphere = proto.create.revolved(angle=-180)
 
             background = [
                 left_half_sphere,
