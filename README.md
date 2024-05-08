@@ -77,7 +77,7 @@ All the splines can be modified. For example, by
 3. [inserting knots](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.insert_knots.html#splinepy.bspline.BSplineBase.insert_knots),
 4. [reducing degrees](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.reduce_degrees.html) and [removing knots](https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.remove_knots.html) with a specified tolerance
 
-*Note: currently {2, 3, 4} are limited to BSpline families.*
+*Note: currently {3, 4} are limited to BSpline families.*
 ```python
 # start with a copy of the original spline
 modified = nurbs.copy()
