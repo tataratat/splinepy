@@ -17,9 +17,9 @@ namespace splinepy::py {
 namespace py = pybind11;
 
 /// (multiple) knot insertion, single dimension
-py::list InsertKnots(std::shared_ptr<PySpline>& spline,
-                     int para_dim,
-                     py::array_t<double> knots);
+py::array_t<bool> InsertKnots(std::shared_ptr<PySpline>& spline,
+                              int para_dim,
+                              py::array_t<double> knots);
 
 /// (multiple) knot removal, single dimension
 py::list RemoveKnots(std::shared_ptr<PySpline>& spline,

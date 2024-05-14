@@ -160,7 +160,8 @@ public:
                                         double* first_derivatives,
                                         double* second_derivatives) const;
 
-  virtual void SplinepyElevateDegree(const int& p_dim);
+  virtual void SplinepyElevateDegree(const int& p_dim,
+                                     const int multiplicity = 1);
 
   virtual void SplinepyBasis(const double* para_coord, double* basis) const;
 
