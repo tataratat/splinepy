@@ -454,8 +454,11 @@ public:
                                 second_derivatives);
   }
 
-  virtual void SplinepyElevateDegree(const int& p_dim) {
-    splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
+  virtual void SplinepyElevateDegree(const int& p_dim,
+                                     const int multiplicity = 1) {
+    splinepy::splines::helpers::ScalarTypeElevateDegree(*this,
+                                                        p_dim,
+                                                        multiplicity);
   }
 
   virtual bool SplinepyReduceDegree(const int& p_dim, const double& tolerance) {
@@ -464,8 +467,13 @@ public:
                                                               tolerance);
   }
 
-  virtual bool SplinepyInsertKnot(const int& p_dim, const double& knot) {
-    return splinepy::splines::helpers::ScalarTypeInsertKnot(*this, p_dim, knot);
+  virtual int SplinepyInsertKnot(const int& p_dim,
+                                 const double& knot,
+                                 const int multiplicity = 1) {
+    return splinepy::splines::helpers::ScalarTypeInsertKnot(*this,
+                                                            p_dim,
+                                                            knot,
+                                                            multiplicity);
   }
 
   virtual bool SplinepyRemoveKnot(const int& p_dim,

@@ -546,7 +546,8 @@ void SplinepyBase::SplinepyVerboseProximity(const double* query,
       SplinepyWhatAmI());
 }
 
-void SplinepyBase::SplinepyElevateDegree(const int& para_dims) {
+void SplinepyBase::SplinepyElevateDegree(const int& para_dims,
+                                         const int multiplicity) {
   splinepy::utils::PrintAndThrowError(
       "SplinepyElevateDegree not implemented for",
       SplinepyWhatAmI());
@@ -560,10 +561,12 @@ bool SplinepyBase::SplinepyReduceDegree(const int& para_dims,
   return false;
 }
 
-bool SplinepyBase::SplinepyInsertKnot(const int& para_dim, const double& knot) {
+int SplinepyBase::SplinepyInsertKnot(const int& para_dim,
+                                     const double& knot,
+                                     const int multiplicity) {
   splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
                                       SplinepyWhatAmI());
-  return false;
+  return -1;
 }
 
 bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,

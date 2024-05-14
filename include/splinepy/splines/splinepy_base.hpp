@@ -232,14 +232,17 @@ public:
                                         double* second_derivatives) const;
 
   /// Spline degree elevation
-  virtual void SplinepyElevateDegree(const int& para_dims);
+  virtual void SplinepyElevateDegree(const int& para_dims,
+                                     const int multiplicity = 1);
 
   /// Spline degree reduction
   virtual bool SplinepyReduceDegree(const int& para_dims,
                                     const double& tolerance);
 
   /// Spline knot insertion.
-  virtual bool SplinepyInsertKnot(const int& para_dim, const double& knot);
+  virtual int SplinepyInsertKnot(const int& para_dim,
+                                 const double& knot,
+                                 const int multiplicity = 1);
 
   /// Spline knot removal.
   virtual bool SplinepyRemoveKnot(const int& para_dim,

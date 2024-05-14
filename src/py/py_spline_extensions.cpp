@@ -1,21 +1,40 @@
 #include "splinepy/py/py_spline_extensions.hpp"
 #include "splinepy/splines/helpers/scalar_type_wrapper.hpp"
+#include "splinepy/utils/arrays.hpp"
 
 namespace splinepy::py {
 
 namespace py = pybind11;
 
-py::list InsertKnots(std::shared_ptr<PySpline>& spline,
-                     int para_dim,
-                     py::array_t<double> knots) {
+py::array_t<bool> InsertKnots(std::shared_ptr<PySpline>& spline,
+                              int para_dim,
+                              py::array_t<double> knots) {
   double* knots_ptr = static_cast<double*>(knots.request().ptr);
   const int n_request = knots.size();
 
-  py::list successful;
-  for (int i{}; i < n_request; ++i) {
-    successful.append(
-        spline->Core()->SplinepyInsertKnot(para_dim, knots_ptr[i]));
+  // let's argsort, get unique, get multiplicity
+  splinepy::utils::Array<double, 1, int> knot_request_view(knots_ptr,
+                                                           n_request);
+  splinepy::utils::Array<int, 1, int> arg_sorted, unique, multiplicity;
+  knot_request_view.ArgSort(arg_sorted);
+  splinepy::utils::UniqueIndicesAndMultiplicities(knot_request_view,
+                                                  arg_sorted,
+                                                  unique,
+                                                  multiplicity);
+
+  py::array_t<bool> successful(n_request);
+  bool* successful_ptr = static_cast<bool*>(successful.request().ptr);
+  const int* arg_ptr = arg_sorted.begin();
+  for (int i{}; i < unique.size(); ++i) {
+    int n_added = spline->Core()->SplinepyInsertKnot(para_dim,
+                                                     knots_ptr[unique[i]],
+                                                     multiplicity[i]);
+    // sets results
+    for (int j{}; j < multiplicity[i]; ++j) {
+      successful_ptr[*arg_ptr++] = (n_added-- > 0);
+    }
   }
+
   return successful;
 }
 

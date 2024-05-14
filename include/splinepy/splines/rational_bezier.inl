@@ -205,8 +205,12 @@ void RationalBezier<para_dim, dim>::SplinepyJacobian(const double* para_coord,
 }
 
 template<std::size_t para_dim, std::size_t dim>
-void RationalBezier<para_dim, dim>::SplinepyElevateDegree(const int& p_dim) {
-  splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
+void RationalBezier<para_dim, dim>::SplinepyElevateDegree(
+    const int& p_dim,
+    const int multiplicity) {
+  splinepy::splines::helpers::ScalarTypeElevateDegree(*this,
+                                                      p_dim,
+                                                      multiplicity);
 }
 
 template<std::size_t para_dim, std::size_t dim>

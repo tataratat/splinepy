@@ -171,10 +171,20 @@ void ScalarTypeJacobian(const SplineType& spline,
 }
 
 /// single degree elevation.
-template<typename SplineType, typename QueryType>
-void ScalarTypeElevateDegree(SplineType& spline, const QueryType query) {
+template<typename SplineType, typename QueryType, typename IntType>
+void ScalarTypeElevateDegree(SplineType& spline,
+                             const QueryType query,
+                             const IntType multiplicity = 1) {
   using Dim = typename SplineType::Dimension_;
-  spline.ElevateDegree(static_cast<Dim>(query));
+
+  if constexpr (SplineType::kHasKnotVectors) {
+    // BSplineLib can take multiplicity
+    spline.ElevateDegree(static_cast<Dim>(query), multiplicity);
+  } else {
+    for (IntType i{}; i < multiplicity; ++i) {
+      spline.ElevateDegree(static_cast<Dim>(query));
+    }
+  }
 }
 
 /// single degree reduction
@@ -187,11 +197,26 @@ bool ScalarTypeReduceDegree(SplineType& spline,
   return spline.ReduceDegree(Dim{query}, Tol{tolerance});
 }
 
-/// single knot insertion
-template<typename SplineType, typename QueryDimType, typename QueryType>
-bool ScalarTypeInsertKnot(SplineType& spline,
-                          QueryDimType query_dim,
-                          QueryType query) {
+/// @brief Inserts knot at given location with given multiplicity. It returns
+/// number of successful multiplicity
+///
+/// @tparam SplineType
+/// @tparam QueryDimType
+/// @tparam QueryType
+/// @tparam IntType
+/// @param spline
+/// @param query_dim
+/// @param query
+/// @param multiplicity
+/// @return
+template<typename SplineType,
+         typename QueryDimType,
+         typename QueryType,
+         typename IntType>
+int ScalarTypeInsertKnot(SplineType& spline,
+                         const QueryDimType query_dim,
+                         const QueryType query,
+                         const IntType multiplicity) {
 
   using Dim = typename SplineType::Dimension_;
   using Knot = typename SplineType::Knot_;
@@ -202,20 +227,21 @@ bool ScalarTypeInsertKnot(SplineType& spline,
       *spline.GetParameterSpace().GetKnotVectors()[query_dim];
 
   // Check if request is valid before BSplineLib
-  // TODO: see discussions in PR #297
+  // see discussions in PR #297
+  // BSplineLib now also has runtime bound check, which raises error.
   const auto para_bounds = GetParametricBounds(spline);
   if ((para_bounds[0][query_dim] >= query)
       || (para_bounds[1][query_dim] <= query)) {
-    return false;
+    return 0;
   }
 
   const auto n_knots_before = knot_vector.GetSize();
 
-  spline.InsertKnot(Dim{query_dim}, Knot{query});
+  spline.InsertKnot(Dim{query_dim}, Knot{query}, multiplicity);
 
   const auto n_knots_after = knot_vector.GetSize();
 
-  return (n_knots_after > n_knots_before);
+  return (n_knots_after - n_knots_before);
 }
 
 /// single knot removal
