@@ -13,8 +13,8 @@ if __name__ == "__main__":
     cps1 = np.array(
         [
             [0.0, 0.0, 0.0],
-            [3.0, 1.0, 0.0],
-            [4.0, 0.0, 0.0],
+            [3.0, 1, 0.0],
+            [4.0, 3, 0.0],
         ]
     )
     # init trajectory as bspline
@@ -29,10 +29,10 @@ if __name__ == "__main__":
 
     # cross section
     # define degrees
-    ds_cs = [2]
+    ds_cs = [3]
 
     # define knot vectors
-    kvs_cs = [[0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0]]
+    kvs_cs = [[0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0]]
 
     # define control points
     cps_cs = np.array(
