@@ -326,3 +326,6 @@ splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
 
 # load
 quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
+
+# svg export
+splinepy.io.svg.export("nurbs.svg", nurbs, background=bg)
