@@ -330,9 +330,9 @@ def swept(
 
     # Check input type
     if not isinstance(cross_section, _Spline):
-        raise NotImplementedError("Sweeps only works for splines")
+        raise NotImplementedError("Sweep only works for splines")
     if not isinstance(trajectory, _Spline):
-        raise NotImplementedError("Sweeps only works for splines")
+        raise NotImplementedError("Sweep only works for splines")
 
     # setting default value for cross_section_normal
     if cross_section_normal is None:
@@ -340,29 +340,67 @@ def swept(
 
     # compute transformation matrix
     # parameters: trajectory traj and parametric value v
-    def transformation_matrix(traj, v):
+    # def transformation_matrix(traj, v):
+    #     # local directions in global coordinates
+    #     x = traj.derivative([[v]], [1]) / _np.linalg.norm(
+    #         traj.derivative([[v]], [1])
+    #     )
+    #     z = _np.cross(
+    #         traj.derivative([[v]], [1]), traj.derivative([[v]], [2])
+    #     ) / _np.linalg.norm(
+    #         _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])))
+
+    #     # check if z is pointing in the right direction
+    #     if z[0][2] < 0:
+    #         z = -z
+    #     y = _np.cross(z, x)
+    #     # transformation matrix from global to local coordinates
+    #     T = []
+    #     3
+    #     T = _np.vstack((x, y, z))
+
+    #     # transformation matrix from local to global coordinates
+    #     A = _np.linalg.inv(T)
+
+    #     # rotation matrix around y
+    #     angle_of_x = _np.arctan2(x[0][2], x[0][0])
+    #     angle_of_cs_normal = _np.arctan2(
+    #         cross_section_normal[2], cross_section_normal[0]
+    #     )
+    #     rotation_angle = angle_of_cs_normal - angle_of_x
+    #     R = _np.array(
+    #         [
+    #             [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
+    #             [0, 1, 0],
+    #             [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
+    #         ]
+    #     )
+    #     return A, R
+
+    def transformation_matrix_with_projection(traj, v):
         # local directions in global coordinates
-        x = traj.derivative([[v]], [1]) / _np.linalg.norm(
+        x = (
             traj.derivative([[v]], [1])
-        )
-        z = _np.cross(
-            traj.derivative([[v]], [1]), traj.derivative([[v]], [2])
-        ) / _np.linalg.norm(
-            _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2]))
-        )
-        # check if z is pointing in the right direction
-        if z[0][2] < 0:
-            z = -z
+            / _np.linalg.norm(traj.derivative([[v]], [1]))
+        ).flatten()
+        # arbitrary vector B_0 normal to x
+        vec = [1, 1, 1]
+        B_0 = _np.cross(x, vec)
+        # projecting B_0 onto the plane normal to x
+        b_i = B_0 - _np.dot(B_0, x) * x
+        z = b_i / _np.linalg.norm(b_i)
+
         y = _np.cross(z, x)
         # transformation matrix from global to local coordinates
         T = []
+
         T = _np.vstack((x, y, z))
 
         # transformation matrix from local to global coordinates
         A = _np.linalg.inv(T)
 
         # rotation matrix around y
-        angle_of_x = _np.arctan2(x[0][2], x[0][0])
+        angle_of_x = _np.arctan2(x[2], x[0])
         angle_of_cs_normal = _np.arctan2(
             cross_section_normal[2], cross_section_normal[0]
         )
@@ -396,7 +434,9 @@ def swept(
     cs_evals = []
     for index, eval_point in enumerate(evals):
         # evaluate transformation matrix for each trajectory point
-        A, R = transformation_matrix(trajectory, par_value[index][0])
+        A, R = transformation_matrix_with_projection(
+            trajectory, par_value[index][0]
+        )
         for cscp in cross_section.control_points:
             # rotate cross section in trajectory direction
             normal_cscp = _np.dot(R, cscp)
@@ -435,8 +475,8 @@ def swept(
             nsections,
         ],
         n_control_points=[
-            len(evaluations),
-            nsections,
+            len(cross_section.control_points),
+            len(trajectory.control_points),
         ],
         degrees=[int(cross_section.degrees), int(trajectory.degrees)],
     )
