@@ -356,7 +356,6 @@ def swept(
     #     y = _np.cross(z, x)
     #     # transformation matrix from global to local coordinates
     #     T = []
-    #     3
     #     T = _np.vstack((x, y, z))
 
     #     # transformation matrix from local to global coordinates
@@ -377,41 +376,54 @@ def swept(
     #     )
     #     return A, R
 
-    def transformation_matrix_with_projection(traj, v):
-        # local directions in global coordinates
-        x = (
-            traj.derivative([[v]], [1])
-            / _np.linalg.norm(traj.derivative([[v]], [1]))
-        ).flatten()
+    def transformation_matrix_with_projection(traj, index, par_value):
+        # for i in range(len(traj.knot_vectors[0])):
+        x = traj.derivative([[0]], [1]) / _np.linalg.norm(
+            traj.derivative([[0]], [1])
+        )
         # arbitrary vector B_0 normal to x
-        vec = [1, 1, 1]
-        B_0 = _np.cross(x, vec)
-        # projecting B_0 onto the plane normal to x
-        b_i = B_0 - _np.dot(B_0, x) * x
-        z = b_i / _np.linalg.norm(b_i)
+        vec = [1.5, 0.3, 1]
+        B = []
+        B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+        z = B[0]
+
+        for i in range(1, index + 1):
+            # local directions in global coordinates
+            x = (
+                traj.derivative([[par_value[i][0]]], [1])
+                / _np.linalg.norm(traj.derivative([[par_value[i][0]]], [1]))
+            ).flatten()
+
+            # projecting B_i onto the plane normal to x
+            B.append(B[i - 1] - _np.dot(B[i - 1], x) * x)
+            B[i] = B[i] / _np.linalg.norm(B[i])
+            z = B[i]
 
         y = _np.cross(z, x)
-        # transformation matrix from global to local coordinates
-        T = []
 
+        # transformation matrix from global to local coordinates
         T = _np.vstack((x, y, z))
 
         # transformation matrix from local to global coordinates
         A = _np.linalg.inv(T)
 
         # rotation matrix around y
-        angle_of_x = _np.arctan2(x[2], x[0])
-        angle_of_cs_normal = _np.arctan2(
-            cross_section_normal[2], cross_section_normal[0]
-        )
-        rotation_angle = angle_of_cs_normal - angle_of_x
-        R = _np.array(
-            [
-                [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
-                [0, 1, 0],
-                [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
-            ]
-        )
+        # angle_of_x = _np.arctan2(x[2], x[0])
+        # angle_of_cs_normal = _np.arctan2(
+        #     cross_section_normal[2], cross_section_normal[0]
+        # )
+        # rotation_angle = angle_of_cs_normal - angle_of_x
+        # R = []
+        # R.append(_np.array(
+        #     [
+        #         [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
+        #         [0, 1, 0],
+        #         [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
+        #     ]
+        # ))
+
+        # rotation matrix for rotation 90° around z-axis
+        R = _np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
         return A, R
 
     # compute parameter values for inserting cross sections
@@ -429,16 +441,22 @@ def swept(
     cs_center = cross_section.evaluate([[0.5]]).flatten()
     cross_section.control_points = cross_section.control_points - cs_center
 
+    # # evaluate transformation matrix for each trajectory point
+    # A, R, B = transformation_matrix_with_projection(
+    #         trajectory
+    #     )
+
     # set cross section evaluation points along trajectory
     cps_eval = []
     cs_evals = []
     for index, eval_point in enumerate(evals):
         # evaluate transformation matrix for each trajectory point
         A, R = transformation_matrix_with_projection(
-            trajectory, par_value[index][0]
+            trajectory, index, par_value
         )
         for cscp in cross_section.control_points:
             # rotate cross section in trajectory direction
+            # cscp = cscp.reshape(-1, 1)
             normal_cscp = _np.dot(R, cscp)
             # transform cross section to global coordinates
             normal_cscp = _np.dot(A, normal_cscp)
