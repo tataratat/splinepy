@@ -43,6 +43,27 @@ def test_insert_knot(np_rng, are_items_close, bspline_2p2d, nurbs_2p2d):
     assert np.allclose(nurbs_2p2d.evaluate(q2D), nurbs_original.evaluate(q2D))
 
 
+def test_insert_knot_status_return(np_rng):
+    # create 3d box and loop for bspline families
+    box = splinepy.helpme.create.box(1, 1, 1)
+    for s in [box.bspline, box.nurbs]:
+        s.elevate_degrees([0, 1, 2])
+        degrees = s.degrees
+
+        # create random knots to insert
+        knots = np_rng.random(5)
+        for i in range(s.para_dim):
+            # repeat those knots one more time than degree so that it fails
+            # at the last insert
+            repeat = degrees[i] + 2
+            repeated = np.repeat(knots, repeat)
+            ref = np.ones(len(knots) * (repeat), dtype=bool)
+            ref[degrees[i] + 1 :: repeat] = False
+
+            successful = s.insert_knots(i, repeated)
+            assert all(successful == ref)
+
+
 def test_insert_knot_with_matrix(np_rng, bspline_2p2d, nurbs_2p2d):
     """Test the knot insertion function (.insert_knot())."""
 
