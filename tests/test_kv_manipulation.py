@@ -53,12 +53,18 @@ def test_insert_knot_status_return(np_rng):
         # create random knots to insert
         knots = np_rng.random(5)
         for i in range(s.para_dim):
-            # repeat those knots one more time than degree so that it fails
-            # at the last insert
-            repeat = degrees[i] + 2
+            # repeat knots for c^-1 repetition - they should all be possible
+            repeat = degrees[i] + 1
             repeated = np.repeat(knots, repeat)
-            ref = np.ones(len(knots) * (repeat), dtype=bool)
-            ref[degrees[i] + 1 :: repeat] = False
+
+            # we create reference
+            # last n_knots should fail
+            ref = np.ones(repeated.size + knots.size, dtype=bool)
+            ref[-knots.size :] = False
+
+            # schuffle
+            np_rng.shuffle(repeated)
+            repeated = np.append(repeated, knots)
 
             successful = s.insert_knots(i, repeated)
             assert all(successful == ref)
