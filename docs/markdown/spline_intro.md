@@ -38,9 +38,9 @@ with
 
 .. math::
   u &\in [0;1],
-  
+
   0^{0} &\equiv 1,
-  
+
   0! &= 1,
 
 and the fixed relation between degree of the polynomial :math:`p` and number of control points :math:`n`
