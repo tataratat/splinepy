@@ -43,7 +43,9 @@ pygments_style = "sphinx"
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
+html_logo = "_static/favicon.png"
 html_theme_options = {
+    # "logo": "_static/favicon.png",
     "icon_links": [
         {
             "name": "GitHub",
@@ -58,6 +60,7 @@ html_theme_options = {
     ],
     "navigation_with_keys": False,
 }
+html_favicon = "_static/favicon.png"
 # html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
 html_css_files = ["style.css"]
