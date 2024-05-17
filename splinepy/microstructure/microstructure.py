@@ -176,7 +176,7 @@ class Microstructure(_SplinepyBase):
          - evaluation_points - a list of points defined in the unit cube
            that will be evaluated in the parametrization function to provide
            the required set of data points
-         - parameter_space_dimension - dimensionality of the parametrization
+         - para_dim - dimensionality of the parametrization
            function and number of design variables for said microtile
 
         Parameters
@@ -211,7 +211,7 @@ class Microstructure(_SplinepyBase):
          - evaluation_points - a list of points defined in the unit cube
            that will be evaluated in the parametrization function to provide
            the required set of data points
-         - parameter_space_dimension - dimensionality of the parametrization
+         - para_dim - dimensionality of the parametrization
            function and number of design variables for said microtile
          - parametrization_function - a function that calculates the microtile
            parameters based on the position of the tile within the deformation
