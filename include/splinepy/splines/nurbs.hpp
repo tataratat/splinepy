@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2021 Jaewook Lee
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #pragma once
 
 // SplineLib
@@ -454,8 +478,11 @@ public:
                                 second_derivatives);
   }
 
-  virtual void SplinepyElevateDegree(const int& p_dim) {
-    splinepy::splines::helpers::ScalarTypeElevateDegree(*this, p_dim);
+  virtual void SplinepyElevateDegree(const int& p_dim,
+                                     const int multiplicity = 1) {
+    splinepy::splines::helpers::ScalarTypeElevateDegree(*this,
+                                                        p_dim,
+                                                        multiplicity);
   }
 
   virtual bool SplinepyReduceDegree(const int& p_dim, const double& tolerance) {
@@ -464,8 +491,13 @@ public:
                                                               tolerance);
   }
 
-  virtual bool SplinepyInsertKnot(const int& p_dim, const double& knot) {
-    return splinepy::splines::helpers::ScalarTypeInsertKnot(*this, p_dim, knot);
+  virtual int SplinepyInsertKnot(const int& p_dim,
+                                 const double& knot,
+                                 const int multiplicity = 1) {
+    return splinepy::splines::helpers::ScalarTypeInsertKnot(*this,
+                                                            p_dim,
+                                                            knot,
+                                                            multiplicity);
   }
 
   virtual bool SplinepyRemoveKnot(const int& p_dim,

@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2021 Jaewook Lee
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #include <algorithm>
 #include <memory>
 #include <numeric>
@@ -11,6 +35,7 @@
 #include "splinepy/splines/bspline.hpp"
 #include "splinepy/splines/nurbs.hpp"
 #include "splinepy/splines/rational_bezier.hpp"
+#include "splinepy/utils/arrays.hpp"
 #include "splinepy/utils/grid_points.hpp"
 #include "splinepy/utils/nthreads.hpp"
 
@@ -759,14 +784,24 @@ PySpline::Proximities(py::array_t<double> queries,
 void PySpline::ElevateDegrees(py::array_t<int> para_dims) {
   int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
   const int n_request = para_dims.size();
-  for (int i{}; i < n_request; ++i) {
-    const int& p_dim = para_dims_ptr[i];
+
+  // get unique and multiplicity
+  splinepy::utils::Array<int, 1, int> para_dims_view(para_dims_ptr, n_request);
+  splinepy::utils::Array<int, 1, int> arg_sorted, unique, multiplicity;
+  para_dims_view.ArgSort(arg_sorted);
+  splinepy::utils::UniqueIndicesAndMultiplicities(para_dims_view,
+                                                  arg_sorted,
+                                                  unique,
+                                                  multiplicity);
+
+  for (int i{}; i < unique.size(); ++i) {
+    const int p_dim = para_dims_ptr[unique[i]];
     if (!(p_dim < para_dim_) || p_dim < 0) {
       splinepy::utils::PrintAndThrowError(
           p_dim,
           "is invalid parametric dimension for degree elevation.");
     }
-    Core()->SplinepyElevateDegree(p_dim);
+    Core()->SplinepyElevateDegree(p_dim, multiplicity[i]);
   }
 }
 

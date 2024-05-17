@@ -176,7 +176,7 @@ class Microstructure(_SplinepyBase):
          - evaluation_points - a list of points defined in the unit cube
            that will be evaluated in the parametrization function to provide
            the required set of data points
-         - parameter_space_dimension - dimensionality of the parametrization
+         - para_dim - dimensionality of the parametrization
            function and number of design variables for said microtile
 
         Parameters
@@ -211,7 +211,7 @@ class Microstructure(_SplinepyBase):
          - evaluation_points - a list of points defined in the unit cube
            that will be evaluated in the parametrization function to provide
            the required set of data points
-         - parameter_space_dimension - dimensionality of the parametrization
+         - para_dim - dimensionality of the parametrization
            function and number of design variables for said microtile
          - parametrization_function - a function that calculates the microtile
            parameters based on the position of the tile within the deformation
@@ -563,12 +563,10 @@ class Microstructure(_SplinepyBase):
                 # To avoid unnecessary constructions (if a parameter
                 # sensitivity evaluates to zero), perform only those that are
                 # in the support of a specific design variable
-                support = _np.where(
-                    _np.any(_np.any(tile_sensitivities != 0.0, axis=0), axis=0)
-                )[0]
-                anti_support = _np.where(
-                    _np.any(_np.all(tile_sensitivities == 0.0, axis=0), axis=0)
-                )[0]
+                support_mask = _np.any(tile_sensitivities != 0.0, axis=(0, 1))
+                support = support_mask.nonzero()[0]
+                anti_support = (~support_mask).nonzero()[0]
+
                 tile_sens_on_support = tile_sensitivities[:, :, support]
             else:
                 tile_sens_on_support = None

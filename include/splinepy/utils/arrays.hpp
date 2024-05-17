@@ -1,8 +1,33 @@
+/*
+MIT License
+
+Copyright (c) 2021 Jaewook Lee
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #pragma once
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <iterator>
 #include <numeric>
 #include <type_traits>
 
@@ -91,6 +116,17 @@ public:
   }
 
   constexpr DataType* end() const {
+    assert(data_);
+    assert(size_ > 0);
+    return data_ + size_;
+  }
+
+  constexpr const DataType* cbegin() const {
+    assert(data_);
+    return data_;
+  }
+
+  constexpr const DataType* cend() const {
     assert(data_);
     assert(size_ > 0);
     return data_ + size_;
@@ -547,7 +583,73 @@ public:
       data_i = -data_i;
     }
   }
+
+  template<typename OutIndexType>
+  constexpr void
+  ArgSort(Array<OutIndexType, 1, OutIndexType>& arg_sorted) const {
+    // fill indices
+    arg_sorted.Reallocate(size_);
+    std::iota(arg_sorted.begin(), arg_sorted.end(), 0);
+
+    // comparison takes a look at the data
+    auto arg_compare = [this](const OutIndexType& a,
+                              const OutIndexType& b) -> bool {
+      return data_[a] < data_[b];
+    };
+
+    std::stable_sort(arg_sorted.begin(), arg_sorted.end(), arg_compare);
+  }
 };
+
+template<typename InputArray, typename OutIndexType>
+void UniqueIndicesAndMultiplicities(
+    const InputArray& input,
+    const Array<OutIndexType, 1, OutIndexType>& arg_sorted,
+    Array<OutIndexType, 1, OutIndexType>& unique,
+    Array<OutIndexType, 1, OutIndexType>& multiplicity) {
+  static_assert(std::is_integral_v<OutIndexType>,
+                "OutIndexType should be an integral type");
+  using InputType = typename InputArray::value_type;
+
+  // copy argsort to use it for unique search
+  unique.Reallocate(arg_sorted.size());
+  unique = arg_sorted;
+
+  // comparison for unique check - need to look at input element of given index
+  auto is_same = [&input](const InputType& a, const InputType& b) {
+    if constexpr (std::is_floating_point_v<InputType>) {
+      return std::abs(input[a] - input[b])
+             < std::numeric_limits<InputType>::epsilon();
+    } else {
+      return input[a] == input[b];
+    }
+  };
+
+  // find unique and reshape
+  auto last = std::unique(unique.begin(), unique.end(), is_same);
+  unique.SetShape(std::distance(unique.begin(), last));
+
+  // now loop and fill return values
+  multiplicity.Reallocate(unique.size());
+  OutIndexType* unique_ptr = unique.begin();
+
+  // iterate unique and count multiplicity
+  // we will check if the next indices are the same. if so, we will stop
+  // counting multiplicity
+  const OutIndexType* arg_ptr = arg_sorted.begin();
+  for (OutIndexType i{}; i < unique.size() - 1; ++i) {
+    const OutIndexType u_next = unique[i + 1];
+    OutIndexType& m = multiplicity[i];
+    m = 1; // at start, we always have the same value
+    while (*(++arg_ptr) != u_next) {
+      ++m; // increase counter if the next argument matches
+    }
+  }
+
+  // last value of multiplicity is distance between
+  OutIndexType* last_multiplicity = multiplicity.end() - 1;
+  *last_multiplicity = std::distance(arg_ptr, arg_sorted.cend());
+}
 
 /// @brief c[i] = a[i] - b[i]
 /// @tparam IterableA
