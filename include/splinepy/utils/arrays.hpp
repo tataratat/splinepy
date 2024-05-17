@@ -618,7 +618,7 @@ void UniqueIndicesAndMultiplicities(
     OutIndexType& m = multiplicity[i];
     m = 1; // at start, we always have the same value
     while (*(++arg_ptr) != u_next) {
-      ++m; // increase counter if arg_sorted_i and u_i are the same
+      ++m; // increase counter if the next argument matches
     }
   }
 
