@@ -43,7 +43,7 @@ pygments_style = "sphinx"
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
-html_logo = "_static/favicon.png"
+html_logo = "_static/splinepy_name.png"
 html_theme_options = {
     # "logo": "_static/favicon.png",
     "icon_links": [
