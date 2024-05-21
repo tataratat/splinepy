@@ -303,7 +303,7 @@ def revolved(
 def swept(
     cross_section,
     trajectory,
-    nsections,
+    nsections=None,
     cross_section_normal=None,
 ):
     """Sweeps a cross-section along a trajectory
@@ -337,6 +337,10 @@ def swept(
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
+
+    # make copies so we can work on it inplace
+    trajectory = trajectory.copy()
+    cross_section = cross_section.copy()
 
     # compute transformation matrix
     # parameters: trajectory traj and parametric value v
@@ -378,8 +382,8 @@ def swept(
 
     def transformation_matrix_with_projection(traj, index, par_value):
         # for i in range(len(traj.knot_vectors[0])):
-        x = traj.derivative([[0]], [1]) / _np.linalg.norm(
-            traj.derivative([[0]], [1])
+        x = traj.derivative([par_value[0]], [1]) / _np.linalg.norm(
+            traj.derivative([par_value[0]], [1])
         )
         # arbitrary vector B_0 normal to x
         vec = [1.5, 0.3, 1]
@@ -390,8 +394,8 @@ def swept(
         for i in range(1, index + 1):
             # local directions in global coordinates
             x = (
-                traj.derivative([[par_value[i][0]]], [1])
-                / _np.linalg.norm(traj.derivative([[par_value[i][0]]], [1]))
+                traj.derivative([par_value[i]], [1])
+                / _np.linalg.norm(traj.derivative([par_value[i]], [1]))
             ).flatten()
 
             # projecting B_i onto the plane normal to x
@@ -427,19 +431,22 @@ def swept(
         return A, R
 
     # compute parameter values for inserting cross sections
-    par_value = _np.zeros((nsections, 1))
-    for i in range(nsections):
-        par_value[i][0] = (
-            trajectory.knot_vectors[0][i + 1]
-            + trajectory.knot_vectors[0][i + 2]
-        ) / 2
+    if nsections is None:
+        par_value = trajectory.greville_abscssae()
+    else:
+        bounds = trajectory.parametric_bounds.ravel()
+        par_value = _np.linspace(*bounds, nsections)
+    par_value = par_value.reshape(-1, 1)
 
     # evaluate trajectory at these parameter values
     evals = trajectory.evaluate(par_value)
 
     # translate cross section to origin
-    cs_center = cross_section.evaluate([[0.5]]).flatten()
-    cross_section.control_points = cross_section.control_points - cs_center
+    cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
+    cs_center = cross_section.evaluate(
+        cross_para_center.reshape(-1, 1)
+    ).ravel()
+    cross_section.control_points -= cs_center
 
     # # evaluate transformation matrix for each trajectory point
     # A, R, B = transformation_matrix_with_projection(
@@ -457,9 +464,9 @@ def swept(
         for cscp in cross_section.control_points:
             # rotate cross section in trajectory direction
             # cscp = cscp.reshape(-1, 1)
-            normal_cscp = _np.dot(R, cscp)
+            normal_cscp = _np.matmul(R, cscp)
             # transform cross section to global coordinates
-            normal_cscp = _np.dot(A, normal_cscp)
+            normal_cscp = _np.matmul(A, normal_cscp)
             # translate cross section to trajectory point
             normal_cscp = normal_cscp + eval_point
             # append control point to list
@@ -478,9 +485,7 @@ def swept(
         )
 
         # evaluate cross section at parameter values
-        evaluations = new_cross_section.evaluate(
-            [[0], [0.25], [0.5], [0.75], [1]]
-        )
+        evaluations = new_cross_section.sample(7)
         cs_evals.append(evaluations)
 
     fitting_points = _np.array(cs_evals).reshape(-1, 3)
