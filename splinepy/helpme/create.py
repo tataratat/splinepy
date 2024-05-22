@@ -387,7 +387,7 @@ def swept(
         )
 
         # evaluating arbitrary vector B_0 normal to x
-        vec = [1.5, 0.3, 1]
+        vec = [0, 1, 0]
         B = []
         B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
 
@@ -432,8 +432,8 @@ def swept(
         #     ]
         # ))
 
-        # rotation matrix for rotation 90° around z-axis and 90° around y-axis
-        R = _np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+        # rotation matrix for rotation 90° around y-axis
+        R = _np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
         return A, R
 
     # compute parameter values for inserting cross sections
