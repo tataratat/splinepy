@@ -127,6 +127,11 @@ One of the drawbacks of Bézier spline listed above is that it cannot be used to
 
 Here, :math:`N_{i,p}` are the Bernstein polynomials discussed above. :math:`\omega_i` is a so-called weight. :math:`\omega_i` is greater than zero and provides a measure to scale the influence of a certain control point. If the weight tends to zero, the control point is technically excluded from the spline computation. If the weight becomes large, the spline moves very close to the respective control point. If all weights are equal, one retrieves a the Bézier spline (the weights cancel and the denominator than becomes zero due to the partition of unity property.
 
+
+#### Properties of Rational Bézier splines
+
+The same properties of Bézier splines hold.
+
 ## B-splines
 
 Just like the Bézier basis functions, B-spline basis functions are polynomials. The key difference is that they are non-zero in only a portion of the parameter space. In other words, the basis functions have local support and this is what, in contrast to Bézier splines, gives us local control over the spline. In order to indicate where the support of each basis function begins and ends, we define a series of break points. These break points are called knots. The collection of knots forms the knot vector :math:`u`:
@@ -190,10 +195,11 @@ until the desired degree has been reached.
 #### Properties of B-spline basis functions:
 -  constitute a partition of unity :math:`\sum_{i=1}^{n}N_{i,p}(u)=1`
 -  non-negative
--  continuously differentiable within knot spans, :math:`p` times differentiable across knots (multiplicity of knot)
+-  continuously differentiable within knot spans, :math:`p-k` times continuously differentiable across knots (:math:`k`: multiplicity of knot)
 -  computation of a set of basis functions requires a knot vector :math:`u` and a degree :math:`p`
 -  basis functions are non-zero in :math:`[u_{i},u_{i+p+1})`, i.e., in :math:`p+1` knot spans
 -  in each knot span, :math:`p+1` basis function will be nonzero
+- each basis function attains exactly one maximum in the interval :math:`[u_{p+1},u_{n+1}]`, except for the case :math:`p=0`
 -  if the number of basis functions is :math:`p+1`, the B-spline basis reduces to the Bézier basis
 
 
@@ -211,6 +217,15 @@ The NURBS basis functions :math:`R_{i,p}` are computed using the B-spline basis 
 
 
 Again, :math:`\omega_i` is a weight.
+
+
+#### Properties of NURBS basis functions:
+
+The same properties of B-spline basis functions hold with the following additions:
+
+- computation of a set of basis functions additionally requires the weights :math:`\{\omega_i\}`
+- each basis function attains exactly one maximum in the interval :math:`[0,1]`, except for the case :math:`p=0`
+- if all weights are equal (:math:`\omega_i=a` for all :math:`i` and arbitrary :math:`a \neq 0`), the NURBS basis reduces to the B-spline basis
 
 <!-- # A selection of spline operations offered by splinepy -->
 
