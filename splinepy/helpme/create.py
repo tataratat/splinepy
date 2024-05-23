@@ -339,7 +339,7 @@ def swept(
         cross_section_normal = _np.array([0, 0, 1])
 
     # make copies so we can work on it inplace
-    trajectory = trajectory.copy()
+    trajectory = trajectory.create.embedded(3)
     cross_section = cross_section.copy()
 
     # compute transformation matrix
@@ -382,12 +382,13 @@ def swept(
 
     def transformation_matrices(traj, par_value):
         # tangent vector x on trajectory at parameter value 0
-        x = traj.derivative([par_value[0]], [1]) / _np.linalg.norm(
+        x = (
             traj.derivative([par_value[0]], [1])
-        )
+            / _np.linalg.norm(traj.derivative([par_value[0]], [1]))
+        ).ravel()
 
-        # evaluating arbitrary vector B_0 normal to x
-        vec = [0, 1, 0]
+        # evaluating a vector B_0 normal to x
+        vec = [-x[1], x[0], -x[2]]
         B = []
         B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
 
