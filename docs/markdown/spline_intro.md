@@ -224,7 +224,6 @@ Again, :math:`\omega_i` is a weight.
 The same properties of B-spline basis functions hold with the following additions:
 
 - computation of a set of basis functions additionally requires the weights :math:`\{\omega_i\}`
-- each basis function attains exactly one maximum in the interval :math:`[0,1]`, except for the case :math:`p=0`
 - if all weights are equal (:math:`\omega_i=a` for all :math:`i` and arbitrary :math:`a \neq 0`), the NURBS basis reduces to the B-spline basis
 
 <!-- # A selection of spline operations offered by splinepy -->
