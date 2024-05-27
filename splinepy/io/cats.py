@@ -32,7 +32,7 @@ CATS_XML_KEY_WORDS = {
     "weights": "wght",  # Weights (every spline is a nurbs)
     "degrees": "deg",  # Degrees vector
     "knot_vectors": "kntVecs",  # Vector of knot vectors
-    "knot_vector": "knotVec",  # individual knot vector
+    "knot_vector": "kntVec",  # individual knot vector
     "spline_list": "SplineList",  # Global list of patches
     "element_variables": "elmentVars",  # Variables defined on the element
 }
