@@ -9,22 +9,22 @@ cats_no_indent_export = [
     '2" spaceDim="2" numOfCntrlPntVars="2" numCntrlPnts="6" numOfEleVars="0" c'
     'losed="0 0"><cntrlPntVarNames>x y</cntrlPntVarNames><cntrlPntVars>0.0 0.0'
     " 0.5 0.0 1.0 0.0 0.0 1.0 0.5 1.0 1.0 1.0</cntrlPntVars><deg>2 1</deg><knt"
-    "Vecs><knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec><knotVec>0.0 0.0 1.0 1.0</"
-    'knotVec></kntVecs></SplineEntry><SplineEntry splDim="2" spaceDim="2" numO'
+    "Vecs><kntVec>0.0 0.0 0.0 1.0 1.0 1.0</kntVec><kntVec>0.0 0.0 1.0 1.0</"
+    'kntVec></kntVecs></SplineEntry><SplineEntry splDim="2" spaceDim="2" numO'
     'fCntrlPntVars="2" numCntrlPnts="4" numOfEleVars="0" closed="0 0"><cntrlPn'
     "tVarNames>x y</cntrlPntVarNames><cntrlPntVars>1.0 0.0 2.0 0.0 1.0 1.0 2.0"
-    " 1.0</cntrlPntVars><deg>1 1</deg><kntVecs><knotVec>0.0 0.0 1.0 1.0</knotV"
-    "ec><knotVec>0.0 0.0 1.0 1.0</knotVec></kntVecs><wght>1.0 1.0 1.0 1.0</wgh"
+    " 1.0</cntrlPntVars><deg>1 1</deg><kntVecs><kntVec>0.0 0.0 1.0 1.0</knotV"
+    "ec><kntVec>0.0 0.0 1.0 1.0</kntVec></kntVecs><wght>1.0 1.0 1.0 1.0</wgh"
     't></SplineEntry><SplineEntry splDim="2" spaceDim="2" numOfCntrlPntVars="2'
     '" numCntrlPnts="9" numOfEleVars="0" closed="0 0"><cntrlPntVarNames>x y</c'
     "ntrlPntVarNames><cntrlPntVars>0.0 1.0 0.5 1.0 1.0 1.0 0.0 1.5 0.5 1.5 1.0"
     " 1.5 0.0 2.0 0.5 2.0 1.0 2.0</cntrlPntVars><deg>2 1</deg><kntVecs><knotVe"
-    "c>0.0 0.0 0.0 1.0 1.0 1.0</knotVec><knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>"
+    "c>0.0 0.0 0.0 1.0 1.0 1.0</kntVec><kntVec>0.0 0.0 0.5 1.0 1.0</kntVec>"
     '</kntVecs></SplineEntry><SplineEntry splDim="2" spaceDim="2" numOfCntrlPn'
     'tVars="2" numCntrlPnts="6" numOfEleVars="0" closed="0 0"><cntrlPntVarName'
     "s>x y</cntrlPntVarNames><cntrlPntVars>1.0 1.0 2.0 1.0 1.0 1.5 2.0 1.5 1.0"
-    " 2.0 2.0 2.0</cntrlPntVars><deg>1 1</deg><kntVecs><knotVec>0.0 0.0 1.0 1."
-    "0</knotVec><knotVec>0.0 0.0 0.5 1.0 1.0</knotVec></kntVecs><wght>1.0 1.0 "
+    " 2.0 2.0 2.0</cntrlPntVars><deg>1 1</deg><kntVecs><kntVec>0.0 0.0 1.0 1."
+    "0</kntVec><kntVec>0.0 0.0 0.5 1.0 1.0</kntVec></kntVecs><wght>1.0 1.0 "
     "1.0 1.0 1.0 1.0</wght></SplineEntry></SplineList>"
 ]
 
@@ -44,8 +44,8 @@ cats_indent_export = [
     "1.0 1.0</cntrlPntVars>\n",
     "    <deg>2 1</deg>\n",
     "    <kntVecs>\n",
-    "      <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
-    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "      <kntVec>0.0 0.0 0.0 1.0 1.0 1.0</kntVec>\n",
+    "      <kntVec>0.0 0.0 1.0 1.0</kntVec>\n",
     "    </kntVecs>\n",
     "  </SplineEntry>\n",
     (
@@ -59,8 +59,8 @@ cats_indent_export = [
     "2.0 1.0</cntrlPntVars>\n",
     "    <deg>1 1</deg>\n",
     "    <kntVecs>\n",
-    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
+    "      <kntVec>0.0 0.0 1.0 1.0</kntVec>\n",
+    "      <kntVec>0.0 0.0 1.0 1.0</kntVec>\n",
     "    </kntVecs>\n",
     "    <wght>1.0 1.0 1.0 1.0</wght>\n",
     "  </SplineEntry>\n",
@@ -80,8 +80,8 @@ cats_indent_export = [
     "1.0 2.0</cntrlPntVars>\n",
     "    <deg>2 1</deg>\n",
     "    <kntVecs>\n",
-    "      <knotVec>0.0 0.0 0.0 1.0 1.0 1.0</knotVec>\n",
-    "      <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
+    "      <kntVec>0.0 0.0 0.0 1.0 1.0 1.0</kntVec>\n",
+    "      <kntVec>0.0 0.0 0.5 1.0 1.0</kntVec>\n",
     "    </kntVecs>\n",
     "  </SplineEntry>\n",
     (
@@ -97,8 +97,8 @@ cats_indent_export = [
     "2.0 2.0</cntrlPntVars>\n",
     "    <deg>1 1</deg>\n",
     "    <kntVecs>\n",
-    "      <knotVec>0.0 0.0 1.0 1.0</knotVec>\n",
-    "      <knotVec>0.0 0.0 0.5 1.0 1.0</knotVec>\n",
+    "      <kntVec>0.0 0.0 1.0 1.0</kntVec>\n",
+    "      <kntVec>0.0 0.0 0.5 1.0 1.0</kntVec>\n",
     "    </kntVecs>\n",
     "    <wght>1.0 1.0 1.0 1.0 1.0 1.0</wght>\n",
     "  </SplineEntry>\n",
