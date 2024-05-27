@@ -70,8 +70,11 @@ def load(fname):
             xml_element.attrib.get(CATS_XML_KEY_WORDS["field_dim"], -1)
         )
         n_ctps = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["n_ctps"], -1))
-        is_periodic = (
-            int(xml_element.attrib.get(CATS_XML_KEY_WORDS["periodic"], 0)) == 1
+        any_is_periodic = any(
+            int(periodic_key) == 1
+            for periodic_key in xml_element.attrib.get(
+                CATS_XML_KEY_WORDS["periodic"], 0
+            ).split()
         )
         if -1 in [dim, para_dim, ctps_dim, n_ctps]:
             raise ValueError(
@@ -84,7 +87,7 @@ def load(fname):
                 "retrieval is not implemented. All non-geometry info will be "
                 "ignored"
             )
-        if is_periodic:
+        if any_is_periodic:
             raise ValueError(
                 "Periodic splines are not (yet) supported. Try saving your "
                 "spline by repeating first and last control points."
@@ -236,7 +239,9 @@ def export(fname, spline_list, indent=True):
                 CATS_XML_KEY_WORDS["field_dim"]: str(patch.dim),
                 CATS_XML_KEY_WORDS["n_ctps"]: str(patch.cps.shape[0]),
                 CATS_XML_KEY_WORDS["n_element_vars"]: str(0),
-                CATS_XML_KEY_WORDS["periodic"]: str(0),
+                CATS_XML_KEY_WORDS["periodic"]: " ".join(
+                    [str(0) for _ in range(patch.para_dim)]
+                ),
             },
         )
 
