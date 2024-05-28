@@ -170,7 +170,7 @@ def load(fname):
     return _ioutils.dict_to_spline(list_of_splines)
 
 
-def export(fname, spline_list, indent=True):
+def export(fname, spline_list, indent=True, make_rational=True):
     """
     Save spline as `.xml`.
 
@@ -182,6 +182,8 @@ def export(fname, spline_list, indent=True):
       Splines to be exported
     indent: bool
       Option for pretty printing
+    make_rational : bool
+      (default True) export everything as nurbs (discard weights)
 
     Returns
     --------
@@ -227,7 +229,11 @@ def export(fname, spline_list, indent=True):
     # All Splines (patches) are written into the spline list as entries
     for spline in spline_list:
         # Convert to non-bezier type (might make unnecessary copy)
-        patch = spline.nurbs if spline.is_rational else spline.bspline
+        patch = (
+            spline.nurbs
+            if spline.is_rational or make_rational
+            else spline.bspline
+        )
 
         # Write spline header
         patch_element = _ET.SubElement(

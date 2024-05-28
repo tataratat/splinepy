@@ -148,9 +148,7 @@ def test_cats_export(to_tmpf, are_items_same, are_stripped_lines_same):
     with tempfile.TemporaryDirectory() as tmpd:
         tmpf = to_tmpf(tmpd)
         splinepy.io.cats.export(
-            tmpf,
-            spline_list=multipatch,
-            indent=False,
+            tmpf, spline_list=multipatch, indent=False, make_rational=False
         )
 
         with open(tmpf) as tmp_read:
@@ -163,9 +161,7 @@ def test_cats_export(to_tmpf, are_items_same, are_stripped_lines_same):
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = to_tmpf(tmpd)
             splinepy.io.cats.export(
-                tmpf,
-                spline_list=multipatch,
-                indent=True,
+                tmpf, spline_list=multipatch, indent=True, make_rational=False
             )
 
             with open(tmpf) as tmp_read:
@@ -173,10 +169,10 @@ def test_cats_export(to_tmpf, are_items_same, are_stripped_lines_same):
 
 
 def test_cats_import(to_tmpf, are_splines_equal):
-    """Test cats export routine"""
+    """Test cats import routine"""
     if int(python_version.split(".")[1]) < 8:
         splinepy.utils.log.info(
-            "gismo export is only tested here from python3.8+. "
+            "gismo import is only tested here from python3.8+. "
             "Skipping test, because current version is: "
             f"{python_version}"
         )
@@ -229,10 +225,28 @@ def test_cats_import(to_tmpf, are_splines_equal):
             tmpf,
             spline_list=multipatch_geometry,
             indent=False,
+            make_rational=False,
         )
         multipatch_geometry_loaded = splinepy.io.cats.load(tmpf)
         assert all(
             are_splines_equal(a, b)
+            for a, b in zip(
+                multipatch_geometry,
+                multipatch_geometry_loaded,
+            )
+        )
+
+    # Make all splines rational
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = to_tmpf(tmpd)
+        splinepy.io.cats.export(
+            tmpf,
+            spline_list=multipatch_geometry,
+            indent=False,
+        )
+        multipatch_geometry_loaded = splinepy.io.cats.load(tmpf)
+        assert all(
+            are_splines_equal(a.nurbs, b)
             for a, b in zip(
                 multipatch_geometry,
                 multipatch_geometry_loaded,
