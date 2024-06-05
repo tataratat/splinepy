@@ -1,5 +1,5 @@
 # A general introduction to splines
-A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section further reading for the exact reference).
+A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section Further reading for the exact reference).
 
 Splines come in many colors and facets, but there are a few properties that the most common ones (Bézier splines, B-splines, and NURBS) share:
 
@@ -15,7 +15,7 @@ Here, :math:`N` denotes the basis functions, :math:`\mathbf{P}` the coordinates 
 1. Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions :math:`N_i(u)` and :math:`M_j(\eta)`. Consider the example of a splines surface:
 
 .. math::
-  \mathbf{S}(u, \eta) = \sum_{i=1}^n \sum_{j=1}^m N_i(u) M_j(\eta) \mathbf{P}\_{i,j}
+  \mathbf{S}(u, \eta) = \sum_{i=1}^n \sum_{j=1}^m N_i(u) M_j(\eta) \mathbf{P}_{i,j}
 
 Notice that the structure of :math:`N_i` and :math:`M_j` is exactly the same. They are simply defined in different coordinate directions.
 
@@ -37,7 +37,11 @@ Named after Pierre Bézier (1910-1999), a French engineer at Renault and one of 
 with
 
 .. math::
-  u \in \[0;1\]; 0^{0}\equiv 1; 0!=1
+  u &\in [0;1],
+
+  0^{0} &\equiv 1,
+
+  0! &= 1,
 
 and the fixed relation between degree of the polynomial :math:`p` and number of control points :math:`n`
 
@@ -63,7 +67,7 @@ The resulting spline curve can then be computed as follows:
 
 .. math::
 
-  \mathbf{S}(u)=(1-u)\mathbf{P}\_{1}+u \mathbf{P}\_{2} .
+  \mathbf{S}(u)=(1-u)\mathbf{P}_{1}+u \mathbf{P}_{2} .
 
 **Example 2**: Bézier curve with :math:`n=3` control points and degree :math:`p=2`
 
@@ -81,7 +85,7 @@ The resulting spline curve can then be computed as follows:
 
 .. math::
 
-   \mathbf{S}(u)=(1-u)^{2}\mathbf{P}\_{1}+2u (1-u)\mathbf{P}\_{2}+u^{2}\mathbf{P}\_{3}
+   \mathbf{S}(u)=(1-u)^{2}\mathbf{P}_{1}+2u (1-u)\mathbf{P}_{2}+u^{2}\mathbf{P}_{3}
 
 #### Properties of Bézier curves
 
@@ -93,7 +97,7 @@ Bézier curves have the following properties:
 
 .. math::
 
-  N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}\_{=1}\underbrace{0^{0}}\_{=1}\underbrace{(1-0)^{p}}\_{=1}=1
+  N_{1,p}(0)&=\underbrace{\frac{p!}{0!p!}}_{=1}\underbrace{0^{0}}_{=1}\underbrace{(1-0)^{p}}_{=1}=1
 
   N_{i,p}(0)&=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1
 
@@ -123,12 +127,17 @@ One of the drawbacks of Bézier spline listed above is that it cannot be used to
 
 Here, :math:`N_{i,p}` are the Bernstein polynomials discussed above. :math:`\omega_i` is a so-called weight. :math:`\omega_i` is greater than zero and provides a measure to scale the influence of a certain control point. If the weight tends to zero, the control point is technically excluded from the spline computation. If the weight becomes large, the spline moves very close to the respective control point. If all weights are equal, one retrieves a the Bézier spline (the weights cancel and the denominator than becomes zero due to the partition of unity property.
 
+
+#### Properties of Rational Bézier splines
+
+The same properties of Bézier splines hold.
+
 ## B-splines
 
 Just like the Bézier basis functions, B-spline basis functions are polynomials. The key difference is that they are non-zero in only a portion of the parameter space. In other words, the basis functions have local support and this is what, in contrast to Bézier splines, gives us local control over the spline. In order to indicate where the support of each basis function begins and ends, we define a series of break points. These break points are called knots. The collection of knots forms the knot vector :math:`u`:
 
 .. math::
-  u=[u_{1}=0,u_{2},\dots,u_{n}=1]\qquad \underbrace{0\le u\le 1}\_{\text{ parameter space}} .
+  u=[u_{1}=0,u_{2},\dots,u_{n}=1]\qquad \underbrace{0\le u\le 1}_{\text{ parameter space}} .
 
 
 
@@ -162,7 +171,7 @@ In an open knot vector, the first and last value appears :math:`p+1` times. A kn
   -  uniform  :math:`\leftrightarrow` non-uniform \\
 In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., :math:`u=[0,0.2,0.4,0.6,0.8,1]`. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., :math:`[0,0,0,0.5,1,1,1]`. This knot vector is then still called uniform, if all middle knots are equally spaced.
 
-Once the knot vector has been specified, the basis functions :math:`N_{i,p}` can be defined. Again, :math:`i` indicates the number of the basis function and :math:`p` the degree.  :math:`N_{i,p}` is defined by the Cox de Boor recurrence formula. The starting point are constant basis functions (:math:`p=0`) defined as follows:
+Once the knot vector has been specified, the basis functions :math:`N_{i,p}` can be defined. Again, :math:`i` indicates the number of the basis function and :math:`p` the degree.  :math:`N_{i,p}` is defined by the Cox-de Boor recurrence formula. The starting point are constant basis functions (:math:`p=0`) defined as follows:
 
 .. math::
    N_{i,0}(u)=
@@ -183,13 +192,14 @@ Subsequently, the degree of the basis function can be raised bit by bit using
 until the desired degree has been reached.
 
 
-####    Properties of B-spline basis functions:
+#### Properties of B-spline basis functions:
 -  constitute a partition of unity :math:`\sum_{i=1}^{n}N_{i,p}(u)=1`
 -  non-negative
--  continuously differentiable within knot spans, :math:`p\cdots` times differentiable across knots (multiplicity of knot)
+-  continuously differentiable within knot spans, :math:`p-k` times continuously differentiable across knots (:math:`k`: multiplicity of knot)
 -  computation of a set of basis functions requires a knot vector :math:`u` and a degree :math:`p`
 -  basis functions are non-zero in :math:`[u_{i},u_{i+p+1})`, i.e., in :math:`p+1` knot spans
 -  in each knot span, :math:`p+1` basis function will be nonzero
+- each basis function attains exactly one maximum in the interval :math:`[u_{p+1},u_{n+1}]`, except for the case :math:`p=0`
 -  if the number of basis functions is :math:`p+1`, the B-spline basis reduces to the Bézier basis
 
 
@@ -207,6 +217,14 @@ The NURBS basis functions :math:`R_{i,p}` are computed using the B-spline basis 
 
 
 Again, :math:`\omega_i` is a weight.
+
+
+#### Properties of NURBS basis functions:
+
+The same properties of B-spline basis functions hold with the following additions:
+
+- computation of a set of basis functions additionally requires the weights :math:`\{\omega_i\}`
+- if all weights are equal (:math:`\omega_i=a` for all :math:`i` and arbitrary :math:`a \neq 0`), the NURBS basis reduces to the B-spline basis
 
 <!-- # A selection of spline operations offered by splinepy -->
 
