@@ -24,8 +24,8 @@ if __name__ == "__main__":
     trajectory = splinepy.BSpline(
         degrees=ds1,
         knot_vectors=kvs1,
-        control_points=cps1,)
-    
+        control_points=cps1,
+    )
 
     # define sections along trajectory
     nsect = len(kvs1[0]) - ds1[0] - 1
