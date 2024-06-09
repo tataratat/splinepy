@@ -8,31 +8,34 @@ if __name__ == "__main__":
     # define degrees
     ds1 = [2]
     # define knot vectors
-    kvs1 = [[0.0, 0.0, 0.0, 1.0, 1.0, 1.0]]
+    kvs1 = [[0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 1.0]]
     # define control points
     cps1 = np.array(
         [
             [0.0, 0.0, 0.0],
-            [2.0, 1.0, 1.0],
-            [4.0, 0.0, 2.0],
+            [5.0, 2.0, 4.0],
+            [10.0, 5.0, 8.0],
+            [15.0, 2.0, 4.0],
+            [20.0, 5.0, 0.0],
         ]
     )
+
     # init trajectory as bspline
     trajectory = splinepy.BSpline(
         degrees=ds1,
         knot_vectors=kvs1,
-        control_points=cps1,
-    )
+        control_points=cps1,)
+    
 
     # define sections along trajectory
     nsect = len(kvs1[0]) - ds1[0] - 1
 
     # cross section
     # define degrees
-    ds_cs = [2]
+    ds_cs = [3]
 
     # define knot vectors
-    kvs_cs = [[0.0, 0.0, 0.0, 1.0, 1.0, 1.0]]
+    kvs_cs = [[0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0]]
 
     # define control points
     cps_cs = np.array(
@@ -40,6 +43,8 @@ if __name__ == "__main__":
             [0.0, 0.0, 0.0],
             [1.0, 2.0, 0.0],
             [2.0, 0.0, 0.0],
+            [3.0, -2.0, 0.0],
+            [4.0, 0.0, 0.0],
         ]
     )
 

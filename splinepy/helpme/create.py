@@ -5,7 +5,7 @@ from gustaf.utils import arr as _arr
 
 import splinepy
 from splinepy import settings as _settings
-from splinepy.helpme.fit import surface
+from splinepy.helpme.fit import surface_from_cross_sections
 from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
 
@@ -459,9 +459,10 @@ def swept(
     A, R = transformation_matrices(trajectory, par_value)
 
     # set cross section evaluation points along trajectory
-    cps_eval = []
-    cs_evals = []
+    cps = []
+    cross_section_splines = []
     for index, eval_point in enumerate(evals):
+        temp_csp = []
         # place every control point of cross section separately
         for cscp in cross_section.control_points:
             # rotate cross section in trajectory direction
@@ -471,33 +472,36 @@ def swept(
             # translate cross section to trajectory point
             normal_cscp = normal_cscp + eval_point
             # append control point to list
-            cps_eval.append(normal_cscp)
+            temp_csp.append(normal_cscp)
 
-        # create spline of new cross section
-        cross_sec_placed_cps = _np.array(cps_eval)
-        number_of_cps_we_take = len(cross_section.control_points)
+        # create temp spline of new cross section
+        cross_sec_placed_cps = _np.array(temp_csp)
         temp_cross_section = splinepy.BSpline(
             degrees=cross_section.degrees,
             knot_vectors=cross_section.knot_vectors,
-            control_points=cross_sec_placed_cps[
-                index
-                * number_of_cps_we_take : (index + 1)
-                * number_of_cps_we_take
-            ],
+            control_points=cross_sec_placed_cps
         )
+        
+        # append cross section spline to list
+        cross_section_splines.append(temp_cross_section)
+        cps.append(cross_sec_placed_cps)
 
-        # evaluate cross section at parameter values
-        temp_evaluations = temp_cross_section.sample(7)
-        cs_evals.append(temp_evaluations)
+    cps = _np.array(cps)
+    degrees=[int(cross_section.degrees), int(trajectory.degrees)]
+    knot_vectors=[cross_section.knot_vectors[0][:], trajectory.knot_vectors[0][:]]
 
-    # defining points for fitting routine
-    fitting_points = _np.array(cs_evals).reshape(-1, 3)
+    fitting_surface = splinepy.BSpline(
+          degrees,
+          knot_vectors,
+          control_points=_np.array(cps).reshape(-1,3),)
 
     # fit surface - take care of size and n_control_points --> not sure yet
-    interpolated_surface, _ = surface(
-        fitting_points=fitting_points,
+    interpolated_surface, _ = surface_from_cross_sections(
+        fitting_spline=fitting_surface,
+        cross_section_splines=cross_section_splines,
+        cps=cps,
         size=[
-            len(temp_evaluations),
+            len(cross_section.control_points),
             nsections,
         ],
         n_control_points=[
