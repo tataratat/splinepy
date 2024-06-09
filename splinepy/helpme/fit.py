@@ -5,7 +5,6 @@ from splinepy.helpme.multi_index import MultiIndex
 from splinepy.utils import log as _log
 from splinepy.utils.data import has_scipy as _has_scipy
 from splinepy.utils.data import make_matrix as _make_matrix
-import splinepy
 
 if _has_scipy:
     from scipy.sparse.linalg import spsolve as _spsolve
@@ -591,18 +590,19 @@ def surface(
         }
     return fitted_spline, residual
 
+
 def surface_from_cross_sections(
     cross_section_splines,
     cps,
     size,
-    degrees=None,
+    # degrees=None,
     n_control_points=None,
     knot_vectors=None,
     fitting_spline=None,
     associated_queries=None,
     centripetal=True,
     interpolate_endpoints=True,
-    verbose_output=False,
+    # verbose_output=False,
 ):
     """
     ...
@@ -614,7 +614,7 @@ def surface_from_cross_sections(
     -------
     ...
     """
-    
+
     # dim = fitting_points.shape[1]
     dim = 3
 
@@ -639,7 +639,7 @@ def surface_from_cross_sections(
             "If fitting spline is given as one spline, "
             "parametric dimension must be 2!"
         )
-    
+
     # extract spline in each direction (knot_vectors, weights etc.
     # of original spline), works for all type of splines!
     fitting_splines = fitting_spline.extract.boundaries([2, 0])
@@ -656,9 +656,9 @@ def surface_from_cross_sections(
     # residual_u = _np.empty(size[1])
     # fitted_spline_u = fitting_splines[0]
     for v in range(len(cross_section_splines)):
-        interim_control_points[mi_interim_cps[:, v]] = (
-        cross_section_splines[v].control_points
-        )
+        interim_control_points[mi_interim_cps[:, v]] = cross_section_splines[
+            v
+        ].control_points
 
     # loop trajectory dim
     # curve fit for every k in n_control_points_u
@@ -666,9 +666,9 @@ def surface_from_cross_sections(
     fitted_spline_v = fitting_splines[1]
     for u in range(n_control_points[0]):
         fitted_spline_v, residual_v[u] = curve(
-            fitting_points=cps[:,u],
+            fitting_points=cps[:, u],
             fitting_spline=fitted_spline_v,
-            #associated_queries=u_k[1],
+            # associated_queries=u_k[1],
             centripetal=centripetal,
             interpolate_endpoints=interpolate_endpoints,
         )
