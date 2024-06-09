@@ -479,21 +479,25 @@ def swept(
         temp_cross_section = splinepy.BSpline(
             degrees=cross_section.degrees,
             knot_vectors=cross_section.knot_vectors,
-            control_points=cross_sec_placed_cps
+            control_points=cross_sec_placed_cps,
         )
-        
+
         # append cross section spline to list
         cross_section_splines.append(temp_cross_section)
         cps.append(cross_sec_placed_cps)
 
     cps = _np.array(cps)
-    degrees=[int(cross_section.degrees), int(trajectory.degrees)]
-    knot_vectors=[cross_section.knot_vectors[0][:], trajectory.knot_vectors[0][:]]
+    degrees = [int(cross_section.degrees), int(trajectory.degrees)]
+    knot_vectors = [
+        cross_section.knot_vectors[0][:],
+        trajectory.knot_vectors[0][:],
+    ]
 
     fitting_surface = splinepy.BSpline(
-          degrees,
-          knot_vectors,
-          control_points=_np.array(cps).reshape(-1,3),)
+        degrees,
+        knot_vectors,
+        control_points=_np.array(cps).reshape(-1, 3),
+    )
 
     # fit surface - take care of size and n_control_points --> not sure yet
     interpolated_surface, _ = surface_from_cross_sections(
@@ -508,7 +512,7 @@ def swept(
             len(cross_section.control_points),
             len(trajectory.control_points),
         ],
-        degrees=[int(cross_section.degrees), int(trajectory.degrees)],
+        # degrees=[int(cross_section.degrees), int(trajectory.degrees)],
     )
 
     return interpolated_surface
