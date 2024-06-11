@@ -216,8 +216,12 @@ def parametric_function(
             )
 
     else:
-        result = _np.sum(
-            function(positions) * meas(spline, positions) * weights, axis=1
+        result = _np.einsum(
+            "i...,i,i->...",
+            function(positions),
+            meas(spline, positions),
+            weights,
+            optimize=True,
         )
     return result
 
