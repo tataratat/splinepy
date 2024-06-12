@@ -5,7 +5,6 @@ from gustaf.utils import arr as _arr
 
 import splinepy
 from splinepy import settings as _settings
-from splinepy.helpme.fit import surface_from_cross_sections
 from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
 
@@ -328,7 +327,7 @@ def swept(
 
     from splinepy.spline import Spline as _Spline
 
-    # Check input type
+    # check input type
     if not isinstance(cross_section, _Spline):
         raise NotImplementedError("Sweep only works for splines")
     if not isinstance(trajectory, _Spline):
@@ -340,45 +339,7 @@ def swept(
 
     # make copies so we can work on it inplace
     trajectory = trajectory.create.embedded(3)
-    cross_section = cross_section.copy()
-
-    # compute transformation matrix
-    # parameters: trajectory traj and parametric value v
-    # def transformation_matrix_without_projection(traj, v):
-    #     # local directions in global coordinates
-    #     x = traj.derivative([[v]], [1]) / _np.linalg.norm(
-    #         traj.derivative([[v]], [1])
-    #     )
-    #     z = _np.cross(
-    #         traj.derivative([[v]], [1]), traj.derivative([[v]], [2])
-    #     ) / _np.linalg.norm(
-    #         _np.cross(traj.derivative([[v]], [1]), traj.derivative([[v]], [2])))
-
-    #     # check if z is pointing in the right direction
-    #     if z[0][2] < 0:
-    #         z = -z
-    #     y = _np.cross(z, x)
-    #     # transformation matrix from global to local coordinates
-    #     T = []
-    #     T = _np.vstack((x, y, z))
-
-    #     # transformation matrix from local to global coordinates
-    #     A = _np.linalg.inv(T)
-
-    #     # rotation matrix around y
-    #     angle_of_x = _np.arctan2(x[0][2], x[0][0])
-    #     angle_of_cs_normal = _np.arctan2(
-    #         cross_section_normal[2], cross_section_normal[0]
-    #     )
-    #     rotation_angle = angle_of_cs_normal - angle_of_x
-    #     R = _np.array(
-    #         [
-    #             [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
-    #             [0, 1, 0],
-    #             [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
-    #         ]
-    #     )
-    #     return A, R
+    cross_section = cross_section.create.embedded(3)
 
     def transformation_matrices(traj, par_value):
         # tangent vector x on trajectory at parameter value 0
@@ -392,7 +353,7 @@ def swept(
         B = []
         B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
 
-        # initializing transformation matrices
+        # initialize transformation matrices
         T = []
         A = []
 
@@ -419,30 +380,39 @@ def swept(
             A.append(_np.linalg.inv(T[i]))
 
         # rotation matrix around y
-        # angle_of_x = _np.arctan2(x[2], x[0])
-        # angle_of_cs_normal = _np.arctan2(
-        #     cross_section_normal[2], cross_section_normal[0]
-        # )
-        # rotation_angle = angle_of_cs_normal - angle_of_x
-        # R = []
-        # R.append(_np.array(
-        #     [
-        #         [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
-        #         [0, 1, 0],
-        #         [-_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
-        #     ]
-        # ))
+        angle_of_x = _np.arctan2(x[2], x[0])
+        angle_of_cs_normal = _np.arctan2(
+            cross_section_normal[2], cross_section_normal[0]
+        )
+        rotation_angle = angle_of_cs_normal - angle_of_x
+        R = _np.array(
+            [
+                [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
+                [0, 1, 0],
+                [_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
+            ]
+        )
+        R = _np.where(_np.abs(R) < 1e-10, 0, R)
 
-        # rotation matrix for rotation 90° around y-axis
-        R = _np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
         return A, R
 
     # compute parameter values for inserting cross sections
     if nsections is None:
-        par_value = trajectory.greville_abscssae()
+        par_value = trajectory.greville_abscissae()
+        v_dir_kv = trajectory.knot_vectors[0]
     else:
         bounds = trajectory.parametric_bounds.ravel()
-        par_value = _np.linspace(*bounds, nsections)
+        par_value = _np.linspace(*bounds, nsections + 1)
+        # compute new knot vector for traj-direction of swept spline
+        traj_deg = trajectory.degrees[0]
+        v_dir_kv = _np.empty(traj_deg + len(par_value) + 1)
+        v_dir_kv[: (traj_deg + 1)] = 0.0
+        v_dir_kv[-(traj_deg + 1) :] = 1.0
+        v_dir_kv[(traj_deg + 1) : -(traj_deg + 1)] = (
+            _np.convolve(par_value.ravel(), _np.ones(traj_deg), "valid")[1:-1]
+            / traj_deg
+        )
+
     par_value = par_value.reshape(-1, 1)
 
     # evaluate trajectory at these parameter values
@@ -451,16 +421,15 @@ def swept(
     # evaluate center of cross section and translate to origin
     cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
     cs_center = cross_section.evaluate(
-        cross_para_center.reshape(-1, 1)
+        cross_para_center.reshape(-1, cross_section.para_dim)
     ).ravel()
     cross_section.control_points -= cs_center
 
     # evaluate transformation matrices for every trajectory point
     A, R = transformation_matrices(trajectory, par_value)
 
-    # set cross section evaluation points along trajectory
-    cps = []
-    cross_section_splines = []
+    # set cross section control points along trajectory
+    swept_spline_cps = []
     for index, eval_point in enumerate(evals):
         temp_csp = []
         # place every control point of cross section separately
@@ -470,52 +439,46 @@ def swept(
             # transform cross section to global coordinates
             normal_cscp = _np.matmul(A[index], normal_cscp)
             # translate cross section to trajectory point
-            normal_cscp = normal_cscp + eval_point
+            normal_cscp += eval_point
             # append control point to list
             temp_csp.append(normal_cscp)
 
-        # create temp spline of new cross section
-        cross_sec_placed_cps = _np.array(temp_csp)
-        temp_cross_section = splinepy.BSpline(
-            degrees=cross_section.degrees,
-            knot_vectors=cross_section.knot_vectors,
-            control_points=cross_sec_placed_cps,
-        )
+        # collect all control points
+        swept_spline_cps.append(_np.array(temp_csp))
 
-        # append cross section spline to list
-        cross_section_splines.append(temp_cross_section)
-        cps.append(cross_sec_placed_cps)
-
-    cps = _np.array(cps)
-    degrees = [int(cross_section.degrees), int(trajectory.degrees)]
-    knot_vectors = [
-        cross_section.knot_vectors[0][:],
-        trajectory.knot_vectors[0][:],
-    ]
-
-    fitting_surface = splinepy.BSpline(
-        degrees,
-        knot_vectors,
-        control_points=_np.array(cps).reshape(-1, 3),
-    )
-
-    # fit surface - take care of size and n_control_points --> not sure yet
-    interpolated_surface, _ = surface_from_cross_sections(
-        fitting_spline=fitting_surface,
-        cross_section_splines=cross_section_splines,
-        cps=cps,
-        size=[
-            len(cross_section.control_points),
-            nsections,
+    # create spline dictionary
+    dict_swept_spline = {
+        "degrees": [*cross_section.degrees, *trajectory.degrees],
+        "knot_vectors": [
+            *cross_section.knot_vectors,
+            v_dir_kv,
         ],
-        n_control_points=[
-            len(cross_section.control_points),
-            len(trajectory.control_points),
-        ],
-        # degrees=[int(cross_section.degrees), int(trajectory.degrees)],
-    )
+        "control_points": _np.asarray(swept_spline_cps).reshape(
+            -1, cross_section.dim
+        ),
+    }
 
-    return interpolated_surface, fitting_surface
+    # check if spline is rational
+    if cross_section.is_rational or trajectory.is_rational:
+
+        def weights(spline):
+            if spline.is_rational:
+                return spline.weights
+            return _np.ones(spline.control_points.shape[0])
+
+        trajectory_weights = weights(trajectory)
+        cross_section_weights = weights(cross_section)
+        dict_swept_spline["weights"] = _np.outer(
+            trajectory_weights, cross_section_weights
+        ).reshape(-1, 1)
+        spline_type = splinepy.NURBS
+    else:
+        spline_type = splinepy.BSpline
+
+    # create swept spline
+    swept_spline = spline_type(**dict_swept_spline)
+
+    return swept_spline
 
 
 def from_bounds(parametric_bounds, physical_bounds):
