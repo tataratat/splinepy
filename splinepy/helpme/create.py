@@ -515,7 +515,7 @@ def swept(
         # degrees=[int(cross_section.degrees), int(trajectory.degrees)],
     )
 
-    return interpolated_surface
+    return interpolated_surface, fitting_surface
 
 
 def from_bounds(parametric_bounds, physical_bounds):
