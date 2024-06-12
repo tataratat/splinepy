@@ -649,7 +649,6 @@ def surface_from_cross_sections(
 
     # index helper
     mi_interim_cps = MultiIndex((n_control_points[0], size[1]))
-
     # loop first dim
     # curve fit for every j in n_points_v
     interim_control_points = _np.empty((n_control_points[0] * size[1], dim))
