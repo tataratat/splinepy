@@ -59,7 +59,7 @@ if __name__ == "__main__":
     cs_nv = np.array([0, 0, 1])
 
     # create interpolated surface
-    interpolated_surface = splinepy.helpme.create.swept(
+    interpolated_surface, fitting_surface = splinepy.helpme.create.swept(
         trajectory=trajectory,
         cross_section=cross_section,
         nsections=nsect,
@@ -84,6 +84,7 @@ if __name__ == "__main__":
     trajectory.show_options["control_mesh"] = False
     cross_section.show_options["control_mesh"] = False
     interpolated_surface.show_options["control_mesh"] = False
+    fitting_surface.show_options["control_mesh"] = False
 
     gus.show(
         ["Trajectory", trajectory],
@@ -92,6 +93,8 @@ if __name__ == "__main__":
     )
 
     gus.show(
-        ["Surface", interpolated_surface],
+        ["Trajectory", trajectory],
+        ["Fitting Surface", fitting_surface],
+        ["Fitted Surface", interpolated_surface],
         resolution=50,
     )
