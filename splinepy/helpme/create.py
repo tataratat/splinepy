@@ -305,7 +305,11 @@ def swept(
     nsections=None,
     cross_section_normal=None,
 ):
-    """Sweeps a cross-section along a trajectory
+    """
+    Sweeps a cross-section along a trajectory. The cross-section
+    receives rotation into the direction of the trajectory tangent
+    vector and is then placed at the evaluation points of the
+    trajectory's knots.
 
     Parameters
     ----------
@@ -348,10 +352,15 @@ def swept(
             / _np.linalg.norm(traj.derivative([par_value[0]], [1]))
         ).ravel()
 
-        # evaluating a vector B_0 normal to x
+        # evaluating a vector normal to x
         vec = [-x[1], x[0], -x[2]]
         B = []
-        B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+        # avoid dividing by zero
+        if _np.linalg.norm(_np.cross(x, vec)) > 1e-10:
+            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+        else:
+            vec = [x[2], -x[1], x[0]]
+            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
 
         # initialize transformation matrices
         T = []
@@ -363,7 +372,7 @@ def swept(
             x = (
                 traj.derivative([par_value[i]], [1])
                 / _np.linalg.norm(traj.derivative([par_value[i]], [1]))
-            ).flatten()
+            ).ravel()
 
             # projecting B_(i-1) onto the plane normal to x
             B.append(B[i] - _np.dot(B[i], x) * x)
@@ -380,20 +389,17 @@ def swept(
             A.append(_np.linalg.inv(T[i]))
 
         # rotation matrix around y
-        angle_of_x = _np.arctan2(x[2], x[0])
         angle_of_cs_normal = _np.arctan2(
             cross_section_normal[2], cross_section_normal[0]
         )
-        rotation_angle = angle_of_cs_normal - angle_of_x
         R = _np.array(
             [
-                [_np.cos(rotation_angle), 0, _np.sin(rotation_angle)],
+                [_np.cos(angle_of_cs_normal), 0, _np.sin(angle_of_cs_normal)],
                 [0, 1, 0],
-                [_np.sin(rotation_angle), 0, _np.cos(rotation_angle)],
+                [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
             ]
         )
         R = _np.where(_np.abs(R) < 1e-10, 0, R)
-
         return A, R
 
     # compute parameter values for inserting cross sections
