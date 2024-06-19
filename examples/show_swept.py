@@ -12,10 +12,10 @@ if __name__ == "__main__":
         "control_points": np.array(
             [
                 [0.0, 0.0, 0.0],
-                [5.0, 5.0, 0.0],
-                [10.0, 7.5, 0.0],
+                [0.0, 0.0, 5.0],
                 [10.0, 5.0, 0.0],
-                [10.0, 0.0, 0.0],
+                [15.0, 0.0, -5.0],
+                [20.0, 0.0, 0.0],
             ]
         ),
     }
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     trajectory = splinepy.BSpline(**dict_trajectory)
 
     # insert knots and control points
-    # trajectory.uniform_refine([0], 1)
+    trajectory.uniform_refine([0], 3)
 
     ### CROSS SECTION ###
     dict_cross_section = {
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     swept_surface = splinepy.helpme.create.swept(
         trajectory=trajectory,
         cross_section=cross_section,
-        nsections=20,
+        nsections=None,
         cross_section_normal=cs_nv,
     )
 
@@ -68,5 +68,5 @@ if __name__ == "__main__":
         ["Trajectory", trajectory],
         ["Cross Section", cross_section],
         ["Swept Surface", swept_surface],
-        resolution=51,
+        resolution=101,
     )
