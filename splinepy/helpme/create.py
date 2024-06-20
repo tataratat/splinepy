@@ -302,7 +302,6 @@ def revolved(
 def swept(
     cross_section,
     trajectory,
-    nsections=None,
     cross_section_normal=None,
 ):
     """
@@ -317,8 +316,6 @@ def swept(
       Cross-section to be swept
     trajectory : Spline
       Trajectory along which the cross-section is swept
-    nsections : int
-      Number of sections trajectory is divided into
     cross_section_normal : np.ndarray
       Normal vector of the cross-section
       Default is [0, 0, 1]
@@ -345,12 +342,18 @@ def swept(
     trajectory = trajectory.create.embedded(3)
     cross_section = cross_section.create.embedded(3)
 
+    # print(trajectory.knot_vectors[0])
+    # print(len(trajectory.control_points))
+
+    # # insert knots
+    # trajectory.insert_knots(0, [0.69, 0.7, 0.1])
+    # print(trajectory.knot_vectors[0])
+    # print(len(trajectory.control_points))
+
     def transformation_matrices(traj, par_value):
         # tangent vector x on trajectory at parameter value 0
-        x = (
-            traj.derivative([par_value[0]], [1])
-            / _np.linalg.norm(traj.derivative([par_value[0]], [1]))
-        ).ravel()
+        x = traj.derivative([par_value[0]], [1])
+        x = (x / _np.linalg.norm(x)).ravel()
 
         # evaluating a vector normal to x
         vec = [-x[1], x[0], -x[2]]
@@ -369,10 +372,8 @@ def swept(
         # evaluating transformation matrices for each trajectory point
         for i in range(len(par_value)):
             # tangent vector x on trajectory at parameter value i
-            x = (
-                traj.derivative([par_value[i]], [1])
-                / _np.linalg.norm(traj.derivative([par_value[i]], [1]))
-            ).ravel()
+            x = traj.derivative([par_value[i]], [1])
+            x = (x / _np.linalg.norm(x)).ravel()
 
             # projecting B_(i-1) onto the plane normal to x
             B.append(B[i] - _np.dot(B[i], x) * x)
@@ -402,22 +403,42 @@ def swept(
         R = _np.where(_np.abs(R) < 1e-10, 0, R)
         return A, R
 
-    # compute parameter values for inserting cross sections
-    if nsections is None:
-        par_value = trajectory.greville_abscissae()
-        v_dir_kv = trajectory.knot_vectors[0]
-    else:
-        bounds = trajectory.parametric_bounds.ravel()
-        par_value = _np.linspace(*bounds, nsections + 1)
-        # compute new knot vector for traj-direction of swept spline
-        traj_deg = trajectory.degrees[0]
-        v_dir_kv = _np.empty(traj_deg + len(par_value) + 1)
-        v_dir_kv[: (traj_deg + 1)] = 0.0
-        v_dir_kv[-(traj_deg + 1) :] = 1.0
-        v_dir_kv[(traj_deg + 1) : -(traj_deg + 1)] = (
-            _np.convolve(par_value.ravel(), _np.ones(traj_deg), "valid")[1:-1]
-            / traj_deg
-        )
+    par_value = trajectory.greville_abscissae()
+    par_value = par_value.reshape(-1, 1)
+
+    curv = []
+    for i in par_value:
+        # calculate derivate of trajectory at parametric value i
+        curv.append(round(_np.linalg.norm(trajectory.derivative([i], [2])), 2))
+
+    # insert knots and control points in trajectory area with highest curvature
+    max_curv = max(curv)
+    max_indices = [i for i, x in enumerate(curv) if x == max_curv]
+    par_insertion_values = []
+    knot_insertion_values = []
+    par_valuesss = par_value.ravel()
+    p = trajectory.degrees[0]
+    for i in max_indices:
+        if i > len(trajectory.knot_vectors[0]) - p - 1:
+            break
+        else:
+            par_insertion_values.append(
+                (par_valuesss[i] + par_valuesss[i + 1]) / 2
+            )
+            knot_insertion_values.append(
+                (
+                    trajectory.knot_vectors[0][i + p]
+                    + trajectory.knot_vectors[0][i + p + 1]
+                )
+                / 2
+            )
+    trajectory.insert_knots(0, knot_insertion_values)
+    par_val_reshape = par_value.reshape(-1)
+    new_insertion_values_reshape = _np.asanyarray(par_insertion_values)
+    par_value = _np.concatenate(
+        (par_val_reshape, new_insertion_values_reshape)
+    )
+    par_value = _np.sort(par_value)
 
     par_value = par_value.reshape(-1, 1)
 
@@ -457,7 +478,7 @@ def swept(
         "degrees": [*cross_section.degrees, *trajectory.degrees],
         "knot_vectors": [
             *cross_section.knot_vectors,
-            v_dir_kv,
+            *trajectory.knot_vectors,
         ],
         "control_points": _np.asarray(swept_spline_cps).reshape(
             -1, cross_section.dim
