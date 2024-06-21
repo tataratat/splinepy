@@ -1,5 +1,6 @@
 """
 Export to g+smo-compatible xml-file. Recreates poisson2d_bvp.xml from gismo repo
+(see https://github.com/gismo/gismo/blob/stable/filedata/pde/poisson2d_bvp.xml)
 """
 
 import splinepy as spp
