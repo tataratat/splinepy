@@ -45,7 +45,6 @@ pygments_style = "sphinx"
 html_theme = "pydata_sphinx_theme"
 html_logo = "_static/splinepy_name.png"
 html_theme_options = {
-    # "logo": "_static/favicon.png",
     "icon_links": [
         {
             "name": "GitHub",
