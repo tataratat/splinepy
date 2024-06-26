@@ -175,13 +175,18 @@ def test_assertions(np_rng):
 
 
 def test_function_integration(np_rng):
+    col1_factor = 2
+
     def volume_function(x):
-        return np.ones((x.shape[0], 1))
+        vf = np.ones((x.shape[0], 2))
+        # scale it with a factor to get a different value
+        vf[:, 1] = col1_factor
+        return vf
 
     bezier = splinepy.Bezier(
         degrees=[1, 2], control_points=np_rng.random((6, 2))
     )
     assert np.allclose(
-        [bezier.integrate.volume()],
+        [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
         bezier.integrate.parametric_function(volume_function),
     )
