@@ -369,13 +369,13 @@ splinepy.io.mfem.export("quarter_circle.mesh", nurbs)
 # load
 quarter_circle = splinepy.io.mfem.load("quarter_circle.mesh")
 ```
- <p align="center"><img src="docs/source/_static/nurbs.svg" width="50%" title="nurbs_svg"></p>
 
 
 [svg format](https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export) enables true vector graphic export which preserves the smoothness of splines for publications/documentation. Try to zoom in!
 ```python
 splinepy.io.svg.export("nurbs.svg", nurbs)
 ```
+ <p align="center"><img src="docs/source/_static/nurbs.svg" width="50%" title="nurbs_svg"></p>
 
 ## Try online
 You can also try splinepy online by clicking the [Binder](https://mybinder.org/v2/gh/tataratat/try-splinepy/main) badge above!
