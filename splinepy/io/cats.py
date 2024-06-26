@@ -70,12 +70,10 @@ def load(fname):
             xml_element.attrib.get(CATS_XML_KEY_WORDS["field_dim"], -1)
         )
         n_ctps = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["n_ctps"], -1))
-        any_is_periodic = any(
-            int(periodic_key) == 1
-            for periodic_key in xml_element.attrib.get(
-                CATS_XML_KEY_WORDS["periodic"], 0
-            ).split()
-        )
+        periodic_keys = xml_element.attrib.get(
+            CATS_XML_KEY_WORDS["periodic"], ""
+        ).split()
+        any_is_periodic = any(int(key) == 1 for key in periodic_keys)
         if -1 in [dim, para_dim, ctps_dim, n_ctps]:
             raise ValueError(
                 f"Not enough information provided for xml-element "
@@ -89,8 +87,9 @@ def load(fname):
             )
         if any_is_periodic:
             raise ValueError(
-                "Periodic splines are not (yet) supported. Try saving your "
-                "spline by repeating first and last control points."
+                "Periodic splines are currently unsupported. Detected "
+                "periodic dimensions: "
+                "{[i for i, key in enumerate(periodic_keys) if int(key) == 1]}"
             )
         for info in xml_element:
             # We ignore most keywords at the moment
