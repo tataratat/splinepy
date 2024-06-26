@@ -281,7 +281,9 @@ def export(fname, spline_list, indent=True, make_rational=True):
             patch_element,
             CATS_XML_KEY_WORDS["degrees"],
         )
-        degrees_elements.text = " ".join(str(deg) for deg in patch.degrees)
+        degrees_elements.text = new_line_char.join(
+            str(deg) for deg in patch.degrees
+        )
 
         # knot-vectors
         knot_vectors_elements = _ET.SubElement(
@@ -293,7 +295,7 @@ def export(fname, spline_list, indent=True, make_rational=True):
                 knot_vectors_elements,
                 CATS_XML_KEY_WORDS["knot_vector"],
             )
-            knot_vector_element.text = " ".join(str(k) for k in kv)
+            knot_vector_element.text = new_line_char.join(str(k) for k in kv)
 
         # weights if rational
         if patch.is_rational:
@@ -301,7 +303,7 @@ def export(fname, spline_list, indent=True, make_rational=True):
                 patch_element,
                 CATS_XML_KEY_WORDS["weights"],
             )
-            weights_elements.text = " ".join(
+            weights_elements.text = new_line_char.join(
                 str(w) for w in patch.weights.ravel()
             )
 
