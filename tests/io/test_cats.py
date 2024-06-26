@@ -170,14 +170,6 @@ def test_cats_export(to_tmpf, are_items_same, are_stripped_lines_same):
 
 def test_cats_import(to_tmpf, are_splines_equal):
     """Test cats import routine"""
-    if int(python_version.split(".")[1]) < 8:
-        splinepy.utils.log.info(
-            "gismo import is only tested here from python3.8+. "
-            "Skipping test, because current version is: "
-            f"{python_version}"
-        )
-        return True
-
     # Define some splines
     bsp_el2 = splinepy.BSpline(
         degrees=[1, 1, 1],
