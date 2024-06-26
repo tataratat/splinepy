@@ -433,16 +433,16 @@ def spline(spline, para_dim, split_plane):
             "Requested parametric dimension exceeds spline's parametric"
             " dimensionality."
         )
-    if isinstance(split_plane, list):
+    if isinstance(split_plane, (tuple, list, _np.ndarray)):
         if not (
             (len(split_plane) == 2)
-            and (isinstance(split_plane[0], float))
-            and (isinstance(split_plane[1], float))
+            and (isinstance(split_plane[0], (float, _np.floating)))
+            and (isinstance(split_plane[1], (float, _np.floating)))
         ):
             raise ValueError(
                 "Range must be float or tuple of floats with length 2"
             )
-    elif not isinstance(split_plane, float):
+    elif not isinstance(split_plane, (float, _np.floating)):
         raise ValueError(
             "Range must be float or tuple of floats with length 2"
         )
