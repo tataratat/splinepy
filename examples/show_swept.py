@@ -22,9 +22,9 @@ if __name__ == "__main__":
 
     # init trajectory as bspline
     trajectory = splinepy.BSpline(**dict_trajectory)
-
+    trajectory = splinepy.helpme.create.circle(10)
     # insert knots and control points
-    trajectory.uniform_refine([0], 2)
+    trajectory.uniform_refine([0], 4)
 
     ### CROSS SECTION ###
     dict_cross_section = {
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     cross_section = splinepy.BSpline(**dict_cross_section)
 
     # alternatively, use helpme to create a cross section
-    # cross_section = splinepy.helpme.create.surface_circle(.5).nurbs
+    cross_section = splinepy.helpme.create.surface_circle(0.5).nurbs
 
     # user can  define the normal vector of the cross section, in case
     # the cross section is not planar in the x-y plane (default)

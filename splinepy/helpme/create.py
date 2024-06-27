@@ -3,7 +3,6 @@ from functools import wraps as _wraps
 import numpy as _np
 from gustaf.utils import arr as _arr
 
-import splinepy
 from splinepy import settings as _settings
 from splinepy.utils import log as _log
 from splinepy.utils.data import make_matrix as _make_matrix
@@ -326,6 +325,8 @@ def swept(
       Spline resulting from the sweep
     """
 
+    from splinepy import NURBS as _NURBS
+    from splinepy import BSpline as _BSpline
     from splinepy.spline import Spline as _Spline
 
     # check input type
@@ -439,7 +440,6 @@ def swept(
         (par_val_reshape, new_insertion_values_reshape)
     )
     par_value = _np.sort(par_value)
-
     par_value = par_value.reshape(-1, 1)
 
     # evaluate trajectory at these parameter values
@@ -498,9 +498,9 @@ def swept(
         dict_swept_spline["weights"] = _np.outer(
             trajectory_weights, cross_section_weights
         ).reshape(-1, 1)
-        spline_type = splinepy.NURBS
+        spline_type = _NURBS
     else:
-        spline_type = splinepy.BSpline
+        spline_type = _BSpline
 
     # create swept spline
     swept_spline = spline_type(**dict_swept_spline)
