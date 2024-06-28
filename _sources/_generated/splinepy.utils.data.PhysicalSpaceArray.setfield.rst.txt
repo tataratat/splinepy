@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.setfield
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.setfield

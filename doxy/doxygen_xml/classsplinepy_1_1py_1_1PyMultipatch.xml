@@ -1,0 +1,1227 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classsplinepy_1_1py_1_1PyMultipatch" kind="class" language="C++" prot="public">
+    <compoundname>splinepy::py::PyMultipatch</compoundname>
+    <includes refid="py__multipatch_8hpp" local="no">py_multipatch.hpp</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" prot="public" static="no">
+        <type>std::vector&lt; typename <ref refid="classsplinepy_1_1py_1_1PySpline_1a8d8fafeb4c9e6e2e9ecfdae2e32c224f" kindref="member">PySpline::CoreSpline_</ref> &gt;</type>
+        <definition>using CorePatches_ =  std::vector&lt;typename PySpline::CoreSpline_&gt;</definition>
+        <argsstring></argsstring>
+        <name>CorePatches_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="209" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="209" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" prot="public" static="no" mutable="no">
+        <type>py::list</type>
+        <definition>py::list patches_</definition>
+        <argsstring></argsstring>
+        <name>patches_</name>
+        <briefdescription>
+<para>individual patches, a.k.a. splines </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="212" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" prot="public" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kindref="member">CorePatches_</ref></type>
+        <definition>CorePatches_ core_patches_</definition>
+        <argsstring></argsstring>
+        <name>core_patches_</name>
+        <briefdescription>
+<para>casted, core splines (patches) from patches_ (list of <ref refid="classsplinepy_1_1py_1_1PySpline" kindref="compound">PySpline</ref>). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="215" column="16" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;PyMultipatch&gt; sub_multipatch_</definition>
+        <argsstring></argsstring>
+        <name>sub_multipatch_</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+<para>sub patches - similar concept to subelement / face elements </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="218" column="19" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" prot="public" static="no" mutable="no">
+        <type>py::object</type>
+        <definition>py::object py_sub_multipatch_</definition>
+        <argsstring></argsstring>
+        <name>py_sub_multipatch_</name>
+        <initializer>= py::none()</initializer>
+        <briefdescription>
+<para>Casted sub multi patch. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="221" column="14" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" prot="public" static="no" mutable="no">
+        <type>py::array_t&lt; double &gt;</type>
+        <definition>py::array_t&lt;double&gt; sub_patch_centers_</definition>
+        <argsstring></argsstring>
+        <name>sub_patch_centers_</name>
+        <briefdescription>
+<para>center of each sub patch. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="224" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" prot="public" static="no" mutable="no">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt;int&gt; boundary_patch_ids_</definition>
+        <argsstring></argsstring>
+        <name>boundary_patch_ids_</name>
+        <briefdescription>
+<para>ids for boundary_patches from sub_patches_ </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="227" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="227" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;PyMultipatch&gt; boundary_multipatch_</definition>
+        <argsstring></argsstring>
+        <name>boundary_multipatch_</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+<para>Boundary multi patches. Should consist of one smaller parametric dim. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="230" column="19" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="230" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" prot="public" static="no" mutable="no">
+        <type>py::object</type>
+        <definition>py::object py_boundary_multipatch_</definition>
+        <argsstring></argsstring>
+        <name>py_boundary_multipatch_</name>
+        <initializer>= py::none()</initializer>
+        <briefdescription>
+<para>Casted boundary multi patches. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="233" column="14" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="233" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" prot="public" static="no" mutable="no">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt;int&gt; interfaces_</definition>
+        <argsstring></argsstring>
+        <name>interfaces_</name>
+        <briefdescription>
+<para>patch-to-patch connectivity information shape: (n_patches, n_boundary_elements) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="237" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a2e07d68f0766923145ef57b2bf9c355a" prot="public" static="no" mutable="no">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt;int&gt; interface_orientations_</definition>
+        <argsstring></argsstring>
+        <name>interface_orientations_</name>
+        <briefdescription>
+<para>interface orientations that define mapping of parametric axis </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="240" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="240" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" prot="public" static="no" mutable="no">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt;int&gt; boundary_ids_</definition>
+        <argsstring></argsstring>
+        <name>boundary_ids_</name>
+        <briefdescription>
+<para>shape: (n_patches,) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="243" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="243" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" prot="public" static="no" mutable="no">
+        <type>py::list</type>
+        <definition>py::list field_multipatches_</definition>
+        <argsstring></argsstring>
+        <name>field_multipatches_</name>
+        <briefdescription>
+<para>Fields - they are saved as multi-patches. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="246" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int n_default_threads_</definition>
+        <argsstring></argsstring>
+        <name>n_default_threads_</name>
+        <initializer>{1}</initializer>
+        <briefdescription>
+<para>default number of threads for all the operations besides queries </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="249" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool same_parametric_bounds_</definition>
+        <argsstring></argsstring>
+        <name>same_parametric_bounds_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+<para>hint flag that can be used to accelerate property decisions </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="252" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="252" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool has_null_splines_</definition>
+        <argsstring></argsstring>
+        <name>has_null_splines_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+<para>internal flag to indicate that this a field multipatch that may contain null spline </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="256" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double tolerance_</definition>
+        <argsstring></argsstring>
+        <name>tolerance_</name>
+        <initializer>{1e-11}</initializer>
+        <briefdescription>
+<para>default tolerance </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="259" column="10" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1ae5b8a48639468f4555dc2065e6997eaf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>PyMultipatch</definition>
+        <argsstring>()=default</argsstring>
+        <name>PyMultipatch</name>
+        <briefdescription>
+<para>ctor </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="262" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a7ece76fbcb5e1715a5402fdba8e69cbe" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>PyMultipatch</definition>
+        <argsstring>(PyMultipatch &amp;&amp;other) noexcept=default</argsstring>
+        <name>PyMultipatch</name>
+        <param>
+          <type><ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>move ctor </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="265" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1acb7bca199cd41acbc397e7f372770fb2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PyMultipatch</definition>
+        <argsstring>(py::list &amp;patches, const int n_default_threads=1, const bool same_parametric_bounds=false)</argsstring>
+        <name>PyMultipatch</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>patches</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>n_default_threads</declname>
+          <defval>1</defval>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>same_parametric_bounds</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>list (iterable) init -&gt; pybind will cast to list for us if needed </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>patches</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_default_threads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>same_parametric_bounds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="271" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="271" bodyend="277"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a0b541beb65f77913b0ade171bd7a6b9b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PyMultipatch</definition>
+        <argsstring>(py::list &amp;patches, const int n_default_threads, const int para_dim_if_none, const int dim_if_none)</argsstring>
+        <name>PyMultipatch</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>patches</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>n_default_threads</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>para_dim_if_none</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim_if_none</declname>
+        </param>
+        <briefdescription>
+<para>Internal use only. used to save field splines. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>patches</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_default_threads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>para_dim_if_none</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dim_if_none</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="284" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="284" bodyend="294"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1acd1e888b3cc89c7a1f0b3d0e5b797215" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PyMultipatch</definition>
+        <argsstring>(std::shared_ptr&lt; PyMultipatch &gt; &amp;other)</argsstring>
+        <name>PyMultipatch</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>given other shared pointer, will copy references ctor. Expected use is for to_derived call. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="300" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="300" bodyend="316"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kindref="member">CorePatches_</ref> &amp;</type>
+        <definition>PyMultipatch::CorePatches_ &amp; CorePatches</definition>
+        <argsstring>()</argsstring>
+        <name>CorePatches</name>
+        <briefdescription>
+<para>Gets core patches. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="319" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1064" bodyend="1069"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aa71d36872f416feaa853788a7a7a7ef8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Clear</definition>
+        <argsstring>()</argsstring>
+        <name>Clear</name>
+        <briefdescription>
+<para>Clears. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="322" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1071" bodyend="1082"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a9443f705493b6a45fc9057d6ea053dad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int ParaDim</definition>
+        <argsstring>()</argsstring>
+        <name>ParaDim</name>
+        <briefdescription>
+<para>returns para_dim of the first patch </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="326" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="326" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a5823ba33cada52391d809436934340e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Dim</definition>
+        <argsstring>()</argsstring>
+        <name>Dim</name>
+        <briefdescription>
+<para>returns dim of the first patch </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="330" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="330" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aea85a30f7330f34848f1ca2313fcbc62" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string Name</definition>
+        <argsstring>()</argsstring>
+        <name>Name</name>
+        <briefdescription>
+<para>my name is Multipatch </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="334" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="334" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aec494286f50120416b01b7a543bae897" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string WhatAmI</definition>
+        <argsstring>()</argsstring>
+        <name>WhatAmI</name>
+        <briefdescription>
+<para>Multipatch with n patches. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="338" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="338" bodyend="341"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aa1995edad00ce4bcd4567fab2e753bfe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetPatchesDefault</definition>
+        <argsstring>(py::list &amp;patches)</argsstring>
+        <name>SetPatchesDefault</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>patches</declname>
+        </param>
+        <briefdescription>
+<para>could overload, but it won&apos;t be clear for pybind </para>
+        </briefdescription>
+        <detaileddescription>
+<para>default patches setter, exposed to python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>patches</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="346" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="346" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetPatchesNThreads</definition>
+        <argsstring>(py::list &amp;patches, const int nthreads=1)</argsstring>
+        <name>SetPatchesNThreads</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>patches</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>nthreads</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>patches setter with nthreads </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>patches</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nthreads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="353" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1084" bodyend="1102"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1ad1ad02b1401aef4beba47d0b7affdd04" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetPatchesWithNullSplines</definition>
+        <argsstring>(py::list &amp;patches, const int nthreads, const int para_dim_if_none, const int dim_if_none)</argsstring>
+        <name>SetPatchesWithNullSplines</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>patches</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>nthreads</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>para_dim_if_none</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim_if_none</declname>
+        </param>
+        <briefdescription>
+<para>patches setter for field patches that may contain null splines. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>patches</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nthreads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>para_dim_if_none</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dim_if_none</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="360" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1104" bodyend="1126"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1acce44859b8f54a3f46334ba2f9787280" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>py::list</type>
+        <definition>py::list GetPatches</definition>
+        <argsstring>()</argsstring>
+        <name>GetPatches</name>
+        <briefdescription>
+<para>Gets patches. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="366" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="366" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1afb4ff78f3f44e7ad4d0d43e63533f041" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; PyMultipatch &gt; SubMultipatch</definition>
+        <argsstring>()</argsstring>
+        <name>SubMultipatch</name>
+        <briefdescription>
+<para>returns sub patches as multi patches, uses default nthreads </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="370" column="19" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1128" bodyend="1167"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1abeb7cc522a0cdf130d591e1296765495" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::object</type>
+        <definition>py::object PySubMultipatch</definition>
+        <argsstring>()</argsstring>
+        <name>PySubMultipatch</name>
+        <briefdescription>
+<para>returns derived class of SubMultipatch </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="374" column="14" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1169" bodyend="1174"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a7f4f2cac2ad983cfb51f7168f2995aee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; double &gt;</type>
+        <definition>py::array_t&lt; double &gt; SubPatchCenters</definition>
+        <argsstring>()</argsstring>
+        <name>SubPatchCenters</name>
+        <briefdescription>
+<para>Computes centers of subpatches. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="378" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1176" bodyend="1248"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a6bd28f06a3f28c386b20ee0e121d126d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetInterfaces</definition>
+        <argsstring>(const py::array_t&lt; int &gt; &amp;interfaces)</argsstring>
+        <name>SetInterfaces</name>
+        <param>
+          <type>const py::array_t&lt; int &gt; &amp;</type>
+          <declname>interfaces</declname>
+        </param>
+        <briefdescription>
+<para>setter for interface info. runs array shape check </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>interfaces</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="382" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1266" bodyend="1284"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a5b7b7c7e7579f9437b7a8326d3256b73" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt; int &gt; GetInterfaces</definition>
+        <argsstring>(const bool recompute=false)</argsstring>
+        <name>GetInterfaces</name>
+        <param>
+          <type>const bool</type>
+          <declname>recompute</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>getter for interface info. recomputes if unavailable </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>recompute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>compute even if already available </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="386" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1250" bodyend="1264"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a70308ab1264bfc06d56e7d490cb2ee6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt; int &gt; GetInterfaceOrientations</definition>
+        <argsstring>(const double tolerance, const int n_threads)</argsstring>
+        <name>GetInterfaceOrientations</name>
+        <param>
+          <type>const double</type>
+          <declname>tolerance</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>n_threads</declname>
+        </param>
+        <briefdescription>
+<para>Get the Boundary Orientations object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tolerance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n_threads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>py::tuple </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="393" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="699" bodyend="790"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aecb50fe9249c1d9db03d85943fc3df99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt; int &gt; BoundaryPatchIds</definition>
+        <argsstring>(const int bid)</argsstring>
+        <name>BoundaryPatchIds</name>
+        <param>
+          <type>const int</type>
+          <declname>bid</declname>
+        </param>
+        <briefdescription>
+<para>Gets IDs of boundary patch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>bid</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>boundary ID to be extracted </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="398" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1286" bodyend="1334"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a7437125b8cd4fe5c53cff10b46038a68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; PyMultipatch &gt; BoundaryMultipatch</definition>
+        <argsstring>(const int bid)</argsstring>
+        <name>BoundaryMultipatch</name>
+        <param>
+          <type>const int</type>
+          <declname>bid</declname>
+        </param>
+        <briefdescription>
+<para>Gets boundary multi patch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>bid</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>boundary ID to be extracted </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="402" column="19" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1338" bodyend="1382"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a11d7c8d4cf202dc6c4ad5e6700719ec8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::object</type>
+        <definition>py::object PyBoundaryMultipatch</definition>
+        <argsstring>(const int bid)</argsstring>
+        <name>PyBoundaryMultipatch</name>
+        <param>
+          <type>const int</type>
+          <declname>bid</declname>
+        </param>
+        <briefdescription>
+<para>returns derived class of boundary multi patch </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>bid</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>boundary ID to be extracted </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para>
+</simplesect>
+<simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="407" column="14" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1386" bodyend="1395"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a313293920957b7ff24b6f116ffff2ff1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; double &gt;</type>
+        <definition>py::array_t&lt; double &gt; Evaluate</definition>
+        <argsstring>(py::array_t&lt; double &gt; queries, const int nthreads)</argsstring>
+        <name>Evaluate</name>
+        <param>
+          <type>py::array_t&lt; double &gt;</type>
+          <declname>queries</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>nthreads</declname>
+        </param>
+        <briefdescription>
+<para>Evaluate at query points. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>queries</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Query points </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nthreads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of threads to use </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="412" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1397" bodyend="1428"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1ab90336e62c0d59ad75edd73d98adf25b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; double &gt;</type>
+        <definition>py::array_t&lt; double &gt; Sample</definition>
+        <argsstring>(const int resolution, const int nthreads, const bool same_parametric_bounds)</argsstring>
+        <name>Sample</name>
+        <param>
+          <type>const int</type>
+          <declname>resolution</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>nthreads</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>same_parametric_bounds</declname>
+        </param>
+        <briefdescription>
+<para>Sample multi patch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>resolution</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nthreads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of threads to use </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>same_parametric_bounds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="418" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1430" bodyend="1533"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1af7d7713467e20f3444c93781ebd7d408" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void AddFields</definition>
+        <argsstring>(py::list &amp;fields, const int field_dim, const bool check_name, const bool check_dims, const bool check_degrees, const bool check_control_mesh_resolutions, const int nthreads)</argsstring>
+        <name>AddFields</name>
+        <param>
+          <type>py::list &amp;</type>
+          <declname>fields</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>field_dim</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>check_name</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>check_dims</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>check_degrees</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>check_control_mesh_resolutions</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>nthreads</declname>
+        </param>
+        <briefdescription>
+<para>Adds fields. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>fields</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>field_dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>check_name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>check_dims</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>check_degrees</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>check_control_mesh_resolutions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nthreads</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="430" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1535" bodyend="1608"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1aaddb4a9ce3c89c4dcc569f8cdb560dfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>py::list</type>
+        <definition>py::list GetFields</definition>
+        <argsstring>()</argsstring>
+        <name>GetFields</name>
+        <briefdescription>
+<para>Gets list of fields. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="439" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="439" bodyend="439"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a1e76305b8f0a1a2c1c60593c9430859f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int GetNumberOfControlPoints</definition>
+        <argsstring>()</argsstring>
+        <name>GetNumberOfControlPoints</name>
+        <briefdescription>
+<para>Get summed number of all control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="442" column="7" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1610" bodyend="1617"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1a3365b303603bd27b61ee593a1e5b0f9a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; int &gt;</type>
+        <definition>py::array_t&lt; int &gt; GetControlPointOffsets</definition>
+        <argsstring>()</argsstring>
+        <name>GetControlPointOffsets</name>
+        <briefdescription>
+<para>Get summed number of all control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="445" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1619" bodyend="1631"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1py_1_1PyMultipatch_1ae45e4bdec943b5fe4a689305b19fee4a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>py::array_t&lt; double &gt;</type>
+        <definition>py::array_t&lt; double &gt; GetControlPoints</definition>
+        <argsstring>()</argsstring>
+        <name>GetControlPoints</name>
+        <briefdescription>
+<para>Create a list of all control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="448" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/py/py_multipatch.cpp" bodystart="1633" bodyend="1666"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Multi-patch splines. Here, use of the words &quot;patch&quot; and &quot;spline&quot; are interchangeable. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>PyMultipatch</label>
+        <link refid="classsplinepy_1_1py_1_1PyMultipatch"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" line="207" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp" bodystart="207" bodyend="449"/>
+    <listofallmembers>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1af7d7713467e20f3444c93781ebd7d408" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>AddFields</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>boundary_ids_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>boundary_multipatch_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>boundary_patch_ids_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7437125b8cd4fe5c53cff10b46038a68" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>BoundaryMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aecb50fe9249c1d9db03d85943fc3df99" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>BoundaryPatchIds</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa71d36872f416feaa853788a7a7a7ef8" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>Clear</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>core_patches_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>CorePatches</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>CorePatches_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a5823ba33cada52391d809436934340e2" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>Dim</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a313293920957b7ff24b6f116ffff2ff1" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>Evaluate</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>field_multipatches_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a3365b303603bd27b61ee593a1e5b0f9a" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetControlPointOffsets</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae45e4bdec943b5fe4a689305b19fee4a" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetControlPoints</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aaddb4a9ce3c89c4dcc569f8cdb560dfb" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetFields</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a70308ab1264bfc06d56e7d490cb2ee6a" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetInterfaceOrientations</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a5b7b7c7e7579f9437b7a8326d3256b73" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetInterfaces</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a1e76305b8f0a1a2c1c60593c9430859f" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetNumberOfControlPoints</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acce44859b8f54a3f46334ba2f9787280" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>GetPatches</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>has_null_splines_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a2e07d68f0766923145ef57b2bf9c355a" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>interface_orientations_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>interfaces_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>n_default_threads_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aea85a30f7330f34848f1ca2313fcbc62" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>Name</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a9443f705493b6a45fc9057d6ea053dad" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>ParaDim</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>patches_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>py_boundary_multipatch_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>py_sub_multipatch_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a11d7c8d4cf202dc6c4ad5e6700719ec8" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyBoundaryMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae5b8a48639468f4555dc2065e6997eaf" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7ece76fbcb5e1715a5402fdba8e69cbe" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acb7bca199cd41acbc397e7f372770fb2" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0b541beb65f77913b0ade171bd7a6b9b" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acd1e888b3cc89c7a1f0b3d0e5b797215" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PyMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1abeb7cc522a0cdf130d591e1296765495" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>PySubMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>same_parametric_bounds_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ab90336e62c0d59ad75edd73d98adf25b" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>Sample</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a6bd28f06a3f28c386b20ee0e121d126d" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SetInterfaces</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa1995edad00ce4bcd4567fab2e753bfe" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SetPatchesDefault</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SetPatchesNThreads</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ad1ad02b1401aef4beba47d0b7affdd04" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SetPatchesWithNullSplines</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>sub_multipatch_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>sub_patch_centers_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1afb4ff78f3f44e7ad4d0d43e63533f041" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SubMultipatch</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7f4f2cac2ad983cfb51f7168f2995aee" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>SubPatchCenters</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>tolerance_</name></member>
+      <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aec494286f50120416b01b7a543bae897" prot="public" virt="non-virtual"><scope>splinepy::py::PyMultipatch</scope><name>WhatAmI</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

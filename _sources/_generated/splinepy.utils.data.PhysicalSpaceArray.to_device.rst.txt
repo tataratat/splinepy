@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.to\_device
+=================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.to_device

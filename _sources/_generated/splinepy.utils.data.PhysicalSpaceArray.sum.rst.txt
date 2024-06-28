@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.sum
+==========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.sum

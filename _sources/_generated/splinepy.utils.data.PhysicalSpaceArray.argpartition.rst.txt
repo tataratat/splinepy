@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.argpartition
+===================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.argpartition

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacebsplinelib" kind="namespace" language="C++">
+    <compoundname>bsplinelib</compoundname>
+    <innernamespace refid="namespacebsplinelib_1_1parameter__spaces">bsplinelib::parameter_spaces</innernamespace>
+    <innernamespace refid="namespacebsplinelib_1_1splines">bsplinelib::splines</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="32" column="1"/>
+  </compounddef>
+</doxygen>

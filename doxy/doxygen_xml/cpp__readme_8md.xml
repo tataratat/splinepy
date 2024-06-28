@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="cpp__readme_8md" kind="file" language="Markdown">
+    <compoundname>cpp_readme.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>splinepy<sp/>(c++)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Library<sp/>for<sp/>prototyping<sp/>spline<sp/>geometries<sp/>of<sp/>arbitrary<sp/>dimensions<sp/>and<sp/>degrees,<sp/>and<sp/>IGA.</highlight></codeline>
+<codeline><highlight class="normal">`splinepy`<sp/>implements<sp/>core<sp/>types<sp/>and<sp/>functions<sp/>in<sp/>c++<sp/>for<sp/>better<sp/>runtime<sp/>performance.</highlight></codeline>
+<codeline><highlight class="normal">Using<sp/>[pybind11](https://github.com/pybind/pybind11),<sp/>these<sp/>implementations<sp/>are<sp/>available<sp/>to<sp/>use<sp/>in<sp/>python.</highlight></codeline>
+<codeline><highlight class="normal">You<sp/>can,<sp/>for<sp/>example,<sp/>either<sp/>use<sp/>this<sp/>part<sp/>of<sp/>the<sp/>project<sp/>to<sp/>create<sp/>pure<sp/>c++<sp/>executables<sp/>or<sp/>to<sp/>interoperate<sp/>with<sp/>other<sp/>`c++`/`c`/`fortran`<sp/>libraries.</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Install<sp/>guide</highlight></codeline>
+<codeline><highlight class="normal">There<sp/>are<sp/>two<sp/>main<sp/>ways<sp/>to<sp/>install<sp/>the<sp/>c++:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>1)<sp/>using<sp/>`pip`</highlight></codeline>
+<codeline><highlight class="normal">```bash</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>sample<sp/>format</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>-&gt;<sp/>pip<sp/>install<sp/>-e.<sp/>-v<sp/>--config-settings=cmake.args=&quot;&lt;cmake-build-args&gt;&quot;<sp/>--config-settings=cmake.build-type=&quot;&lt;build-type&gt;&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>for<sp/>example,<sp/>minimal<sp/>(up<sp/>to<sp/>spline<sp/>dim<sp/>3),<sp/>optimized<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">pip<sp/>install<sp/>-e.<sp/>-v<sp/>--config-settings=cmake.args=-DSPLINEPY_MORE=OFF<sp/>--config-settings=cmake.build-type=&quot;Release&quot;</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">This<sp/>will<sp/>install<sp/>compiled<sp/>library<sp/>to<sp/>`site-packges`<sp/>path.</highlight></codeline>
+<codeline><highlight class="normal">You<sp/>can<sp/>find<sp/>this<sp/>path<sp/>with:</highlight></codeline>
+<codeline><highlight class="normal">```bash</highlight></codeline>
+<codeline><highlight class="normal">python<sp/>-c<sp/>&quot;import<sp/>site;<sp/>print(site.getsitepackages())&quot;</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>2)<sp/>using<sp/>`cmake`<sp/>only</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">mkdir<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">cd<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">cmake<sp/>..<sp/>#<sp/>along<sp/>with<sp/>other<sp/>cmake<sp/>options</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+    </programlisting>
+    <location file="markdown/cpp_readme.md"/>
+  </compounddef>
+</doxygen>

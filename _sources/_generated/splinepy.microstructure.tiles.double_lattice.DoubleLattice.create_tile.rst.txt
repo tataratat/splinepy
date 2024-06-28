@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.double\_lattice.DoubleLattice.create\_tile
+========================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.double_lattice
+
+.. automethod:: DoubleLattice.create_tile

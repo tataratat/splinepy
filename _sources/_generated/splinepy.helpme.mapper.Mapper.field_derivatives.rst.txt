@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.field\_derivatives
+================================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.field_derivatives

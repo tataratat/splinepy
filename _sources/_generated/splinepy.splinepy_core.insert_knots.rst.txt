@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.insert\_knots
+=====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: insert_knots

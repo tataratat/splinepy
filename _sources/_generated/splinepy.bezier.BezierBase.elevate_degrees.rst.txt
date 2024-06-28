@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.elevate\_degrees
+===========================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.elevate_degrees

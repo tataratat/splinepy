@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.swapaxes
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.swapaxes

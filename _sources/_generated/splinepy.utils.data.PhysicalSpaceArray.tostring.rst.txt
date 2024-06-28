@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.tostring
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.tostring

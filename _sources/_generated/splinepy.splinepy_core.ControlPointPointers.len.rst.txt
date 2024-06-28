@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.ControlPointPointers.len
+================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: ControlPointPointers.len

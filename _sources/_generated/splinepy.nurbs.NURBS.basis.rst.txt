@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.basis
+==========================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.basis

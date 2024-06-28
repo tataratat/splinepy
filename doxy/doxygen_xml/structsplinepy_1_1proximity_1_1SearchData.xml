@@ -1,0 +1,692 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structsplinepy_1_1proximity_1_1SearchData" kind="struct" language="C++" prot="public">
+    <compoundname>splinepy::proximity::SearchData</compoundname>
+    <includes refid="proximity_8hpp" local="no">proximity.hpp</includes>
+    <innerclass refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData" prot="public">splinepy::proximity::SearchData::LMData</innerclass>
+    <innerclass refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData" prot="public">splinepy::proximity::SearchData::SLSQPData</innerclass>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a44c52cb01c136bc648b605fa6f7195cf" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int para_dim</definition>
+        <argsstring></argsstring>
+        <name>para_dim</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="56" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a70b5e28b5bc3d1b63a7435c5fe50b837" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int dim</definition>
+        <argsstring></argsstring>
+        <name>dim</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="57" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a21051f849765cb1a0b55489fbf8cf61c" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a0268d731df47b1be3dbb96f91fa33a06" kindref="member">ConstRealArray</ref></type>
+        <definition>ConstRealArray phys_query</definition>
+        <argsstring></argsstring>
+        <name>phys_query</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="60" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a3737a2b489c3a7444e22ce5112f7cfc6" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray current_guess</definition>
+        <argsstring></argsstring>
+        <name>current_guess</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="62" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a734edcb4c6d08405bf9599a0cc172709" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray current_phys</definition>
+        <argsstring></argsstring>
+        <name>current_phys</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="63" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a0f8e97ff4b3535504ce8da28cdac9842" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray difference</definition>
+        <argsstring></argsstring>
+        <name>difference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="64" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a2831ea3643f31d690188fde388e17292" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref></type>
+        <definition>RealArray2D spline_gradient</definition>
+        <argsstring></argsstring>
+        <name>spline_gradient</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="65" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ab7d06748bbd02c82e0c3fbea709770e8" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a5905cb3ac9c10468cb620098703da388" kindref="member">RealArray3D</ref></type>
+        <definition>RealArray3D spline_hessian</definition>
+        <argsstring></argsstring>
+        <name>spline_hessian</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="66" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ae529444e0eddb7db98959571320837ed" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray initial_guess</definition>
+        <argsstring></argsstring>
+        <name>initial_guess</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="69" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a0dc0b5a1406c6256535eec262540877f" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref></type>
+        <definition>RealArray2D d2jdu2</definition>
+        <argsstring></argsstring>
+        <name>d2jdu2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="70" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ae3877633e31f8e79587c770d9ec2f09d" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray djdu</definition>
+        <argsstring></argsstring>
+        <name>djdu</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="71" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1abf2789e067bdc343a130d6b73a7dd918" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray delta_guess</definition>
+        <argsstring></argsstring>
+        <name>delta_guess</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="72" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ac5c47d097abf6b2a598add0ce92672b3" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref></type>
+        <definition>RealArray2D spline_gradient_AAt</definition>
+        <argsstring></argsstring>
+        <name>spline_gradient_AAt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="73" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ae4966660e7f808af798ab2ab0b84d53c" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref></type>
+        <definition>RealArray2D search_bounds</definition>
+        <argsstring></argsstring>
+        <name>search_bounds</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="74" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a0fb1290196e5d5fcbb9d4a9ac762a60f" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray lower_bound</definition>
+        <argsstring></argsstring>
+        <name>lower_bound</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="75" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ab012d1ab6742b4a56d10784298d470be" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray upper_bound</definition>
+        <argsstring></argsstring>
+        <name>upper_bound</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="76" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a8c27391c7be262f80bc4cdc7b6281257" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a0602c9659981e782c9312f8d6f27dcfa" kindref="member">IndexArray</ref></type>
+        <definition>IndexArray clipped</definition>
+        <argsstring></argsstring>
+        <name>clipped</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="77" column="14" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a097975d09aa0bb27af296eebb678891f" prot="public" static="no" mutable="no">
+        <type>std::unique_ptr&lt; <ref refid="namespacesplinepy_1_1proximity_1a41e8e0dd014a8432c03b168afac6d923" kindref="member">LhsMatrix</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;LhsMatrix&gt; lhs_matrix</definition>
+        <argsstring></argsstring>
+        <name>lhs_matrix</name>
+        <briefdescription>
+<para>lhs matrix based on 2D array. Created by search methods </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="80" column="19" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a229fe836529a54bc8a7d390148d7a488" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double J</definition>
+        <argsstring></argsstring>
+        <name>J</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="83" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a79b8e036dca6911e3295a47d99f21f43" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double distance</definition>
+        <argsstring></argsstring>
+        <name>distance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="84" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a697b743232d64407856efb8abf7d07ea" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double squared_distance</definition>
+        <argsstring></argsstring>
+        <name>squared_distance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="85" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a149038624de5f33350db5b3b83fe9af0" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double convergence_norm</definition>
+        <argsstring></argsstring>
+        <name>convergence_norm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="86" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ab8695fef7f8cc08585fc3003ccfdce5e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int stop_iteration</definition>
+        <argsstring></argsstring>
+        <name>stop_iteration</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="87" column="9" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ab043fd34e57f4f64b781d96a04d49979" prot="public" static="no" mutable="no">
+        <type>struct splinepy::proximity::SearchData::@0</type>
+        <definition>struct splinepy::proximity::SearchData::@0 status</definition>
+        <argsstring></argsstring>
+        <name>status</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="88" column="10"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a53380b3b14c20bdfcb3bc9970c421231" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int max_iter</definition>
+        <argsstring></argsstring>
+        <name>max_iter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="91" column="9" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a97eab6d709b80585fe9e8a54b1e3da27" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double tolerance</definition>
+        <argsstring></argsstring>
+        <name>tolerance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="92" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a539b73efce03233e5b3f3dc4444dc8c7" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double convergence_goal</definition>
+        <argsstring></argsstring>
+        <name>convergence_goal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="94" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1a0b94201dbc5c30bfe0a68404f0c6055e" prot="public" static="no" mutable="no">
+        <type>struct splinepy::proximity::SearchData::@1</type>
+        <definition>struct splinepy::proximity::SearchData::@1 options</definition>
+        <argsstring></argsstring>
+        <name>options</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="95" column="11"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1ad4a26dcd5b8c2799b5b732c217ea1c71" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData" kindref="compound">splinepy::proximity::SearchData::SLSQPData</ref></type>
+        <definition>struct splinepy::proximity::SearchData::SLSQPData SLSQP</definition>
+        <argsstring></argsstring>
+        <name>SLSQP</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="137" column="9"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1aa3965c6e2d957efe45a4a53b48793736" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData" kindref="compound">splinepy::proximity::SearchData::LMData</ref></type>
+        <definition>struct splinepy::proximity::SearchData::LMData LM</definition>
+        <argsstring></argsstring>
+        <name>LM</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="164" column="6"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1a8add18ed96bae6549335e7e7ca5f473b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SearchData</definition>
+        <argsstring>(const int para_dim, const int dim, const double tolerance, const int max_iter, const double *query, double *final_guess, double *nearest, double *nearest_minus_query, double *first_derivatives, double *second_derivatives)</argsstring>
+        <name>SearchData</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>tolerance</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>max_iter</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>final_guess</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>nearest</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>nearest_minus_query</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>first_derivatives</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>second_derivatives</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="166" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="166" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1a9930ae7406ed5d885c199de82d6cad26" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Setup</definition>
+        <argsstring>(const int para_dim_, const int dim_, const double tolerance, const int max_iter, const double *query, double *final_guess, double *nearest, double *nearest_minus_query, double *first_derivatives, double *second_derivatives)</argsstring>
+        <name>Setup</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim_</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim_</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>tolerance</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>max_iter</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>final_guess</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>nearest</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>nearest_minus_query</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>first_derivatives</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>second_derivatives</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="188" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/proximity/proximity.cpp" bodystart="94" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1a93ed07345de6501d352abe5567d9489b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a41e8e0dd014a8432c03b168afac6d923" kindref="member">LhsMatrix</ref> &amp;</type>
+        <definition>LhsMatrix&amp; Lhs</definition>
+        <argsstring>()</argsstring>
+        <name>Lhs</name>
+        <briefdescription>
+<para>solvable lhs matrix - in mfem this is called Mult(rhs) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="200" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="200" bodyend="205"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1a98885f4db7c1da7aa8e763f55829fd5e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a41e8e0dd014a8432c03b168afac6d923" kindref="member">LhsMatrix</ref> &amp;</type>
+        <definition>LhsMatrix&amp; Lhs</definition>
+        <argsstring>(RealArray2D &amp;arr)</argsstring>
+        <name>Lhs</name>
+        <param>
+          <type><ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref> &amp;</type>
+          <declname>arr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="207" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="207" bodyend="210"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1ab7c099e6eaaeeafd655dbfc236c6fdf8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool IsConverged</definition>
+        <argsstring>()</argsstring>
+        <name>IsConverged</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="212" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="212" bodyend="215"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>struct to hold temporary data during the search. This should allow easier transition to fallback methods. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>Array&lt; int &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; int &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Array&lt; const double &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; const double &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>SLSQPData</label>
+        <link refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+jw_space</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+g_space</edgelabel>
+          <edgelabel>+w_space</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>LMData</label>
+        <link refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData"/>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+metric</edgelabel>
+          <edgelabel>+prev_guess</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>SearchData</label>
+        <link refid="structsplinepy_1_1proximity_1_1SearchData"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+SLSQP</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>+phys_query</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>+clipped</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>+LM</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>+current_guess</edgelabel>
+          <edgelabel>+current_phys</edgelabel>
+          <edgelabel>+delta_guess</edgelabel>
+          <edgelabel>+difference</edgelabel>
+          <edgelabel>+djdu</edgelabel>
+          <edgelabel>+initial_guess</edgelabel>
+          <edgelabel>+lower_bound</edgelabel>
+          <edgelabel>+upper_bound</edgelabel>
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>+spline_hessian</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>+d2jdu2</edgelabel>
+          <edgelabel>+search_bounds</edgelabel>
+          <edgelabel>+spline_gradient</edgelabel>
+          <edgelabel>+spline_gradient_AAt</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>Array&lt; DataType, dim, IndexType &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+      </node>
+      <node id="5">
+        <label>Array&lt; double &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; double &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>Array&lt; double, 3 &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; double, 3 &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="9">
+        <label>Array&lt; double, 2 &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="4" relation="template-instance">
+          <edgelabel>&lt; double, 2 &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="55" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="55" bodyend="216"/>
+    <listofallmembers>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a8c27391c7be262f80bc4cdc7b6281257" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>clipped</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a539b73efce03233e5b3f3dc4444dc8c7" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>convergence_goal</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a149038624de5f33350db5b3b83fe9af0" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>convergence_norm</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a3737a2b489c3a7444e22ce5112f7cfc6" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>current_guess</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a734edcb4c6d08405bf9599a0cc172709" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>current_phys</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0dc0b5a1406c6256535eec262540877f" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>d2jdu2</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1abf2789e067bdc343a130d6b73a7dd918" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>delta_guess</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0f8e97ff4b3535504ce8da28cdac9842" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>difference</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a70b5e28b5bc3d1b63a7435c5fe50b837" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>dim</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a79b8e036dca6911e3295a47d99f21f43" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>distance</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae3877633e31f8e79587c770d9ec2f09d" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>djdu</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae529444e0eddb7db98959571320837ed" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>initial_guess</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab7c099e6eaaeeafd655dbfc236c6fdf8" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>IsConverged</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a229fe836529a54bc8a7d390148d7a488" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>J</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a93ed07345de6501d352abe5567d9489b" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>Lhs</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a98885f4db7c1da7aa8e763f55829fd5e" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>Lhs</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a097975d09aa0bb27af296eebb678891f" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>lhs_matrix</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1aa3965c6e2d957efe45a4a53b48793736" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>LM</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0fb1290196e5d5fcbb9d4a9ac762a60f" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>lower_bound</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a53380b3b14c20bdfcb3bc9970c421231" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>max_iter</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0b94201dbc5c30bfe0a68404f0c6055e" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>options</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a44c52cb01c136bc648b605fa6f7195cf" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>para_dim</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a21051f849765cb1a0b55489fbf8cf61c" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>phys_query</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae4966660e7f808af798ab2ab0b84d53c" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>search_bounds</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a8add18ed96bae6549335e7e7ca5f473b" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>SearchData</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a9930ae7406ed5d885c199de82d6cad26" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>Setup</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ad4a26dcd5b8c2799b5b732c217ea1c71" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>SLSQP</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a2831ea3643f31d690188fde388e17292" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>spline_gradient</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ac5c47d097abf6b2a598add0ce92672b3" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>spline_gradient_AAt</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab7d06748bbd02c82e0c3fbea709770e8" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>spline_hessian</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a697b743232d64407856efb8abf7d07ea" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>squared_distance</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab043fd34e57f4f64b781d96a04d49979" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>status</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab8695fef7f8cc08585fc3003ccfdce5e" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>stop_iteration</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1a97eab6d709b80585fe9e8a54b1e3da27" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>tolerance</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab012d1ab6742b4a56d10784298d470be" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData</scope><name>upper_bound</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

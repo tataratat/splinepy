@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.setflags
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.setflags

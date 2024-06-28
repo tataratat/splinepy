@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.todict
+===========================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.todict

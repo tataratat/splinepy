@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.split
+================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.split

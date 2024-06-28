@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="todo" kind="page">
+    <compoundname>todo</compoundname>
+    <title>Todo List</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term>Member <ref refid="namespacesplinepy_1_1py_1a5cf14f511cf4a3be00b3e751989f74a2" kindref="member">splinepy::py::ComputeGlobalKnotInsertionMatrix</ref>  (const std::vector&lt; py::array_t&lt; double &gt;&gt; &amp;old_kvs, const py::array_t&lt; int &gt; &amp;degrees, const int parametric_dimension, const py::array_t&lt; double &gt; &amp;new_knots, const double &amp;tolerance)</term></varlistentry>
+<listitem><para><anchor id="todo_1_todo000001"/>: replace calls with pybind/eigen</para>
+</listitem>
+</variablelist>
+</para>
+    </detaileddescription>
+    <location file="todo"/>
+  </compounddef>
+</doxygen>

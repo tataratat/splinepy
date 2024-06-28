@@ -1,0 +1,6 @@
+splinepy.helpme.ffd.FFD.padding
+===============================
+
+.. currentmodule:: splinepy.helpme.ffd
+
+.. autoproperty:: FFD.padding

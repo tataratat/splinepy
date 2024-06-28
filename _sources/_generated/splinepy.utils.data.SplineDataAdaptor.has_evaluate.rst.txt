@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.has\_evaluate
+===================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoattribute:: SplineDataAdaptor.has_evaluate

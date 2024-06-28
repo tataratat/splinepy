@@ -1,0 +1,6 @@
+splinepy.io.ioutils.abs\_fname
+==============================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: abs_fname

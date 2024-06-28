@@ -1,0 +1,6 @@
+splinepy.utils.data.enforce\_contiguous\_values
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autofunction:: enforce_contiguous_values

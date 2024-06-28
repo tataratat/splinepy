@@ -1,0 +1,6 @@
+splinepy.spline.Spline.todict
+=============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.todict

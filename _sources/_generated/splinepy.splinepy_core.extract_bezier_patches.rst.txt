@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.extract\_bezier\_patches
+================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: extract_bezier_patches

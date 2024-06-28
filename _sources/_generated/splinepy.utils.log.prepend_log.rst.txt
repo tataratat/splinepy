@@ -1,0 +1,6 @@
+splinepy.utils.log.prepend\_log
+===============================
+
+.. currentmodule:: splinepy.utils.log
+
+.. autofunction:: prepend_log

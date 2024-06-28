@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.interface\_orientations
+============================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: PyMultipatch.interface_orientations

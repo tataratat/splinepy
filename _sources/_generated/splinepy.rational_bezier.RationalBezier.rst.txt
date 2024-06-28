@@ -1,0 +1,140 @@
+splinepy.rational\_bezier.RationalBezier
+========================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. autoclass:: RationalBezier
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       RationalBezier.basis
+     
+     
+       RationalBezier.basis_and_support
+     
+     
+       RationalBezier.basis_derivative
+     
+     
+       RationalBezier.basis_derivative_and_support
+     
+     
+       RationalBezier.clear
+     
+     
+       RationalBezier.compose
+     
+     
+       RationalBezier.composition_derivative
+     
+     
+       RationalBezier.copy
+     
+     
+       RationalBezier.current_core_properties
+     
+     
+       RationalBezier.derivative
+     
+     
+       RationalBezier.derivative_spline
+     
+     
+       RationalBezier.elevate_degrees
+     
+     
+       RationalBezier.evaluate
+     
+     
+       RationalBezier.export
+     
+     
+       RationalBezier.extract_dim
+     
+     
+       RationalBezier.greville_abscissae
+     
+     
+       RationalBezier.jacobian
+     
+     
+       RationalBezier.mapper
+     
+     
+       RationalBezier.proximities
+     
+     
+       RationalBezier.reduce_degrees
+     
+     
+       RationalBezier.sample
+     
+     
+       RationalBezier.show
+     
+     
+       RationalBezier.showable
+     
+     
+       RationalBezier.split
+     
+     
+       RationalBezier.support
+     
+     
+       RationalBezier.todict
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+         RationalBezier.nurbs
+      
+      
+      
+      
+         RationalBezier.rationalbezier
+      
+      
+      
+      
+      
+      
+      
+      
+   
+   

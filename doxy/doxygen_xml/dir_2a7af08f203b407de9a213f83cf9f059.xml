@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_2a7af08f203b407de9a213f83cf9f059" kind="dir">
+    <compoundname>splines</compoundname>
+    <innerdir refid="dir_74bbe59dc4d4993b4196ab48d40e9589">create</innerdir>
+    <innerdir refid="dir_b34649bf36c520b8780fa665f9e90d86">helpers</innerdir>
+    <innerfile refid="splinepy__base_8cpp">splinepy_base.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/src/splines/"/>
+  </compounddef>
+</doxygen>

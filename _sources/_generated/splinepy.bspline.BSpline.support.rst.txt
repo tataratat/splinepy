@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.support
+================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.support

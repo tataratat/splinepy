@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacesplinepy_1_1splines" kind="namespace" language="C++">
+    <compoundname>splinepy::splines</compoundname>
+    <innerclass refid="classsplinepy_1_1splines_1_1Bezier" prot="public">splinepy::splines::Bezier</innerclass>
+    <innerclass refid="classsplinepy_1_1splines_1_1BSpline" prot="public">splinepy::splines::BSpline</innerclass>
+    <innerclass refid="classsplinepy_1_1splines_1_1NullSpline" prot="public">splinepy::splines::NullSpline</innerclass>
+    <innerclass refid="classsplinepy_1_1splines_1_1Nurbs" prot="public">splinepy::splines::Nurbs</innerclass>
+    <innerclass refid="classsplinepy_1_1splines_1_1RationalBezier" prot="public">splinepy::splines::RationalBezier</innerclass>
+    <innerclass refid="classsplinepy_1_1splines_1_1SplinepyBase" prot="public">splinepy::splines::SplinepyBase</innerclass>
+    <innernamespace refid="namespacesplinepy_1_1splines_1_1create">splinepy::splines::create</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1splines_1_1helpers">splinepy::splines::helpers</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacesplinepy_1_1splines_1a8c9e801687881101d00a2226ef6e122d" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::size_t</type>
+            <declname>para_dim</declname>
+            <defname>para_dim</defname>
+          </param>
+          <param>
+            <type>std::size_t</type>
+            <declname>dim</declname>
+            <defname>dim</defname>
+          </param>
+        </templateparamlist>
+        <type>bezman::BezierSpline&lt; static_cast&lt; std::size_t &gt;(para_dim), std::conditional_t&lt;(dim &gt; 1), bezman::Point&lt; dim &gt;, double &gt;, double &gt;</type>
+        <definition>using BezierSplineType =  bezman::BezierSpline&lt; static_cast&lt;std::size_t&gt;(para_dim), std::conditional_t&lt;(dim &gt; 1), bezman::Point&lt;dim&gt;, double&gt;, double&gt;</definition>
+        <argsstring></argsstring>
+        <name>BezierSplineType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/bezier.hpp" line="40" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/bezier.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" prot="public" static="no">
+        <type>std::array&lt; std::array&lt; std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;, <ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref> &gt;, <ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref> &gt;</type>
+        <definition>using LookupArray_ =  std::array&lt;std::array&lt;std::shared_ptr&lt;SplinepyBase&gt;, kMaxLookupDim&gt;, kMaxLookupDim&gt;</definition>
+        <argsstring></argsstring>
+        <name>LookupArray_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" line="133" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1splines_1ac7d6d249cbfbd419edc7324547215a62" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>std::size_t</type>
+            <declname>para_dim</declname>
+            <defname>para_dim</defname>
+          </param>
+          <param>
+            <type>std::size_t</type>
+            <declname>dim</declname>
+            <defname>dim</defname>
+          </param>
+        </templateparamlist>
+        <type>bezman::RationalBezierSpline&lt; static_cast&lt; std::size_t &gt;(para_dim), std::conditional_t&lt;(dim &gt; 1), bezman::Point&lt; dim &gt;, double &gt;, double &gt;</type>
+        <definition>using RationalBezierSplineType =  bezman::RationalBezierSpline&lt; static_cast&lt;std::size_t&gt;(para_dim), std::conditional_t&lt;(dim &gt; 1), bezman::Point&lt;dim&gt;, double&gt;, double&gt;</definition>
+        <argsstring></argsstring>
+        <name>RationalBezierSplineType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/rational_bezier.hpp" line="40" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/rational_bezier.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static int</type>
+        <definition>constexpr static int kMaxLookupDim</definition>
+        <argsstring></argsstring>
+        <name>kMaxLookupDim</name>
+        <initializer>{10}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" line="131" column="22" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacesplinepy_1_1splines_1a49b3d2fe229e792a665a79d227456d12" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kindref="member">LookupArray_</ref></type>
+        <definition>const LookupArray_ kNullSplineLookup</definition>
+        <argsstring></argsstring>
+        <name>kNullSplineLookup</name>
+        <initializer>= [] {
+  <ref refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kindref="member">LookupArray_</ref> lookup;
+  int i{0};
+  for (auto&amp; para_dim_array : lookup) {
+    int j{0};
+    for (auto&amp; dim_element : para_dim_array) {
+      dim_element = std::make_shared&lt;<ref refid="classsplinepy_1_1splines_1_1NullSpline" kindref="compound">NullSpline</ref>&gt;(i + 1, j + 1);
+      ++j;
+    }
+    ++i;
+  }
+  return lookup;
+}()</initializer>
+        <briefdescription>
+<para>pre-create null splines up to the dimension we support </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" line="137" column="34" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; NullSplineFromLookup</definition>
+        <argsstring>(const int para_dim, const int dim)</argsstring>
+        <name>NullSplineFromLookup</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" line="151" column="17" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" bodystart="151" bodyend="154" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp" declline="35" declcolumn="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/bezier.hpp" line="37" column="1"/>
+  </compounddef>
+</doxygen>

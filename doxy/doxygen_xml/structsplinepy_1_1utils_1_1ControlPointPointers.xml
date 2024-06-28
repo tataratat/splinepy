@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structsplinepy_1_1utils_1_1ControlPointPointers" kind="struct" language="C++" prot="public">
+    <compoundname>splinepy::utils::ControlPointPointers</compoundname>
+    <includes refid="coordinate__pointers_8hpp" local="no">coordinate_pointers.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; double * &gt;</type>
+        <definition>std::vector&lt;double*&gt; coordinate_begins_</definition>
+        <argsstring></argsstring>
+        <name>coordinate_begins_</name>
+        <briefdescription>
+<para>first pointers of each control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="72" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int dim_</definition>
+        <argsstring></argsstring>
+        <name>dim_</name>
+        <initializer>{-1}</initializer>
+        <briefdescription>
+<para>dimension of control points </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="75" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool for_rational_</definition>
+        <argsstring></argsstring>
+        <name>for_rational_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+<para>flag to let them know that this comes from a rational splines </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="78" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="structsplinepy_1_1utils_1_1WeightPointers" kindref="compound">WeightPointers</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;WeightPointers&gt; weight_pointers_</definition>
+        <argsstring></argsstring>
+        <name>weight_pointers_</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+<para>shared_ptr for weight pointers </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="81" column="19" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool invalid_</definition>
+        <argsstring></argsstring>
+        <name>invalid_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+<para>Validity flag. Set to false by parent spline&apos;s dtor. Stops any syncing. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="85" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Len</definition>
+        <argsstring>() const</argsstring>
+        <name>Len</name>
+        <briefdescription>
+<para>Returns Number of control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="88" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="88" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Dim</definition>
+        <argsstring>() const</argsstring>
+        <name>Dim</name>
+        <briefdescription>
+<para>Returns dimension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="91" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="91" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a4b56d928685606c8838f951276e816d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetRow</definition>
+        <argsstring>(const int id, const double *values)</argsstring>
+        <name>SetRow</name>
+        <param>
+          <type>const int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Set a single row. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="97" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/utils/coordinate_pointers.cpp" bodystart="29" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>bool</type>
+            <declname>same_sized_value</declname>
+            <defname>same_sized_value</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void SetRows</definition>
+        <argsstring>(const int *ids, const int n_rows, const double *values)</argsstring>
+        <name>SetRows</name>
+        <param>
+          <type>const int *</type>
+          <declname>ids</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>n_rows</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Sets multiple rows. If tparam is true, we assume that values will have same size (len * dim) as control points. Other wise, (n_rows * dim) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="103" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="151" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1ControlPointPointers_1aae439260e416f2cd8a082b5bf1412d99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Sync</definition>
+        <argsstring>(const double *values)</argsstring>
+        <name>Sync</name>
+        <param>
+          <type>const double *</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Sync whole control points with values. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="106" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/utils/coordinate_pointers.cpp" bodystart="52" bodyend="85"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Helper class than contains pointers to the beginning pointer of each control point. This provides general, type-invariant interface to access core spline&apos;s control points. This must only be created by SplinepyBase class and each splines holds a shared_ptr of control points. SplinepyBase&apos;s dtor will set invalid_ flag to false, so that it will stop updating the control points if spline doesn&apos;t exist. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>For rational splines, this type holds shared pointer to weight_pointers_. Backend splines saveds weighted control points and we always expose unweighted control points, which means that each time we sync, we need to apply weights to the control points.</para>
+<para>In splinepy, this will be part of PhysicalSpaceArray. More specifically, _source_ptr attribute. </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>ControlPointPointers</label>
+        <link refid="structsplinepy_1_1utils_1_1ControlPointPointers"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="69" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="69" bodyend="107"/>
+    <listofallmembers>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>coordinate_begins_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>Dim</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>dim_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>for_rational_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>invalid_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>Len</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a4b56d928685606c8838f951276e816d2" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>SetRow</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>SetRows</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae439260e416f2cd8a082b5bf1412d99" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>Sync</name></member>
+      <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" prot="public" virt="non-virtual"><scope>splinepy::utils::ControlPointPointers</scope><name>weight_pointers_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

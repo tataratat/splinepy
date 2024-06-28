@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.insert\_knots
+==================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.insert_knots

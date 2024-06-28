@@ -1,0 +1,33 @@
+.. _splinepy.helpme.multi_index:
+
+splinepy.helpme.multi\_index
+============================
+
+.. automodule:: splinepy.helpme.multi_index
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      MultiIndex
+   
+   
+
+   
+   
+   
+
+
+

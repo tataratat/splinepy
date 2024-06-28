@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.KnotVector.unique
+=========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: KnotVector.unique
