@@ -32,7 +32,7 @@ CATS_XML_KEY_WORDS = {
     "weights": "wght",  # Weights (every spline is a nurbs)
     "degrees": "deg",  # Degrees vector
     "knot_vectors": "kntVecs",  # Vector of knot vectors
-    "knot_vector": "knotVec",  # individual knot vector
+    "knot_vector": "kntVec",  # individual knot vector
     "spline_list": "SplineList",  # Global list of patches
     "element_variables": "elmentVars",  # Variables defined on the element
 }
@@ -70,9 +70,10 @@ def load(fname):
             xml_element.attrib.get(CATS_XML_KEY_WORDS["field_dim"], -1)
         )
         n_ctps = int(xml_element.attrib.get(CATS_XML_KEY_WORDS["n_ctps"], -1))
-        is_periodic = (
-            int(xml_element.attrib.get(CATS_XML_KEY_WORDS["periodic"], 0)) == 1
-        )
+        periodic_keys = xml_element.attrib.get(
+            CATS_XML_KEY_WORDS["periodic"], ""
+        ).split()
+        any_is_periodic = any(int(key) == 1 for key in periodic_keys)
         if -1 in [dim, para_dim, ctps_dim, n_ctps]:
             raise ValueError(
                 f"Not enough information provided for xml-element "
@@ -84,10 +85,11 @@ def load(fname):
                 "retrieval is not implemented. All non-geometry info will be "
                 "ignored"
             )
-        if is_periodic:
+        if any_is_periodic:
             raise ValueError(
-                "Periodic splines are not (yet) supported. Try saving your "
-                "spline by repeating first and last control points."
+                "Periodic splines are currently unsupported. Detected "
+                "periodic dimensions: "
+                "{[i for i, key in enumerate(periodic_keys) if int(key) == 1]}"
             )
         for info in xml_element:
             # We ignore most keywords at the moment
@@ -167,7 +169,7 @@ def load(fname):
     return _ioutils.dict_to_spline(list_of_splines)
 
 
-def export(fname, spline_list, indent=True):
+def export(fname, spline_list, indent=True, make_rational=True):
     """
     Save spline as `.xml`.
 
@@ -179,6 +181,8 @@ def export(fname, spline_list, indent=True):
       Splines to be exported
     indent: bool
       Option for pretty printing
+    make_rational : bool
+      (default True) export everything as nurbs (discard weights)
 
     Returns
     --------
@@ -224,7 +228,11 @@ def export(fname, spline_list, indent=True):
     # All Splines (patches) are written into the spline list as entries
     for spline in spline_list:
         # Convert to non-bezier type (might make unnecessary copy)
-        patch = spline.nurbs if spline.is_rational else spline.bspline
+        patch = (
+            spline.nurbs
+            if spline.is_rational or make_rational
+            else spline.bspline
+        )
 
         # Write spline header
         patch_element = _ET.SubElement(
@@ -236,7 +244,9 @@ def export(fname, spline_list, indent=True):
                 CATS_XML_KEY_WORDS["field_dim"]: str(patch.dim),
                 CATS_XML_KEY_WORDS["n_ctps"]: str(patch.cps.shape[0]),
                 CATS_XML_KEY_WORDS["n_element_vars"]: str(0),
-                CATS_XML_KEY_WORDS["periodic"]: str(0),
+                CATS_XML_KEY_WORDS["periodic"]: " ".join(
+                    [str(0) for _ in range(patch.para_dim)]
+                ),
             },
         )
 
@@ -271,7 +281,9 @@ def export(fname, spline_list, indent=True):
             patch_element,
             CATS_XML_KEY_WORDS["degrees"],
         )
-        degrees_elements.text = " ".join(str(deg) for deg in patch.degrees)
+        degrees_elements.text = new_line_char.join(
+            str(deg) for deg in patch.degrees
+        )
 
         # knot-vectors
         knot_vectors_elements = _ET.SubElement(
@@ -283,7 +295,7 @@ def export(fname, spline_list, indent=True):
                 knot_vectors_elements,
                 CATS_XML_KEY_WORDS["knot_vector"],
             )
-            knot_vector_element.text = " ".join(str(k) for k in kv)
+            knot_vector_element.text = new_line_char.join(str(k) for k in kv)
 
         # weights if rational
         if patch.is_rational:
@@ -291,7 +303,7 @@ def export(fname, spline_list, indent=True):
                 patch_element,
                 CATS_XML_KEY_WORDS["weights"],
             )
-            weights_elements.text = " ".join(
+            weights_elements.text = new_line_char.join(
                 str(w) for w in patch.weights.ravel()
             )
 

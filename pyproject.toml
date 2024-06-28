@@ -8,7 +8,7 @@ authors = [
     {name="Jaewook Lee", email="jaewooklee042@gmail.com"},
 ]
 license = {file = "LICENSE"}
-description = "Process, analyze and visualize N-dim, N-degree splines"
+description = "Library for prototyping spline geometries of arbitrary dimensions and degrees, and IGA"
 keywords = ["bezier", "rational bezier", "bspline", "nurbs", "multi patch"]
 urls = {Homepage = "https://github.com/tataratat/splinepy"}
 classifiers=[
@@ -23,8 +23,8 @@ classifiers=[
     "Natural Language :: English",
     "Topic :: Scientific/Engineering",
 ]
-dependencies = ["numpy", "gustaf>=0.0.22"]
-requires-python = '>=3.7'
+dependencies = ["numpy", "gustaf>=0.0.25"]
+requires-python = '>=3.8'
 dynamic = ["version"]
 
 [project.readme]
@@ -32,8 +32,8 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.optional-dependencies]
-all = ["gustaf[all]>=0.0.22"]
-test = ["funi>=0.0.1", "pytest"]
+all = ["gustaf[all]>=0.0.25"]
+test = ["funi>=0.1.0", "pytest"]
 
 [project.scripts]
 splinepy = "splinepy.cli:entry"
