@@ -450,6 +450,9 @@ def export(
                     )
                 attributes = gismo_dictionary.get("attributes", {})
                 option_text = gismo_dictionary.get("text", None)
+                comment_text = gismo_dictionary.get("comment", None)
+                if comment_text is not None:
+                    xml_data.append(_ET.Comment(comment_text))
                 optional_data = _ET.SubElement(
                     ETelement,
                     name,
@@ -701,3 +704,269 @@ def load(fname, load_options=True):
         return multipatch, list_of_options
     else:
         return multipatch
+
+
+def create_boundary_conditions_block(
+    bc_id,
+    dim,
+    function_list,
+    bc_list,
+    unknown_id=0,
+    multipatch_id=0,
+    comment=None,
+):
+    """Create Python dictionary of boundary function's block to be used in
+    gismo export function.
+
+    Parameters
+    ----------
+    bc_id : int
+        ID number of boundaryConditions-block
+    dim : int
+        Dimension of physical space
+    function_list : list<str/tuple<str,str,...>>
+        List of functions where entries are strings of the function of the BC.
+        If tuple is given, it will be interpreted as component-wise functions
+        (e.g. for vector valued functions)
+    bc_list : list<tuple<str, str, int>>
+        List of which boundary attains which type of boundary condition. First
+        entry is the boundary name, second the type of condition (e.g.
+        "Dirichlet"), third is on which variable/unknown it should be applied
+    unknown_id : int (0)
+        ID of the unknown/variable on which this boundaryConditions block should be
+        applied
+    multipatch_id : int (0)
+        ID of the multipatch
+    comment: str
+        Comment above boundaryFunctions-block
+
+    Returns
+    -------
+    bc_dict_for_xml : dict
+      Dictionary of boundary conditions
+    """
+    bc_dict_for_xml = {}
+    bc_dict_for_xml["tag"] = "boundaryConditions"
+    bc_dict_for_xml["attributes"] = {
+        "id": str(bc_id),
+        "multipatch": str(multipatch_id),
+    }
+
+    # Define functions
+    children_list = []
+    for index, func_text in enumerate(function_list):
+        function_dict = {
+            "tag": "Function",
+            "attributes": {
+                "type": "FunctionExpr",
+                "dim": str(dim),
+                "index": str(index),
+            },
+        }
+        if type(func_text) != tuple:
+            function_dict["text"] = func_text
+        # Else vector-valued function
+        else:
+            function_dict["attributes"]["c"] = str(dim)
+            function_dict["children"] = [
+                {
+                    "tag": "c",
+                    "attributes": {"index": str(component_index)},
+                    "text": single_func_text,
+                }
+                for component_index, single_func_text in enumerate(func_text)
+            ]
+
+        children_list.append(function_dict)
+
+    children_list += [
+        {
+            "tag": "bc",
+            "attributes": {
+                "name": bidname,
+                "type": bctype,
+                "unknown": str(unknown_id),
+                # component omitted, might be sth for vector-valued unknowns
+                "function": str(function_id),
+            },
+        }
+        for bidname, bctype, function_id in bc_list
+    ]
+
+    bc_dict_for_xml["children"] = children_list
+
+    if comment is not None:
+        bc_dict_for_xml["comment"] = comment
+
+    return bc_dict_for_xml
+
+
+def create_function_block(dim, function_id, function_string, comment=None):
+    """Create Python dictionary of custom function's block to be used in
+    gismo export function.
+
+    Parameters
+    ----------
+    dim: int
+        Physical dimension of the problem
+    id: int
+        ID of function block
+    function_string: str or tuple<str,str>
+        Function as string. If tuple is given, function will be vector-valued.
+    comment: str
+        Comment above function block
+
+    Returns
+    -------
+    function_dict: dict
+        Dictionary to be used in export function
+    """
+    function_dict = {}
+    function_dict["tag"] = "Function"
+    function_dict["attributes"] = {
+        "id": str(function_id),
+        "type": "FunctionExpr",
+        "dim": str(dim),
+    }
+
+    # Scalar-valued function
+    if type(function_string) != tuple:
+        function_dict["text"] = function_string
+    # Vector-valued function
+    else:
+        function_dict["attributes"]["c"] = str(dim)
+        function_dict["children"] = [
+            {
+                "tag": "c",
+                "attributes": {"index": str(component_index)},
+                "text": function_component_string,
+            }
+            for component_index, function_component_string in enumerate(
+                function_string
+            )
+        ]
+
+    if comment is not None:
+        function_dict["comment"] = comment
+
+    return function_dict
+
+
+def create_assembly_options_block(
+    options_id,
+    dirichlet_strategy=11,
+    dirichlet_values=101,
+    interface_strategy=1,
+    bda=2,
+    bdb=1,
+    bdo=0.333,
+    qua=1,
+    qub=1,
+    qurule=1,
+    comment=None,
+):
+    """Create Python dictionary of g+smo assembly options to be used in gismo
+    export function
+
+    Parameters
+    ----------
+    options_id: int
+        ID of the OptionList-block
+    dirichlet_strategy: int
+        Method for enforcement of Dirichlet BCs [11..14]
+    dirichlet_values: int
+        Method for computation of Dirichlet DoF values [100..103]
+    interface_strategy: int
+        Method of treatment of patch interfaces [0..3]
+    bda: int
+        Estimated nonzeros per column of the matrix: bdA*deg + bdB
+    bdb: int
+        Estimated nonzeros per column of the matrix: bdA*deg + bdB
+    bdo: int
+        Overhead of sparse mem. allocation: (1+bdO)(bdA*deg + bdB) [0..1]
+    qua: int
+        Number of quadrature points: quA*deg + quB
+    qub: int
+        Number of quadrature points: quA*deg + quB
+    qurule: int
+        Quadrature rule [1:GaussLegendre,2:GaussLobatto]
+    comment: str
+        Comment above OptionList-block
+
+    Returns
+    -------
+    assembly_dict: dict
+        Dictionary to be used in export function
+    """
+    labels = [
+        "DirichletStrategy",
+        "DirichletValues",
+        "InterfaceStrategy",
+        "bdA",
+        "bdB",
+        "bdO",
+        "quA",
+        "quB",
+        "quRule",
+    ]
+    descriptions = [
+        "Method for enforcement of Dirichlet BCs [11..14]",
+        "Method for computation of Dirichlet DoF values [100..103]",
+        "Method of treatment of patch interfaces [0..3]",
+        "Estimated nonzeros per column of the matrix: bdA*deg + bdB",
+        "Estimated nonzeros per column of the matrix: bdA*deg + bdB",
+        "Overhead of sparse mem. allocation: (1+bdO)(bdA*deg + bdB) [0..1]",
+        "Number of quadrature points: quA*deg + quB",
+        "Number of quadrature points: quA*deg + quB",
+        "Quadrature rule [1:GaussLegendre,2:GaussLobatto]",
+    ]
+    values = [
+        dirichlet_strategy,
+        dirichlet_values,
+        interface_strategy,
+        bda,
+        bdb,
+        bdo,
+        qua,
+        qub,
+        qurule,
+    ]
+    number_types = [
+        "int",
+        "int",
+        "int",
+        "real",
+        "int",
+        "real",
+        "real",
+        "int",
+        "int",
+    ]
+
+    assembly_dict = {}
+    assembly_dict["tag"] = "OptionList"
+    assembly_dict["attributes"] = {"id": str(options_id)}
+    assembly_dict["text"] = "\n    "
+
+    children_list = []
+
+    for label, description, value, number_type in zip(
+        labels, descriptions, values, number_types
+    ):
+        children_list.append(
+            {
+                "tag": number_type,
+                "attributes": {
+                    "label": label,
+                    "desc": description,
+                    "value": str(value),
+                },
+            }
+        )
+
+    assembly_dict["children"] = children_list
+
+    if comment is not None:
+        assembly_dict["comment"] = comment
+
+    return assembly_dict
