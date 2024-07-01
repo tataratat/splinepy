@@ -311,7 +311,7 @@ def swept(
 
     Parameters
     ----------
-    crossection : Spline
+    cross_section : Spline
       Cross-section to be swept
     trajectory : Spline
       Trajectory along which the cross-section is swept
@@ -342,14 +342,6 @@ def swept(
     # make copies so we can work on it inplace
     trajectory = trajectory.create.embedded(3)
     cross_section = cross_section.create.embedded(3)
-
-    # print(trajectory.knot_vectors[0])
-    # print(len(trajectory.control_points))
-
-    # # insert knots
-    # trajectory.insert_knots(0, [0.69, 0.7, 0.1])
-    # print(trajectory.knot_vectors[0])
-    # print(len(trajectory.control_points))
 
     def transformation_matrices(traj, par_value):
         # tangent vector x on trajectory at parameter value 0
@@ -407,42 +399,48 @@ def swept(
     par_value = trajectory.greville_abscissae()
     par_value = par_value.reshape(-1, 1)
 
+    ### insert knots in trajectory area with highest curvature ###
     curv = []
     for i in par_value:
-        # calculate derivate of trajectory at parametric value i
+        # calculate curvature of trajectory at parametric value i
         curv.append(round(_np.linalg.norm(trajectory.derivative([i], [2])), 2))
-
-    # insert knots and control points in trajectory area with highest curvature
+    # evaluate the par_values-vector indices of the maximum curvature points
     max_curv = max(curv)
     max_indices = [i for i, x in enumerate(curv) if x == max_curv]
-    par_insertion_values = []
-    knot_insertion_values = []
-    par_valuesss = par_value.ravel()
-    p = trajectory.degrees[0]
-    for i in max_indices:
-        if i > len(trajectory.knot_vectors[0]) - p - 1:
-            break
+    # prepare two matrices for the insertion
+    insertion_values = []
+    # compute the new insertion values
+    par_values = par_value.ravel()
+
+    for maxi in max_indices:
+        if maxi == 0:
+            insertion_values.append(
+                (par_values[maxi] + par_values[maxi + 1]) / 2
+            )
+        elif maxi == len(par_values) - 1:
+            insertion_values.append(
+                (par_values[maxi] + par_values[maxi - 1]) / 2
+            )
         else:
-            par_insertion_values.append(
-                (par_valuesss[i] + par_valuesss[i + 1]) / 2
+            insertion_values.append(
+                (par_values[maxi] + par_values[maxi - 1]) / 2
             )
-            knot_insertion_values.append(
-                (
-                    trajectory.knot_vectors[0][i + p]
-                    + trajectory.knot_vectors[0][i + p + 1]
-                )
-                / 2
+            insertion_values.append(
+                (par_values[maxi] + par_values[maxi + 1]) / 2
             )
-    trajectory.insert_knots(0, knot_insertion_values)
-    par_val_reshape = par_value.reshape(-1)
-    new_insertion_values_reshape = _np.asanyarray(par_insertion_values)
+
+    # insert knots into the trajectory's knot vector
+    insertion_values = _np.unique(insertion_values)
+    trajectory.uniform_refine_fixed_knots(0, len(insertion_values))
+    # insert knots into the parameter values
     par_value = _np.concatenate(
-        (par_val_reshape, new_insertion_values_reshape)
+        (par_value.reshape(-1), _np.asanyarray(insertion_values))
     )
+    # sort parameter values
     par_value = _np.sort(par_value)
     par_value = par_value.reshape(-1, 1)
 
-    # evaluate trajectory at these parameter values
+    # evaluate trajectory at the parameter values
     evals = trajectory.evaluate(par_value)
 
     # evaluate center of cross section and translate to origin
