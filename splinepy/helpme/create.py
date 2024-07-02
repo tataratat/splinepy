@@ -298,6 +298,306 @@ def revolved(
     return type(spline)(**spline_dict)
 
 
+def swept(
+    cross_section,
+    trajectory,
+    cross_section_normal=None,
+    auto_refinement=False,
+):
+    """
+    Sweeps a cross-section along a trajectory. The cross-section
+    receives rotation into the direction of the trajectory tangent
+    vector and is then placed at the evaluation points of the
+    trajectory's knots.
+    Fundamental ideas can be found in the NURBS Book, Piegl & Tiller,
+    2nd edition, chapter 10.4 Swept Surfaces.
+
+    Parameters
+    ----------
+    cross_section : Spline
+      Cross-section to be swept
+    trajectory : Spline
+      Trajectory along which the cross-section is swept
+    cross_section_normal : np.array
+      Normal vector of the cross-section
+      Default is [0, 0, 1]
+    auto_refinement : bool
+      If True, the trajectory will be refined at points of
+      highest curvature. Default is False.
+
+    Returns
+    -------
+    swept_spline : Spline
+      Spline resulting from the sweep
+    """
+
+    from splinepy import NURBS as _NURBS
+    from splinepy import BSpline as _BSpline
+    from splinepy.spline import Spline as _Spline
+
+    # check input type
+    if not isinstance(cross_section, _Spline):
+        raise NotImplementedError("Sweep only works for splines")
+    if not isinstance(trajectory, _Spline):
+        raise NotImplementedError("Sweep only works for splines")
+    if not trajectory.para_dim == 1:
+        raise NotImplementedError("Trajectory must be 1D")
+
+    if cross_section_normal is not None and not len(cross_section_normal) == 3:
+        raise ValueError("Cross section normal must be 3D")
+    if not isinstance(auto_refinement, bool):
+        raise ValueError("auto_refinement must be a boolean")
+
+    # setting default value for cross_section_normal
+    if cross_section_normal is None:
+        cross_section_normal = _np.array([0, 0, 1])
+
+    # make copies so we can work on it inplace
+    trajectory = trajectory.create.embedded(3)
+    cross_section = cross_section.create.embedded(3)
+
+    # initialize parameter values
+    par_value = trajectory.greville_abscissae()
+    par_value = par_value.reshape(-1, 1)
+
+    def transformation_matrices(traj, par_value):
+
+        ### TRANSFORMATION MATRICES ###
+
+        # tangent vector x on trajectory at parameter value 0
+        x = traj.derivative([par_value[0]], [1])
+        x = (x / _np.linalg.norm(x)).ravel()
+
+        # evaluating a vector normal to x
+        vec = [-x[1], x[0], -x[2]]
+        B = []
+        # avoid dividing by zero
+        if _np.linalg.norm(_np.cross(x, vec)) > 1e-10:
+            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+        else:
+            vec = [x[2], -x[1], x[0]]
+            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+
+        # initialize transformation matrices and x-collection
+        T = []
+        A = []
+        x_collection = []
+
+        # evaluating transformation matrices for each trajectory point
+        for i in range(len(par_value)):
+            # calculation according to NURBS Book, eq. 10.27
+            # tangent vector x on trajectory at parameter value i
+            x = traj.derivative([par_value[i]], [1])
+            x = (x / _np.linalg.norm(x)).ravel()
+            x_collection.append(x)
+
+            # projecting B_(i) onto the plane normal to x
+            B.append(B[i] - _np.dot(B[i], x) * x)
+            B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
+
+            # defining y and z axis-vectors
+            z = B[i + 1]
+            y = _np.cross(z, x)
+
+            # array of transformation matrices from global to local coordinates
+            T.append(_np.vstack((x, y, z)))
+
+            # array of transformation matrices from local to global coordinates
+            A.append(_np.linalg.inv(T[i]))
+
+        # own procedure, if trajectory is closed and B[0] != B[-1]
+        # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
+        if _np.array_equal(
+            traj.evaluate([[0]]), traj.evaluate([par_value[-1]])
+        ) and not _np.array_equal(B[0], B[-1]):
+            # reset transformation matrices
+            T = []
+            A = []
+            B_reverse = [None] * len(B)
+            B_reverse[0] = B[-1]
+            for i in range(len(par_value)):
+                # redo the calculation of B using x_collection from before
+                # according to NURBS Book, eq. 10.27
+                B_reverse[i + 1] = (
+                    B_reverse[i]
+                    - _np.dot(B_reverse[i], x_collection[i]) * x_collection[i]
+                )
+                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
+                    B_reverse[i + 1]
+                )
+                # middle point between B and B_reverse
+                B_reverse[i + 1] = (B[i + 1] + B_reverse[i + 1]) * 0.5
+                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
+                    B_reverse[i + 1]
+                )
+                # defining y and z axis-vectors
+                z = B_reverse[i + 1]
+                y = _np.cross(z, x_collection[i])
+
+                # array of transformation matrices from global to local coordinates
+                T.append(_np.vstack((x_collection[i], y, z)))
+
+                # array of transformation matrices from local to global coordinates
+                A.append(_np.linalg.inv(T[i]))
+
+            # check if the beginning and the end of the B-vector are the same
+            if not _np.allclose(B_reverse[0], B_reverse[-1], rtol=1e-3):
+                _log.warning(
+                    "Vector calculation is not exact due to the "
+                    "trajectory being closed in an uncommon way."
+                )
+
+        ### ROTATION MATRIX AROUND Y ###
+
+        angle_of_cs_normal = _np.arctan2(
+            cross_section_normal[2], cross_section_normal[0]
+        )
+        R = _np.array(
+            [
+                [_np.cos(angle_of_cs_normal), 0, _np.sin(angle_of_cs_normal)],
+                [0, 1, 0],
+                [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
+            ]
+        )
+        R = _np.where(_np.abs(R) < 1e-10, 0, R)
+
+        return A, R
+
+    ### REFINEMENT OF TRAJECTORY ###
+
+    if auto_refinement:
+        ## inserts knots in trajectory area with highest curvature #
+
+        curv = []
+        for i in par_value:
+            # calculate curvature of trajectory at parametric value i
+            curv.append(
+                round(_np.linalg.norm(trajectory.derivative([i], [2])), 2)
+            )
+        # evaluate the par_values-vector indices of the maximum curvature points
+        max_curv = max(curv)
+        max_indices = [i for i, x in enumerate(curv) if x == max_curv]
+        # prepare matrix for the insertion
+        insertion_values = []
+        # compute the new insertion values
+        par_values = par_value.ravel()
+
+        for maxi in max_indices:
+            if maxi == 0:
+                insertion_values.append(
+                    (par_values[maxi] + par_values[maxi + 1]) / 2
+                )
+            elif maxi == len(par_values) - 1:
+                insertion_values.append(
+                    (par_values[maxi] + par_values[maxi - 1]) / 2
+                )
+            else:
+                insertion_values.append(
+                    (par_values[maxi] + par_values[maxi - 1]) / 2
+                )
+                insertion_values.append(
+                    (par_values[maxi] + par_values[maxi + 1]) / 2
+                )
+
+        # insert knots into the trajectory's knot vector
+        insertion_values = _np.unique(insertion_values)
+        # convert knot vector to list
+        kv_list = trajectory.knot_vectors[0].numpy()
+
+        # insert knots into the trajectory's knot vector
+        if any(value in insertion_values for value in kv_list):
+            add = _np.concatenate((insertion_values, kv_list))
+            add = _np.unique(add)
+            # remove the existing knots
+            add = add[~_np.isin(add, kv_list)]
+            # check if there are any knots to insert
+            if len(add) == 0:
+                _log.warning("Auto Refinement couldn't insert knots.")
+            else:
+                trajectory.insert_knots(0, add)
+                # give information about the inserted knots
+                _log.info(
+                    f"Auto Refinement inserted {len(add)} "
+                    "knots into the trajectory."
+                )
+        else:
+            trajectory.insert_knots(0, insertion_values)
+            # give information about the inserted knots
+            _log.info(
+                f"Auto Refinement inserted {len(insertion_values)} "
+                "knots into the trajectory."
+            )
+
+        # recalculate parameter values
+        par_value = trajectory.greville_abscissae()
+        par_value = par_value.reshape(-1, 1)
+
+    ### SWEEPING PROCESS ###
+
+    # evaluate center of cross section and translate to origin
+    cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
+    cs_center = cross_section.evaluate(
+        cross_para_center.reshape(-1, cross_section.para_dim)
+    ).ravel()
+    cross_section.control_points -= cs_center
+
+    # evaluate transformation matrices for every trajectory point
+    A, R = transformation_matrices(trajectory, par_value)
+
+    # set cross section control points along trajectory
+    swept_spline_cps = []
+    for index in range(len(par_value)):
+        temp_csp = []
+        # place every control point of cross section separately
+        for cscp in cross_section.control_points:
+            # rotate cross section in trajectory direction
+            normal_cscp = _np.matmul(R, cscp)
+            # transform cross section to global coordinates
+            normal_cscp = _np.matmul(A[index], normal_cscp)
+            # translate cross section to trajectory point
+            normal_cscp += trajectory.control_points[index]
+            # append control point to list
+            temp_csp.append(normal_cscp)
+
+        # collect all control points
+        swept_spline_cps.append(_np.array(temp_csp))
+
+    # create spline dictionary
+    dict_swept_spline = {
+        "degrees": [*cross_section.degrees, *trajectory.degrees],
+        "knot_vectors": [
+            *cross_section.knot_vectors,
+            *trajectory.knot_vectors,
+        ],
+        "control_points": _np.asarray(swept_spline_cps).reshape(
+            -1, cross_section.dim
+        ),
+    }
+
+    # check if spline is rational
+    if cross_section.is_rational or trajectory.is_rational:
+
+        def weights(spline):
+            if spline.is_rational:
+                return spline.weights
+            return _np.ones(spline.control_points.shape[0])
+
+        trajectory_weights = weights(trajectory)
+        cross_section_weights = weights(cross_section)
+        dict_swept_spline["weights"] = _np.outer(
+            trajectory_weights, cross_section_weights
+        ).reshape(-1, 1)
+        spline_type = _NURBS
+
+    else:
+        spline_type = _BSpline
+
+    # create swept spline
+    swept_spline = spline_type(**dict_swept_spline)
+
+    return swept_spline
+
+
 def from_bounds(parametric_bounds, physical_bounds):
     """Creates a minimal spline with given parametric bounds, physical bounds.
     Physical bounds can have less or equal number of

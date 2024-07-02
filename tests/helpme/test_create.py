@@ -343,3 +343,79 @@ def test_determinant_spline(
             det_spl.evaluate(queries=rnd_queries).ravel(),
             np.linalg.det(sp_i.jacobian(queries=rnd_queries)),
         ), f"{sp_i.whatami} at index {idx} failed determinant spline"
+
+
+def test_swept_basic_functionality():
+    cross_section = splinepy.BSpline(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    trajectory = splinepy.BSpline(
+        degrees=[3],
+        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    result = splinepy.helpme.create.swept(cross_section, trajectory)
+    assert result is not None
+    assert (
+        result.control_points.shape[0]
+        == cross_section.control_points.shape[0]
+        * trajectory.control_points.shape[0]
+    )
+
+
+def test_swept_with_custom_normal():
+    cross_section = splinepy.BSpline(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    trajectory = splinepy.BSpline(
+        degrees=[3],
+        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    custom_normal = np.array([0, 1, 0])
+    result = splinepy.helpme.create.swept(
+        cross_section, trajectory, cross_section_normal=custom_normal
+    )
+    assert result is not None
+
+
+def test_swept_invalid_inputs():
+    cross_section = splinepy.BSpline(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    invalid_trajectory = "invalid_trajectory"
+    with pytest.raises(NotImplementedError):
+        splinepy.helpme.create.swept(cross_section, invalid_trajectory)
+
+    invalid_cross_section = "invalid_cross_section"
+    trajectory = splinepy.BSpline(
+        degrees=[3],
+        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    with pytest.raises(NotImplementedError):
+        splinepy.helpme.create.swept(invalid_cross_section, trajectory)
+
+
+def test_swept_rational_splines():
+    cross_section = splinepy.NURBS(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        weights=[1, 0.5, 1],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    trajectory = splinepy.NURBS(
+        degrees=[3],
+        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
+        weights=[1, 0.5, 0.5, 1],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    result = splinepy.helpme.create.swept(cross_section, trajectory)
+    assert result is not None
+    assert result.is_rational
