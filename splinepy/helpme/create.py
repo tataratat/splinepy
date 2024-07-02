@@ -342,7 +342,8 @@ def swept(
         raise NotImplementedError("Sweep only works for splines")
     if not trajectory.para_dim == 1:
         raise NotImplementedError("Trajectory must be 1D")
-    if not len(cross_section_normal) == 3:
+
+    if cross_section_normal is not None and not len(cross_section_normal) == 3:
         raise ValueError("Cross section normal must be 3D")
     if not isinstance(auto_refinement, bool):
         raise ValueError("auto_refinement must be a boolean")
