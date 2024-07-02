@@ -374,6 +374,7 @@ def swept(
 
         # evaluating transformation matrices for each trajectory point
         for i in range(len(par_value)):
+            # calculation according to NURBS Book, eq. 10.27
             # tangent vector x on trajectory at parameter value i
             x = traj.derivative([par_value[i]], [1])
             x = (x / _np.linalg.norm(x)).ravel()
@@ -405,6 +406,7 @@ def swept(
             B_reverse[0] = B[-1]
             for i in range(len(par_value)):
                 # redo the calculation of B using x_collection from before
+                # according to NURBS Book, eq. 10.27
                 B_reverse[i + 1] = (
                     B_reverse[i]
                     - _np.dot(B_reverse[i], x_collection[i]) * x_collection[i]
