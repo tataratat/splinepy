@@ -440,7 +440,7 @@ def swept(
                 A.append(_np.linalg.inv(T[i]))
 
             # check if the beginning and the end of the B-vector are the same
-            if not _np.allclose(B_reverse[0], B_reverse[-1]):
+            if not _np.allclose(B_reverse[0], B_reverse[-1], rtol=1e-3):
                 _log.warning(
                     "Vector calculation is not exact due to the "
                     "trajectory being closed in an uncommon way."
@@ -500,19 +500,38 @@ def swept(
 
         # insert knots into the trajectory's knot vector
         insertion_values = _np.unique(insertion_values)
-        trajectory.uniform_refine_fixed_knots(0, len(insertion_values))
-        # add insertion values to the existing parameter values
-        par_value = _np.concatenate(
-            (par_value.reshape(-1), _np.asanyarray(insertion_values))
-        )
-        # sort parameter values
-        par_value = _np.sort(par_value)
+        # convert knot vector to list
+        kv_list = trajectory.knot_vectors[0].numpy()
+
+        # insert knots into the trajectory's knot vector
+        if any(value in insertion_values for value in kv_list):
+            add = _np.concatenate((insertion_values, kv_list))
+            add = _np.unique(add)
+            # remove the existing knots
+            add = add[~_np.isin(add, kv_list)]
+            # check if there are any knots to insert
+            if len(add) == 0:
+                _log.warning("Auto Refinement couldn't insert knots.")
+            else:
+                trajectory.insert_knots(0, add)
+                # give information about the inserted knots
+                _log.info(
+                    f"Auto Refinement inserted {len(add)} "
+                    "knots into the trajectory."
+                )
+        else:
+            trajectory.insert_knots(0, insertion_values)
+            # give information about the inserted knots
+            _log.info(
+                f"Auto Refinement inserted {len(insertion_values)} "
+                "knots into the trajectory."
+            )
+
+        # recalculate parameter values
+        par_value = trajectory.greville_abscissae()
         par_value = par_value.reshape(-1, 1)
 
     ### SWEEPING PROCESS ###
-
-    # evaluate trajectory at the parameter values
-    evals = trajectory.evaluate(par_value)
 
     # evaluate center of cross section and translate to origin
     cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
@@ -526,7 +545,7 @@ def swept(
 
     # set cross section control points along trajectory
     swept_spline_cps = []
-    for index, eval_point in enumerate(evals):
+    for index in range(len(par_value)):
         temp_csp = []
         # place every control point of cross section separately
         for cscp in cross_section.control_points:
@@ -535,7 +554,7 @@ def swept(
             # transform cross section to global coordinates
             normal_cscp = _np.matmul(A[index], normal_cscp)
             # translate cross section to trajectory point
-            normal_cscp += eval_point
+            normal_cscp += trajectory.control_points[index]
             # append control point to list
             temp_csp.append(normal_cscp)
 
