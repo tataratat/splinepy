@@ -308,6 +308,8 @@ def swept(
     receives rotation into the direction of the trajectory tangent
     vector and is then placed at the evaluation points of the
     trajectory's knots.
+    Fundamental ideas can be found in the NURBS Book, Piegl & Tiller,
+    2nd edition, chapter 10.4 Swept Surfaces.
 
     Parameters
     ----------
@@ -315,7 +317,7 @@ def swept(
       Cross-section to be swept
     trajectory : Spline
       Trajectory along which the cross-section is swept
-    cross_section_normal : np.ndarray
+    cross_section_normal : np.array
       Normal vector of the cross-section
       Default is [0, 0, 1]
 
@@ -344,6 +346,9 @@ def swept(
     cross_section = cross_section.create.embedded(3)
 
     def transformation_matrices(traj, par_value):
+
+        ### TRANSFORMATION MATRICES ###
+
         # tangent vector x on trajectory at parameter value 0
         x = traj.derivative([par_value[0]], [1])
         x = (x / _np.linalg.norm(x)).ravel()
@@ -358,17 +363,19 @@ def swept(
             vec = [x[2], -x[1], x[0]]
             B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
 
-        # initialize transformation matrices
+        # initialize transformation matrices and x-collection
         T = []
         A = []
+        x_collection = []
 
         # evaluating transformation matrices for each trajectory point
         for i in range(len(par_value)):
             # tangent vector x on trajectory at parameter value i
             x = traj.derivative([par_value[i]], [1])
             x = (x / _np.linalg.norm(x)).ravel()
+            x_collection.append(x)
 
-            # projecting B_(i-1) onto the plane normal to x
+            # projecting B_(i) onto the plane normal to x
             B.append(B[i] - _np.dot(B[i], x) * x)
             B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
 
@@ -382,7 +389,49 @@ def swept(
             # array of transformation matrices from local to global coordinates
             A.append(_np.linalg.inv(T[i]))
 
-        # rotation matrix around y
+        # own procedure, if trajectory is closed and B[0] != B[-1]
+        # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
+        if _np.array_equal(
+            traj.evaluate([[0]]), traj.evaluate([par_value[-1]])
+        ) and not _np.array_equal(B[0], B[-1]):
+            # reset transformation matrices
+            T = []
+            A = []
+            B_reverse = [None] * len(B)
+            B_reverse[0] = B[-1]
+            for i in range(len(par_value)):
+                # redo the calculation of B using x_collection from before
+                B_reverse[i + 1] = (
+                    B_reverse[i]
+                    - _np.dot(B_reverse[i], x_collection[i]) * x_collection[i]
+                )
+                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
+                    B_reverse[i + 1]
+                )
+                # middle point between B and B_reverse
+                B_reverse[i + 1] = (B[i + 1] + B_reverse[i + 1]) * 0.5
+                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
+                    B_reverse[i + 1]
+                )
+                # defining y and z axis-vectors
+                z = B_reverse[i + 1]
+                y = _np.cross(z, x_collection[i])
+
+                # array of transformation matrices from global to local coordinates
+                T.append(_np.vstack((x_collection[i], y, z)))
+
+                # array of transformation matrices from local to global coordinates
+                A.append(_np.linalg.inv(T[i]))
+
+            # check if the beginning and the end of the B-vector are the same
+            if not _np.allclose(B_reverse[0], B_reverse[-1]):
+                _log.warning(
+                    "Vector calculation is not exact due to the "
+                    "trajectory being closed in an uncommon way."
+                )
+
+        ### ROTATION MATRIX AROUND Y ###
+
         angle_of_cs_normal = _np.arctan2(
             cross_section_normal[2], cross_section_normal[0]
         )
@@ -394,7 +443,10 @@ def swept(
             ]
         )
         R = _np.where(_np.abs(R) < 1e-10, 0, R)
+
         return A, R
+
+    ### REFINEMENT OF TRAJECTORY ###
 
     par_value = trajectory.greville_abscissae()
     par_value = par_value.reshape(-1, 1)
@@ -439,6 +491,8 @@ def swept(
     # sort parameter values
     par_value = _np.sort(par_value)
     par_value = par_value.reshape(-1, 1)
+
+    ### SWEEPING PROCESS ###
 
     # evaluate trajectory at the parameter values
     evals = trajectory.evaluate(par_value)
