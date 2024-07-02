@@ -120,6 +120,7 @@ if __name__ == "__main__":
         trajectory=trajectory,
         cross_section=cross_section,
         cross_section_normal=cs_nv,
+        auto_refinement=True,
     )
 
     ### VISUALIZATION ###
