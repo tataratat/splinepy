@@ -336,6 +336,10 @@ def swept(
         raise NotImplementedError("Sweep only works for splines")
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweep only works for splines")
+    if not trajectory.para_dim == 1:
+        raise NotImplementedError("Trajectory must be 1D")
+    if not len(cross_section_normal) == 3:
+        raise ValueError("Cross section normal must be 3D")
 
     # setting default value for cross_section_normal
     if cross_section_normal is None:
@@ -459,7 +463,7 @@ def swept(
     # evaluate the par_values-vector indices of the maximum curvature points
     max_curv = max(curv)
     max_indices = [i for i, x in enumerate(curv) if x == max_curv]
-    # prepare two matrices for the insertion
+    # prepare matrix for the insertion
     insertion_values = []
     # compute the new insertion values
     par_values = par_value.ravel()
@@ -484,7 +488,7 @@ def swept(
     # insert knots into the trajectory's knot vector
     insertion_values = _np.unique(insertion_values)
     trajectory.uniform_refine_fixed_knots(0, len(insertion_values))
-    # insert knots into the parameter values
+    # add insertion values to the existing parameter values
     par_value = _np.concatenate(
         (par_value.reshape(-1), _np.asanyarray(insertion_values))
     )
@@ -551,6 +555,7 @@ def swept(
             trajectory_weights, cross_section_weights
         ).reshape(-1, 1)
         spline_type = _NURBS
+
     else:
         spline_type = _BSpline
 
