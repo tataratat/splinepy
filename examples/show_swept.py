@@ -25,63 +25,67 @@ if __name__ == "__main__":
     # }
 
     # 2D questionmark
-    # dict_trajectory = {
-    #     "degrees": [3],
-    #     "knot_vectors": [[0.0, 0.0, 0.0, 0.0, 0.2, 0.4,
-    #                   0.6, 0.8, 0.9, 1.0, 1.0, 1.0, 1.0]],
-    #     "control_points": np.array([
-    #             [0.5, 0],  # Startpunkt
-    #             [0.5, 2],
-    #             [1.0, 3],
-    #             [2.0, 4],
-    #             [2.15, 5],
-    #             [1.8, 5.9],
-    #             [1.0, 6.2],
-    #             [-0.25, 6],
-    #             [-0.5, 5],])
-    # }
-    # init trajectory as bspline
-
-    # closed 3D questionmark
     dict_trajectory = {
         "degrees": [3],
         "knot_vectors": [
-            [
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.1,
-                0.2,
-                0.3,
-                0.4,
-                0.5,
-                0.6,
-                0.8,
-                0.9,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-            ]
+            [0.0, 0.0, 0.0, 0.0, 0.2, 0.4, 0.6, 0.8, 0.9, 1.0, 1.0, 1.0, 1.0]
         ],
         "control_points": np.array(
             [
-                [0.5, 0, 0],
-                [0.5, 2, 0.3],
-                [1.0, 3, 0.1],
-                [2.0, 4, -0.1],
-                [2.15, 5, -0.2],
-                [1.8, 5.9, -0.4],
-                [1.0, 6.2, -0.3],
-                [-0.25, 6, -0.1],
-                [-0.5, 5.0, 0.1],
-                [-2.0, 4.0, 0.2],
-                [-1, 3.0, 0.1],
-                [0.5, 0.0, 0.0],
+                [0.5, 0],  # Startpunkt
+                [0.5, 2],
+                [1.0, 3],
+                [2.0, 4],
+                [2.15, 5],
+                [1.8, 5.9],
+                [1.0, 6.2],
+                [-0.25, 6],
+                [-0.5, 5],
             ]
         ),
     }
+    # init trajectory as bspline
+
+    # closed 3D questionmark
+    # dict_trajectory = {
+    #     "degrees": [3],
+    #     "knot_vectors": [
+    #         [
+    #             0.0,
+    #             0.0,
+    #             0.0,
+    #             0.0,
+    #             0.1,
+    #             0.2,
+    #             0.3,
+    #             0.4,
+    #             0.5,
+    #             0.6,
+    #             0.8,
+    #             0.9,
+    #             1.0,
+    #             1.0,
+    #             1.0,
+    #             1.0,
+    #         ]
+    #     ],
+    #     "control_points": np.array(
+    #         [
+    #             [0.5, 0, 0],
+    #             [0.5, 2, 0.3],
+    #             [1.0, 3, 0.1],
+    #             [2.0, 4, -0.1],
+    #             [2.15, 5, -0.2],
+    #             [1.8, 5.9, -0.4],
+    #             [1.0, 6.2, -0.3],
+    #             [-0.25, 6, -0.1],
+    #             [-0.5, 5.0, 0.1],
+    #             [-2.0, 4.0, 0.2],
+    #             [-1, 3.0, 0.1],
+    #             [0.5, 0.0, 0.0],
+    #         ]
+    #     ),
+    # }
     trajectory = splinepy.BSpline(**dict_trajectory)
 
     # alternatively, use helpme to create a trajectory
@@ -91,25 +95,25 @@ if __name__ == "__main__":
     trajectory.uniform_refine(0, 1)
 
     ### CROSS SECTION ###
-    dict_cross_section = {
-        "degrees": [3],
-        "knot_vectors": [[0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0]],
-        "control_points": np.array(
-            [
-                [0.0, 0.0, 0.0],
-                [1.0, 2.0, 0.0],
-                [2.0, 0.0, 0.0],
-                [3.0, -2.0, 0.0],
-                [4.0, 0.0, 0.0],
-            ]
-        ),
-    }
+    # dict_cross_section = {
+    #     "degrees": [3],
+    #     "knot_vectors": [[0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0]],
+    #     "control_points": np.array(
+    #         [
+    #             [0.0, 0.0, 0.0],
+    #             [1.0, 2.0, 0.0],
+    #             [2.0, 0.0, 0.0],
+    #             [3.0, -2.0, 0.0],
+    #             [4.0, 0.0, 0.0],
+    #         ]
+    #     ),
+    # }
 
-    # init cross section as bspline
-    cross_section = splinepy.BSpline(**dict_cross_section)
+    # # init cross section as bspline
+    # cross_section = splinepy.BSpline(**dict_cross_section)
 
     # alternatively, use helpme to create a cross section
-    # cross_section = splinepy.helpme.create.surface_circle(0.5).nurbs
+    cross_section = splinepy.helpme.create.surface_circle(0.5).nurbs
 
     # user can  define the normal vector of the cross section, in case
     # the cross section is not planar in the x-y plane (default)
