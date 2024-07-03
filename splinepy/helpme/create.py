@@ -366,6 +366,8 @@ def swept(
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
+        # add debug message
+        _log.debug("No cross section normal given. Defaulting to [0, 0, 1].")
 
     # make copies so we can work on it inplace
     trajectory = trajectory.create.embedded(3)
