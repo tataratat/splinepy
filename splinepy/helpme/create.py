@@ -375,115 +375,6 @@ def swept(
     par_value = trajectory.greville_abscissae()
     par_value = par_value.reshape(-1, 1)
 
-    def transformation_matrices(traj, par_value):
-
-        ### TRANSFORMATION MATRICES ###
-
-        # tangent vector 'e1' of trajectory at parameter value 0
-        e1 = traj.derivative([par_value[0]], [1])
-        e1 = (e1 / _np.linalg.norm(e1)).ravel()
-
-        # evaluating a vector normal to e1
-        vec = [-e1[1], e1[0], -e1[2]]
-        B = []
-        # avoid dividing by zero
-        if _np.linalg.norm(_np.cross(e1, vec)) > _settings.TOLERANCE:
-            B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
-        else:
-            vec = [e1[2], -e1[1], e1[0]]
-            B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
-
-        # initialize transformation matrices and e1-collection
-        T = []
-        A = []
-        tang_collection = []
-
-        # evaluating transformation matrices for each trajectory point
-        for i in range(len(par_value)):
-            # calculation according to NURBS Book, eq. 10.27
-            # tangent vector e1 on trajectory at parameter value i
-            e1 = traj.derivative([par_value[i]], [1])
-            e1 = (e1 / _np.linalg.norm(e1)).ravel()
-            # collecting tangent vectors for later use
-            tang_collection.append(e1)
-
-            # projecting B_(i) onto the plane normal to e1
-            B.append(B[i] - _np.dot(B[i], e1) * e1)
-            B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
-
-            # defining e2 and e3 vectors
-            e3 = B[i + 1]
-            e2 = _np.cross(e3, e1)
-
-            # array of transformation matrices from global to local coordinates
-            T.append(_np.vstack((e1, e2, e3)))
-
-            # array of transformation matrices from local to global coordinates
-            A.append(_np.linalg.inv(T[i]))
-
-        # separate procedure, if trajectory is closed and B[0] != B[-1]
-        # recalculate B-vector and middle the values between B and B_rec
-        # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
-        is_trajectory_closed = _np.array_equal(
-            traj.evaluate([[0]]), traj.evaluate([par_value[-1]])
-        )
-        is_B_start_equal_B_end = _np.array_equal(B[0], B[-1])
-
-        if is_trajectory_closed and not is_B_start_equal_B_end:
-            # reset transformation matrices
-            T = []
-            A = []
-            # preallocate B_rec
-            B_rec = [None] * len(B)
-            # make sure start of B_rec is equal to the end of B
-            B_rec[0] = B[-1]
-            # redo the calculation of B using tang_collection from before
-            # in order to avoid recalculating the tangent vectors;
-            # calculation according to NURBS Book, eq. 10.27
-            for i in range(len(par_value)):
-                B_rec[i + 1] = (
-                    B_rec[i]
-                    - _np.dot(B_rec[i], tang_collection[i])
-                    * tang_collection[i]
-                )
-                B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
-                # middle point between B and B_rec
-                B_rec[i + 1] = (B[i + 1] + B_rec[i + 1]) * 0.5
-                # normalizing B_rec
-                B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
-                # defining e2 and e3 axis-vectors
-                e3 = B_rec[i + 1]
-                e2 = _np.cross(e3, tang_collection[i])
-
-                # array of transformation matrices from global to local coordinates
-                T.append(_np.vstack((tang_collection[i], e2, e3)))
-
-                # array of transformation matrices from local to global coordinates
-                A.append(_np.linalg.inv(T[i]))
-
-            # check if the beginning and the end of the B-vector are the same
-            if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
-                _log.warning(
-                    "Vector calculation is not exact due to the "
-                    "trajectory being closed in an uncommon way."
-                )
-
-        ### ROTATION MATRIX AROUND e2 VECTOR ###
-
-        angle_of_cs_normal = _np.arctan2(
-            cross_section_normal[2], cross_section_normal[0]
-        )
-        R = _np.array(
-            [
-                [_np.cos(angle_of_cs_normal), 0, _np.sin(angle_of_cs_normal)],
-                [0, 1, 0],
-                [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
-            ]
-        )
-        R = _np.where(_np.abs(R) < _settings.TOLERANCE, 0, R)
-
-        return A, R
-
     ### REFINEMENT OF TRAJECTORY ###
 
     if auto_refinement:
@@ -553,6 +444,110 @@ def swept(
         par_value = trajectory.greville_abscissae()
         par_value = par_value.reshape(-1, 1)
 
+    ### TRANSFORMATION MATRICES ###
+
+    # tangent vector 'e1' of trajectory at parameter value 0
+    e1 = trajectory.derivative([par_value[0]], [1])
+    e1 = (e1 / _np.linalg.norm(e1)).ravel()
+
+    # evaluating a vector normal to e1
+    vec = [-e1[1], e1[0], -e1[2]]
+    B = []
+    # avoid dividing by zero
+    if _np.linalg.norm(_np.cross(e1, vec)) > _settings.TOLERANCE:
+        B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
+    else:
+        vec = [e1[2], -e1[1], e1[0]]
+        B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
+
+    # initialize transformation matrices and tangent-vector-collection
+    T = []
+    A = []
+    tang_collection = []
+
+    # evaluating transformation matrices for each trajectory point
+    for i in range(len(par_value)):
+        # calculation according to NURBS Book, eq. 10.27
+        # tangent vector e1 on trajectory at parameter value i
+        e1 = trajectory.derivative([par_value[i]], [1])
+        e1 = (e1 / _np.linalg.norm(e1)).ravel()
+        # collecting tangent vectors for later use
+        tang_collection.append(e1)
+
+        # projecting B_(i) onto the plane normal to e1
+        B.append(B[i] - _np.dot(B[i], e1) * e1)
+        B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
+
+        # defining e2 and e3 vectors
+        e3 = B[i + 1]
+        e2 = _np.cross(e3, e1)
+
+        # array of transformation matrices from global to local coordinates
+        T.append(_np.vstack((e1, e2, e3)))
+
+        # array of transformation matrices from local to global coordinates
+        A.append(_np.linalg.inv(T[i]))
+
+    # separate procedure, if trajectory is closed and B[0] != B[-1]
+    # recalculate B-vector and middle the values between B and B_rec
+    # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
+    is_trajectory_closed = _np.array_equal(
+        trajectory.evaluate([[0]]), trajectory.evaluate([par_value[-1]])
+    )
+    is_B_start_equal_B_end = _np.array_equal(B[0], B[-1])
+
+    if is_trajectory_closed and not is_B_start_equal_B_end:
+        # reset transformation matrices
+        T = []
+        A = []
+        # preallocate B_rec
+        B_rec = [None] * len(B)
+        # make sure start of B_rec is equal to the end of B
+        B_rec[0] = B[-1]
+        # redo the calculation of B using tang_collection from before
+        # in order to avoid recalculating the tangent vectors;
+        # calculation according to NURBS Book, eq. 10.27
+        for i in range(len(par_value)):
+            B_rec[i + 1] = (
+                B_rec[i]
+                - _np.dot(B_rec[i], tang_collection[i]) * tang_collection[i]
+            )
+            B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+            # middle point between B and B_rec
+            B_rec[i + 1] = (B[i + 1] + B_rec[i + 1]) * 0.5
+            # normalizing B_rec
+            B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+            # defining e2 and e3 axis-vectors
+            e3 = B_rec[i + 1]
+            e2 = _np.cross(e3, tang_collection[i])
+
+            # array of transformation matrices from global to local coordinates
+            T.append(_np.vstack((tang_collection[i], e2, e3)))
+
+            # array of transformation matrices from local to global coordinates
+            A.append(_np.linalg.inv(T[i]))
+
+        # check if the beginning and the end of the B-vector are the same
+        if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
+            _log.warning(
+                "Vector calculation is not exact due to the "
+                "trajectory being closed in an uncommon way."
+            )
+
+    ### ROTATION MATRIX AROUND e2 VECTOR ###
+
+    angle_of_cs_normal = _np.arctan2(
+        cross_section_normal[2], cross_section_normal[0]
+    )
+    R = _np.array(
+        [
+            [_np.cos(angle_of_cs_normal), 0, _np.sin(angle_of_cs_normal)],
+            [0, 1, 0],
+            [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
+        ]
+    )
+    R = _np.where(_np.abs(R) < _settings.TOLERANCE, 0, R)
+
     ### SWEEPING PROCESS ###
 
     # evaluate center of cross section and translate to origin
@@ -562,14 +557,11 @@ def swept(
     ).ravel()
     cross_section.control_points -= cs_center
 
-    # evaluate transformation matrices for every trajectory point
-    A, R = transformation_matrices(trajectory, par_value)
-
     # set cross section control points along trajectory
     swept_spline_cps = []
     for i, par_val in enumerate(par_value):
         temp_csp = []
-        # evaluate trajectory if user wants to set cross section on traj.
+        # evaluate trajectory if user wants to set cross section on trajectory.
         if set_on_trajectory:
             evals = trajectory.evaluate([par_val]).ravel()
         # place every control point of cross section separately
