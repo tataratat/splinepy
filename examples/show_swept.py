@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     # user can  define the normal vector of the cross section, in case
     # the cross section is not planar in the x-y plane (default)
-    cs_nv = np.array([0, 1, 1])
+    cs_nv = np.array([0, 0, 1])
 
     ### SWEEP ###
     swept_surface = splinepy.helpme.create.swept(
