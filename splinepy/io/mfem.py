@@ -86,13 +86,18 @@ def load(fname):
 
     # parse nurbs_dict
     # kvs
-    knot_vectors = nurbs_dict["knotvectors"][1:]
-    knot_vectors[0] = eval("[" + knot_vectors[0].replace(" ", ",") + "]")
-    knot_vectors[1] = eval("[" + knot_vectors[1].replace(" ", ",") + "]")
+    knot_vectors_sec = nurbs_dict["knotvectors"][1:]
+    knot_vectors = []
+    for kvs in knot_vectors_sec:
+        knot_vectors.append(eval("[" + kvs.replace(" ", ",") + "]"))
     # pop some values
     # ds
-    degrees = [knot_vectors[0].pop(0), knot_vectors[1].pop(0)]
-    ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
+    degrees = []
+    ncps = 1
+    for kv in knot_vectors:
+        degrees.append(kv.pop(0))
+        ncps *= kv.pop(0)
+
     # ws
     weights = nurbs_dict["weights"]
     weights = [eval(w) for w in weights]  # hopefully not too slow
@@ -107,7 +112,8 @@ def load(fname):
     if (
         ncps != len(control_points)
         or ncps != len(weights)
-        or int(nurbs_dict["knotvectors"][0]) != 2
+        or int(nurbs_dict["knotvectors"][0]) != len(degrees)
+        or len(degrees) != len(knot_vectors)
     ):
         raise ValueError("Inconsistent spline info in " + fname)
 
