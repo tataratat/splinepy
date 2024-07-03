@@ -31,7 +31,7 @@ _mfem_meaningful_keywords = {
 def load(fname):
     """Reads mfem spline and returns a spline.
 
-    Again, only supports 2D single patch.
+    Again, only supports 2D/3D single patch.
 
     Parameters
     -----------
