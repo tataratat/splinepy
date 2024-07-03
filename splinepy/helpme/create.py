@@ -308,9 +308,14 @@ def swept(
     """
     Sweeps a cross-section along a trajectory. The cross-section
     receives rotation into the direction of the trajectory tangent
-    vector and is then placed at the evaluation points of the
-    trajectory's knots.
-    Fundamental ideas can be found in the NURBS Book, Piegl & Tiller,
+    vector and is then placed either at the evaluation points of the
+    trajectory's knots or at the trajectory's control points. This
+    depends on the value of the set_on_trajectory parameter.
+
+    The sweeping process has some limitations, since the cross-section
+    cannot be preserved exactly along the whole trajectory.
+
+    The maths behind can be found in the NURBS Book, Piegl & Tiller,
     2nd edition, chapter 10.4 Swept Surfaces.
 
     Parameters
@@ -378,7 +383,7 @@ def swept(
         vec = [-x[1], x[0], -x[2]]
         B = []
         # avoid dividing by zero
-        if _np.linalg.norm(_np.cross(x, vec)) > 1e-10:
+        if _np.linalg.norm(_np.cross(x, vec)) > _settings.TOLERANCE:
             B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
         else:
             vec = [x[2], -x[1], x[0]]
@@ -465,7 +470,7 @@ def swept(
                 [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
             ]
         )
-        R = _np.where(_np.abs(R) < 1e-10, 0, R)
+        R = _np.where(_np.abs(R) < _settings.TOLERANCE, 0, R)
 
         return A, R
 
