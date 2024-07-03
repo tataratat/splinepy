@@ -135,15 +135,25 @@ def test_mfem_single_patch_export(to_tmpf, are_splines_equal, np_rng):
     """
     Test MFEM single patch export routine
     """
-    length = [1, 2, 3]
-    for dim in [2, 3]:
-        spline = splinepy.helpme.create.box(*length[:dim]).nurbs
+    # create 2d/3d splines of all supporting types
+    box = splinepy.helpme.create.box(1, 2)
+    boxes = []
+    boxes.extend([box, box.rationalbezier, box.bspline, box.nurbs])
+    boxes.extend([b.create.extruded([0, 0, 3]) for b in boxes[:4]])
+    for spline in boxes:
+        dim = spline.dim
 
         # make it a bit complex
         for i in range(dim):
+            if not spline.has_knot_vectors:
+                break
             spline.insert_knots(i, np_rng.random([5]))
+
         spline.elevate_degrees(list(range(dim)) * 2)
+
         for i in range(dim):
+            if not spline.has_knot_vectors:
+                break
             spline.insert_knots(i, np_rng.random([5]))
 
         # Test Output
@@ -153,4 +163,5 @@ def test_mfem_single_patch_export(to_tmpf, are_splines_equal, np_rng):
 
             loaded_spline = splinepy.io.mfem.load(tmpf)
 
-            are_splines_equal(spline, loaded_spline)
+            # all mfem export is nurbs
+            assert are_splines_equal(spline.nurbs, loaded_spline)
