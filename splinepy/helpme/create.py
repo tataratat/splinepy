@@ -352,12 +352,16 @@ def swept(
     if not isinstance(trajectory, _Spline):
         raise NotImplementedError("Sweep only works for splines")
     if not trajectory.para_dim == 1:
-        raise NotImplementedError("Trajectory must be 1D")
+        raise NotImplementedError(
+            "Trajectory must be of parametric dimension 1"
+        )
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
-        raise ValueError("Cross section normal must be 3D")
+        raise ValueError("Cross section normal must be a 3D vector")
     if not isinstance(auto_refinement, bool):
         raise ValueError("auto_refinement must be a boolean")
+    if not isinstance(set_on_trajectory, bool):
+        raise ValueError("set_on_trajectory must be a boolean")
 
     # setting default value for cross_section_normal
     if cross_section_normal is None:
@@ -375,90 +379,96 @@ def swept(
 
         ### TRANSFORMATION MATRICES ###
 
-        # tangent vector x on trajectory at parameter value 0
-        x = traj.derivative([par_value[0]], [1])
-        x = (x / _np.linalg.norm(x)).ravel()
+        # tangent vector 'e1' of trajectory at parameter value 0
+        e1 = traj.derivative([par_value[0]], [1])
+        e1 = (e1 / _np.linalg.norm(e1)).ravel()
 
-        # evaluating a vector normal to x
-        vec = [-x[1], x[0], -x[2]]
+        # evaluating a vector normal to e1
+        vec = [-e1[1], e1[0], -e1[2]]
         B = []
         # avoid dividing by zero
-        if _np.linalg.norm(_np.cross(x, vec)) > _settings.TOLERANCE:
-            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+        if _np.linalg.norm(_np.cross(e1, vec)) > _settings.TOLERANCE:
+            B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
         else:
-            vec = [x[2], -x[1], x[0]]
-            B.append(_np.cross(x, vec) / _np.linalg.norm(_np.cross(x, vec)))
+            vec = [e1[2], -e1[1], e1[0]]
+            B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
 
-        # initialize transformation matrices and x-collection
+        # initialize transformation matrices and e1-collection
         T = []
         A = []
-        x_collection = []
+        tang_collection = []
 
         # evaluating transformation matrices for each trajectory point
         for i in range(len(par_value)):
             # calculation according to NURBS Book, eq. 10.27
-            # tangent vector x on trajectory at parameter value i
-            x = traj.derivative([par_value[i]], [1])
-            x = (x / _np.linalg.norm(x)).ravel()
-            x_collection.append(x)
+            # tangent vector e1 on trajectory at parameter value i
+            e1 = traj.derivative([par_value[i]], [1])
+            e1 = (e1 / _np.linalg.norm(e1)).ravel()
+            # collecting tangent vectors for later use
+            tang_collection.append(e1)
 
-            # projecting B_(i) onto the plane normal to x
-            B.append(B[i] - _np.dot(B[i], x) * x)
+            # projecting B_(i) onto the plane normal to e1
+            B.append(B[i] - _np.dot(B[i], e1) * e1)
             B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
 
-            # defining y and z axis-vectors
-            z = B[i + 1]
-            y = _np.cross(z, x)
+            # defining e2 and e3 vectors
+            e3 = B[i + 1]
+            e2 = _np.cross(e3, e1)
 
             # array of transformation matrices from global to local coordinates
-            T.append(_np.vstack((x, y, z)))
+            T.append(_np.vstack((e1, e2, e3)))
 
             # array of transformation matrices from local to global coordinates
             A.append(_np.linalg.inv(T[i]))
 
-        # own procedure, if trajectory is closed and B[0] != B[-1]
+        # separate procedure, if trajectory is closed and B[0] != B[-1]
+        # recalculate B-vector and middle the values between B and B_rec
         # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
-        if _np.array_equal(
+        is_trajectory_closed = _np.array_equal(
             traj.evaluate([[0]]), traj.evaluate([par_value[-1]])
-        ) and not _np.array_equal(B[0], B[-1]):
+        )
+        is_B_start_equal_B_end = _np.array_equal(B[0], B[-1])
+
+        if is_trajectory_closed and not is_B_start_equal_B_end:
             # reset transformation matrices
             T = []
             A = []
-            B_reverse = [None] * len(B)
-            B_reverse[0] = B[-1]
+            # preallocate B_rec
+            B_rec = [None] * len(B)
+            # make sure start of B_rec is equal to the end of B
+            B_rec[0] = B[-1]
+            # redo the calculation of B using tang_collection from before
+            # in order to avoid recalculating the tangent vectors;
+            # calculation according to NURBS Book, eq. 10.27
             for i in range(len(par_value)):
-                # redo the calculation of B using x_collection from before
-                # according to NURBS Book, eq. 10.27
-                B_reverse[i + 1] = (
-                    B_reverse[i]
-                    - _np.dot(B_reverse[i], x_collection[i]) * x_collection[i]
+                B_rec[i + 1] = (
+                    B_rec[i]
+                    - _np.dot(B_rec[i], tang_collection[i])
+                    * tang_collection[i]
                 )
-                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
-                    B_reverse[i + 1]
-                )
-                # middle point between B and B_reverse
-                B_reverse[i + 1] = (B[i + 1] + B_reverse[i + 1]) * 0.5
-                B_reverse[i + 1] = B_reverse[i + 1] / _np.linalg.norm(
-                    B_reverse[i + 1]
-                )
-                # defining y and z axis-vectors
-                z = B_reverse[i + 1]
-                y = _np.cross(z, x_collection[i])
+                B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+                # middle point between B and B_rec
+                B_rec[i + 1] = (B[i + 1] + B_rec[i + 1]) * 0.5
+                # normalizing B_rec
+                B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+                # defining e2 and e3 axis-vectors
+                e3 = B_rec[i + 1]
+                e2 = _np.cross(e3, tang_collection[i])
 
                 # array of transformation matrices from global to local coordinates
-                T.append(_np.vstack((x_collection[i], y, z)))
+                T.append(_np.vstack((tang_collection[i], e2, e3)))
 
                 # array of transformation matrices from local to global coordinates
                 A.append(_np.linalg.inv(T[i]))
 
             # check if the beginning and the end of the B-vector are the same
-            if not _np.allclose(B_reverse[0], B_reverse[-1], rtol=1e-3):
+            if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
                 _log.warning(
                     "Vector calculation is not exact due to the "
                     "trajectory being closed in an uncommon way."
                 )
 
-        ### ROTATION MATRIX AROUND Y ###
+        ### ROTATION MATRIX AROUND e2 VECTOR ###
 
         angle_of_cs_normal = _np.arctan2(
             cross_section_normal[2], cross_section_normal[0]
@@ -559,6 +569,7 @@ def swept(
     swept_spline_cps = []
     for i, par_val in enumerate(par_value):
         temp_csp = []
+        # evaluate trajectory if user wants to set cross section on traj.
         if set_on_trajectory:
             evals = trajectory.evaluate([par_val]).ravel()
         # place every control point of cross section separately
@@ -567,8 +578,8 @@ def swept(
             normal_cscp = _np.matmul(R, cscp)
             # transform cross section to global coordinates
             normal_cscp = _np.matmul(A[i], normal_cscp)
-            # check whether user wants to place cross section
-            # at evaluation points or control points of trajectory
+            # check if user wants to place cross section at
+            # evaluation points or control points of trajectory
             if set_on_trajectory:
                 # translate cross section to trajectory evaluation point
                 normal_cscp += evals
@@ -593,7 +604,7 @@ def swept(
         ),
     }
 
-    # check if spline is rational
+    # add weights properly if spline is rational
     if cross_section.is_rational or trajectory.is_rational:
 
         def weights(spline):
@@ -607,7 +618,6 @@ def swept(
             trajectory_weights, cross_section_weights
         ).reshape(-1, 1)
         spline_type = _NURBS
-
     else:
         spline_type = _BSpline
 
