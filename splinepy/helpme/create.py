@@ -303,6 +303,7 @@ def swept(
     trajectory,
     cross_section_normal=None,
     auto_refinement=False,
+    set_on_trajectory=False,
 ):
     """
     Sweeps a cross-section along a trajectory. The cross-section
@@ -324,6 +325,11 @@ def swept(
     auto_refinement : bool
       If True, the trajectory will be refined at points of
       highest curvature. Default is False.
+    set_on_trajectory : bool
+      If True, the cross-section will be placed at the evaluation
+      points of the trajectory's knots. If False, the cross-section
+      will be placed at the control points of the trajectory.
+      Default is False.
 
     Returns
     -------
@@ -466,7 +472,7 @@ def swept(
     ### REFINEMENT OF TRAJECTORY ###
 
     if auto_refinement:
-        ## inserts knots in trajectory area with highest curvature #
+        ## inserts knots in trajectory area with highest curvature ##
 
         curv = []
         for i in par_value:
@@ -546,16 +552,24 @@ def swept(
 
     # set cross section control points along trajectory
     swept_spline_cps = []
-    for index in range(len(par_value)):
+    for i, par_val in enumerate(par_value):
         temp_csp = []
+        if set_on_trajectory:
+            evals = trajectory.evaluate([par_val]).ravel()
         # place every control point of cross section separately
         for cscp in cross_section.control_points:
             # rotate cross section in trajectory direction
             normal_cscp = _np.matmul(R, cscp)
             # transform cross section to global coordinates
-            normal_cscp = _np.matmul(A[index], normal_cscp)
-            # translate cross section to trajectory point
-            normal_cscp += trajectory.control_points[index]
+            normal_cscp = _np.matmul(A[i], normal_cscp)
+            # check whether user wants to place cross section
+            # at evaluation points or control points of trajectory
+            if set_on_trajectory:
+                # translate cross section to trajectory evaluation point
+                normal_cscp += evals
+            else:
+                # translate cross section to trajectory control point
+                normal_cscp += trajectory.control_points[i]
             # append control point to list
             temp_csp.append(normal_cscp)
 
