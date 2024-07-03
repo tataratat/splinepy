@@ -461,6 +461,10 @@ def swept(
     else:
         vec = [e1[2], -e1[1], e1[0]]
         B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
+        # add debug message
+        _log.debug(
+            "Division by zero occurred. Using alternative vector for B."
+        )
 
     # initialize transformation matrices and tangent-vector-collection
     T = []
