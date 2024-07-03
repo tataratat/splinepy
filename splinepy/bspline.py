@@ -179,63 +179,6 @@ class BSplineBase(_spline.Spline):
             )
             self.insert_knots(para_dim, new_knots)
 
-    def uniform_refine_fixed_knots(self, para_dims=None, total_knots=4):
-        """
-        Uniformly refines the knot vector in given direction(s) by adding a fixed
-        total number of knots, which are evenly distributed.
-
-        Parameters
-        ----------
-        para_dims : int or list
-            list of parametric dimensions to be refined (default None -> all)
-        total_knots : int
-            total number of new knots to be added
-
-        Returns
-        --------
-        None
-        """
-        # if no para_dim is given - assume that each dimension is refined
-        if para_dims is None:
-            para_dims = range(self.para_dim)
-
-        # if an integer is given, make it a list
-        elif isinstance(para_dims, int):
-            para_dims = [para_dims]
-
-        def determine_new_knots_fixed(kv_unique, total_knots):
-            if total_knots == 0:
-                return []
-            # Calculate the number of new knots to be added between each
-            # pair of existing knots
-            num_spans = len(kv_unique) - 1
-            new_knots_per_span = total_knots // num_spans
-            additional_knots = total_knots % num_spans
-
-            new_knots = []
-            for i in range(num_spans):
-                span = kv_unique[i + 1] - kv_unique[i]
-                num_knots_in_span = new_knots_per_span + (
-                    1 if i < additional_knots else 0
-                )
-                if num_knots_in_span > 0:
-                    new_knots_in_span = kv_unique[i] + span * _np.linspace(
-                        1 / (num_knots_in_span + 1),
-                        1 - 1 / (num_knots_in_span + 1),
-                        num_knots_in_span,
-                    )
-                    new_knots.extend(new_knots_in_span)
-            return _np.array(new_knots)
-
-        # determine new knots for each para_dim and insert the knots
-        for para_dim in para_dims:
-            new_knots = determine_new_knots_fixed(
-                # recompute unique to allow duplicating para_dims.
-                kv_unique=self.unique_knots[para_dim],
-                total_knots=total_knots,
-            )
-            self.insert_knots(para_dim, new_knots)
-
     def knot_insertion_matrix(
         self, parametric_dimension=None, knots=None, beziers=False
     ):
