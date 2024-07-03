@@ -623,23 +623,7 @@ def export(fname, nurbs, precision=10):
     else:
         raise ValueError("mfem output support 2D and 3D splines.")
 
-    # I am not sure if mixed order is allowed, but in case not, let's
-    # match orders
-    max_degree = max(nurbs.degrees)
-    for i, d in enumerate(nurbs.degrees):
-        d_diff = int(max_degree - d)
-        if d_diff > 0:
-            for _ in range(d_diff):
-                nurbs.elevate_degrees(i)
-
     cnr = nurbs.control_mesh_resolutions
-
-    # double-check
-    if not (nurbs.degrees == nurbs.degrees[0]).all():
-        raise RuntimeError(
-            "Something went wrong trying to match degrees of nurbs "
-            + "before export."
-        )
 
     # This is reusable
     def kv_sec(spline):
@@ -688,7 +672,7 @@ def export(fname, nurbs, precision=10):
 
     fe_space_sec = _form_lines(
         "FiniteElementSpace",
-        "FiniteElementCollection: NURBS" + str(nurbs.degrees[0]),
+        "FiniteElementCollection: NURBS",
         "VDim: " + str(nurbs.dim),
         "Ordering: 1",
         "",
