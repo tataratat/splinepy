@@ -129,3 +129,28 @@ def test_mfem_export(to_tmpf, are_stripped_lines_same):
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
             )
+
+
+def test_mfem_single_patch_export(to_tmpf, are_splines_equal, np_rng):
+    """
+    Test MFEM single patch export routine
+    """
+    length = [1, 2, 3]
+    for dim in [2, 3]:
+        spline = splinepy.helpme.create.box(*length[:dim]).nurbs
+
+        # make it a bit complex
+        for i in range(dim):
+            spline.insert_knots(i, np_rng.random([5]))
+        spline.elevate_degrees(list(range(dim)) * 2)
+        for i in range(dim):
+            spline.insert_knots(i, np_rng.random([5]))
+
+        # Test Output
+        with tempfile.TemporaryDirectory() as tmpd:
+            tmpf = to_tmpf(tmpd)
+            splinepy.io.mfem.export(tmpf, spline)
+
+            loaded_spline = splinepy.io.mfem.load(tmpf)
+
+            are_splines_equal(spline, loaded_spline)
