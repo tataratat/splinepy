@@ -304,6 +304,7 @@ def swept(
     cross_section_normal=None,
     auto_refinement=False,
     set_on_trajectory=False,
+    rotation_adaption=None,
 ):
     """
     Sweeps a cross-section along a trajectory. The cross-section
@@ -335,6 +336,18 @@ def swept(
       points of the trajectory's knots. If False, the cross-section
       will be placed at the control points of the trajectory.
       Default is False.
+    rotation_adaption : float
+        Angle in radians by which the cross-section is rotated around
+        the trajectory tangent vector. This is an additional rotation
+        if the user wants to adapt the cross-section rotation.
+        Example with rectangular crossection:
+                  x
+                x   x                                      x x x x x
+              x       x                                    x       x
+            x           x    --> rotation around pi/4 -->  x       x
+              x       x                                    x       x
+                x   x                                      x x x x x
+                  x
 
     Returns
     -------
@@ -540,18 +553,28 @@ def swept(
                 "trajectory being closed in an uncommon way."
             )
 
-    ### ROTATION MATRIX AROUND e2 VECTOR ###
+    ### ROTATION MATRIX ###
 
+    # calculate angle of cross section normal vector around e2-axis
     angle_of_cs_normal = _np.arctan2(
         cross_section_normal[2], cross_section_normal[0]
     )
-    R = _np.array(
-        [
-            [_np.cos(angle_of_cs_normal), 0, _np.sin(angle_of_cs_normal)],
-            [0, 1, 0],
-            [_np.sin(angle_of_cs_normal), 0, _np.cos(angle_of_cs_normal)],
-        ]
+
+    # calculate rotation matrix for cross section normal vector
+    R = _arr.rotation_matrix_around_axis(
+        axis=[0, 1, 0], rotation=angle_of_cs_normal, degree=False
     )
+
+    # rotate cross section around trajectory tangent vector if wanted
+    if rotation_adaption is not None:
+        R = _np.matmul(
+            _arr.rotation_matrix_around_axis(
+                axis=[1, 0, 0], rotation=rotation_adaption, degree=False
+            ),
+            R,
+        )
+
+    # remove numerical noise
     R = _np.where(_np.abs(R) < _settings.TOLERANCE, 0, R)
 
     ### SWEEPING PROCESS ###
