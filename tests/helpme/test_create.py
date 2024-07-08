@@ -380,7 +380,11 @@ def test_swept_with_custom_normal():
     result = splinepy.helpme.create.swept(
         cross_section, trajectory, cross_section_normal=custom_normal
     )
-    assert result is not None
+    trajectory = splinepy.helpme.create.embedded(trajectory, 3)
+    swept_derivative = result.derivative([[0.5, 0]], [0, 1])
+    traj_derivative = trajectory.derivative([[0]], [1])
+
+    assert np.allclose(swept_derivative, traj_derivative)
 
 
 def test_swept_invalid_inputs():
