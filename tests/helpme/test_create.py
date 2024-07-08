@@ -419,3 +419,24 @@ def test_swept_rational_splines():
     result = splinepy.helpme.create.swept(cross_section, trajectory)
     assert result is not None
     assert result.is_rational
+
+
+def test_swept_to_extruded():
+    cross_section = splinepy.NURBS(
+        degrees=[2],
+        control_points=[[-0.5, -1 / 3], [0, 2 / 3], [0.5, -1 / 3]],
+        weights=[1, 0.5, 1],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    trajectory = splinepy.NURBS(
+        degrees=[1],
+        control_points=[[0, 0, 0], [0, 0, 3]],
+        weights=[1, 1],
+        knot_vectors=[[0, 0, 1, 1]],
+    )
+
+    result = splinepy.helpme.create.swept(
+        cross_section, trajectory, rotation_adaption=np.pi / 2
+    )
+    extruded_result = splinepy.helpme.create.extruded(cross_section, [0, 0, 3])
+    assert np.allclose(result.control_points, extruded_result.control_points)
