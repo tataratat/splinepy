@@ -339,13 +339,13 @@ def swept(
       the trajectory tangent vector. This is an additional rotation
       if the user wants to adapt the cross-section rotation.
       Example with rectangular crossection:
-            x
-          x   x                                      x x x x x
-        x       x                                    x       x
-      x           x    --> rotation around pi/4 -->  x       x
-        x       x                                    x       x
-          x   x                                      x x x x x
-            x
+      .         x
+      .       x   x                                      x x x x x
+      .     x       x                                    x       x
+      .   x           x    --> rotation around pi/4 -->  x       x
+      .     x       x                                    x       x
+      .       x   x                                      x x x x x
+      .         x
 
     Returns
     -------
