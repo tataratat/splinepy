@@ -310,7 +310,9 @@ def swept(
     receives rotation into the direction of the trajectory tangent
     vector and is then placed either at the evaluation points of the
     trajectory's knots or at the trajectory's control points. This
-    depends on the value of the set_on_trajectory parameter.
+    depends on the value of the set_on_trajectory parameter. It can
+    create both a surface or a solid, depending on the dimension of
+    the cross-section.
 
     The sweeping process has some limitations, since the cross-section
     cannot be preserved exactly along the whole trajectory.
