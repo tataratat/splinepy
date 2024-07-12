@@ -15,7 +15,7 @@ if __name__ == "__main__":
         ],
         "control_points": np.array(
             [
-                [0.5, 0],  # Startpunkt
+                [0.5, 0], 
                 [0.5, 2],
                 [1.0, 3],
                 [2.0, 4],
