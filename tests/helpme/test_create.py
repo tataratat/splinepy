@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from gustaf.utils import arr
 
 import splinepy
 
@@ -346,86 +347,61 @@ def test_determinant_spline(
 
 
 def test_swept_basic_functionality():
-    cross_section = splinepy.BSpline(
-        degrees=[2],
-        control_points=[[0, 0], [0.5, 1], [1, 0]],
-        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    cross_section = splinepy.NURBS(
+        degrees=[2, 1],
+        knot_vectors=[
+            [0, 0, 0, 1, 1, 1],
+            [0, 0, 1, 1],
+        ],
+        control_points=[
+            [-1.0, 0.0],
+            [-1.0, 1.0],
+            [0.0, 1.0],
+            [-2.0, 0.0],
+            [-2.0, 2.0],
+            [0.0, 2.0],
+        ],
+        weights=[
+            [1.0],
+            [2**-0.5],
+            [1.0],
+            [1.0],
+            [2**-0.5],
+            [1.0],
+        ],
     )
     trajectory = splinepy.BSpline(
         degrees=[3],
         control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
         knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
     )
+
+    # create result --> 3D body should be created
     result = splinepy.helpme.create.swept(cross_section, trajectory)
+
+    # test result's type
     assert result is not None
+    assert result.is_rational
+
+    # test invalid input
+    invalid_trajectory = "invalid_trajectory"
+    with pytest.raises(TypeError):
+        splinepy.helpme.create.swept(cross_section, invalid_trajectory)
+
+    # test result's shape
     assert (
         result.control_points.shape[0]
         == cross_section.control_points.shape[0]
         * trajectory.control_points.shape[0]
     )
 
-
-def test_swept_with_custom_normal():
-    cross_section = splinepy.BSpline(
-        degrees=[2],
-        control_points=[[0, 0], [0.5, 1], [1, 0]],
-        knot_vectors=[[0, 0, 0, 1, 1, 1]],
-    )
-    trajectory = splinepy.BSpline(
-        degrees=[3],
-        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
-        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
-    )
-    custom_normal = np.array([0, 1, 0])
-    result = splinepy.helpme.create.swept(
-        cross_section, trajectory, cross_section_normal=custom_normal
-    )
-    trajectory = splinepy.helpme.create.embedded(trajectory, 3)
-    swept_derivative = result.derivative([[0.5, 0]], [0, 1])
-    traj_derivative = trajectory.derivative([[0]], [1])
-
-    assert np.allclose(swept_derivative, traj_derivative)
-
-
-def test_swept_invalid_inputs():
-    cross_section = splinepy.BSpline(
-        degrees=[2],
-        control_points=[[0, 0], [0.5, 1], [1, 0]],
-        knot_vectors=[[0, 0, 0, 1, 1, 1]],
-    )
-    invalid_trajectory = "invalid_trajectory"
-    with pytest.raises(NotImplementedError):
-        splinepy.helpme.create.swept(cross_section, invalid_trajectory)
-
-    invalid_cross_section = "invalid_cross_section"
-    trajectory = splinepy.BSpline(
-        degrees=[3],
-        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
-        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
-    )
-    with pytest.raises(NotImplementedError):
-        splinepy.helpme.create.swept(invalid_cross_section, trajectory)
-
-
-def test_swept_rational_splines():
-    cross_section = splinepy.NURBS(
-        degrees=[2],
-        control_points=[[0, 0], [0.5, 1], [1, 0]],
-        weights=[1, 0.5, 1],
-        knot_vectors=[[0, 0, 0, 1, 1, 1]],
-    )
-    trajectory = splinepy.NURBS(
-        degrees=[3],
-        control_points=[[0, 0], [1, 2], [2, 3], [3, 3]],
-        weights=[1, 0.5, 0.5, 1],
-        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
-    )
-    result = splinepy.helpme.create.swept(cross_section, trajectory)
-    assert result is not None
-    assert result.is_rational
+    # test if result is 3D
+    assert result.dim == 3
 
 
 def test_swept_to_extruded():
+    # create linear swept surface and compare it to extruded surface
+
     cross_section = splinepy.NURBS(
         degrees=[2],
         control_points=[[-0.5, -1 / 3], [0, 2 / 3], [0.5, -1 / 3]],
@@ -444,3 +420,119 @@ def test_swept_to_extruded():
     )
     extruded_result = splinepy.helpme.create.extruded(cross_section, [0, 0, 3])
     assert np.allclose(result.control_points, extruded_result.control_points)
+
+
+def test_swept_control_point_placing(np_rng):
+    # check if cross-section's control points are always placed in the correct angle
+
+    cross_section = splinepy.BSpline(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+
+    trajectory = splinepy.BSpline(
+        degrees=[3],
+        control_points=[[0, 0, 0], [1, 0, 1], [0, 0, 2], [0, 0, 3]],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    result = splinepy.helpme.create.swept(cross_section, trajectory)
+
+    def calculate_cs_normal_vector(cs_cp, res_cp, rand):
+
+        # take the control points of the chosen cross-section
+        taken_cs_cp = res_cp[
+            rand * len(cs_cp) : rand * len(cs_cp) + len(cs_cp)
+        ]
+        P1 = taken_cs_cp[0]
+        P2 = taken_cs_cp[1]
+        P3 = taken_cs_cp[2]
+
+        # calculate normal vector of cross-section
+        v1 = P2 - P1
+        v2 = P3 - P1
+        return np.cross(v1, v2)
+
+    cs_cp = cross_section.control_points
+    res_cp = result.control_points
+
+    # choose id of cross-section to take from result
+    rand = np_rng.integers(0, len(res_cp) / len(cs_cp), 1)[0]
+
+    normal_vector = calculate_cs_normal_vector(cs_cp, res_cp, rand)
+
+    # evaluate trajectory parameter value at the position of the cross-section
+    rand_traj_pos = trajectory.greville_abscissae()[rand]
+    # calculate tangent vector of trajectory at the position of the cross-section
+    rand_traj_tangent = trajectory.derivative([rand_traj_pos], 1).ravel()
+
+    # check if normal vector is parallel to tangent vector
+    # --> then transformation of cross-section is correct
+    assert np.allclose(np.cross(rand_traj_tangent, normal_vector).all(), 0)
+
+    ## TEST ALSO WITH CUSTOM NORMAL VECTOR ##
+
+    # make sure that the angle between trajectory's tangent and cross-section's
+    # normal vector is always the same
+    custom_normal = np.array([1, 0, 1])
+
+    angle_of_custom_cs_normal = np.arctan2(custom_normal[2], custom_normal[0])
+    # calculate rotation matrix for cross-section normal vector
+    R = arr.rotation_matrix_around_axis(
+        axis=[0, 1, 0], rotation=angle_of_custom_cs_normal, degree=False
+    )
+    # in sweeping, the cross-section is rotated, we mimic this here
+    test_normal = np.matmul(R, custom_normal)
+
+    start_traj_tang = trajectory.derivative([[0]], 1).ravel()
+    angle_at_start = np.arccos(
+        np.dot(start_traj_tang, test_normal)
+        / (np.linalg.norm(start_traj_tang) * np.linalg.norm(test_normal))
+    )
+
+    result_with_cus_normal = splinepy.helpme.create.swept(
+        cross_section, trajectory, cross_section_normal=custom_normal
+    )
+
+    result_with_cus_normal_cps = result_with_cus_normal.control_points
+    normal_vector_custom_version = (
+        calculate_cs_normal_vector(cs_cp, result_with_cus_normal_cps, rand)
+        * -1
+    )
+
+    angle_at_rand = np.arccos(
+        np.dot(rand_traj_tangent, normal_vector_custom_version)
+        / (
+            np.linalg.norm(rand_traj_tangent)
+            * np.linalg.norm(normal_vector_custom_version)
+        )
+    )
+
+    assert np.allclose(angle_at_start, angle_at_rand)
+
+
+def test_swept_cs_centering(np_rng):
+    # check if cross-section's center lays on the trajectory
+
+    cross_section = splinepy.BSpline(
+        degrees=[2],
+        control_points=[[0, 0], [0.5, 1], [1, 0]],
+        knot_vectors=[[0, 0, 0, 1, 1, 1]],
+    )
+    trajectory = splinepy.BSpline(
+        degrees=[3],
+        control_points=[[0, 0, 0], [1, 2, 0], [2, 3, 0], [3, 3, 0]],
+        knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
+    )
+    result = splinepy.helpme.create.swept(cross_section, trajectory)
+
+    # choose random parameter value of trajectory
+    r_par_val = np_rng.random(1)
+    # evaluate swept spline at the chosen position of the trajectory
+    # --> cross-section parameter value 0.5 ensures that the center of the
+    # cross-section is evaluated
+    coords = result.evaluate([[0.5, r_par_val[0]]]).ravel()
+    # evaluate trajectory at the chosen position of the trajectory
+    ref_coords = trajectory.evaluate([r_par_val]).ravel()
+
+    assert np.allclose(coords, ref_coords)
