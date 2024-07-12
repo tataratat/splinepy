@@ -335,17 +335,17 @@ def swept(
       will be placed at the control points of the trajectory.
       Default is False.
     rotation_adaption : float
-        Angle in radians by which the cross-section is rotated around
-        the trajectory tangent vector. This is an additional rotation
-        if the user wants to adapt the cross-section rotation.
-        Example with rectangular crossection:
-                  x
-                x   x                                      x x x x x
-              x       x                                    x       x
-            x           x    --> rotation around pi/4 -->  x       x
-              x       x                                    x       x
-                x   x                                      x x x x x
-                  x
+      Angle in radians by which the cross-section is rotated around
+      the trajectory tangent vector. This is an additional rotation
+      if the user wants to adapt the cross-section rotation.
+      Example with rectangular crossection:
+            x
+          x   x                                      x x x x x
+        x       x                                    x       x
+      x           x    --> rotation around pi/4 -->  x       x
+        x       x                                    x       x
+          x   x                                      x x x x x
+            x
 
     Returns
     -------
