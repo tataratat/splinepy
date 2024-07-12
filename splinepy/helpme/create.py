@@ -355,26 +355,29 @@ def swept(
     from splinepy import BSpline as _BSpline
     from splinepy.spline import Spline as _Spline
 
-    # check input type
+    ### INPUT CHECKS ###
+
     if not isinstance(cross_section, _Spline):
-        raise NotImplementedError("Sweep only works for splines")
+        raise TypeError("Sweep only works for splines")
     if not isinstance(trajectory, _Spline):
-        raise NotImplementedError("Sweep only works for splines")
+        raise TypeError("Sweep only works for splines")
     if not trajectory.para_dim == 1:
-        raise NotImplementedError(
-            "Trajectory must be of parametric dimension 1"
-        )
+        raise TypeError("Trajectory must be of parametric dimension 1")
+    if not isinstance(set_on_trajectory, bool):
+        raise TypeError("set_on_trajectory must be a boolean")
+    if not isinstance(rotation_adaption, (float, int, type(None))):
+        raise TypeError("rotation_adaption must be a float or int")
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
         raise ValueError("Cross section normal must be a 3D vector")
-    if not isinstance(set_on_trajectory, bool):
-        raise ValueError("set_on_trajectory must be a boolean")
 
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
         # add debug message
         _log.debug("No cross section normal given. Defaulting to [0, 0, 1].")
+
+    ### STARTING CALCULATIONS ###
 
     # make copies so we can work on it inplace
     trajectory = trajectory.create.embedded(3)
