@@ -3,6 +3,8 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
+from ast import literal_eval
+
 import gustaf as _gus
 import numpy as _np
 
@@ -31,7 +33,7 @@ _mfem_meaningful_keywords = {
 def load(fname):
     """Reads mfem spline and returns a spline.
 
-    Again, only supports 2D single patch.
+    Supports 2D/3D single patch.
 
     Parameters
     -----------
@@ -86,20 +88,27 @@ def load(fname):
 
     # parse nurbs_dict
     # kvs
-    knot_vectors = nurbs_dict["knotvectors"][1:]
-    knot_vectors[0] = eval("[" + knot_vectors[0].replace(" ", ",") + "]")
-    knot_vectors[1] = eval("[" + knot_vectors[1].replace(" ", ",") + "]")
-    # pop some values
-    # ds
-    degrees = [knot_vectors[0].pop(0), knot_vectors[1].pop(0)]
-    ncps = knot_vectors[0].pop(0) * knot_vectors[1].pop(0)
+    knot_vectors_sec = nurbs_dict["knotvectors"][1:]
+    knot_vectors = []
+    for kvs in knot_vectors_sec:
+        knot_vectors.append(literal_eval("[" + kvs.replace(" ", ",") + "]"))
+
+    # parse degrees and get number of control points for consistency checks
+    degrees = []
+    ncps = 1
+    for kv in knot_vectors:
+        # first value in kv is degrees
+        degrees.append(kv.pop(0))
+        # second value is number of control points
+        ncps *= kv.pop(0)
+
     # ws
     weights = nurbs_dict["weights"]
-    weights = [eval(w) for w in weights]  # hopefully not too slow
+    weights = [literal_eval(w) for w in weights]  # hopefully not too slow
     # cps
     control_points = nurbs_dict["Ordering"]
     control_points = [
-        eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
+        literal_eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
     ]
 
     # double check
@@ -107,9 +116,17 @@ def load(fname):
     if (
         ncps != len(control_points)
         or ncps != len(weights)
-        or int(nurbs_dict["knotvectors"][0]) != 2
+        or int(nurbs_dict["knotvectors"][0]) != len(degrees)
+        or len(degrees) != len(knot_vectors)
     ):
-        raise ValueError("Inconsistent spline info in " + fname)
+        raise ValueError(
+            f"Inconsistent spline info in {fname}: "
+            f"ncps = {ncps}, "
+            f"len(control_points) = {len(control_points)}, "
+            f"len(weights) = {len(weights)}, "
+            f"len(degrees) = {len(degrees)}, "
+            f"len(knot_vectors) = {len(knot_vectors)}"
+        )
 
     mfem_dict_spline = {
         "degrees": degrees,
@@ -152,7 +169,7 @@ def read_solution(
         collect = False
         while line is not None:
             if collect:  # check this first. should be true most time
-                solution.append(eval(f"[{line.replace(' ', ',')}]"))
+                solution.append(literal_eval(f"[{line.replace(' ', ',')}]"))
             elif hotkey in line:
                 collect = True
 
@@ -579,51 +596,68 @@ def export(fname, nurbs, precision=10):
             "4",
             "",
         )
-
-        # I am not sure if mixed order is allowed, but in case not, let's
-        # match orders
-        max_degree = max(nurbs.degrees)
-        for i, d in enumerate(nurbs.degrees):
-            d_diff = int(max_degree - d)
-            if d_diff > 0:
-                for _ in range(d_diff):
-                    nurbs.elevate_degrees(i)
-
-        cnr = nurbs.control_mesh_resolutions
-
-        # double-check
-        if not (nurbs.degrees == nurbs.degrees[0]).all():
-            raise RuntimeError(
-                "Something went wrong trying to match degrees of nurbs "
-                + "before export."
-            )
-
-        # This is reusable
-        def kv_sec(spline):
-            kvs = _form_lines(
-                "knotvectors",
-                str(len(spline.knot_vectors)),
-            )
-            kvs2 = ""
-            for i in range(spline.para_dim):
-                kvs2 += _form_lines(
-                    str(spline.degrees[i])
-                    + " "
-                    + str(cnr[i])
-                    + " "
-                    + str(list(spline.knot_vectors[i]))[1:-1].replace(",", "")
-                )
-
-            kvs = kvs + kvs2
-
-            kvs += "\n"  # missing empty line
-
-            return kvs
-
-        knotvectors_sec = kv_sec(nurbs)
-
+    elif nurbs.para_dim == 3:
+        elements_sec = _form_lines("elements", "1", "1 5 0 1 2 3 4 5 6 7", "")
+        boundary_sec = _form_lines(
+            "boundary",
+            "6",
+            "1 3 3 2 1 0",
+            "2 3 4 5 6 7",
+            "3 3 0 1 5 4",
+            "4 3 1 2 6 5",
+            "5 3 2 3 7 6",
+            "6 3 3 0 4 7",
+            "",
+        )
+        edges_sec = _form_lines(
+            "edges",
+            "12",
+            "0 0 1",
+            "0 3 2",
+            "0 4 5",
+            "0 7 6",
+            "1 0 3",
+            "1 1 2",
+            "1 4 7",
+            "1 5 6",
+            "2 0 4",
+            "2 1 5",
+            "2 2 6",
+            "2 3 7",
+            "",
+        )
+        vertices_sec = _form_lines(
+            "vertices",
+            "8",
+            "",
+        )
     else:
-        raise NotImplementedError
+        raise ValueError("mfem output support 2D and 3D splines.")
+
+    cnr = nurbs.control_mesh_resolutions
+
+    # This is reusable
+    def kv_sec(spline):
+        kvs = _form_lines(
+            "knotvectors",
+            str(len(spline.knot_vectors)),
+        )
+        kvs2 = ""
+        for i in range(spline.para_dim):
+            kvs2 += _form_lines(
+                str(spline.degrees[i])
+                + " "
+                + str(cnr[i])
+                + " "
+                + str(list(spline.knot_vectors[i]))[1:-1].replace(",", "")
+            )
+
+        kvs = kvs + kvs2
+
+        kvs += "\n"  # missing empty line
+        return kvs
+
+    knotvectors_sec = kv_sec(nurbs)
 
     # disregard inverse
     reorder_ids, _ = dof_mapping(nurbs)
@@ -649,7 +683,7 @@ def export(fname, nurbs, precision=10):
 
     fe_space_sec = _form_lines(
         "FiniteElementSpace",
-        "FiniteElementCollection: NURBS" + str(nurbs.degrees[0]),
+        "FiniteElementCollection: NURBS",
         "VDim: " + str(nurbs.dim),
         "Ordering: 1",
         "",
