@@ -64,8 +64,7 @@ class FFD(_SplinepyBase):
         self._q_offset = None
 
         # use setters for attr
-        if padding is None:
-            self.padding = _settings.TOLERANCE
+        self.padding = _settings.TOLERANCE if padding is None else padding
         if mesh is not None:
             self.mesh = mesh
         if spline is not None:
