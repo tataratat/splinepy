@@ -33,7 +33,7 @@ _mfem_meaningful_keywords = {
 def load(fname):
     """Reads mfem spline and returns a spline.
 
-    Again, only supports 2D/3D single patch.
+    Supports 2D/3D single patch.
 
     Parameters
     -----------
@@ -92,12 +92,14 @@ def load(fname):
     knot_vectors = []
     for kvs in knot_vectors_sec:
         knot_vectors.append(literal_eval("[" + kvs.replace(" ", ",") + "]"))
-    # pop some values
-    # ds
+
+    # parse degrees and get number of control points for consistency checks
     degrees = []
     ncps = 1
     for kv in knot_vectors:
+        # first value in kv is degrees
         degrees.append(kv.pop(0))
+        # second value is number of control points
         ncps *= kv.pop(0)
 
     # ws
@@ -117,7 +119,14 @@ def load(fname):
         or int(nurbs_dict["knotvectors"][0]) != len(degrees)
         or len(degrees) != len(knot_vectors)
     ):
-        raise ValueError("Inconsistent spline info in " + fname)
+        raise ValueError(
+            f"Inconsistent spline info in {fname}: "
+            f"ncps = {ncps}, "
+            f"len(control_points) = {len(control_points)}, "
+            f"len(weights) = {len(weights)}, "
+            f"len(degrees) = {len(degrees)}, "
+            f"len(knot_vectors) = {len(knot_vectors)}"
+        )
 
     mfem_dict_spline = {
         "degrees": degrees,
