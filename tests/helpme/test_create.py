@@ -174,7 +174,7 @@ def test_create_parametric_view(splinetype, request):
 
         if conform:
             # same spline type
-            assert type(p_spl) == type(spline)
+            assert type(p_spl) is type(spline)
 
             # same degrees
             assert np.allclose(p_spl.ds, spline.ds)
