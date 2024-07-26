@@ -29,7 +29,6 @@ spp.io.svg.export("spline_curve_3.svg", rational_spline_curve)
 circle = spp.helpme.create.surface_circle(1)
 spp.io.svg.export("spline_circle_1.svg", circle)
 
-#
 circle = circle.nurbs
 circle.insert_knots(0, [0.333, 0.666])
 circle.insert_knots(1, [0.333, 0.666])

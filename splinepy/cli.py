@@ -69,7 +69,7 @@ def entry():
 
     Try out `splinpy -h` for more information.
     """
-    print("")
+    print()
     print(
         "                    %%\\ %%\\                                         "
     )
@@ -104,7 +104,7 @@ def entry():
     print(
         "          \\__|                                  \\__|       \\______/"
     )
-    print("")
+    print()
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help="sub-command help", dest="command")
     parser.add_argument(
