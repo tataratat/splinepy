@@ -3,6 +3,8 @@
 Currently hardcoded for 2D-single-patch-splines.
 """
 
+from ast import literal_eval
+
 import gustaf as _gus
 import numpy as _np
 
@@ -89,7 +91,7 @@ def load(fname):
     knot_vectors_sec = nurbs_dict["knotvectors"][1:]
     knot_vectors = []
     for kvs in knot_vectors_sec:
-        knot_vectors.append(eval("[" + kvs.replace(" ", ",") + "]"))
+        knot_vectors.append(literal_eval("[" + kvs.replace(" ", ",") + "]"))
     # pop some values
     # ds
     degrees = []
@@ -100,11 +102,11 @@ def load(fname):
 
     # ws
     weights = nurbs_dict["weights"]
-    weights = [eval(w) for w in weights]  # hopefully not too slow
+    weights = [literal_eval(w) for w in weights]  # hopefully not too slow
     # cps
     control_points = nurbs_dict["Ordering"]
     control_points = [
-        eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
+        literal_eval(f"[{cp.replace(' ', ',')}]") for cp in control_points
     ]
 
     # double check
@@ -158,7 +160,7 @@ def read_solution(
         collect = False
         while line is not None:
             if collect:  # check this first. should be true most time
-                solution.append(eval(f"[{line.replace(' ', ',')}]"))
+                solution.append(literal_eval(f"[{line.replace(' ', ',')}]"))
             elif hotkey in line:
                 collect = True
 
