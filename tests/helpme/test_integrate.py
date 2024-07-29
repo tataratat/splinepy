@@ -193,7 +193,7 @@ def test_function_integration(np_rng):
 
 
 def test_physical_function_integration(np_rng):
-    # Integrate y*(5-y) over [0,1]x[0,5] rectangle
+    # Analytical integral of y*(5-y) over [0,1]x[0,5] rectangle
     integral_analytical = 125 / 6
 
     def parabolic_function(points):
@@ -214,7 +214,7 @@ def test_physical_function_integration(np_rng):
         control_points=control_points,
     )
 
-    # Insert random knots
+    # Insert random knots along both parametric dimensions
     rectangle.insert_knots(0, np_rng.random(2))
     rectangle.insert_knots(1, np_rng.random(2))
 

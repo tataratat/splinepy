@@ -307,3 +307,7 @@ class Integrator:
     @_wraps(parametric_function)
     def parametric_function(self, *args, **kwargs):
         return parametric_function(self._helpee, *args, **kwargs)
+
+    @_wraps(physical_function)
+    def physical_function(self, *args, **kwargs):
+        return physical_function(self._helpee, *args, **kwargs)
