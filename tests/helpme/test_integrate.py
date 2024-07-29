@@ -200,7 +200,7 @@ def test_physical_function_integration(np_rng):
         if isinstance(points, list):
             y = points[0][1]
         elif isinstance(points, np.ndarray):
-            y = points[:,1]
+            y = points[:, 1]
         return (y * (5 - y)).reshape(-1, 1)
 
     # Create rectangle domain
