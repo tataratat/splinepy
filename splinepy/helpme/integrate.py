@@ -260,7 +260,8 @@ def physical_function(
             result += _np.einsum(
                 "i...,i,i->...",
                 function(physical_positions),
-                element_meas(bezier_element, positions) * meas(spline, quad_positions),
+                element_meas(bezier_element, positions)
+                * meas(spline, quad_positions),
                 weights,
                 optimize=True,
             )
