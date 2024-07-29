@@ -197,12 +197,14 @@ def test_physical_function_integration(np_rng):
     integral_analytical = 125 / 6
 
     def parabolic_function(points):
-        y = points[0][1] if isinstance(points, list) else points[:, 1]
+        if isinstance(points, list):
+            y = points[0][1]
+        elif isinstance(points, np.ndarray):
+            y = points[:,1]
         return (y * (5 - y)).reshape(-1, 1)
 
     # Create rectangle domain
-    xlin = np.linspace(0, 1, 3)
-    ylin = np.linspace(0, 5, 3)
+    xlin, ylin = np.linspace(0, 1, 3), np.linspace(0, 5, 3)
     control_points = np.vstack(
         [array.ravel() for array in np.meshgrid(xlin, ylin)]
     ).T
