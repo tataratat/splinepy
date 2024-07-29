@@ -190,3 +190,32 @@ def test_function_integration(np_rng):
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
         bezier.integrate.parametric_function(volume_function),
     )
+
+def test_physical_function_integration(np_rng):
+    # Integrate y*(5-y) over [0,1]x[0,5] rectangle
+    integral_analytical = 125/6
+    
+    def parabolic_function(points):
+        y = points[0][1] if isinstance(points, list) else points[:,1]
+        return (y*(5-y)).reshape(-1,1)
+    
+    # Create rectangle domain
+    xlin = np.linspace(0,1,3)
+    ylin = np.linspace(0,5,3)
+    control_points = np.vstack([array.ravel() for array in np.meshgrid(xlin,ylin)]).T
+    rectangle = splinepy.BSpline(
+        degrees=[2,2],
+        knot_vectors=[[0,0,0,1,1,1], [0,0,0,1,1,1]],
+        control_points=control_points
+    )
+    
+    # Insert random knots
+    rectangle.insert_knots(0, np_rng.random(2))
+    rectangle.insert_knots(1, np_rng.random(2))
+    
+    integral = splinepy.helpme.integrate.physical_function(
+        rectangle,
+        parabolic_function
+    )
+    
+    assert np.allclose(integral, integral_analytical)
