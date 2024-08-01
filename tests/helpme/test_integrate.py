@@ -181,7 +181,6 @@ def test_function_integration(np_rng):
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
         bezier.integrate.parametric_function(volume_function),
     )
-
     # try bsplines
     bspline = bezier.bspline
     assert np.allclose(
@@ -192,7 +191,6 @@ def test_function_integration(np_rng):
 
 def test_transformation_class():
     """Test element transformation of single patch"""
-
     # Create quadratic spline
     spline = splinepy.BSpline(
         degrees=[2, 2],
@@ -212,35 +210,31 @@ def test_transformation_class():
     # Check whether element quadrature points lie inside element
     ukvs = spline.unique_knots
     trafo.compute_all_element_quad_points()
-    # Check quadrature points of each element
     for element_id, quad_points in enumerate(trafo.all_quad_points):
         grid_id = trafo.get_element_grid_id(element_id)
-        # Extract the corners of the current element
         element_corners = [
             ukv[grid_dim_id : grid_dim_id + 2]
             for ukv, grid_dim_id in zip(ukvs, grid_id)
         ]
-        # Check if quadrature points lie within element
+        quad_points = trafo.all_quad_points[element_id]
+        # Check if quadrature points lie within element corners
         for dim, corners in enumerate(element_corners):
             assert np.all(
                 (quad_points[:, dim] > corners[0]) & (quad_points[:, dim] < corners[1])
-            ), f"Quadrature points do not lie within element for dimension {dim}"
+            )
 
     # For given spline, all Jacobians should be identity matrix
     eye = np.eye(spline.para_dim)
     trafo.compute_all_element_jacobian_inverses()
     for element_jacobians in trafo.all_jacobians:
         for jacobian_at_quad_point in element_jacobians:
-            assert np.allclose(eye, jacobian_at_quad_point), (
-                "All Jacobians should be identity matrix"
-            )
+            assert np.allclose(eye, jacobian_at_quad_point)
 
     # For created spline, all determinants should equal one
     trafo.compute_all_element_jacobian_determinants()
     assert np.allclose(
-        trafo.all_jacobian_determinants,
-        np.ones_like(trafo.all_jacobian_determinants),
-    ), "All Jacobians' determinants should be equal to one"
+        trafo.all_jacobian_determinants, np.ones_like(trafo.all_jacobian_determinants)
+    )
 
 
 def test_physical_function_integration(np_rng):
