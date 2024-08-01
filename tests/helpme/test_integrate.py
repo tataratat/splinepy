@@ -42,9 +42,7 @@ def test_volume_integration_embedded(np_rng):
 
     # test for other types same spline
     assert np.allclose(bezier.bspline.integrate.volume(), expected_result)
-    assert np.allclose(
-        bezier.rationalbezier.integrate.volume(), expected_result
-    )
+    assert np.allclose(bezier.rationalbezier.integrate.volume(), expected_result)
     assert np.allclose(bezier.nurbs.integrate.volume(), expected_result)
 
     # Check if equal after refinement
@@ -155,18 +153,12 @@ def test_complex_geometry(np_rng):
 
 def test_assertions(np_rng):
     """Test the assertions in volume function"""
-    bezier = splinepy.Bezier(
-        degrees=[1, 2], control_points=np_rng.random((6, 1))
-    )
+    bezier = splinepy.Bezier(degrees=[1, 2], control_points=np_rng.random((6, 1)))
 
-    with pytest.raises(
-        ValueError, match=r"`Volume` not supported if para_dim > dim"
-    ):
+    with pytest.raises(ValueError, match=r"`Volume` not supported if para_dim > dim"):
         bezier.integrate.volume()
 
-    bezier = splinepy.Bezier(
-        degrees=[2, 2], control_points=np_rng.random((9, 2))
-    )
+    bezier = splinepy.Bezier(degrees=[2, 2], control_points=np_rng.random((9, 2)))
 
     with pytest.raises(
         ValueError, match=r"Integration order must be array of size para_dim"
@@ -183,9 +175,7 @@ def test_function_integration(np_rng):
         vf[:, 1] = col1_factor
         return vf
 
-    bezier = splinepy.Bezier(
-        degrees=[1, 2], control_points=np_rng.random((6, 2))
-    )
+    bezier = splinepy.Bezier(degrees=[1, 2], control_points=np_rng.random((6, 2)))
 
     assert np.allclose(
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
@@ -197,6 +187,55 @@ def test_function_integration(np_rng):
     assert np.allclose(
         [bspline.integrate.volume(), col1_factor * bspline.integrate.volume()],
         bspline.integrate.parametric_function(volume_function),
+    )
+
+
+def test_transformation_class():
+    """Test element transformation of single patch"""
+
+    # Create quadratic spline
+    spline = splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+        control_points=splinepy.utils.data.cartesian_product(
+            [np.linspace(0, 1, 3), np.linspace(0, 1, 3)]
+        ),
+    )
+
+    # Randomly insert knots along both parametric dimensions
+    spline.insert_knots(0, np.random.random(2))
+    spline.insert_knots(1, np.random.random(2))
+
+    # Create transformation class for spline
+    trafo = splinepy.helpme.integrate.Transformation(spline)
+
+    # Check whether element quadrature points lie inside element
+    ukvs = spline.unique_knots
+    trafo.compute_all_element_quad_points()
+    for element_id, quad_points in enumerate(trafo.all_quad_points):
+        grid_id = trafo.get_element_grid_id(element_id)
+        element_corners = [
+            ukv[grid_dim_id : grid_dim_id + 2]
+            for ukv, grid_dim_id in zip(ukvs, grid_id)
+        ]
+        quad_points = trafo.all_quad_points[element_id]
+        # Check if quadrature points lie within element corners
+        for dim, corners in enumerate(element_corners):
+            assert np.all(
+                (quad_points[:, dim] > corners[0]) & (quad_points[:, dim] < corners[1])
+            )
+
+    # For given spline, all Jacobians should be identity matrix
+    eye = np.eye(spline.para_dim)
+    trafo.compute_all_element_jacobian_inverses()
+    for element_jacobians in trafo.all_jacobians:
+        for jacobian_at_quad_point in element_jacobians:
+            assert np.allclose(eye, jacobian_at_quad_point)
+
+    # For created spline, all determinants should equal one
+    trafo.compute_all_element_jacobian_determinants()
+    assert np.allclose(
+        trafo.all_jacobian_determinants, np.ones_like(trafo.all_jacobian_determinants)
     )
 
 
@@ -215,9 +254,7 @@ def test_physical_function_integration(np_rng):
 
     # Create rectangle domain
     xlin, ylin = np.linspace(0, 1, 3), np.linspace(0, 5, 3)
-    control_points = np.vstack(
-        [array.ravel() for array in np.meshgrid(xlin, ylin)]
-    ).T
+    control_points = np.vstack([array.ravel() for array in np.meshgrid(xlin, ylin)]).T
     rectangle = splinepy.BSpline(
         degrees=[2, 2],
         knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
