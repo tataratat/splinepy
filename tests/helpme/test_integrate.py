@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 import splinepy
 
@@ -216,7 +215,6 @@ def test_transformation_class():
             ukv[grid_dim_id : grid_dim_id + 2]
             for ukv, grid_dim_id in zip(ukvs, grid_id)
         ]
-        quad_points = trafo.all_quad_points[element_id]
         # Check if quadrature points lie within element corners
         for dim, corners in enumerate(element_corners):
             assert np.all(
@@ -233,7 +231,8 @@ def test_transformation_class():
     # For created spline, all determinants should equal one
     trafo.compute_all_element_jacobian_determinants()
     assert np.allclose(
-        trafo.all_jacobian_determinants, np.ones_like(trafo.all_jacobian_determinants)
+        trafo.all_jacobian_determinants,
+        np.ones_like(trafo.all_jacobian_determinants),
     )
 
 
