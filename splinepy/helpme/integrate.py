@@ -20,7 +20,7 @@ class Transformation:
         "_all_jacobian_determinants",
     )
 
-    def __init__(self, spline):
+    def __init__(self, spline, orders=None):
         self._spline = spline
         self._para_dim = spline.para_dim
         if self._para_dim == 3:
@@ -30,17 +30,26 @@ class Transformation:
         self._n_elems_per_dim = [len(kv) - 1 for kv in self._ukv]
 
         # Gauss-Legendre quadrature points and weights
-        max_order = int(_np.max(self._spline.degrees))
-        quad_positions, quad_weights = _np.polynomial.legendre.leggauss(
-            deg=max_order
-        )
-        self._quad_positions = _cartesian_product(
-            [quad_positions for _ in range(self._para_dim)]
-        )
-        self._quad_weights = _cartesian_product(
-            [quad_weights for _ in range(self._para_dim)]
-        )
-        self._quad_weights = _np.prod(self._quad_weights, axis=1)
+        if orders is None:
+            quad_positions = []
+            quad_weights = []
+            for dim_quadrature_order in _default_quadrature_orders(spline):
+                quad_position, quad_weight = _np.polynomial.legendre.leggauss(
+                    deg=dim_quadrature_order
+                )
+                # Make quadrature points go from [0,1] instead of [-1,1]
+                quad_positions.append((quad_position + 1) / 2)
+                # Adjust weights accordingly
+                quad_weights.append(quad_weight / 2)
+
+            self._quad_positions = _cartesian_product(quad_positions)
+            self._quad_weights = _np.prod(
+                _cartesian_product(quad_weights), axis=1
+            )
+        else:
+            self._quad_positions, self._quad_weights = (
+                _get_quadrature_information(spline, orders)
+            )
 
         self._all_element_quad_points = None
         self._all_jacobians = None
@@ -232,12 +241,13 @@ class Transformation:
         )
         # Scale quad points for each element
         quad_points_centered = _np.einsum(
-            "ij,hj->hij", self._quad_positions / 2, element_lengths
+            "ij,hj->hij", self._quad_positions, element_lengths
         )
         # apply offset to quad points
         n_elements, n_quad_points, _ = quad_points_centered.shape
+        offsets = element_midpoints - element_lengths / 2
         self._all_element_quad_points = quad_points_centered + _np.repeat(
-            element_midpoints.reshape(n_elements, 1, -1), n_quad_points, 1
+            (offsets).reshape(n_elements, 1, -1), n_quad_points, 1
         )
 
     def compute_all_element_jacobians(self, recompute=False):
@@ -586,7 +596,8 @@ class FieldIntegrator(_SplinepyBase):
         """ """
         self._helpee = spline
 
-        self.reset(orders)
+        self._trafo = Transformation(spline, orders)
+        self.precompute_transformation()
 
     def reset(self, orders=None):
         """ """
@@ -604,6 +615,11 @@ class FieldIntegrator(_SplinepyBase):
         self._supports = None
         self._jacobians = None
         self._jacobian_weights = None
+
+    def precompute_transformation(self):
+        """Computes the quadrature points, jacobians and their determinants
+        of all elements in spline"""
+        self._trafo.compute_all_element_jacobian_determinants()
 
     @property
     def positions(self):
@@ -706,10 +722,19 @@ class FieldIntegrator(_SplinepyBase):
 
         return self._jacobian_weights
 
-    def assemble_matrix(self, function, dim, matrix=None):
+    def assemble_matrix(self, function, matrix=None):
         """ """
         pass
 
-    def assemble_vector(self, function, dim, matrix=None):
-        """ """
+    def assemble_vector(self, function, vector=None):
+        """Assemble the rhs for a given function
+
+        Parameters
+        ------------
+        function: callable
+            Function which defines how to assemble the rhs vector
+        vector: np.ndarray
+            Rhs vector. If None, a new vector will be created. Otherwise it will
+            add the corresponding to values to existing vector
+        """
         pass
