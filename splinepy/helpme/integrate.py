@@ -10,6 +10,319 @@ if _has_scipy:
     from scipy.sparse import dok_matrix as _dok_matrix
     from scipy.sparse.linalg import spsolve as _spsolve
 
+class Transformation:
+    __slots__ = (
+        "_spline",
+        "_para_dim",
+        "_ukv",
+        "_n_elems_per_dim",
+        "_quad_positions",
+        "_quad_weights",
+        "_all_element_quad_points",
+        "_all_jacobians",
+        "_all_jacobian_inverses",
+        "_all_jacobian_determinants",
+    )
+
+    def __init__(self, spline, orders=None):
+        self._spline = spline
+        self._para_dim = spline.para_dim
+        if self._para_dim == 3:
+            raise NotImplementedError("Not yet tested for 3D")
+
+        self._ukv = self._spline.unique_knots
+        self._n_elems_per_dim = [len(kv) - 1 for kv in self._ukv]
+
+        # Gauss-Legendre quadrature points and weights
+        if orders is None:
+            quad_positions = []
+            quad_weights = []
+            for dim_quadrature_order in _default_quadrature_orders(spline):
+                quad_position, quad_weight = _np.polynomial.legendre.leggauss(
+                    deg=dim_quadrature_order
+                )
+                # Make quadrature points go from [0,1] instead of [-1,1]
+                quad_positions.append((quad_position + 1) / 2)
+                # Adjust weights accordingly
+                quad_weights.append(quad_weight / 2)
+
+            self._quad_positions = _cartesian_product(quad_positions)
+            self._quad_weights = _np.prod(
+                _cartesian_product(quad_weights), axis=1
+            )
+        else:
+            self._quad_positions, self._quad_weights = (
+                _get_quadrature_information(spline, orders)
+            )
+
+        self._all_element_quad_points = None
+        self._all_jacobians = None
+        self._all_jacobian_inverses = None
+        self._all_jacobian_determinants = None
+
+    def check_element_id_validity(self, element_id):
+        """Check if given element ID is valid
+
+        Parameters
+        -----------
+        element_id: int
+            ID of element in spline's element. ID-array is 1D
+        """
+        assert element_id >= 0
+        assert element_id < _np.prod(self._n_elems_per_dim)
+
+    @property
+    def all_quad_points(self):
+        """Quadrature points of all elements.
+        Dimensions [<n_elements>, <n_quad_pts>, 2]"""
+        return self._all_element_quad_points
+
+    @property
+    def all_jacobians(self):
+        """Jacobians of all elements.
+        Dimensions [<n_elements> <n_quad_pts>, <para_dim>, <para_dim>]"""
+        return self._all_jacobians
+
+    @property
+    def all_jacobian_inverses(self):
+        """Inverses of Jacobians of all elements.
+        Dimensions [<n_elements> <n_quad_pts>, <para_dim>, <para_dim>]"""
+        return self._all_jacobian_inverses
+
+    @property
+    def all_jacobian_determinants(self):
+        """Determinants of Jacobians of all elements.
+        Dimensions [<n_elements> <n_quad_pts>]"""
+        return self._all_jacobian_determinants
+
+    @property
+    def quadrature_weights(self):
+        return self._quad_weights
+
+    def get_element_grid_id(self, element_id):
+        """Compute element ID in grid
+
+        Parameters
+        ----------
+        element_id: int
+            ID of element of spline
+
+        Returns
+        ---------
+        element_grid_id: list<int>
+            ID of element in grid
+        """
+        if self._para_dim == 3:
+            raise NotImplementedError(
+                "Element grid ID not yet implemented for 3D"
+            )
+
+        n_elems_x = self._n_elems_per_dim[0]
+        grid_id = [element_id % n_elems_x, element_id // n_elems_x]
+
+        return grid_id
+
+    def get_element_quad_points(self, element_id):
+        """For given element computes quad points
+
+        Parameters
+        -----------
+        element_id: int
+            ID of element in spline's element
+
+        Returns
+        -----------
+        element_quad_points: np.ndarray
+            Quadrature points for element
+        """
+        self.check_element_id_validity(element_id)
+
+        if self._all_element_quad_points is not None:
+            return self._all_element_quad_points[element_id]
+
+        element_grid_id = self.get_element_grid_id(element_id)
+
+        element_corner_points = _np.vstack(
+            [
+                ukv_dim[e_dim_id : (e_dim_id + 2)]
+                for ukv_dim, e_dim_id in zip(self._ukv, element_grid_id)
+            ]
+        )
+        element_lengths = _np.diff(element_corner_points, axis=1).ravel()
+        element_midpoints = _np.mean(element_corner_points, axis=1)
+
+        return self._quad_positions / 2 * element_lengths + element_midpoints
+
+    def jacobian(self, element_id):
+        """Return Jacobian of single element at quadrature points
+
+        Parameters
+        ------------
+        element_id: list<int>
+            ID of element in grid
+
+        Returns
+        ---------
+        element_jacobian: np.ndarray
+            Jacobian of element evaluated at quadrature points
+        """
+        if self._all_jacobians is not None:
+            return self._all_jacobians[element_id]
+
+        element_quad_points = self.get_element_quad_points(element_id)
+
+        return self._spline.jacobian(element_quad_points)
+
+    def jacobian_inverse(self, element_id):
+        """Return inverse of Jacobian of single element, evaluated at quadrature points
+
+        Parameters
+        ------------
+        element_id: list<int>
+            ID of element in grid
+
+        Returns
+        ---------
+        element_inverse_jacobian: np.ndarray
+            Inverse of Jacobian of element evaluated at quadrature points
+        """
+        if self._all_jacobian_inverses is not None:
+            return self._all_jacobian_inverses[element_id]
+
+        element_jacobians = self.jacobian(element_id)
+        element_jacobian_inverse = _np.stack(
+            [
+                _np.linalg.inv(element_jacobian)
+                for element_jacobian in element_jacobians
+            ]
+        )
+
+        return element_jacobian_inverse
+
+    def jacobian_determinant(self, element_id):
+        """Return determinant of Jacobian of single element, evaluated at
+        quadrature points
+
+        Parameters
+        ------------
+        element_id: list<int>
+            ID of element in grid
+
+        Returns
+        ---------
+        element_jacobian_determinant: np.ndarray
+            Determinant of Jacobian of element evaluated at quadrature points
+        """
+        if self._all_jacobian_determinants is not None:
+            return self._all_jacobian_determinants[element_id]
+
+        element_jacobians = self.jacobian(element_id)
+        return _np.array(
+            [
+                _np.linalg.det(element_jacobian)
+                for element_jacobian in element_jacobians
+            ]
+        )
+
+    def compute_all_element_quad_points(self, recompute=False):
+        """Compute the quadrature points of all elements
+
+        Parameters
+        ----------
+        recompute: bool
+            Recompute quadrature points
+        """
+        if self._all_element_quad_points is not None and not recompute:
+            return
+
+        # compute element lengths and center points
+        element_lengths = _cartesian_product(
+            [_np.diff(dim_ukv) for dim_ukv in self._ukv]
+        )
+        element_midpoints = (
+            _cartesian_product([dim_ukv[:-1] for dim_ukv in self._ukv])
+            + element_lengths / 2
+        )
+        # Scale quad points for each element
+        quad_points_centered = _np.einsum(
+            "ij,hj->hij", self._quad_positions, element_lengths
+        )
+        # apply offset to quad points
+        n_elements, n_quad_points, _ = quad_points_centered.shape
+        offsets = element_midpoints - element_lengths / 2
+        self._all_element_quad_points = quad_points_centered + _np.repeat(
+            (offsets).reshape(n_elements, 1, -1), n_quad_points, 1
+        )
+
+    def compute_all_element_jacobians(self, recompute=False):
+        """Compute Jacobians of each element at each quadrature point
+
+        Parameters
+        ----------
+        recompute: bool
+            Recompute Jacobians
+        """
+        if self._all_jacobians is not None and not recompute:
+            return
+
+        self.compute_all_element_quad_points(recompute=recompute)
+        self._all_jacobians = _np.stack(
+            [
+                self._spline.jacobian(quad_points)
+                for quad_points in self._all_element_quad_points
+            ]
+        )
+
+    def compute_all_element_jacobian_inverses(self, recompute=False):
+        """Compute Jacobians' inverses of each element at each quadrature point
+
+        Parameters
+        ----------
+        recompute: bool
+            Recompute Jacobians' inverses
+        """
+        if self._all_jacobian_inverses is not None and not recompute:
+            return
+
+        self.compute_all_element_jacobians(recompute=recompute)
+
+        self._all_jacobian_inverses = _np.stack(
+            [
+                _np.stack(
+                    [
+                        _np.linalg.inv(element_jacobian)
+                        for element_jacobian in element_jacobians
+                    ]
+                )
+                for element_jacobians in self._all_jacobians
+            ]
+        )
+
+    def compute_all_element_jacobian_determinants(self, recompute=False):
+        """Compute Jacobians' determinants of each element at each quadrature point
+
+        Parameters
+        ----------
+        recompute: bool
+            Recompute Jacobians' determinants
+        """
+        if self._all_jacobian_determinants is not None and not recompute:
+            return
+
+        self.compute_all_element_jacobians(recompute=recompute)
+
+        self._all_jacobian_determinants = _np.stack(
+            [
+                _np.stack(
+                    [
+                        _np.linalg.det(element_jacobian)
+                        for element_jacobian in element_jacobians
+                    ]
+                )
+                for element_jacobians in self._all_jacobians
+            ]
+        )
+
 
 def _get_integral_measure(spline):
     """
@@ -695,7 +1008,8 @@ class FieldIntegrator(_SplinepyBase):
         )
         self._mapper = self._solution_field.mapper(reference=self._helpee)
 
-        self.reset(orders)
+        self._trafo = Transformation(spline, orders)
+        self.precompute_transformation()
 
     def reset(self, orders=None):
         """ """
@@ -713,6 +1027,45 @@ class FieldIntegrator(_SplinepyBase):
         of all elements in spline"""
         self._trafo.compute_all_supports()
         self._trafo.compute_all_element_jacobian_determinants()
+
+    @property
+    def positions(self):
+        """
+        Normalized Quadrature positions. Can use this value for
+        """
+        return self._positions
+
+    @property
+    def global_positions(self):
+        """
+        Quadrature points in global position
+        """
+        if self._global_positions is not None:
+            return self._global_positions
+
+        # TODO: clamped knot vector check once it's merged
+        lower_bounds_per_dim = []
+        span_scales_per_dim = []
+        for ukv in self._helpee.unique_knots:
+            lower_bounds_per_dim.append(ukv[:-1])
+            span_scales_per_dim.append(_np.diff(ukv))
+        lower_bounds = _cartesian_product(lower_bounds_per_dim, reverse=True)
+        span_scales = _cartesian_product(span_scales_per_dim, reverse=True)
+
+        # add lower bound as offsets using np.broadcast rules
+        n_quads, dim = self.positions.shape
+        n_elem = len(lower_bounds)
+
+        # create normalized quad points for each element
+        self._global_positions = _np.tile(self.positions, (n_elem, 1)).reshape(
+            n_elem, n_quads, dim
+        )
+        # scale them
+        self._global_positions *= span_scales.reshape(n_elem, 1, dim)
+        # apply offset
+        self._global_positions += lower_bounds.reshape(n_elem, 1, dim)
+
+        return self._global_positions
 
     @property
     def supports(self):
