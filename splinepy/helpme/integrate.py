@@ -718,7 +718,7 @@ class FieldIntegrator(_SplinepyBase):
 
         return self._supports
 
-    def assemble_matrix(self, function):
+    def assemble_matrix(self, function, matrixout=None):
         """Assemble the system matrix for a given function. If system matrix is
         already assembled, it will add values on top of existing matrix.
 
@@ -726,14 +726,30 @@ class FieldIntegrator(_SplinepyBase):
         ------------
         function: callable
             Function which defines how to assemble the system matrix
+        matrixout: np.ndarray
+            Assembled matrix will be stored there. Default is global system matrix
         """
         # Initialize system matrix if not already
-        if self._global_system_matrix is None:
+        if self._global_system_matrix is None and matrixout is None:
             global_size = (self._ndofs, self._ndofs)
             if _has_scipy:
                 self._global_system_matrix = _dok_matrix(global_size)
             else:
                 self._global_system_matrix = _np.zeros(global_size)
+
+        # If other matrix is used, check if it compatible
+        if matrixout is not None:
+            if _has_scipy:
+                assert isinstance(
+                    matrixout, _dok_matrix
+                ), "Matrixout must be scipy sparse dok matrix"
+            else:
+                assert isinstance(matrixout, _np.ndarray)
+            assert matrixout.shape == (self._ndofs, self._ndofs)
+
+        system_matrix = (
+            self._global_system_matrix if matrixout is None else matrixout
+        )
 
         quad_weights = self._trafo.quadrature_weights
 
@@ -744,7 +760,7 @@ class FieldIntegrator(_SplinepyBase):
             self._trafo.all_quad_points,
         ):
             element_matrix = function(
-                self._mapper,
+                mapper=self._mapper,
                 quad_points=element_quad_points,
                 quad_weights=quad_weights,
                 jacobian_det=element_jacobian_det,
@@ -752,11 +768,11 @@ class FieldIntegrator(_SplinepyBase):
             matrix_element_support = _cartesian_product(
                 [element_support, element_support]
             )
-            self._global_system_matrix[
+            system_matrix[
                 matrix_element_support[:, 0], matrix_element_support[:, 1]
             ] += element_matrix
 
-    def assemble_vector(self, function, current_sol=None):
+    def assemble_vector(self, function, current_sol=None, vectorout=None):
         """Assemble the rhs for a given function. If rhs is already assembled,
         it will add values on top of existing rhs.
 
@@ -771,7 +787,21 @@ class FieldIntegrator(_SplinepyBase):
         if self._global_rhs is None:
             self._global_rhs = _np.zeros(self._ndofs)
 
-        quad_weights = self._trafo.quadrature_weights
+        # Ensure that current solution has right dimensions
+        if current_sol is not None:
+            assert len(current_sol) == self._ndofs
+
+        if vectorout is not None:
+            assert isinstance(vectorout, _np.ndarray)
+            assert len(vectorout) == self._ndofs
+
+        rhs_vector = self._global_rhs if vectorout is None else vectorout
+
+        # Prepare function arguments, which stay the same for all elements
+        function_args = {
+            "mapper": self._mapper,
+            "quad_weights": self._trafo.quadrature_weights,
+        }
 
         # Element loop
         for element_jacobian_det, element_support, element_quad_points in zip(
@@ -779,22 +809,32 @@ class FieldIntegrator(_SplinepyBase):
             self._trafo.all_supports,
             self._trafo.all_quad_points,
         ):
-            element_vector = function(
-                self._solution_field,
-                quad_points=element_quad_points,
-                quad_weights=quad_weights,
-                jacobian_det=element_jacobian_det,
-                current_sol=current_sol,
-            )
-            self._global_rhs[element_support] += element_vector
+            # Assemble element vector
+            function_args["quad_points"] = element_quad_points
+            function_args["jacobian_det"] = element_jacobian_det
+            if current_sol is not None:
+                function_args["current_sol"] = current_sol[element_support]
+            element_vector = function(**function_args)
+
+            # Add element vector to global rhs vector
+            rhs_vector[element_support] += element_vector
 
     def check_if_assembled(self):
+        """
+        Check if system matrix and rhs are already assembled
+        """
         if self._global_system_matrix is None or self._global_rhs is None:
             raise ValueError("System is not yet fully assembled")
 
-    def assign_homogeneous_dirichlet_boundary_conditions(self):
-        self.check_if_assembled()
+    def get_boundary_dofs(self):
+        """
+        Get indices of boundary dofs.
 
+        Returns
+        -------------
+        indices: np.ndarray
+            Indices of relevant boundary dofs
+        """
         relevant_spline = (
             self._helpee
             if self._solution_field is None
@@ -814,11 +854,104 @@ class FieldIntegrator(_SplinepyBase):
             )
         )
 
+        return indices
+
+    def assign_homogeneous_dirichlet_boundary_conditions(self):
+        """
+        Assembles homogeneous Dirichlet boundary conditions
+        """
+        self.check_if_assembled()
+
+        indices = self.get_boundary_dofs()
+
         self._global_system_matrix[indices, :] = 0
         self._global_system_matrix[indices, indices] = 1
         self._global_rhs[indices] = 0
 
+    def apply_dirichlet_boundary_conditions(self, function):
+        """
+        Applies Dirichlet boundary conditions via :math:`L^2`-projection.
+
+        For a given function g, it solves the following equation
+
+        .. math:: \\sum\\limits_{j=1}^n \alpha_j (N_i, N_j) = (g, N_i) \\quad
+        \forall i = 1, \\dots, n.
+
+        Then, the :math:`Pg`, the :math:`L^2`-projection of the function, is
+        given by
+
+        .. math:: Pg(x) = \\sum\\limits_{j=1}^n \alpha_j \\phi_j(x)
+
+        For the Dirichlet boundary conditions, only the DoFs corresponding to
+        the boundaries are taken from the :math:`L^2`-projection.
+
+        Parameters
+        -------------
+        function: callable
+            Function to apply. Input are points, output is scalar
+        """
+        self.check_if_assembled()
+
+        # Assemble mass matrix
+        global_size = (self._ndofs, self._ndofs)
+        mass_matrix = (
+            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
+        )
+
+        def mass_lhs(mapper, quad_points, quad_weights, jacobian_det):
+            bf_values = mapper._field_reference.basis(quad_points)
+            element_matrix = _np.einsum(
+                "qi,qj,q,q->ij",
+                bf_values,
+                bf_values,
+                quad_weights,
+                jacobian_det,
+                optimize=True,
+            )
+            return element_matrix.ravel()
+
+        self.assemble_matrix(mass_lhs, matrixout=mass_matrix)
+
+        # Assemble rhs: f(x) * N
+        rhs_vector = _np.zeros(self._ndofs)
+
+        def rhs_function(mapper, quad_points, quad_weights, jacobian_det):
+            bf = mapper._field_reference.basis(quad_points)
+            quad_points_forward = mapper._geometry_reference.evaluate(
+                quad_points
+            )
+            function_values = function(quad_points_forward)
+            element_vector = _np.einsum(
+                "qj,q,q,q->j",
+                bf,
+                function_values,
+                quad_weights,
+                jacobian_det,
+                optimize=True,
+            )
+            return element_vector
+
+        self.assemble_vector(rhs_function, vectorout=rhs_vector)
+
+        # Solve system to get all dofs
+        dof_vector = _np.empty(self._ndofs)
+        if _has_scipy:
+            dof_vector = _spsolve(mass_matrix.tocsr(), rhs_vector)
+        else:
+            dof_vector = _np.linalg.solve(mass_matrix, rhs_vector)
+
+        # Get relevant dofs
+        indices = self.get_boundary_dofs()
+
+        # Apply Dirichlet to relevant boundary dofs
+        self._global_system_matrix[indices, :] = 0
+        self._global_system_matrix[indices, indices] = 1
+        self._global_rhs[indices] = dof_vector[indices]
+
     def solve_linear_system(self):
+        """
+        Solve linear system for system matrix and rhs
+        """
         self.check_if_assembled()
 
         if _has_scipy:
