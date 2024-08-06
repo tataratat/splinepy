@@ -914,9 +914,31 @@ class FieldIntegrator(_SplinepyBase):
         if self._global_system_matrix is None or self._global_rhs is None:
             raise ValueError("System is not yet fully assembled")
 
-    def get_boundary_dofs(self):
+    def get_boundary_dofs(
+        self,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
-        Get indices of boundary dofs.
+        Get indices of boundary dofs. Assumes that control points are arranged
+        in the following way: first one is the southwest corner, then the first
+        dimension goes from west to east and second dimension goes from south to
+        north.
+
+        Parameters
+        ------------------
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west. On the other, if any boundary is selected,
+            this value will be ignored
+        north: bool
+            If True, return indices for north boundary of geometry
+        east: bool
+        south: bool
+        west: bool
 
         Returns
         -------------
@@ -931,32 +953,74 @@ class FieldIntegrator(_SplinepyBase):
 
         multi_index = relevant_spline.multi_index
 
+        multi_indices = [
+            multi_index[0, :],
+            multi_index[-1, :],
+            multi_index[:, 0],
+            multi_index[:, -1],
+        ]
+
+        # If at least one boundary is True, set all_boundaries to False
+        if north or east or south or west:
+            all_boundaries = False
+
+        boundaries = (
+            [True] * 4 if all_boundaries else [west, east, south, north]
+        )
+
         indices = _np.unique(
             _np.hstack(
-                (
-                    multi_index[0, :],
-                    multi_index[-1, :],
-                    multi_index[:, 0],
-                    multi_index[:, -1],
-                )
+                [
+                    index
+                    for index, boundary in zip(multi_indices, boundaries)
+                    if boundary
+                ]
             )
         )
 
         return indices
 
-    def assign_homogeneous_dirichlet_boundary_conditions(self):
+    def apply_homogeneous_dirichlet_boundary_conditions(
+        self,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
         Assembles homogeneous Dirichlet boundary conditions
+
+        Parameters
+        -------------
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west
+        north: bool
+            If True, sets homogeneous Dirichlet condition on north boundary
+        east: bool
+        south: bool
+        west: bool
         """
         self.check_if_assembled()
 
-        indices = self.get_boundary_dofs()
+        indices = self.get_boundary_dofs(
+            all_boundaries, north, east, south, west
+        )
 
         self._global_system_matrix[indices, :] = 0
         self._global_system_matrix[indices, indices] = 1
         self._global_rhs[indices] = 0
 
-    def apply_dirichlet_boundary_conditions(self, function):
+    def apply_dirichlet_boundary_conditions(
+        self,
+        function,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
         Applies Dirichlet boundary conditions via :math:`L^2`-projection.
 
@@ -977,6 +1041,14 @@ class FieldIntegrator(_SplinepyBase):
         -------------
         function: callable
             Function to apply. Input are points, output is scalar
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west
+        north: bool
+            If True, sets homogeneous Dirichlet condition on north boundary
+        east: bool
+        south: bool
+        west: bool
         """
         self.check_if_assembled()
 
@@ -1029,7 +1101,9 @@ class FieldIntegrator(_SplinepyBase):
             dof_vector = _np.linalg.solve(mass_matrix, rhs_vector)
 
         # Get relevant dofs
-        indices = self.get_boundary_dofs()
+        indices = self.get_boundary_dofs(
+            all_boundaries, north, east, south, west
+        )
 
         # Apply Dirichlet to relevant boundary dofs
         self._global_system_matrix[indices, :] = 0
