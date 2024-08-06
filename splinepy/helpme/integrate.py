@@ -73,7 +73,7 @@ def _get_quadrature_information(spline, orders=None):
     """
     Select appropriate integration order (gauss-legendre)
 
-    Determinante of a polynomial spline with para_dim==dim has degree
+    Determinant of a polynomial spline with para_dim==dim has degree
 
     .. math::
         p_i^{det} = n_{dim} \\cdot p_i - 1
@@ -217,7 +217,10 @@ def parametric_function(
 
     else:
         result = _np.einsum(
-            "id,i,i->d", function(positions), meas(spline, positions), weights
+            "i...,i,i->...",
+            function(positions),
+            meas(spline, positions),
+            weights,
         )
     return result
 
@@ -960,15 +963,16 @@ class FieldIntegrator(_SplinepyBase):
         """
         Applies Dirichlet boundary conditions via :math:`L^2`-projection.
 
-        For a given function g, it solves the following equation
+        For a given function g, :math:`L^2`-projection is obtained by solving
+        the following equation:
 
-        .. math:: \\sum\\limits_{j=1}^n \alpha_j (N_i, N_j) = (g, N_i) \\quad
+        .. math:: \\sum\\limits_{j=1}^n \\alpha_j (N_i, N_j) = (g, N_i) \\quad
         \forall i = 1, \\dots, n.
 
-        Then, the :math:`Pg`, the :math:`L^2`-projection of the function, is
+        Then, :math:`Pg`, the :math:`L^2`-projection of the function, is
         given by
 
-        .. math:: Pg(x) = \\sum\\limits_{j=1}^n \alpha_j \\phi_j(x)
+        .. math:: Pg(x) = \\sum\\limits_{j=1}^n \\alpha_j \\phi_j(x).
 
         For the Dirichlet boundary conditions, only the DoFs corresponding to
         the boundaries are taken from the :math:`L^2`-projection.

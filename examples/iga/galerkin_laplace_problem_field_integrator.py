@@ -51,6 +51,25 @@ def prepare_geometry_and_solution_field():
 
 
 def poisson_lhs(mapper, quad_points, quad_weights, jacobian_det):
+    """
+    Assemble the system matrix of the Poisson equation.
+
+    Parameters
+    -----------
+    mapper: splinepy.helpme.mapper.Mapper
+        Mapper of solution field
+    quad_points: np.ndarray
+        Quadrature points
+    quad_weights: np.ndarray
+        Quadrature weights
+    jacobian_det: np.ndarray
+        Determinant of Jacobian, evaluated at quadrature points
+
+    Returns
+    -----------
+    element_matrix: np.ndarray
+        Element matrix
+    """
     bf_gradient, _ = mapper.basis_gradient_and_support(quad_points)
     element_matrix = np.einsum(
         "qid,qjd,q,q->ij",
@@ -64,6 +83,25 @@ def poisson_lhs(mapper, quad_points, quad_weights, jacobian_det):
 
 
 def poisson_rhs(mapper, quad_points, quad_weights, jacobian_det):
+    """
+    Assemble the rhs of the Poisson equation with f=1
+
+    Parameters
+    -----------
+    mapper: splinepy.helpme.mapper.Mapper
+        Mapper of solution field
+    quad_points: np.ndarray
+        Quadrature points
+    quad_weights: np.ndarray
+        Quadrature weights
+    jacobian_det: np.ndarray
+        Determinant of Jacobian, evaluated at quadrature points
+
+    Returns
+    -----------
+    element_vector: np.ndarray
+        Element vector
+    """
     bf = mapper._field_reference.basis(quad_points)
     element_vector = np.einsum(
         "qj,q,q->j", bf, quad_weights, jacobian_det, optimize=True
@@ -72,6 +110,7 @@ def poisson_rhs(mapper, quad_points, quad_weights, jacobian_det):
 
 
 def show_solution(geometry, solution_field):
+    """Visualize the solution"""
     geometry.spline_data["field"] = solution_field
     geometry.show_options["data"] = "field"
     geometry.show_options["cmap"] = "jet"
