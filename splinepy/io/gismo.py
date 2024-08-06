@@ -107,9 +107,7 @@ class AdditionalBlocks:
 
         self._blocks.append(bc_dict_for_xml)
 
-    def add_function_block(
-        self, dim, block_id, function_string, comment=None
-    ):
+    def add_function_block(self, dim, block_id, function_string, comment=None):
         """Create Python dictionary of custom function's block to be used in
         gismo export function.
 
