@@ -268,22 +268,22 @@ def test_gismo_export_function_block(
 ):
     if int(python_version.split(".")[1]) >= 9:
         additional_blocks = splinepy.io.gismo.AdditionalBlocks()
-        
+
         # Function block for scalar variable
         additional_blocks.add_function_block(
             dim=2,
             block_id=1,
             function_string="2*pi^2*sin(pi*x)*sin(pi*y)",
-            comment="Scalar-valued function"
+            comment="Scalar-valued function",
         )
         # Function block for vector-valued variable
         additional_blocks.add_function_block(
             dim=2,
             block_id=2,
             function_string=("x", "y"),
-            comment="Vector-valued function"
+            comment="Vector-valued function",
         )
-        
+
         # Create block for boundary conditions
         additional_blocks.add_boundary_conditions_block(
             block_id=3,
@@ -298,12 +298,12 @@ def test_gismo_export_function_block(
             multipatch_id=0,
             comment="Boundary conditions",
         )
-        
+
         # Create dictionary for assembly options
         additional_blocks.add_assembly_options_block(
             block_id=4, comment="Assembler options"
         )
-        
+
         with tempfile.TemporaryDirectory() as tmpd:
             tmpf = to_tmpf(tmpd)
             splinepy.io.gismo.export(
@@ -311,9 +311,9 @@ def test_gismo_export_function_block(
                 multipatch=gismo_2D_multipatch,
                 indent=True,
                 labeled_boundaries=True,
-                options=additional_blocks._blocks
+                options=additional_blocks._blocks,
             )
-            
+
             with open(tmpf) as tmp_read, open(
                 os.path.dirname(__file__)
                 + "/../data/gismo_additional_blocks.xml"
@@ -321,6 +321,7 @@ def test_gismo_export_function_block(
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
+
 
 def test_gismo_export_3D_indented(
     gismo_multipatch_3D, to_tmpf, are_stripped_lines_same
@@ -606,25 +607,25 @@ if __name__ == "__main__":
     # Add boundary
     multipatch.boundary_from_function(is_bottom)
     multipatch.boundary_from_function(is_top)
-    
+
     # ---------------------------------------
     additional_blocks = splinepy.io.gismo.AdditionalBlocks()
-        
+
     # Function block for scalar variable
     additional_blocks.add_function_block(
         dim=2,
         block_id=1,
         function_string="2*pi^2*sin(pi*x)*sin(pi*y)",
-        comment="Scalar-valued function"
+        comment="Scalar-valued function",
     )
     # Function block for vector-valued variable
     additional_blocks.add_function_block(
         dim=2,
         block_id=2,
         function_string=("x", "y"),
-        comment="Vector-valued function"
+        comment="Vector-valued function",
     )
-    
+
     # Create block for boundary conditions
     additional_blocks.add_boundary_conditions_block(
         block_id=3,
@@ -639,16 +640,16 @@ if __name__ == "__main__":
         multipatch_id=0,
         comment="Boundary conditions",
     )
-    
+
     # Create dictionary for assembly options
     additional_blocks.add_assembly_options_block(
         block_id=4, comment="Assembler options"
     )
-    
+
     splinepy.io.gismo.export(
         "../data/gismo_additional_blocks.xml",
         multipatch=multipatch,
         indent=True,
         labeled_boundaries=True,
-        options=additional_blocks._blocks
+        options=additional_blocks._blocks,
     )
