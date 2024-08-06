@@ -10,6 +10,7 @@ if _has_scipy:
     from scipy.sparse import dok_matrix as _dok_matrix
     from scipy.sparse.linalg import spsolve as _spsolve
 
+
 def _get_integral_measure(spline):
     """
     Determines the appropriate measure to be used in integration
@@ -20,7 +21,7 @@ def _get_integral_measure(spline):
     .. math::
         \\mathcal{J}_S = det(\\mathbf(J))
 
-    If the physical dimension is bigger then the paramtric dimension it will
+    If the physical dimension is bigger then the parametric dimension it will
     return
 
     .. math::
@@ -188,7 +189,7 @@ def parametric_function(
     """
     from splinepy.spline import Spline as _Spline
 
-    # Check i_nput type
+    # Check input type
     if not isinstance(spline, _Spline):
         raise NotImplementedError("integration only works for splines")
 
@@ -215,8 +216,8 @@ def parametric_function(
             )
 
     else:
-        result = _np.sum(
-            function(positions) * meas(spline, positions) * weights, axis=1
+        result = _np.einsum(
+            "id,i,i->d", function(positions), meas(spline, positions), weights
         )
     return result
 
@@ -267,31 +268,47 @@ class Integrator:
 class Transformation:
     __slots__ = (
         "_spline",
+        "_solution_field",
+        "_mapper",
         "_para_dim",
         "_ukv",
-        "_n_elems_per_dim",
+        "_n_elems",
         "_quad_positions",
         "_quad_weights",
+        "_grid_ids",
+        "_all_supports",
         "_all_element_quad_points",
         "_all_jacobians",
         "_all_jacobian_inverses",
         "_all_jacobian_determinants",
     )
 
-    def __init__(self, spline, orders=None):
+    def __init__(self, spline, solution_field=None, orders=None):
         self._spline = spline
+        self._solution_field = solution_field
+        if solution_field is not None:
+            self._mapper = self._solution_field.mapper(reference=self._spline)
+
         self._para_dim = spline.para_dim
         if self._para_dim == 3:
             raise NotImplementedError("Not yet tested for 3D")
 
-        self._ukv = self._spline.unique_knots
-        self._n_elems_per_dim = [len(kv) - 1 for kv in self._ukv]
+        if solution_field is None:
+            self._ukv = spline.unique_knots
+        else:
+            self._ukv = self._solution_field.unique_knots
+        n_elems_per_dim = [len(kv) - 1 for kv in self._ukv]
+        self._n_elems = _np.prod(n_elems_per_dim)
 
         # Gauss-Legendre quadrature points and weights
+        spline_for_quad = spline if solution_field is None else solution_field
+
         if orders is None:
             quad_positions = []
             quad_weights = []
-            for dim_quadrature_order in _default_quadrature_orders(spline):
+            for dim_quadrature_order in _default_quadrature_orders(
+                spline_for_quad
+            ):
                 quad_position, quad_weight = _np.polynomial.legendre.leggauss(
                     deg=dim_quadrature_order
                 )
@@ -306,9 +323,16 @@ class Transformation:
             )
         else:
             self._quad_positions, self._quad_weights = (
-                _get_quadrature_information(spline, orders)
+                _get_quadrature_information(spline_for_quad, orders)
             )
 
+        # Precompute grid IDs
+        self._grid_ids = _cartesian_product(
+            [_np.arange(n_elems) for n_elems in n_elems_per_dim],
+            reverse=True,
+        )
+
+        self._all_supports = None
         self._all_element_quad_points = None
         self._all_jacobians = None
         self._all_jacobian_inverses = None
@@ -323,7 +347,13 @@ class Transformation:
             ID of element in spline's element. ID-array is 1D
         """
         assert element_id >= 0
-        assert element_id < _np.prod(self._n_elems_per_dim)
+        assert element_id < self._n_elems
+
+    @property
+    def all_supports(self):
+        """Supports of all quadrature points.
+        List of <n_elements> entries of support"""
+        return self._all_supports
 
     @property
     def all_quad_points(self):
@@ -371,10 +401,7 @@ class Transformation:
                 "Element grid ID not yet implemented for 3D"
             )
 
-        n_elems_x = self._n_elems_per_dim[0]
-        grid_id = [element_id % n_elems_x, element_id // n_elems_x]
-
-        return grid_id
+        return self._grid_ids[element_id, :]
 
     def get_element_quad_points(self, element_id):
         """For given element computes quad points
@@ -405,7 +432,36 @@ class Transformation:
         element_lengths = _np.diff(element_corner_points, axis=1).ravel()
         element_midpoints = _np.mean(element_corner_points, axis=1)
 
-        return self._quad_positions / 2 * element_lengths + element_midpoints
+        # Bring center to origin and scale
+        element_quad_points = (self._quad_positions - 0.5) * element_lengths
+        # Apply offset
+        element_quad_points += element_midpoints
+
+        return element_quad_points
+
+    def get_element_support(self, element_id):
+        """Get support for quadrature points in element
+
+        Parameters
+        ------------
+        element_id: int
+            ID of element
+
+        Returns
+        ---------
+        support: np.ndarray
+            Support for element. All quadrature points have same support
+        """
+        element_quad_points = self.get_element_quad_points(element_id)
+
+        # All quad points in element have same support, therefore take arbitrary
+        # one
+        relevant_quad_point = element_quad_points[0, :]
+
+        if self._solution_field is None:
+            return self._spline.support(relevant_quad_point)
+        else:
+            return self._solution_field.support(relevant_quad_point)
 
     def jacobian(self, element_id):
         """Return Jacobian of single element at quadrature points
@@ -507,6 +563,28 @@ class Transformation:
         self._all_element_quad_points = quad_points_centered + _np.repeat(
             (offsets).reshape(n_elements, 1, -1), n_quad_points, 1
         )
+
+    def compute_all_supports(self, recompute=False):
+        """Compute the support for all quadrature points
+
+        Parameters
+        --------------
+        recompute: bool
+            Recompute quadrature points
+        """
+        if self._all_supports is not None and not recompute:
+            return
+
+        self.compute_all_element_quad_points(recompute=recompute)
+        relevant_spline = (
+            self._spline
+            if self._solution_field is None
+            else self._solution_field
+        )
+        self._all_supports = [
+            relevant_spline.support(quad_points[:1, :]).ravel()
+            for quad_points in self._all_element_quad_points
+        ]
 
     def compute_all_element_jacobians(self, recompute=False):
         """Compute Jacobians of each element at each quadrature point
@@ -613,11 +691,7 @@ class FieldIntegrator(_SplinepyBase):
         )
         self._mapper = self._solution_field.mapper(reference=self._helpee)
 
-        self._trafo = Transformation(spline, orders)
-        self.precompute_transformation()
-
-        self._rhs = None
-        self._system_matrix = None
+        self.reset(orders)
 
     def reset(self, orders=None):
         """ """
@@ -635,45 +709,6 @@ class FieldIntegrator(_SplinepyBase):
         of all elements in spline"""
         self._trafo.compute_all_supports()
         self._trafo.compute_all_element_jacobian_determinants()
-
-    @property
-    def positions(self):
-        """
-        Normalized Quadrature positions. Can use this value for
-        """
-        return self._positions
-
-    @property
-    def global_positions(self):
-        """
-        Quadrature points in global position
-        """
-        if self._global_positions is not None:
-            return self._global_positions
-
-        # TODO: clamped knot vector check once it's merged
-        lower_bounds_per_dim = []
-        span_scales_per_dim = []
-        for ukv in self._helpee.unique_knots:
-            lower_bounds_per_dim.append(ukv[:-1])
-            span_scales_per_dim.append(_np.diff(ukv))
-        lower_bounds = _cartesian_product(lower_bounds_per_dim, reverse=True)
-        span_scales = _cartesian_product(span_scales_per_dim, reverse=True)
-
-        # add lower bound as offsets using np.broadcast rules
-        n_quads, dim = self.positions.shape
-        n_elem = len(lower_bounds)
-
-        # create normalized quad points for each element
-        self._global_positions = _np.tile(self.positions, (n_elem, 1)).reshape(
-            n_elem, n_quads, dim
-        )
-        # scale them
-        self._global_positions *= span_scales.reshape(n_elem, 1, dim)
-        # apply offset
-        self._global_positions += lower_bounds.reshape(n_elem, 1, dim)
-
-        return self._global_positions
 
     @property
     def supports(self):
