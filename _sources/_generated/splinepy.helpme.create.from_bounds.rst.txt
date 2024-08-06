@@ -1,0 +1,6 @@
+splinepy.helpme.create.from\_bounds
+===================================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: from_bounds

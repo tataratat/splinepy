@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_930093d73ce72330a19dc149ffda8d70" kind="dir">
+    <compoundname>create</compoundname>
+    <innerfile refid="create__bezier_8hpp">create_bezier.hpp</innerfile>
+    <innerfile refid="create__rational__bezier_8hpp">create_rational_bezier.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/"/>
+  </compounddef>
+</doxygen>

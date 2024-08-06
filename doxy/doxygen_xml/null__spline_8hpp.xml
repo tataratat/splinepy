@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="null__spline_8hpp" kind="file" language="C++">
+    <compoundname>null_spline.hpp</compoundname>
+    <includes local="no">algorithm</includes>
+    <includes local="no">array</includes>
+    <includes local="no">memory</includes>
+    <includes refid="splinepy__base_8hpp" local="no">splinepy/splines/splinepy_base.hpp</includes>
+    <includedby refid="py__spline__extensions_8hpp" local="yes">py_spline_extensions.hpp</includedby>
+    <includedby refid="py__multipatch_8cpp" local="yes">py_multipatch.cpp</includedby>
+    <incdepgraph>
+      <node id="7">
+        <label>splinepy/utils/coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>splinepy/splines/splinepy_base.hpp</label>
+        <link refid="splinepy__base_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>cassert</label>
+      </node>
+      <node id="12">
+        <label>stdexcept</label>
+      </node>
+      <node id="9">
+        <label>splinepy/utils/print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+      <node id="3">
+        <label>array</label>
+      </node>
+      <node id="11">
+        <label>sstream</label>
+      </node>
+      <node id="10">
+        <label>iostream</label>
+      </node>
+      <node id="1">
+        <label>null_spline.hpp</label>
+        <link refid="null__spline_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>algorithm</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>py_spline_extensions.hpp</label>
+        <link refid="py__spline__extensions_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>py_multipatch.cpp</label>
+        <link refid="py__multipatch_8cpp"/>
+      </node>
+      <node id="4">
+        <label>py_spline_extensions.cpp</label>
+        <link refid="py__spline__extensions_8cpp"/>
+      </node>
+      <node id="1">
+        <label>null_spline.hpp</label>
+        <link refid="null__spline_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>py_spline_exporter.cpp</label>
+        <link refid="py__spline__exporter_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classsplinepy_1_1splines_1_1NullSpline" prot="public">splinepy::splines::NullSpline</innerclass>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1splines">splinepy::splines</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;array&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="splinepy__base_8hpp" kindref="compound">splinepy/splines/splinepy_base.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1splines" kindref="compound">splinepy::splines</ref><sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;SplinepyBase&gt;<sp/><ref refid="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" kindref="member">NullSplineFromLookup</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim,</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44" refid="classsplinepy_1_1splines_1_1NullSpline" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classsplinepy_1_1splines_1_1NullSpline" kindref="compound">NullSpline</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref><sp/>{</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="49" refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref>;</highlight></codeline>
+<codeline lineno="53" refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="classsplinepy_1_1splines_1_1NullSpline_1a60d0d3311a977317ea34583685aad25c" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a60d0d3311a977317ea34583685aad25c" kindref="member">NullSpline</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim)</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref>(para_dim),</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>(dim)<sp/>{}</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>basic<sp/>implementations</highlight></codeline>
+<codeline lineno="64" refid="classsplinepy_1_1splines_1_1NullSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" kindref="member">SplinepyParaDim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="66" refid="classsplinepy_1_1splines_1_1NullSpline_1addafa95d18f804ff9b6565cc69b9b441" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1addafa95d18f804ff9b6565cc69b9b441" kindref="member">SplinepyDim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="68" refid="classsplinepy_1_1splines_1_1NullSpline_1ae9e589febdb3931dc5edf33b83e6ed81" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ae9e589febdb3931dc5edf33b83e6ed81" kindref="member">SplinepySplineName</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;NullSpline&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="70" refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" kindref="member">SplinepyWhatAmI</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;NullSpline,<sp/>parametric<sp/>dimension:<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref>)</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>physical<sp/>dimension:<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="75" refid="classsplinepy_1_1splines_1_1NullSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" kindref="member">SplinepyHasKnotVectors</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a012d99626ae7c9c6e90195d6d2ed2ad8" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;SplinepyHasKnotVectors()<sp/>-<sp/>invalid<sp/>function<sp/>call<sp/>for&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" kindref="member">SplinepyWhatAmI</ref>());</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82" refid="classsplinepy_1_1splines_1_1NullSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" kindref="member">SplinepyIsRational</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a012d99626ae7c9c6e90195d6d2ed2ad8" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;SplinepyIsRational()<sp/>-<sp/>invalid<sp/>function<sp/>call<sp/>for&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" kindref="member">SplinepyWhatAmI</ref>());</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="90" refid="classsplinepy_1_1splines_1_1NullSpline_1ab155088195abe36b77efe299d1ef338d" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab155088195abe36b77efe299d1ef338d" kindref="member">SplinepyNumberOfControlPoints</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>-1;<sp/>}</highlight></codeline>
+<codeline lineno="93" refid="classsplinepy_1_1splines_1_1NullSpline_1a3359640a16e7af39e032fbd3e9b93318" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a3359640a16e7af39e032fbd3e9b93318" kindref="member">SplinepyNumberOfSupports</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>-1;<sp/>}</highlight></codeline>
+<codeline lineno="96" refid="classsplinepy_1_1splines_1_1NullSpline_1ae791a517504d63316946462ffd75a597" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ae791a517504d63316946462ffd75a597" kindref="member">SplinepyIsNull</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98" refid="classsplinepy_1_1splines_1_1NullSpline_1afbc69546e8f79d8f846fbe3bb8e06130" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1afbc69546e8f79d8f846fbe3bb8e06130" kindref="member">SplinepyCurrentProperties</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>degrees,</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::vector&lt;double&gt;&gt;*<sp/>knot_vectors,</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>control_points,</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>weights)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a012d99626ae7c9c6e90195d6d2ed2ad8" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;SplinepyCurrentProperties()<sp/>-<sp/>invalid<sp/>function<sp/>call<sp/>for&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" kindref="member">SplinepyWhatAmI</ref>());</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="classsplinepy_1_1splines_1_1NullSpline_1a920537be0e6844b2d11fd37eaea260ff" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a920537be0e6844b2d11fd37eaea260ff" kindref="member">SplinepyEvaluate</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>evaluated)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/>std::fill_n(evaluated,<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>,<sp/>0.0);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115" refid="classsplinepy_1_1splines_1_1NullSpline_1a9784014998b254ace83bf0ce81d4d85f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a9784014998b254ace83bf0ce81d4d85f" kindref="member">SplinepyParametricBounds</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_bounds)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/>std::fill_n(para_bounds,<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref><sp/>*<sp/>2,<sp/>0.0);</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;SplinepyBase&gt;</highlight></codeline>
+<codeline lineno="122" refid="classsplinepy_1_1splines_1_1NullSpline_1afccd6b3327213012b3c3bfddcb083139" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1afccd6b3327213012b3c3bfddcb083139" kindref="member">SplinepyExtractBoundary</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>boundary_id)<sp/>{</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" kindref="member">NullSplineFromLookup</ref>(<ref refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kindref="member">para_dim_</ref><sp/>-<sp/>1,<sp/><ref refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="125"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight><highlight class="comment">//<sp/>maxdim<sp/>to<sp/>pre-create<sp/>null<sp/>splines</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>SPLINEPY_MORE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal">constexpr<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref>{3};</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" refkind="member"><highlight class="normal">constexpr<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref>{10};</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133" refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kindref="member">LookupArray_</ref><sp/>=</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>std::array&lt;std::array&lt;std::shared_ptr&lt;SplinepyBase&gt;,<sp/><ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref>&gt;,</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kindref="member">kMaxLookupDim</ref>&gt;;</highlight></codeline>
+<codeline lineno="137" refid="namespacesplinepy_1_1splines_1a49b3d2fe229e792a665a79d227456d12" refkind="member"><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kindref="member">LookupArray_</ref><sp/><ref refid="namespacesplinepy_1_1splines_1a49b3d2fe229e792a665a79d227456d12" kindref="member">kNullSplineLookup</ref><sp/>=<sp/>[]<sp/>{</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kindref="member">LookupArray_</ref><sp/>lookup;</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{0};</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>para_dim_array<sp/>:<sp/>lookup)<sp/>{</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{0};</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>dim_element<sp/>:<sp/>para_dim_array)<sp/>{</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dim_element<sp/>=<sp/>std::make_shared&lt;NullSpline&gt;(i<sp/>+<sp/>1,<sp/>j<sp/>+<sp/>1);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++j;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>++i;</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>lookup;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal">}();</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151" refid="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" refkind="member"><highlight class="normal">std::shared_ptr&lt;SplinepyBase&gt;<sp/><ref refid="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" kindref="member">NullSplineFromLookup</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim,</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim)<sp/>{</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1a49b3d2fe229e792a665a79d227456d12" kindref="member">kNullSplineLookup</ref>[para_dim<sp/>-<sp/>1][dim<sp/>-<sp/>1];</highlight></codeline>
+<codeline lineno="154"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>splinepy::splines</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/null_spline.hpp"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,6 @@
+splinepy.spline.Spline.showable
+===============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.showable

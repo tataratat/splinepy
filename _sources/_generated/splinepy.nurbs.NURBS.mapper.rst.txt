@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.mapper
+===========================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.mapper

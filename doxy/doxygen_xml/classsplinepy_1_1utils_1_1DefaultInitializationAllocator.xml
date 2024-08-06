@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classsplinepy_1_1utils_1_1DefaultInitializationAllocator" kind="class" language="C++" prot="public">
+    <compoundname>splinepy::utils::DefaultInitializationAllocator</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::allocator&lt; Type &gt;</basecompoundref>
+    <includes refid="default__initialization__allocator_8hpp" local="no">default_initialization_allocator.hpp</includes>
+    <innerclass refid="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind" prot="public">splinepy::utils::DefaultInitializationAllocator::rebind</innerclass>
+    <templateparamlist>
+      <param>
+        <type>typename Type</type>
+      </param>
+      <param>
+        <type>typename BaseAllocator</type>
+        <defval>std::allocator&lt;Type&gt;</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ad6b5c2f154278f500cb8c7207170c711" prot="private" static="no">
+        <type>std::allocator_traits&lt; BaseAllocator &gt;</type>
+        <definition>using AllocatorTraits_ =  std::allocator_traits&lt;BaseAllocator&gt;</definition>
+        <argsstring></argsstring>
+        <name>AllocatorTraits_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="42" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ab03d31c4f600b6b98aaebb05af710cc6" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void construct</definition>
+        <argsstring>(U *ptr) noexcept(std::is_nothrow_default_constructible&lt; U &gt;::value)</argsstring>
+        <name>construct</name>
+        <param>
+          <type>U *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Construct. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="60" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="60" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1a26e38324fafae6670ce624b485dd9b3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void construct</definition>
+        <argsstring>(U *ptr, Args &amp;&amp;... args)</argsstring>
+        <name>construct</name>
+        <param>
+          <type>U *</type>
+          <declname>ptr</declname>
+        </param>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Construct. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>...Args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>...args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="69" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="69" bodyend="73"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Adapted from a post from Casey <ulink url="http://stackoverflow.com/a/21028912/273767">http://stackoverflow.com/a/21028912/273767</ulink> mentioned in <computeroutput>Note</computeroutput> at <ulink url="http://en.cppreference.com/w/cpp/container/vector/resize">http://en.cppreference.com/w/cpp/container/vector/resize</ulink>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>comments, also from the post: Allocator adaptor that interposes <ref refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ab03d31c4f600b6b98aaebb05af710cc6" kindref="member">construct()</ref> calls to convert value initialization into default initialization. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>DefaultInitializationAllocator&lt; Type, BaseAllocator &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>allocator&lt;Type&gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>DefaultInitializationAllocator&lt; Type, BaseAllocator &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>allocator&lt;Type&gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="41" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="41" bodyend="74"/>
+    <listofallmembers>
+      <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ad6b5c2f154278f500cb8c7207170c711" prot="private" virt="non-virtual"><scope>splinepy::utils::DefaultInitializationAllocator</scope><name>AllocatorTraits_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ab03d31c4f600b6b98aaebb05af710cc6" prot="public" virt="non-virtual"><scope>splinepy::utils::DefaultInitializationAllocator</scope><name>construct</name></member>
+      <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1a26e38324fafae6670ce624b485dd9b3a" prot="public" virt="non-virtual"><scope>splinepy::utils::DefaultInitializationAllocator</scope><name>construct</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

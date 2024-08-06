@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.double\_lattice.DoubleLattice
+===========================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.double_lattice
+
+.. autoclass:: DoubleLattice
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       DoubleLattice.check_param_derivatives
+     
+     
+       DoubleLattice.check_params
+     
+     
+       DoubleLattice.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

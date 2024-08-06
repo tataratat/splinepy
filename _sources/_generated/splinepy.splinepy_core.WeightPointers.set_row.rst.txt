@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.WeightPointers.set\_row
+===============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: WeightPointers.set_row

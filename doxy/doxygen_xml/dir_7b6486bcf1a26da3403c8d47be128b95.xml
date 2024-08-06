@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_7b6486bcf1a26da3403c8d47be128b95" kind="dir">
+    <compoundname>py</compoundname>
+    <innerfile refid="py__knot__insertion__matrix_8hpp">py_knot_insertion_matrix.hpp</innerfile>
+    <innerfile refid="py__multipatch_8hpp">py_multipatch.hpp</innerfile>
+    <innerfile refid="py__spline_8hpp">py_spline.hpp</innerfile>
+    <innerfile refid="py__spline__exporter_8hpp">py_spline_exporter.hpp</innerfile>
+    <innerfile refid="py__spline__extensions_8hpp">py_spline_extensions.hpp</innerfile>
+    <innerfile refid="py__spline__reader_8hpp">py_spline_reader.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/"/>
+  </compounddef>
+</doxygen>

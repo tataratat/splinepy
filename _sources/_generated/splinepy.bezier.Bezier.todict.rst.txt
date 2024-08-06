@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.todict
+=============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.todict

@@ -1,0 +1,1137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
+  <compound refid="classsplinepy_1_1utils_1_1Array" kind="class"><name>splinepy::utils::Array</name>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ace8c7b9eba68e41a0d6c21ea971637f6" kind="typedef"><name>ShapeType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a844c863e21272c53f7a12829e69d8c59" kind="typedef"><name>StridesType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a7df28105bea7ae6d0d78a1a4da44e86b" kind="typedef"><name>DataType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a95d51f45162d74c83a7e3c20471dcd6e" kind="typedef"><name>IndexType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a12946efe528d48c02aa751c0d42f3017" kind="typedef"><name>value_type</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a1ed20642c504789b157f2aa44832ada2" kind="typedef"><name>size_type</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a0ada8d0106954f4b35edcd9ffe678686" kind="variable"><name>kDim</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1aa0a52906d4a2a37abafe4fd8e2b40668" kind="variable"><name>own_data_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a446297c547ebaf652c826cae0dcb96e8" kind="variable"><name>data_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a88aa79a90b0954ba0d578f5c3c40cd21" kind="variable"><name>size_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1af8dc82d16f06e9409cc71ff795f9bd05" kind="variable"><name>strides_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a7baad4f9456800401f5dd9fc0991fbf4" kind="variable"><name>shape_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a517efc7086142a8b2b4be72a184dd4e7" kind="function"><name>ComputeRemainingOffset</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae5adb9837ca9c75fc5dafb2fd2460d4d" kind="function"><name>data</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a01c742e508de3e3dece7a592dd3d5e8d" kind="function"><name>data</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a55dc6e813f9d9398051e749c3d1063c8" kind="function"><name>begin</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a10e232b70e6064281a14a07381863520" kind="function"><name>end</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a88497fcf5e3a1c28ab02086ca2e4911e" kind="function"><name>cbegin</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a88677f4a750d649bf4a89a81e3ffd5a6" kind="function"><name>cend</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae6357bd53aff150a8d3c7b28c434bae9" kind="function"><name>size</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a03613a20fdeae22f60eaac6bf7fab4b7" kind="function"><name>OwnsData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1af7f370671a60aa288380d6a31f28d12d" kind="function"><name>DestroyData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ab18e11dbcf6d82749f74437b18ca1341" kind="function"><name>SetData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a57a41e6c9403d8093ff5bbb1a61ca8d9" kind="function"><name>SetData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a89e795b04534e87e863089160f2c7a4c" kind="function"><name>SetOrReallocateData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ad8761433ff372c9d90ef9067ceceb51f" kind="function"><name>GetData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1af02543875b7ffee4100728722d7976ba" kind="function"><name>GetData</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1af698ca47acccaa1024899fa634658378" kind="function"><name>TransferOwnership</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a68c19a2b0c830726dc9070fc61e054c6" kind="function"><name>Reallocate</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a5936300d802fdbb05407bcd51d53c8b5" kind="function"><name>Reallocate</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a34f61cd94ee615fbf76f998c21e50c77" kind="function"><name>SetShape</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1aa097499ba4e6215595411f02110c6e16" kind="function"><name>Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a6b50ed29ea8e97fdd0510a4fee427fa6" kind="function"><name>Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a1af0d7406b19289d4821975af1289061" kind="function"><name>Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a0b2d2aba2e64b58c980399838f60205c" kind="function"><name>Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a2306865a953375e882f08d37e2ec3612" kind="function"><name>Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a81e14119a1cad7a332af662d7cfc2fc2" kind="function"><name>operator=</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1abaa8e1017e0f4a8b7265b7a0dfeb9376" kind="function"><name>operator=</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a9338ffdafb6c90a0d192ade96b24550a" kind="function"><name>~Array</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a71b3b8051b1400a7f2e6b99d5ab1896c" kind="function"><name>Shape</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a40556898bcfb3189c6771ad580d7b47c" kind="function"><name>Strides</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a407fe103da2bc9f75a391de919ec4a0f" kind="function"><name>operator[]</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a5a90d4be85e88fe15b4a83e82e3c6a1b" kind="function"><name>operator[]</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a538f9175f3b59121030fa5f738eef48e" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae785acbb1f43c57428086db6ac4de24e" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a2a3ae24956524ab6b4b09d26074dd4a9" kind="function"><name>Fill</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a20a0c63283fd0ead1d700b1cfdb9197e" kind="function"><name>Add</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a7661b3f6307753f2d8a977462aba7833" kind="function"><name>Subtract</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae8cfd9d9b04b87cff9ff818f960e5b3e" kind="function"><name>InnerProduct</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ac133624a314eb42f8d550c9342670f54" kind="function"><name>InnerProduct</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a1dd42fb743734067f2f27248c16fb0c4" kind="function"><name>AAt</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae1ebfece8e76a5f9b074691cc6928845" kind="function"><name>Clip</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ae833ba8788874c754dd5f98bdbe00519" kind="function"><name>NormL2</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a7a904d0bfdde84468684f346057524de" kind="function"><name>NormL2Squared</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ac0db01798eb38c7569046d27e38065f0" kind="function"><name>NonZeros</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1a5f7ec1968ea2e9be6e8a783eb60cdf33" kind="function"><name>FlipSign</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Array_1ac3d8d88fe12b48b6dde88e47255cb591" kind="function"><name>ArgSort</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1Bezier" kind="class"><name>splinepy::splines::Bezier</name>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ad0d9b5c506ab3573df65a8d5a14ad73a" kind="typedef"><name>SplinepyBase_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a5f613a8fd36ee18f019a4c009cad1cab" kind="typedef"><name>SelfTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a254caad58b3f006c122d79a78ac66a47" kind="typedef"><name>BoundaryType_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ad0b2125a69583956f2f9805080ef497b" kind="typedef"><name>Base_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a0babcb28456d8fe15392e21fcab35323" kind="typedef"><name>BaseTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1af2a9841bfd6f3753f41e328aa4310be1" kind="typedef"><name>ControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a105d5d135cd13dfc2bdaaa5d518807c8" kind="typedef"><name>ParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1abcf87a110cc88b5bd29c8d3ef1ff0c3b" kind="typedef"><name>Degrees_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1aaca1d2c801d643e6975e97e82cb9b68b" kind="typedef"><name>Coordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a5ffc4405bae9fc25b79b0f9959d57ee2" kind="typedef"><name>Coordinates_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1aa1b46e064c187fc4dcc6489713c5b69c" kind="typedef"><name>Derivative_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1aee53aa3b3dab35b50d619eb6d7d64940" kind="typedef"><name>Dimension_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1af25be4433e4f4a2cdaba20195b042eff" kind="typedef"><name>Proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a8032d06d9c896fd0a551f5070eea21c5" kind="variable"><name>kParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a09f7e0710eaf58e3a373b2c514e41967" kind="variable"><name>kDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a61ce0c82e3321630130cde7c22bba55d" kind="variable"><name>kIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a2f325b26d4ab0f18cd453c784ff1d0c9" kind="variable"><name>kHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a39f7fc544822bdc30499730036603f1c" kind="variable"><name>proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a8eef4de7301e2fc00c4d493307a0734f" kind="function"><name>CreateBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a3364ffe6e7db36fb99751fe1bac4a8a0" kind="function"><name>Bezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a01903f5dd9b66f0d71751675baeb3658" kind="function"><name>Bezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ac866d368a93d910cd1e150bc2ceeba2f" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ab10a0286f45741df4e09ab99300feef0" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a295928c8177dccebb36ad246b2af01af" kind="function"><name>ElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ad0b0e5b72a509032ee74ce3af1df08ca" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1addafa95d18f804ff9b6565cc69b9b441" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ae9e589febdb3931dc5edf33b83e6ed81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a0164ebf3b3d2364894b747ab27772bfe" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a11ac3093e1244d3bcf9e8434acc37a5f" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1aa69c5b2aa3411e4f1b78332e0b6a2265" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a7b497cd52107288f7bf90fefbfb313e2" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a14e0d96a5aa8c07d510779cc6b4a2d1c" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a6abc26b6de0d012f500516e90b10157d" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1aa4e862437f08dcca165fbbabb0633a23" kind="function"><name>SplinepyControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ad2869f6460d00786e925884afda6ab16" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a82c7531c75207a9c4c1ce2ee287d6d80" kind="function"><name>SplinepyControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a937737f903b962b14b75911ad87ea980" kind="function"><name>SplinepyGrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1af44d40483deab0f4f5d3901073b63c2c" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a1623b3917d83d47770045b0277ae0702" kind="function"><name>SplinepyDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a082fa04363d7823b4657cb5a1b5669ac" kind="function"><name>SplinepyJacobian</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a655dd76f93a8a1ca02b8bb1fecb83c82" kind="function"><name>SplinepyPlantNewKdTreeForProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a311f2f145c25efbf07a4127a93fd728f" kind="function"><name>SplinepyVerboseProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1afb7b9a66f7bb2a06001bbaa6fe4b059e" kind="function"><name>SplinepyElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a5c804a4b323dcae914442ef3836f5ec9" kind="function"><name>SplinepyBasis</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a2858ead137ca708d2bfeccdae6e7ac45" kind="function"><name>SplinepyBasisDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a80ef44d7b6a5f9250fc26fd0fe2923aa" kind="function"><name>SplinepySupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a20722d779bdedf75284890abe61cce7f" kind="function"><name>SplinepyBasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ac61583ad2cb14834fa073d1f0d58c604" kind="function"><name>SplinepyBasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a99ff3ac5c14681c4a3410ac4fc15ec5a" kind="function"><name>SplinepyMultiply</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a115e11c597c41143a487bac1564f306f" kind="function"><name>SplinepyAdd</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a555d25d480de53786027bda44ac4ae59" kind="function"><name>ConvertComposeToBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a8e0877c5aa9d0880e837c4f8e081d651" kind="function"><name>SplinepyComposeSensitivities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1af05fe3b20aed88bea1f16b634e3ddb19" kind="function"><name>SplinepyCompose</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a58e861256bd97c949018429e88bf2df9" kind="function"><name>SplinepySplit</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ad30620aeaaad6a9db0816696fbd87179" kind="function"><name>SplinepyDerivativeSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a89017250bfdb853c3bd01a41d7828a13" kind="function"><name>SplinepyExtractBezierPatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a50217282b435afd4c8db596f147f88ce" kind="function"><name>SplinepyExtractBoundary</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a531c1b5ece7f10875a4d5dac7598668b" kind="function"><name>SplinepyExtractDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a04cd334a9c81663a688f9a42f10348d4" kind="function"><name>SplinepyCompositionDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ae9c2e3de194c9487a6f9aef3060903ec" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1ae2f9dba293ec9b163a2957be0e440f50" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Bezier_1a296ff957b200c50aadee703157f2f1ff" kind="function"><name>SplinepyDeepCopy</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1BSpline" kind="class"><name>splinepy::splines::BSpline</name>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a031cfc67ae5fe3dc5df751f226fd3406" kind="typedef"><name>SelfTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a7e9d611431179672d9ae6970eb2a5a7e" kind="typedef"><name>BoundaryType_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ad0d9b5c506ab3573df65a8d5a14ad73a" kind="typedef"><name>SplinepyBase_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1af2a9841bfd6f3753f41e328aa4310be1" kind="typedef"><name>ControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kind="typedef"><name>Base_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a6e3dfc7daeb578c54fc0e984ad9f8fd7" kind="typedef"><name>BaseTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a20870b9160eae832517f663003ae24fc" kind="typedef"><name>ParameterSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1adc5ad717de7fad3a3ee96504ac2ea07c" kind="typedef"><name>Degrees_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a80fab9148dab1f93aca30768997d6c9c" kind="typedef"><name>Degree_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a9b34c3ea005ed1dd25ba751e5e53f1ee" kind="typedef"><name>KnotVectors_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ab559c9152b4090fad482f1883738dab3" kind="typedef"><name>KnotVector_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a5a94d6442a3574855d282bd3b1a92d24" kind="typedef"><name>Knots_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a2274e8740c2987df3d330fc12aaecc46" kind="typedef"><name>Knot_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a043a483863483e58be843ae8ecc55a96" kind="typedef"><name>KnotRatios_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1aa9b6e2f891e4bf9abd5d6d8051b97230" kind="typedef"><name>KnotRatio_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a0a86f29c6556481ec8b89601dd9d26c4" kind="typedef"><name>ParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a97df7363d9f19c8b1943ac28b3867088" kind="typedef"><name>ScalarParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a72c1f105c5d5771614c19d88df40c31e" kind="typedef"><name>VectorSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a0a9107ffb4cefd99b60e2f4610abb02b" kind="typedef"><name>PhysicalSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1acef79325f0f261682cbc24ff910098cc" kind="typedef"><name>Coordinates_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a19b20a06fe0be91929026adae2978441" kind="typedef"><name>Coordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1acf52f8bfd5466bbb7b2d607de305fdf7" kind="typedef"><name>ScalarCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1afa3c295d17d44d8600ac460f857f66e0" kind="typedef"><name>Derivative_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ac6da1daeb00717554acdb6a402f7c7e8" kind="typedef"><name>Dimension_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1adb22bc1e9d18d27e973b877451564ec6" kind="typedef"><name>Tolerance_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a5b55bb6cb18dcc78653d0ed10ebdbeb1" kind="typedef"><name>OutputInformation_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a2062f583d300416c3a883d7e82f39b81" kind="typedef"><name>Index_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a7b972c161a9363ecf0f282df86bbf84f" kind="typedef"><name>IndexLength_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ad21312923c2a26df579f7d9f26cd31df" kind="typedef"><name>IndexValue_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a980671554592380731175871f48954b9" kind="typedef"><name>BezierInformation_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1acb13e0e4fd7c95a10ed80f49f1c2f011" kind="typedef"><name>BinomialRatios_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1af1d01a690d8a691995bdb40ac185f463" kind="typedef"><name>BinomialRatio_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1af25be4433e4f4a2cdaba20195b042eff" kind="typedef"><name>Proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kind="variable"><name>kParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a61ce0c82e3321630130cde7c22bba55d" kind="variable"><name>kIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a2f325b26d4ab0f18cd453c784ff1d0c9" kind="variable"><name>kHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a929598a182c3b81b720ad9a6dc256c4a" kind="variable"><name>para_dim_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1aabba7d9e4f876f453ecee9d09ac5dc2c" kind="variable"><name>proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ac32267e6cf2f415e76c5d48281919528" kind="function"><name>CreateBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ac593154654dc28bb40f6d079226e9c28" kind="function"><name>BSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a756dbf0e9ba484a59d33469ed652495f" kind="function"><name>BSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a4456a1cfe7545048c31366a6fe0dde7f" kind="function"><name>GetDegrees</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a3c840f740f31771132abddd743dcf4a8" kind="function"><name>GetKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1afec5511510398a7261801ff1a9ec39c6" kind="function"><name>GetCoordinates</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1addafa95d18f804ff9b6565cc69b9b441" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ae9e589febdb3931dc5edf33b83e6ed81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a0164ebf3b3d2364894b747ab27772bfe" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ab155088195abe36b77efe299d1ef338d" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a3359640a16e7af39e032fbd3e9b93318" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1afbc69546e8f79d8f846fbe3bb8e06130" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ad6c3fa6228d61c1674e431d3851a8786" kind="function"><name>SplinepyParameterSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a62b70c236fdbd8198586e3b3411f3d80" kind="function"><name>SplinepyKnotVector</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ad3225a4b5d51b3a21fab0d4af5bea44b" kind="function"><name>SplinepyControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a9784014998b254ace83bf0ce81d4d85f" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a7da40985234c8eb3bca9ca82cd0b1428" kind="function"><name>SplinepyControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a15d33b3d5e816d319737c5e4c109e8d0" kind="function"><name>SplinepyGrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a920537be0e6844b2d11fd37eaea260ff" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a7d654e8ba079c395e1003593088d3106" kind="function"><name>SplinepyDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1afcc0eca9e90bc2626b5a97fead06d9b6" kind="function"><name>SplinepyJacobian</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a50e29ae33a6e4bb268dd5a4ef371b3bd" kind="function"><name>SplinepyBasis</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ac5b096806c4cd9447bf3b59921ddfc29" kind="function"><name>SplinepyBasisDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18" kind="function"><name>SplinepySupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a10f13720963256edc8ea3597fff70dec" kind="function"><name>SplinepyBasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a5f579d3e5401be64ef8ec3f8c95e9dd6" kind="function"><name>SplinepyBasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a22488930b1700b805f5a5e948e2fbf4c" kind="function"><name>SplinepyPlantNewKdTreeForProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a84d1acf1be097f8e35a12c43f6f4c4f2" kind="function"><name>SplinepyVerboseProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1af03150e973b9a12015b3ee7945d3fa57" kind="function"><name>SplinepyElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1aa180de3e9ee55ed0b6857401423d7d55" kind="function"><name>SplinepyReduceDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a5b63e6458cf833910c28aec1ab48dc00" kind="function"><name>SplinepyInsertKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a76d88d7ec305769215551668be88214a" kind="function"><name>SplinepyRemoveKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1adff57da32b261fc1eb98abf13233bef9" kind="function"><name>SplinepyKnotMultiplicities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1afccd6b3327213012b3c3bfddcb083139" kind="function"><name>SplinepyExtractBoundary</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a37c647b9c74e36f1c809d8c0dbb17580" kind="function"><name>SplinepyExtractBezierPatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kind="function"><name>GetParameterSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" kind="function"><name>GetVectorSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ae9c2e3de194c9487a6f9aef3060903ec" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1ae2f9dba293ec9b163a2957be0e440f50" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1BSpline_1a296ff957b200c50aadee703157f2f1ff" kind="function"><name>SplinepyDeepCopy</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1utils_1_1ControlPointPointers" kind="struct"><name>splinepy::utils::ControlPointPointers</name>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" kind="variable"><name>coordinate_begins_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" kind="variable"><name>dim_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" kind="variable"><name>for_rational_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" kind="variable"><name>weight_pointers_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" kind="variable"><name>invalid_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" kind="function"><name>Len</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" kind="function"><name>Dim</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a4b56d928685606c8838f951276e816d2" kind="function"><name>SetRow</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" kind="function"><name>SetRows</name></member>
+    <member refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae439260e416f2cd8a082b5bf1412d99" kind="function"><name>Sync</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator" kind="class"><name>splinepy::utils::DefaultInitializationAllocator</name>
+    <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ad6b5c2f154278f500cb8c7207170c711" kind="typedef"><name>AllocatorTraits_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1ab03d31c4f600b6b98aaebb05af710cc6" kind="function"><name>construct</name></member>
+    <member refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator_1a26e38324fafae6670ce624b485dd9b3a" kind="function"><name>construct</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1utils_1_1GridPoints" kind="class"><name>splinepy::utils::GridPoints</name>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kind="typedef"><name>Vector_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a414219f98e2bc7fd0cbed64ab70ab02e" kind="variable"><name>bounds_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kind="variable"><name>resolutions_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kind="variable"><name>entries_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" kind="variable"><name>step_size_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kind="variable"><name>len_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" kind="variable"><name>dim_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1ad227d250713ca3d1e28e69446d8883f8" kind="function"><name>GridPoints</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a85aaee125991db5ad7a0b988538b3eb2" kind="function"><name>GridPoints</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" kind="function"><name>SetUp</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a813f37203931095ef0fb60f38df1961f" kind="function"><name>IdToGridPoint</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a0c5cc66a8b72aa62858806e262ddf44e" kind="function"><name>Fill</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a24926108b770033792d015cb86aeffb3" kind="function"><name>Size</name></member>
+    <member refid="classsplinepy_1_1utils_1_1GridPoints_1a19b68d97707f8f59e7aad6989e49a007" kind="function"><name>IdsOnHyperPlane</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData" kind="struct"><name>splinepy::proximity::SearchData::LMData</name>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a3db359547eed8cfd48ca821d95f577af" kind="variable"><name>lambda</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0f38328e75899d2e10214346395a0af0" kind="variable"><name>prev_J</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a34e184faa9a443c59035671bd5b43b29" kind="variable"><name>modified_update</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1e2f9a2352c1d9a6cada9544898fceec" kind="variable"><name>lower_bound</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1ba5ca0f61f2fa13bd23bf0f89004f35" kind="variable"><name>upper_bound</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a7840e3f05acab965fa1cdb901aeb384e" kind="variable"><name>metric</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a08d7d5902a040d033b3c5f1d0db0ceab" kind="variable"><name>prev_guess</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a93088a93384ad640541aadfe81ea4055" kind="function"><name>Setup</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0b484aaf62491beed1609c7e4e61e280" kind="function"><name>Metric</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1utils_1_1Matrix" kind="class"><name>splinepy::utils::Matrix</name>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a7df28105bea7ae6d0d78a1a4da44e86b" kind="typedef"><name>DataType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a95d51f45162d74c83a7e3c20471dcd6e" kind="typedef"><name>IndexType_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1ac682d757a445e98c3c5bf361e87f25fa" kind="typedef"><name>SignedIndexType</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1aee16503916dd43752a05cf0f2c25b07a" kind="typedef"><name>DataArray_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a4f52aaf7a6e13951fcc5993fb6f9a16a" kind="typedef"><name>RowOrderArray_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a9110ae4bd5bcba9e063dfda1e52d94b9" kind="variable"><name>array_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a22397158d4670294c2102a32f091dff1" kind="variable"><name>row_order_</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a55beb63b16f478d69e28b577124a86f7" kind="function"><name>Matrix</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a1676ce98ba97c9736c56f4ffa77b9bda" kind="function"><name>ResetRowOrder</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a9227fb4c50059a1aca60aced4c5fa10e" kind="function"><name>SwapRow</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1a314d13b1ff765202834fd54ace1ce8d9" kind="function"><name>RowOrder</name></member>
+    <member refid="classsplinepy_1_1utils_1_1Matrix_1ac8c1ab3dee2ccc51054c0445abba858f" kind="function"><name>Solve</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1NullSpline" kind="class"><name>splinepy::splines::NullSpline</name>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1ab9f07ec06b9517013da2dd4a6f8ebead" kind="variable"><name>para_dim_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a453424b2c6030131d0c0b103fc2d5141" kind="variable"><name>dim_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a60d0d3311a977317ea34583685aad25c" kind="function"><name>NullSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1addafa95d18f804ff9b6565cc69b9b441" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1ae9e589febdb3931dc5edf33b83e6ed81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1ab155088195abe36b77efe299d1ef338d" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a3359640a16e7af39e032fbd3e9b93318" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1ae791a517504d63316946462ffd75a597" kind="function"><name>SplinepyIsNull</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1afbc69546e8f79d8f846fbe3bb8e06130" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a920537be0e6844b2d11fd37eaea260ff" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1a9784014998b254ace83bf0ce81d4d85f" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1NullSpline_1afccd6b3327213012b3c3bfddcb083139" kind="function"><name>SplinepyExtractBoundary</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1Nurbs" kind="class"><name>splinepy::splines::Nurbs</name>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ab4551edc0e38a61f8472316d03a4b736" kind="typedef"><name>SelfTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a36517af4d7fe09d3dcf3fb0b443e83c9" kind="typedef"><name>BoundaryType_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad0d9b5c506ab3573df65a8d5a14ad73a" kind="typedef"><name>SplinepyBase_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad07398d0d22bba77389b66e5ade57d10" kind="typedef"><name>WeightedControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a8b515a4638167cbb3d30b30105ed49e4" kind="typedef"><name>WeightPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a618bc37a208ca0ff8ad6c946a80117ef" kind="typedef"><name>Base_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a20870b9160eae832517f663003ae24fc" kind="typedef"><name>ParameterSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1adc5ad717de7fad3a3ee96504ac2ea07c" kind="typedef"><name>Degrees_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a80fab9148dab1f93aca30768997d6c9c" kind="typedef"><name>Degree_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a9b34c3ea005ed1dd25ba751e5e53f1ee" kind="typedef"><name>KnotVectors_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ab559c9152b4090fad482f1883738dab3" kind="typedef"><name>KnotVector_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a5a94d6442a3574855d282bd3b1a92d24" kind="typedef"><name>Knots_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a2274e8740c2987df3d330fc12aaecc46" kind="typedef"><name>Knot_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a043a483863483e58be843ae8ecc55a96" kind="typedef"><name>KnotRatios_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aa9b6e2f891e4bf9abd5d6d8051b97230" kind="typedef"><name>KnotRatio_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a0a86f29c6556481ec8b89601dd9d26c4" kind="typedef"><name>ParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a97df7363d9f19c8b1943ac28b3867088" kind="typedef"><name>ScalarParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a1986a20803290a02010b9de86c369997" kind="typedef"><name>WeightedVectorSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a9ddf3a47fd8428d3b9550656f7d9c617" kind="typedef"><name>PhysicalSpace_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a9342451b303191d36a7be76ffca8b727" kind="typedef"><name>Coordinates_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aed0e921134e7f3c93ece64eacad1ec7c" kind="typedef"><name>HomogeneousCoordinates_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a19b20a06fe0be91929026adae2978441" kind="typedef"><name>Coordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1acf52f8bfd5466bbb7b2d607de305fdf7" kind="typedef"><name>ScalarCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ae214ada9ac0e199b5694f88f0db616e9" kind="typedef"><name>Weights_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a42a6132afa21eed3d23603eef64bee3a" kind="typedef"><name>Weight_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1afa3c295d17d44d8600ac460f857f66e0" kind="typedef"><name>Derivative_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ac6da1daeb00717554acdb6a402f7c7e8" kind="typedef"><name>Dimension_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1adb22bc1e9d18d27e973b877451564ec6" kind="typedef"><name>Tolerance_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a17f668db5518d3d6aaac2a9d301f36ac" kind="typedef"><name>OutputInformation_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a2062f583d300416c3a883d7e82f39b81" kind="typedef"><name>Index_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a7b972c161a9363ecf0f282df86bbf84f" kind="typedef"><name>IndexLength_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad21312923c2a26df579f7d9f26cd31df" kind="typedef"><name>IndexValue_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aedbcb463bf44c58df5f60b6a77ef51ef" kind="typedef"><name>HomogeneousBSpline_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1af25be4433e4f4a2cdaba20195b042eff" kind="typedef"><name>Proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a8032d06d9c896fd0a551f5070eea21c5" kind="variable"><name>kParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a61ce0c82e3321630130cde7c22bba55d" kind="variable"><name>kIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a2f325b26d4ab0f18cd453c784ff1d0c9" kind="variable"><name>kHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a929598a182c3b81b720ad9a6dc256c4a" kind="variable"><name>para_dim_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aabba7d9e4f876f453ecee9d09ac5dc2c" kind="variable"><name>proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad609c511fc14e0733342644a71f46266" kind="function"><name>CreateBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ade17d3fd262aef0a7e4b1b0f2248614a" kind="function"><name>Nurbs</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ab4ab46375192e6ea196c80e0c15cc34c" kind="function"><name>Nurbs</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a4456a1cfe7545048c31366a6fe0dde7f" kind="function"><name>GetDegrees</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a3c840f740f31771132abddd743dcf4a8" kind="function"><name>GetKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a110d09c536e1b381c7be24e3d001c89b" kind="function"><name>GetCoordinates</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad0b0e5b72a509032ee74ce3af1df08ca" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1addafa95d18f804ff9b6565cc69b9b441" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ae9e589febdb3931dc5edf33b83e6ed81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a0164ebf3b3d2364894b747ab27772bfe" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a11ac3093e1244d3bcf9e8434acc37a5f" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aa69c5b2aa3411e4f1b78332e0b6a2265" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ab155088195abe36b77efe299d1ef338d" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a3359640a16e7af39e032fbd3e9b93318" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1afbc69546e8f79d8f846fbe3bb8e06130" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ad6c3fa6228d61c1674e431d3851a8786" kind="function"><name>SplinepyParameterSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a62b70c236fdbd8198586e3b3411f3d80" kind="function"><name>SplinepyKnotVector</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a0c6395fd1f9cd39aa7e3bbe0e58814a9" kind="function"><name>SplinepyWeightedControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a667e7050760866f04acefef17e883fb0" kind="function"><name>SplinepyWeightPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a9784014998b254ace83bf0ce81d4d85f" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a7da40985234c8eb3bca9ca82cd0b1428" kind="function"><name>SplinepyControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a15d33b3d5e816d319737c5e4c109e8d0" kind="function"><name>SplinepyGrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a920537be0e6844b2d11fd37eaea260ff" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a7d654e8ba079c395e1003593088d3106" kind="function"><name>SplinepyDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1afcc0eca9e90bc2626b5a97fead06d9b6" kind="function"><name>SplinepyJacobian</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a50e29ae33a6e4bb268dd5a4ef371b3bd" kind="function"><name>SplinepyBasis</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ac5b096806c4cd9447bf3b59921ddfc29" kind="function"><name>SplinepyBasisDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aad466357960a590d8a452bb9b3cf0f18" kind="function"><name>SplinepySupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a10f13720963256edc8ea3597fff70dec" kind="function"><name>SplinepyBasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a5f579d3e5401be64ef8ec3f8c95e9dd6" kind="function"><name>SplinepyBasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a22488930b1700b805f5a5e948e2fbf4c" kind="function"><name>SplinepyPlantNewKdTreeForProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a84d1acf1be097f8e35a12c43f6f4c4f2" kind="function"><name>SplinepyVerboseProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1af03150e973b9a12015b3ee7945d3fa57" kind="function"><name>SplinepyElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1aa180de3e9ee55ed0b6857401423d7d55" kind="function"><name>SplinepyReduceDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a5b63e6458cf833910c28aec1ab48dc00" kind="function"><name>SplinepyInsertKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a76d88d7ec305769215551668be88214a" kind="function"><name>SplinepyRemoveKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1adff57da32b261fc1eb98abf13233bef9" kind="function"><name>SplinepyKnotMultiplicities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1afccd6b3327213012b3c3bfddcb083139" kind="function"><name>SplinepyExtractBoundary</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a37c647b9c74e36f1c809d8c0dbb17580" kind="function"><name>SplinepyExtractBezierPatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a4874da9fb79799d367ff8f2167fa3a99" kind="function"><name>GetParameterSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ae6e423cd20ede61f6e7982b0e9cae794" kind="function"><name>GetWeightedVectorSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ae9c2e3de194c9487a6f9aef3060903ec" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1ae2f9dba293ec9b163a2957be0e440f50" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1Nurbs_1a296ff957b200c50aadee703157f2f1ff" kind="function"><name>SplinepyDeepCopy</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1proximity_1_1Proximity" kind="class"><name>splinepy::proximity::Proximity</name>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1af670dc78d0fd5b6fea989d1d4bdab0bf" kind="typedef"><name>Cloud_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a8099212695aada5d3a94d0de42966d4e" kind="typedef"><name>Tree_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a96864dcfe527491c13fb3f49fe817942" kind="variable"><name>spline_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a2329b1ec8670869ea1dbdb85629d980b" kind="variable"><name>grid_points_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a398bd36b3db46a6934adcbdde870f91c" kind="variable"><name>sampled_spline_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a3157abde4ecf99a5366c0d035daa262c" kind="variable"><name>cloud_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1abbaea3ec19e8c761542f81acf6eaaacc" kind="variable"><name>kdtree_</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a324aaa9c890544e32bd1e7a4eacc07ca" kind="function"><name>Proximity</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a78f057726c4086c6aaa4ef6f88e35b7a" kind="function"><name>PlantNewKdTree</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a5039b9171663bab0004f16d5f600c458" kind="function"><name>GuessMinusQuery</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a71df3d99818b62c0bee602e0e7cc9898" kind="function"><name>GuessMinusQuery</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a059970b224c2b88401e267cda6056306" kind="function"><name>MakeInitialGuess</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1ad3803fba4b510bc0032bb288aeca8474" kind="function"><name>MakeInitialGuess</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1abbfc07f94c7158549508652caf8d9970" kind="function"><name>UpdateAndClip</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1aa7f51b640993c400ef616904ecc88a04" kind="function"><name>J</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a44cdf9b5b9caf9ad32cbaef908273569" kind="function"><name>dJdu</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a03467d5a9f33e023ef3dc9f27f98ee88" kind="function"><name>d2Jdu2</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a763f998f2462d614816694590db82403" kind="function"><name>ComputeCostAndDerivatives</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1afae8f61fe1415c8031027fcfdfd4b228" kind="function"><name>ComputeStatus</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1ac6afa3dce7d30dc3dfe64bd36084c5b6" kind="function"><name>FindSearchBound</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a5bccb0d823f7af2b0c6afec80bb78c50" kind="function"><name>PrepareIterationNewton</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a1d37b48382b994fe06b16d7932310b34" kind="function"><name>Newton</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a9e634d5142db53be3cc71cbeb037e459" kind="function"><name>PrepareIterationLevenbergMarquart</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a12ca9dd0e254380b14981ac41e12f5d7" kind="function"><name>LevenbergMarquart</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1aee8736b8c0d27df9ec6be2e300882a34" kind="function"><name>PrepareIterationSlsqp</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1a8bf129e56e5e69cefd73b046cfad68dc" kind="function"><name>Slsqp</name></member>
+    <member refid="classsplinepy_1_1proximity_1_1Proximity_1af82b608c2d0ceac506ffa6b8230efd5e" kind="function"><name>VerboseQuery</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1py_1_1PyMultipatch" kind="class"><name>splinepy::py::PyMultipatch</name>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kind="typedef"><name>CorePatches_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" kind="variable"><name>patches_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" kind="variable"><name>core_patches_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" kind="variable"><name>sub_multipatch_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" kind="variable"><name>py_sub_multipatch_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" kind="variable"><name>sub_patch_centers_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" kind="variable"><name>boundary_patch_ids_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" kind="variable"><name>boundary_multipatch_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" kind="variable"><name>py_boundary_multipatch_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" kind="variable"><name>interfaces_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a2e07d68f0766923145ef57b2bf9c355a" kind="variable"><name>interface_orientations_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" kind="variable"><name>boundary_ids_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" kind="variable"><name>field_multipatches_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kind="variable"><name>n_default_threads_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" kind="variable"><name>same_parametric_bounds_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" kind="variable"><name>has_null_splines_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" kind="variable"><name>tolerance_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae5b8a48639468f4555dc2065e6997eaf" kind="function"><name>PyMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7ece76fbcb5e1715a5402fdba8e69cbe" kind="function"><name>PyMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acb7bca199cd41acbc397e7f372770fb2" kind="function"><name>PyMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0b541beb65f77913b0ade171bd7a6b9b" kind="function"><name>PyMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acd1e888b3cc89c7a1f0b3d0e5b797215" kind="function"><name>PyMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" kind="function"><name>CorePatches</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa71d36872f416feaa853788a7a7a7ef8" kind="function"><name>Clear</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a9443f705493b6a45fc9057d6ea053dad" kind="function"><name>ParaDim</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a5823ba33cada52391d809436934340e2" kind="function"><name>Dim</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aea85a30f7330f34848f1ca2313fcbc62" kind="function"><name>Name</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aec494286f50120416b01b7a543bae897" kind="function"><name>WhatAmI</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aa1995edad00ce4bcd4567fab2e753bfe" kind="function"><name>SetPatchesDefault</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" kind="function"><name>SetPatchesNThreads</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ad1ad02b1401aef4beba47d0b7affdd04" kind="function"><name>SetPatchesWithNullSplines</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1acce44859b8f54a3f46334ba2f9787280" kind="function"><name>GetPatches</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1afb4ff78f3f44e7ad4d0d43e63533f041" kind="function"><name>SubMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1abeb7cc522a0cdf130d591e1296765495" kind="function"><name>PySubMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7f4f2cac2ad983cfb51f7168f2995aee" kind="function"><name>SubPatchCenters</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a6bd28f06a3f28c386b20ee0e121d126d" kind="function"><name>SetInterfaces</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a5b7b7c7e7579f9437b7a8326d3256b73" kind="function"><name>GetInterfaces</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a70308ab1264bfc06d56e7d490cb2ee6a" kind="function"><name>GetInterfaceOrientations</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aecb50fe9249c1d9db03d85943fc3df99" kind="function"><name>BoundaryPatchIds</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a7437125b8cd4fe5c53cff10b46038a68" kind="function"><name>BoundaryMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a11d7c8d4cf202dc6c4ad5e6700719ec8" kind="function"><name>PyBoundaryMultipatch</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a313293920957b7ff24b6f116ffff2ff1" kind="function"><name>Evaluate</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ab90336e62c0d59ad75edd73d98adf25b" kind="function"><name>Sample</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1af7d7713467e20f3444c93781ebd7d408" kind="function"><name>AddFields</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1aaddb4a9ce3c89c4dcc569f8cdb560dfb" kind="function"><name>GetFields</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a1e76305b8f0a1a2c1c60593c9430859f" kind="function"><name>GetNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1a3365b303603bd27b61ee593a1e5b0f9a" kind="function"><name>GetControlPointOffsets</name></member>
+    <member refid="classsplinepy_1_1py_1_1PyMultipatch_1ae45e4bdec943b5fe4a689305b19fee4a" kind="function"><name>GetControlPoints</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1py_1_1PySpline" kind="class"><name>splinepy::py::PySpline</name>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a8d8fafeb4c9e6e2e9ecfdae2e32c224f" kind="typedef"><name>CoreSpline_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1af22fc033a28da611de197aeb49448c6c" kind="variable"><name>c_spline_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a96fb3e6b8f86a70c6fe8091b478e46a9" kind="variable"><name>para_dim_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a844805bf936642eb8849d76b506abf8d" kind="variable"><name>dim_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1aa3b9f0460d2b251a6cff4ac28881e040" kind="variable"><name>data_</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a76dea4c59b29d5361d4bc8f39fdf5522" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a26998f8662cb1ceab252a129907228a5" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1abc8b793a4130adf17324b21ca82ffb50" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ae468b1186fafd7422f3c48457cf27d1a" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a1da7c5ae328bed5795683bb93f36a24d" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a29daeecfc1b16e9298daf9f2018baaf8" kind="function"><name>PySpline</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a46a29b83a9a47391c25a2d49219f5fc2" kind="function"><name>NewCore</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a359946f99148cf58ab49950b385f65b7" kind="function"><name>Core</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a509fb1c72ca532a607ff93c8181e511e" kind="function"><name>Core</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a15d38297a4b14f22d084eab95779e35c" kind="function"><name>WhatAmI</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a41087c5f2f732f7a2f336b45b952f199" kind="function"><name>Name</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a129c6f541a94e7ae95577082a2cfedcc" kind="function"><name>HasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ab12b7cdceeccd010d3bbe04eb8b5c85b" kind="function"><name>IsRational</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a64406e0b9ea41f6e74ea8e6cdb448ad3" kind="function"><name>CurrentCoreDegrees</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a1d5d763de9077626609705b8591202b5" kind="function"><name>CurrentCoreProperties</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a671e8c0d22cf78763ab8ccfcf5ac5f4d" kind="function"><name>CoordinatePointers</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a52b23b4182a864a49ccb5f9d92c7c263" kind="function"><name>ParameterSpace</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1acc39b4da8816e8f99b4c1742c191a224" kind="function"><name>KnotVector</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a552febdd775dae957792b82e0d530608" kind="function"><name>ParametricBounds</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1aa635e6dc78e3e47607b7ecf8a24d7a4a" kind="function"><name>GrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a364309e6bb44dcfae649369f7f02c2e9" kind="function"><name>ControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a6bc4484d5b815817d892cf9a4473c61a" kind="function"><name>Evaluate</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ab5608611d0f26d611ecf1d1154e6ecbc" kind="function"><name>Sample</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a71a3306452b75e110c517a7093d4fab4" kind="function"><name>Jacobian</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1aebaf7c32aec0f6efc4146d65d63662c2" kind="function"><name>Derivative</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ab1f0a87f7f6c4d26012c624490203f10" kind="function"><name>Support</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ac9ec778787b12d40471a3b56a62d8654" kind="function"><name>Basis</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ac48d3b5c395957696c0773d2ede46717" kind="function"><name>BasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a93acd9db34aeb236e07da8e41f42e169" kind="function"><name>BasisDerivative</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a7689961cf31e06f07e5cbac49b8040c9" kind="function"><name>BasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ae19ff20aa33ba4159b920983abcaa18c" kind="function"><name>Proximities</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1acaaf8a6ec687d936f5881779bdde5958" kind="function"><name>ElevateDegrees</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1a00b28c3c7d392225ed4f6f3a106fc724" kind="function"><name>ReduceDegrees</name></member>
+    <member refid="classsplinepy_1_1py_1_1PySpline_1ada50ed6d0db4819e5466827fd5085fe4" kind="function"><name>ToDerived</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1RationalBezier" kind="class"><name>splinepy::splines::RationalBezier</name>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ad0d9b5c506ab3573df65a8d5a14ad73a" kind="typedef"><name>SplinepyBase_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ad07398d0d22bba77389b66e5ade57d10" kind="typedef"><name>WeightedControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a8b515a4638167cbb3d30b30105ed49e4" kind="typedef"><name>WeightPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aac7f3625301a8ac787db50365049177a" kind="typedef"><name>SelfTemplate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a4901bd43907ea496221048f74d61f402" kind="typedef"><name>BoundaryType_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a1be695544b8f365ecfde807473a48087" kind="typedef"><name>Base_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a105d5d135cd13dfc2bdaaa5d518807c8" kind="typedef"><name>ParametricCoordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1abcf87a110cc88b5bd29c8d3ef1ff0c3b" kind="typedef"><name>Degrees_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aaca1d2c801d643e6975e97e82cb9b68b" kind="typedef"><name>Coordinate_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a5ffc4405bae9fc25b79b0f9959d57ee2" kind="typedef"><name>Coordinates_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a3431b783fae0066f058e1834f52ca36e" kind="typedef"><name>Weight_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aa1b46e064c187fc4dcc6489713c5b69c" kind="typedef"><name>Derivative_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aee53aa3b3dab35b50d619eb6d7d64940" kind="typedef"><name>Dimension_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1af25be4433e4f4a2cdaba20195b042eff" kind="typedef"><name>Proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a8032d06d9c896fd0a551f5070eea21c5" kind="variable"><name>kParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a09f7e0710eaf58e3a373b2c514e41967" kind="variable"><name>kDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a61ce0c82e3321630130cde7c22bba55d" kind="variable"><name>kIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a2f325b26d4ab0f18cd453c784ff1d0c9" kind="variable"><name>kHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a39f7fc544822bdc30499730036603f1c" kind="variable"><name>proximity_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1af2418b2cbb12d2ce9df0a3a3cd7a2e1b" kind="function"><name>CreateBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a2195be1cb2827491a2cbb4f5d41f0d56" kind="function"><name>RationalBezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aebc814e7556505fdbffacf8d70b18201" kind="function"><name>RationalBezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ac866d368a93d910cd1e150bc2ceeba2f" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ab10a0286f45741df4e09ab99300feef0" kind="function"><name>operator()</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a295928c8177dccebb36ad246b2af01af" kind="function"><name>ElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ad0b0e5b72a509032ee74ce3af1df08ca" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1addafa95d18f804ff9b6565cc69b9b441" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ae9e589febdb3931dc5edf33b83e6ed81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a0164ebf3b3d2364894b747ab27772bfe" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a11ac3093e1244d3bcf9e8434acc37a5f" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1aa69c5b2aa3411e4f1b78332e0b6a2265" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a7b497cd52107288f7bf90fefbfb313e2" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a14e0d96a5aa8c07d510779cc6b4a2d1c" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a6abc26b6de0d012f500516e90b10157d" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a8e0889eaef9c19858a2518d7ec702ee8" kind="function"><name>SplinepyWeightedControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a1098dc0849393b10e09095c96f55d8d9" kind="function"><name>SplinepyWeightPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ad2869f6460d00786e925884afda6ab16" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a82c7531c75207a9c4c1ce2ee287d6d80" kind="function"><name>SplinepyControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a937737f903b962b14b75911ad87ea980" kind="function"><name>SplinepyGrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1af44d40483deab0f4f5d3901073b63c2c" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a1623b3917d83d47770045b0277ae0702" kind="function"><name>SplinepyDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a082fa04363d7823b4657cb5a1b5669ac" kind="function"><name>SplinepyJacobian</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1afb7b9a66f7bb2a06001bbaa6fe4b059e" kind="function"><name>SplinepyElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a5c804a4b323dcae914442ef3836f5ec9" kind="function"><name>SplinepyBasis</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a2858ead137ca708d2bfeccdae6e7ac45" kind="function"><name>SplinepyBasisDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a80ef44d7b6a5f9250fc26fd0fe2923aa" kind="function"><name>SplinepySupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a20722d779bdedf75284890abe61cce7f" kind="function"><name>SplinepyBasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ac61583ad2cb14834fa073d1f0d58c604" kind="function"><name>SplinepyBasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a655dd76f93a8a1ca02b8bb1fecb83c82" kind="function"><name>SplinepyPlantNewKdTreeForProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a311f2f145c25efbf07a4127a93fd728f" kind="function"><name>SplinepyVerboseProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a99ff3ac5c14681c4a3410ac4fc15ec5a" kind="function"><name>SplinepyMultiply</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a115e11c597c41143a487bac1564f306f" kind="function"><name>SplinepyAdd</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a555d25d480de53786027bda44ac4ae59" kind="function"><name>ConvertComposeToBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a8e0877c5aa9d0880e837c4f8e081d651" kind="function"><name>SplinepyComposeSensitivities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1af05fe3b20aed88bea1f16b634e3ddb19" kind="function"><name>SplinepyCompose</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a58e861256bd97c949018429e88bf2df9" kind="function"><name>SplinepySplit</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ad30620aeaaad6a9db0816696fbd87179" kind="function"><name>SplinepyDerivativeSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a50217282b435afd4c8db596f147f88ce" kind="function"><name>SplinepyExtractBoundary</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a89017250bfdb853c3bd01a41d7828a13" kind="function"><name>SplinepyExtractBezierPatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a531c1b5ece7f10875a4d5dac7598668b" kind="function"><name>SplinepyExtractDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a04cd334a9c81663a688f9a42f10348d4" kind="function"><name>SplinepyCompositionDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ae9c2e3de194c9487a6f9aef3060903ec" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1ae2f9dba293ec9b163a2957be0e440f50" kind="function"><name>GetProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1RationalBezier_1a296ff957b200c50aadee703157f2f1ff" kind="function"><name>SplinepyDeepCopy</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind" kind="struct"><name>splinepy::utils::DefaultInitializationAllocator::rebind</name>
+    <member refid="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind_1a0dc42ae1171daffda6b4843704acc572" kind="typedef"><name>other</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1proximity_1_1SearchData" kind="struct"><name>splinepy::proximity::SearchData</name>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a44c52cb01c136bc648b605fa6f7195cf" kind="variable"><name>para_dim</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a70b5e28b5bc3d1b63a7435c5fe50b837" kind="variable"><name>dim</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a21051f849765cb1a0b55489fbf8cf61c" kind="variable"><name>phys_query</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a3737a2b489c3a7444e22ce5112f7cfc6" kind="variable"><name>current_guess</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a734edcb4c6d08405bf9599a0cc172709" kind="variable"><name>current_phys</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0f8e97ff4b3535504ce8da28cdac9842" kind="variable"><name>difference</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a2831ea3643f31d690188fde388e17292" kind="variable"><name>spline_gradient</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab7d06748bbd02c82e0c3fbea709770e8" kind="variable"><name>spline_hessian</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae529444e0eddb7db98959571320837ed" kind="variable"><name>initial_guess</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0dc0b5a1406c6256535eec262540877f" kind="variable"><name>d2jdu2</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae3877633e31f8e79587c770d9ec2f09d" kind="variable"><name>djdu</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1abf2789e067bdc343a130d6b73a7dd918" kind="variable"><name>delta_guess</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ac5c47d097abf6b2a598add0ce92672b3" kind="variable"><name>spline_gradient_AAt</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ae4966660e7f808af798ab2ab0b84d53c" kind="variable"><name>search_bounds</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0fb1290196e5d5fcbb9d4a9ac762a60f" kind="variable"><name>lower_bound</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab012d1ab6742b4a56d10784298d470be" kind="variable"><name>upper_bound</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a8c27391c7be262f80bc4cdc7b6281257" kind="variable"><name>clipped</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a097975d09aa0bb27af296eebb678891f" kind="variable"><name>lhs_matrix</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a229fe836529a54bc8a7d390148d7a488" kind="variable"><name>J</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a79b8e036dca6911e3295a47d99f21f43" kind="variable"><name>distance</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a697b743232d64407856efb8abf7d07ea" kind="variable"><name>squared_distance</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a149038624de5f33350db5b3b83fe9af0" kind="variable"><name>convergence_norm</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab8695fef7f8cc08585fc3003ccfdce5e" kind="variable"><name>stop_iteration</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab043fd34e57f4f64b781d96a04d49979" kind="variable"><name>status</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a53380b3b14c20bdfcb3bc9970c421231" kind="variable"><name>max_iter</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a97eab6d709b80585fe9e8a54b1e3da27" kind="variable"><name>tolerance</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a539b73efce03233e5b3f3dc4444dc8c7" kind="variable"><name>convergence_goal</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a0b94201dbc5c30bfe0a68404f0c6055e" kind="variable"><name>options</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ad4a26dcd5b8c2799b5b732c217ea1c71" kind="variable"><name>SLSQP</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1aa3965c6e2d957efe45a4a53b48793736" kind="variable"><name>LM</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a8add18ed96bae6549335e7e7ca5f473b" kind="function"><name>SearchData</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a9930ae7406ed5d885c199de82d6cad26" kind="function"><name>Setup</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a93ed07345de6501d352abe5567d9489b" kind="function"><name>Lhs</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1a98885f4db7c1da7aa8e763f55829fd5e" kind="function"><name>Lhs</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1ab7c099e6eaaeeafd655dbfc236c6fdf8" kind="function"><name>IsConverged</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData" kind="struct"><name>splinepy::proximity::SearchData::SLSQPData</name>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a742204794ea328ba293fe59cec79b990" kind="variable"><name>m</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a487e32cf264952c428d632759a257845" kind="variable"><name>meq</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a8e48dcc59e4b8bbe40fe5b58321e4e72" kind="variable"><name>la</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a76f11d9a0a47b94f72c2d0e77fb32240" kind="variable"><name>n</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a711aad4cbe735871dd9e91ab575c878b" kind="variable"><name>x</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a3085279a86965e5710343f18e4169f34" kind="variable"><name>xl</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a6937a21ebbadaaab6e73fedb14ecf383" kind="variable"><name>xu</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a2e13cbaaba1951fdfe9e83d8b031e802" kind="variable"><name>f</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1ac5d97016e21972e630c7e5161990b267" kind="variable"><name>c</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1af72286acf4184005499476fbc853146f" kind="variable"><name>g</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1af2a333b1670df64a88d3a2f22210d155" kind="variable"><name>a</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a3f5829fb406b1eb98443802e65c97fc5" kind="variable"><name>acc</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1aab6f168571c2073e01e240524b8a3da0" kind="variable"><name>iter</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a1ea5d0cb93f22f7d0fdf804bd68c3326" kind="variable"><name>mode</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a1abaf67e7fe299b33a5cc25a3cec2175" kind="variable"><name>w</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a26ea56cf6c724847af1b6264df4bd584" kind="variable"><name>l_w</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a9b765b5c11c80cfe07ebe734342518f4" kind="variable"><name>jw</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a8054c99c8cf35848471c5451704eabb7" kind="variable"><name>l_jw</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a20f4c4490bc8ecbdd1ffcb79acce6035" kind="variable"><name>alpha</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a21dc9c125e26e5af3ff2e487cf27cdcd" kind="variable"><name>f0</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a1119eb164c502475d0c2a2a636db8658" kind="variable"><name>gs</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a74553021dc63dd47aa8b838f9312c599" kind="variable"><name>h1</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1ac2d9b75feeec68992c955b63e813e7ce" kind="variable"><name>h2</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1adafe1d7389480b1a329b70b3c2baed11" kind="variable"><name>h3</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a40b544b5f22197434cf4bb2ccca5c8a6" kind="variable"><name>h4</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a87accd1af8e0aff4b818d891374f7cec" kind="variable"><name>t</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a2a6d90c736b9e880fad815952157136f" kind="variable"><name>t0</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a2687e4b3cb5da7dbd00e565343f66c6c" kind="variable"><name>tol</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1ad1e4e0fdfec2d2565dc9264b0dda0949" kind="variable"><name>iexact</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1ad00efd267e46ea73ed393603ad19214b" kind="variable"><name>incons</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1abf5d5fdad910ea4587ea51c772db9b8d" kind="variable"><name>ireset</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a1bf60589bdebcb735025fb81a1d0f42e" kind="variable"><name>itermx</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a41ebd28ef1d7c6ade45642cb6acc1039" kind="variable"><name>line</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1acf4b6cea27655a9d2012c09c64d6ca9e" kind="variable"><name>n1</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1aa5d111dfc5a6d5317ca02bed02649f46" kind="variable"><name>n2</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1aeb30d83ca1f02849b55625bb3756843d" kind="variable"><name>n3</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a0e56b778ead80c706c91f91ef4d5114f" kind="variable"><name>w_space</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1aec2e8b0ac64c05b9e83749e337e83974" kind="variable"><name>jw_space</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a631f7180999fa232eae99ad825a5a353" kind="variable"><name>g_space</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1a93088a93384ad640541aadfe81ea4055" kind="function"><name>Setup</name></member>
+    <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData_1abf1938a7c08e7f2ea4ea49369320b340" kind="function"><name>CopyDerivative</name></member>
+  </compound>
+  <compound refid="classsplinepy_1_1splines_1_1SplinepyBase" kind="class"><name>splinepy::splines::SplinepyBase</name>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" kind="typedef"><name>ControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1adc055961fdb5902289317a57a4e01a1b" kind="typedef"><name>WeightedControlPointPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a4f5e1e4fe61bfc1f496d90985e18a938" kind="typedef"><name>WeightPointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" kind="variable"><name>control_point_pointers_</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a300fda0bc3091ee8328d7e3ccf83c889" kind="function"><name>SplinepyBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aea386b22415f301117a669e1fa04d55c" kind="function"><name>~SplinepyBase</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a997118cc64f6c3d827933652a0e06a25" kind="function"><name>SplinepyParaDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae2dd295617527f88b933ca007619ba06" kind="function"><name>SplinepyDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a96f3192b27218f7d53d83cf18bf5ee81" kind="function"><name>SplinepySplineName</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1abefc95435c3aa85747558d2f74cfd1f3" kind="function"><name>SplinepyWhatAmI</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af3bd0735a49bd8e375b06f562d3f3341" kind="function"><name>SplinepyHasKnotVectors</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a94e746bab5a7210db8dae6981a6aef14" kind="function"><name>SplinepyIsRational</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae1c06aea93c8a42d13959c78481416b8" kind="function"><name>SplinepyNumberOfControlPoints</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ade6ccd2d2e8897dab6f3950b4b905f48" kind="function"><name>SplinepyNumberOfSupports</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae791a517504d63316946462ffd75a597" kind="function"><name>SplinepyIsNull</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af304b3a49872cd3b06e5d4719e4919d2" kind="function"><name>SplinepyCurrentProperties</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a54dcf4b4f9ebd93c047a2de6b4b8ec23" kind="function"><name>SplinepyParameterSpace</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aec3f80474d3a3e1c2681b9b188c8f4b4" kind="function"><name>SplinepyKnotVector</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af20c63586810ad81b86a126d2a3ebff2" kind="function"><name>SplinepyControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a34564c79b8de33a2ad8bbbc2b7499c23" kind="function"><name>SplinepyWeightedControlPointPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a955f6e0c10f3df22e8d13034b9b619f7" kind="function"><name>SplinepyWeightPointers</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ad2869f6460d00786e925884afda6ab16" kind="function"><name>SplinepyParametricBounds</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a82c7531c75207a9c4c1ce2ee287d6d80" kind="function"><name>SplinepyControlMeshResolutions</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a937737f903b962b14b75911ad87ea980" kind="function"><name>SplinepyGrevilleAbscissae</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af44d40483deab0f4f5d3901073b63c2c" kind="function"><name>SplinepyEvaluate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a1623b3917d83d47770045b0277ae0702" kind="function"><name>SplinepyDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a8a41f8be9a9f5508406f8fedbe5c0499" kind="function"><name>SplinepyJacobian</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a5c804a4b323dcae914442ef3836f5ec9" kind="function"><name>SplinepyBasis</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a26f85766cf788dbcfc3b304900c18b49" kind="function"><name>SplinepyBasisDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a80ef44d7b6a5f9250fc26fd0fe2923aa" kind="function"><name>SplinepySupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a20722d779bdedf75284890abe61cce7f" kind="function"><name>SplinepyBasisAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7db518859493e6f59eddcfd643ac0fd9" kind="function"><name>SplinepyBasisDerivativeAndSupport</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a655dd76f93a8a1ca02b8bb1fecb83c82" kind="function"><name>SplinepyPlantNewKdTreeForProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a311f2f145c25efbf07a4127a93fd728f" kind="function"><name>SplinepyVerboseProximity</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a78beda53207c40f7f809f8bb3454d164" kind="function"><name>SplinepyElevateDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1abdc29d91239f8cbc6d80deab29327567" kind="function"><name>SplinepyReduceDegree</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aeee448dc5071048348878fb3f2cf6637" kind="function"><name>SplinepyInsertKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a87f592bab9442f544762bf187c21d819" kind="function"><name>SplinepyRemoveKnot</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a9b314b6a49745e77cce147e1ddde407e" kind="function"><name>SplinepyKnotMultiplicities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a99ff3ac5c14681c4a3410ac4fc15ec5a" kind="function"><name>SplinepyMultiply</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a115e11c597c41143a487bac1564f306f" kind="function"><name>SplinepyAdd</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af05fe3b20aed88bea1f16b634e3ddb19" kind="function"><name>SplinepyCompose</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a8e0877c5aa9d0880e837c4f8e081d651" kind="function"><name>SplinepyComposeSensitivities</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aa14f7f52b84375357c04e829276386a8" kind="function"><name>SplinepySplit</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ad30620aeaaad6a9db0816696fbd87179" kind="function"><name>SplinepyDerivativeSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a89017250bfdb853c3bd01a41d7828a13" kind="function"><name>SplinepyExtractBezierPatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a50217282b435afd4c8db596f147f88ce" kind="function"><name>SplinepyExtractBoundary</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a531c1b5ece7f10875a4d5dac7598668b" kind="function"><name>SplinepyExtractDim</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a04cd334a9c81663a688f9a42f10348d4" kind="function"><name>SplinepyCompositionDerivative</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1acc36e2767ff06648d5e325bb2bb61e8a" kind="function"><name>SplinepyDeepCopy</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a570e95158a7ef8c3d65a883524bfe843" kind="function"><name>SplinepyCreate</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a6197098cf037e4eac451a8e916b930ab" kind="function"><name>SplinepyCreateBezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aad8af300d6750fbfdc9bd07e6b880a2f" kind="function"><name>SplinepyCreateRationalBezier</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a2552b5bc29ddb7181f31ef6df08d82b1" kind="function"><name>SplinepyCreateBSpline</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a94259ef86c46a1f7a889a910dfbe56fb" kind="function"><name>SplinepyCreateNurbs</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a9bc5332b3f0f6aa06e959d5c73e54f7f" kind="function"><name>SplinepySplineNameMatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a922a33f1754656830dda4933f294fa41" kind="function"><name>SplinepyParaDimMatches</name></member>
+    <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a14e31715a0972b74b13776d636b700dc" kind="function"><name>SplinepyDimMatches</name></member>
+  </compound>
+  <compound refid="structsplinepy_1_1utils_1_1WeightPointers" kind="struct"><name>splinepy::utils::WeightPointers</name>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" kind="variable"><name>weights_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a5f242cdfd4e9f2337e42449cfdaecbd2" kind="variable"><name>control_point_pointers_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" kind="variable"><name>invalid_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" kind="variable"><name>dim_</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a084daa1edcc4d58991ca7dcbb09f42df" kind="function"><name>Len</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1aef6f9581b5fbe9ebe1178958db29d389" kind="function"><name>Dim</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" kind="function"><name>SetRow</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" kind="function"><name>SetRows</name></member>
+    <member refid="structsplinepy_1_1utils_1_1WeightPointers_1aae439260e416f2cd8a082b5bf1412d99" kind="function"><name>Sync</name></member>
+  </compound>
+  <compound refid="namespacebsplinelib" kind="namespace"><name>bsplinelib</name>
+  </compound>
+  <compound refid="namespacebsplinelib_1_1parameter__spaces" kind="namespace"><name>bsplinelib::parameter_spaces</name>
+  </compound>
+  <compound refid="namespacebsplinelib_1_1splines" kind="namespace"><name>bsplinelib::splines</name>
+  </compound>
+  <compound refid="namespacesplinepy" kind="namespace"><name>splinepy</name>
+  </compound>
+  <compound refid="namespacesplinepy_1_1proximity" kind="namespace"><name>splinepy::proximity</name>
+    <member refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kind="typedef"><name>RealArray</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kind="typedef"><name>RealArray2D</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1a5905cb3ac9c10468cb620098703da388" kind="typedef"><name>RealArray3D</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1a0602c9659981e782c9312f8d6f27dcfa" kind="typedef"><name>IndexArray</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1a0268d731df47b1be3dbb96f91fa33a06" kind="typedef"><name>ConstRealArray</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1a41e8e0dd014a8432c03b168afac6d923" kind="typedef"><name>LhsMatrix</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1ad5248019ad10a7724d2ac4644b752469" kind="function"><name>ConvergenceGoal</name></member>
+    <member refid="namespacesplinepy_1_1proximity_1ab6afed1649415d3f17a0e10a5c98ab69" kind="function"><name>FillHessian</name></member>
+  </compound>
+  <compound refid="namespacesplinepy_1_1py" kind="namespace"><name>splinepy::py</name>
+    <member refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kind="typedef"><name>CoreSplineVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" kind="typedef"><name>IntVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1aeffd78ed756c66d09f043c32424810f2" kind="typedef"><name>IntVectorVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1af25a53aec82a347bf9329587384342f7" kind="typedef"><name>DoubleVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1aa54a61745ccb960ae91ecf171271ffb7" kind="typedef"><name>SplineLibIoSpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a9558e3a8f677d63851f66fd3e652b4db" kind="typedef"><name>SplineLibIoSplines</name></member>
+    <member refid="namespacesplinepy_1_1py_1a84da04520f4e4e26a11e90c1ca3e3796" kind="function"><name>ComputeKnotInsertionMatrixAndKnotSpan</name></member>
+    <member refid="namespacesplinepy_1_1py_1a5cf14f511cf4a3be00b3e751989f74a2" kind="function"><name>ComputeGlobalKnotInsertionMatrix</name></member>
+    <member refid="namespacesplinepy_1_1py_1af42cf6e8a9e6fc8b1db32167f5daf7b5" kind="function"><name>BezierExtractionMatrices</name></member>
+    <member refid="namespacesplinepy_1_1py_1a07298ba791a7565d84229895f6ddf137" kind="function"><name>ToCoreSplineVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1ad2fe74453e3c2e17e2d039a2023d9f9d" kind="function"><name>ToCoreSplineVector</name></member>
+    <member refid="namespacesplinepy_1_1py_1a4578b809c1e80bce55ebbd59665f97ea" kind="function"><name>ToPySplineList</name></member>
+    <member refid="namespacesplinepy_1_1py_1afe72c4de339c154690534c93c0f2f6a4" kind="function"><name>ArgSort</name></member>
+    <member refid="namespacesplinepy_1_1py_1ad44754525d67fa05e6c0ce206df156d2" kind="function"><name>RaiseMismatch</name></member>
+    <member refid="namespacesplinepy_1_1py_1a147e1ba3d98f6b649a9a618600b60eb2" kind="function"><name>RaiseMismatch</name></member>
+    <member refid="namespacesplinepy_1_1py_1a039b2eb13ad81b37ad215fa9501722a7" kind="function"><name>FindConnectivityFromCenters</name></member>
+    <member refid="namespacesplinepy_1_1py_1a22ad050b6cf117fbc2dfbc91ba4d7a90" kind="function"><name>InterfacesFromBoundaryCenters</name></member>
+    <member refid="namespacesplinepy_1_1py_1a46ff56ea1abd3875dca74818e5b4b613" kind="function"><name>GetInterfaceOrientation</name></member>
+    <member refid="namespacesplinepy_1_1py_1a20f803f3d17344179ddd3499e71bf32d" kind="function"><name>ExtractAllBoundarySplines</name></member>
+    <member refid="namespacesplinepy_1_1py_1ab0d05deb35a0410b19f8444844f773cf" kind="function"><name>AddBoundariesFromContinuity</name></member>
+    <member refid="namespacesplinepy_1_1py_1a2458f4498100e7310c4902c8a2c45713" kind="function"><name>ToDerived</name></member>
+    <member refid="namespacesplinepy_1_1py_1a79a204f0c4dd472b5fd281848e4ddf39" kind="function"><name>CheckPyArrayShape</name></member>
+    <member refid="namespacesplinepy_1_1py_1a41d10c573edf76d8e297a879a64dc015" kind="function"><name>CheckPyArraySize</name></member>
+    <member refid="namespacesplinepy_1_1py_1a1df7f4a015c71dbc17bfe98914646f6e" kind="function"><name>PySplineToSplineLibIoSpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1ac7106e9a9b7e82a6a1c8103d1fdf8b4b" kind="function"><name>ListOfPySplinesToSplineLibIoSplines</name></member>
+    <member refid="namespacesplinepy_1_1py_1a8171653ebc75e667984e0b3c432bd559" kind="function"><name>ExportIges</name></member>
+    <member refid="namespacesplinepy_1_1py_1aa916efe70a993c713616651bb1a1bb75" kind="function"><name>InsertKnots</name></member>
+    <member refid="namespacesplinepy_1_1py_1a7f79a0f29cc7760709a673fad41b280c" kind="function"><name>RemoveKnots</name></member>
+    <member refid="namespacesplinepy_1_1py_1a39d3959657845ef75f493f1bddcd4653" kind="function"><name>Multiply</name></member>
+    <member refid="namespacesplinepy_1_1py_1ac1effb194c30fc6013e85cb61a2d77eb" kind="function"><name>Add</name></member>
+    <member refid="namespacesplinepy_1_1py_1acadb5e921a523baa6a56dc226ea9fbad" kind="function"><name>Compose</name></member>
+    <member refid="namespacesplinepy_1_1py_1a3a972b846ecc336a93df845419d32f6d" kind="function"><name>ComposeSensitivities</name></member>
+    <member refid="namespacesplinepy_1_1py_1a0c6df5fea37b9e2239a93cb812d391e6" kind="function"><name>DerivativeSpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a95c05d01782ddd2f92cfcc83ec47796f" kind="function"><name>Split</name></member>
+    <member refid="namespacesplinepy_1_1py_1a69ccd54675655ebe1388f11ca43ab7ab" kind="function"><name>ExtractBezierPatches</name></member>
+    <member refid="namespacesplinepy_1_1py_1aa59ae55bee4f8f3279e3d94fa068a90e" kind="function"><name>ExtractBoundaries</name></member>
+    <member refid="namespacesplinepy_1_1py_1a8b51ee28ed5db8cfcd067517bb52630f" kind="function"><name>ExtractDim</name></member>
+    <member refid="namespacesplinepy_1_1py_1a07e196cde055e4e35681279c031b12c1" kind="function"><name>CompositionDerivative</name></member>
+    <member refid="namespacesplinepy_1_1py_1a8b638ab7dedd352dadcb0b6b1cdc98c0" kind="function"><name>SameSplineWithKnotVectors</name></member>
+    <member refid="namespacesplinepy_1_1py_1a7d93e0caa24b51355f12250993739bc7" kind="function"><name>EvaluateBoundaryCenters</name></member>
+    <member refid="namespacesplinepy_1_1py_1a14ae9841ec9e6dc38898de25315b1728" kind="function"><name>CoreId</name></member>
+    <member refid="namespacesplinepy_1_1py_1a479d5e37953f5224be8cc4e873c04702" kind="function"><name>CoreRefCount</name></member>
+    <member refid="namespacesplinepy_1_1py_1aa4a51b5e4cf0fbdab4620d4581344f55" kind="function"><name>HasCore</name></member>
+    <member refid="namespacesplinepy_1_1py_1a5b484495db8158286c056d2ddd784ed2" kind="function"><name>AnnulCore</name></member>
+    <member refid="namespacesplinepy_1_1py_1a6dee28086f20dafc04390441aa515eb6" kind="function"><name>CreateNullSpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a38937802a3bd2f0a81c289ff1a5f4010" kind="function"><name>ReadIges</name></member>
+    <member refid="namespacesplinepy_1_1py_1a02809e044aead8a77e50077b38e60529" kind="function"><name>Len</name></member>
+    <member refid="namespacesplinepy_1_1py_1a6ca8877984225027549de04c2388d551" kind="function"><name>Dim</name></member>
+    <member refid="namespacesplinepy_1_1py_1a4423ae10a57891e29c8d80af09d935f9" kind="function"><name>SetRows</name></member>
+    <member refid="namespacesplinepy_1_1py_1afc885cab87839c5ff884e0f349169879" kind="function"><name>Sync</name></member>
+    <member refid="namespacesplinepy_1_1py_1a131bb6969f0587426b016882d41a17d6" kind="function"><name>SubSet</name></member>
+    <member refid="namespacesplinepy_1_1py_1af3a02bfb50c4567c0ba5b76c5f315a94" kind="function"><name>init_coordinate_pointers</name></member>
+    <member refid="namespacesplinepy_1_1py_1ab29c9c77cd0112111d41a3efe4299800" kind="function"><name>ComputeKnotInsertionMatrix</name></member>
+    <member refid="namespacesplinepy_1_1py_1af159c9d1601d82fa64c721493db38784" kind="function"><name>BezierExtractionMatrices</name></member>
+    <member refid="namespacesplinepy_1_1py_1aafdc79dc2d99f43309fc00d24b1c56bf" kind="function"><name>init_knot_insertion_matrix</name></member>
+    <member refid="namespacesplinepy_1_1py_1ad2b02cf46800801d294641e586b0bd2c" kind="function"><name>init_knot_vector</name></member>
+    <member refid="namespacesplinepy_1_1py_1a5f1550c9c8a37255249af5ed12531dd3" kind="function"><name>init_multipatch</name></member>
+    <member refid="namespacesplinepy_1_1py_1aabddfe649256f806af615fa51ae9dece" kind="function"><name>init_parameter_space</name></member>
+    <member refid="namespacesplinepy_1_1py_1a222a4e10a52851978982357340b97384" kind="function"><name>init_pyspline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a7219b1b1cb42cc80839059f67de777f7" kind="function"><name>init_spline_exporter</name></member>
+    <member refid="namespacesplinepy_1_1py_1aefb559e48da272690cc04d3db3c1dd9c" kind="function"><name>init_spline_extensions</name></member>
+    <member refid="namespacesplinepy_1_1py_1a5f459d4a1aae4e4e43bc969188c9e4a0" kind="function"><name>ConvertToPySpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a11461ebe92cc9864ffb341ccaaa055e9" kind="function"><name>ToPySpline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a9bd2575e6d65294595ca69ab55430364" kind="function"><name>init_spline_reader</name></member>
+    <member refid="namespacesplinepy_1_1py_1aed540ff2ea6ea85c9c127d8003e94626" kind="function"><name>init_pyspline</name></member>
+    <member refid="namespacesplinepy_1_1py_1a9c73245b96a4cd12b6b0e91afd0aed68" kind="function"><name>init_coordinate_pointers</name></member>
+    <member refid="namespacesplinepy_1_1py_1a197f60d0c52f56f222f95a08d73de251" kind="function"><name>init_spline_extensions</name></member>
+    <member refid="namespacesplinepy_1_1py_1a1253753b05331878ec2c0f968e713043" kind="function"><name>init_knot_insertion_matrix</name></member>
+    <member refid="namespacesplinepy_1_1py_1a94f70d63f1e9bf19b5193619e48b9efb" kind="function"><name>init_spline_exporter</name></member>
+  </compound>
+  <compound refid="namespacesplinepy_1_1splines" kind="namespace"><name>splinepy::splines</name>
+    <member refid="namespacesplinepy_1_1splines_1a8c9e801687881101d00a2226ef6e122d" kind="typedef"><name>BezierSplineType</name></member>
+    <member refid="namespacesplinepy_1_1splines_1ad01d8ff2a64fa5f4d65fdb041342b092" kind="typedef"><name>LookupArray_</name></member>
+    <member refid="namespacesplinepy_1_1splines_1ac7d6d249cbfbd419edc7324547215a62" kind="typedef"><name>RationalBezierSplineType</name></member>
+    <member refid="namespacesplinepy_1_1splines_1a95d16f836b3889ac76aef5899dbcb4b0" kind="variable"><name>kMaxLookupDim</name></member>
+    <member refid="namespacesplinepy_1_1splines_1a49b3d2fe229e792a665a79d227456d12" kind="variable"><name>kNullSplineLookup</name></member>
+    <member refid="namespacesplinepy_1_1splines_1a6b96cb1d80e48930cc1c98e9faf9d3c9" kind="function"><name>NullSplineFromLookup</name></member>
+  </compound>
+  <compound refid="namespacesplinepy_1_1splines_1_1create" kind="namespace"><name>splinepy::splines::create</name>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1aade4ea29deb4a1697966c7b102f6d9d3" kind="function"><name>CreateBezier1</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1a6fdc3f59aa5135692b3c8b7440dcb3c6" kind="function"><name>CreateBezier2</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1aeff31c4728ad825ee13af0874ce895af" kind="function"><name>CreateBezier3</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1a133205d2377199b333b5439ef323a288" kind="function"><name>CreateRationalBezier1</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1a20c5933b52cc5ddd5368ab548b416e1d" kind="function"><name>CreateRationalBezier2</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1create_1a9cec82a50d342fcb43608432cb7c5c1f" kind="function"><name>CreateRationalBezier3</name></member>
+  </compound>
+  <compound refid="namespacesplinepy_1_1splines_1_1helpers" kind="namespace"><name>splinepy::splines::helpers</name>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ac88688024bbdfd39f497adb7a6a9b069" kind="function"><name>BezierBasis</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1abf46ba39892f39afc84242904a8b1e12" kind="function"><name>BezierBasisDerivative</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1afb63375e861befdd4f20cc193eff188e" kind="function"><name>BezierSupport</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a76058087524095ec6cffd428231ebfac" kind="function"><name>BSplineBasisPerParametricDimension</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ae886b3af80688caf098c00d4bf632879" kind="function"><name>BSplineSupport</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1aef6e96f183bd171465935d9442951377" kind="function"><name>BSplineSupport</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ace4af8500f999ad1a79237eaca1e6484" kind="function"><name>NonRationalBSplineBasis</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ab3d9894780e786b1416765adc671a4e9" kind="function"><name>RationalBSplineBasis</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a16b1094f25c41240504b137374ba4df4" kind="function"><name>RationalBSplineBasis</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a701b1ee5e5523ef0aabe51ae50aec6be" kind="function"><name>BSplineBasis</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ad5737c732eb881489503fa1f29ce8d96" kind="function"><name>BSplineBasisDerivativePerParametricDimension</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a3513a523068e93277e43b90c5ba8bd0b" kind="function"><name>NonRationalBSplineBasisDerivative</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1af6bd76e2df5c596ea8c2cf0aacbaa0e4" kind="function"><name>RationalBSplineBasisDerivative</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a99526fdb0b3b82f24413f2d52fa465a8" kind="function"><name>BSplineBasisDerivative</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a570f88059ca67218883fe85fde537278" kind="function"><name>ExtractBoundaryFromAxisAndExtrema</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a5217fdf3988ebbe7dd2adad970aab7eb" kind="function"><name>ExtractControlMeshSliceFromIDs</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1abf555888abb017a2eb52dbe6c81f3955" kind="function"><name>ExtractBoundaryMeshSlice</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a745e71bdf26ed5bdad7a530f45233799" kind="function"><name>ExtractControlMeshSlice</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a809114d1545aa26f4be0e068e1034a25" kind="function"><name>ExtractBezierPatchIDs</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a86d5fb909736e3e591d169c303b1a376" kind="function"><name>ExtractBezierPatches</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a7602f13d93f009d510e06319ff15ff33" kind="function"><name>GetParametricBounds</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a85e5be7173a8c83be2f6c74ad47a46bb" kind="function"><name>GetNumberOfSupports</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a97e747d67be547c7d8ef4b11a5e80f68" kind="function"><name>GetControlMeshResolutions</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1aa9925bb7bb124b27286fc142645ea018" kind="function"><name>GetGrevilleAbscissae</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1ac43c5574e08a0bf9f361e46a265ad95c" kind="function"><name>ScalarTypeEvaluate</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a2411a5c76f036f8c12a52fbcc2982c02" kind="function"><name>ScalarTypeBoundaryCenters</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1acab2d940771d30fd9baf6eda020e1bb7" kind="function"><name>ScalarTypeEvaluateBoundaryCenters</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1af98bb1f615fdb461970a305b67243936" kind="function"><name>ScalarTypeDerivative</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1aaad4ffee231d04ff5eabe2c65bd2e9a8" kind="function"><name>ScalarTypeJacobian</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1af08c758f2ee6ce109789332bd7c83cb1" kind="function"><name>ScalarTypeElevateDegree</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1aa42eef74f70fed5db000351dd6f84358" kind="function"><name>ScalarTypeReduceDegree</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a6dcd426d8f7ea59e414c7e1ba4fc1f7e" kind="function"><name>ScalarTypeInsertKnot</name></member>
+    <member refid="namespacesplinepy_1_1splines_1_1helpers_1a64fa41c4a96e6ae83d468e1164021a7a" kind="function"><name>ScalarTypeRemoveKnot</name></member>
+  </compound>
+  <compound refid="namespacesplinepy_1_1utils" kind="namespace"><name>splinepy::utils</name>
+    <member refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kind="typedef"><name>DefaultInitializationVector</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a400e9a56941f39a0414f6e29bbe4cab6" kind="function"><name>UniqueIndicesAndMultiplicities</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a71a48c4084570c5e2c59d67e6161605d" kind="function"><name>Subtract</name></member>
+    <member refid="namespacesplinepy_1_1utils_1ad79d98218bcd82080944cccdcc9721de" kind="function"><name>CopyUpperToLowerTriangle</name></member>
+    <member refid="namespacesplinepy_1_1utils_1aeb1dd930c708aed1f211322bd867bc8b" kind="function"><name>GaussWithPivot</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a0ee0ec250f29b95c8641b9114debf96c" kind="function"><name>WrapId</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a79a958006d178cda7641daceabb6354b" kind="function"><name>NThreadExecution</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a49d56ded196d210960ec7b08a73e2dc8" kind="function"><name>PrintInfo</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a58a52f5ff8828626c8dacc16a98135ef" kind="function"><name>PrintDebug</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a93243e8cd8ac6e4b940fa0d53461141a" kind="function"><name>PrintWarning</name></member>
+    <member refid="namespacesplinepy_1_1utils_1a012d99626ae7c9c6e90195d6d2ed2ad8" kind="function"><name>PrintAndThrowError</name></member>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="arrays_8hpp" kind="file"><name>arrays.hpp</name>
+  </compound>
+  <compound refid="basis__functions_8hpp" kind="file"><name>basis_functions.hpp</name>
+  </compound>
+  <compound refid="explicit_2bezier_8hpp" kind="file"><name>explicit/bezier.hpp</name>
+  </compound>
+  <compound refid="splines_2bezier_8hpp" kind="file"><name>splines/bezier.hpp</name>
+  </compound>
+  <compound refid="bezier_8inl" kind="file"><name>bezier.inl</name>
+  </compound>
+  <compound refid="bezier1_8cpp" kind="file"><name>bezier1.cpp</name>
+  </compound>
+  <compound refid="bezier10_8cpp" kind="file"><name>bezier10.cpp</name>
+  </compound>
+  <compound refid="bezier2_8cpp" kind="file"><name>bezier2.cpp</name>
+  </compound>
+  <compound refid="bezier3_8cpp" kind="file"><name>bezier3.cpp</name>
+  </compound>
+  <compound refid="bezier4_8cpp" kind="file"><name>bezier4.cpp</name>
+  </compound>
+  <compound refid="bezier5_8cpp" kind="file"><name>bezier5.cpp</name>
+  </compound>
+  <compound refid="bezier6_8cpp" kind="file"><name>bezier6.cpp</name>
+  </compound>
+  <compound refid="bezier7_8cpp" kind="file"><name>bezier7.cpp</name>
+  </compound>
+  <compound refid="bezier8_8cpp" kind="file"><name>bezier8.cpp</name>
+  </compound>
+  <compound refid="bezier9_8cpp" kind="file"><name>bezier9.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit1_8cpp" kind="file"><name>bezier_explicit1.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit10_8cpp" kind="file"><name>bezier_explicit10.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit2_8cpp" kind="file"><name>bezier_explicit2.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit3_8cpp" kind="file"><name>bezier_explicit3.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit4_8cpp" kind="file"><name>bezier_explicit4.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit5_8cpp" kind="file"><name>bezier_explicit5.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit6_8cpp" kind="file"><name>bezier_explicit6.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit7_8cpp" kind="file"><name>bezier_explicit7.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit8_8cpp" kind="file"><name>bezier_explicit8.cpp</name>
+  </compound>
+  <compound refid="bezier__explicit9_8cpp" kind="file"><name>bezier_explicit9.cpp</name>
+  </compound>
+  <compound refid="explicit_2bspline_8hpp" kind="file"><name>explicit/bspline.hpp</name>
+  </compound>
+  <compound refid="splines_2bspline_8hpp" kind="file"><name>splines/bspline.hpp</name>
+  </compound>
+  <compound refid="bspline__explicit_8cpp" kind="file"><name>bspline_explicit.cpp</name>
+  </compound>
+  <compound refid="coordinate__pointers_8cpp" kind="file"><name>coordinate_pointers.cpp</name>
+  </compound>
+  <compound refid="coordinate__pointers_8hpp" kind="file"><name>coordinate_pointers.hpp</name>
+  </compound>
+  <compound refid="cpp__readme_8md" kind="file"><name>cpp_readme.md</name>
+  </compound>
+  <compound refid="create__bezier_8hpp" kind="file"><name>create_bezier.hpp</name>
+  </compound>
+  <compound refid="create__rational__bezier_8hpp" kind="file"><name>create_rational_bezier.hpp</name>
+  </compound>
+  <compound refid="default__initialization__allocator_8hpp" kind="file"><name>default_initialization_allocator.hpp</name>
+  </compound>
+  <compound refid="extract_8cpp" kind="file"><name>extract.cpp</name>
+  </compound>
+  <compound refid="extract_8hpp" kind="file"><name>extract.hpp</name>
+  </compound>
+  <compound refid="grid__points_8hpp" kind="file"><name>grid_points.hpp</name>
+  </compound>
+  <compound refid="nthreads_8hpp" kind="file"><name>nthreads.hpp</name>
+  </compound>
+  <compound refid="null__spline_8hpp" kind="file"><name>null_spline.hpp</name>
+  </compound>
+  <compound refid="explicit_2nurbs_8hpp" kind="file"><name>explicit/nurbs.hpp</name>
+  </compound>
+  <compound refid="splines_2nurbs_8hpp" kind="file"><name>splines/nurbs.hpp</name>
+  </compound>
+  <compound refid="nurbs__explicit_8cpp" kind="file"><name>nurbs_explicit.cpp</name>
+  </compound>
+  <compound refid="print_8hpp" kind="file"><name>print.hpp</name>
+  </compound>
+  <compound refid="properties_8hpp" kind="file"><name>properties.hpp</name>
+  </compound>
+  <compound refid="proximity_8cpp" kind="file"><name>proximity.cpp</name>
+  </compound>
+  <compound refid="proximity_8hpp" kind="file"><name>proximity.hpp</name>
+  </compound>
+  <compound refid="py__coordinate__pointers_8cpp" kind="file"><name>py_coordinate_pointers.cpp</name>
+  </compound>
+  <compound refid="py__knot__insertion__matrix_8cpp" kind="file"><name>py_knot_insertion_matrix.cpp</name>
+  </compound>
+  <compound refid="py__knot__insertion__matrix_8hpp" kind="file"><name>py_knot_insertion_matrix.hpp</name>
+  </compound>
+  <compound refid="py__knot__vector_8cpp" kind="file"><name>py_knot_vector.cpp</name>
+  </compound>
+  <compound refid="py__multipatch_8cpp" kind="file"><name>py_multipatch.cpp</name>
+  </compound>
+  <compound refid="py__multipatch_8hpp" kind="file"><name>py_multipatch.hpp</name>
+  </compound>
+  <compound refid="py__parameter__space_8cpp" kind="file"><name>py_parameter_space.cpp</name>
+  </compound>
+  <compound refid="py__spline_8cpp" kind="file"><name>py_spline.cpp</name>
+  </compound>
+  <compound refid="py__spline_8hpp" kind="file"><name>py_spline.hpp</name>
+  </compound>
+  <compound refid="py__spline__exporter_8cpp" kind="file"><name>py_spline_exporter.cpp</name>
+  </compound>
+  <compound refid="py__spline__exporter_8hpp" kind="file"><name>py_spline_exporter.hpp</name>
+  </compound>
+  <compound refid="py__spline__extensions_8cpp" kind="file"><name>py_spline_extensions.cpp</name>
+  </compound>
+  <compound refid="py__spline__extensions_8hpp" kind="file"><name>py_spline_extensions.hpp</name>
+  </compound>
+  <compound refid="py__spline__reader_8cpp" kind="file"><name>py_spline_reader.cpp</name>
+  </compound>
+  <compound refid="py__spline__reader_8hpp" kind="file"><name>py_spline_reader.hpp</name>
+  </compound>
+  <compound refid="explicit_2rational__bezier_8hpp" kind="file"><name>explicit/rational_bezier.hpp</name>
+  </compound>
+  <compound refid="splines_2rational__bezier_8hpp" kind="file"><name>splines/rational_bezier.hpp</name>
+  </compound>
+  <compound refid="rational__bezier_8inl" kind="file"><name>rational_bezier.inl</name>
+  </compound>
+  <compound refid="rational__bezier1_8cpp" kind="file"><name>rational_bezier1.cpp</name>
+  </compound>
+  <compound refid="rational__bezier10_8cpp" kind="file"><name>rational_bezier10.cpp</name>
+  </compound>
+  <compound refid="rational__bezier2_8cpp" kind="file"><name>rational_bezier2.cpp</name>
+  </compound>
+  <compound refid="rational__bezier3_8cpp" kind="file"><name>rational_bezier3.cpp</name>
+  </compound>
+  <compound refid="rational__bezier4_8cpp" kind="file"><name>rational_bezier4.cpp</name>
+  </compound>
+  <compound refid="rational__bezier5_8cpp" kind="file"><name>rational_bezier5.cpp</name>
+  </compound>
+  <compound refid="rational__bezier6_8cpp" kind="file"><name>rational_bezier6.cpp</name>
+  </compound>
+  <compound refid="rational__bezier7_8cpp" kind="file"><name>rational_bezier7.cpp</name>
+  </compound>
+  <compound refid="rational__bezier8_8cpp" kind="file"><name>rational_bezier8.cpp</name>
+  </compound>
+  <compound refid="rational__bezier9_8cpp" kind="file"><name>rational_bezier9.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit1_8cpp" kind="file"><name>rational_bezier_explicit1.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit10_8cpp" kind="file"><name>rational_bezier_explicit10.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit2_8cpp" kind="file"><name>rational_bezier_explicit2.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit3_8cpp" kind="file"><name>rational_bezier_explicit3.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit4_8cpp" kind="file"><name>rational_bezier_explicit4.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit5_8cpp" kind="file"><name>rational_bezier_explicit5.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit6_8cpp" kind="file"><name>rational_bezier_explicit6.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit7_8cpp" kind="file"><name>rational_bezier_explicit7.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit8_8cpp" kind="file"><name>rational_bezier_explicit8.cpp</name>
+  </compound>
+  <compound refid="rational__bezier__explicit9_8cpp" kind="file"><name>rational_bezier_explicit9.cpp</name>
+  </compound>
+  <compound refid="scalar__type__wrapper_8hpp" kind="file"><name>scalar_type_wrapper.hpp</name>
+  </compound>
+  <compound refid="slsqp_8c" kind="file"><name>slsqp.c</name>
+    <member refid="slsqp_8c_1affe776513b24d84b39af8ab0930fef7f" kind="define"><name>max</name></member>
+    <member refid="slsqp_8c_1ac6afabdc09a49a433ee19d8a9486056d" kind="define"><name>min</name></member>
+    <member refid="slsqp_8c_1a81305851d8fc81c7a4515d6d9b9123a6" kind="variable"><name>c__0</name></member>
+    <member refid="slsqp_8c_1ac3b6f615e934afb8022ec5b2c10977c7" kind="variable"><name>c__1</name></member>
+    <member refid="slsqp_8c_1a6b800a656683f20e606bd642ac8e81cc" kind="variable"><name>c__2</name></member>
+    <member refid="slsqp_8c_1a39b11d874bd2f3722fed6bf2bb2c7c0d" kind="function"><name>slsqp</name></member>
+    <member refid="slsqp_8c_1ac9a4f95953ac5ea16fce54b9869e1e43" kind="function"><name>slsqpb</name></member>
+    <member refid="slsqp_8c_1a7dfdca0e768acb4762246944df6064e5" kind="function"><name>lsq</name></member>
+    <member refid="slsqp_8c_1a6c885899adf056165227634cd8ce8c2b" kind="function"><name>lsei</name></member>
+    <member refid="slsqp_8c_1a983278d976283a647607d8b4a35863c1" kind="function"><name>lsi</name></member>
+    <member refid="slsqp_8c_1af93a8bea55789bf3439530749194a41b" kind="function"><name>ldp</name></member>
+    <member refid="slsqp_8c_1a418a33363f316eb90f63962554971f91" kind="function"><name>nnls</name></member>
+    <member refid="slsqp_8c_1a932017376b1cfdcfb236231b5a68aa23" kind="function"><name>hfti</name></member>
+    <member refid="slsqp_8c_1a28c37f92c3ee05f871d6e3c58a67ef7a" kind="function"><name>h12</name></member>
+    <member refid="slsqp_8c_1af746a9e04b19fdfc067a84752a503ccc" kind="function"><name>ldl</name></member>
+    <member refid="slsqp_8c_1a9b2e40140ae64d5dcc6aa1f8cd413226" kind="function"><name>linmin</name></member>
+    <member refid="slsqp_8c_1a7d8f534b2d6396e7e4fe9430a7478f55" kind="function"><name>daxpy_sl</name></member>
+    <member refid="slsqp_8c_1a6cca4592861e49593fcdec93143114d7" kind="function"><name>dcopy</name></member>
+    <member refid="slsqp_8c_1ab8f4bd9ffd53a9b1bae9e16e613c7fe7" kind="function"><name>ddot_sl</name></member>
+    <member refid="slsqp_8c_1aff4f441d0ef8a288248ce241e9a25038" kind="function"><name>dnrm1</name></member>
+    <member refid="slsqp_8c_1ae659bc9c1f411c00a88c25243eba595f" kind="function"><name>dnrm2</name></member>
+    <member refid="slsqp_8c_1ab21b159dcf686c0a01d8bf4deef90608" kind="function"><name>dsrot</name></member>
+    <member refid="slsqp_8c_1ab4a611e9eb900cbae0fd9ed8b13962bb" kind="function"><name>dsrotg</name></member>
+    <member refid="slsqp_8c_1a42ae61b7465343cc4978a6c6560f78cb" kind="function"><name>dscal_sl</name></member>
+    <member refid="slsqp_8c_1ab68793d89fb57020efdd2bb3b451a27a" kind="function"><name>bound</name></member>
+  </compound>
+  <compound refid="slsqp_8h" kind="file"><name>slsqp.h</name>
+    <member refid="slsqp_8h_1ac0adb27ab06e12e9bdc0641ed7ff4f55" kind="function"><name>slsqp</name></member>
+    <member refid="slsqp_8h_1ac9a4f95953ac5ea16fce54b9869e1e43" kind="function"><name>slsqpb</name></member>
+    <member refid="slsqp_8h_1a7dfdca0e768acb4762246944df6064e5" kind="function"><name>lsq</name></member>
+    <member refid="slsqp_8h_1a6c885899adf056165227634cd8ce8c2b" kind="function"><name>lsei</name></member>
+    <member refid="slsqp_8h_1a983278d976283a647607d8b4a35863c1" kind="function"><name>lsi</name></member>
+    <member refid="slsqp_8h_1af93a8bea55789bf3439530749194a41b" kind="function"><name>ldp</name></member>
+    <member refid="slsqp_8h_1a418a33363f316eb90f63962554971f91" kind="function"><name>nnls</name></member>
+    <member refid="slsqp_8h_1a932017376b1cfdcfb236231b5a68aa23" kind="function"><name>hfti</name></member>
+    <member refid="slsqp_8h_1a28c37f92c3ee05f871d6e3c58a67ef7a" kind="function"><name>h12</name></member>
+    <member refid="slsqp_8h_1af746a9e04b19fdfc067a84752a503ccc" kind="function"><name>ldl</name></member>
+    <member refid="slsqp_8h_1a9b2e40140ae64d5dcc6aa1f8cd413226" kind="function"><name>linmin</name></member>
+    <member refid="slsqp_8h_1a7d8f534b2d6396e7e4fe9430a7478f55" kind="function"><name>daxpy_sl</name></member>
+    <member refid="slsqp_8h_1a6cca4592861e49593fcdec93143114d7" kind="function"><name>dcopy</name></member>
+    <member refid="slsqp_8h_1ab8f4bd9ffd53a9b1bae9e16e613c7fe7" kind="function"><name>ddot_sl</name></member>
+    <member refid="slsqp_8h_1aff4f441d0ef8a288248ce241e9a25038" kind="function"><name>dnrm1</name></member>
+    <member refid="slsqp_8h_1ae659bc9c1f411c00a88c25243eba595f" kind="function"><name>dnrm2</name></member>
+    <member refid="slsqp_8h_1ab21b159dcf686c0a01d8bf4deef90608" kind="function"><name>dsrot</name></member>
+    <member refid="slsqp_8h_1ab4a611e9eb900cbae0fd9ed8b13962bb" kind="function"><name>dsrotg</name></member>
+    <member refid="slsqp_8h_1a42ae61b7465343cc4978a6c6560f78cb" kind="function"><name>dscal_sl</name></member>
+    <member refid="slsqp_8h_1ab68793d89fb57020efdd2bb3b451a27a" kind="function"><name>bound</name></member>
+  </compound>
+  <compound refid="splinepy__base_8cpp" kind="file"><name>splinepy_base.cpp</name>
+  </compound>
+  <compound refid="splinepy__base_8hpp" kind="file"><name>splinepy_base.hpp</name>
+  </compound>
+  <compound refid="splinepy__core_8cpp" kind="file"><name>splinepy_core.cpp</name>
+    <member refid="splinepy__core_8cpp_1aa81a7eab19ac43115dc9e95f0ec2c581" kind="function"><name>PYBIND11_MODULE</name></member>
+  </compound>
+  <compound refid="todo" kind="page"><name>todo</name>
+  </compound>
+  <compound refid="dir_74bbe59dc4d4993b4196ab48d40e9589" kind="dir"><name>create</name>
+  </compound>
+  <compound refid="dir_930093d73ce72330a19dc149ffda8d70" kind="dir"><name>create</name>
+  </compound>
+  <compound refid="dir_7626833f9d7b502d569dc83ee13d5ccd" kind="dir"><name>explicit</name>
+  </compound>
+  <compound refid="dir_2e7ef7816641e35773efc2fa5e44e674" kind="dir"><name>explicit</name>
+  </compound>
+  <compound refid="dir_3fb51d3403234d8fe241b572e8fc6ba8" kind="dir"><name>helpers</name>
+  </compound>
+  <compound refid="dir_b34649bf36c520b8780fa665f9e90d86" kind="dir"><name>helpers</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_953ac13dcbfb3e70ef6edb1a0956b929" kind="dir"><name>markdown</name>
+  </compound>
+  <compound refid="dir_94674edf9b4889731a2913233d828326" kind="dir"><name>proximity</name>
+  </compound>
+  <compound refid="dir_1fe5f34325739966f06c59d2449db345" kind="dir"><name>proximity</name>
+  </compound>
+  <compound refid="dir_7b6486bcf1a26da3403c8d47be128b95" kind="dir"><name>py</name>
+  </compound>
+  <compound refid="dir_a93a2bf9e4fdfd9b0c8f935e1e182eb2" kind="dir"><name>py</name>
+  </compound>
+  <compound refid="dir_cf1916ac376f75d16565f721d2a29699" kind="dir"><name>slsqp</name>
+  </compound>
+  <compound refid="dir_edecae33a05e19acb624f263f2463190" kind="dir"><name>slsqp</name>
+  </compound>
+  <compound refid="dir_51f859c5f05dfa4785ab521e2a5e77fe" kind="dir"><name>splinepy</name>
+  </compound>
+  <compound refid="dir_95a9dc4e7398479dca1c905da5f147d3" kind="dir"><name>splinepy</name>
+  </compound>
+  <compound refid="dir_2a7af08f203b407de9a213f83cf9f059" kind="dir"><name>splines</name>
+  </compound>
+  <compound refid="dir_f6c01941168702e98691a021660d553b" kind="dir"><name>splines</name>
+  </compound>
+  <compound refid="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir"><name>src</name>
+  </compound>
+  <compound refid="dir_313caf1132e152dd9b58bea13a4052ca" kind="dir"><name>utils</name>
+  </compound>
+  <compound refid="dir_27bfc26f2c2737738a236cc0f99f995c" kind="dir"><name>utils</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

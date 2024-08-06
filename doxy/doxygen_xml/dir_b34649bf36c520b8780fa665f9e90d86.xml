@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_b34649bf36c520b8780fa665f9e90d86" kind="dir">
+    <compoundname>helpers</compoundname>
+    <innerfile refid="extract_8cpp">extract.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/src/splines/helpers/"/>
+  </compounddef>
+</doxygen>

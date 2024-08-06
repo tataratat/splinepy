@@ -1,0 +1,6 @@
+splinepy.helpme.fit.curve
+=========================
+
+.. currentmodule:: splinepy.helpme.fit
+
+.. autofunction:: curve

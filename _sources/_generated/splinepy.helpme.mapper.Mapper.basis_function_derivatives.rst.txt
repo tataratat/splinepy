@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.basis\_function\_derivatives
+==========================================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.basis_function_derivatives

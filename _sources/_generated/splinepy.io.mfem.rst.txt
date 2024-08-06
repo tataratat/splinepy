@@ -1,0 +1,36 @@
+.. _splinepy.io.mfem:
+
+splinepy.io.mfem
+================
+
+.. automodule:: splinepy.io.mfem
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      dof_mapping
+      export
+      export_cartesian
+      load
+      read_solution
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

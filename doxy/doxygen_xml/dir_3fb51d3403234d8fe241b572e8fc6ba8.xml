@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_3fb51d3403234d8fe241b572e8fc6ba8" kind="dir">
+    <compoundname>helpers</compoundname>
+    <innerfile refid="basis__functions_8hpp">basis_functions.hpp</innerfile>
+    <innerfile refid="extract_8hpp">extract.hpp</innerfile>
+    <innerfile refid="properties_8hpp">properties.hpp</innerfile>
+    <innerfile refid="scalar__type__wrapper_8hpp">scalar_type_wrapper.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,11 @@
+<map id="SearchData" name="SearchData">
+<area shape="rect" id="node1" title="struct to hold temporary data during the search. This should allow easier transition to fallback meth..." alt="" coords="466,1368,628,1680"/>
+<area shape="rect" id="node2" href="$structsplinepy_1_1proximity_1_1SearchData_1_1SLSQPData.html" title="SLSQP specific search data. members are organized in the same order as the function call." alt="" coords="146,1067,294,1305"/>
+<area shape="rect" id="node3" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="40,395,254,707"/>
+<area shape="rect" id="node4" href="$classsplinepy_1_1utils_1_1Array.html" title="fully dynamic array" alt="" coords="480,5,694,332"/>
+<area shape="rect" id="node5" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="280,395,494,707"/>
+<area shape="rect" id="node6" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="480,731,694,1043"/>
+<area shape="rect" id="node8" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="701,731,916,1043"/>
+<area shape="rect" id="node9" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="922,731,1137,1043"/>
+<area shape="rect" id="node7" href="$structsplinepy_1_1proximity_1_1SearchData_1_1LMData.html" title="Levenberg&#45;Marquart specific search data." alt="" coords="474,1111,620,1261"/>
+</map>

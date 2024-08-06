@@ -1,0 +1,6 @@
+splinepy.utils.log.error
+========================
+
+.. currentmodule:: splinepy.utils.log
+
+.. autofunction:: error

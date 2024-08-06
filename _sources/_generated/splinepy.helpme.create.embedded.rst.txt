@@ -1,0 +1,6 @@
+splinepy.helpme.create.embedded
+===============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: embedded

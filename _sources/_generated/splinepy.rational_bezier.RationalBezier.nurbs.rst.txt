@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.nurbs
+==============================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. autoproperty:: RationalBezier.nurbs

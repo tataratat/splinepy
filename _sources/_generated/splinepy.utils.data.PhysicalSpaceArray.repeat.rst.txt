@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.repeat
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.repeat

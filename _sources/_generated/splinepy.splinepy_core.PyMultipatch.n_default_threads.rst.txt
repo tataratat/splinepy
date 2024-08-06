@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.n\_default\_threads
+========================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PyMultipatch.n_default_threads

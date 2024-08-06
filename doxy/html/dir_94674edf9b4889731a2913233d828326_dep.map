@@ -1,0 +1,11 @@
+<map id="proximity" name="proximity">
+<area shape="rect" id="node1" href="dir_27bfc26f2c2737738a236cc0f99f995c.html" title="utils" alt="" coords="125,184,197,232"/>
+<area shape="rect" id="node2" href="dir_f6c01941168702e98691a021660d553b.html" title="splines" alt="" coords="27,88,99,136"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000003_000002.html" title="7" alt="" coords="125,158,135,173"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000003_000016.html" title="4" alt="" coords="247,61,257,75"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000016_000002.html" title="2" alt="" coords="200,171,209,185"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000016_000003.html" title="1" alt="" coords="79,66,88,81"/>
+<area shape="rect" id="node4" href="dir_cf1916ac376f75d16565f721d2a29699.html" title="slsqp" alt="" coords="123,88,195,136"/>
+<area shape="rect" id="clust2" href="dir_94674edf9b4889731a2913233d828326.html" alt="" coords="112,78,315,147"/>
+<area shape="rect" id="clust1" href="dir_95a9dc4e7398479dca1c905da5f147d3.html" title="splinepy" alt="" coords="16,42,325,243"/>
+</map>

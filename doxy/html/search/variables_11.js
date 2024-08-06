@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['same_5fparametric_5fbounds_5f_1152',['same_parametric_bounds_',['../classsplinepy_1_1py_1_1PyMultipatch.html#ae9c5c714c1f63cd697ccfe41abb2630a',1,'splinepy::py::PyMultipatch']]],
+  ['sampled_5fspline_5f_1153',['sampled_spline_',['../classsplinepy_1_1proximity_1_1Proximity.html#a398bd36b3db46a6934adcbdde870f91c',1,'splinepy::proximity::Proximity']]],
+  ['search_5fbounds_1154',['search_bounds',['../structsplinepy_1_1proximity_1_1SearchData.html#ae4966660e7f808af798ab2ab0b84d53c',1,'splinepy::proximity::SearchData']]],
+  ['shape_5f_1155',['shape_',['../classsplinepy_1_1utils_1_1Array.html#a7baad4f9456800401f5dd9fc0991fbf4',1,'splinepy::utils::Array']]],
+  ['size_5f_1156',['size_',['../classsplinepy_1_1utils_1_1Array.html#a88aa79a90b0954ba0d578f5c3c40cd21',1,'splinepy::utils::Array']]],
+  ['slsqp_1157',['SLSQP',['../structsplinepy_1_1proximity_1_1SearchData.html#ad4a26dcd5b8c2799b5b732c217ea1c71',1,'splinepy::proximity::SearchData']]],
+  ['spline_5f_1158',['spline_',['../classsplinepy_1_1proximity_1_1Proximity.html#a96864dcfe527491c13fb3f49fe817942',1,'splinepy::proximity::Proximity']]],
+  ['spline_5fgradient_1159',['spline_gradient',['../structsplinepy_1_1proximity_1_1SearchData.html#a2831ea3643f31d690188fde388e17292',1,'splinepy::proximity::SearchData']]],
+  ['spline_5fgradient_5faat_1160',['spline_gradient_AAt',['../structsplinepy_1_1proximity_1_1SearchData.html#ac5c47d097abf6b2a598add0ce92672b3',1,'splinepy::proximity::SearchData']]],
+  ['spline_5fhessian_1161',['spline_hessian',['../structsplinepy_1_1proximity_1_1SearchData.html#ab7d06748bbd02c82e0c3fbea709770e8',1,'splinepy::proximity::SearchData']]],
+  ['squared_5fdistance_1162',['squared_distance',['../structsplinepy_1_1proximity_1_1SearchData.html#a697b743232d64407856efb8abf7d07ea',1,'splinepy::proximity::SearchData']]],
+  ['status_1163',['status',['../structsplinepy_1_1proximity_1_1SearchData.html#ab043fd34e57f4f64b781d96a04d49979',1,'splinepy::proximity::SearchData']]],
+  ['step_5fsize_5f_1164',['step_size_',['../classsplinepy_1_1utils_1_1GridPoints.html#a7d5796b8247d83429451149106488bd5',1,'splinepy::utils::GridPoints']]],
+  ['stop_5fiteration_1165',['stop_iteration',['../structsplinepy_1_1proximity_1_1SearchData.html#ab8695fef7f8cc08585fc3003ccfdce5e',1,'splinepy::proximity::SearchData']]],
+  ['strides_5f_1166',['strides_',['../classsplinepy_1_1utils_1_1Array.html#af8dc82d16f06e9409cc71ff795f9bd05',1,'splinepy::utils::Array']]],
+  ['sub_5fmultipatch_5f_1167',['sub_multipatch_',['../classsplinepy_1_1py_1_1PyMultipatch.html#aab456af91fd28cc500e245439fb8dd22',1,'splinepy::py::PyMultipatch']]],
+  ['sub_5fpatch_5fcenters_5f_1168',['sub_patch_centers_',['../classsplinepy_1_1py_1_1PyMultipatch.html#abb28f7a0a16a6d38e6ea67a2a6d8fda0',1,'splinepy::py::PyMultipatch']]]
+];

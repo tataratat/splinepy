@@ -1,0 +1,40 @@
+<map id="create_rational_bezier.hpp" name="create_rational_bezier.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="1996,5,2191,32"/>
+<area shape="rect" id="node2" href="$splines_2rational__bezier_8hpp.html" title=" " alt="" coords="1762,80,1943,121"/>
+<area shape="rect" id="node9" href="$splinepy__base_8hpp.html" title=" " alt="" coords="1858,497,2044,539"/>
+<area shape="rect" id="node3" title=" " alt="" coords="668,594,724,621"/>
+<area shape="rect" id="node4" title=" " alt="" coords="1516,676,1608,703"/>
+<area shape="rect" id="node5" title=" " alt="" coords="1627,333,1790,360"/>
+<area shape="rect" id="node6" title=" " alt="" coords="1966,169,2117,211"/>
+<area shape="rect" id="node7" href="$proximity_8hpp.html" title=" " alt="" coords="1550,408,1694,449"/>
+<area shape="rect" id="node26" href="$rational__bezier_8inl.html" title=" " alt="" coords="807,169,988,211"/>
+<area shape="rect" id="node38" href="$explicit_2rational__bezier_8hpp.html" title=" " alt="" coords="2141,169,2324,211"/>
+<area shape="rect" id="node8" title=" " alt="" coords="1704,505,1782,531"/>
+<area shape="rect" id="node18" href="$arrays_8hpp.html" title=" " alt="" coords="986,505,1169,531"/>
+<area shape="rect" id="node23" href="$grid__points_8hpp.html" title=" " alt="" coords="1287,497,1426,539"/>
+<area shape="rect" id="node10" title=" " alt="" coords="1832,676,1910,703"/>
+<area shape="rect" id="node11" title=" " alt="" coords="2098,676,2161,703"/>
+<area shape="rect" id="node12" href="$coordinate__pointers_8hpp.html" title=" " alt="" coords="1909,587,2092,628"/>
+<area shape="rect" id="node13" title=" " alt="" coords="1966,676,2035,703"/>
+<area shape="rect" id="node14" href="$print_8hpp.html" title=" " alt="" coords="778,676,948,703"/>
+<area shape="rect" id="node15" title=" " alt="" coords="722,751,802,777"/>
+<area shape="rect" id="node16" title=" " alt="" coords="826,751,900,777"/>
+<area shape="rect" id="node17" title=" " alt="" coords="925,751,1012,777"/>
+<area shape="rect" id="node19" title=" " alt="" coords="1146,594,1231,621"/>
+<area shape="rect" id="node20" title=" " alt="" coords="1256,594,1318,621"/>
+<area shape="rect" id="node21" title=" " alt="" coords="952,594,1022,621"/>
+<area shape="rect" id="node22" title=" " alt="" coords="1047,594,1122,621"/>
+<area shape="rect" id="node24" title=" " alt="" coords="1394,594,1454,621"/>
+<area shape="rect" id="node25" href="$default__initialization__allocator_8hpp.html" title=" " alt="" coords="1530,587,1732,628"/>
+<area shape="rect" id="node27" href="$splines_2bezier_8hpp.html" title=" " alt="" coords="1070,259,1269,285"/>
+<area shape="rect" id="node30" href="$basis__functions_8hpp.html" title=" " alt="" coords="390,408,568,449"/>
+<area shape="rect" id="node33" href="$extract_8hpp.html" title=" " alt="" coords="951,408,1130,449"/>
+<area shape="rect" id="node34" href="$properties_8hpp.html" title=" " alt="" coords="516,497,695,539"/>
+<area shape="rect" id="node36" href="$scalar__type__wrapper_8hpp.html" title=" " alt="" coords="1154,408,1342,449"/>
+<area shape="rect" id="node28" title=" " alt="" coords="1062,333,1277,360"/>
+<area shape="rect" id="node29" href="$bezier_8inl.html" title=" " alt="" coords="644,333,834,360"/>
+<area shape="rect" id="node37" href="$explicit_2bezier_8hpp.html" title=" " alt="" coords="1302,333,1502,360"/>
+<area shape="rect" id="node31" title=" " alt="" coords="46,497,253,539"/>
+<area shape="rect" id="node32" title=" " alt="" coords="277,497,441,539"/>
+<area shape="rect" id="node35" title=" " alt="" coords="498,587,644,628"/>
+</map>

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.tile\_base.TileBase.create\_tile
+==============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.tile_base
+
+.. automethod:: TileBase.create_tile

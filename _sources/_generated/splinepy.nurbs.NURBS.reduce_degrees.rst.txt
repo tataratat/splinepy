@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.reduce\_degrees
+====================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.reduce_degrees

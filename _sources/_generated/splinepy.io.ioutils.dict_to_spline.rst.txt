@@ -1,0 +1,6 @@
+splinepy.io.ioutils.dict\_to\_spline
+====================================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: dict_to_spline

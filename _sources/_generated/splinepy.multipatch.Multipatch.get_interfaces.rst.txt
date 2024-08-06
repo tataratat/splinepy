@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.get\_interfaces
+==============================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.get_interfaces

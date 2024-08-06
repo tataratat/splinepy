@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_74bbe59dc4d4993b4196ab48d40e9589" kind="dir">
+    <compoundname>create</compoundname>
+    <innerfile refid="bezier1_8cpp">bezier1.cpp</innerfile>
+    <innerfile refid="bezier10_8cpp">bezier10.cpp</innerfile>
+    <innerfile refid="bezier2_8cpp">bezier2.cpp</innerfile>
+    <innerfile refid="bezier3_8cpp">bezier3.cpp</innerfile>
+    <innerfile refid="bezier4_8cpp">bezier4.cpp</innerfile>
+    <innerfile refid="bezier5_8cpp">bezier5.cpp</innerfile>
+    <innerfile refid="bezier6_8cpp">bezier6.cpp</innerfile>
+    <innerfile refid="bezier7_8cpp">bezier7.cpp</innerfile>
+    <innerfile refid="bezier8_8cpp">bezier8.cpp</innerfile>
+    <innerfile refid="bezier9_8cpp">bezier9.cpp</innerfile>
+    <innerfile refid="rational__bezier1_8cpp">rational_bezier1.cpp</innerfile>
+    <innerfile refid="rational__bezier10_8cpp">rational_bezier10.cpp</innerfile>
+    <innerfile refid="rational__bezier2_8cpp">rational_bezier2.cpp</innerfile>
+    <innerfile refid="rational__bezier3_8cpp">rational_bezier3.cpp</innerfile>
+    <innerfile refid="rational__bezier4_8cpp">rational_bezier4.cpp</innerfile>
+    <innerfile refid="rational__bezier5_8cpp">rational_bezier5.cpp</innerfile>
+    <innerfile refid="rational__bezier6_8cpp">rational_bezier6.cpp</innerfile>
+    <innerfile refid="rational__bezier7_8cpp">rational_bezier7.cpp</innerfile>
+    <innerfile refid="rational__bezier8_8cpp">rational_bezier8.cpp</innerfile>
+    <innerfile refid="rational__bezier9_8cpp">rational_bezier9.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/src/splines/create/"/>
+  </compounddef>
+</doxygen>

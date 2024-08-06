@@ -1,0 +1,6 @@
+splinepy.spline.Spline.basis
+============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.basis

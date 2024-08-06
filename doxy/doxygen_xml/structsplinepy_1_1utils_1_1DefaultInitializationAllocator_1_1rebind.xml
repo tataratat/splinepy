@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind" kind="struct" language="C++" prot="public">
+    <compoundname>splinepy::utils::DefaultInitializationAllocator::rebind</compoundname>
+    <includes refid="default__initialization__allocator_8hpp" local="no">default_initialization_allocator.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename U</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind_1a0dc42ae1171daffda6b4843704acc572" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator" kindref="compound">DefaultInitializationAllocator</ref>&lt; U, typename AllocatorTraits_::template rebind_alloc&lt; U &gt; &gt;</type>
+        <definition>using other =  DefaultInitializationAllocator&lt; U, typename AllocatorTraits_::template rebind_alloc&lt;U&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>other</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="48" column="5" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Rebind. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>DefaultInitializationAllocator&lt; Type, BaseAllocator &gt;::rebind&lt; U &gt;</label>
+        <link refid="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="47" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="47" bodyend="51"/>
+    <listofallmembers>
+      <member refid="structsplinepy_1_1utils_1_1DefaultInitializationAllocator_1_1rebind_1a0dc42ae1171daffda6b4843704acc572" prot="public" virt="non-virtual"><scope>splinepy::utils::DefaultInitializationAllocator::rebind</scope><name>other</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

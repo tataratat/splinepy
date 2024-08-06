@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.ravel
+============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.ravel

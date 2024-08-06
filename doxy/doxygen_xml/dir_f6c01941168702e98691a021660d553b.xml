@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_f6c01941168702e98691a021660d553b" kind="dir">
+    <compoundname>splines</compoundname>
+    <innerdir refid="dir_930093d73ce72330a19dc149ffda8d70">create</innerdir>
+    <innerdir refid="dir_3fb51d3403234d8fe241b572e8fc6ba8">helpers</innerdir>
+    <innerfile refid="splines_2bezier_8hpp">splines/bezier.hpp</innerfile>
+    <innerfile refid="bezier_8inl">bezier.inl</innerfile>
+    <innerfile refid="splines_2bspline_8hpp">splines/bspline.hpp</innerfile>
+    <innerfile refid="null__spline_8hpp">null_spline.hpp</innerfile>
+    <innerfile refid="splines_2nurbs_8hpp">splines/nurbs.hpp</innerfile>
+    <innerfile refid="splines_2rational__bezier_8hpp">splines/rational_bezier.hpp</innerfile>
+    <innerfile refid="rational__bezier_8inl">rational_bezier.inl</innerfile>
+    <innerfile refid="splinepy__base_8hpp">splinepy_base.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/"/>
+  </compounddef>
+</doxygen>
