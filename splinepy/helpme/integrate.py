@@ -725,8 +725,8 @@ class FieldIntegrator(_SplinepyBase):
         Parameters
         ------------
         function: callable
-            Function which defines how to assemble the system matrix
-        matrixout: np.ndarray
+            Function which defines how to assemble an element matrix
+        matrixout: np.ndarray / scipy.sparse matrix
             Assembled matrix will be stored there. Default is global system matrix
         """
         # Initialize system matrix if not already
@@ -779,9 +779,11 @@ class FieldIntegrator(_SplinepyBase):
         Parameters
         ------------
         function: callable
-            Function which defines how to assemble the rhs vector
+            Function which defines how to assemble an element vector
         current_sol: np.ndarray
             Current solution vector. Needed for nonlinear forms
+        vectorout: np.ndarray
+            Assembled rhs vector will be stored there. Default is global rhs
         """
         # Initialize rhs vector
         if self._global_rhs is None:
@@ -815,6 +817,92 @@ class FieldIntegrator(_SplinepyBase):
             if current_sol is not None:
                 function_args["current_sol"] = current_sol[element_support]
             element_vector = function(**function_args)
+
+            # Add element vector to global rhs vector
+            rhs_vector[element_support] += element_vector
+
+    def assemble_matrix_and_vector(
+        self, function, current_sol=None, matrixout=None, vectorout=None
+    ):
+        """Assemble the system matrix and rhs vector for a given function. If system
+        matrix is already assembled, it will add values on top of existing matrix.
+        The same goes for the rhs vector
+
+        Parameters
+        ------------
+        function: callable
+            Function which defines how to assemble an element matrix and vector
+        current_sol: np.ndarray
+            Current solution vector. Needed for nonlinear forms
+        matrixout: np.ndarray / scipy.sparse matrix
+            Assembled matrix will be stored there. Default is global system matrix
+        vectorout: np.ndarray
+            Assembled rhs vector will be stored there. Default is global rhs
+        """
+        # Initialize system matrix if not already
+        if self._global_system_matrix is None and matrixout is None:
+            global_size = (self._ndofs, self._ndofs)
+            if _has_scipy:
+                self._global_system_matrix = _dok_matrix(global_size)
+            else:
+                self._global_system_matrix = _np.zeros(global_size)
+
+        # If other matrix is used, check if it compatible
+        if matrixout is not None:
+            if _has_scipy:
+                assert isinstance(
+                    matrixout, _dok_matrix
+                ), "Matrixout must be scipy sparse dok matrix"
+            else:
+                assert isinstance(matrixout, _np.ndarray)
+            assert matrixout.shape == (self._ndofs, self._ndofs)
+
+        # Set matrix accordingly
+        system_matrix = (
+            self._global_system_matrix if matrixout is None else matrixout
+        )
+
+        # Initialize rhs vector
+        if self._global_rhs is None:
+            self._global_rhs = _np.zeros(self._ndofs)
+
+        # Ensure that current solution has right dimensions
+        if current_sol is not None:
+            assert len(current_sol) == self._ndofs
+
+        if vectorout is not None:
+            assert isinstance(vectorout, _np.ndarray)
+            assert len(vectorout) == self._ndofs
+
+        # Set rhs vector accordingly
+        rhs_vector = self._global_rhs if vectorout is None else vectorout
+
+        # Prepare function arguments, which stay the same for all elements
+        function_args = {
+            "mapper": self._mapper,
+            "quad_weights": self._trafo.quadrature_weights,
+        }
+
+        # Element loop
+        for element_jacobian_det, element_support, element_quad_points in zip(
+            self._trafo.all_jacobian_determinants,
+            self._trafo.all_supports,
+            self._trafo.all_quad_points,
+        ):
+            # Assemble element matrix and vector
+            function_args["quad_points"] = element_quad_points
+            function_args["jacobian_det"] = element_jacobian_det
+            if current_sol is not None:
+                function_args["current_sol"] = current_sol[element_support]
+            element_matrix, element_vector = function(**function_args)
+
+            # Add element vector to global system matrix
+            matrix_element_support = _cartesian_product(
+                [element_support, element_support]
+            )
+            system_matrix[
+                matrix_element_support[:, 0], matrix_element_support[:, 1]
+            ] += element_matrix
 
             # Add element vector to global rhs vector
             rhs_vector[element_support] += element_vector
