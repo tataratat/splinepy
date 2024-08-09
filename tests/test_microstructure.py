@@ -16,7 +16,7 @@ def test_tile_class():
         "_dim": int,
         "_evaluation_points": np.ndarray,
         "_n_info_per_eval_point": int,
-        # "_sensitivities_implemented": bool
+        "_sensitivities_implemented": bool,
     }
 
     # Go through all available tiles
@@ -58,13 +58,28 @@ def test_tile_class():
 
 
 def test_tile_bounds():
-    """Test if tile is still in unit cube at the bounds"""
-    # TODO
-    pass
+    """Test if tile is still in unit cube at the bounds. Currently only checks
+    default parameter values."""
+    # TODO: also check non-default parameters
+
+    def check_control_points(tile_patches):
+        """Check if all of tile's control points all lie within unit square/cube"""
+        # Go through all patches
+        for tile_patch in tile_patches:
+            cps = tile_patch.control_points
+            assert np.all(
+                (cps >= 0.0) & (cps <= 1.0)
+            ), "Control points of tile must lie inside the unit square/cube"
+
+    for tile_class in all_tile_classes:
+        tile_creator = tile_class()
+        # Create tile with default parameters
+        tile_patches, _ = tile_creator.create_tile()
+        check_control_points(tile_patches)
 
 
 def test_tile_derivatives():
-    """Testing the correctness of the tile derivatives"""
+    """Testing the correctness of the tile derivatives using Finite Differences"""
     # TODO
     pass
 
