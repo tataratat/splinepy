@@ -28,6 +28,7 @@ class HollowCube(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
 
     def create_tile(
         self,
