@@ -20,6 +20,15 @@ class Armadillo(_TileBase):
     _dim = 3
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = False
+    _closure_directions = [
+        "x_min",
+        "x_max",
+        "y_min",
+        "y_max",
+        "z_min",
+        "z_max",
+    ]
 
     def _closing_tile(
         self,

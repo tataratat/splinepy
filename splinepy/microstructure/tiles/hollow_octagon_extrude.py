@@ -18,6 +18,8 @@ class HollowOctagonExtrude(_TileBase):
     _para_dim = 3
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = False
+    _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
 
     def create_tile(
         self,
@@ -215,7 +217,7 @@ class HollowOctagonExtrude(_TileBase):
 
         return (spline_list, None)
 
-    def closing_tile(
+    def _closing_tile(
         self,
         parameters=None,
         parameter_sensitivities=None,  # TODO
