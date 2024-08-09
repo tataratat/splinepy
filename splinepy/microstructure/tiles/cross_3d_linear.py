@@ -28,6 +28,8 @@ class Cross3DLinear(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _closure_directions = ["z_min", "z_max"]
 
     def _closing_tile(
         self,
