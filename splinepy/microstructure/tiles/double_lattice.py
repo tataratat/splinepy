@@ -20,6 +20,7 @@ class DoubleLattice(_TileBase):
     _para_dim = 2
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 2
+    _sensitivities_implemented = True
 
     def create_tile(
         self,
@@ -44,7 +45,7 @@ class DoubleLattice(_TileBase):
           correlates with thickness of branches and entouring wall
         contact_length : double
           required for conformity between tiles, sets the length of the center
-          block on the tiles boundary
+          block on the tile's boundary
 
         Returns
         -------

@@ -28,6 +28,8 @@ class Cross3D(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _closure_directions = ["z_min", "z_max"]
 
     def _closing_tile(
         self,
@@ -557,6 +559,10 @@ class Cross3D(_TileBase):
             derivatives = None
 
         if closure is not None:
+            if closure not in self._closure_directions:
+                raise NotImplementedError(
+                    f"Closure '{closure}' not implemented"
+                )
             return self._closing_tile(
                 parameters=parameters,
                 parameter_sensitivities=parameter_sensitivities,

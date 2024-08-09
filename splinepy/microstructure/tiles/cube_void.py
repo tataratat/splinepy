@@ -25,6 +25,7 @@ class CubeVoid(_TileBase):
     _para_dim = 3
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 4
+    _sensitivities_implemented = True
 
     # Aux values
     _sphere_ctps = _np.array(
