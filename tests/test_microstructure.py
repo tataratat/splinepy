@@ -140,7 +140,12 @@ def test_tile_derivatives():
 
 def test_tile_closure():
     """Check if closing tiles also lie in unit cube. Maybe also check derivatives."""
-    # TODO: check closure also for extreme values of parameters
+    # Skip certain tile classes for testing
+    skip_tiles = [
+        ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
+        ms.tiles.Snappy,  # Has no parameters
+    ]
+
     for tile_class in all_tile_classes:
         # Skip tile if if does not support closure
         if "_closure_directions" not in dir(tile_class):
@@ -156,3 +161,30 @@ def test_tile_closure():
             ), "Ensure sensitivities for closure are None if no sensitivities are asked"
 
             check_control_points(tile_patches)
+
+        # Also check non-default parameters
+        # Skip certain classes for testing
+        skip_tile_class = False
+        for skip_tile in skip_tiles:
+            if tile_class is skip_tile:
+                skip_tile_class = True
+                break
+        if skip_tile_class:
+            continue
+
+        # Go through all extremes of parameters and ensure that also they create
+        # tiles within unit square/cube
+        feasible_parameter_bounds = make_bounds_feasible(
+            tile_creator._parameter_bounds
+        )
+        all_parameter_bounds = _cartesian_product(feasible_parameter_bounds)
+        # Go through all implemented closure directions
+        for closure_direction in tile_creator._closure_directions:
+            for parameter_extremes in all_parameter_bounds:
+                tile_patches, _ = tile_creator.create_tile(
+                    parameters=parameter_extremes.reshape(
+                        tile_creator._parameters_shape
+                    ),
+                    closure=closure_direction,
+                )
+                check_control_points(tile_patches)
