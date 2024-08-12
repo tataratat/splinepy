@@ -20,7 +20,7 @@ class Chi(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
 
-    _parameter_bounds = {"parameters": [-_np.pi / 2, _np.pi / 2]}
+    _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
 
     def create_tile(
         self,
