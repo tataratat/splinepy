@@ -77,9 +77,9 @@ class HollowOctagon(_TileBase):
             )
 
         v_h_void = parameters[0, 0]
-        if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
+        if not ((v_h_void > 0.0) and (v_h_void < 0.5)):
             raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
+                "The thickness of the wall must be in (0.0 and 0.5)"
             )
 
         spline_list = []
