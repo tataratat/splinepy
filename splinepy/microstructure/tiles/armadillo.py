@@ -30,6 +30,7 @@ class Armadillo(_TileBase):
         "z_max",
     ]
     _parameter_bounds = [[0.0, 0.5]]
+    _parameters_shape = (1, 1)
 
     def _closing_tile(
         self,

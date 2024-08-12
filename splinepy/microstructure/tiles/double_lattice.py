@@ -21,6 +21,8 @@ class DoubleLattice(_TileBase):
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 2
     _sensitivities_implemented = True
+    _parameter_bounds = [[0.0, 1 / (2 * (1 + _np.sqrt(2)))]] * 2
+    _parameters_shape = (1, 2)
 
     def create_tile(
         self,

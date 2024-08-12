@@ -20,6 +20,8 @@ class HollowOctagon(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = False
     _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
+    _parameter_bounds = [[0.0, 0.5]]
+    _parameters_shape = (1, 1)
 
     def _closing_tile(
         self,

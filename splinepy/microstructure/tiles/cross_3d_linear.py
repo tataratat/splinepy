@@ -33,6 +33,7 @@ class Cross3DLinear(_TileBase):
     _parameter_bounds = [
         [0.0, 0.5]
     ] * 6  # valid for default center_expansion=1.0
+    _parameters_shape = (6, 1)
 
     def _closing_tile(
         self,
