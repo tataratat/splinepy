@@ -81,10 +81,32 @@ def test_tile_bounds():
 def test_tile_derivatives():
     """Testing the correctness of the tile derivatives using Finite Differences"""
     # TODO
-    pass
+    for tile_class in all_tile_classes:
+        tile_creator = tile_class()
+        # Skip test if tile class has no implemented sensitivities
+        if not tile_creator._sensitivities_implemented:
+            continue
+        pass
 
 
 def test_tile_closure():
     """Check if closing tiles also lie in unit cube. Maybe also check derivatives."""
-    # TODO
-    pass
+    # TODO: check closure also for extreme values of parameters
+    for tile_class in all_tile_classes:
+        # Skip tile if if does not support closure
+        if "_closure_directions" not in dir(tile_class):
+            continue
+        tile_creator = tile_class()
+        # Go through all implemented closure directions
+        for closure_direction in tile_creator._closure_directions:
+            tile_patches, sensitivities = tile_creator.create_tile(
+                closure=closure_direction
+            )
+            assert (
+                sensitivities is None
+            ), "Ensure sensitivities for closure are None if no sensitivities are asked"
+            for tile_patch in tile_patches:
+                cps = tile_patch.control_points
+                assert np.all(
+                    (cps >= 0.0) & (cps <= 1.0)
+                ), "Control points of tile must lie inside the unit square/cube"

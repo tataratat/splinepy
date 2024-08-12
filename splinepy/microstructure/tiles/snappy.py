@@ -63,7 +63,9 @@ class Snappy(_TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
-        self.check_params(parameters)
+        # TODO: parameters are not implemented, therefore do not check params
+        if parameters is not None:
+            self.check_params(parameters)
 
         if parameter_sensitivities is not None:
             raise NotImplementedError(
@@ -222,7 +224,6 @@ class Snappy(_TileBase):
             spline_list.append(
                 _Bezier(degrees=[3, 1], control_points=spline_10)
             )
-            return spline_list
         elif closure == "y_max":
             spline_1 = _np.array(
                 [
@@ -288,11 +289,12 @@ class Snappy(_TileBase):
             spline_list.append(
                 _Bezier(degrees=[3, 1], control_points=spline_5)
             )
-            return (spline_list, None)
         else:
             raise ValueError(
                 "Closing tile is only implemented for y-enclosure"
             )
+
+        return (spline_list, None)
 
     def create_tile(
         self,
