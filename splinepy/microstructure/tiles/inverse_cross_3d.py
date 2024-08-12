@@ -34,6 +34,8 @@ class InverseCross3D(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = False
     _closure_directions = ["z_min", "z_max"]
+    _parameter_bounds = [[0.2, 0.3]] * 6  # For default values
+    _parameters_shape = (6, 1)
 
     def _closing_tile(
         self,
@@ -909,7 +911,7 @@ class InverseCross3D(_TileBase):
           branches
         separator_distance : float
           Control point distance to separation layer of biquadratic degrees,
-          determines the minimum branch thickness (defaults to 0.4)
+          determines the minimum branch thickness (defaults to 0.3)
         center_expansion : float
           thickness of center is expanded by a factor (default to 1.0), which
           determines the maximum branch thickness

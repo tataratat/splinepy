@@ -3,10 +3,41 @@ from inspect import getfullargspec
 import numpy as np
 
 import splinepy.microstructure as ms
+from splinepy.utils.data import cartesian_product as _cartesian_product
 
 EPS = 1e-8
 
 all_tile_classes = list(ms.tiles.everything().values())
+
+
+def check_control_points(tile_patches):
+    """Check if all of tile's control points all lie within unit square/cube"""
+    # Go through all patches
+    for tile_patch in tile_patches:
+        cps = tile_patch.control_points
+        assert np.all(
+            (cps >= 0.0 - EPS) & (cps <= 1.0 + EPS)
+        ), "Control points of tile must lie inside the unit square/cube"
+
+
+def make_bounds_feasible(bounds):
+    """Bounds are given are understood as open set of min. and max. values. Therefore,
+    convert bounds to open set of these values.
+
+    Parameters
+    ------------
+    bounds: list<list<float>>
+        Values of bounds
+
+    Returns
+    ----------
+    feasible_bounds: np.ndarray
+        Values of bounds
+    """
+    feasible_bounds = [
+        [min_value + EPS, max_value - EPS] for min_value, max_value in bounds
+    ]
+    return np.array(feasible_bounds)
 
 
 def test_tile_class():
@@ -60,22 +91,40 @@ def test_tile_class():
 def test_tile_bounds():
     """Test if tile is still in unit cube at the bounds. Currently only checks
     default parameter values."""
-    # TODO: also check non-default parameters
-
-    def check_control_points(tile_patches):
-        """Check if all of tile's control points all lie within unit square/cube"""
-        # Go through all patches
-        for tile_patch in tile_patches:
-            cps = tile_patch.control_points
-            assert np.all(
-                (cps >= 0.0) & (cps <= 1.0)
-            ), "Control points of tile must lie inside the unit square/cube"
+    # Skip certain tile classes for testing
+    skip_tiles = [
+        ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
+        ms.tiles.Snappy,  # Has no parameters
+    ]
 
     for tile_class in all_tile_classes:
+        # Skip certain classes for testing
+        skip_tile_class = False
+        for skip_tile in skip_tiles:
+            if tile_class is skip_tile:
+                skip_tile_class = True
+                break
+        if skip_tile_class:
+            continue
+
         tile_creator = tile_class()
         # Create tile with default parameters
         tile_patches, _ = tile_creator.create_tile()
         check_control_points(tile_patches)
+
+        # Go through all extremes of parameters and ensure that also they create
+        # tiles within unit square/cube
+        feasible_parameter_bounds = make_bounds_feasible(
+            tile_creator._parameter_bounds
+        )
+        all_parameter_bounds = _cartesian_product(feasible_parameter_bounds)
+        for parameter_extremes in all_parameter_bounds:
+            tile_patches, _ = tile_creator.create_tile(
+                parameters=parameter_extremes.reshape(
+                    tile_creator._parameters_shape
+                )
+            )
+            check_control_points(tile_patches)
 
 
 def test_tile_derivatives():
@@ -105,8 +154,5 @@ def test_tile_closure():
             assert (
                 sensitivities is None
             ), "Ensure sensitivities for closure are None if no sensitivities are asked"
-            for tile_patch in tile_patches:
-                cps = tile_patch.control_points
-                assert np.all(
-                    (cps >= 0.0) & (cps <= 1.0)
-                ), "Control points of tile must lie inside the unit square/cube"
+
+            check_control_points(tile_patches)

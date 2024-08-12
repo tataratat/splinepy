@@ -19,8 +19,8 @@ class Chi(_TileBase):
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
-
     _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
+    _parameters_shape = (1, 1)
 
     def create_tile(
         self,
@@ -51,7 +51,7 @@ class Chi(_TileBase):
             )
             parameters = _np.array([[_np.pi / 8]])
         else:
-            angle_bounds = self._parameter_bounds["parameters"]
+            angle_bounds = self._parameter_bounds[0]
             if not (
                 _np.all(parameters >= angle_bounds[0])
                 and _np.all(parameters < angle_bounds[1])

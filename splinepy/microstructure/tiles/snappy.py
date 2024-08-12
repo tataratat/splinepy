@@ -22,6 +22,8 @@ class Snappy(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = False
     _closure_directions = ["y_min", "y_max"]
+    _parameter_bounds = []
+    _parameters_shape = ()
 
     def _closing_tile(
         self,
