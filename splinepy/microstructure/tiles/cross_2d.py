@@ -31,6 +31,7 @@ class Cross2D(_TileBase):
     _parameter_bounds = [
         [0.0, 0.5]
     ] * 4  # valid for default center_expansion=1.0
+    _parameters_shape = (4, 1)
 
     def _closing_tile(
         self,
