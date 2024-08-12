@@ -26,9 +26,11 @@ class Cross2D(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
-    _parameter_bounds = {"center_expansion": [0.5, 1.5]}
     _sensitivities_implemented = True
     _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
+    _parameter_bounds = [
+        [0.0, 0.5]
+    ] * 4  # valid for default center_expansion=1.0
 
     def _closing_tile(
         self,
@@ -420,15 +422,8 @@ class Cross2D(_TileBase):
         if not isinstance(center_expansion, float):
             raise ValueError("Invalid Type")
 
-        center_expansion_bounds = self._parameter_bounds["center_expansion"]
-        if not (
-            (center_expansion > center_expansion_bounds[0])
-            and (center_expansion < center_expansion_bounds[1])
-        ):
-            error_message = (
-                "Center Expansion must be in ("
-                + f"{center_expansion_bounds[0]}, {center_expansion_bounds[1]})"
-            )
+        if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
+            error_message = "Center Expansion must be in (0.5, 1.5)"
             raise ValueError(error_message)
 
         max_radius = min(0.5, (0.5 / center_expansion))
