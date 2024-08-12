@@ -9,6 +9,12 @@ EPS = 1e-8
 
 all_tile_classes = list(ms.tiles.everything().values())
 
+# Skip certain tile classes for parameters testing
+skip_tiles = [
+    ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
+    ms.tiles.Snappy,  # Has no "parameters"
+]
+
 
 def check_control_points(tile_patches):
     """Check if all of tile's control points all lie within unit square/cube"""
@@ -48,6 +54,8 @@ def test_tile_class():
         "_evaluation_points": np.ndarray,
         "_n_info_per_eval_point": int,
         "_sensitivities_implemented": bool,
+        "_parameter_bounds": list,
+        "_parameters_shape": tuple,
     }
 
     # Go through all available tiles
@@ -89,15 +97,14 @@ def test_tile_class():
 
 
 def test_tile_bounds():
-    """Test if tile is still in unit cube at the bounds. Currently only checks
-    default parameter values."""
-    # Skip certain tile classes for testing
-    skip_tiles = [
-        ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
-        ms.tiles.Snappy,  # Has no parameters
-    ]
-
+    """Test if tile is still in unit cube at the bounds. Checks default and also
+    non-default parameter values."""
     for tile_class in all_tile_classes:
+        tile_creator = tile_class()
+        # Create tile with default parameters
+        tile_patches, _ = tile_creator.create_tile()
+        check_control_points(tile_patches)
+
         # Skip certain classes for testing
         skip_tile_class = False
         for skip_tile in skip_tiles:
@@ -106,11 +113,6 @@ def test_tile_bounds():
                 break
         if skip_tile_class:
             continue
-
-        tile_creator = tile_class()
-        # Create tile with default parameters
-        tile_patches, _ = tile_creator.create_tile()
-        check_control_points(tile_patches)
 
         # Go through all extremes of parameters and ensure that also they create
         # tiles within unit square/cube
@@ -127,24 +129,8 @@ def test_tile_bounds():
             check_control_points(tile_patches)
 
 
-def test_tile_derivatives():
-    """Testing the correctness of the tile derivatives using Finite Differences"""
-    # TODO
-    for tile_class in all_tile_classes:
-        tile_creator = tile_class()
-        # Skip test if tile class has no implemented sensitivities
-        if not tile_creator._sensitivities_implemented:
-            continue
-        pass
-
-
 def test_tile_closure():
-    """Check if closing tiles also lie in unit cube. Maybe also check derivatives."""
-    # Skip certain tile classes for testing
-    skip_tiles = [
-        ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
-        ms.tiles.Snappy,  # Has no parameters
-    ]
+    """Check if closing tiles also lie in unit cube. TODO: also check derivatives."""
 
     for tile_class in all_tile_classes:
         # Skip tile if if does not support closure
@@ -188,3 +174,14 @@ def test_tile_closure():
                     closure=closure_direction,
                 )
                 check_control_points(tile_patches)
+
+
+def test_tile_derivatives():
+    """Testing the correctness of the tile derivatives using Finite Differences"""
+    # TODO
+    for tile_class in all_tile_classes:
+        tile_creator = tile_class()
+        # Skip test if tile class has no implemented sensitivities
+        if not tile_creator._sensitivities_implemented:
+            continue
+        pass
