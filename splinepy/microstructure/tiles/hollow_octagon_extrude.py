@@ -20,6 +20,8 @@ class HollowOctagonExtrude(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = False
     _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
+    _parameter_bounds = [[0.0, 0.5]]
+    _parameters_shape = (1, 1)
 
     def create_tile(
         self,
@@ -75,9 +77,9 @@ class HollowOctagonExtrude(_TileBase):
         self.check_params(parameters)
 
         v_h_void = parameters[0, 0]
-        if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
+        if not ((v_h_void > 0.0) and (v_h_void < 0.5)):
             raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
+                "The thickness of the wall must be in (0.0 and 0.5)"
             )
 
         v_zero = 0.0
