@@ -984,13 +984,10 @@ class FieldIntegrator(_SplinepyBase):
         """
         self.check_if_assembled()
 
-        # Assemble mass matrix
-        global_size = (self._ndofs, self._ndofs)
-        mass_matrix = (
-            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
-        )
-
-        def mass_lhs(mapper, quad_points, quad_weights, jacobian_det):
+        def dirichlet_lhs_and_rhs(
+            mapper, quad_points, quad_weights, jacobian_det
+        ):
+            # Assemble system matrix
             bf_values = mapper._field_reference.basis(quad_points)
             element_matrix = _np.einsum(
                 "qi,qj,q,q->ij",
@@ -1000,30 +997,33 @@ class FieldIntegrator(_SplinepyBase):
                 jacobian_det,
                 optimize=True,
             )
-            return element_matrix.ravel()
 
-        self.assemble_matrix(mass_lhs, matrixout=mass_matrix)
-
-        # Assemble rhs: f(x) * N
-        rhs_vector = _np.zeros(self._ndofs)
-
-        def rhs_function(mapper, quad_points, quad_weights, jacobian_det):
-            bf = mapper._field_reference.basis(quad_points)
+            # Assemble rhs
             quad_points_forward = mapper._geometry_reference.evaluate(
                 quad_points
             )
             function_values = function(quad_points_forward)
             element_vector = _np.einsum(
                 "qj,q,q,q->j",
-                bf,
+                bf_values,
                 function_values,
                 quad_weights,
                 jacobian_det,
                 optimize=True,
             )
-            return element_vector
 
-        self.assemble_vector(rhs_function, vectorout=rhs_vector)
+            return element_matrix.ravel(), element_vector
+
+        # Initialiye mass matrix and rhs
+        global_size = (self._ndofs, self._ndofs)
+        mass_matrix = (
+            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
+        )
+        rhs_vector = _np.zeros(self._ndofs)
+        # Assemble lhs and rhs
+        self.assemble_matrix_and_vector(
+            dirichlet_lhs_and_rhs, matrixout=mass_matrix, vectorout=rhs_vector
+        )
 
         # Solve system to get all dofs
         dof_vector = _np.empty(self._ndofs)
