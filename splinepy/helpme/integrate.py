@@ -959,7 +959,16 @@ class FieldIntegrator(_SplinepyBase):
         self._global_system_matrix[indices, indices] = 1
         self._global_rhs[indices] = 0
 
-    def apply_dirichlet_boundary_conditions(self, function):
+    def apply_dirichlet_boundary_conditions(
+        self,
+        function,
+        return_values=False,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
         Applies Dirichlet boundary conditions via :math:`L^2`-projection.
 
@@ -981,6 +990,18 @@ class FieldIntegrator(_SplinepyBase):
         -------------
         function: callable
             Function to apply. Input are points, output is scalar
+        return_values: bool
+            If True, computed values and the corresponding DoF indices will be returned
+            and not applied to global system matrix or the global rhs. If False, values
+            will be applied to system matrix and rhs and nothing will be returned
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west
+        north: bool
+            If True, sets homogeneous Dirichlet condition on north boundary
+        east: bool
+        south: bool
+        west: bool
         """
         self.check_if_assembled()
 
@@ -1035,10 +1056,13 @@ class FieldIntegrator(_SplinepyBase):
         # Get relevant dofs
         indices = self.get_boundary_dofs()
 
-        # Apply Dirichlet to relevant boundary dofs
-        self._global_system_matrix[indices, :] = 0
-        self._global_system_matrix[indices, indices] = 1
-        self._global_rhs[indices] = dof_vector[indices]
+        if return_values:
+            return dof_vector[indices], indices
+        else:
+            # Apply Dirichlet to relevant boundary dofs
+            self._global_system_matrix[indices, :] = 0
+            self._global_system_matrix[indices, indices] = 1
+            self._global_rhs[indices] = dof_vector[indices]
 
     def solve_linear_system(self):
         """
