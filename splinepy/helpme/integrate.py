@@ -676,7 +676,7 @@ class FieldIntegrator(_SplinepyBase):
         self._helpee = geometry
         if solution_field is None:
             self._solution_field = geometry.copy()
-            self._solution_field.control_points = _np.ones(
+            self._solution_field.control_points = _np.zeros(
                 (geometry.cps.shape[0], 1)
             )
         else:
@@ -910,6 +910,70 @@ class FieldIntegrator(_SplinepyBase):
             # Add element vector to global rhs vector
             rhs_vector[element_support] += element_vector
 
+    def L2_projection(self, function):
+        """Perform an L2-projection of a function
+
+        Parameters
+        ----------------
+        function: callable
+            Function to L2-project
+
+        Returns
+        -------------
+        dof_values: np.ndarray
+            L2-projected values for Dofs
+        """
+
+        def dirichlet_lhs_and_rhs(
+            mapper, quad_points, quad_weights, jacobian_det
+        ):
+            # Assemble system matrix
+            bf_values = mapper._field_reference.basis(quad_points)
+            element_matrix = _np.einsum(
+                "qi,qj,q,q->ij",
+                bf_values,
+                bf_values,
+                quad_weights,
+                jacobian_det,
+                optimize=True,
+            )
+
+            # Assemble rhs
+            quad_points_forward = mapper._geometry_reference.evaluate(
+                quad_points
+            )
+            function_values = function(quad_points_forward)
+            element_vector = _np.einsum(
+                "qj,q,q,q->j",
+                bf_values,
+                function_values,
+                quad_weights,
+                jacobian_det,
+                optimize=True,
+            )
+
+            return element_matrix.ravel(), element_vector
+
+        # Initialiye mass matrix and rhs
+        global_size = (self._ndofs, self._ndofs)
+        mass_matrix = (
+            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
+        )
+        rhs_vector = _np.zeros(self._ndofs)
+        # Assemble lhs and rhs
+        self.assemble_matrix_and_vector(
+            dirichlet_lhs_and_rhs, matrixout=mass_matrix, vectorout=rhs_vector
+        )
+
+        # Solve system to get all dofs
+        dof_values = _np.empty(self._ndofs)
+        if _has_scipy:
+            dof_values = _spsolve(mass_matrix.tocsr(), rhs_vector)
+        else:
+            dof_values = _np.linalg.solve(mass_matrix, rhs_vector)
+
+        return dof_values
+
     def check_if_assembled(self):
         """
         Check if system matrix and rhs are already assembled
@@ -1003,55 +1067,10 @@ class FieldIntegrator(_SplinepyBase):
         south: bool
         west: bool
         """
-        self.check_if_assembled()
+        if not return_values:
+            self.check_if_assembled()
 
-        def dirichlet_lhs_and_rhs(
-            mapper, quad_points, quad_weights, jacobian_det
-        ):
-            # Assemble system matrix
-            bf_values = mapper._field_reference.basis(quad_points)
-            element_matrix = _np.einsum(
-                "qi,qj,q,q->ij",
-                bf_values,
-                bf_values,
-                quad_weights,
-                jacobian_det,
-                optimize=True,
-            )
-
-            # Assemble rhs
-            quad_points_forward = mapper._geometry_reference.evaluate(
-                quad_points
-            )
-            function_values = function(quad_points_forward)
-            element_vector = _np.einsum(
-                "qj,q,q,q->j",
-                bf_values,
-                function_values,
-                quad_weights,
-                jacobian_det,
-                optimize=True,
-            )
-
-            return element_matrix.ravel(), element_vector
-
-        # Initialiye mass matrix and rhs
-        global_size = (self._ndofs, self._ndofs)
-        mass_matrix = (
-            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
-        )
-        rhs_vector = _np.zeros(self._ndofs)
-        # Assemble lhs and rhs
-        self.assemble_matrix_and_vector(
-            dirichlet_lhs_and_rhs, matrixout=mass_matrix, vectorout=rhs_vector
-        )
-
-        # Solve system to get all dofs
-        dof_vector = _np.empty(self._ndofs)
-        if _has_scipy:
-            dof_vector = _spsolve(mass_matrix.tocsr(), rhs_vector)
-        else:
-            dof_vector = _np.linalg.solve(mass_matrix, rhs_vector)
+        dof_vector = self.L2_projection(function)
 
         # Get relevant dofs
         indices = self.get_boundary_dofs()
