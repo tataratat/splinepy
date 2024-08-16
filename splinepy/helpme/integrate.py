@@ -284,6 +284,7 @@ class Transformation:
         "_all_jacobians",
         "_all_jacobian_inverses",
         "_all_jacobian_determinants",
+        "_all_element_measures",
     )
 
     def __init__(self, spline, solution_field=None, orders=None):
@@ -340,6 +341,7 @@ class Transformation:
         self._all_jacobians = None
         self._all_jacobian_inverses = None
         self._all_jacobian_determinants = None
+        self._all_element_measures = None
 
     def check_element_id_validity(self, element_id):
         """Check if given element ID is valid
@@ -656,6 +658,18 @@ class Transformation:
                 )
                 for element_jacobians in self._all_jacobians
             ]
+        )
+
+    def compute_all_element_measures(self, recompute=False):
+        """Computes the measures of all elements in parametric space. Assumes
+        tensor-product-like structure.
+        """
+        if self._all_element_measures is not None and not recompute:
+            return
+
+        element_lengths = [_np.diff(ukv) for ukv in self._ukv]
+        self._all_element_measures = _np.prod(
+            _cartesian_product(element_lengths), axis=1
         )
 
 
@@ -1098,3 +1112,61 @@ class FieldIntegrator(_SplinepyBase):
                 self._global_system_matrix, self._global_rhs
             )
         self._solution_field.control_points = solution_vector.reshape(-1, 1)
+
+    def compute_error(self, function, norm="l2"):
+        """
+        Compute error to some given function(s) w.r.t a norm
+
+        Parameters
+        -------------
+        function: callable
+            Analytical function(s) to compare to
+        norm: str
+            Used norm for error calculation
+
+        Returns
+        ------------------
+        error_integration: np.ndarray
+            Value(s) of error in given norm
+        """
+        self._trafo.compute_all_element_jacobian_determinants()
+
+        # Evaluate function and solution values
+        all_quad_points = self._trafo._all_element_quad_points.reshape(
+            -1, self._helpee.para_dim
+        )
+        all_physical_points = self._helpee.evaluate(all_quad_points)
+        all_function_values = function(all_physical_points)
+        solution_values = self._solution_field.evaluate(all_quad_points)
+        error_values = all_function_values - solution_values
+        # Take the norm into consideration
+        if norm == "l1":
+            error_norm_values = _np.abs(error_values)
+        elif norm == "l2":
+            error_norm_values = _np.power(error_values, 2)
+        elif norm == "linf":
+            return _np.max(_np.abs(error_values))
+        else:
+            raise NotImplementedError(f"{norm}-norm not implemented")
+
+        # Integrate error
+        quad_weights = self._trafo._quad_weights
+        n_weights = quad_weights.shape[0]
+        quad_weights = _np.tile(
+            quad_weights, len(solution_values) // len(quad_weights)
+        )
+        self._trafo.compute_all_element_measures()
+
+        error_integration = _np.einsum(
+            "i...,i,i->...",
+            error_norm_values,
+            self._trafo._all_jacobian_determinants.ravel()
+            * _np.repeat(self._trafo._all_element_measures, n_weights),
+            quad_weights,
+            optimize=True,
+        )
+
+        if norm == "l1":
+            return error_integration
+        elif norm == "l2":
+            return _np.sqrt(error_integration)
