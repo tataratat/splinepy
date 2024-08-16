@@ -5,15 +5,15 @@ equation in the form
         -\Delta u = f
 with source term f=1.
 
-First, homogeneous Dirichlet boundary conditions are applied. Then, inhomogeneous ones
-are applied.
+First, homogeneous Dirichlet boundary conditions are applied. Then, homogeneous
+and inhomogeneous Dirichlet boundary conditions are applied on 3 of 4 boundaries.
 """
 
 import numpy as np
 
 import splinepy as sp
 
-# Test Case
+# Number of refinements for the solution field
 n_refine = 15
 
 
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     fi.assemble_vector(poisson_rhs)
 
     # Homogeneous Dirichlet boundary conditions
-    fi.assign_homogeneous_dirichlet_boundary_conditions()
+    fi.apply_homogeneous_dirichlet_boundary_conditions()
     fi.solve_linear_system()
     # Plot geometry and field
     show_solution(geometry, solution_field)
@@ -138,10 +138,18 @@ if __name__ == "__main__":
     # Inhomogeneous Dirichlet boundary conditions
     def dirichlet_function(points):
         """
-        On the boundary apply: g(x,y) = x/10
+        On the boundary apply: g(x,y) = x/4
         """
-        return points[:, 0] / 10
+        return points[:, 0] / 4
 
-    fi.apply_dirichlet_boundary_conditions(dirichlet_function)
+    # Assemble again to override previous boundary conditions
+    fi.assemble_matrix(poisson_lhs)
+    fi.assemble_vector(poisson_rhs)
+
+    # Apply boundary conditions on 3 boundaries
+    fi.apply_homogeneous_dirichlet_boundary_conditions(west=True)
+    fi.apply_dirichlet_boundary_conditions(
+        dirichlet_function, south=True, north=True
+    )
     fi.solve_linear_system()
     show_solution(geometry, solution_field)

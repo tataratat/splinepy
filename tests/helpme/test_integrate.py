@@ -4,59 +4,6 @@ import pytest
 import splinepy
 
 
-def test_transformation_class(np_rng):
-    """Test element transformation of single patch"""
-    # Create quadratic spline
-    spline = splinepy.BSpline(
-        degrees=[2, 2],
-        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
-        control_points=splinepy.utils.data.cartesian_product(
-            [np.linspace(0, 1, 3), np.linspace(0, 1, 3)]
-        ),
-    )
-
-    # Randomly insert knots along both parametric dimensions
-    spline.insert_knots(0, np_rng.random(2))
-    spline.insert_knots(1, np_rng.random(2))
-
-    # Create transformation class for spline
-    trafo = splinepy.helpme.integrate.Transformation(spline)
-
-    # Check whether element quadrature points lie inside element
-    ukvs = spline.unique_knots
-    trafo.compute_all_element_quad_points()
-    # Check quadrature points of each element
-    for element_id, quad_points in enumerate(trafo.all_quad_points):
-        grid_id = trafo.get_element_grid_id(element_id)
-        # Extract the corners of the current element
-        element_corners = [
-            ukv[grid_dim_id : grid_dim_id + 2]
-            for ukv, grid_dim_id in zip(ukvs, grid_id)
-        ]
-        # Check if quadrature points lie within element
-        for dim, corners in enumerate(element_corners):
-            assert np.all(
-                (quad_points[:, dim] > corners[0])
-                & (quad_points[:, dim] < corners[1])
-            ), f"Quadrature points do not lie within element for dimension {dim}"
-
-    # For given spline, all Jacobians should be identity matrix
-    eye = np.eye(spline.para_dim)
-    trafo.compute_all_element_jacobian_inverses()
-    for element_jacobians in trafo.all_jacobians:
-        for jacobian_at_quad_point in element_jacobians:
-            assert np.allclose(
-                eye, jacobian_at_quad_point
-            ), "All Jacobians should be identity matrix"
-
-    # For created spline, all determinants should equal one
-    trafo.compute_all_element_jacobian_determinants()
-    assert np.allclose(
-        trafo.all_jacobian_determinants,
-        np.ones_like(trafo.all_jacobian_determinants),
-    ), "All Jacobians' determinants should be equal to one"
-
-
 def test_volume_integration_1D(np_rng):
     """
     Test volume integration for splines using numerical integration of the
@@ -87,20 +34,20 @@ def test_volume_integration_embedded(np_rng):
     Test volume integration for splines using numerical integration of the
     Jacobi-Determinant
     """
-    # Test 1D -> 2D
+    # Test 1D -> 2D volume integration for Bezier
     expected_result = 2.0**1.5
     bezier = splinepy.Bezier(degrees=[1], control_points=[[0, 0], [2, 2]])
 
     assert np.allclose(bezier.integrate.volume(), expected_result)
 
-    # test for other types same spline
+    # For same curve, test other spline types
     assert np.allclose(bezier.bspline.integrate.volume(), expected_result)
     assert np.allclose(
         bezier.rationalbezier.integrate.volume(), expected_result
     )
     assert np.allclose(bezier.nurbs.integrate.volume(), expected_result)
 
-    # Check if equal after refinement
+    # Check if volume is equal after degree elevation
     bezier.elevate_degrees([0, 0, 0])
 
     assert np.allclose(bezier.integrate.volume(), expected_result)
@@ -230,6 +177,7 @@ def test_assertions(np_rng):
 def test_function_integration(np_rng):
     col1_factor = 2
 
+    # Define vector-valued constant function
     def volume_function(x):
         vf = np.ones((x.shape[0], 2))
         # scale it with a factor to get a different value
@@ -239,7 +187,61 @@ def test_function_integration(np_rng):
     bezier = splinepy.Bezier(
         degrees=[1, 2], control_points=np_rng.random((6, 2))
     )
+    # Test function integration for constant functions
     assert np.allclose(
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
         bezier.integrate.parametric_function(volume_function),
     )
+
+
+def test_transformation_class(np_rng):
+    """Test element transformation of single patch"""
+    # Create quadratic spline
+    spline = splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+        control_points=splinepy.utils.data.cartesian_product(
+            [np.linspace(0, 1, 3), np.linspace(0, 1, 3)]
+        ),
+    )
+
+    # Randomly insert knots along both parametric dimensions
+    spline.insert_knots(0, np_rng.random(2))
+    spline.insert_knots(1, np_rng.random(2))
+
+    # Create transformation class for spline
+    trafo = splinepy.helpme.integrate.Transformation(spline)
+
+    # Check whether element quadrature points lie inside element
+    ukvs = spline.unique_knots
+    trafo.compute_all_element_quad_points()
+    # Check quadrature points of each element
+    for element_id, quad_points in enumerate(trafo.all_quad_points):
+        grid_id = trafo.get_element_grid_id(element_id)
+        # Extract the corners of the current element
+        element_corners = [
+            ukv[grid_dim_id : grid_dim_id + 2]
+            for ukv, grid_dim_id in zip(ukvs, grid_id)
+        ]
+        # Check if quadrature points lie within element
+        for dim, corners in enumerate(element_corners):
+            assert np.all(
+                (quad_points[:, dim] > corners[0])
+                & (quad_points[:, dim] < corners[1])
+            ), f"Quadrature points do not lie within element for dimension {dim}"
+
+    # For given spline, all Jacobians should be identity matrix
+    eye = np.eye(spline.para_dim)
+    trafo.compute_all_element_jacobian_inverses()
+    for element_jacobians in trafo.all_jacobians:
+        for jacobian_at_quad_point in element_jacobians:
+            assert np.allclose(
+                eye, jacobian_at_quad_point
+            ), "All Jacobians should be identity matrix"
+
+    # For created spline, all determinants should equal one
+    trafo.compute_all_element_jacobian_determinants()
+    assert np.allclose(
+        trafo.all_jacobian_determinants,
+        np.ones_like(trafo.all_jacobian_determinants),
+    ), "All Jacobians' determinants should be equal to one"
