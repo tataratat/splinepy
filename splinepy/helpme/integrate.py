@@ -2,7 +2,6 @@ from functools import wraps as _wraps
 
 import numpy as _np
 
-from splinepy._base import SplinepyBase as _SplinepyBase
 from splinepy.utils.data import cartesian_product as _cartesian_product
 from splinepy.utils.data import has_scipy as _has_scipy
 
@@ -21,7 +20,7 @@ def _get_integral_measure(spline):
     .. math::
         \\mathcal{J}_S = det(\\mathbf(J))
 
-    If the physical dimension is bigger then the parametric dimension it will
+    If the physical dimension is bigger than the parametric dimension it will
     return
 
     .. math::
@@ -30,12 +29,13 @@ def _get_integral_measure(spline):
     Parameters
     ----------
     spline : Spline / Multipatch
-      For parametric and physical dimension
+      The spline object for which the measure of one of its patches is determined
 
     Returns
     -------
     measure : Callable
-      single patch only
+      A function which computes the jacobian's determinant for a single patch.
+      It takes a patch and query positions in the parametric domain as input
     """
     # Check dimensionality
     if spline.dim == spline.para_dim:
@@ -58,6 +58,7 @@ def _get_integral_measure(spline):
 
 
 def _default_quadrature_orders(spline):
+    # Expected degree for quadrature based on spline's degrees and parametric dimension
     expected_degree = spline.degrees * spline.para_dim + 1
     if spline.is_rational:
         expected_degree += 2
@@ -69,7 +70,10 @@ def _default_quadrature_orders(spline):
 
 def _get_quadrature_information(spline, orders=None):
     """
-    Select appropriate integration order (gauss-legendre)
+    Select appropriate integration order (gauss-legendre).
+
+    Determines the integration points and weights for numerical integration
+    based on the given spline and the optionally given quadrature orders.
 
     Determinant of a polynomial spline with para_dim==dim has degree
 
@@ -87,16 +91,17 @@ def _get_quadrature_information(spline, orders=None):
     Parameters
     ----------
     spline : Spline
-      Spline for integration
+      The spline object for which the quadrature information is determined.
     orders : array-like (optional)
-      Orders along every parametric dimension
+      Orders along every parametric dimension. If not provided, default quadrature
+      orders will be used.
 
     Returns
     -------
     positions : np.ndarray
-      quadrature position in unit-square
+      Quadrature points in unit-square
     weights : np.ndarray
-      quadrature weights
+      Quadrature weights
     """
 
     # Determine integration points
@@ -129,22 +134,24 @@ def _get_quadrature_information(spline, orders=None):
 def volume(spline, orders=None):
     r"""Compute volume of a given spline
 
+    Uses quadrature to compute volume. Can handle patches with multiple elements.
+
     Parameters
     ----------
     spline : Spline
         (self if called via integrator)
-      splinepy - spline type
+        The spline object for which the volume is computed.
     orders : array-like (optional)
       order for gauss quadrature
 
     Returns
     -------
     volume : float
-      Integral of dim-dimensional object
+      The computed volume of the spline
     """
     from splinepy.spline import Spline as _Spline
 
-    # Check i_nput type
+    # Check input type
     if not isinstance(spline, _Spline):
         raise NotImplementedError("integration only works for splines")
 
@@ -172,9 +179,12 @@ def parametric_function(
     Parameters
     ----------
     spline : Spline
-        (self if called via integrator)
+        The geometry over which the function is integrated
     function : Callable
+        The user-defined function to integrate. It takes points in the parametric
+        dimension as input and outputs a scalar or an array of scalars.
     orders : optional
+        Quadrature orders for numerical integration
 
     Returns
     -------
@@ -281,6 +291,19 @@ class Transformation:
     )
 
     def __init__(self, spline, solution_field=None, orders=None):
+        """
+        Setup transformation class with a given geometry.
+
+        Parameters
+        ------------
+        spline: spline
+            The geometry
+        solution_field: None or spline
+            Solution field as spline function. If not given, supports and quadrature
+            will be calculated for geometry
+        orders: None or list<int>
+            Quadrature orders. If not given, default quadrature orders will be used
+        """
         self._spline = spline
         self._solution_field = solution_field
         if solution_field is not None:
@@ -378,17 +401,20 @@ class Transformation:
         return self._quad_weights
 
     def get_element_grid_id(self, element_id):
-        """Compute element ID in grid
+        """Compute element ID in grid.
+
+        The grid follows splinepy's ordering: first it goes into the x-direction,
+        after that into the y-direction.
 
         Parameters
         ----------
         element_id: int
-            ID of element of spline
+            ID of spline's element in element grid
 
         Returns
         ---------
         element_grid_id: list<int>
-            ID of element in grid
+            The grid ID of the element.
         """
         if self._para_dim == 3:
             raise NotImplementedError("Element grid ID not yet implemented for 3D")
@@ -396,12 +422,12 @@ class Transformation:
         return self._grid_ids[element_id, :]
 
     def get_element_quad_points(self, element_id):
-        """For given element computes quad points
+        """Compute the quadrature points for a given element.
 
         Parameters
         -----------
         element_id: int
-            ID of element in spline's element
+            ID of spline's element in element grid
 
         Returns
         -----------
@@ -437,7 +463,7 @@ class Transformation:
         Parameters
         ------------
         element_id: int
-            ID of element
+            ID of spline's element in element grid
 
         Returns
         ---------
@@ -461,7 +487,7 @@ class Transformation:
         Parameters
         ------------
         element_id: list<int>
-            ID of element in grid
+            ID of spline's element in element grid
 
         Returns
         ---------
@@ -481,7 +507,7 @@ class Transformation:
         Parameters
         ------------
         element_id: list<int>
-            ID of element in grid
+            ID of spline's element in element grid
 
         Returns
         ---------
@@ -525,8 +551,8 @@ class Transformation:
 
         Parameters
         ----------
-        recompute: bool
-            Recompute quadrature points
+        recompute: bool (optional)
+            If True, recompute the qudrature points. Default is no recomputation
         """
         if self._all_element_quad_points is not None and not recompute:
             return
@@ -555,8 +581,8 @@ class Transformation:
 
         Parameters
         --------------
-        recompute: bool
-            Recompute quadrature points
+        recompute: bool (optional)
+            If True, recomputes the supports. The default is no recomputation
         """
         if self._all_supports is not None and not recompute:
             return
@@ -575,8 +601,8 @@ class Transformation:
 
         Parameters
         ----------
-        recompute: bool
-            Recompute Jacobians
+        recompute: bool (optional)
+            If True, recomputes the Jacobians. Default option is no recomputation
         """
         if self._all_jacobians is not None and not recompute:
             return
@@ -594,8 +620,8 @@ class Transformation:
 
         Parameters
         ----------
-        recompute: bool
-            Recompute Jacobians' inverses
+        recompute: bool (optional)
+            If True, recompute Jacobians' inverses. Default is no recomputation
         """
         if self._all_jacobian_inverses is not None and not recompute:
             return
@@ -652,7 +678,7 @@ class Transformation:
         )
 
 
-class FieldIntegrator(_SplinepyBase):
+class FieldIntegrator:
     __slots__ = (
         "_helpee",
         "_solution_field",
@@ -665,7 +691,21 @@ class FieldIntegrator(_SplinepyBase):
     )
 
     def __init__(self, geometry, solution_field=None, orders=None):
-        """ """
+        """
+        Sets up solution field, its mapper, precomputes the transformation and
+        calculate the number of DoFs.
+
+        Parameters
+        ----------
+        geometry: spline
+            The geometry
+        solution_field: None or spline
+            Solution field. If not given, quadrature and supports will be calculated
+            using the geometry
+        orders: None or list<int>
+            Quadrature order in each dimension. If not given, default quadrature
+            will be used
+        """
         self._helpee = geometry
         if solution_field is None:
             self._solution_field = geometry.copy()
@@ -688,7 +728,14 @@ class FieldIntegrator(_SplinepyBase):
         self.reset(orders)
 
     def reset(self, orders=None):
-        """ """
+        """Sets up the transformation and resets the lhs and rhs.
+
+        Parameters
+        ------------
+        orders: None or list<int>
+            If given, these orders will be used for quadrature. Otherwise, default
+            quadrature orders will be used.
+        """
         self._trafo = Transformation(self._helpee, self._solution_field, orders)
         self.precompute_transformation()
 
@@ -704,7 +751,14 @@ class FieldIntegrator(_SplinepyBase):
 
     @property
     def supports(self):
-        """ """
+        """
+        Get the quadrature points' supports.
+
+        Returns
+        -------
+        supports: np.ndarray
+            The supports
+        """
         if self._supports is None:
             self._supports = self._helpee.supports(self._trafo.all_quad_points)
 
@@ -960,9 +1014,31 @@ class FieldIntegrator(_SplinepyBase):
         if self._global_system_matrix is None or self._global_rhs is None:
             raise ValueError("System is not yet fully assembled")
 
-    def get_boundary_dofs(self):
+    def get_boundary_dofs(
+        self,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
-        Get indices of boundary dofs.
+        Get indices of boundary dofs. Assumes that control points are arranged
+        in the following way: first one is the southwest corner, then the first
+        dimension goes from west to east and second dimension goes from south to
+        north.
+
+        Parameters
+        ------------------
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west. On the other, if any boundary is selected,
+            this value will be ignored
+        north: bool
+            If True, return indices for north boundary of geometry
+        east: bool
+        south: bool
+        west: bool
 
         Returns
         -------------
@@ -975,26 +1051,56 @@ class FieldIntegrator(_SplinepyBase):
 
         multi_index = relevant_spline.multi_index
 
+        multi_indices = [
+            multi_index[0, :],
+            multi_index[-1, :],
+            multi_index[:, 0],
+            multi_index[:, -1],
+        ]
+
+        # If at least one boundary is True, set all_boundaries to False
+        if north or east or south or west:
+            all_boundaries = False
+
+        boundaries = [True] * 4 if all_boundaries else [west, east, south, north]
+
         indices = _np.unique(
             _np.hstack(
-                (
-                    multi_index[0, :],
-                    multi_index[-1, :],
-                    multi_index[:, 0],
-                    multi_index[:, -1],
-                )
+                [
+                    index
+                    for index, boundary in zip(multi_indices, boundaries)
+                    if boundary
+                ]
             )
         )
 
         return indices
 
-    def assign_homogeneous_dirichlet_boundary_conditions(self):
+    def apply_homogeneous_dirichlet_boundary_conditions(
+        self,
+        all_boundaries=True,
+        north=False,
+        east=False,
+        south=False,
+        west=False,
+    ):
         """
         Assembles homogeneous Dirichlet boundary conditions
+
+        Parameters
+        -------------
+        all_boundaries: bool
+            If True, get indices of all boundary dofs and ignores values for
+            north, south, east and west
+        north: bool
+            If True, sets homogeneous Dirichlet condition on north boundary
+        east: bool
+        south: bool
+        west: bool
         """
         self.check_if_assembled()
 
-        indices = self.get_boundary_dofs()
+        indices = self.get_boundary_dofs(all_boundaries, north, east, south, west)
 
         self._global_system_matrix[indices, :] = 0
         self._global_system_matrix[indices, indices] = 1
@@ -1050,7 +1156,7 @@ class FieldIntegrator(_SplinepyBase):
         dof_vector = self.L2_projection(function)
 
         # Get relevant dofs
-        indices = self.get_boundary_dofs()
+        indices = self.get_boundary_dofs(all_boundaries, north, east, south, west)
 
         if return_values:
             return dof_vector[indices], indices
@@ -1115,9 +1221,7 @@ class FieldIntegrator(_SplinepyBase):
         # Integrate error
         quad_weights = self._trafo._quad_weights
         n_weights = quad_weights.shape[0]
-        quad_weights = _np.tile(
-            quad_weights, len(solution_values) // len(quad_weights)
-        )
+        quad_weights = _np.tile(quad_weights, len(solution_values) // len(quad_weights))
         self._trafo.compute_all_element_measures()
 
         error_integration = _np.einsum(
