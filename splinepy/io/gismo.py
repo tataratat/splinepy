@@ -12,6 +12,11 @@ from splinepy.utils.log import warning as _warning
 
 
 class AdditionalBlocks:
+    """Class to manage additional XML blocks for gismo export, including boundary
+    conditions, function definitions, and assembly options. Each block is stored as a
+    Python dictionary, which is then later handled by the export function.
+    """
+
     def __init__(self):
         self._blocks = []
 
