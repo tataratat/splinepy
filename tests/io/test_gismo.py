@@ -263,10 +263,16 @@ def test_gismo_export_3D(
             )
 
 
-def test_gismo_export_function_block(
+def test_gismo_export_additional_blocks(
     gismo_2D_multipatch, to_tmpf, are_stripped_lines_same
 ):
+    """Test if the export of additional xml-blocks are correctly handled by splinepy's
+    g+smo export function. This inlucdes scalar and vector-valued function and
+    boundary condition blocks and also the default assembly options.
+    """
+    # Test only runs for Python version 3.9 and higher
     if int(python_version.split(".")[1]) >= 9:
+        # Initialize AdditionalBlocks to manage various blocks for export
         additional_blocks = splinepy.io.gismo.AdditionalBlocks()
 
         # Function block for scalar variable

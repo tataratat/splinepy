@@ -1,5 +1,7 @@
 """
-Export to g+smo-compatible xml-file. Recreates poisson2d_bvp.xml from gismo repo
+Export to g+smo-compatible xml-file.
+
+Recreates poisson2d_bvp.xml from gismo repo
 (see https://github.com/gismo/gismo/blob/stable/filedata/pde/poisson2d_bvp.xml)
 """
 
@@ -17,7 +19,7 @@ def create_geometry():
     multipatch: splinepy Multipatch
         Arc geometry consisting of two patches
     """
-    # Create inner and outer arcs
+    # Create inner and outer arcs as NURBS patches
     arc_inner = spp.NURBS(
         degrees=[1, 2],
         knot_vectors=[[0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]],
@@ -47,6 +49,7 @@ def create_geometry():
     multipatch.determine_interfaces()
 
     # Identify the patches' boundaries which correspond to the Dirichlet BCs
+    # Points with y=0 or (x=0 and y=2) are identified as Dirichlet boundaries
     def dirichlet_identifier(points):
         return (points[:, 1] < EPS) | (
             (points[:, 0] < EPS) & (points[:, 1] > 2 - EPS)
@@ -129,7 +132,7 @@ if __name__ == "__main__":
         control_points=False,
     )
 
-    # Export to xml-file
+    # Export multipatch geometry and additional options/functions to an XML file
     gismo.export(
         fname="poisson2d_bvp_recreation.xml",
         multipatch=multipatch,

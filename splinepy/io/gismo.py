@@ -709,6 +709,7 @@ def export(
                 attributes = gismo_dictionary.get("attributes", {})
                 option_text = gismo_dictionary.get("text", None)
                 comment_text = gismo_dictionary.get("comment", None)
+                # If comment is provided, add it above XML-block
                 if comment_text is not None:
                     xml_data.append(_ET.Comment(comment_text))
                 optional_data = _ET.SubElement(
