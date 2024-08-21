@@ -11,6 +11,7 @@ from the root of the project.
 Author: Clemens Fricke
 """
 
+import argparse
 import os
 import pathlib
 import re
@@ -131,69 +132,81 @@ def process_file(
     Returns:
         str: Content of the markdown file. Only if return_content is True.
     """
+    content = ""
     # read in the content of the markdown file
     with open(file) as f:
-        content = f.read()
-    os.chdir(os.path.dirname(file)) if os.path.dirname(file) else None
-    # get all links from the markdown file
-    links = get_markdown_links(content)
+        # content = f.read()
+        os.chdir(os.path.dirname(file)) if os.path.dirname(file) else None
+        for line in f:
+            # get all links from the markdown file
+            links = get_markdown_links(line)
+            for item in links:
+                if not item[1].strip():
+                    warnings.warn(
+                        f"Empty link in `{file}`. Link name `{item[0]}` link path "
+                        f"`{item[1]}`. Will ignore link.",
+                        stacklevel=3,
+                    )
+                    continue
+                if item[1].startswith(
+                    ("http", "#")
+                ):  # skip http links and anchors
+                    if "badge" in item[1]:
+                        continue
+                    line = line.replace(  # noqa: PLW2901
+                        f"[{item[0]}]({item[1]})",
+                        f"<a href='{item[1]}'>{item[0]}</a>",
+                    )
+                    continue
+                elif item[1] in link_substitutions:
+                    if relative_links:
+                        line = line.replace(  # noqa: PLW2901
+                            f"[{item[0]}]({item[1]})",
+                            f"<a href='{link_substitutions[item[1]]}'>{item[0]}</a>",
+                        )
+                        continue
+                    else:
+                        line = line.replace(  # noqa: PLW2901
+                            f"[{item[0]}]({item[1]})",
+                            "See documentation for examples.",
+                        )
+                elif not relative_links:  # generate links to github repo
+                    new_path = get_github_path_from(
+                        pathlib.Path(item[1]).resolve()
+                    )
+                else:  # generate relative links
+                    common_sub_path, steps_back = get_common_parent(
+                        item[1], folder_to_save_to
+                    )
+                    new_path = "../" * steps_back + str(
+                        pathlib.Path(item[1])
+                        .resolve()
+                        .relative_to(common_sub_path)
+                    )
+                line = line.replace(item[1], str(new_path))  # noqa: PLW2901
 
-    for item in links:
-        if not item[1].strip():
-            warnings.warn(
-                f"Empty link in `{file}`. Link name `{item[0]}` link path "
-                f"`{item[1]}`. Will ignore link.",
-                stacklevel=3,
-            )
-            continue
-        if item[1].startswith(("http", "#")):  # skip http links and anchors
-            if "badge" in item[1]:
-                continue
-            content = content.replace(
-                f"[{item[0]}]({item[1]})",
-                f"<a href='{item[1]}'>{item[0]}</a>",
-            )
-            continue
-        elif item[1] in link_substitutions:
-            if relative_links:
-                content = content.replace(
-                    f"[{item[0]}]({item[1]})",
-                    f"<a href='{link_substitutions[item[1]]}'>{item[0]}</a>",
-                )
-                continue
-            else:
-                content = content.replace(
-                    f"[{item[0]}]({item[1]})",
-                    "See documentation for examples.",
-                )
-        elif not relative_links:  # generate links to github repo
-            new_path = get_github_path_from(pathlib.Path(item[1]).resolve())
-        else:  # generate relative links
-            common_sub_path, steps_back = get_common_parent(
-                item[1], folder_to_save_to
-            )
-            new_path = "../" * steps_back + str(
-                pathlib.Path(item[1]).resolve().relative_to(common_sub_path)
-            )
-        content = content.replace(item[1], str(new_path))
-
-    # super special links (just special images) that the sphinx markdown
-    # parser won't correctly handle since they are in html tags.
-    special_links = get_special_links(content)
-    for item in special_links:
-        if not item[0].strip():
-            warnings.warn(
-                f"Empty link in `{file}`. Link name `{item[1]}` link path "
-                f"`{item[0]}`. Will ignore link.",
-                stacklevel=3,
-            )
-            continue
-        if item[0].startswith("http"):  # skip http links and anchors
-            continue
-        else:
-            # just link to static folder in docs
-            new_path = "_static/" + str(pathlib.Path(item[1]).name)
-            content = content.replace(item[1], str(new_path))
+            # super special links (just special images) that the sphinx markdown
+            # parser won't correctly handle since they are in html tags.
+            special_links = get_special_links(line)
+            for item in special_links:
+                if not item[0].strip():
+                    warnings.warn(
+                        f"Empty link in `{file}`. Link name `{item[1]}` link path "
+                        f"`{item[0]}`. Will ignore link.",
+                        stacklevel=3,
+                    )
+                    continue
+                if item[0].startswith("http"):  # skip http links and anchors
+                    continue
+                elif not relative_links:  # generate links to github repo
+                    new_path = get_github_path_from(
+                        pathlib.Path(item[1]).resolve()
+                    )
+                else:
+                    # just link to static folder in docs
+                    new_path = "_static/" + str(pathlib.Path(item[1]).name)
+                line = line.replace(item[1], str(new_path))  # noqa: PLW2901
+            content += f"{line}"
 
     os.chdir(original_cwd)
 
@@ -206,7 +219,33 @@ def process_file(
         f.write(content)
 
 
+def prepare_file_for_PyPI():
+    """Prepare the README file for PyPI.
+
+    This function will prepare the README file for PyPI. It will replace all
+    relative links with absolute links to the github repository.
+
+    Args:
+        file (str): Path to the README file.
+    """
+    content = process_file(
+        "README.md", relative_links=False, return_content=True
+    )
+    with open("README.md", "w") as f:
+        f.write(content)
+
+
 if __name__ == "__main__":
+    # python handle_markdown -> docs
+    # python handle_markdown -b -> PyPI
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-b", "--build", action="store_true")
+    args = parser.parse_args()
+    if args.build:
+        print("Preparing README for PyPI.")  # noqa: T201
+        prepare_file_for_PyPI()
+        exit()  # noqa: PLR1722
+    print("Processing markdown files.")  # noqa: T201
     os.chdir(repo_root)
     os.makedirs(folder_to_save_to, exist_ok=True)
     # Process all markdown files
