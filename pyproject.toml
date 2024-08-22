@@ -60,7 +60,7 @@ input = "splinepy/_version.py"
 [tool.cibuildwheel]
 test-extras = ["test"]
 test-command = "pytest {project}/tests"
-before_all = "python docs/source/handle_markdown.py -b"
+before-all = "python {project}/docs/source/handle_markdown.py -b"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "arm64"]
