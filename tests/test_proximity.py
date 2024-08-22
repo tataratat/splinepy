@@ -2,21 +2,24 @@ import numpy as np
 import pytest
 
 # fixtures used
-all_2p2d_splines = (
+all_splines = (
     "rational_bezier_2p2d",
     "bezier_2p2d",
     "bspline_2p2d",
     "nurbs_2p2d",
+    "rational_bezier_3p3d",
+    "bezier_3p3d",
+    "bspline_3p3d",
+    "nurbs_3p3d",
 )
 
 
-@pytest.mark.parametrize("splinetype", all_2p2d_splines)
+@pytest.mark.parametrize("splinetype", all_splines)
 def test_queries_inside_spline_initial_guess_with_kdt(
     request, splinetype, np_rng
 ):
     """
-    Initial guess made with kdt. Mid-point as initial guess tends to fail,
-    so excluded from test.
+    Initial guess made with kdt.
     """
     spline = request.getfixturevalue(splinetype)
     # form parametric queries

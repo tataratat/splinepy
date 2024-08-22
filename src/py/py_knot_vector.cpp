@@ -170,7 +170,9 @@ void init_knot_vector(py::module_& m) {
           "Returns copy of knot vectors as numpy array.")
       .def(
           "__array__",
-          [](const KnotVector& kv, [[maybe_unused]] py::args dtype_ignored) {
+          [](const KnotVector& kv,
+             [[maybe_unused]] py::args dtype_ignored,
+             [[maybe_unused]] py::kwargs copy_ignored) {
             py::array_t<KnotType> arr(kv.GetSize());
             KnotType* arr_ptr = static_cast<KnotType*>(arr.request().ptr);
             for (int i{}; i < kv.GetSize(); ++i) {
