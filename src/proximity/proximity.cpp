@@ -427,7 +427,7 @@ void Proximity::Newton(SearchData& data) const {
 }
 
 void Proximity::PrepareIterationLevenbergMarquart(SearchData& data) const {
-  // LM requires Jac (pronounced similar to Jacques)
+  // LM requires Jacobian
   ComputeCostAndDerivatives(data, 1);
 
   // prepare rhs
