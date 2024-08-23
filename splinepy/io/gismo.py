@@ -20,7 +20,7 @@ class AdditionalBlocks:
     def __init__(self):
         self._blocks = []
 
-    def add_boundary_conditions_block(
+    def add_boundary_conditions(
         self,
         block_id,
         dim,
@@ -112,7 +112,7 @@ class AdditionalBlocks:
 
         self._blocks.append(bc_dict_for_xml)
 
-    def add_function_block(self, dim, block_id, function_string, comment=None):
+    def add_function(self, dim, block_id, function_string, comment=None):
         """Create Python dictionary of custom function's block to be used in
         gismo export function.
 
@@ -158,7 +158,7 @@ class AdditionalBlocks:
 
         self._blocks.append(function_dict)
 
-    def add_assembly_options_block(
+    def add_assembly_options(
         self,
         block_id,
         dirichlet_strategy=11,
@@ -272,6 +272,17 @@ class AdditionalBlocks:
             assembly_dict["comment"] = comment
 
         self._blocks.append(assembly_dict)
+
+    def to_list(self):
+        """
+        Returns list of created XML-blocks
+
+        Returns
+        ---------
+        blocks: list<dict>
+            List of XML-blocks
+        """
+        return self._blocks
 
 
 def _spline_to_ET(
@@ -499,7 +510,7 @@ def export(
     multipatch=None,
     indent=True,
     labeled_boundaries=True,
-    options=None,
+    additional_blocks=None,
     export_fields=False,
     field_mask=None,
     as_base64=False,
@@ -518,7 +529,7 @@ def export(
       Appends white spaces using xml.etree.ElementTree.indent, if possible.
     labeled_boundaries : bool
       Writes boundaries with labels into the MultiPatch part of the XML
-    options : list
+    additional_blocks : list
       List of dictionaries, that specify model related options, like boundary
       conditions, assembler options, etc.. The dictionaries must have the
       following keys, 'tag'->string, 'text'->string (optional),
@@ -698,10 +709,10 @@ def export(
     patch_range.text = f"{index_offset} " f"{n_patches - 1 + index_offset}"
 
     # Add additional options to the xml file
-    if options is not None:
+    if additional_blocks is not None:
         # Verify that the list stored in the correct format
-        if not isinstance(options, list):
-            options = [options]
+        if not isinstance(additional_blocks, list):
+            additional_blocks = [additional_blocks]
 
         def _apply_options(ETelement, options_list):
             for gismo_dictionary in options_list:
@@ -730,7 +741,7 @@ def export(
                         options_list=gismo_dictionary["children"],
                     )
 
-        _apply_options(xml_data, options)
+        _apply_options(xml_data, additional_blocks)
 
     if int(_python_version.split(".")[1]) >= 9 and indent:
         # Pretty printing xml with indent only exists in version > 3.9

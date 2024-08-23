@@ -19,7 +19,7 @@ def create_geometry():
     multipatch: splinepy Multipatch
         Arc geometry consisting of two patches
     """
-    # Create inner and outer arcs as NURBS patches
+    # Create example's inner and outer arcs as NURBS patches with predefined values
     arc_inner = spp.NURBS(
         degrees=[1, 2],
         knot_vectors=[[0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]],
@@ -75,7 +75,7 @@ def generate_additional_xml_blocks():
     additional_blocks = gismo.AdditionalBlocks()
 
     # Create function block for rhs
-    additional_blocks.add_function_block(
+    additional_blocks.add_function(
         dim=2,
         block_id=1,
         function_string="2*pi^2*sin(pi*x)*sin(pi*y)",
@@ -83,7 +83,7 @@ def generate_additional_xml_blocks():
     )
 
     # Create function block for manufactured solution
-    additional_blocks.add_function_block(
+    additional_blocks.add_function(
         dim=2,
         block_id=3,
         function_string="sin(pi*x) * sin(pi*y)",
@@ -91,7 +91,7 @@ def generate_additional_xml_blocks():
     )
 
     # Create block for boundary conditions
-    additional_blocks.add_boundary_conditions_block(
+    additional_blocks.add_boundary_conditions(
         block_id=2,
         dim=2,
         function_list=[
@@ -106,11 +106,11 @@ def generate_additional_xml_blocks():
     )
 
     # Create dictionary for assembly options
-    additional_blocks.add_assembly_options_block(
+    additional_blocks.add_assembly_options(
         block_id=4, comment="Assembler options"
     )
 
-    return additional_blocks._blocks
+    return additional_blocks.to_list()
 
 
 if __name__ == "__main__":
@@ -137,5 +137,5 @@ if __name__ == "__main__":
         fname="poisson2d_bvp_recreation.xml",
         multipatch=multipatch,
         indent=True,
-        options=additional_blocks,
+        additional_blocks=additional_blocks,
     )

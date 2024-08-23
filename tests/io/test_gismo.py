@@ -276,14 +276,14 @@ def test_gismo_export_additional_blocks(
         additional_blocks = splinepy.io.gismo.AdditionalBlocks()
 
         # Function block for scalar variable
-        additional_blocks.add_function_block(
+        additional_blocks.add_function(
             dim=2,
             block_id=1,
             function_string="2*pi^2*sin(pi*x)*sin(pi*y)",
             comment="Scalar-valued function",
         )
         # Function block for vector-valued variable
-        additional_blocks.add_function_block(
+        additional_blocks.add_function(
             dim=2,
             block_id=2,
             function_string=("x", "y"),
@@ -291,7 +291,7 @@ def test_gismo_export_additional_blocks(
         )
 
         # Create block for boundary conditions
-        additional_blocks.add_boundary_conditions_block(
+        additional_blocks.add_boundary_conditions(
             block_id=3,
             dim=2,
             function_list=[
@@ -306,7 +306,7 @@ def test_gismo_export_additional_blocks(
         )
 
         # Create dictionary for assembly options
-        additional_blocks.add_assembly_options_block(
+        additional_blocks.add_assembly_options(
             block_id=4, comment="Assembler options"
         )
 
@@ -317,7 +317,7 @@ def test_gismo_export_additional_blocks(
                 multipatch=gismo_2D_multipatch,
                 indent=True,
                 labeled_boundaries=True,
-                options=additional_blocks._blocks,
+                additional_blocks=additional_blocks.to_list(),
             )
 
             with open(tmpf) as tmp_read, open(
@@ -490,7 +490,7 @@ def test_gismo_import_with_options(to_tmpf, are_splines_equal):
             multipatch=multipatch_geometry,
             indent=False,
             labeled_boundaries=False,
-            options=gismo_options,
+            additional_blocks=gismo_options,
         )
         (
             multipatch_geometry_loaded,
