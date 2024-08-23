@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.split
+=============================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: split

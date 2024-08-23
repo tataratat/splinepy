@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacesplinepy_1_1proximity" kind="namespace" language="C++">
+    <compoundname>splinepy::proximity</compoundname>
+    <innerclass refid="structsplinepy_1_1proximity_1_1SearchData" prot="public">splinepy::proximity::SearchData</innerclass>
+    <innerclass refid="classsplinepy_1_1proximity_1_1Proximity" prot="public">splinepy::proximity::Proximity</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">splinepy::utils::Array</ref>&lt; double &gt;</type>
+        <definition>using RealArray =  splinepy::utils::Array&lt;double&gt;</definition>
+        <argsstring></argsstring>
+        <name>RealArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="35" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">splinepy::utils::Array</ref>&lt; double, 2 &gt;</type>
+        <definition>using RealArray2D =  splinepy::utils::Array&lt;double, 2&gt;</definition>
+        <argsstring></argsstring>
+        <name>RealArray2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="36" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a5905cb3ac9c10468cb620098703da388" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">splinepy::utils::Array</ref>&lt; double, 3 &gt;</type>
+        <definition>using RealArray3D =  splinepy::utils::Array&lt;double, 3&gt;</definition>
+        <argsstring></argsstring>
+        <name>RealArray3D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="37" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a0602c9659981e782c9312f8d6f27dcfa" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">splinepy::utils::Array</ref>&lt; int &gt;</type>
+        <definition>using IndexArray =  splinepy::utils::Array&lt;int&gt;</definition>
+        <argsstring></argsstring>
+        <name>IndexArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="38" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a0268d731df47b1be3dbb96f91fa33a06" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">splinepy::utils::Array</ref>&lt; const double &gt;</type>
+        <definition>using ConstRealArray =  splinepy::utils::Array&lt;const double&gt;</definition>
+        <argsstring></argsstring>
+        <name>ConstRealArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="39" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacesplinepy_1_1proximity_1a41e8e0dd014a8432c03b168afac6d923" prot="public" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Matrix" kindref="compound">splinepy::utils::Matrix</ref>&lt; double, int &gt;</type>
+        <definition>using LhsMatrix =  splinepy::utils::Matrix&lt;double, int&gt;</definition>
+        <argsstring></argsstring>
+        <name>LhsMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="40" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacesplinepy_1_1proximity_1ad5248019ad10a7724d2ac4644b752469" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T splinepy::proximity::ConvergenceGoal</definition>
+        <argsstring>(const T &amp;first_norm, const T &amp;rel_tol, const T &amp;abs_tol)</argsstring>
+        <name>ConvergenceGoal</name>
+        <param>
+          <type>const T &amp;</type>
+          <declname>first_norm</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>rel_tol</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>abs_tol</declname>
+        </param>
+        <briefdescription>
+<para>compute convergence goal based on first norm and tolerances. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>first_norm</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rel_tol</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>abs_tol</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="49" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="49" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1proximity_1ab6afed1649415d3f17a0e10a5c98ab69" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void FillHessian</definition>
+        <argsstring>(const splinepy::splines::SplinepyBase &amp;spline, const RealArray &amp;at, RealArray3D &amp;hess)</argsstring>
+        <name>FillHessian</name>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref> &amp;</type>
+          <declname>at</declname>
+        </param>
+        <param>
+          <type><ref refid="namespacesplinepy_1_1proximity_1a5905cb3ac9c10468cb620098703da388" kindref="member">RealArray3D</ref> &amp;</type>
+          <declname>hess</declname>
+        </param>
+        <briefdescription>
+<para>helper function to compute hessian at the end </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>at</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hess</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/proximity/proximity.cpp" line="747" column="6" bodyfile="/home/runner/work/splinepy/splinepy/src/proximity/proximity.cpp" bodystart="747" bodyend="788" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" declline="409" declcolumn="6"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="33" column="1"/>
+  </compounddef>
+</doxygen>

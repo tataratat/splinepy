@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.chi.Chi.create\_tile
+==================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.chi
+
+.. automethod:: Chi.create_tile

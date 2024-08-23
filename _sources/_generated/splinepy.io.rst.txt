@@ -1,0 +1,43 @@
+.. _splinepy.io:
+
+splinepy.io
+===========
+
+.. automodule:: splinepy.io
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   cats
+   default
+   gismo
+   iges
+   ioutils
+   irit
+   json
+   mfem
+   npz
+   svg
+

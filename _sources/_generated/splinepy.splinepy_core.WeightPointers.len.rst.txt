@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.WeightPointers.len
+==========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: WeightPointers.len

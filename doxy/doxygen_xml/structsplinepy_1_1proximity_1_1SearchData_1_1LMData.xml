@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData" kind="struct" language="C++" prot="public">
+    <compoundname>splinepy::proximity::SearchData::LMData</compoundname>
+    <includes refid="proximity_8hpp" local="no">proximity.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a3db359547eed8cfd48ca821d95f577af" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double lambda</definition>
+        <argsstring></argsstring>
+        <name>lambda</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="141" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="141" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0f38328e75899d2e10214346395a0af0" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double prev_J</definition>
+        <argsstring></argsstring>
+        <name>prev_J</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="142" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a34e184faa9a443c59035671bd5b43b29" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool modified_update</definition>
+        <argsstring></argsstring>
+        <name>modified_update</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="143" column="10" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1e2f9a2352c1d9a6cada9544898fceec" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double lower_bound</definition>
+        <argsstring></argsstring>
+        <name>lower_bound</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="144" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1ba5ca0f61f2fa13bd23bf0f89004f35" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double upper_bound</definition>
+        <argsstring></argsstring>
+        <name>upper_bound</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="145" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a7840e3f05acab965fa1cdb901aeb384e" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray metric</definition>
+        <argsstring></argsstring>
+        <name>metric</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="146" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a08d7d5902a040d033b3c5f1d0db0ceab" prot="public" static="no" mutable="no">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref></type>
+        <definition>RealArray prev_guess</definition>
+        <argsstring></argsstring>
+        <name>prev_guess</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="147" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a93088a93384ad640541aadfe81ea4055" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Setup</definition>
+        <argsstring>(SearchData &amp;data)</argsstring>
+        <name>Setup</name>
+        <param>
+          <type><ref refid="structsplinepy_1_1proximity_1_1SearchData" kindref="compound">SearchData</ref> &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="149" column="10" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="149" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0b484aaf62491beed1609c7e4e61e280" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref> &amp;</type>
+        <definition>RealArray&amp; Metric</definition>
+        <argsstring>(const RealArray2D &amp;spline_gradient_, const RealArray &amp;delta_guess_)</argsstring>
+        <name>Metric</name>
+        <param>
+          <type>const <ref refid="namespacesplinepy_1_1proximity_1a6ffd1c98976d723d11bf5063020d9a7c" kindref="member">RealArray2D</ref> &amp;</type>
+          <declname>spline_gradient_</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacesplinepy_1_1proximity_1a70e0c33aa6fcbed8c056eb5f458d2ae4" kindref="member">RealArray</ref> &amp;</type>
+          <declname>delta_guess_</declname>
+        </param>
+        <briefdescription>
+<para>Computes || F(x) + J^T * dX ||^2. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline_gradient_</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delta_guess_</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="157" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="157" bodyend="163"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Levenberg-Marquart specific search data. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>SearchData::LMData</label>
+        <link refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+metric</edgelabel>
+          <edgelabel>+prev_guess</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Array&lt; DataType, dim, IndexType &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+      </node>
+      <node id="2">
+        <label>Array&lt; double &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="3" relation="template-instance">
+          <edgelabel>&lt; double &gt;</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" line="140" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/proximity/proximity.hpp" bodystart="140" bodyend="164"/>
+    <listofallmembers>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a3db359547eed8cfd48ca821d95f577af" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>lambda</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1e2f9a2352c1d9a6cada9544898fceec" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>lower_bound</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a7840e3f05acab965fa1cdb901aeb384e" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>metric</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0b484aaf62491beed1609c7e4e61e280" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>Metric</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a34e184faa9a443c59035671bd5b43b29" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>modified_update</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a08d7d5902a040d033b3c5f1d0db0ceab" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>prev_guess</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a0f38328e75899d2e10214346395a0af0" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>prev_J</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a93088a93384ad640541aadfe81ea4055" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>Setup</name></member>
+      <member refid="structsplinepy_1_1proximity_1_1SearchData_1_1LMData_1a1ba5ca0f61f2fa13bd23bf0f89004f35" prot="public" virt="non-virtual"><scope>splinepy::proximity::SearchData::LMData</scope><name>upper_bound</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

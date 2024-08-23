@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structsplinepy_1_1utils_1_1WeightPointers" kind="struct" language="C++" prot="public">
+    <compoundname>splinepy::utils::WeightPointers</compoundname>
+    <includes refid="coordinate__pointers_8hpp" local="no">coordinate_pointers.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; double * &gt;</type>
+        <definition>std::vector&lt;double*&gt; weights_</definition>
+        <argsstring></argsstring>
+        <name>weights_</name>
+        <briefdescription>
+<para>Pointer to weights. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="116" column="15" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1WeightPointers_1a5f242cdfd4e9f2337e42449cfdaecbd2" prot="public" static="no" mutable="no">
+        <type>std::weak_ptr&lt; <ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">ControlPointPointers</ref> &gt;</type>
+        <definition>std::weak_ptr&lt;ControlPointPointers&gt; control_point_pointers_</definition>
+        <argsstring></argsstring>
+        <name>control_point_pointers_</name>
+        <briefdescription>
+<para>weak_ptr to partner control points. shared_ptr will cause cyclic dependency </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="120" column="17" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool invalid_</definition>
+        <argsstring></argsstring>
+        <name>invalid_</name>
+        <initializer>{false}</initializer>
+        <briefdescription>
+<para>Validity flag. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="126" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int dim_</definition>
+        <argsstring></argsstring>
+        <name>dim_</name>
+        <initializer>{1}</initializer>
+        <briefdescription>
+<para>Dimension of the weights are always one. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="123" column="20" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="123" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1WeightPointers_1a084daa1edcc4d58991ca7dcbb09f42df" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Len</definition>
+        <argsstring>() const</argsstring>
+        <name>Len</name>
+        <briefdescription>
+<para>Number of weights. Same as number of control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="129" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="129" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1WeightPointers_1aef6f9581b5fbe9ebe1178958db29d389" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Dim</definition>
+        <argsstring>() const</argsstring>
+        <name>Dim</name>
+        <briefdescription>
+<para>Dimension. Always one. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="132" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="132" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetRow</definition>
+        <argsstring>(const int id, double const &amp;value)</argsstring>
+        <name>SetRow</name>
+        <param>
+          <type>const int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>double const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Sets one row entry. It updates weights and adjusts weighted control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="139" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/utils/coordinate_pointers.cpp" bodystart="87" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>bool</type>
+            <declname>same_sized_value</declname>
+            <defname>same_sized_value</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void SetRows</definition>
+        <argsstring>(const int *ids, const int n_rows, const double *values)</argsstring>
+        <name>SetRows</name>
+        <param>
+          <type>const int *</type>
+          <declname>ids</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>n_rows</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Same as ControlPointPointer&apos;s SetRows. Here, it calls SetRow iteratively. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="144" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="202" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="structsplinepy_1_1utils_1_1WeightPointers_1aae439260e416f2cd8a082b5bf1412d99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Sync</definition>
+        <argsstring>(const double *values)</argsstring>
+        <name>Sync</name>
+        <param>
+          <type>const double *</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+<para>Syncs whole array by calling SetRow iteratively. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="147" column="8" bodyfile="/home/runner/work/splinepy/splinepy/src/utils/coordinate_pointers.cpp" bodystart="115" bodyend="122"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Similar to <ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">ControlPointPointers</ref>, but for weights. This same layout as <ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">ControlPointPointers</ref>, because in BSplineLib, weights are saved as last element of the homogeneous control points, which means that it is not contiguous. bezman, however, has a contiguous array, but this approach is applicable for both case. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>WeightPointers</label>
+        <link refid="structsplinepy_1_1utils_1_1WeightPointers"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="114" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="114" bodyend="148"/>
+    <listofallmembers>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a5f242cdfd4e9f2337e42449cfdaecbd2" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>control_point_pointers_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1aef6f9581b5fbe9ebe1178958db29d389" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>Dim</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>dim_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>invalid_</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a084daa1edcc4d58991ca7dcbb09f42df" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>Len</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>SetRow</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>SetRows</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1aae439260e416f2cd8a082b5bf1412d99" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>Sync</name></member>
+      <member refid="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" prot="public" virt="non-virtual"><scope>splinepy::utils::WeightPointers</scope><name>weights_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

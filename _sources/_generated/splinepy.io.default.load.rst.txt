@@ -1,0 +1,6 @@
+splinepy.io.default.load
+========================
+
+.. currentmodule:: splinepy.io.default
+
+.. autofunction:: load

@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.evaluate
+=================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.evaluate

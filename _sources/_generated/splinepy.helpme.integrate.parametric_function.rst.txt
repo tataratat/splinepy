@@ -1,0 +1,6 @@
+splinepy.helpme.integrate.parametric\_function
+==============================================
+
+.. currentmodule:: splinepy.helpme.integrate
+
+.. autofunction:: parametric_function

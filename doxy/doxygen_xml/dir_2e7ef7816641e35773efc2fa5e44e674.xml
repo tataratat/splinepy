@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_2e7ef7816641e35773efc2fa5e44e674" kind="dir">
+    <compoundname>explicit</compoundname>
+    <innerdir refid="dir_51f859c5f05dfa4785ab521e2a5e77fe">splinepy</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/src/explicit/"/>
+  </compounddef>
+</doxygen>

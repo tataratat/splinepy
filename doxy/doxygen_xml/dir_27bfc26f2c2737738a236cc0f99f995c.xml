@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_27bfc26f2c2737738a236cc0f99f995c" kind="dir">
+    <compoundname>utils</compoundname>
+    <innerfile refid="arrays_8hpp">arrays.hpp</innerfile>
+    <innerfile refid="coordinate__pointers_8hpp">coordinate_pointers.hpp</innerfile>
+    <innerfile refid="default__initialization__allocator_8hpp">default_initialization_allocator.hpp</innerfile>
+    <innerfile refid="grid__points_8hpp">grid_points.hpp</innerfile>
+    <innerfile refid="nthreads_8hpp">nthreads.hpp</innerfile>
+    <innerfile refid="print_8hpp">print.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/"/>
+  </compounddef>
+</doxygen>

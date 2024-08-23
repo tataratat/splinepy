@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_1fe5f34325739966f06c59d2449db345" kind="dir">
+    <compoundname>proximity</compoundname>
+    <innerdir refid="dir_edecae33a05e19acb624f263f2463190">slsqp</innerdir>
+    <innerfile refid="proximity_8cpp">proximity.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/src/proximity/"/>
+  </compounddef>
+</doxygen>

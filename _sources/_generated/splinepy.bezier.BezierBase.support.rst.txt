@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.support
+==================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.support

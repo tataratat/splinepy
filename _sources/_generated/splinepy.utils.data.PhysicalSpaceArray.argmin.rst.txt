@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.argmin
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.argmin

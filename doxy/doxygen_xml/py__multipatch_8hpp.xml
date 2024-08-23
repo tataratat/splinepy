@@ -1,0 +1,395 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="py__multipatch_8hpp" kind="file" language="C++">
+    <compoundname>py_multipatch.hpp</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">pybind11/numpy.h</includes>
+    <includes local="no">pybind11/pybind11.h</includes>
+    <includes refid="py__spline_8hpp" local="yes">splinepy/py/py_spline.hpp</includes>
+    <includes refid="default__initialization__allocator_8hpp" local="yes">splinepy/utils/default_initialization_allocator.hpp</includes>
+    <includedby refid="py__multipatch_8cpp" local="yes">py_multipatch.cpp</includedby>
+    <incdepgraph>
+      <node id="9">
+        <label>splinepy/utils/coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>splinepy/splines/splinepy_base.hpp</label>
+        <link refid="splinepy__base_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>cassert</label>
+      </node>
+      <node id="14">
+        <label>stdexcept</label>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="3">
+        <label>pybind11/numpy.h</label>
+      </node>
+      <node id="11">
+        <label>splinepy/utils/print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>vector</label>
+      </node>
+      <node id="5">
+        <label>splinepy/py/py_spline.hpp</label>
+        <link refid="py__spline_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>sstream</label>
+      </node>
+      <node id="4">
+        <label>pybind11/pybind11.h</label>
+      </node>
+      <node id="12">
+        <label>iostream</label>
+      </node>
+      <node id="1">
+        <label>py_multipatch.hpp</label>
+        <link refid="py__multipatch_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>type_traits</label>
+      </node>
+      <node id="15">
+        <label>splinepy/utils/default_initialization_allocator.hpp</label>
+        <link refid="default__initialization__allocator_8hpp"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>py_multipatch.cpp</label>
+        <link refid="py__multipatch_8cpp"/>
+      </node>
+      <node id="1">
+        <label>py_multipatch.hpp</label>
+        <link refid="py__multipatch_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classsplinepy_1_1py_1_1PyMultipatch" prot="public">splinepy::py::PyMultipatch</innerclass>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1py">splinepy::py</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">//<sp/>pybind</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;pybind11/numpy.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;pybind11/pybind11.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="py__spline_8hpp" kindref="compound">splinepy/py/py_spline.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="default__initialization__allocator_8hpp" kindref="compound">splinepy/utils/default_initialization_allocator.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1py" kindref="compound">splinepy::py</ref><sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">py<sp/>=<sp/>pybind11;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="comment">//<sp/>alias<sp/>for<sp/>frequently<sp/>used<sp/>vectors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kindref="member">CoreSplineVector</ref><sp/>=</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;splinepy::splines::SplinepyBase&gt;&gt;;</highlight></codeline>
+<codeline lineno="44" refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" kindref="member">IntVector</ref><sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kindref="member">splinepy::utils::DefaultInitializationVector&lt;int&gt;</ref>;</highlight></codeline>
+<codeline lineno="45" refid="namespacesplinepy_1_1py_1aeffd78ed756c66d09f043c32424810f2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1aeffd78ed756c66d09f043c32424810f2" kindref="member">IntVectorVector</ref><sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kindref="member">splinepy::utils::DefaultInitializationVector&lt;IntVector&gt;</ref>;</highlight></codeline>
+<codeline lineno="46" refid="namespacesplinepy_1_1py_1af25a53aec82a347bf9329587384342f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1af25a53aec82a347bf9329587384342f7" kindref="member">DoubleVector</ref><sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kindref="member">splinepy::utils::DefaultInitializationVector&lt;double&gt;</ref>;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">std::vector&lt;PySpline::CoreSpline_&gt;<sp/><ref refid="namespacesplinepy_1_1py_1a07298ba791a7565d84229895f6ddf137" kindref="member">ToCoreSplineVector</ref>(py::list<sp/>pysplines,</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads<sp/>=<sp/>1);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal">std::vector&lt;PySpline::CoreSpline_&gt;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><ref refid="namespacesplinepy_1_1py_1a07298ba791a7565d84229895f6ddf137" kindref="member">ToCoreSplineVector</ref>(py::list<sp/>pysplines,</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim_if_none,</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim_if_none,</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads);</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal">py::list<sp/><ref refid="namespacesplinepy_1_1py_1a4578b809c1e80bce55ebbd59665f97ea" kindref="member">ToPySplineList</ref>(<ref refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kindref="member">CoreSplineVector</ref>&amp;<sp/>splist);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/>*<sp/>Sort<sp/>Vector<sp/>using<sp/>lambda<sp/>expressions</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/>*<sp/>https://stackoverflow.com/a/12399290</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><ref refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" kindref="member">IntVector</ref><sp/><ref refid="namespacesplinepy_1_1py_1afe72c4de339c154690534c93c0f2f6a4" kindref="member">ArgSort</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;T&gt;&amp;<sp/>v);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ad44754525d67fa05e6c0ce206df156d2" kindref="member">RaiseMismatch</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kindref="member">CoreSplineVector</ref>&amp;<sp/>splist,</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string<sp/>name,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim,</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim,</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" kindref="member">IntVector</ref>&amp;<sp/>degrees,</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1afd7bf6ce6bc6ac6edf35a374497465c3" kindref="member">IntVector</ref>&amp;<sp/>control_mesh_resolutions,</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads);</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ad44754525d67fa05e6c0ce206df156d2" kindref="member">RaiseMismatch</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kindref="member">CoreSplineVector</ref>&amp;<sp/>splist0,</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ab7c23aa04194d24a6d288e55fa402bb6" kindref="member">CoreSplineVector</ref>&amp;<sp/>splist1,</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>name,</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>dimensionality,</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>field_dim,</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>degrees,</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>control_mesh_resolutions,</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal">py::array_t&lt;int&gt;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><ref refid="namespacesplinepy_1_1py_1a039b2eb13ad81b37ad215fa9501722a7" kindref="member">FindConnectivityFromCenters</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;double&gt;&amp;<sp/>face_center_vertices,</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>parametric_dimension,</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;double&gt;&amp;<sp/>metric,</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>tolerance);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal">py::array_t&lt;int&gt;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><ref refid="namespacesplinepy_1_1py_1a22ad050b6cf117fbc2dfbc91ba4d7a90" kindref="member">InterfacesFromBoundaryCenters</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;double&gt;&amp;<sp/>py_center_vertices,</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance,</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>parametric_dimension);</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1a46ff56ea1abd3875dca74818e5b4b613" kindref="member">GetInterfaceOrientation</ref>(</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;splinepy::splines::SplinepyBase&gt;&amp;<sp/>pyspline_start,</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>boundary_start,</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;splinepy::splines::SplinepyBase&gt;&amp;<sp/>pyspline_end,</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>boundary_end,</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance,</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>mappings_ptr,</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>orientations_ptr);</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal">py::list<sp/><ref refid="namespacesplinepy_1_1py_1a20f803f3d17344179ddd3499e71bf32d" kindref="member">ExtractAllBoundarySplines</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::list&amp;<sp/>spline_list,</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;int&gt;&amp;<sp/>interfaces,</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>n_threads);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1ab0d05deb35a0410b19f8444844f773cf" kindref="member">AddBoundariesFromContinuity</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::list&amp;<sp/>boundary_splines,</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;int&gt;&amp;<sp/>boundary_interfaces,</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>py::array_t&lt;int&gt;&amp;<sp/>global_interfaces,</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance,</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>n_threads);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="207" refid="classsplinepy_1_1py_1_1PyMultipatch" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref><sp/>{</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="209" refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kindref="member">CorePatches_</ref><sp/>=<sp/>std::vector&lt;typename<sp/>PySpline::CoreSpline_&gt;;</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight></codeline>
+<codeline lineno="212" refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" refkind="member"><highlight class="normal"><sp/><sp/>py::list<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" kindref="member">patches_</ref>;</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight></codeline>
+<codeline lineno="215" refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kindref="member">CorePatches_</ref><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" kindref="member">core_patches_</ref>;</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218" refid="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" refkind="member"><highlight class="normal"><sp/><sp/>std::shared_ptr&lt;PyMultipatch&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" kindref="member">sub_multipatch_</ref><sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight></codeline>
+<codeline lineno="221" refid="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" refkind="member"><highlight class="normal"><sp/><sp/>py::object<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" kindref="member">py_sub_multipatch_</ref><sp/>=<sp/>py::none();</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight></codeline>
+<codeline lineno="224" refid="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" refkind="member"><highlight class="normal"><sp/><sp/>py::array_t&lt;double&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" kindref="member">sub_patch_centers_</ref>;</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227" refid="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" refkind="member"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" kindref="member">boundary_patch_ids_</ref>;</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230" refid="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" refkind="member"><highlight class="normal"><sp/><sp/>std::shared_ptr&lt;PyMultipatch&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" kindref="member">boundary_multipatch_</ref><sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233" refid="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" refkind="member"><highlight class="normal"><sp/><sp/>py::object<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" kindref="member">py_boundary_multipatch_</ref><sp/>=<sp/>py::none();</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight></codeline>
+<codeline lineno="237" refid="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" refkind="member"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" kindref="member">interfaces_</ref>;</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight></codeline>
+<codeline lineno="240" refid="classsplinepy_1_1py_1_1PyMultipatch_1a2e07d68f0766923145ef57b2bf9c355a" refkind="member"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a2e07d68f0766923145ef57b2bf9c355a" kindref="member">interface_orientations_</ref>;</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243" refid="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" refkind="member"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" kindref="member">boundary_ids_</ref>;</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246" refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" refkind="member"><highlight class="normal"><sp/><sp/>py::list<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" kindref="member">field_multipatches_</ref>;</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight></codeline>
+<codeline lineno="249" refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kindref="member">n_default_threads_</ref>{1};</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight></codeline>
+<codeline lineno="252" refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" kindref="member">same_parametric_bounds_</ref>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight></codeline>
+<codeline lineno="256" refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" kindref="member">has_null_splines_</ref>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight></codeline>
+<codeline lineno="259" refid="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" kindref="member">tolerance_</ref>{1e-11};</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"></highlight></codeline>
+<codeline lineno="262" refid="classsplinepy_1_1py_1_1PyMultipatch_1ae5b8a48639468f4555dc2065e6997eaf" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ae5b8a48639468f4555dc2065e6997eaf" kindref="member">PyMultipatch</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"></highlight></codeline>
+<codeline lineno="265" refid="classsplinepy_1_1py_1_1PyMultipatch_1a7ece76fbcb5e1715a5402fdba8e69cbe" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7ece76fbcb5e1715a5402fdba8e69cbe" kindref="member">PyMultipatch</ref>(<ref refid="classsplinepy_1_1py_1_1PyMultipatch" kindref="compound">PyMultipatch</ref>&amp;&amp;<sp/>other)<sp/>noexcept<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"></highlight></codeline>
+<codeline lineno="271" refid="classsplinepy_1_1py_1_1PyMultipatch_1acb7bca199cd41acbc397e7f372770fb2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1acb7bca199cd41acbc397e7f372770fb2" kindref="member">PyMultipatch</ref>(py::list&amp;<sp/>patches,</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_default_threads<sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_parametric_bounds<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kindref="member">n_default_threads_</ref>(n_default_threads),</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" kindref="member">same_parametric_bounds_</ref>(same_parametric_bounds)<sp/>{</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" kindref="member">SetPatchesNThreads</ref>(patches,<sp/>n_default_threads);</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight></codeline>
+<codeline lineno="284" refid="classsplinepy_1_1py_1_1PyMultipatch_1a0b541beb65f77913b0ade171bd7a6b9b" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0b541beb65f77913b0ade171bd7a6b9b" kindref="member">PyMultipatch</ref>(py::list&amp;<sp/>patches,</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_default_threads,</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim_if_none,</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim_if_none)</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kindref="member">n_default_threads_</ref>(n_default_threads),</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" kindref="member">has_null_splines_</ref>(true)<sp/>{</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ad1ad02b1401aef4beba47d0b7affdd04" kindref="member">SetPatchesWithNullSplines</ref>(patches,</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>n_default_threads,</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>para_dim_if_none,</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dim_if_none);</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight></codeline>
+<codeline lineno="300" refid="classsplinepy_1_1py_1_1PyMultipatch_1acd1e888b3cc89c7a1f0b3d0e5b797215" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1acd1e888b3cc89c7a1f0b3d0e5b797215" kindref="member">PyMultipatch</ref>(std::shared_ptr&lt;PyMultipatch&gt;&amp;<sp/>other)<sp/>{</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" kindref="member">patches_</ref><sp/>=<sp/>other-&gt;patches_;</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" kindref="member">core_patches_</ref><sp/>=<sp/>other-&gt;core_patches_;</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aab456af91fd28cc500e245439fb8dd22" kindref="member">sub_multipatch_</ref><sp/>=<sp/>other-&gt;sub_multipatch_;</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1abb28f7a0a16a6d38e6ea67a2a6d8fda0" kindref="member">sub_patch_centers_</ref><sp/>=<sp/>other-&gt;sub_patch_centers_;</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a1283801a3270d42a9cf9b4e1aeee1f14" kindref="member">py_sub_multipatch_</ref><sp/>=<sp/>other-&gt;py_sub_multipatch_;</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a11bf040919e16b18441e0783e5da082b" kindref="member">boundary_patch_ids_</ref><sp/>=<sp/>other-&gt;boundary_patch_ids_;</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adf46f869296093ee4ce9033b512852e5" kindref="member">boundary_multipatch_</ref><sp/>=<sp/>other-&gt;boundary_multipatch_;</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765c3a06dbd8ad315dc2329c22086203" kindref="member">py_boundary_multipatch_</ref><sp/>=<sp/>other-&gt;py_boundary_multipatch_;</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a570bb500d30ba94bb7252545fda4f489" kindref="member">interfaces_</ref><sp/>=<sp/>other-&gt;interfaces_;</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aa3a53c1eef093c85273de1921a670c57" kindref="member">boundary_ids_</ref><sp/>=<sp/>other-&gt;boundary_ids_;</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" kindref="member">field_multipatches_</ref><sp/>=<sp/>other-&gt;field_multipatches_;</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kindref="member">n_default_threads_</ref><sp/>=<sp/>other-&gt;n_default_threads_;</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ae9c5c714c1f63cd697ccfe41abb2630a" kindref="member">same_parametric_bounds_</ref><sp/>=<sp/>other-&gt;same_parametric_bounds_;</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0588e85617b759a9f179dd5610310311" kindref="member">has_null_splines_</ref><sp/>=<sp/>other-&gt;has_null_splines_;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aaf0e20e7183662254959fa56809a4261" kindref="member">tolerance_</ref><sp/>=<sp/>other-&gt;tolerance_;</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="317"><highlight class="normal"></highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a765d781bdcdc3e072d1d679fb0345001" kindref="member">CorePatches_</ref>&amp;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" kindref="member">CorePatches</ref>();</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"></highlight></codeline>
+<codeline lineno="322"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aa71d36872f416feaa853788a7a7a7ef8" kindref="member">Clear</ref>();</highlight></codeline>
+<codeline lineno="323"><highlight class="normal"></highlight></codeline>
+<codeline lineno="326" refid="classsplinepy_1_1py_1_1PyMultipatch_1a9443f705493b6a45fc9057d6ea053dad" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a9443f705493b6a45fc9057d6ea053dad" kindref="member">ParaDim</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" kindref="member">CorePatches</ref>()[0]-&gt;SplinepyParaDim();<sp/>}</highlight></codeline>
+<codeline lineno="327"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330" refid="classsplinepy_1_1py_1_1PyMultipatch_1a5823ba33cada52391d809436934340e2" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a5823ba33cada52391d809436934340e2" kindref="member">Dim</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0abf34f0a97e4e9d75f3547ff862e149" kindref="member">CorePatches</ref>()[0]-&gt;SplinepyDim();<sp/>}</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"></highlight></codeline>
+<codeline lineno="334" refid="classsplinepy_1_1py_1_1PyMultipatch_1aea85a30f7330f34848f1ca2313fcbc62" refkind="member"><highlight class="normal"><sp/><sp/>std::string<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aea85a30f7330f34848f1ca2313fcbc62" kindref="member">Name</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;Multipatch&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="335"><highlight class="normal"></highlight></codeline>
+<codeline lineno="338" refid="classsplinepy_1_1py_1_1PyMultipatch_1aec494286f50120416b01b7a543bae897" refkind="member"><highlight class="normal"><sp/><sp/>std::string<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aec494286f50120416b01b7a543bae897" kindref="member">WhatAmI</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="339"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;Multipatch<sp/>with<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a3701ac9b54bf9045a7a76d80ff12a1a2" kindref="member">core_patches_</ref>.size())</highlight></codeline>
+<codeline lineno="340"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;<sp/>patches.&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="341"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="342"><highlight class="normal"></highlight></codeline>
+<codeline lineno="346" refid="classsplinepy_1_1py_1_1PyMultipatch_1aa1995edad00ce4bcd4567fab2e753bfe" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aa1995edad00ce4bcd4567fab2e753bfe" kindref="member">SetPatchesDefault</ref>(py::list&amp;<sp/>patches)<sp/>{</highlight></codeline>
+<codeline lineno="347"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" kindref="member">SetPatchesNThreads</ref>(patches,<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1adeca29a3586fb1e41519fb18770504e7" kindref="member">n_default_threads_</ref>);</highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="349"><highlight class="normal"></highlight></codeline>
+<codeline lineno="353"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a0a256d61db8e9b6eea4462a16d1c9f71" kindref="member">SetPatchesNThreads</ref>(py::list&amp;<sp/>patches,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads<sp/>=<sp/>1);</highlight></codeline>
+<codeline lineno="354"><highlight class="normal"></highlight></codeline>
+<codeline lineno="360"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ad1ad02b1401aef4beba47d0b7affdd04" kindref="member">SetPatchesWithNullSplines</ref>(py::list&amp;<sp/>patches,</highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads,</highlight></codeline>
+<codeline lineno="362"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim_if_none,</highlight></codeline>
+<codeline lineno="363"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim_if_none);</highlight></codeline>
+<codeline lineno="364"><highlight class="normal"></highlight></codeline>
+<codeline lineno="366" refid="classsplinepy_1_1py_1_1PyMultipatch_1acce44859b8f54a3f46334ba2f9787280" refkind="member"><highlight class="normal"><sp/><sp/>py::list<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1acce44859b8f54a3f46334ba2f9787280" kindref="member">GetPatches</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7210feea29ffd8f4343290d6e5adc2c3" kindref="member">patches_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="367"><highlight class="normal"></highlight></codeline>
+<codeline lineno="370"><highlight class="normal"><sp/><sp/>std::shared_ptr&lt;PyMultipatch&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1afb4ff78f3f44e7ad4d0d43e63533f041" kindref="member">SubMultipatch</ref>();</highlight></codeline>
+<codeline lineno="371"><highlight class="normal"></highlight></codeline>
+<codeline lineno="374"><highlight class="normal"><sp/><sp/>py::object<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1abeb7cc522a0cdf130d591e1296765495" kindref="member">PySubMultipatch</ref>();</highlight></codeline>
+<codeline lineno="375"><highlight class="normal"></highlight></codeline>
+<codeline lineno="378"><highlight class="normal"><sp/><sp/>py::array_t&lt;double&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7f4f2cac2ad983cfb51f7168f2995aee" kindref="member">SubPatchCenters</ref>();</highlight></codeline>
+<codeline lineno="379"><highlight class="normal"></highlight></codeline>
+<codeline lineno="382"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a6bd28f06a3f28c386b20ee0e121d126d" kindref="member">SetInterfaces</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>py::array_t&lt;int&gt;&amp;<sp/>interfaces);</highlight></codeline>
+<codeline lineno="383"><highlight class="normal"></highlight></codeline>
+<codeline lineno="386"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a5b7b7c7e7579f9437b7a8326d3256b73" kindref="member">GetInterfaces</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>recompute<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="387"><highlight class="normal"></highlight></codeline>
+<codeline lineno="393"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a70308ab1264bfc06d56e7d490cb2ee6a" kindref="member">GetInterfaceOrientations</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>tolerance,</highlight></codeline>
+<codeline lineno="394"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_threads);</highlight></codeline>
+<codeline lineno="395"><highlight class="normal"></highlight></codeline>
+<codeline lineno="398"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aecb50fe9249c1d9db03d85943fc3df99" kindref="member">BoundaryPatchIds</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>bid);</highlight></codeline>
+<codeline lineno="399"><highlight class="normal"></highlight></codeline>
+<codeline lineno="402"><highlight class="normal"><sp/><sp/>std::shared_ptr&lt;PyMultipatch&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a7437125b8cd4fe5c53cff10b46038a68" kindref="member">BoundaryMultipatch</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>bid);</highlight></codeline>
+<codeline lineno="403"><highlight class="normal"></highlight></codeline>
+<codeline lineno="407"><highlight class="normal"><sp/><sp/>py::object<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a11d7c8d4cf202dc6c4ad5e6700719ec8" kindref="member">PyBoundaryMultipatch</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>bid);</highlight></codeline>
+<codeline lineno="408"><highlight class="normal"></highlight></codeline>
+<codeline lineno="412"><highlight class="normal"><sp/><sp/>py::array_t&lt;double&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a313293920957b7ff24b6f116ffff2ff1" kindref="member">Evaluate</ref>(py::array_t&lt;double&gt;<sp/>queries,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads);</highlight></codeline>
+<codeline lineno="413"><highlight class="normal"></highlight></codeline>
+<codeline lineno="418"><highlight class="normal"><sp/><sp/>py::array_t&lt;double&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ab90336e62c0d59ad75edd73d98adf25b" kindref="member">Sample</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>resolution,</highlight></codeline>
+<codeline lineno="419"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads,</highlight></codeline>
+<codeline lineno="420"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_parametric_bounds);</highlight></codeline>
+<codeline lineno="421"><highlight class="normal"></highlight></codeline>
+<codeline lineno="430"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1af7d7713467e20f3444c93781ebd7d408" kindref="member">AddFields</ref>(py::list&amp;<sp/>fields,</highlight></codeline>
+<codeline lineno="431"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>field_dim,</highlight></codeline>
+<codeline lineno="432"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>check_name,</highlight></codeline>
+<codeline lineno="433"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>check_dims,</highlight></codeline>
+<codeline lineno="434"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>check_degrees,</highlight></codeline>
+<codeline lineno="435"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>check_control_mesh_resolutions,</highlight></codeline>
+<codeline lineno="436"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nthreads);</highlight></codeline>
+<codeline lineno="437"><highlight class="normal"></highlight></codeline>
+<codeline lineno="439" refid="classsplinepy_1_1py_1_1PyMultipatch_1aaddb4a9ce3c89c4dcc569f8cdb560dfb" refkind="member"><highlight class="normal"><sp/><sp/>py::list<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1aaddb4a9ce3c89c4dcc569f8cdb560dfb" kindref="member">GetFields</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a6194bb56fa0830d26d28e035dd2b9de3" kindref="member">field_multipatches_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="440"><highlight class="normal"></highlight></codeline>
+<codeline lineno="442"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a1e76305b8f0a1a2c1c60593c9430859f" kindref="member">GetNumberOfControlPoints</ref>();</highlight></codeline>
+<codeline lineno="443"><highlight class="normal"></highlight></codeline>
+<codeline lineno="445"><highlight class="normal"><sp/><sp/>py::array_t&lt;int&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1a3365b303603bd27b61ee593a1e5b0f9a" kindref="member">GetControlPointOffsets</ref>();</highlight></codeline>
+<codeline lineno="446"><highlight class="normal"></highlight></codeline>
+<codeline lineno="448"><highlight class="normal"><sp/><sp/>py::array_t&lt;double&gt;<sp/><ref refid="classsplinepy_1_1py_1_1PyMultipatch_1ae45e4bdec943b5fe4a689305b19fee4a" kindref="member">GetControlPoints</ref>();</highlight></codeline>
+<codeline lineno="449"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="450"><highlight class="normal"></highlight></codeline>
+<codeline lineno="454"><highlight class="normal">py::object<sp/><ref refid="namespacesplinepy_1_1py_1a2458f4498100e7310c4902c8a2c45713" kindref="member">ToDerived</ref>(std::shared_ptr&lt;PyMultipatch&gt;<sp/>core_obj);</highlight></codeline>
+<codeline lineno="455"><highlight class="normal"></highlight></codeline>
+<codeline lineno="456"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>splinepy::py</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/py/py_multipatch.hpp"/>
+  </compounddef>
+</doxygen>

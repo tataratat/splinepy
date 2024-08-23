@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.derivative
+===============================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.derivative
