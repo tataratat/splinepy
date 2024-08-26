@@ -34,7 +34,7 @@ class CubeVoid(_TileBase):
         [-_np.pi / 2, _np.pi / 2],
         [-_np.pi / 2, _np.pi / 2],
     ]
-    _parameters_shape = (1, 1, 4)
+    _parameters_shape = (1, 4)
 
     # Aux values
     _sphere_ctps = _np.array(
