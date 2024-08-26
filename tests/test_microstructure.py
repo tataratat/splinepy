@@ -196,11 +196,14 @@ def test_tile_derivatives(np_rng, heps=1e-8):
         # Skip test if tile class has no implemented sensitivities
         if not tile_creator._sensitivities_implemented:
             continue
-        # Choose parameter(s) as mean of extreme values
-        parameter_bounds = tile_creator._parameter_bounds
-        parameters = np.mean(np.array(parameter_bounds), axis=1).reshape(
-            tile_creator._parameters_shape
-        )
+
+        # Choose random parameter(s) within bounds
+        parameter_bounds = np.array(tile_creator._parameter_bounds)
+        parameters = parameter_bounds[:, 0] + np_rng.random(
+            len(parameter_bounds)
+        ) * np.ptp(parameter_bounds, axis=1)
+        parameters = parameters.reshape(tile_creator._parameters_shape)
+
         # Create 3D identity matrix
         n_eval_points = tile_creator._evaluation_points.shape[0]
         n_info_per_eval_point = tile_creator._n_info_per_eval_point
@@ -213,7 +216,7 @@ def test_tile_derivatives(np_rng, heps=1e-8):
             parameters=parameters,
             parameter_sensitivities=parameter_sensitivities,
         )
-        # Evaluate splines and derivatives at random points
+        # Evaluate splines and derivatives at multiple random points
         eval_points = np_rng.random((4, splines[0].para_dim))
         deriv_evaluations = [
             deriv.evaluate(eval_points) for deriv in derivatives[0]
