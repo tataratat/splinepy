@@ -20,7 +20,7 @@ class Armadillo(_TileBase):
     _dim = 3
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 1
-    _sensitivities_implemented = False
+    _sensitivities_implemented = True
     _closure_directions = [
         "x_min",
         "x_max",
@@ -35,7 +35,7 @@ class Armadillo(_TileBase):
     def _closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # TODO
+        parameter_sensitivities=None,
         contact_length=0.3,
         closure=None,
         **kwargs,  # noqa ARG002
@@ -85,4959 +85,4945 @@ class Armadillo(_TileBase):
             )
 
         self.check_params(parameters)
+        self.check_param_derivatives(parameter_sensitivities)
 
         if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
+            n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
+        else:
+            n_derivatives = 0
+            derivatives = None
 
         if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError(
                 "The thickness of the wall must be in (0.01 and 0.49)"
             )
 
-        v_wall_thickness = parameters[0, 0]
-        spline_list = []
-        v_zero = 0.0
-        v_one_half = 0.5
-        v_one = 1.0
-        v_half_contact_length = contact_length * 0.5
-        v_inner_half_contact_length = contact_length * parameters[0, 0]
-
-        if closure == "x_min":
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        elif closure == "x_max":
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        elif closure == "y_min":
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        elif closure == "y_max":
-            # set points:
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        elif closure == "z_max":
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        elif closure == "z_min":
-            # set points:
-            # set points:
-            right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_right = _np.array(
-                [
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            front = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_left = _np.array(
-                [
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_front_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            back = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_right = _np.array(
-                [
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        -v_wall_thickness + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                ]
-            )
-
-            connection_front_bottom = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_front_top = _np.array(
-                [
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_back_bottom = _np.array(
-                [
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_back_top = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        -v_half_contact_length + v_one_half,
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_right = _np.array(
-                [
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half + v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_top_left = _np.array(
-                [
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                        v_one,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half + v_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                    ],
-                ]
-            )
-
-            connection_bottom_left = _np.array(
-                [
-                    [
-                        v_zero,
-                        v_one_half + v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one_half - v_half_contact_length,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_zero,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_zero,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_wall_thickness,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-            connection_bottom_right = _np.array(
-                [
-                    [
-                        v_one,
-                        v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        -v_half_contact_length + v_one_half,
-                        v_one_half - v_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_wall_thickness + v_one_half,
-                        -v_inner_half_contact_length + v_one_half,
-                        v_one_half - v_inner_half_contact_length,
-                    ],
-                    [
-                        v_one,
-                        v_one,
-                        v_zero,
-                    ],
-                    [
-                        v_one,
-                        v_zero,
-                        v_zero,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                    [
-                        v_one_half + v_inner_half_contact_length,
-                        v_one_half - v_inner_half_contact_length,
-                        v_one_half - v_wall_thickness,
-                    ],
-                ]
-            )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
-        )
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=back))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=left))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=front))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=bottom))
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=top))
-
-        return (spline_list, None)
+        splines = []
+        for i_derivative in range(n_derivatives + 1):
+            if i_derivative == 0:
+                v_wall_thickness = parameters[0, 0]
+                v_zero = 0.0
+                v_one_half = 0.5
+                v_one = 1.0
+                v_half_contact_length = contact_length * 0.5
+                v_inner_half_contact_length = contact_length * v_wall_thickness
+            else:
+                v_wall_thickness = parameter_sensitivities[
+                    0, 0, i_derivative - 1
+                ]
+                v_zero = 0.0
+                v_one_half = 0.0
+                v_one = 0.0
+                v_half_contact_length = 0.0
+                v_inner_half_contact_length = contact_length * v_wall_thickness
+
+            spline_list = []
+
+            if closure == "x_min":
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            elif closure == "x_max":
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            elif closure == "y_min":
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            elif closure == "y_max":
+                # set points:
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            elif closure == "z_max":
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            elif closure == "z_min":
+                # set points:
+                # set points:
+                right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_right = _np.array(
+                    [
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                front = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_left = _np.array(
+                    [
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_front_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                back = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_right = _np.array(
+                    [
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            -v_wall_thickness + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                    ]
+                )
+
+                connection_front_bottom = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_front_top = _np.array(
+                    [
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_back_bottom = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_back_top = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            -v_half_contact_length + v_one_half,
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_right = _np.array(
+                    [
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half + v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_top_left = _np.array(
+                    [
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                            v_one,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half + v_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                        ],
+                    ]
+                )
+
+                connection_bottom_left = _np.array(
+                    [
+                        [
+                            v_zero,
+                            v_one_half + v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one_half - v_half_contact_length,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_zero,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_zero,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_wall_thickness,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+                connection_bottom_right = _np.array(
+                    [
+                        [
+                            v_one,
+                            v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            -v_half_contact_length + v_one_half,
+                            v_one_half - v_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_wall_thickness + v_one_half,
+                            -v_inner_half_contact_length + v_one_half,
+                            v_one_half - v_inner_half_contact_length,
+                        ],
+                        [
+                            v_one,
+                            v_one,
+                            v_zero,
+                        ],
+                        [
+                            v_one,
+                            v_zero,
+                            v_zero,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                        [
+                            v_one_half + v_inner_half_contact_length,
+                            v_one_half - v_inner_half_contact_length,
+                            v_one_half - v_wall_thickness,
+                        ],
+                    ]
+                )
+
+            for control_points in [
+                right,
+                connection_front_right,
+                front,
+                connection_back_left,
+                left,
+                connection_front_left,
+                back,
+                connection_back_right,
+                bottom,
+                top,
+                connection_front_bottom,
+                connection_front_top,
+                connection_back_bottom,
+                connection_back_top,
+                connection_top_right,
+                connection_top_left,
+                connection_bottom_left,
+                connection_bottom_right,
+            ]:
+                spline_list.append(
+                    _Bezier(degrees=[1, 1, 1], control_points=control_points)
+                )
+
+            if i_derivative == 0:
+                splines = spline_list.copy()
+            else:
+                derivatives.append(spline_list)
+
+        return (splines, derivatives)
 
     def create_tile(
         self,
@@ -5092,11 +5078,14 @@ class Armadillo(_TileBase):
             )
 
         self.check_params(parameters)
+        self.check_param_derivatives(parameter_sensitivities)
 
         if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
+            n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
+        else:
+            n_derivatives = 0
+            derivatives = None
 
         if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
             raise ValueError(
@@ -5112,884 +5101,865 @@ class Armadillo(_TileBase):
                 **kwargs,
             )
 
-        v_wall_thickness = parameters[0, 0]
-        v_zero = 0.0
-        v_one_half = 0.5
-        v_one = 1.0
-        v_half_contact_length = contact_length * 0.5
-        v_half_contact_length = contact_length * 0.5
-        v_inner_half_contact_length = contact_length * parameters[0, 0]
+        splines = []
+        for i_derivative in range(n_derivatives + 1):
+            if i_derivative == 0:
+                v_wall_thickness = parameters[0, 0]
+                v_zero = 0.0
+                v_one_half = 0.5
+                v_one = 1.0
+                v_half_contact_length = contact_length * 0.5
+                v_inner_half_contact_length = contact_length * v_wall_thickness
+            else:
+                v_wall_thickness = parameter_sensitivities[
+                    0, 0, i_derivative - 1
+                ]
+                v_zero = 0.0
+                v_one_half = 0.0
+                v_one = 0.0
+                v_half_contact_length = 0.0
+                v_inner_half_contact_length = contact_length * v_wall_thickness
 
-        spline_list = []
+            spline_list = []
 
-        # set points:
-        right = _np.array(
-            [
+            # set points:
+            right = _np.array(
                 [
-                    v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_front_right = _np.array(
-            [
+            connection_front_right = _np.array(
                 [
-                    v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                ]
+            )
 
-        front = _np.array(
-            [
+            front = _np.array(
                 [
-                    v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_back_left = _np.array(
-            [
+            connection_back_left = _np.array(
                 [
-                    -v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        -v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                ]
+            )
 
-        left = _np.array(
-            [
+            left = _np.array(
                 [
-                    v_zero,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_zero,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_front_left = _np.array(
-            [
+            connection_front_left = _np.array(
                 [
-                    v_zero,
-                    v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_zero,
+                        v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        back = _np.array(
-            [
+            back = _np.array(
                 [
-                    v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_back_right = _np.array(
-            [
+            connection_back_right = _np.array(
                 [
-                    v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    -v_wall_thickness + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        -v_wall_thickness + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                ]
+            )
 
-        bottom = _np.array(
-            [
+            bottom = _np.array(
                 [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-            ]
-        )
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                ]
+            )
 
-        top = _np.array(
-            [
+            top = _np.array(
                 [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-            ]
-        )
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                ]
+            )
 
-        connection_front_bottom = _np.array(
-            [
+            connection_front_bottom = _np.array(
                 [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-            ]
-        )
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                ]
+            )
 
-        connection_front_top = _np.array(
-            [
+            connection_front_top = _np.array(
                 [
-                    v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half + v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-            ]
-        )
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half + v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                ]
+            )
 
-        connection_back_bottom = _np.array(
-            [
+            connection_back_bottom = _np.array(
                 [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_back_top = _np.array(
-            [
+            connection_back_top = _np.array(
                 [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    -v_half_contact_length + v_one_half,
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        -v_half_contact_length + v_one_half,
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_top_right = _np.array(
-            [
+            connection_top_right = _np.array(
                 [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one,
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_one,
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_one_half + v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half + v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one,
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_top_left = _np.array(
-            [
+            connection_top_left = _np.array(
                 [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_one,
-                ],
-                [
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half - v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                ],
-            ]
-        )
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_one,
+                    ],
+                    [
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                    ],
+                ]
+            )
 
-        connection_bottom_left = _np.array(
-            [
+            connection_bottom_left = _np.array(
                 [
-                    v_zero,
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                ],
+                    [
+                        v_zero,
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_zero,
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half - v_wall_thickness,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_wall_thickness,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                ]
+            )
+
+            connection_bottom_right = _np.array(
                 [
-                    v_zero,
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half - v_wall_thickness,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half - v_wall_thickness,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-            ]
-        )
+                    [
+                        v_one,
+                        v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_one,
+                        -v_half_contact_length + v_one_half,
+                        v_one_half - v_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_wall_thickness + v_one_half,
+                        -v_inner_half_contact_length + v_one_half,
+                        v_one_half - v_inner_half_contact_length,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half + v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half + v_half_contact_length,
+                        v_one_half - v_half_contact_length,
+                        v_zero,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                    [
+                        v_one_half + v_inner_half_contact_length,
+                        v_one_half - v_inner_half_contact_length,
+                        v_one_half - v_wall_thickness,
+                    ],
+                ]
+            )
 
-        connection_bottom_right = _np.array(
-            [
-                [
-                    v_one,
-                    v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_one,
-                    -v_half_contact_length + v_one_half,
-                    v_one_half - v_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_wall_thickness + v_one_half,
-                    -v_inner_half_contact_length + v_one_half,
-                    v_one_half - v_inner_half_contact_length,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half + v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half + v_half_contact_length,
-                    v_one_half - v_half_contact_length,
-                    v_zero,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-                [
-                    v_one_half + v_inner_half_contact_length,
-                    v_one_half - v_inner_half_contact_length,
-                    v_one_half - v_wall_thickness,
-                ],
-            ]
-        )
+            for control_points in [
+                right,
+                connection_front_right,
+                front,
+                connection_back_left,
+                left,
+                connection_front_left,
+                back,
+                connection_back_right,
+                bottom,
+                top,
+                connection_front_bottom,
+                connection_front_top,
+                connection_back_bottom,
+                connection_back_top,
+                connection_top_right,
+                connection_top_left,
+                connection_bottom_left,
+                connection_bottom_right,
+            ]:
+                spline_list.append(
+                    _Bezier(degrees=[1, 1, 1], control_points=control_points)
+                )
 
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=right))
+            if i_derivative == 0:
+                splines = spline_list.copy()
+            else:
+                derivatives.append(spline_list)
 
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_right)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=back))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_left)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=left))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_left)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=front))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_right)
-        )
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=bottom))
-
-        spline_list.append(_Bezier(degrees=[1, 1, 1], control_points=top))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_top)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_front_bottom)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_bottom)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_back_top)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_top_right)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_top_left)
-        )
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_left)
-        )
-        spline_list.append(
-            _Bezier(degrees=[1, 1, 1], control_points=connection_bottom_right)
-        )
-
-        return (spline_list, None)
+        return (splines, derivatives)
