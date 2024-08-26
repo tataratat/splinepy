@@ -16,7 +16,7 @@ class Chi(_TileBase):
 
     _dim = 2
     _para_dim = 1
-    _evaluation_points = _np.array([[0.5, 0.5]])
+    _evaluation_points = _np.array([[0.5]])
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
     _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
