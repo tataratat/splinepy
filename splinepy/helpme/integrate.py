@@ -227,13 +227,16 @@ def physical_function(
     Parameters
     ----------
     spline : Spline
-        (self if called via integrator)
+        The geometry over which the function is integrated
     function : Callable
+        The user-defined function to integrate. Can also be vector-valued
     orders : optional
+        Quadrature order in parametric domain for numerical integration
 
     Returns
     -------
     integral : np.ndarray
+        The computed integral. It is vector-valued if function is vector-valued
     """
     from splinepy.spline import Spline as _Spline
 
