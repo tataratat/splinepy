@@ -32,7 +32,8 @@ class InverseCross3D(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
-    _sensitivities_implemented = False
+    # TODO: implemented sensitivities are not correct
+    _sensitivities_implemented = True
     _closure_directions = ["z_min", "z_max"]
     _parameter_bounds = [[0.2, 0.3]] * 6  # For default values
     _parameters_shape = (6, 1)
@@ -44,7 +45,7 @@ class InverseCross3D(_TileBase):
         closure=None,
         boundary_width=0.1,
         filling_height=0.5,
-        separator_distance=None,
+        separator_distance=0.3,
         **kwargs,  # noqa ARG002
     ):
         """Create a closing tile to match with closed surface.
@@ -72,10 +73,6 @@ class InverseCross3D(_TileBase):
         # Check parameters
         if closure is None:
             raise ValueError("No closing direction given")
-
-        # Set default values
-        if separator_distance is None:
-            separator_distance = 0.3
 
         if parameters is None:
             self._logd("Tile request is not parametrized, setting default 0.2")
@@ -893,7 +890,7 @@ class InverseCross3D(_TileBase):
         self,
         parameters=None,
         parameter_sensitivities=None,
-        separator_distance=None,
+        separator_distance=0.3,
         center_expansion=1.0,
         closure=None,
         **kwargs,  # noqa ARG002
@@ -930,13 +927,6 @@ class InverseCross3D(_TileBase):
         if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
             raise ValueError("Center Expansion must be in (.5, 1.5)")
 
-        # Set default values
-        if separator_distance is None:
-            separator_distance = 0.3
-
-        if center_expansion is None:
-            center_expansion = 1.0
-
         # Check if all radii are in allowed range
         max_radius = min(0.5, (0.5 / center_expansion))
         max_radius = min(max_radius, separator_distance)
@@ -953,11 +943,14 @@ class InverseCross3D(_TileBase):
             )
 
         if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
+            n_derivatives = parameter_sensitivities.shape[2]
+            derivatives = []
+        else:
+            n_derivatives = 0
+            derivatives = None
 
         self.check_params(parameters)
+        self.check_param_derivatives(parameter_sensitivities)
 
         if _np.any(parameters < min_radius) or _np.any(
             parameters > max_radius
@@ -976,644 +969,707 @@ class InverseCross3D(_TileBase):
                 **kwargs,
             )
 
-        [
-            x_min_r,
-            x_max_r,
-            y_min_r,
-            y_max_r,
-            z_min_r,
-            z_max_r,
-        ] = parameters.flatten()
+        splines = []
+        for i_derivative in range(n_derivatives + 1):
+            if i_derivative == 0:
+                [
+                    x_min_r,
+                    x_max_r,
+                    y_min_r,
+                    y_max_r,
+                    z_min_r,
+                    z_max_r,
+                ] = parameters.flatten()
 
-        # center radius
-        center_r = _np.sum(parameters) / 6.0 * center_expansion
+                # center radius
+                center_r = _np.sum(parameters) / 6.0 * center_expansion
 
-        # Auxiliary values for smooothing (mid-branch thickness)
-        [
-            aux_x_min,
-            aux_x_max,
-            aux_y_min,
-            aux_y_max,
-            aux_z_min,
-            aux_z_max,
-        ] = _np.minimum(parameters.ravel(), center_r)
-        # Branch midlength
-        hd_center = 0.5 * (0.5 + center_r)
-        aux_column_width = 0.5 - 2 * (0.5 - separator_distance)
+                # Auxiliary values for smooothing (mid-branch thickness)
+                [
+                    aux_x_min,
+                    aux_x_max,
+                    aux_y_min,
+                    aux_y_max,
+                    aux_z_min,
+                    aux_z_max,
+                ] = _np.minimum(parameters.ravel(), center_r)
+                # Branch midlength
+                hd_center = 0.5 * (0.5 + center_r)
+                aux_column_width = 0.5 - 2 * (0.5 - separator_distance)
 
-        # Init return type
-        spline_list = []
+                v_one_half = 0.5
+                center_point = _np.array([0.5, 0.5, 0.5])
+            else:
+                sensitivities_i = parameter_sensitivities[
+                    :, 0, i_derivative - 1
+                ]
+                [
+                    x_min_r,
+                    x_max_r,
+                    y_min_r,
+                    y_max_r,
+                    z_min_r,
+                    z_max_r,
+                ] = sensitivities_i
 
-        # Start with branch interconnections
-        x_min_y_min = _np.array(
-            [
-                [-0.5, -0.5, -aux_column_width],
-                [-separator_distance, -0.5, -aux_column_width],
-                [-y_min_r, -0.5, -y_min_r],
-                [-0.5, -separator_distance, -aux_column_width],
-                [-hd_center, -hd_center, -aux_column_width],
-                [-aux_y_min, -hd_center, -aux_y_min],
-                [-0.5, -x_min_r, -x_min_r],
-                [-hd_center, -aux_x_min, -aux_x_min],
-                [-center_r, -center_r, -center_r],
-                [-0.5, -0.5, aux_column_width],
-                [-separator_distance, -0.5, aux_column_width],
-                [-y_min_r, -0.5, y_min_r],
-                [-0.5, -separator_distance, aux_column_width],
-                [-hd_center, -hd_center, aux_column_width],
-                [-aux_y_min, -hd_center, aux_y_min],
-                [-0.5, -x_min_r, x_min_r],
-                [-hd_center, -aux_x_min, aux_x_min],
-                [-center_r, -center_r, center_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+                center_r = _np.mean(sensitivities_i) * center_expansion
+                [
+                    aux_x_min,
+                    aux_x_max,
+                    aux_y_min,
+                    aux_y_max,
+                    aux_z_min,
+                    aux_z_max,
+                ] = _np.where(
+                    parameters.ravel()
+                    < _np.mean(parameters.ravel()) * center_expansion,
+                    sensitivities_i,
+                    center_r,
+                )
+                # Branch midlength
+                hd_center = center_r / 2.0
+                aux_column_width = 0.0
+                v_one_half = 0.0
+                center_point = _np.zeros(3)
 
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 1], control_points=x_min_y_min)
-        )
+            # Init return type
+            spline_list = []
 
-        x_max_y_min = _np.array(
-            [
-                [y_min_r, -0.5, -y_min_r],
-                [separator_distance, -0.5, -aux_column_width],
-                [0.5, -0.5, -aux_column_width],
-                [aux_y_min, -hd_center, -aux_y_min],
-                [hd_center, -hd_center, -aux_column_width],
-                [0.5, -separator_distance, -aux_column_width],
-                [center_r, -center_r, -center_r],
-                [hd_center, -aux_x_max, -aux_x_max],
-                [0.5, -x_max_r, -x_max_r],
-                [y_min_r, -0.5, y_min_r],
-                [separator_distance, -0.5, aux_column_width],
-                [0.5, -0.5, aux_column_width],
-                [aux_y_min, -hd_center, aux_y_min],
-                [hd_center, -hd_center, aux_column_width],
-                [0.5, -separator_distance, aux_column_width],
-                [center_r, -center_r, center_r],
-                [hd_center, -aux_x_max, aux_x_max],
-                [0.5, -x_max_r, x_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            # Start with branch interconnections
+            x_min_y_min = (
+                _np.array(
+                    [
+                        [-v_one_half, -v_one_half, -aux_column_width],
+                        [-separator_distance, -v_one_half, -aux_column_width],
+                        [-y_min_r, -v_one_half, -y_min_r],
+                        [-v_one_half, -separator_distance, -aux_column_width],
+                        [-hd_center, -hd_center, -aux_column_width],
+                        [-aux_y_min, -hd_center, -aux_y_min],
+                        [-v_one_half, -x_min_r, -x_min_r],
+                        [-hd_center, -aux_x_min, -aux_x_min],
+                        [-center_r, -center_r, -center_r],
+                        [-v_one_half, -v_one_half, aux_column_width],
+                        [-separator_distance, -v_one_half, aux_column_width],
+                        [-y_min_r, -v_one_half, y_min_r],
+                        [-v_one_half, -separator_distance, aux_column_width],
+                        [-hd_center, -hd_center, aux_column_width],
+                        [-aux_y_min, -hd_center, aux_y_min],
+                        [-v_one_half, -x_min_r, x_min_r],
+                        [-hd_center, -aux_x_min, aux_x_min],
+                        [-center_r, -center_r, center_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 1], control_points=x_max_y_min)
-        )
+            x_max_y_min = (
+                _np.array(
+                    [
+                        [y_min_r, -v_one_half, -y_min_r],
+                        [separator_distance, -v_one_half, -aux_column_width],
+                        [v_one_half, -v_one_half, -aux_column_width],
+                        [aux_y_min, -hd_center, -aux_y_min],
+                        [hd_center, -hd_center, -aux_column_width],
+                        [v_one_half, -separator_distance, -aux_column_width],
+                        [center_r, -center_r, -center_r],
+                        [hd_center, -aux_x_max, -aux_x_max],
+                        [v_one_half, -x_max_r, -x_max_r],
+                        [y_min_r, -v_one_half, y_min_r],
+                        [separator_distance, -v_one_half, aux_column_width],
+                        [v_one_half, -v_one_half, aux_column_width],
+                        [aux_y_min, -hd_center, aux_y_min],
+                        [hd_center, -hd_center, aux_column_width],
+                        [v_one_half, -separator_distance, aux_column_width],
+                        [center_r, -center_r, center_r],
+                        [hd_center, -aux_x_max, aux_x_max],
+                        [v_one_half, -x_max_r, x_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        x_min_y_max = _np.array(
-            [
-                [-0.5, x_min_r, -x_min_r],
-                [-hd_center, aux_x_min, -aux_x_min],
-                [-center_r, center_r, -center_r],
-                [-0.5, separator_distance, -aux_column_width],
-                [-hd_center, hd_center, -aux_column_width],
-                [-aux_y_max, hd_center, -aux_y_max],
-                [-0.5, 0.5, -aux_column_width],
-                [-separator_distance, 0.5, -aux_column_width],
-                [-y_max_r, 0.5, -y_max_r],
-                [-0.5, x_min_r, x_min_r],
-                [-hd_center, aux_x_min, aux_x_min],
-                [-center_r, center_r, center_r],
-                [-0.5, separator_distance, aux_column_width],
-                [-hd_center, hd_center, aux_column_width],
-                [-aux_y_max, hd_center, aux_y_max],
-                [-0.5, 0.5, aux_column_width],
-                [-separator_distance, 0.5, aux_column_width],
-                [-y_max_r, 0.5, y_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_y_max = (
+                _np.array(
+                    [
+                        [-v_one_half, x_min_r, -x_min_r],
+                        [-hd_center, aux_x_min, -aux_x_min],
+                        [-center_r, center_r, -center_r],
+                        [-v_one_half, separator_distance, -aux_column_width],
+                        [-hd_center, hd_center, -aux_column_width],
+                        [-aux_y_max, hd_center, -aux_y_max],
+                        [-v_one_half, v_one_half, -aux_column_width],
+                        [-separator_distance, v_one_half, -aux_column_width],
+                        [-y_max_r, v_one_half, -y_max_r],
+                        [-v_one_half, x_min_r, x_min_r],
+                        [-hd_center, aux_x_min, aux_x_min],
+                        [-center_r, center_r, center_r],
+                        [-v_one_half, separator_distance, aux_column_width],
+                        [-hd_center, hd_center, aux_column_width],
+                        [-aux_y_max, hd_center, aux_y_max],
+                        [-v_one_half, v_one_half, aux_column_width],
+                        [-separator_distance, v_one_half, aux_column_width],
+                        [-y_max_r, v_one_half, y_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 1], control_points=x_min_y_max)
-        )
+            x_max_y_max = (
+                _np.array(
+                    [
+                        [center_r, center_r, -center_r],
+                        [hd_center, aux_x_max, -aux_x_max],
+                        [v_one_half, x_max_r, -x_max_r],
+                        [aux_y_max, hd_center, -aux_y_max],
+                        [hd_center, hd_center, -aux_column_width],
+                        [v_one_half, separator_distance, -aux_column_width],
+                        [y_max_r, v_one_half, -y_max_r],
+                        [separator_distance, v_one_half, -aux_column_width],
+                        [v_one_half, v_one_half, -aux_column_width],
+                        [center_r, center_r, center_r],
+                        [hd_center, aux_x_max, aux_x_max],
+                        [v_one_half, x_max_r, x_max_r],
+                        [aux_y_max, hd_center, aux_y_max],
+                        [hd_center, hd_center, aux_column_width],
+                        [v_one_half, separator_distance, aux_column_width],
+                        [y_max_r, v_one_half, y_max_r],
+                        [separator_distance, v_one_half, aux_column_width],
+                        [v_one_half, v_one_half, aux_column_width],
+                    ]
+                )
+                + center_point
+            )
 
-        x_max_y_max = _np.array(
-            [
-                [center_r, center_r, -center_r],
-                [hd_center, aux_x_max, -aux_x_max],
-                [0.5, x_max_r, -x_max_r],
-                [aux_y_max, hd_center, -aux_y_max],
-                [hd_center, hd_center, -aux_column_width],
-                [0.5, separator_distance, -aux_column_width],
-                [y_max_r, 0.5, -y_max_r],
-                [separator_distance, 0.5, -aux_column_width],
-                [0.5, 0.5, -aux_column_width],
-                [center_r, center_r, center_r],
-                [hd_center, aux_x_max, aux_x_max],
-                [0.5, x_max_r, x_max_r],
-                [aux_y_max, hd_center, aux_y_max],
-                [hd_center, hd_center, aux_column_width],
-                [0.5, separator_distance, aux_column_width],
-                [y_max_r, 0.5, y_max_r],
-                [separator_distance, 0.5, aux_column_width],
-                [0.5, 0.5, aux_column_width],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_z_min = (
+                _np.array(
+                    [
+                        [-v_one_half, -aux_column_width, -v_one_half],
+                        [-separator_distance, -aux_column_width, -v_one_half],
+                        [-z_min_r, -z_min_r, -v_one_half],
+                        [-v_one_half, aux_column_width, -v_one_half],
+                        [-separator_distance, aux_column_width, -v_one_half],
+                        [-z_min_r, z_min_r, -v_one_half],
+                        [-v_one_half, -aux_column_width, -separator_distance],
+                        [-hd_center, -aux_column_width, -hd_center],
+                        [-aux_z_min, -aux_z_min, -hd_center],
+                        [-v_one_half, aux_column_width, -separator_distance],
+                        [-hd_center, aux_column_width, -hd_center],
+                        [-aux_z_min, aux_z_min, -hd_center],
+                        [-v_one_half, -x_min_r, -x_min_r],
+                        [-hd_center, -aux_x_min, -aux_x_min],
+                        [-center_r, -center_r, -center_r],
+                        [-v_one_half, x_min_r, -x_min_r],
+                        [-hd_center, aux_x_min, -aux_x_min],
+                        [-center_r, center_r, -center_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 1], control_points=x_max_y_max)
-        )
+            x_max_z_min = (
+                _np.array(
+                    [
+                        [z_min_r, -z_min_r, -v_one_half],
+                        [separator_distance, -aux_column_width, -v_one_half],
+                        [v_one_half, -aux_column_width, -v_one_half],
+                        [z_min_r, z_min_r, -v_one_half],
+                        [separator_distance, aux_column_width, -v_one_half],
+                        [v_one_half, aux_column_width, -v_one_half],
+                        [aux_z_min, -aux_z_min, -hd_center],
+                        [hd_center, -aux_column_width, -hd_center],
+                        [v_one_half, -aux_column_width, -separator_distance],
+                        [aux_z_min, aux_z_min, -hd_center],
+                        [hd_center, aux_column_width, -hd_center],
+                        [v_one_half, aux_column_width, -separator_distance],
+                        [center_r, -center_r, -center_r],
+                        [hd_center, -aux_x_max, -aux_x_max],
+                        [v_one_half, -x_max_r, -x_max_r],
+                        [center_r, center_r, -center_r],
+                        [hd_center, aux_x_max, -aux_x_max],
+                        [v_one_half, x_max_r, -x_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        x_min_z_min = _np.array(
-            [
-                [-0.5, -aux_column_width, -0.5],
-                [-separator_distance, -aux_column_width, -0.5],
-                [-z_min_r, -z_min_r, -0.5],
-                [-0.5, aux_column_width, -0.5],
-                [-separator_distance, aux_column_width, -0.5],
-                [-z_min_r, z_min_r, -0.5],
-                [-0.5, -aux_column_width, -separator_distance],
-                [-hd_center, -aux_column_width, -hd_center],
-                [-aux_z_min, -aux_z_min, -hd_center],
-                [-0.5, aux_column_width, -separator_distance],
-                [-hd_center, aux_column_width, -hd_center],
-                [-aux_z_min, aux_z_min, -hd_center],
-                [-0.5, -x_min_r, -x_min_r],
-                [-hd_center, -aux_x_min, -aux_x_min],
-                [-center_r, -center_r, -center_r],
-                [-0.5, x_min_r, -x_min_r],
-                [-hd_center, aux_x_min, -aux_x_min],
-                [-center_r, center_r, -center_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_z_max = (
+                _np.array(
+                    [
+                        [-v_one_half, -x_min_r, x_min_r],
+                        [-hd_center, -aux_x_min, aux_x_min],
+                        [-center_r, -center_r, center_r],
+                        [-v_one_half, x_min_r, x_min_r],
+                        [-hd_center, aux_x_min, aux_x_min],
+                        [-center_r, center_r, center_r],
+                        [-v_one_half, -aux_column_width, separator_distance],
+                        [-hd_center, -aux_column_width, hd_center],
+                        [-aux_z_max, -aux_z_max, hd_center],
+                        [-v_one_half, aux_column_width, separator_distance],
+                        [-hd_center, aux_column_width, hd_center],
+                        [-aux_z_max, aux_z_max, hd_center],
+                        [-v_one_half, -aux_column_width, v_one_half],
+                        [-separator_distance, -aux_column_width, v_one_half],
+                        [-z_max_r, -z_max_r, v_one_half],
+                        [-v_one_half, aux_column_width, v_one_half],
+                        [-separator_distance, aux_column_width, v_one_half],
+                        [-z_max_r, z_max_r, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 1, 2], control_points=x_min_z_min)
-        )
+            x_max_z_max = (
+                _np.array(
+                    [
+                        [center_r, -center_r, center_r],
+                        [hd_center, -aux_x_max, aux_x_max],
+                        [v_one_half, -x_max_r, x_max_r],
+                        [center_r, center_r, center_r],
+                        [hd_center, aux_x_max, aux_x_max],
+                        [v_one_half, x_max_r, x_max_r],
+                        [aux_z_max, -aux_z_max, hd_center],
+                        [hd_center, -aux_column_width, hd_center],
+                        [v_one_half, -aux_column_width, separator_distance],
+                        [aux_z_max, aux_z_max, hd_center],
+                        [hd_center, aux_column_width, hd_center],
+                        [v_one_half, aux_column_width, separator_distance],
+                        [z_max_r, -z_max_r, v_one_half],
+                        [separator_distance, -aux_column_width, v_one_half],
+                        [v_one_half, -aux_column_width, v_one_half],
+                        [z_max_r, z_max_r, v_one_half],
+                        [separator_distance, aux_column_width, v_one_half],
+                        [v_one_half, aux_column_width, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        x_max_z_min = _np.array(
-            [
-                [z_min_r, -z_min_r, -0.5],
-                [separator_distance, -aux_column_width, -0.5],
-                [0.5, -aux_column_width, -0.5],
-                [z_min_r, z_min_r, -0.5],
-                [separator_distance, aux_column_width, -0.5],
-                [0.5, aux_column_width, -0.5],
-                [aux_z_min, -aux_z_min, -hd_center],
-                [hd_center, -aux_column_width, -hd_center],
-                [0.5, -aux_column_width, -separator_distance],
-                [aux_z_min, aux_z_min, -hd_center],
-                [hd_center, aux_column_width, -hd_center],
-                [0.5, aux_column_width, -separator_distance],
-                [center_r, -center_r, -center_r],
-                [hd_center, -aux_x_max, -aux_x_max],
-                [0.5, -x_max_r, -x_max_r],
-                [center_r, center_r, -center_r],
-                [hd_center, aux_x_max, -aux_x_max],
-                [0.5, x_max_r, -x_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            y_min_z_min = (
+                _np.array(
+                    [
+                        [-aux_column_width, -v_one_half, -v_one_half],
+                        [aux_column_width, -v_one_half, -v_one_half],
+                        [-aux_column_width, -separator_distance, -v_one_half],
+                        [aux_column_width, -separator_distance, -v_one_half],
+                        [-z_min_r, -z_min_r, -v_one_half],
+                        [z_min_r, -z_min_r, -v_one_half],
+                        [-aux_column_width, -v_one_half, -separator_distance],
+                        [aux_column_width, -v_one_half, -separator_distance],
+                        [-aux_column_width, -hd_center, -hd_center],
+                        [aux_column_width, -hd_center, -hd_center],
+                        [-aux_z_min, -aux_z_min, -hd_center],
+                        [aux_z_min, -aux_z_min, -hd_center],
+                        [-y_min_r, -v_one_half, -y_min_r],
+                        [y_min_r, -v_one_half, -y_min_r],
+                        [-aux_y_min, -hd_center, -aux_y_min],
+                        [aux_y_min, -hd_center, -aux_y_min],
+                        [-center_r, -center_r, -center_r],
+                        [center_r, -center_r, -center_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 1, 2], control_points=x_max_z_min)
-        )
+            y_max_z_min = (
+                _np.array(
+                    [
+                        [-z_min_r, z_min_r, -v_one_half],
+                        [z_min_r, z_min_r, -v_one_half],
+                        [-aux_column_width, separator_distance, -v_one_half],
+                        [aux_column_width, separator_distance, -v_one_half],
+                        [-aux_column_width, v_one_half, -v_one_half],
+                        [aux_column_width, v_one_half, -v_one_half],
+                        [-aux_z_min, aux_z_min, -hd_center],
+                        [aux_z_min, aux_z_min, -hd_center],
+                        [-aux_column_width, hd_center, -hd_center],
+                        [aux_column_width, hd_center, -hd_center],
+                        [-aux_column_width, v_one_half, -separator_distance],
+                        [aux_column_width, v_one_half, -separator_distance],
+                        [-center_r, center_r, -center_r],
+                        [center_r, center_r, -center_r],
+                        [-aux_y_max, hd_center, -aux_y_max],
+                        [aux_y_max, hd_center, -aux_y_max],
+                        [-y_max_r, v_one_half, -y_max_r],
+                        [y_max_r, v_one_half, -y_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        x_min_z_max = _np.array(
-            [
-                [-0.5, -x_min_r, x_min_r],
-                [-hd_center, -aux_x_min, aux_x_min],
-                [-center_r, -center_r, center_r],
-                [-0.5, x_min_r, x_min_r],
-                [-hd_center, aux_x_min, aux_x_min],
-                [-center_r, center_r, center_r],
-                [-0.5, -aux_column_width, separator_distance],
-                [-hd_center, -aux_column_width, hd_center],
-                [-aux_z_max, -aux_z_max, hd_center],
-                [-0.5, aux_column_width, separator_distance],
-                [-hd_center, aux_column_width, hd_center],
-                [-aux_z_max, aux_z_max, hd_center],
-                [-0.5, -aux_column_width, 0.5],
-                [-separator_distance, -aux_column_width, 0.5],
-                [-z_max_r, -z_max_r, 0.5],
-                [-0.5, aux_column_width, 0.5],
-                [-separator_distance, aux_column_width, 0.5],
-                [-z_max_r, z_max_r, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            y_min_z_max = (
+                _np.array(
+                    [
+                        [-y_min_r, -v_one_half, y_min_r],
+                        [y_min_r, -v_one_half, y_min_r],
+                        [-aux_y_min, -hd_center, aux_y_min],
+                        [aux_y_min, -hd_center, aux_y_min],
+                        [-center_r, -center_r, center_r],
+                        [center_r, -center_r, center_r],
+                        [-aux_column_width, -v_one_half, separator_distance],
+                        [aux_column_width, -v_one_half, separator_distance],
+                        [-aux_column_width, -hd_center, hd_center],
+                        [aux_column_width, -hd_center, hd_center],
+                        [-aux_z_max, -aux_z_max, hd_center],
+                        [aux_z_max, -aux_z_max, hd_center],
+                        [-aux_column_width, -v_one_half, v_one_half],
+                        [aux_column_width, -v_one_half, v_one_half],
+                        [-aux_column_width, -separator_distance, v_one_half],
+                        [aux_column_width, -separator_distance, v_one_half],
+                        [-z_max_r, -z_max_r, v_one_half],
+                        [z_max_r, -z_max_r, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 1, 2], control_points=x_min_z_max)
-        )
+            y_max_z_max = (
+                _np.array(
+                    [
+                        [-center_r, center_r, center_r],
+                        [center_r, center_r, center_r],
+                        [-aux_y_max, hd_center, aux_y_max],
+                        [aux_y_max, hd_center, aux_y_max],
+                        [-y_max_r, v_one_half, y_max_r],
+                        [y_max_r, v_one_half, y_max_r],
+                        [-aux_z_max, aux_z_max, hd_center],
+                        [aux_z_max, aux_z_max, hd_center],
+                        [-aux_column_width, hd_center, hd_center],
+                        [aux_column_width, hd_center, hd_center],
+                        [-aux_column_width, v_one_half, separator_distance],
+                        [aux_column_width, v_one_half, separator_distance],
+                        [-z_max_r, z_max_r, v_one_half],
+                        [z_max_r, z_max_r, v_one_half],
+                        [-aux_column_width, separator_distance, v_one_half],
+                        [aux_column_width, separator_distance, v_one_half],
+                        [-aux_column_width, v_one_half, v_one_half],
+                        [aux_column_width, v_one_half, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        x_max_z_max = _np.array(
-            [
-                [center_r, -center_r, center_r],
-                [hd_center, -aux_x_max, aux_x_max],
-                [0.5, -x_max_r, x_max_r],
-                [center_r, center_r, center_r],
-                [hd_center, aux_x_max, aux_x_max],
-                [0.5, x_max_r, x_max_r],
-                [aux_z_max, -aux_z_max, hd_center],
-                [hd_center, -aux_column_width, hd_center],
-                [0.5, -aux_column_width, separator_distance],
-                [aux_z_max, aux_z_max, hd_center],
-                [hd_center, aux_column_width, hd_center],
-                [0.5, aux_column_width, separator_distance],
-                [z_max_r, -z_max_r, 0.5],
-                [separator_distance, -aux_column_width, 0.5],
-                [0.5, -aux_column_width, 0.5],
-                [z_max_r, z_max_r, 0.5],
-                [separator_distance, aux_column_width, 0.5],
-                [0.5, aux_column_width, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_y_min_z_min = (
+                _np.array(
+                    [
+                        [-v_one_half, -v_one_half, -v_one_half],
+                        [-separator_distance, -v_one_half, -v_one_half],
+                        [-aux_column_width, -v_one_half, -v_one_half],
+                        [-v_one_half, -separator_distance, -v_one_half],
+                        [
+                            -separator_distance,
+                            -separator_distance,
+                            -v_one_half,
+                        ],
+                        [-aux_column_width, -separator_distance, -v_one_half],
+                        [-v_one_half, -aux_column_width, -v_one_half],
+                        [-separator_distance, -aux_column_width, -v_one_half],
+                        [-z_min_r, -z_min_r, -v_one_half],
+                        [-v_one_half, -v_one_half, -separator_distance],
+                        [
+                            -separator_distance,
+                            -v_one_half,
+                            -separator_distance,
+                        ],
+                        [-aux_column_width, -v_one_half, -separator_distance],
+                        [
+                            -v_one_half,
+                            -separator_distance,
+                            -separator_distance,
+                        ],
+                        [-hd_center, -hd_center, -hd_center],
+                        [-aux_column_width, -hd_center, -hd_center],
+                        [-v_one_half, -aux_column_width, -separator_distance],
+                        [-hd_center, -aux_column_width, -hd_center],
+                        [-aux_z_min, -aux_z_min, -hd_center],
+                        [-v_one_half, -v_one_half, -aux_column_width],
+                        [-separator_distance, -v_one_half, -aux_column_width],
+                        [-y_min_r, -v_one_half, -y_min_r],
+                        [-v_one_half, -separator_distance, -aux_column_width],
+                        [-hd_center, -hd_center, -aux_column_width],
+                        [-aux_y_min, -hd_center, -aux_y_min],
+                        [-v_one_half, -x_min_r, -x_min_r],
+                        [-hd_center, -aux_x_min, -aux_x_min],
+                        [-center_r, -center_r, -center_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[2, 1, 2], control_points=x_max_z_max)
-        )
+            x_max_y_min_z_min = (
+                _np.array(
+                    [
+                        [aux_column_width, -v_one_half, -v_one_half],
+                        [separator_distance, -v_one_half, -v_one_half],
+                        [v_one_half, -v_one_half, -v_one_half],
+                        [aux_column_width, -separator_distance, -v_one_half],
+                        [separator_distance, -separator_distance, -v_one_half],
+                        [v_one_half, -separator_distance, -v_one_half],
+                        [z_min_r, -z_min_r, -v_one_half],
+                        [separator_distance, -aux_column_width, -v_one_half],
+                        [v_one_half, -aux_column_width, -v_one_half],
+                        [aux_column_width, -v_one_half, -separator_distance],
+                        [separator_distance, -v_one_half, -separator_distance],
+                        [v_one_half, -v_one_half, -separator_distance],
+                        [aux_column_width, -hd_center, -hd_center],
+                        [hd_center, -hd_center, -hd_center],
+                        [v_one_half, -separator_distance, -separator_distance],
+                        [aux_z_min, -aux_z_min, -hd_center],
+                        [hd_center, -aux_column_width, -hd_center],
+                        [v_one_half, -aux_column_width, -separator_distance],
+                        [y_min_r, -v_one_half, -y_min_r],
+                        [separator_distance, -v_one_half, -aux_column_width],
+                        [v_one_half, -v_one_half, -aux_column_width],
+                        [aux_y_min, -hd_center, -aux_y_min],
+                        [hd_center, -hd_center, -aux_column_width],
+                        [v_one_half, -separator_distance, -aux_column_width],
+                        [center_r, -center_r, -center_r],
+                        [hd_center, -aux_x_max, -aux_x_max],
+                        [v_one_half, -x_max_r, -x_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        y_min_z_min = _np.array(
-            [
-                [-aux_column_width, -0.5, -0.5],
-                [aux_column_width, -0.5, -0.5],
-                [-aux_column_width, -separator_distance, -0.5],
-                [aux_column_width, -separator_distance, -0.5],
-                [-z_min_r, -z_min_r, -0.5],
-                [z_min_r, -z_min_r, -0.5],
-                [-aux_column_width, -0.5, -separator_distance],
-                [aux_column_width, -0.5, -separator_distance],
-                [-aux_column_width, -hd_center, -hd_center],
-                [aux_column_width, -hd_center, -hd_center],
-                [-aux_z_min, -aux_z_min, -hd_center],
-                [aux_z_min, -aux_z_min, -hd_center],
-                [-y_min_r, -0.5, -y_min_r],
-                [y_min_r, -0.5, -y_min_r],
-                [-aux_y_min, -hd_center, -aux_y_min],
-                [aux_y_min, -hd_center, -aux_y_min],
-                [-center_r, -center_r, -center_r],
-                [center_r, -center_r, -center_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_y_max_z_min = (
+                _np.array(
+                    [
+                        [-v_one_half, aux_column_width, -v_one_half],
+                        [-separator_distance, aux_column_width, -v_one_half],
+                        [-z_min_r, z_min_r, -v_one_half],
+                        [-v_one_half, separator_distance, -v_one_half],
+                        [-separator_distance, separator_distance, -v_one_half],
+                        [-aux_column_width, separator_distance, -v_one_half],
+                        [-v_one_half, v_one_half, -v_one_half],
+                        [-separator_distance, v_one_half, -v_one_half],
+                        [-aux_column_width, v_one_half, -v_one_half],
+                        [-v_one_half, aux_column_width, -separator_distance],
+                        [-hd_center, aux_column_width, -hd_center],
+                        [-aux_z_min, aux_z_min, -hd_center],
+                        [-v_one_half, separator_distance, -separator_distance],
+                        [-hd_center, hd_center, -hd_center],
+                        [-aux_column_width, hd_center, -hd_center],
+                        [-v_one_half, v_one_half, -separator_distance],
+                        [-separator_distance, v_one_half, -separator_distance],
+                        [-aux_column_width, v_one_half, -separator_distance],
+                        [-v_one_half, x_min_r, -x_min_r],
+                        [-hd_center, aux_x_min, -aux_x_min],
+                        [-center_r, center_r, -center_r],
+                        [-v_one_half, separator_distance, -aux_column_width],
+                        [-hd_center, hd_center, -aux_column_width],
+                        [-aux_y_max, hd_center, -aux_y_max],
+                        [-v_one_half, v_one_half, -aux_column_width],
+                        [-separator_distance, v_one_half, -aux_column_width],
+                        [-y_max_r, v_one_half, -y_max_r],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[1, 2, 2], control_points=y_min_z_min)
-        )
+            x_max_y_max_z_min = (
+                _np.array(
+                    [
+                        [z_min_r, z_min_r, -v_one_half],
+                        [separator_distance, aux_column_width, -v_one_half],
+                        [v_one_half, aux_column_width, -v_one_half],
+                        [aux_column_width, separator_distance, -v_one_half],
+                        [separator_distance, separator_distance, -v_one_half],
+                        [v_one_half, separator_distance, -v_one_half],
+                        [aux_column_width, v_one_half, -v_one_half],
+                        [separator_distance, v_one_half, -v_one_half],
+                        [v_one_half, v_one_half, -v_one_half],
+                        [aux_z_min, aux_z_min, -hd_center],
+                        [hd_center, aux_column_width, -hd_center],
+                        [v_one_half, aux_column_width, -separator_distance],
+                        [aux_column_width, hd_center, -hd_center],
+                        [hd_center, hd_center, -hd_center],
+                        [v_one_half, separator_distance, -separator_distance],
+                        [aux_column_width, v_one_half, -separator_distance],
+                        [separator_distance, v_one_half, -separator_distance],
+                        [v_one_half, v_one_half, -separator_distance],
+                        [center_r, center_r, -center_r],
+                        [hd_center, aux_x_max, -aux_x_max],
+                        [v_one_half, x_max_r, -x_max_r],
+                        [aux_y_max, hd_center, -aux_y_max],
+                        [hd_center, hd_center, -aux_column_width],
+                        [v_one_half, separator_distance, -aux_column_width],
+                        [y_max_r, v_one_half, -y_max_r],
+                        [separator_distance, v_one_half, -aux_column_width],
+                        [v_one_half, v_one_half, -aux_column_width],
+                    ]
+                )
+                + center_point
+            )
 
-        y_max_z_min = _np.array(
-            [
-                [-z_min_r, z_min_r, -0.5],
-                [z_min_r, z_min_r, -0.5],
-                [-aux_column_width, separator_distance, -0.5],
-                [aux_column_width, separator_distance, -0.5],
-                [-aux_column_width, 0.5, -0.5],
-                [aux_column_width, 0.5, -0.5],
-                [-aux_z_min, aux_z_min, -hd_center],
-                [aux_z_min, aux_z_min, -hd_center],
-                [-aux_column_width, hd_center, -hd_center],
-                [aux_column_width, hd_center, -hd_center],
-                [-aux_column_width, 0.5, -separator_distance],
-                [aux_column_width, 0.5, -separator_distance],
-                [-center_r, center_r, -center_r],
-                [center_r, center_r, -center_r],
-                [-aux_y_max, hd_center, -aux_y_max],
-                [aux_y_max, hd_center, -aux_y_max],
-                [-y_max_r, 0.5, -y_max_r],
-                [y_max_r, 0.5, -y_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_y_min_z_max = (
+                _np.array(
+                    [
+                        [-v_one_half, -v_one_half, aux_column_width],
+                        [-separator_distance, -v_one_half, aux_column_width],
+                        [-y_min_r, -v_one_half, y_min_r],
+                        [-v_one_half, -separator_distance, aux_column_width],
+                        [-hd_center, -hd_center, aux_column_width],
+                        [-aux_y_min, -hd_center, aux_y_min],
+                        [-v_one_half, -x_min_r, x_min_r],
+                        [-hd_center, -aux_x_min, aux_x_min],
+                        [-center_r, -center_r, center_r],
+                        [-v_one_half, -v_one_half, separator_distance],
+                        [-separator_distance, -v_one_half, separator_distance],
+                        [-aux_column_width, -v_one_half, separator_distance],
+                        [-v_one_half, -separator_distance, separator_distance],
+                        [-hd_center, -hd_center, hd_center],
+                        [-aux_column_width, -hd_center, hd_center],
+                        [-v_one_half, -aux_column_width, separator_distance],
+                        [-hd_center, -aux_column_width, hd_center],
+                        [-aux_z_max, -aux_z_max, hd_center],
+                        [-v_one_half, -v_one_half, v_one_half],
+                        [-separator_distance, -v_one_half, v_one_half],
+                        [-aux_column_width, -v_one_half, v_one_half],
+                        [-v_one_half, -separator_distance, v_one_half],
+                        [-separator_distance, -separator_distance, v_one_half],
+                        [-aux_column_width, -separator_distance, v_one_half],
+                        [-v_one_half, -aux_column_width, v_one_half],
+                        [-separator_distance, -aux_column_width, v_one_half],
+                        [-z_max_r, -z_max_r, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[1, 2, 2], control_points=y_max_z_min)
-        )
+            x_max_y_min_z_max = (
+                _np.array(
+                    [
+                        [y_min_r, -v_one_half, y_min_r],
+                        [separator_distance, -v_one_half, aux_column_width],
+                        [v_one_half, -v_one_half, aux_column_width],
+                        [aux_y_min, -hd_center, aux_y_min],
+                        [hd_center, -hd_center, aux_column_width],
+                        [v_one_half, -separator_distance, aux_column_width],
+                        [center_r, -center_r, center_r],
+                        [hd_center, -aux_x_max, aux_x_max],
+                        [v_one_half, -x_max_r, x_max_r],
+                        [aux_column_width, -v_one_half, separator_distance],
+                        [separator_distance, -v_one_half, separator_distance],
+                        [v_one_half, -v_one_half, separator_distance],
+                        [aux_column_width, -hd_center, hd_center],
+                        [hd_center, -hd_center, hd_center],
+                        [v_one_half, -separator_distance, separator_distance],
+                        [aux_z_max, -aux_z_max, hd_center],
+                        [hd_center, -aux_column_width, hd_center],
+                        [v_one_half, -aux_column_width, separator_distance],
+                        [aux_column_width, -v_one_half, v_one_half],
+                        [separator_distance, -v_one_half, v_one_half],
+                        [v_one_half, -v_one_half, v_one_half],
+                        [aux_column_width, -separator_distance, v_one_half],
+                        [separator_distance, -separator_distance, v_one_half],
+                        [v_one_half, -separator_distance, v_one_half],
+                        [z_max_r, -z_max_r, v_one_half],
+                        [separator_distance, -aux_column_width, v_one_half],
+                        [v_one_half, -aux_column_width, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        y_min_z_max = _np.array(
-            [
-                [-y_min_r, -0.5, y_min_r],
-                [y_min_r, -0.5, y_min_r],
-                [-aux_y_min, -hd_center, aux_y_min],
-                [aux_y_min, -hd_center, aux_y_min],
-                [-center_r, -center_r, center_r],
-                [center_r, -center_r, center_r],
-                [-aux_column_width, -0.5, separator_distance],
-                [aux_column_width, -0.5, separator_distance],
-                [-aux_column_width, -hd_center, hd_center],
-                [aux_column_width, -hd_center, hd_center],
-                [-aux_z_max, -aux_z_max, hd_center],
-                [aux_z_max, -aux_z_max, hd_center],
-                [-aux_column_width, -0.5, 0.5],
-                [aux_column_width, -0.5, 0.5],
-                [-aux_column_width, -separator_distance, 0.5],
-                [aux_column_width, -separator_distance, 0.5],
-                [-z_max_r, -z_max_r, 0.5],
-                [z_max_r, -z_max_r, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            x_min_y_max_z_max = (
+                _np.array(
+                    [
+                        [-v_one_half, x_min_r, x_min_r],
+                        [-hd_center, aux_x_min, aux_x_min],
+                        [-center_r, center_r, center_r],
+                        [-v_one_half, separator_distance, aux_column_width],
+                        [-hd_center, hd_center, aux_column_width],
+                        [-aux_y_max, hd_center, aux_y_max],
+                        [-v_one_half, v_one_half, aux_column_width],
+                        [-separator_distance, v_one_half, aux_column_width],
+                        [-y_max_r, v_one_half, y_max_r],
+                        [-v_one_half, aux_column_width, separator_distance],
+                        [-hd_center, aux_column_width, hd_center],
+                        [-aux_z_max, aux_z_max, hd_center],
+                        [-v_one_half, separator_distance, separator_distance],
+                        [-hd_center, hd_center, hd_center],
+                        [-aux_column_width, hd_center, hd_center],
+                        [-v_one_half, v_one_half, separator_distance],
+                        [-separator_distance, v_one_half, separator_distance],
+                        [-aux_column_width, v_one_half, separator_distance],
+                        [-v_one_half, aux_column_width, v_one_half],
+                        [-separator_distance, aux_column_width, v_one_half],
+                        [-z_max_r, z_max_r, v_one_half],
+                        [-v_one_half, separator_distance, v_one_half],
+                        [-separator_distance, separator_distance, v_one_half],
+                        [-aux_column_width, separator_distance, v_one_half],
+                        [-v_one_half, v_one_half, v_one_half],
+                        [-separator_distance, v_one_half, v_one_half],
+                        [-aux_column_width, v_one_half, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        spline_list.append(
-            _Bezier(degrees=[1, 2, 2], control_points=y_min_z_max)
-        )
+            x_max_y_max_z_max = (
+                _np.array(
+                    [
+                        [center_r, center_r, center_r],
+                        [hd_center, aux_x_max, aux_x_max],
+                        [v_one_half, x_max_r, x_max_r],
+                        [aux_y_max, hd_center, aux_y_max],
+                        [hd_center, hd_center, aux_column_width],
+                        [v_one_half, separator_distance, aux_column_width],
+                        [y_max_r, v_one_half, y_max_r],
+                        [separator_distance, v_one_half, aux_column_width],
+                        [v_one_half, v_one_half, aux_column_width],
+                        [aux_z_max, aux_z_max, hd_center],
+                        [hd_center, aux_column_width, hd_center],
+                        [v_one_half, aux_column_width, separator_distance],
+                        [aux_column_width, hd_center, hd_center],
+                        [hd_center, hd_center, hd_center],
+                        [v_one_half, separator_distance, separator_distance],
+                        [aux_column_width, v_one_half, separator_distance],
+                        [separator_distance, v_one_half, separator_distance],
+                        [v_one_half, v_one_half, separator_distance],
+                        [z_max_r, z_max_r, v_one_half],
+                        [separator_distance, aux_column_width, v_one_half],
+                        [v_one_half, aux_column_width, v_one_half],
+                        [aux_column_width, separator_distance, v_one_half],
+                        [separator_distance, separator_distance, v_one_half],
+                        [v_one_half, separator_distance, v_one_half],
+                        [aux_column_width, v_one_half, v_one_half],
+                        [separator_distance, v_one_half, v_one_half],
+                        [v_one_half, v_one_half, v_one_half],
+                    ]
+                )
+                + center_point
+            )
 
-        y_max_z_max = _np.array(
-            [
-                [-center_r, center_r, center_r],
-                [center_r, center_r, center_r],
-                [-aux_y_max, hd_center, aux_y_max],
-                [aux_y_max, hd_center, aux_y_max],
-                [-y_max_r, 0.5, y_max_r],
-                [y_max_r, 0.5, y_max_r],
-                [-aux_z_max, aux_z_max, hd_center],
-                [aux_z_max, aux_z_max, hd_center],
-                [-aux_column_width, hd_center, hd_center],
-                [aux_column_width, hd_center, hd_center],
-                [-aux_column_width, 0.5, separator_distance],
-                [aux_column_width, 0.5, separator_distance],
-                [-z_max_r, z_max_r, 0.5],
-                [z_max_r, z_max_r, 0.5],
-                [-aux_column_width, separator_distance, 0.5],
-                [aux_column_width, separator_distance, 0.5],
-                [-aux_column_width, 0.5, 0.5],
-                [aux_column_width, 0.5, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
+            # Append the control points to the spline list
+            for control_points, degrees in [
+                (x_min_y_min, [2, 2, 1]),
+                (x_max_y_min, [2, 2, 1]),
+                (x_min_y_max, [2, 2, 1]),
+                (x_max_y_max, [2, 2, 1]),
+                (x_min_z_min, [2, 1, 2]),
+                (x_max_z_min, [2, 1, 2]),
+                (x_min_z_max, [2, 1, 2]),
+                (x_max_z_max, [2, 1, 2]),
+                (y_min_z_min, [1, 2, 2]),
+                (y_max_z_min, [1, 2, 2]),
+                (y_min_z_max, [1, 2, 2]),
+                (y_max_z_max, [1, 2, 2]),
+                (x_min_y_min_z_min, [2, 2, 2]),
+                (x_max_y_min_z_min, [2, 2, 2]),
+                (x_min_y_max_z_min, [2, 2, 2]),
+                (x_max_y_max_z_min, [2, 2, 2]),
+                (x_min_y_min_z_max, [2, 2, 2]),
+                (x_max_y_min_z_max, [2, 2, 2]),
+                (x_min_y_max_z_max, [2, 2, 2]),
+                (x_max_y_max_z_max, [2, 2, 2]),
+            ]:
+                spline_list.append(
+                    _Bezier(degrees=degrees, control_points=control_points)
+                )
 
-        spline_list.append(
-            _Bezier(degrees=[1, 2, 2], control_points=y_max_z_max)
-        )
+            if i_derivative == 0:
+                splines = spline_list.copy()
+            else:
+                derivatives.append(spline_list)
 
-        x_min_y_min_z_min = _np.array(
-            [
-                [-0.5, -0.5, -0.5],
-                [-separator_distance, -0.5, -0.5],
-                [-aux_column_width, -0.5, -0.5],
-                [-0.5, -separator_distance, -0.5],
-                [-separator_distance, -separator_distance, -0.5],
-                [-aux_column_width, -separator_distance, -0.5],
-                [-0.5, -aux_column_width, -0.5],
-                [-separator_distance, -aux_column_width, -0.5],
-                [-z_min_r, -z_min_r, -0.5],
-                [-0.5, -0.5, -separator_distance],
-                [-separator_distance, -0.5, -separator_distance],
-                [-aux_column_width, -0.5, -separator_distance],
-                [-0.5, -separator_distance, -separator_distance],
-                [-hd_center, -hd_center, -hd_center],
-                [-aux_column_width, -hd_center, -hd_center],
-                [-0.5, -aux_column_width, -separator_distance],
-                [-hd_center, -aux_column_width, -hd_center],
-                [-aux_z_min, -aux_z_min, -hd_center],
-                [-0.5, -0.5, -aux_column_width],
-                [-separator_distance, -0.5, -aux_column_width],
-                [-y_min_r, -0.5, -y_min_r],
-                [-0.5, -separator_distance, -aux_column_width],
-                [-hd_center, -hd_center, -aux_column_width],
-                [-aux_y_min, -hd_center, -aux_y_min],
-                [-0.5, -x_min_r, -x_min_r],
-                [-hd_center, -aux_x_min, -aux_x_min],
-                [-center_r, -center_r, -center_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_min)
-        )
-
-        x_max_y_min_z_min = _np.array(
-            [
-                [aux_column_width, -0.5, -0.5],
-                [separator_distance, -0.5, -0.5],
-                [0.5, -0.5, -0.5],
-                [aux_column_width, -separator_distance, -0.5],
-                [separator_distance, -separator_distance, -0.5],
-                [0.5, -separator_distance, -0.5],
-                [z_min_r, -z_min_r, -0.5],
-                [separator_distance, -aux_column_width, -0.5],
-                [0.5, -aux_column_width, -0.5],
-                [aux_column_width, -0.5, -separator_distance],
-                [separator_distance, -0.5, -separator_distance],
-                [0.5, -0.5, -separator_distance],
-                [aux_column_width, -hd_center, -hd_center],
-                [hd_center, -hd_center, -hd_center],
-                [0.5, -separator_distance, -separator_distance],
-                [aux_z_min, -aux_z_min, -hd_center],
-                [hd_center, -aux_column_width, -hd_center],
-                [0.5, -aux_column_width, -separator_distance],
-                [y_min_r, -0.5, -y_min_r],
-                [separator_distance, -0.5, -aux_column_width],
-                [0.5, -0.5, -aux_column_width],
-                [aux_y_min, -hd_center, -aux_y_min],
-                [hd_center, -hd_center, -aux_column_width],
-                [0.5, -separator_distance, -aux_column_width],
-                [center_r, -center_r, -center_r],
-                [hd_center, -aux_x_max, -aux_x_max],
-                [0.5, -x_max_r, -x_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_min)
-        )
-
-        x_min_y_max_z_min = _np.array(
-            [
-                [-0.5, aux_column_width, -0.5],
-                [-separator_distance, aux_column_width, -0.5],
-                [-z_min_r, z_min_r, -0.5],
-                [-0.5, separator_distance, -0.5],
-                [-separator_distance, separator_distance, -0.5],
-                [-aux_column_width, separator_distance, -0.5],
-                [-0.5, 0.5, -0.5],
-                [-separator_distance, 0.5, -0.5],
-                [-aux_column_width, 0.5, -0.5],
-                [-0.5, aux_column_width, -separator_distance],
-                [-hd_center, aux_column_width, -hd_center],
-                [-aux_z_min, aux_z_min, -hd_center],
-                [-0.5, separator_distance, -separator_distance],
-                [-hd_center, hd_center, -hd_center],
-                [-aux_column_width, hd_center, -hd_center],
-                [-0.5, 0.5, -separator_distance],
-                [-separator_distance, 0.5, -separator_distance],
-                [-aux_column_width, 0.5, -separator_distance],
-                [-0.5, x_min_r, -x_min_r],
-                [-hd_center, aux_x_min, -aux_x_min],
-                [-center_r, center_r, -center_r],
-                [-0.5, separator_distance, -aux_column_width],
-                [-hd_center, hd_center, -aux_column_width],
-                [-aux_y_max, hd_center, -aux_y_max],
-                [-0.5, 0.5, -aux_column_width],
-                [-separator_distance, 0.5, -aux_column_width],
-                [-y_max_r, 0.5, -y_max_r],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_min)
-        )
-
-        x_max_y_max_z_min = _np.array(
-            [
-                [z_min_r, z_min_r, -0.5],
-                [separator_distance, aux_column_width, -0.5],
-                [0.5, aux_column_width, -0.5],
-                [aux_column_width, separator_distance, -0.5],
-                [separator_distance, separator_distance, -0.5],
-                [0.5, separator_distance, -0.5],
-                [aux_column_width, 0.5, -0.5],
-                [separator_distance, 0.5, -0.5],
-                [0.5, 0.5, -0.5],
-                [aux_z_min, aux_z_min, -hd_center],
-                [hd_center, aux_column_width, -hd_center],
-                [0.5, aux_column_width, -separator_distance],
-                [aux_column_width, hd_center, -hd_center],
-                [hd_center, hd_center, -hd_center],
-                [0.5, separator_distance, -separator_distance],
-                [aux_column_width, 0.5, -separator_distance],
-                [separator_distance, 0.5, -separator_distance],
-                [0.5, 0.5, -separator_distance],
-                [center_r, center_r, -center_r],
-                [hd_center, aux_x_max, -aux_x_max],
-                [0.5, x_max_r, -x_max_r],
-                [aux_y_max, hd_center, -aux_y_max],
-                [hd_center, hd_center, -aux_column_width],
-                [0.5, separator_distance, -aux_column_width],
-                [y_max_r, 0.5, -y_max_r],
-                [separator_distance, 0.5, -aux_column_width],
-                [0.5, 0.5, -aux_column_width],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_min)
-        )
-
-        x_min_y_min_z_max = _np.array(
-            [
-                [-0.5, -0.5, aux_column_width],
-                [-separator_distance, -0.5, aux_column_width],
-                [-y_min_r, -0.5, y_min_r],
-                [-0.5, -separator_distance, aux_column_width],
-                [-hd_center, -hd_center, aux_column_width],
-                [-aux_y_min, -hd_center, aux_y_min],
-                [-0.5, -x_min_r, x_min_r],
-                [-hd_center, -aux_x_min, aux_x_min],
-                [-center_r, -center_r, center_r],
-                [-0.5, -0.5, separator_distance],
-                [-separator_distance, -0.5, separator_distance],
-                [-aux_column_width, -0.5, separator_distance],
-                [-0.5, -separator_distance, separator_distance],
-                [-hd_center, -hd_center, hd_center],
-                [-aux_column_width, -hd_center, hd_center],
-                [-0.5, -aux_column_width, separator_distance],
-                [-hd_center, -aux_column_width, hd_center],
-                [-aux_z_max, -aux_z_max, hd_center],
-                [-0.5, -0.5, 0.5],
-                [-separator_distance, -0.5, 0.5],
-                [-aux_column_width, -0.5, 0.5],
-                [-0.5, -separator_distance, 0.5],
-                [-separator_distance, -separator_distance, 0.5],
-                [-aux_column_width, -separator_distance, 0.5],
-                [-0.5, -aux_column_width, 0.5],
-                [-separator_distance, -aux_column_width, 0.5],
-                [-z_max_r, -z_max_r, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_min_z_max)
-        )
-
-        x_max_y_min_z_max = _np.array(
-            [
-                [y_min_r, -0.5, y_min_r],
-                [separator_distance, -0.5, aux_column_width],
-                [0.5, -0.5, aux_column_width],
-                [aux_y_min, -hd_center, aux_y_min],
-                [hd_center, -hd_center, aux_column_width],
-                [0.5, -separator_distance, aux_column_width],
-                [center_r, -center_r, center_r],
-                [hd_center, -aux_x_max, aux_x_max],
-                [0.5, -x_max_r, x_max_r],
-                [aux_column_width, -0.5, separator_distance],
-                [separator_distance, -0.5, separator_distance],
-                [0.5, -0.5, separator_distance],
-                [aux_column_width, -hd_center, hd_center],
-                [hd_center, -hd_center, hd_center],
-                [0.5, -separator_distance, separator_distance],
-                [aux_z_max, -aux_z_max, hd_center],
-                [hd_center, -aux_column_width, hd_center],
-                [0.5, -aux_column_width, separator_distance],
-                [aux_column_width, -0.5, 0.5],
-                [separator_distance, -0.5, 0.5],
-                [0.5, -0.5, 0.5],
-                [aux_column_width, -separator_distance, 0.5],
-                [separator_distance, -separator_distance, 0.5],
-                [0.5, -separator_distance, 0.5],
-                [z_max_r, -z_max_r, 0.5],
-                [separator_distance, -aux_column_width, 0.5],
-                [0.5, -aux_column_width, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_min_z_max)
-        )
-
-        x_min_y_max_z_max = _np.array(
-            [
-                [-0.5, x_min_r, x_min_r],
-                [-hd_center, aux_x_min, aux_x_min],
-                [-center_r, center_r, center_r],
-                [-0.5, separator_distance, aux_column_width],
-                [-hd_center, hd_center, aux_column_width],
-                [-aux_y_max, hd_center, aux_y_max],
-                [-0.5, 0.5, aux_column_width],
-                [-separator_distance, 0.5, aux_column_width],
-                [-y_max_r, 0.5, y_max_r],
-                [-0.5, aux_column_width, separator_distance],
-                [-hd_center, aux_column_width, hd_center],
-                [-aux_z_max, aux_z_max, hd_center],
-                [-0.5, separator_distance, separator_distance],
-                [-hd_center, hd_center, hd_center],
-                [-aux_column_width, hd_center, hd_center],
-                [-0.5, 0.5, separator_distance],
-                [-separator_distance, 0.5, separator_distance],
-                [-aux_column_width, 0.5, separator_distance],
-                [-0.5, aux_column_width, 0.5],
-                [-separator_distance, aux_column_width, 0.5],
-                [-z_max_r, z_max_r, 0.5],
-                [-0.5, separator_distance, 0.5],
-                [-separator_distance, separator_distance, 0.5],
-                [-aux_column_width, separator_distance, 0.5],
-                [-0.5, 0.5, 0.5],
-                [-separator_distance, 0.5, 0.5],
-                [-aux_column_width, 0.5, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_min_y_max_z_max)
-        )
-
-        x_max_y_max_z_max = _np.array(
-            [
-                [center_r, center_r, center_r],
-                [hd_center, aux_x_max, aux_x_max],
-                [0.5, x_max_r, x_max_r],
-                [aux_y_max, hd_center, aux_y_max],
-                [hd_center, hd_center, aux_column_width],
-                [0.5, separator_distance, aux_column_width],
-                [y_max_r, 0.5, y_max_r],
-                [separator_distance, 0.5, aux_column_width],
-                [0.5, 0.5, aux_column_width],
-                [aux_z_max, aux_z_max, hd_center],
-                [hd_center, aux_column_width, hd_center],
-                [0.5, aux_column_width, separator_distance],
-                [aux_column_width, hd_center, hd_center],
-                [hd_center, hd_center, hd_center],
-                [0.5, separator_distance, separator_distance],
-                [aux_column_width, 0.5, separator_distance],
-                [separator_distance, 0.5, separator_distance],
-                [0.5, 0.5, separator_distance],
-                [z_max_r, z_max_r, 0.5],
-                [separator_distance, aux_column_width, 0.5],
-                [0.5, aux_column_width, 0.5],
-                [aux_column_width, separator_distance, 0.5],
-                [separator_distance, separator_distance, 0.5],
-                [0.5, separator_distance, 0.5],
-                [aux_column_width, 0.5, 0.5],
-                [separator_distance, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-            ]
-        ) + _np.array([0.5, 0.5, 0.5])
-
-        spline_list.append(
-            _Bezier(degrees=[2, 2, 2], control_points=x_max_y_max_z_max)
-        )
-        return (spline_list, None)
+        return splines, derivatives
