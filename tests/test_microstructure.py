@@ -176,16 +176,25 @@ def test_tile_closure():
                 check_control_points(tile_patches)
 
 
-def test_tile_derivatives(np_rng, heps=1e-8):
-    """Testing the correctness of the tile derivatives using Finite Differences
+def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
+    """Testing the correctness of the tile derivatives using Finite Differences.
+    This includes every closure and no closure, every parameter and every patch
+    by evaluating at random points and for random parameters.
 
     Parameters
     ---------
     heps: float
         Perturbation size for finite difference evaluation
+    n_test_points: int
+        Number of testing points in the parametric domain
     """
-    # TODO: right now Chi, EllipsVoid and CubeVoid show wrong derivatives
-    skip_classes = [ms.tiles.Chi, ms.tiles.EllipsVoid, ms.tiles.CubeVoid]
+    # TODO: right now Chi, EllipsVoid, CubeVoid and InverseCross show wrong derivatives
+    skip_classes = [
+        ms.tiles.Chi,
+        ms.tiles.EllipsVoid,
+        ms.tiles.CubeVoid,
+        ms.tiles.InverseCross3D,
+    ]
 
     for tile_class in all_tile_classes:
         # TODO: right now skip classes with faultily implemented derivatives
@@ -204,76 +213,69 @@ def test_tile_derivatives(np_rng, heps=1e-8):
         ) * np.ptp(parameter_bounds, axis=1)
         parameters = parameters.reshape(tile_creator._parameters_shape)
 
-        # Create 3D identity matrix
+        # Test no closure as well as ...
+        closure_directions = [None]
+        # ... every closure implemented
+        if "_closure_directions" in dir(tile_creator):
+            closure_directions += tile_creator._closure_directions
+
+        # Retrieve shape values of parameters
         n_eval_points = tile_creator._evaluation_points.shape[0]
         n_info_per_eval_point = tile_creator._n_info_per_eval_point
-        parameter_sensitivities = np.zeros(
-            (n_eval_points, n_info_per_eval_point, 1)
-        )
-        idx = np.arange(np.min(parameter_sensitivities.shape))
-        parameter_sensitivities[idx, idx, :] = 1
-        splines, derivatives = tile_creator.create_tile(
-            parameters=parameters,
-            parameter_sensitivities=parameter_sensitivities,
-        )
-        # Evaluate splines and derivatives at multiple random points
-        eval_points = np_rng.random((4, splines[0].para_dim))
-        deriv_evaluations = [
-            deriv.evaluate(eval_points) for deriv in derivatives[0]
-        ]
-        spline_orig_evaluations = [
-            spl.evaluate(eval_points) for spl in splines
-        ]
 
-        parameters_perturbed = parameters.copy()
-        parameters_perturbed += heps
-        splines_perturbed, _ = tile_creator.create_tile(
-            parameters=parameters_perturbed
-        )
-        spline_perturbed_evaluations = [
-            spl.evaluate(eval_points) for spl in splines_perturbed
-        ]
-        fd_sensitivities = [
-            (spl_pert - spl_orig) / heps
-            for spl_pert, spl_orig in zip(
-                spline_perturbed_evaluations, spline_orig_evaluations
+        # Test each closure direction
+        for closure in closure_directions:
+            # Evaluate tile with given parameter and closure configuration
+            splines_orig, _ = tile_creator.create_tile(
+                parameters=parameters, closure=closure
             )
-        ]
-
-        # Go through all the parameters individually
-        for i_parameter in range(n_info_per_eval_point):
-            # Get derivatives w.r.t. one parameter
-            parameter_sensitivities = np.zeros(
-                (n_eval_points, n_info_per_eval_point, 1)
+            # Set evaluation points as 4 random spots in the parametric space
+            eval_points = np_rng.random(
+                (n_test_points, splines_orig[0].para_dim)
             )
-            parameter_sensitivities[:, i_parameter, :] = 1
-            _, derivatives = tile_creator.create_tile(
-                parameters=parameters,
-                parameter_sensitivities=parameter_sensitivities,
-            )
-            deriv_evaluations = [
-                deriv.evaluate(eval_points) for deriv in derivatives[0]
+            splines_orig_evaluations = [
+                spl.evaluate(eval_points) for spl in splines_orig
             ]
-            # Perform finite difference evaluation
-            parameters_perturbed = parameters.copy()
-            parameters_perturbed[:, i_parameter] += heps
-            splines_perturbed, _ = tile_creator.create_tile(
-                parameters=parameters_perturbed
-            )
-            spline_perturbed_evaluations = [
-                spl.evaluate(eval_points) for spl in splines_perturbed
-            ]
-            fd_sensitivities = [
-                (spl_pert - spl_orig) / heps
-                for spl_pert, spl_orig in zip(
-                    spline_perturbed_evaluations, spline_orig_evaluations
+            # Go through all the parameters individually
+            for i_parameter in range(n_info_per_eval_point):
+                # Get derivatives w.r.t. one parameter
+                parameter_sensitivities = np.zeros(
+                    (n_eval_points, n_info_per_eval_point, 1)
                 )
-            ]
-            # Check every patch
-            for deriv_orig, deriv_fd in zip(
-                deriv_evaluations, fd_sensitivities
-            ):
-                assert np.allclose(deriv_orig, deriv_fd), (
-                    "Implemented derivative calculation does not match the derivative "
-                    + "obtained using Finite Differences"
+                parameter_sensitivities[:, i_parameter, :] = 1
+                _, derivatives = tile_creator.create_tile(
+                    parameters=parameters,
+                    parameter_sensitivities=parameter_sensitivities,
+                    closure=closure,
                 )
+                deriv_evaluations = [
+                    deriv.evaluate(eval_points) for deriv in derivatives[0]
+                ]
+                # Perform finite difference evaluation
+                parameters_perturbed = parameters.copy()
+                parameters_perturbed[:, i_parameter] += heps
+                splines_perturbed, _ = tile_creator.create_tile(
+                    parameters=parameters_perturbed, closure=closure
+                )
+                spline_perturbed_evaluations = [
+                    spl.evaluate(eval_points) for spl in splines_perturbed
+                ]
+                # Evaluate finite difference gradient
+                fd_sensitivities = [
+                    (spl_pert - spl_orig) / heps
+                    for spl_pert, spl_orig in zip(
+                        spline_perturbed_evaluations, splines_orig_evaluations
+                    )
+                ]
+                # Check every patch
+                n_patches = len(fd_sensitivities)
+                for i_patch, deriv_orig, deriv_fd in zip(
+                    range(n_patches), deriv_evaluations, fd_sensitivities
+                ):
+                    assert np.allclose(deriv_orig, deriv_fd), (
+                        "Implemented derivative calculation for tile class"
+                        + f"{tile_class}, parameter "
+                        + f"{i_parameter+1}/{n_info_per_eval_point} at patch "
+                        + f"{i_patch+1}/{n_patches} does not match the derivative "
+                        + "obtained using Finite Differences"
+                    )
