@@ -201,6 +201,8 @@ def test_physical_function_integration(np_rng):
             y = points[0][1]
         elif isinstance(points, np.ndarray):
             y = points[:, 1]
+        else:
+            raise TypeError("Unsupported type for points")
         return (y * (5 - y)).reshape(-1, 1)
 
     # Create rectangle domain
