@@ -1158,21 +1158,10 @@ class FieldIntegrator:
         west=False,
     ):
         """
-        Applies Dirichlet boundary conditions via :math:`L^2`-projection.
+        Applies Dirichlet boundary conditions via L2-projection.
 
-        For a given function g, :math:`L^2`-projection is obtained by solving
-        the following equation:
-
-        .. math:: \\sum\\limits_{j=1}^n \\alpha_j (N_i, N_j) = (g, N_i) \\quad
-        \forall i = 1, \\dots, n.
-
-        Then, :math:`Pg`, the :math:`L^2`-projection of the function, is
-        given by
-
-        .. math:: Pg(x) = \\sum\\limits_{j=1}^n \\alpha_j \\phi_j(x).
-
-        For the Dirichlet boundary conditions, only the DoFs corresponding to
-        the boundaries are taken from the :math:`L^2`-projection.
+        Firstly, the function is L2-projected on the whole domain, but only the DoFs
+        corresponding to the boundaries are taken into account.
 
         Parameters
         -------------
