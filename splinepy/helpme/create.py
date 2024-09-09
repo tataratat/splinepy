@@ -338,7 +338,7 @@ def swept(
       Angle in radians by which the cross-section is rotated around
       the trajectory tangent vector. This is an additional rotation
       if the user wants to adapt the cross-section rotation.
-      Example with rectangular crossection:
+      Example with rectangular cross-section:
       .         x
       .       x   x                                      x x x x x
       .     x       x                                    x       x
