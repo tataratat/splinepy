@@ -468,7 +468,7 @@ def test_swept_control_point_placing(np_rng):
 
     # check if normal vector is parallel to tangent vector
     # --> then transformation of cross-section is correct
-    assert np.allclose(np.cross(rand_traj_tangent, normal_vector).all(), 0)
+    assert np.allclose(np.cross(rand_traj_tangent, normal_vector), 0)
 
     ## TEST ALSO WITH CUSTOM NORMAL VECTOR ##
 
