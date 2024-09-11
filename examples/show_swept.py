@@ -36,14 +36,14 @@ if __name__ == "__main__":
 
     ### CROSS SECTIONS ###
 
-    # 1. create a circular line-cross-section
-    cross_section_circle1D = splinepy.helpme.create.circle(0.5).nurbs
+    # 1. create a circular 1D-line-cross-section
+    cross_section_circle = splinepy.helpme.create.circle(0.5).nurbs
 
-    # 2. create a circular surface-cross-section
-    cross_section_circle2D = splinepy.helpme.create.surface_circle(0.5).nurbs
+    # 2. create a circular 2D-surface-cross-section
+    cross_section_disk = splinepy.helpme.create.surface_circle(0.5).nurbs
 
-    # 3. create a rectangular surface-cross-section
-    cross_section_rect2D = splinepy.helpme.create.box(1, 1).nurbs
+    # 3. create a rectangular 2D-surface-cross-section
+    cross_section_plate = splinepy.helpme.create.box(1, 1).nurbs
 
     # user can  define the normal vector of the cross section, in case
     # the cross section is not planar in the x-y plane (or the user
@@ -53,48 +53,48 @@ if __name__ == "__main__":
     ### SWEEP ###
 
     # create swept surface
-    swept_surface_1D_circle = splinepy.helpme.create.swept(
+    swept_surface_circle = splinepy.helpme.create.swept(
         trajectory=trajectory,
-        cross_section=cross_section_circle1D,
+        cross_section=cross_section_circle,
         cross_section_normal=None,
         set_on_trajectory=False,
         rotation_adaption=None,
     )
 
-    # create swept solid (circular nr. 1)
-    # the cross-sections are set on the trajectory's control points (default)
-    swept_surface_2D_circle_1 = splinepy.helpme.create.swept(
-        trajectory=trajectory,
-        cross_section=cross_section_circle2D,
-        cross_section_normal=None,
-        set_on_trajectory=False,
-        rotation_adaption=None,
-    )
-
-    # create crooked swept solid (circular nr. 2)
-    # the cross-sections are set on the trajectory's evaluation points
-    swept_surface_2D_circle_2 = splinepy.helpme.create.swept(
-        trajectory=trajectory,
-        cross_section=cross_section_circle2D,
-        cross_section_normal=None,
-        set_on_trajectory=True,
-        rotation_adaption=None,
-    )
-
-    # create swept solid set on trajectory (circular nr. 3)
+    # create crooked swept solid (circular nr. 1)
     # the cross-section's normal vector is not default; crooked sweeping
-    swept_surface_2D_circle_3 = splinepy.helpme.create.swept(
+    swept_solid_disk_1 = splinepy.helpme.create.swept(
         trajectory=trajectory,
-        cross_section=cross_section_circle2D,
+        cross_section=cross_section_disk,
         cross_section_normal=cs_nv,
         set_on_trajectory=False,
         rotation_adaption=None,
     )
 
-    # create swept solid (rectangular nr. 1)
-    swept_surface_2D_rect_1 = splinepy.helpme.create.swept(
+    # create swept solid (circular nr. 2)
+    # the cross-sections are set on the trajectory's control points (default)
+    swept_solid_disk_2 = splinepy.helpme.create.swept(
         trajectory=trajectory,
-        cross_section=cross_section_rect2D,
+        cross_section=cross_section_disk,
+        cross_section_normal=None,
+        set_on_trajectory=False,
+        rotation_adaption=None,
+    )
+
+    # create swept solid (circular nr. 3)
+    # the cross-sections are set on the trajectory's evaluation points
+    swept_solid_disk_3 = splinepy.helpme.create.swept(
+        trajectory=trajectory,
+        cross_section=cross_section_disk,
+        cross_section_normal=None,
+        set_on_trajectory=True,
+        rotation_adaption=None,
+    )
+
+    # create swept solid (rectangular nr. 1)
+    swept_solid_plate_1 = splinepy.helpme.create.swept(
+        trajectory=trajectory,
+        cross_section=cross_section_plate,
         cross_section_normal=None,
         set_on_trajectory=False,
         rotation_adaption=None,
@@ -102,9 +102,9 @@ if __name__ == "__main__":
 
     # create swept solid (rectangular nr. 2)
     # rotation adaption with 45 degrees
-    swept_surface_2D_rect_2 = splinepy.helpme.create.swept(
+    swept_solid_plate_2 = splinepy.helpme.create.swept(
         trajectory=trajectory,
-        cross_section=cross_section_rect2D,
+        cross_section=cross_section_plate,
         cross_section_normal=None,
         set_on_trajectory=False,
         rotation_adaption=45 * np.pi / 180,
@@ -112,27 +112,46 @@ if __name__ == "__main__":
 
     ### VISUALIZATION ###
 
+    # first window: swept surface
     gus.show(
         ["Trajectory", trajectory],
-        ["1D Cross Section", cross_section_circle1D],
-        ["Swept Surface", swept_surface_1D_circle],
-        resolution=101,
+        ["1D Cross Section", cross_section_circle],
+        ["Swept Surface", swept_surface_circle],
+        resolution=51,
         control_mesh=False,
+        control_point_ids=False,
     )
 
+    # adjust show options
+    swept_solid_disk_2.show_options["alpha"] = 0.3
+    swept_solid_disk_3.show_options["alpha"] = 0.3
+    trajectory.show_options["control_points"] = False
+
+    # second window: swept solids (circular)
     gus.show(
-        ["2D Cross Section", cross_section_circle2D],
-        ["Swept Solid - Set on Control Points", swept_surface_2D_circle_1],
-        ["Swept Solid - Set on Evaluation Points", swept_surface_2D_circle_2],
-        ["Swept Solid - Crooked Sweeping", swept_surface_2D_circle_3],
-        resolution=101,
+        ["2D Cross Section", cross_section_disk],
+        ["Swept Solid - Crooked Sweeping", swept_solid_disk_1],
+        [
+            "Swept Solid - Set on Control Points",
+            swept_solid_disk_2,
+            trajectory,
+        ],
+        [
+            "Swept Solid - Set on Evaluation Points",
+            swept_solid_disk_3,
+            trajectory,
+        ],
+        resolution=51,
         control_mesh=False,
+        control_point_ids=False,
     )
 
+    # third window: swept solids (rectangular)
     gus.show(
-        ["New Cross Section", cross_section_rect2D],
-        ["Swept Solid without Rotation", swept_surface_2D_rect_1, trajectory],
-        ["Swept Solid with 45° Rotation", swept_surface_2D_rect_2, trajectory],
-        resolution=101,
+        ["New Cross Section", cross_section_plate],
+        ["Swept Solid without Rotation", swept_solid_plate_1],
+        ["Swept Solid with 45° Rotation", swept_solid_plate_2],
+        resolution=51,
         control_mesh=False,
+        control_point_ids=False,
     )
