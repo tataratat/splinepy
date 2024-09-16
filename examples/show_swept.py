@@ -45,9 +45,9 @@ if __name__ == "__main__":
     # 3. create a rectangular 2D-surface-cross-section
     cross_section_plate = splinepy.helpme.create.box(1, 1).nurbs
 
-    # user can  define the normal vector of the cross section, in case
-    # the cross section is not planar in the x-y plane (or the user
-    # wants crooked sweeping)
+    # Define a custom normal vector for the cross-section when:
+    # a) The cross-section is not planar in the x-y plane, or
+    # b) Crooked sweeping is desired
     cs_nv = np.array([1, 0, 1])
 
     ### SWEEP ###
