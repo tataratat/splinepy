@@ -355,16 +355,17 @@ def swept(
 
     from splinepy import NURBS as _NURBS
     from splinepy import BSpline as _BSpline
-    from splinepy.spline import Spline as _Spline
 
     ### INPUT CHECKS ###
 
-    if not isinstance(cross_section, _Spline):
-        raise TypeError("Sweep only works for splines")
-    if not isinstance(trajectory, _Spline):
-        raise TypeError("Sweep only works for splines")
+    if not isinstance(cross_section, (_BSpline, _NURBS)):
+        raise TypeError(
+            "cross_section must be an instance of BSpline or NURBS"
+        )
+    if not isinstance(trajectory, (_BSpline, _NURBS)):
+        raise TypeError("trajectory must be an instance of BSpline or NURBS")
     if not trajectory.para_dim == 1:
-        raise TypeError("Trajectory must be of parametric dimension 1")
+        raise TypeError("trajectory must be of parametric dimension 1")
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
     if not isinstance(rotation_adaption, (float, int, type(None))):
