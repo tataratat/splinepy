@@ -346,6 +346,10 @@ def test_determinant_spline(
         ), f"{sp_i.whatami} at index {idx} failed determinant spline"
 
 
+### TESTS FOR SWEEPING ###
+
+
+# test the basic functionality of the swept-function
 def test_swept_basic_functionality():
     cross_section = splinepy.NURBS(
         degrees=[2, 1],
@@ -398,9 +402,30 @@ def test_swept_basic_functionality():
     # test if result is 3D
     assert result.dim == 3
 
+    # test if result's degrees are correct
+    assert np.allclose(
+        result.degrees,
+        [
+            cross_section.degrees[0],
+            cross_section.degrees[1],
+            trajectory.degrees[0],
+        ],
+    )
 
+    # test if result's knot vectors are correct
+    assert np.allclose(
+        result.knot_vectors[0], cross_section.knot_vectors[0]
+    ), "Knot vector of first cross-section dimension does not match."
+    assert np.allclose(
+        result.knot_vectors[1], cross_section.knot_vectors[1]
+    ), "Knot vector of second cross-section dimension does not match."
+    assert np.allclose(
+        result.knot_vectors[2], trajectory.knot_vectors[0]
+    ), "Knot vector of trajectory does not match."
+
+
+# create linear swept surface and compare it to extruded surface
 def test_swept_to_extruded():
-    # create linear swept surface and compare it to extruded surface
 
     cross_section = splinepy.NURBS(
         degrees=[2],
@@ -422,8 +447,8 @@ def test_swept_to_extruded():
     assert np.allclose(result.control_points, extruded_result.control_points)
 
 
+# check if cross-section's control points are always placed in the correct angle
 def test_swept_control_point_placing(np_rng):
-    # check if cross-section's control points are always placed in the correct angle
 
     cross_section = splinepy.BSpline(
         degrees=[2],
@@ -511,8 +536,8 @@ def test_swept_control_point_placing(np_rng):
     assert np.allclose(angle_at_start, angle_at_rand)
 
 
+# check if cross-section's center lays on the trajectory
 def test_swept_cs_centering(np_rng):
-    # check if cross-section's center lays on the trajectory
 
     cross_section = splinepy.BSpline(
         degrees=[2],
