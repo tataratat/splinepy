@@ -371,13 +371,13 @@ def swept(
         raise TypeError("rotation_adaption must be a float or int")
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
-        raise ValueError("Cross section normal must be a 3D vector")
+        raise ValueError("cross_section_normal must be a 3D vector")
 
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
         # add debug message
-        _log.debug("No cross section normal given. Defaulting to [0, 0, 1].")
+        _log.debug("No cross_section_normal given. Defaulting to [0, 0, 1].")
 
     ### STARTING CALCULATIONS ###
 
