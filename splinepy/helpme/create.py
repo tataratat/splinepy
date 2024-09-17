@@ -373,7 +373,6 @@ def swept(
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
         raise ValueError("cross_section_normal must be a 3D vector")
-
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
@@ -485,18 +484,33 @@ def swept(
             )
 
     ### ROTATION MATRIX ###
+    # rotates cross-section normal vector into global e1 direction
 
-    # calculate angle of cross section normal vector around e2-axis
-    angle_of_cs_normal = _np.arctan2(
-        cross_section_normal[2], cross_section_normal[0]
-    )
+    # skip calculation if cross-section normal vector is default
+    if _np.array_equal(cross_section_normal, _np.array([0, 0, 1])):
+        R = _np.array([[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [-1.0, 0.0, 0.0]])
+    # else, calculate rotation matrix for given cross-section normal vector
+    else:
+        # calculate angle of cross-section normal vector around e2-axis
+        angle_of_cs_normal_1 = _np.arctan2(
+            cross_section_normal[2], cross_section_normal[0]
+        )
 
-    # calculate rotation matrix for cross section normal vector
-    R = _arr.rotation_matrix_around_axis(
-        axis=[0, 1, 0], rotation=angle_of_cs_normal, degree=False
-    )
+        # calculate angle of cross-section normal vector around e3-axis
+        angle_of_cs_normal_2 = _np.arctan2(
+            cross_section_normal[1], cross_section_normal[2]
+        )
 
-    # rotate cross section around trajectory tangent vector if wanted
+        # calculate rotation matrix for cross-section normal vector
+        R1 = _arr.rotation_matrix_around_axis(
+            axis=[0, 1, 0], rotation=angle_of_cs_normal_1, degree=False
+        )
+        R2 = _arr.rotation_matrix_around_axis(
+            axis=[0, 0, 1], rotation=angle_of_cs_normal_2, degree=False
+        )
+        R = _np.matmul(R2, R1)
+
+    # rotate cross-section around trajectory tangent vector (e1) if wanted
     if rotation_adaption is not None:
         R = _np.matmul(
             _arr.rotation_matrix_around_axis(
@@ -510,33 +524,33 @@ def swept(
 
     ### SWEEPING PROCESS ###
 
-    # evaluate center of cross section and translate to origin
+    # evaluate center of cross-section and translate to origin
     cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
     cs_center = cross_section.evaluate(
         cross_para_center.reshape(-1, cross_section.para_dim)
     ).ravel()
     cross_section.control_points -= cs_center
 
-    # set cross section control points along trajectory
+    # set cross-section control points along trajectory
     swept_spline_cps = []
     for i, par_val in enumerate(par_value):
         temp_csp = []
-        # evaluate trajectory if user wants to set cross section on trajectory.
+        # evaluate trajectory if user wants to set cross-section on trajectory.
         if set_on_trajectory:
             evals = trajectory.evaluate([par_val]).ravel()
-        # place every control point of cross section separately
+        # place every control point of cross-section separately
         for cscp in cross_section.control_points:
-            # rotate cross section in trajectory direction
+            # rotate cross-section in trajectory direction
             normal_cscp = _np.matmul(R, cscp)
-            # transform cross section to global coordinates
+            # transform cross-section to global coordinates
             normal_cscp = _np.matmul(A[i], normal_cscp)
-            # check if user wants to place cross section at
+            # check if user wants to place cross-section at
             # evaluation points or control points of trajectory
             if set_on_trajectory:
-                # translate cross section to trajectory evaluation point
+                # translate cross-section to trajectory evaluation point
                 normal_cscp += evals
             else:
-                # translate cross section to trajectory control point
+                # translate cross-section to trajectory control point
                 normal_cscp += trajectory.control_points[i]
             # append control point to list
             temp_csp.append(normal_cscp)
