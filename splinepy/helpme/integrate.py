@@ -201,7 +201,10 @@ def parametric_function(
             result += _np.einsum(
                 "i...,i,i->...",
                 function(quad_positions),
-                meas(spline, quad_positions),
+                meas(spline, quad_positions)
+                * _np.prod(
+                    _np.diff(bezier_element.control_point_bounds, axis=0)
+                ),
                 weights,
                 optimize=True,
             )
