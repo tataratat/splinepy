@@ -178,7 +178,7 @@ def test_function_integration(np_rng):
     col1_factor = 2
 
     def volume_function(x):
-        vf = np.ones((x.shape[0], 2))
+        vf = np.ones((len(x), 2))
         # scale it with a factor to get a different value
         vf[:, 1] = col1_factor
         return vf
@@ -186,7 +186,15 @@ def test_function_integration(np_rng):
     bezier = splinepy.Bezier(
         degrees=[1, 2], control_points=np_rng.random((6, 2))
     )
+
     assert np.allclose(
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
         bezier.integrate.parametric_function(volume_function),
+    )
+
+    # try bsplines
+    bspline = bezier.bspline
+    assert np.allclose(
+        [bspline.integrate.volume(), col1_factor * bspline.integrate.volume()],
+        bspline.integrate.parametric_function(volume_function),
     )
