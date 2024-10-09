@@ -64,7 +64,7 @@ class CubeVoid(_TileBase):
 
     def _rotation_matrix_y_deriv(self, angle):
         cc, ss = _np.cos(angle), _np.sin(angle)
-        return _np.array([[-ss, 0, -cc], [0, 1, 0], [cc, 0, -ss]])
+        return _np.array([[-ss, 0, -cc], [0, 0, 0], [cc, 0, -ss]])
 
     def create_tile(
         self,
