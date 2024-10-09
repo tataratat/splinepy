@@ -188,14 +188,8 @@ def test_tile_derivatives(np_rng, heps=1e-7, n_test_points=10):
     n_test_points: int
         Number of testing points in the parametric domain
     """
-    # TODO: right now EllipsVoid shows wrong derivatives
-    skip_classes = [ms.tiles.EllipsVoid]
 
     for tile_class in all_tile_classes:
-        # TODO: right now skip classes with faultily implemented derivatives
-        if tile_class in skip_classes:
-            continue
-
         tile_creator = tile_class()
         # Skip test if tile class has no implemented sensitivities
         if not tile_creator._sensitivities_implemented:
