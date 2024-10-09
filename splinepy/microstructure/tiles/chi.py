@@ -83,12 +83,13 @@ class Chi(_TileBase):
                 s = r * _np.sin(alpha)
                 c = r * _np.cos(alpha)
             else:
-                alpha = parameter_sensitivities[0, 0, i_derivative - 1]
+                alpha = parameters[0, 0] + _np.pi / 4
+                dalpha = float(parameter_sensitivities[0, 0, i_derivative - 1])
                 v_one_half = 0.0
                 v_zero = 0.0
                 r = _np.sqrt(0.125)
-                s = r * _np.cos(alpha)
-                c = -r * _np.sin(alpha)
+                s = dalpha * r * _np.cos(alpha)
+                c = dalpha * -r * _np.sin(alpha)
 
             # Init return value
             spline_list = []
