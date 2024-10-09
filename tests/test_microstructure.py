@@ -176,7 +176,7 @@ def test_tile_closure():
                 check_control_points(tile_patches)
 
 
-def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
+def test_tile_derivatives(np_rng, heps=1e-7, n_test_points=10):
     """Testing the correctness of the tile derivatives using Finite Differences.
     This includes every closure and no closure, every parameter and every patch
     by evaluating at random points and for random parameters.
@@ -188,8 +188,8 @@ def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
     n_test_points: int
         Number of testing points in the parametric domain
     """
-    # TODO: right now EllipsVoid, CubeVoid and InverseCross show wrong derivatives
-    skip_classes = [ms.tiles.EllipsVoid, ms.tiles.CubeVoid]
+    # TODO: right now EllipsVoid shows wrong derivatives
+    skip_classes = [ms.tiles.EllipsVoid]
 
     for tile_class in all_tile_classes:
         # TODO: right now skip classes with faultily implemented derivatives
