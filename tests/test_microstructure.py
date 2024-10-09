@@ -188,9 +188,8 @@ def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
     n_test_points: int
         Number of testing points in the parametric domain
     """
-    # TODO: right now Chi, EllipsVoid, CubeVoid and InverseCross show wrong derivatives
+    # TODO: right now EllipsVoid, CubeVoid and InverseCross show wrong derivatives
     skip_classes = [
-        ms.tiles.Chi,
         ms.tiles.EllipsVoid,
         ms.tiles.CubeVoid,
         ms.tiles.InverseCross3D,
