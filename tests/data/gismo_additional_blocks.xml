@@ -111,6 +111,8 @@
     <Function type="FunctionExpr" dim="2" index="2">0</Function>
     <bc name="BID2" type="Dirichlet" unknown="0" function="0" />
     <bc name="BID1" type="Neumann" unknown="0" function="1" />
+    <cv unknown="0" patch="0" corner="1">0</cv>
+    <cv unknown="0" patch="0" corner="2">sin(x)</cv>
   </boundaryConditions>
   <!--Assembler options-->
   <OptionList id="4">

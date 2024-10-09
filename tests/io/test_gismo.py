@@ -300,6 +300,10 @@ def test_gismo_export_additional_blocks(
                 "0",
             ],
             bc_list=[("BID2", "Dirichlet", 0), ("BID1", "Neumann", 1)],
+            cv_list=[
+            ("0", "0", "1", "0"),
+            ("0", "0", "2", "sin(x)"),
+        ],  # unknown, patch, corner, function
             unknown_id=0,
             multipatch_id=0,
             comment="Boundary conditions",

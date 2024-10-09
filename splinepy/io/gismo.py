@@ -117,7 +117,6 @@ class AdditionalBlocks:
                     "unknown": cv_unknown,
                     "patch": cv_patch,
                     "corner": cv_corner,
-                    # component omitted, might be sth for vector-valued unknowns
                 },
                 "text": cv_function,
             }
