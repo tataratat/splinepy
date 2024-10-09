@@ -26,6 +26,7 @@ class AdditionalBlocks:
         dim,
         function_list,
         bc_list,
+        cv_list=None,
         unknown_id=0,
         multipatch_id=0,
         comment=None,
@@ -47,6 +48,10 @@ class AdditionalBlocks:
             List of which boundary attains which type of boundary condition. First
             entry is the boundary name, second the type of condition (e.g.
             "Dirichlet"), third is on which variable/unknown it should be applied
+        cv_list : list<tuple<str, str, str, str>>
+            List of which corner values of each patch should have a boundary condition.
+            First entry is the variable/unknown, second the patch number, third is on
+            which corner it should be applied and fourth is the function or value
         unknown_id : int (0)
             ID of the unknown/variable on which this boundaryConditions block should be
             applied
@@ -104,6 +109,19 @@ class AdditionalBlocks:
             }
             for bidname, bctype, block_id in bc_list
         ]
+
+        for cv_unknown, cv_patch, cv_corner, cv_function in cv_list:
+            function_dict_cv = {
+                "tag": "cv",
+                "attributes": {
+                    "unknown": cv_unknown,
+                    "patch": cv_patch,
+                    "corner": cv_corner,
+                    # component omitted, might be sth for vector-valued unknowns
+                },
+                "text": cv_function,
+            }
+            children_list.append(function_dict_cv)
 
         bc_dict_for_xml["children"] = children_list
 

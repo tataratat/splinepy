@@ -100,6 +100,10 @@ def generate_additional_xml_blocks():
             "0",
         ],
         bc_list=[("BID2", "Dirichlet", 0), ("BID1", "Neumann", 1)],
+        cv_list=[
+            ("0", "0", "1", "0"),
+            ("0", "0", "2", "sin(x)"),
+        ],  # unknown, patch, corner, function
         unknown_id=0,
         multipatch_id=0,
         comment="The boundary conditions (multipatch=number of patches)",
@@ -120,17 +124,17 @@ if __name__ == "__main__":
 
     # Visualize geometry and BCs
     boundary_names = ["Neumann boundary", "Dirichlet boundary"]
-    spp.show(
-        ["Multipatch", multipatch],
-        *[
-            [
-                f"BID{i+1}: {boundary_names[i]}",
-                multipatch.boundary_multipatch(i + 1),
-            ]
-            for i in range(len(multipatch.boundaries))
-        ],
-        control_points=False,
-    )
+    # spp.show(
+    #     ["Multipatch", multipatch],
+    #     *[
+    #         [
+    #             f"BID{i+1}: {boundary_names[i]}",
+    #             multipatch.boundary_multipatch(i + 1),
+    #         ]
+    #         for i in range(len(multipatch.boundaries))
+    #     ],
+    #     control_points=False,
+    # )
 
     # Export multipatch geometry and additional options/functions to an XML file
     gismo.export(
