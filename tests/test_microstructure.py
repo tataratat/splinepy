@@ -189,11 +189,7 @@ def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
         Number of testing points in the parametric domain
     """
     # TODO: right now EllipsVoid, CubeVoid and InverseCross show wrong derivatives
-    skip_classes = [
-        ms.tiles.EllipsVoid,
-        ms.tiles.CubeVoid,
-        ms.tiles.InverseCross3D,
-    ]
+    skip_classes = [ms.tiles.EllipsVoid, ms.tiles.CubeVoid]
 
     for tile_class in all_tile_classes:
         # TODO: right now skip classes with faultily implemented derivatives
@@ -273,7 +269,7 @@ def test_tile_derivatives(np_rng, heps=1e-8, n_test_points=4):
                 ):
                     assert np.allclose(deriv_orig, deriv_fd), (
                         "Implemented derivative calculation for tile class"
-                        + f"{tile_class}, parameter "
+                        + f"{tile_class}, with closure {closure},  parameter "
                         + f"{i_parameter+1}/{n_info_per_eval_point} at patch "
                         + f"{i_patch+1}/{n_patches} does not match the derivative "
                         + "obtained using Finite Differences"
