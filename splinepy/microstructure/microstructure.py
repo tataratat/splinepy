@@ -9,7 +9,7 @@ from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
 class Microstructure(_SplinepyBase):
-    """Helper class to facilitatae the construction of microstructures."""
+    """Helper class to facilitate the construction of microstructures."""
 
     def __init__(
         self,
@@ -18,7 +18,7 @@ class Microstructure(_SplinepyBase):
         microtile=None,
         parametrization_function=None,
     ):
-        """Helper class to facilitatae the construction of microstructures.
+        """Helper class to facilitate the construction of microstructures.
 
         Parameters
         ----------
