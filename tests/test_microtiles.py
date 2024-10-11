@@ -76,7 +76,7 @@ def test_tile_class():
                 required_param in create_parameters
             ), f"create_tile() must have '{required_param}' as an input parameter"
 
-        # Ensure closure can be correctly handled
+        # Ensure closure can be handled correctly
         if "closure" in create_parameters:
             assert "_closure_directions" in members, (
                 "Tile class has closure ability. The available closure directions "
@@ -130,7 +130,7 @@ def test_tile_bounds():
 
 
 def test_tile_closure():
-    """Check if closing tiles also lie in unit cube. TODO: also check derivatives."""
+    """Check if closing tiles also lie in unit cube."""
 
     for tile_class in all_tile_classes:
         # Skip tile if if does not support closure
@@ -218,7 +218,7 @@ def test_tile_derivatives(np_rng, heps=1e-7, n_test_points=10):
             splines_orig, _ = tile_creator.create_tile(
                 parameters=parameters, closure=closure
             )
-            # Set evaluation points as 4 random spots in the parametric space
+            # Set evaluation points as random spots in the parametric space
             eval_points = np_rng.random(
                 (n_test_points, splines_orig[0].para_dim)
             )
