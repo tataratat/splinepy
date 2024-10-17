@@ -14,7 +14,9 @@ except ImportError as err:
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
+from gustaf import Faces as _Faces
 from gustaf import Vertices as _Vertices
+from gustaf import Volumes as _Volumes
 
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
@@ -196,8 +198,8 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y, **kwargs):
     showable = sampled_spline.showable()
 
     # Discretize colors
-    if kwargs.get("n_colors", None) is not None:
-        n_colors = kwargs.get("n_colors", None)
+    if kwargs.get("n_colors") is not None:
+        n_colors = kwargs.get("n_colors")
         cmap_key = spline.show_options.get("cmap", "jet")
         vmin = kwargs.get("vmin", spline.show_options.get("vmin", None))
         vmax = kwargs.get("vmax", spline.show_options.get("vmax", None))
@@ -260,8 +262,11 @@ def _export_gustaf_object(
     r, g, b = _get_color(gus_object.show_options.get("c", "red"))
     a = gus_object.show_options.get("alpha", 1.0)
     radius = gus_object.show_options.get("r", 0.1)
+    stroke_width = gus_object.show_options.get("lw", 0.1)
 
-    if isinstance(gus_object, _Vertices):
+    if isinstance(gus_object, _Vertices) and not isinstance(
+        gus_object, _Faces
+    ):
         data_name = gus_object.show_options.get("data", None)
         if data_name is not None:
             # Retrieve information on colors and values
@@ -307,7 +312,7 @@ def _export_gustaf_object(
             )
 
             # Set text options
-            if kwargs.get("font_family", None) is not None:
+            if kwargs.get("font_family") is not None:
                 svg_labels.attrib["font-family"] = kwargs["font_family"]
 
             svg_labels.attrib["font-size"] = str(kwargs.get("font_size", 0.1))
@@ -330,6 +335,31 @@ def _export_gustaf_object(
                     dy=str(dx),
                 )
                 text_element.text = label
+    if isinstance(gus_object, _Faces) and not isinstance(gus_object, _Volumes):
+        svg_faces = _ET.SubElement(
+            svg_spline_element,
+            "g",
+            id="faces",
+            style=(
+                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                f"stroke-width:{stroke_width};stroke-linecap:round"
+            ),
+        )
+
+        # Create a new face-group
+        for face in gus_object.faces:
+            edge_points = gus_object.vertices[[*face, face[0]], :]
+
+            _ET.SubElement(
+                svg_faces,
+                "polyline",
+                points=" ".join(
+                    [
+                        str(xx - box_min_x) + "," + str(box_max_y - xy)
+                        for (xx, xy) in edge_points
+                    ]
+                ),
+            )
 
     else:
         raise NotImplementedError(
@@ -479,7 +509,7 @@ def _export_control_mesh(
         )
 
         # Set text options
-        if kwargs.get("font_family", None) is not None:
+        if kwargs.get("font_family") is not None:
             svg_control_point_ids.attrib["font-family"] = kwargs["font_family"]
         svg_control_point_ids.attrib["font-size"] = str(
             kwargs.get("font_size", 0.1)
@@ -746,7 +776,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     )
 
     # Set text options
-    if kwargs.get("font_family", None) is not None:
+    if kwargs.get("font_family") is not None:
         svg_tick_labels.attrib["font-family"] = kwargs["font_family"]
     svg_tick_labels.attrib["font-size"] = str(
         kwargs.get("scalarbar_font_size", stroke_width * 20)
@@ -1305,8 +1335,7 @@ def export(
     scalarbar_offset = kwargs["scalarbar_offset"]
     # Check if required arguments have been passed
     if scalarbar and (
-        (kwargs.get("vmin", None) is None)
-        or (kwargs.get("vmax", None) is None)
+        (kwargs.get("vmin") is None) or (kwargs.get("vmax") is None)
     ):
         raise ValueError(
             "`vmin` and `vmax` must be passed alon with scalarbar to ensure"
