@@ -14,7 +14,9 @@ except ImportError as err:
     _color_map = ModuleImportRaiser(_error_message_vedo_import, err)
     _get_color = ModuleImportRaiser(_error_message_vedo_import, err)
 
+from gustaf import Faces as _Faces
 from gustaf import Vertices as _Vertices
+from gustaf import Volumes as _Volumes
 
 from splinepy.utils.log import debug as _debug
 from splinepy.utils.log import warning as _warning
@@ -260,8 +262,11 @@ def _export_gustaf_object(
     r, g, b = _get_color(gus_object.show_options.get("c", "red"))
     a = gus_object.show_options.get("alpha", 1.0)
     radius = gus_object.show_options.get("r", 0.1)
+    stroke_width = gus_object.show_options.get("lw", 0.1)
 
-    if isinstance(gus_object, _Vertices):
+    if isinstance(gus_object, _Vertices) and not isinstance(
+        gus_object, _Faces
+    ):
         data_name = gus_object.show_options.get("data", None)
         if data_name is not None:
             # Retrieve information on colors and values
@@ -330,6 +335,31 @@ def _export_gustaf_object(
                     dy=str(dx),
                 )
                 text_element.text = label
+    if isinstance(gus_object, _Faces) and not isinstance(gus_object, _Volumes):
+        svg_faces = _ET.SubElement(
+            svg_spline_element,
+            "g",
+            id="faces",
+            style=(
+                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                f"stroke-width:{stroke_width};stroke-linecap:round"
+            ),
+        )
+
+        # Create a new face-group
+        for face in gus_object.faces:
+            edge_points = gus_object.vertices[[*face, face[0]], :]
+
+            _ET.SubElement(
+                svg_faces,
+                "polyline",
+                points=" ".join(
+                    [
+                        str(xx - box_min_x) + "," + str(box_max_y - xy)
+                        for (xx, xy) in edge_points
+                    ]
+                ),
+            )
 
     else:
         raise NotImplementedError(
