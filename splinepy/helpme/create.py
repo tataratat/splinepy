@@ -440,7 +440,7 @@ def swept(
 
         # projecting B_(i) onto the plane normal to e1
         B.append(B[i] - _np.dot(B[i], e1) * e1)
-        B[i + 1] = B[i + 1] / _np.linalg.norm(B[i + 1])
+        B[i + 1] /= _np.linalg.norm(B[i + 1])
 
         # defining e2 and e3 vectors
         e3 = B[i + 1]
@@ -476,11 +476,11 @@ def swept(
                 B_rec[i]
                 - _np.dot(B_rec[i], tang_collection[i]) * tang_collection[i]
             )
-            B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+            B_rec[i + 1] /= _np.linalg.norm(B_rec[i + 1])
             # middle point between B and B_rec
             B_rec[i + 1] = (B[i + 1] + B_rec[i + 1]) * 0.5
             # normalizing B_rec
-            B_rec[i + 1] = B_rec[i + 1] / _np.linalg.norm(B_rec[i + 1])
+            B_rec[i + 1] /= _np.linalg.norm(B_rec[i + 1])
             # defining e2 and e3 axis-vectors
             e3 = B_rec[i + 1]
             e2 = _np.cross(e3, tang_collection[i])
