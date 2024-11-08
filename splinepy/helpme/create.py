@@ -419,6 +419,13 @@ def swept(
         # calculation according to NURBS Book, eq. 10.27
         # tangent vector e1 on trajectory at parameter value i
         e1 = trajectory.derivative([par_value[i]], [1])
+        if _np.linalg.norm(e1) < _settings.TOLERANCE:
+            e1 = tang_collection[-1]
+            # add debug message
+            _log.debug(
+                "Division by zero occurred. Applying an approximation "
+                "by using the previous tangent e1 for parametric value {par_value[i]}"
+            )
         e1 = (e1 / _np.linalg.norm(e1)).ravel()
         # collecting tangent vectors for later use
         tang_collection.append(e1)
