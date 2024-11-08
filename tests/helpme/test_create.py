@@ -537,7 +537,7 @@ def test_swept_control_point_placing(np_rng):
 
 
 # check if cross-section's center lays on the trajectory
-def test_swept_cs_centering(np_rng):
+def test_swept_cross_section_centering(np_rng):
 
     cross_section = splinepy.BSpline(
         degrees=[2],
