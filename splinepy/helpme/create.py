@@ -405,11 +405,13 @@ def swept(
     vec = [-e1[1], e1[0], -e1[2]]
     B = []
     # avoid dividing by zero
-    if _np.linalg.norm(_np.cross(e1, vec)) > _settings.TOLERANCE:
-        B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
+    temp_cross = _np.cross(e1, vec)
+    if _np.linalg.norm(temp_cross) > _settings.TOLERANCE:
+        B.append(temp_cross / _np.linalg.norm(temp_cross))
     else:
         vec = [e1[2], -e1[1], e1[0]]
-        B.append(_np.cross(e1, vec) / _np.linalg.norm(_np.cross(e1, vec)))
+        temp_cross = _np.cross(e1, vec)
+        B.append(temp_cross / _np.linalg.norm(temp_cross))
         # add debug message
         _log.debug(
             "Division by zero occurred. Using alternative vector for B."
