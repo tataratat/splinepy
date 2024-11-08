@@ -359,7 +359,7 @@ def swept(
 
     ### INPUT CHECKS ###
 
-    if isinstance(cross_section and trajectory, Spline):
+    if isinstance(cross_section, Spline) and isinstance(trajectory, Spline):
         if not isinstance(cross_section, (_BSpline, _NURBS)):
             raise TypeError(
                 "cross_section must be an instance of BSpline or NURBS"
@@ -431,8 +431,8 @@ def swept(
             e1 = tang_collection[-1]
             # add debug message
             _log.debug(
-                "Division by zero occurred. Applying an approximation "
-                "by using the previous tangent e1 for parametric value {par_value[i]}"
+                f"Division by zero occurred. Applying an approximation "
+                f"by using the previous tangent e1 for parametric value {par_value[i]}"
             )
         e1 = (e1 / _np.linalg.norm(e1)).ravel()
         # collecting tangent vectors for later use
