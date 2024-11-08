@@ -373,12 +373,14 @@ def swept(
             "cross_section and trajectory must be instances of Spline"
         )
     if not trajectory.para_dim == 1:
-        raise TypeError("trajectory must be of parametric dimension 1")
+        raise TypeError("trajectory must have a parametric dimension of 1")
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
-        raise ValueError("cross_section_normal must be a 3D vector")
+        raise ValueError(
+            "cross_section_normal must be a 3D vector (array of length 3)"
+        )
     # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
@@ -494,8 +496,8 @@ def swept(
         # check if the beginning and the end of the B-vector are the same
         if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
             _log.warning(
-                "Vector calculation is not exact due to the "
-                "trajectory being closed in an uncommon way."
+                "Vector calculation is not exact due to the trajectory being closed"
+                " with non-matching tangent vectors at start and end points."
             )
 
     ### ROTATION MATRIX ###
