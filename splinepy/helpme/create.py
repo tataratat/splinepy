@@ -373,7 +373,7 @@ def swept(
             "cross_section and trajectory must be instances of Spline"
         )
     if not trajectory.para_dim == 1:
-        raise TypeError("trajectory must have a parametric dimension of 1")
+        raise ValueError("trajectory must have a parametric dimension of 1")
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
 
