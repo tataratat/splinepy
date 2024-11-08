@@ -355,21 +355,27 @@ def swept(
 
     from splinepy import NURBS as _NURBS
     from splinepy import BSpline as _BSpline
+    from splinepy import Spline
 
     ### INPUT CHECKS ###
 
-    if not isinstance(cross_section, (_BSpline, _NURBS)):
+    if isinstance(cross_section and trajectory, Spline):
+        if not isinstance(cross_section, (_BSpline, _NURBS)):
+            raise TypeError(
+                "cross_section must be an instance of BSpline or NURBS"
+            )
+        if not isinstance(trajectory, (_BSpline, _NURBS)):
+            raise TypeError(
+                "trajectory must be an instance of BSpline or NURBS"
+            )
+    else:
         raise TypeError(
-            "cross_section must be an instance of BSpline or NURBS"
+            "cross_section and trajectory must be instances of Spline"
         )
-    if not isinstance(trajectory, (_BSpline, _NURBS)):
-        raise TypeError("trajectory must be an instance of BSpline or NURBS")
     if not trajectory.para_dim == 1:
         raise TypeError("trajectory must be of parametric dimension 1")
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
-    if not isinstance(rotation_adaption, (float, int, type(None))):
-        raise TypeError("rotation_adaption must be a float or int")
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
         raise ValueError("cross_section_normal must be a 3D vector")
@@ -519,6 +525,13 @@ def swept(
 
     # rotate cross-section around trajectory tangent vector (e1) if wanted
     if rotation_adaption is not None:
+        try:
+            rotation_adaption = float(rotation_adaption)
+        except TypeError:
+            raise TypeError(
+                "rotation_adaption must be a number (float, int) or None"
+            )
+
         R = _np.matmul(
             _arr.rotation_matrix_around_axis(
                 axis=[1, 0, 0], rotation=rotation_adaption, degree=False
