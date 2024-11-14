@@ -14,16 +14,32 @@ class SulzerSMX(_TileBase):
             - just one curve
             - maybe multiple curves (wave-like)
         - If just one curve parameter, may set _n_info_per_eval_point to 2
+
+    TODO: curved blades combined with different widths has self intersections
     """
 
     _dim = 3
     _para_dim = 3
     _evaluation_points = _np.array(
-        [[0.25, 0.5, 0.5], [0.75, 0.5, 0.5], [0.5, 0.5, 0.0], [0.5, 0.5, 1.0]]
+        [
+            [0.25, 0.5, 0.5],
+            [0.75, 0.5, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.5, 1.0],
+            [0.5, 0.5, 0.5],
+            [0.5, 0.5, 0.5],
+        ]
     )
     _n_info_per_eval_point = 1
-    _parameter_bounds = [[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]]
-    _parameters_shape = (4, 1)
+    _parameter_bounds = [
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [-0.5, 0.5],
+        [-0.5, 0.5],
+    ]
+    _parameters_shape = (6, 1)
 
     def create_tile(
         self,
@@ -43,6 +59,8 @@ class SulzerSMX(_TileBase):
                 2. Thickness of back crossbar
                 3. Width (x-direction) of front crossbar at inlet
                 4. Width of front crossbar at outlet
+                5. Front middle point shift ("radial" direction)
+                6. Back middle point shift ("radial" direction)
         parameter_sensitivities: np.ndarray
             The sensitivities of the parameters
         closure: str(optional)
@@ -67,7 +85,7 @@ class SulzerSMX(_TileBase):
             self._logd(
                 "Setting cross bar thickness to default 0.2 and widths to 0.5"
             )
-            parameters = _np.array([[0.2], [0.2], [0.5], [0.5]])
+            parameters = _np.array([[0.2], [0.2], [0.5], [0.5], [0.0], [0.0]])
 
         # Check if parameters are in allowed range
         if _np.sum(
@@ -101,15 +119,24 @@ class SulzerSMX(_TileBase):
                     thickness_back,
                     width_inlet,
                     width_outlet,
+                    r_front,
+                    r_back,
                 ] = parameters.flatten()
 
                 v_zero = 0.0
+                v_one_half = 0.5
                 v_one = 1.0
 
                 width_shift = width_outlet - width_inlet
 
                 shift_front = thickness_front * width_shift
                 shift_back = thickness_back * width_shift
+
+                # Auxiliary values
+                # Bar thickness
+                bt_front = thickness_front / 2
+                bt_back = thickness_back / 2
+                width_middle = (width_inlet + width_outlet) / 2
             else:
                 raise NotImplementedError("Derivatives not yet implemented")
                 [thickness_front, thickness_back] = (
@@ -125,10 +152,22 @@ class SulzerSMX(_TileBase):
                 [
                     [v_zero, v_zero, v_zero],
                     [width_inlet, v_zero, v_zero],
+                    [v_zero, v_one_half + r_front, v_one_half - r_front],
+                    [width_middle, v_one_half + r_front, v_one_half - r_front],
                     [v_zero, v_one, v_one],
                     [width_outlet, v_one, v_one],
                     [v_zero, v_zero + thickness_front, v_zero],
                     [width_inlet, v_zero + thickness_front, v_zero],
+                    [
+                        v_zero,
+                        v_one_half + bt_front + r_front,
+                        v_one_half - bt_front - r_front,
+                    ],
+                    [
+                        width_middle,
+                        v_one_half + bt_front + r_front,
+                        v_one_half - bt_front - r_front,
+                    ],
                     [v_zero, v_one, v_one - thickness_front],
                     [
                         width_outlet - shift_front,
@@ -146,10 +185,22 @@ class SulzerSMX(_TileBase):
                         v_zero,
                         v_zero + thickness_front,
                     ],
+                    [
+                        v_zero,
+                        v_one_half - bt_front + r_front,
+                        v_one_half + bt_front - r_front,
+                    ],
+                    [
+                        width_middle,
+                        v_one_half - bt_front + r_front,
+                        v_one_half + bt_front - r_front,
+                    ],
                     [v_zero, v_one - thickness_front, v_one],
                     [width_outlet, v_one - thickness_front, v_one],
                     [v_zero, v_zero, v_zero],
                     [width_inlet, v_zero, v_zero],
+                    [v_zero, v_one_half + r_front, v_one_half - r_front],
+                    [width_middle, v_one_half + r_front, v_one_half - r_front],
                     [v_zero, v_one, v_one],
                     [width_outlet, v_one, v_one],
                 ]
@@ -159,10 +210,22 @@ class SulzerSMX(_TileBase):
                 [
                     [width_inlet, v_one, v_zero],
                     [v_one, v_one, v_zero],
+                    [width_middle, v_one_half + r_back, v_one_half + r_back],
+                    [v_one, v_one_half + r_back, v_one_half + r_back],
                     [width_outlet, v_zero, v_one],
                     [v_one, v_zero, v_one],
                     [width_inlet + shift_back, v_one, v_zero + thickness_back],
                     [v_one, v_one, v_zero + thickness_back],
+                    [
+                        width_middle,
+                        v_one_half + bt_back + r_back,
+                        v_one_half + bt_back + r_back,
+                    ],
+                    [
+                        v_one,
+                        v_one_half + bt_back + r_back,
+                        v_one_half + bt_back + r_back,
+                    ],
                     [width_outlet, v_zero + thickness_back, v_one],
                     [v_one, v_zero + thickness_back, v_one],
                 ]
@@ -173,6 +236,16 @@ class SulzerSMX(_TileBase):
                     [width_inlet, v_one - thickness_back, v_zero],
                     [v_one, v_one - thickness_back, v_zero],
                     [
+                        width_middle,
+                        v_one_half - bt_back + r_back,
+                        v_one_half - bt_back + r_back,
+                    ],
+                    [
+                        v_one,
+                        v_one_half - bt_back + r_back,
+                        v_one_half - bt_back + r_back,
+                    ],
+                    [
                         width_outlet - shift_back,
                         v_zero,
                         v_one - thickness_front,
@@ -180,6 +253,8 @@ class SulzerSMX(_TileBase):
                     [v_one, v_zero, v_one - thickness_front],
                     [width_inlet, v_one, v_zero],
                     [v_one, v_one, v_zero],
+                    [width_middle, v_one_half + r_back, v_one_half + r_back],
+                    [v_one, v_one_half + r_back, v_one_half + r_back],
                     [width_outlet, v_zero, v_one],
                     [v_one, v_zero, v_one],
                 ]
@@ -193,7 +268,7 @@ class SulzerSMX(_TileBase):
                 back_bar_bottom,
             ]:
                 spline_list.append(
-                    _Bezier(degrees=[1, 1, 1], control_points=control_points)
+                    _Bezier(degrees=[1, 2, 1], control_points=control_points)
                 )
 
             if i_derivative == 0:
