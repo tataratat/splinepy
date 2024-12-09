@@ -196,8 +196,8 @@ def _export_spline_field(spline, svg_element, box_min_x, box_max_y, **kwargs):
     showable = sampled_spline.showable()
 
     # Discretize colors
-    if kwargs.get("n_colors", None) is not None:
-        n_colors = kwargs.get("n_colors", None)
+    if kwargs.get("n_colors") is not None:
+        n_colors = kwargs.get("n_colors")
         cmap_key = spline.show_options.get("cmap", "jet")
         vmin = kwargs.get("vmin", spline.show_options.get("vmin", None))
         vmax = kwargs.get("vmax", spline.show_options.get("vmax", None))
@@ -307,7 +307,7 @@ def _export_gustaf_object(
             )
 
             # Set text options
-            if kwargs.get("font_family", None) is not None:
+            if kwargs.get("font_family") is not None:
                 svg_labels.attrib["font-family"] = kwargs["font_family"]
 
             svg_labels.attrib["font-size"] = str(kwargs.get("font_size", 0.1))
@@ -479,7 +479,7 @@ def _export_control_mesh(
         )
 
         # Set text options
-        if kwargs.get("font_family", None) is not None:
+        if kwargs.get("font_family") is not None:
             svg_control_point_ids.attrib["font-family"] = kwargs["font_family"]
         svg_control_point_ids.attrib["font-size"] = str(
             kwargs.get("font_size", 0.1)
@@ -746,7 +746,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
     )
 
     # Set text options
-    if kwargs.get("font_family", None) is not None:
+    if kwargs.get("font_family") is not None:
         svg_tick_labels.attrib["font-family"] = kwargs["font_family"]
     svg_tick_labels.attrib["font-size"] = str(
         kwargs.get("scalarbar_font_size", stroke_width * 20)
@@ -1305,8 +1305,8 @@ def export(
     scalarbar_offset = kwargs["scalarbar_offset"]
     # Check if required arguments have been passed
     if scalarbar and (
-        (kwargs.get("vmin", None) is None)
-        or (kwargs.get("vmax", None) is None)
+        (kwargs.get("vmin") is None)
+        or (kwargs.get("vmax") is None)
     ):
         raise ValueError(
             "`vmin` and `vmax` must be passed alon with scalarbar to ensure"
