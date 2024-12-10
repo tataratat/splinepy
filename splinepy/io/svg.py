@@ -1305,8 +1305,7 @@ def export(
     scalarbar_offset = kwargs["scalarbar_offset"]
     # Check if required arguments have been passed
     if scalarbar and (
-        (kwargs.get("vmin") is None)
-        or (kwargs.get("vmax") is None)
+        (kwargs.get("vmin") is None) or (kwargs.get("vmax") is None)
     ):
         raise ValueError(
             "`vmin` and `vmax` must be passed alon with scalarbar to ensure"
