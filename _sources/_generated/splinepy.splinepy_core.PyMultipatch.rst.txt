@@ -1,0 +1,95 @@
+splinepy.splinepy\_core.PyMultipatch
+====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: PyMultipatch
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       PyMultipatch.add_fields
+     
+     
+       PyMultipatch.boundary_multipatch
+     
+     
+       PyMultipatch.boundary_patch_ids
+     
+     
+       PyMultipatch.clear
+     
+     
+       PyMultipatch.control_point_offsets
+     
+     
+       PyMultipatch.evaluate
+     
+     
+       PyMultipatch.fields
+     
+     
+       PyMultipatch.get_interfaces
+     
+     
+       PyMultipatch.interface_orientations
+     
+     
+       PyMultipatch.sample
+     
+     
+       PyMultipatch.set_interfaces
+     
+     
+       PyMultipatch.sub_multipatch
+     
+     
+       PyMultipatch.sub_patch_centers
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         PyMultipatch.control_points
+      
+      
+         PyMultipatch.dim
+      
+      
+         PyMultipatch.n_default_threads
+      
+      
+         PyMultipatch.name
+      
+      
+         PyMultipatch.para_dim
+      
+      
+         PyMultipatch.patches
+      
+      
+         PyMultipatch.same_parametric_bounds
+      
+      
+         PyMultipatch.tolerance
+      
+      
+         PyMultipatch.whatami
+      
+   
+   

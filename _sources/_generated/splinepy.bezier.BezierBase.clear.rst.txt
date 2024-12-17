@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.clear
+================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.clear

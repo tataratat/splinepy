@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.as\_vertex\_data
+======================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineDataAdaptor.as_vertex_data

@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.normalize\_knot\_vectors
+=============================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.normalize_knot_vectors

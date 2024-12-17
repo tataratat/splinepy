@@ -1,0 +1,6 @@
+splinepy.spline.Spline.current\_core\_properties
+================================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.current_core_properties

@@ -1,0 +1,6 @@
+splinepy.helpme.check.Checker.clamped\_knot\_vectors
+====================================================
+
+.. currentmodule:: splinepy.helpme.check
+
+.. automethod:: Checker.clamped_knot_vectors

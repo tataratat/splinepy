@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.knot\_insertion\_matrix
+===============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: knot_insertion_matrix

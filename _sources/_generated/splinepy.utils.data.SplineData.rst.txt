@@ -1,0 +1,50 @@
+splinepy.utils.data.SplineData
+==============================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoclass:: SplineData
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       SplineData.as_arrow
+     
+     
+       SplineData.as_scalar
+     
+     
+       SplineData.clear
+     
+     
+       SplineData.get
+     
+     
+       SplineData.items
+     
+     
+       SplineData.keys
+     
+     
+       SplineData.pop
+     
+     
+       SplineData.update
+     
+     
+       SplineData.values
+     
+   
+   
+
+   
+   
+   

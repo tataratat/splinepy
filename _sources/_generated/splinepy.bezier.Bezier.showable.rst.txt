@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.showable
+===============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.showable

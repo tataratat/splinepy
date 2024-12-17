@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>splinepy (c++)</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><anchor id="index_1md_markdown_cpp_readme"/> Library for prototyping spline geometries of arbitrary dimensions and degrees, and IGA. <computeroutput>splinepy</computeroutput> implements core types and functions in c++ for better runtime performance. Using <ulink url="https://github.com/pybind/pybind11">pybind11</ulink>, these implementations are available to use in python. You can, for example, either use this part of the project to create pure c++ executables or to interoperate with other <computeroutput>c++</computeroutput>/<computeroutput>c</computeroutput>/<computeroutput>fortran</computeroutput> libraries.</para>
+<para><heading level="1">Install guide</heading>
+</para>
+<para>There are two main ways to install the c++:</para>
+<para><heading level="2">1) using <computeroutput>pip</computeroutput></heading>
+</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">#<sp/>sample<sp/>format</highlight></codeline>
+<codeline><highlight class="normal">#<sp/>-&gt;<sp/>pip<sp/>install<sp/>-e.<sp/>-v<sp/>--config-settings=cmake.args=&quot;&lt;cmake-build-args&gt;&quot;<sp/>--config-settings=cmake.build-type=&quot;&lt;build-type&gt;&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>for<sp/>example,<sp/>minimal<sp/>(up<sp/>to<sp/>spline<sp/>dim<sp/>3),<sp/>optimized<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">pip<sp/>install<sp/>-e.<sp/>-v<sp/>--config-settings=cmake.args=-DSPLINEPY_MORE=OFF<sp/>--config-settings=cmake.build-type=&quot;Release&quot;</highlight></codeline>
+</programlisting> This will install compiled library to <computeroutput>site-packges</computeroutput> path. You can find this path with: <programlisting filename=".bash"><codeline><highlight class="normal">python<sp/>-c<sp/>&quot;import<sp/>site;<sp/>print(site.getsitepackages())&quot;</highlight></codeline>
+</programlisting></para>
+<para><heading level="2">2) using <computeroutput>cmake</computeroutput> only</heading>
+</para>
+<para><programlisting><codeline><highlight class="normal">mkdir<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">cd<sp/>build</highlight></codeline>
+<codeline><highlight class="normal">cmake<sp/>..<sp/>#<sp/>along<sp/>with<sp/>other<sp/>cmake<sp/>options</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="markdown/cpp_readme.md"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,6 @@
+splinepy.io.ioutils.next\_line
+==============================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: next_line

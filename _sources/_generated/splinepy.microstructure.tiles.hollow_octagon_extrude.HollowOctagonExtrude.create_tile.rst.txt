@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.hollow\_octagon\_extrude.HollowOctagonExtrude.create\_tile
+========================================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_octagon_extrude
+
+.. automethod:: HollowOctagonExtrude.create_tile

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.get
+=================================
+
+.. currentmodule:: splinepy.microstructure.tiles
+
+.. autofunction:: get

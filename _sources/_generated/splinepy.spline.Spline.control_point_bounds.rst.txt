@@ -1,0 +1,6 @@
+splinepy.spline.Spline.control\_point\_bounds
+=============================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.control_point_bounds

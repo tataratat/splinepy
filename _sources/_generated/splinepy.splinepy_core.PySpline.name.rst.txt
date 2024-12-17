@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PySpline.name
+=====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PySpline.name

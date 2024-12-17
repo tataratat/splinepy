@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.uniform\_refine
+========================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.uniform_refine

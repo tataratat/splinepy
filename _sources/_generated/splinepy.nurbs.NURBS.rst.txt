@@ -1,0 +1,140 @@
+splinepy.nurbs.NURBS
+====================
+
+.. currentmodule:: splinepy.nurbs
+
+.. autoclass:: NURBS
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       NURBS.basis
+     
+     
+       NURBS.basis_and_support
+     
+     
+       NURBS.basis_derivative
+     
+     
+       NURBS.basis_derivative_and_support
+     
+     
+       NURBS.clear
+     
+     
+       NURBS.copy
+     
+     
+       NURBS.current_core_properties
+     
+     
+       NURBS.derivative
+     
+     
+       NURBS.elevate_degrees
+     
+     
+       NURBS.evaluate
+     
+     
+       NURBS.export
+     
+     
+       NURBS.extract_bezier_patches
+     
+     
+       NURBS.greville_abscissae
+     
+     
+       NURBS.insert_knots
+     
+     
+       NURBS.jacobian
+     
+     
+       NURBS.knot_insertion_matrix
+     
+     
+       NURBS.mapper
+     
+     
+       NURBS.normalize_knot_vectors
+     
+     
+       NURBS.proximities
+     
+     
+       NURBS.reduce_degrees
+     
+     
+       NURBS.remove_knots
+     
+     
+       NURBS.sample
+     
+     
+       NURBS.show
+     
+     
+       NURBS.showable
+     
+     
+       NURBS.support
+     
+     
+       NURBS.todict
+     
+     
+       NURBS.uniform_refine
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+         NURBS.nurbs
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   
+   

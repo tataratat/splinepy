@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classsplinepy_1_1utils_1_1Matrix" kind="class" language="C++" prot="public">
+    <compoundname>splinepy::utils::Matrix</compoundname>
+    <includes refid="arrays_8hpp" local="no">arrays.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename DataType</type>
+      </param>
+      <param>
+        <type>typename IndexType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1Matrix_1a7df28105bea7ae6d0d78a1a4da44e86b" prot="private" static="no">
+        <type>DataType</type>
+        <definition>using DataType_ =  DataType</definition>
+        <argsstring></argsstring>
+        <name>DataType_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="675" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="675" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1Matrix_1a95d51f45162d74c83a7e3c20471dcd6e" prot="private" static="no">
+        <type>IndexType</type>
+        <definition>using IndexType_ =  IndexType</definition>
+        <argsstring></argsstring>
+        <name>IndexType_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="676" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="676" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1Matrix_1ac682d757a445e98c3c5bf361e87f25fa" prot="private" static="no">
+        <type>std::make_signed_t&lt; IndexType &gt;</type>
+        <definition>using SignedIndexType =  std::make_signed_t&lt;IndexType&gt;</definition>
+        <argsstring></argsstring>
+        <name>SignedIndexType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="677" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="677" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1Matrix_1aee16503916dd43752a05cf0f2c25b07a" prot="private" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; DataType, 2, IndexType &gt;</type>
+        <definition>using DataArray_ =  Array&lt;DataType, 2, IndexType&gt;</definition>
+        <argsstring></argsstring>
+        <name>DataArray_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="678" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="678" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1Matrix_1a4f52aaf7a6e13951fcc5993fb6f9a16a" prot="private" static="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; IndexType, 1, IndexType &gt;</type>
+        <definition>using RowOrderArray_ =  Array&lt;IndexType, 1, IndexType&gt;</definition>
+        <argsstring></argsstring>
+        <name>RowOrderArray_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="679" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="679" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1Matrix_1a9110ae4bd5bcba9e063dfda1e52d94b9" prot="protected" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Matrix_1aee16503916dd43752a05cf0f2c25b07a" kindref="member">DataArray_</ref> &amp;</type>
+        <definition>DataArray_&amp; array_</definition>
+        <argsstring></argsstring>
+        <name>array_</name>
+        <briefdescription>
+<para>2d base array of this matrix </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="683" column="14" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="683" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1Matrix_1a22397158d4670294c2102a32f091dff1" prot="protected" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1Matrix_1a4f52aaf7a6e13951fcc5993fb6f9a16a" kindref="member">RowOrderArray_</ref></type>
+        <definition>RowOrderArray_ row_order_</definition>
+        <argsstring></argsstring>
+        <name>row_order_</name>
+        <briefdescription>
+<para>row permutation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="686" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="686" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1Matrix_1a55beb63b16f478d69e28b577124a86f7" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Matrix</definition>
+        <argsstring>(DataArray_ &amp;array)</argsstring>
+        <name>Matrix</name>
+        <param>
+          <type><ref refid="classsplinepy_1_1utils_1_1Matrix_1aee16503916dd43752a05cf0f2c25b07a" kindref="member">DataArray_</ref> &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="689" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="689" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1Matrix_1a1676ce98ba97c9736c56f4ffa77b9bda" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr void</type>
+        <definition>constexpr void ResetRowOrder</definition>
+        <argsstring>()</argsstring>
+        <name>ResetRowOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="697" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="697" bodyend="699"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1Matrix_1a9227fb4c50059a1aca60aced4c5fa10e" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr void</type>
+        <definition>constexpr void SwapRow</definition>
+        <argsstring>(const IndexType &amp;i, const IndexType j)</argsstring>
+        <name>SwapRow</name>
+        <param>
+          <type>const IndexType &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>const IndexType</type>
+          <declname>j</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="701" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="701" bodyend="703"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1Matrix_1a314d13b1ff765202834fd54ace1ce8d9" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr const <ref refid="classsplinepy_1_1utils_1_1Matrix_1a4f52aaf7a6e13951fcc5993fb6f9a16a" kindref="member">RowOrderArray_</ref> &amp;</type>
+        <definition>constexpr const RowOrderArray_&amp; RowOrder</definition>
+        <argsstring>() const</argsstring>
+        <name>RowOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="705" column="34" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="705" bodyend="705"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1Matrix_1ac8c1ab3dee2ccc51054c0445abba858f" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IterableB</type>
+          </param>
+          <param>
+            <type>typename IterableX</type>
+          </param>
+        </templateparamlist>
+        <type>constexpr void</type>
+        <definition>constexpr void Solve</definition>
+        <argsstring>(IterableB &amp;b, IterableX &amp;x)</argsstring>
+        <name>Solve</name>
+        <param>
+          <type>IterableB &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>IterableX &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="708" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="708" bodyend="819"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>Array&lt; IndexType, 1, IndexType &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+        <childnode refid="2" relation="template-instance">
+          <edgelabel>&lt; IndexType, 1, IndexType &gt;</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Array&lt; DataType, dim, IndexType &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Array"/>
+      </node>
+      <node id="1">
+        <label>Matrix&lt; DataType, IndexType &gt;</label>
+        <link refid="classsplinepy_1_1utils_1_1Matrix"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>#array_</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>#row_order_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="674" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="674" bodyend="820"/>
+    <listofallmembers>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a9110ae4bd5bcba9e063dfda1e52d94b9" prot="protected" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>array_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1aee16503916dd43752a05cf0f2c25b07a" prot="private" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>DataArray_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a7df28105bea7ae6d0d78a1a4da44e86b" prot="private" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>DataType_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a95d51f45162d74c83a7e3c20471dcd6e" prot="private" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>IndexType_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a55beb63b16f478d69e28b577124a86f7" prot="public" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>Matrix</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a1676ce98ba97c9736c56f4ffa77b9bda" prot="public" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>ResetRowOrder</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a22397158d4670294c2102a32f091dff1" prot="protected" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>row_order_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a314d13b1ff765202834fd54ace1ce8d9" prot="public" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>RowOrder</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a4f52aaf7a6e13951fcc5993fb6f9a16a" prot="private" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>RowOrderArray_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1ac682d757a445e98c3c5bf361e87f25fa" prot="private" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>SignedIndexType</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1ac8c1ab3dee2ccc51054c0445abba858f" prot="public" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>Solve</name></member>
+      <member refid="classsplinepy_1_1utils_1_1Matrix_1a9227fb4c50059a1aca60aced4c5fa10e" prot="public" virt="non-virtual"><scope>splinepy::utils::Matrix</scope><name>SwapRow</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

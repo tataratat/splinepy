@@ -1,0 +1,381 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classsplinepy_1_1utils_1_1GridPoints" kind="class" language="C++" prot="public">
+    <compoundname>splinepy::utils::GridPoints</compoundname>
+    <includes refid="grid__points_8hpp" local="no">grid_points.hpp</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kindref="member">splinepy::utils::DefaultInitializationVector</ref>&lt; T &gt;</type>
+        <definition>using Vector_ =  splinepy::utils::DefaultInitializationVector&lt;T&gt;</definition>
+        <argsstring></argsstring>
+        <name>Vector_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="40" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1a414219f98e2bc7fd0cbed64ab70ab02e" prot="public" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; double &gt;</type>
+        <definition>Vector_&lt;double&gt; bounds_</definition>
+        <argsstring></argsstring>
+        <name>bounds_</name>
+        <briefdescription>
+<para>Vector of bounds. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="43" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" prot="public" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; int &gt;</type>
+        <definition>Vector_&lt;int&gt; resolutions_</definition>
+        <argsstring></argsstring>
+        <name>resolutions_</name>
+        <briefdescription>
+<para>Vector of resolutions. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="45" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" prot="public" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; <ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; double &gt; &gt;</type>
+        <definition>Vector_&lt;Vector_&lt;double&gt; &gt; entries_</definition>
+        <argsstring></argsstring>
+        <name>entries_</name>
+        <briefdescription>
+<para>Vector of vectors of entries. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="47" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" prot="public" static="no" mutable="no">
+        <type><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; double &gt;</type>
+        <definition>Vector_&lt;double&gt; step_size_</definition>
+        <argsstring></argsstring>
+        <name>step_size_</name>
+        <briefdescription>
+<para>each dimension&apos;s interval </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="49" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int len_</definition>
+        <argsstring></argsstring>
+        <name>len_</name>
+        <briefdescription>
+<para>Length. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="51" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int dim_</definition>
+        <argsstring></argsstring>
+        <name>dim_</name>
+        <briefdescription>
+<para>Dimension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="53" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1ad227d250713ca3d1e28e69446d8883f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>GridPoints</definition>
+        <argsstring>()=default</argsstring>
+        <name>GridPoints</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="55" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a85aaee125991db5ad7a0b988538b3eb2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GridPoints</definition>
+        <argsstring>(const int dim, const double *bounds, const int *resolutions)</argsstring>
+        <name>GridPoints</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>bounds</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>resolutions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="56" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="56" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void SetUp</definition>
+        <argsstring>(const int dim, const double *bounds, const int *resolutions)</argsstring>
+        <name>SetUp</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>bounds</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>resolutions</declname>
+        </param>
+        <briefdescription>
+<para>Set up resolutions and entries. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bounds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>resolutions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="64" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="64" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a813f37203931095ef0fb60f38df1961f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void IdToGridPoint</definition>
+        <argsstring>(const int &amp;id, double *grid_point) const</argsstring>
+        <name>IdToGridPoint</name>
+        <param>
+          <type>const int &amp;</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>grid_point</declname>
+        </param>
+        <briefdescription>
+<para>given global id, returns grid point coordinate </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>in </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>grid_point</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>out </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="100" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="100" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a0c5cc66a8b72aa62858806e262ddf44e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Fill</definition>
+        <argsstring>(double *grid_point_to_fill) const</argsstring>
+        <name>Fill</name>
+        <param>
+          <type>double *</type>
+          <declname>grid_point_to_fill</declname>
+        </param>
+        <briefdescription>
+<para>fills array with full set of grid points </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>grid_point_to_fill</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="110" column="8" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="110" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a24926108b770033792d015cb86aeffb3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Size</definition>
+        <argsstring>() const</argsstring>
+        <name>Size</name>
+        <briefdescription>
+<para>Size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="175" column="7" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="175" bodyend="175"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classsplinepy_1_1utils_1_1GridPoints_1a19b68d97707f8f59e7aad6989e49a007" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref>&lt; int &gt;</type>
+        <definition>static Vector_&lt;int&gt; IdsOnHyperPlane</definition>
+        <argsstring>(const int *grid_resolutions, const int &amp;dim, const int &amp;plane_normal_axis, const int &amp;plane_id)</argsstring>
+        <name>IdsOnHyperPlane</name>
+        <param>
+          <type>const int *</type>
+          <declname>grid_resolutions</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>plane_normal_axis</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>plane_id</declname>
+        </param>
+        <briefdescription>
+<para>Get global IDs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>grid_resolutions</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>plane_normal_axis</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>plane_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="134" column="18" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="134" bodyend="172"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classsplinepy_1_1utils_1_1GridPoints" kindref="compound">GridPoints</ref> based dynamic grid point sampler. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>GridPoints</label>
+        <link refid="classsplinepy_1_1utils_1_1GridPoints"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" line="37" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp" bodystart="37" bodyend="176"/>
+    <listofallmembers>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a414219f98e2bc7fd0cbed64ab70ab02e" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>bounds_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>dim_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>entries_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a0c5cc66a8b72aa62858806e262ddf44e" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>Fill</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1ad227d250713ca3d1e28e69446d8883f8" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>GridPoints</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a85aaee125991db5ad7a0b988538b3eb2" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>GridPoints</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a19b68d97707f8f59e7aad6989e49a007" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>IdsOnHyperPlane</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a813f37203931095ef0fb60f38df1961f" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>IdToGridPoint</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>len_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>resolutions_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>SetUp</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a24926108b770033792d015cb86aeffb3" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>Size</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>step_size_</name></member>
+      <member refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" prot="public" virt="non-virtual"><scope>splinepy::utils::GridPoints</scope><name>Vector_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

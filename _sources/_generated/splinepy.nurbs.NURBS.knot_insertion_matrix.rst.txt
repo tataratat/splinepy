@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.knot\_insertion\_matrix
+============================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.knot_insertion_matrix

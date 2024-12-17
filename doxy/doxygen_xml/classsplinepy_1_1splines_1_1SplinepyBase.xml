@@ -1,0 +1,1699 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classsplinepy_1_1splines_1_1SplinepyBase" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>splinepy::splines::SplinepyBase</compoundname>
+    <derivedcompoundref refid="classsplinepy_1_1splines_1_1BSpline" prot="public" virt="non-virtual">BSpline&lt; para_dim &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classsplinepy_1_1splines_1_1Bezier" prot="public" virt="non-virtual">Bezier&lt; para_dim, dim &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classsplinepy_1_1splines_1_1NullSpline" prot="public" virt="non-virtual">NullSpline</derivedcompoundref>
+    <derivedcompoundref refid="classsplinepy_1_1splines_1_1Nurbs" prot="public" virt="non-virtual">Nurbs&lt; para_dim &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classsplinepy_1_1splines_1_1RationalBezier" prot="public" virt="non-virtual">RationalBezier&lt; para_dim, dim &gt;</derivedcompoundref>
+    <includes refid="splinepy__base_8hpp" local="no">splinepy_base.hpp</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" prot="public" static="no">
+        <type><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">splinepy::utils::ControlPointPointers</ref></type>
+        <definition>using ControlPointPointers_ =  splinepy::utils::ControlPointPointers</definition>
+        <argsstring></argsstring>
+        <name>ControlPointPointers_</name>
+        <briefdescription>
+<para>Beginning pointers to control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="44" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1splines_1_1SplinepyBase_1adc055961fdb5902289317a57a4e01a1b" prot="public" static="no">
+        <type><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">splinepy::utils::ControlPointPointers</ref></type>
+        <definition>using WeightedControlPointPointers_ =  splinepy::utils::ControlPointPointers</definition>
+        <argsstring></argsstring>
+        <name>WeightedControlPointPointers_</name>
+        <briefdescription>
+<para>Same type, different alias to emphasize &quot;Weighted&quot;. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="46" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classsplinepy_1_1splines_1_1SplinepyBase_1a4f5e1e4fe61bfc1f496d90985e18a938" prot="public" static="no">
+        <type><ref refid="structsplinepy_1_1utils_1_1WeightPointers" kindref="compound">splinepy::utils::WeightPointers</ref></type>
+        <definition>using WeightPointers_ =  splinepy::utils::WeightPointers</definition>
+        <argsstring></argsstring>
+        <name>WeightPointers_</name>
+        <briefdescription>
+<para>Pointers to weights. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="48" column="3" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" kindref="member">ControlPointPointers_</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ControlPointPointers_&gt; control_point_pointers_</definition>
+        <argsstring></argsstring>
+        <name>control_point_pointers_</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+<para>each class creates only once and returns shared_ptr second time. not thread safe for first run. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="53" column="19" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a300fda0bc3091ee8328d7e3ccf83c889" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SplinepyBase</definition>
+        <argsstring>()=default</argsstring>
+        <name>SplinepyBase</name>
+        <briefdescription>
+<para>default ctor </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="57" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1aea386b22415f301117a669e1fa04d55c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~SplinepyBase</definition>
+        <argsstring>()</argsstring>
+        <name>~SplinepyBase</name>
+        <briefdescription>
+<para>dtor sets invalid flag to control_point_pointers_ to prevent segfault </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="60" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="60" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a997118cc64f6c3d827933652a0e06a25" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int SplinepyParaDim</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyParaDim</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1ad0b0e5b72a509032ee74ce3af1df08ca">SplinepyParaDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ad0b0e5b72a509032ee74ce3af1df08ca">SplinepyParaDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1ad0b0e5b72a509032ee74ce3af1df08ca">SplinepyParaDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1ad0b0e5b72a509032ee74ce3af1df08ca">SplinepyParaDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1ad0b0e5b72a509032ee74ce3af1df08ca">SplinepyParaDim</reimplementedby>
+        <briefdescription>
+<para>Parametric dimension of spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="130" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ae2dd295617527f88b933ca007619ba06" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int SplinepyDim</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyDim</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1addafa95d18f804ff9b6565cc69b9b441">SplinepyDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1addafa95d18f804ff9b6565cc69b9b441">SplinepyDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1addafa95d18f804ff9b6565cc69b9b441">SplinepyDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1addafa95d18f804ff9b6565cc69b9b441">SplinepyDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1addafa95d18f804ff9b6565cc69b9b441">SplinepyDim</reimplementedby>
+        <briefdescription>
+<para>Physical dimension of spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="132" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a96f3192b27218f7d53d83cf18bf5ee81" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string SplinepySplineName</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepySplineName</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1ae9e589febdb3931dc5edf33b83e6ed81">SplinepySplineName</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ae9e589febdb3931dc5edf33b83e6ed81">SplinepySplineName</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1ae9e589febdb3931dc5edf33b83e6ed81">SplinepySplineName</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1ae9e589febdb3931dc5edf33b83e6ed81">SplinepySplineName</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1ae9e589febdb3931dc5edf33b83e6ed81">SplinepySplineName</reimplementedby>
+        <briefdescription>
+<para>Returns name of spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="134" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1abefc95435c3aa85747558d2f74cfd1f3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string SplinepyWhatAmI</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyWhatAmI</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a0164ebf3b3d2364894b747ab27772bfe">SplinepyWhatAmI</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a0164ebf3b3d2364894b747ab27772bfe">SplinepyWhatAmI</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1a0164ebf3b3d2364894b747ab27772bfe">SplinepyWhatAmI</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a0164ebf3b3d2364894b747ab27772bfe">SplinepyWhatAmI</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a0164ebf3b3d2364894b747ab27772bfe">SplinepyWhatAmI</reimplementedby>
+        <briefdescription>
+<para>What am I? </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="136" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1af3bd0735a49bd8e375b06f562d3f3341" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool SplinepyHasKnotVectors</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyHasKnotVectors</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a11ac3093e1244d3bcf9e8434acc37a5f">SplinepyHasKnotVectors</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a11ac3093e1244d3bcf9e8434acc37a5f">SplinepyHasKnotVectors</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1a11ac3093e1244d3bcf9e8434acc37a5f">SplinepyHasKnotVectors</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a11ac3093e1244d3bcf9e8434acc37a5f">SplinepyHasKnotVectors</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a11ac3093e1244d3bcf9e8434acc37a5f">SplinepyHasKnotVectors</reimplementedby>
+        <briefdescription>
+<para>Returns true iff spline has knot vectors. <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> splines don’t. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="138" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a94e746bab5a7210db8dae6981a6aef14" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool SplinepyIsRational</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyIsRational</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1aa69c5b2aa3411e4f1b78332e0b6a2265">SplinepyIsRational</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265">SplinepyIsRational</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265">SplinepyIsRational</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1aa69c5b2aa3411e4f1b78332e0b6a2265">SplinepyIsRational</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1aa69c5b2aa3411e4f1b78332e0b6a2265">SplinepyIsRational</reimplementedby>
+        <briefdescription>
+<para>Returns true iff spline is rational. NURBS is rational, for example. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="141" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ae1c06aea93c8a42d13959c78481416b8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int SplinepyNumberOfControlPoints</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyNumberOfControlPoints</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a7b497cd52107288f7bf90fefbfb313e2">SplinepyNumberOfControlPoints</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ab155088195abe36b77efe299d1ef338d">SplinepyNumberOfControlPoints</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1ab155088195abe36b77efe299d1ef338d">SplinepyNumberOfControlPoints</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1ab155088195abe36b77efe299d1ef338d">SplinepyNumberOfControlPoints</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a7b497cd52107288f7bf90fefbfb313e2">SplinepyNumberOfControlPoints</reimplementedby>
+        <briefdescription>
+<para>Get number of control points. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="143" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ade6ccd2d2e8897dab6f3950b4b905f48" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int SplinepyNumberOfSupports</definition>
+        <argsstring>() const =0</argsstring>
+        <name>SplinepyNumberOfSupports</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a14e0d96a5aa8c07d510779cc6b4a2d1c">SplinepyNumberOfSupports</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a3359640a16e7af39e032fbd3e9b93318">SplinepyNumberOfSupports</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1a3359640a16e7af39e032fbd3e9b93318">SplinepyNumberOfSupports</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a3359640a16e7af39e032fbd3e9b93318">SplinepyNumberOfSupports</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a14e0d96a5aa8c07d510779cc6b4a2d1c">SplinepyNumberOfSupports</reimplementedby>
+        <briefdescription>
+<para>Get number of supports. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="145" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ae791a517504d63316946462ffd75a597" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool SplinepyIsNull</definition>
+        <argsstring>() const</argsstring>
+        <name>SplinepyIsNull</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1ae791a517504d63316946462ffd75a597">SplinepyIsNull</reimplementedby>
+        <briefdescription>
+<para>Returns true iff spline is null-spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="147" column="16" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="147" bodyend="147"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1af304b3a49872cd3b06e5d4719e4919d2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void SplinepyCurrentProperties</definition>
+        <argsstring>(int *degrees, std::vector&lt; std::vector&lt; double &gt;&gt; *knot_vectors, double *control_points, double *weights) const =0</argsstring>
+        <name>SplinepyCurrentProperties</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a6abc26b6de0d012f500516e90b10157d">SplinepyCurrentProperties</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1afbc69546e8f79d8f846fbe3bb8e06130">SplinepyCurrentProperties</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1afbc69546e8f79d8f846fbe3bb8e06130">SplinepyCurrentProperties</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1afbc69546e8f79d8f846fbe3bb8e06130">SplinepyCurrentProperties</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a6abc26b6de0d012f500516e90b10157d">SplinepyCurrentProperties</reimplementedby>
+        <param>
+          <type>int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::vector&lt; double &gt;&gt; *</type>
+          <declname>knot_vectors</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>Extract core spline properties. Similar to previous update_p. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>degrees</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>knot_vectors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>control_points</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>weights</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="154" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a54dcf4b4f9ebd93c047a2de6b4b8ec23" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; bsplinelib::parameter_spaces::ParameterSpaceBase &gt;</type>
+        <definition>std::shared_ptr&lt; bsplinelib::parameter_spaces::ParameterSpaceBase &gt; SplinepyParameterSpace</definition>
+        <argsstring>()</argsstring>
+        <name>SplinepyParameterSpace</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ad6c3fa6228d61c1674e431d3851a8786">SplinepyParameterSpace</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1ad6c3fa6228d61c1674e431d3851a8786">SplinepyParameterSpace</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="160" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="435" bodyend="440"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1aec3f80474d3a3e1c2681b9b188c8f4b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; bsplinelib::parameter_spaces::KnotVector &gt;</type>
+        <definition>std::shared_ptr&lt; bsplinelib::parameter_spaces::KnotVector &gt; SplinepyKnotVector</definition>
+        <argsstring>(const int p_dim)</argsstring>
+        <name>SplinepyKnotVector</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a62b70c236fdbd8198586e3b3411f3d80">SplinepyKnotVector</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a62b70c236fdbd8198586e3b3411f3d80">SplinepyKnotVector</reimplementedby>
+        <param>
+          <type>const int</type>
+          <declname>p_dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="162" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="443" bodyend="447"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1af20c63586810ad81b86a126d2a3ebff2" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" kindref="member">ControlPointPointers_</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; typename SplinepyBase::ControlPointPointers_ &gt; SplinepyControlPointPointers</definition>
+        <argsstring>()</argsstring>
+        <name>SplinepyControlPointPointers</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1aa4e862437f08dcca165fbbabb0633a23">SplinepyControlPointPointers</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ad3225a4b5d51b3a21fab0d4af5bea44b">SplinepyControlPointPointers</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="164" column="27" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="450" bodyend="455"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a34564c79b8de33a2ad8bbbc2b7499c23" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1adc055961fdb5902289317a57a4e01a1b" kindref="member">WeightedControlPointPointers_</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; typename SplinepyBase::WeightedControlPointPointers_ &gt; SplinepyWeightedControlPointPointers</definition>
+        <argsstring>()</argsstring>
+        <name>SplinepyWeightedControlPointPointers</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a0c6395fd1f9cd39aa7e3bbe0e58814a9">SplinepyWeightedControlPointPointers</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a8e0889eaef9c19858a2518d7ec702ee8">SplinepyWeightedControlPointPointers</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="166" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="458" bodyend="463"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a955f6e0c10f3df22e8d13034b9b619f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a4f5e1e4fe61bfc1f496d90985e18a938" kindref="member">WeightPointers_</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; typename SplinepyBase::WeightPointers_ &gt; SplinepyWeightPointers</definition>
+        <argsstring>()</argsstring>
+        <name>SplinepyWeightPointers</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a667e7050760866f04acefef17e883fb0">SplinepyWeightPointers</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a1098dc0849393b10e09095c96f55d8d9">SplinepyWeightPointers</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="167" column="27" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="466" bodyend="471"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ad2869f6460d00786e925884afda6ab16" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyParametricBounds</definition>
+        <argsstring>(double *para_bounds) const</argsstring>
+        <name>SplinepyParametricBounds</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1ad2869f6460d00786e925884afda6ab16">SplinepyParametricBounds</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a9784014998b254ace83bf0ce81d4d85f">SplinepyParametricBounds</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1a9784014998b254ace83bf0ce81d4d85f">SplinepyParametricBounds</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a9784014998b254ace83bf0ce81d4d85f">SplinepyParametricBounds</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1ad2869f6460d00786e925884afda6ab16">SplinepyParametricBounds</reimplementedby>
+        <param>
+          <type>double *</type>
+          <declname>para_bounds</declname>
+        </param>
+        <briefdescription>
+<para>Parameter space AABB. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>para_bounds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="171" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="473" bodyend="477"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a82c7531c75207a9c4c1ce2ee287d6d80" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyControlMeshResolutions</definition>
+        <argsstring>(int *control_mesh_res) const</argsstring>
+        <name>SplinepyControlMeshResolutions</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a82c7531c75207a9c4c1ce2ee287d6d80">SplinepyControlMeshResolutions</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a7da40985234c8eb3bca9ca82cd0b1428">SplinepyControlMeshResolutions</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a7da40985234c8eb3bca9ca82cd0b1428">SplinepyControlMeshResolutions</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a82c7531c75207a9c4c1ce2ee287d6d80">SplinepyControlMeshResolutions</reimplementedby>
+        <param>
+          <type>int *</type>
+          <declname>control_mesh_res</declname>
+        </param>
+        <briefdescription>
+<para>Control mesh resoltuons - number of control points per para dim. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>control_mesh_res</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="175" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="479" bodyend="483"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a937737f903b962b14b75911ad87ea980" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyGrevilleAbscissae</definition>
+        <argsstring>(double *greville_abscissae, const int &amp;i_para_dim, const double &amp;duplicate_tolerance) const</argsstring>
+        <name>SplinepyGrevilleAbscissae</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a937737f903b962b14b75911ad87ea980">SplinepyGrevilleAbscissae</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a15d33b3d5e816d319737c5e4c109e8d0">SplinepyGrevilleAbscissae</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a15d33b3d5e816d319737c5e4c109e8d0">SplinepyGrevilleAbscissae</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a937737f903b962b14b75911ad87ea980">SplinepyGrevilleAbscissae</reimplementedby>
+        <param>
+          <type>double *</type>
+          <declname>greville_abscissae</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>i_para_dim</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>duplicate_tolerance</declname>
+        </param>
+        <briefdescription>
+<para>Calculate Greville abscissae for Spline (required for e.g. collocation) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="out">greville_abscissae</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to solution </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">i_para_dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>parametric dimension </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">duplicate_tolerance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if negative two greville abscissae can be equal, positive tolerance to avoid duplication of greville abscissae. Made to comply with C^(-1) splines. Tolerance represents difference between two greville abscissae for them to be considered equal </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="189" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="485" bodyend="492"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1af44d40483deab0f4f5d3901073b63c2c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyEvaluate</definition>
+        <argsstring>(const double *para_coord, double *evaluated) const</argsstring>
+        <name>SplinepyEvaluate</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1af44d40483deab0f4f5d3901073b63c2c">SplinepyEvaluate</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a920537be0e6844b2d11fd37eaea260ff">SplinepyEvaluate</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1a920537be0e6844b2d11fd37eaea260ff">SplinepyEvaluate</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a920537be0e6844b2d11fd37eaea260ff">SplinepyEvaluate</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1af44d40483deab0f4f5d3901073b63c2c">SplinepyEvaluate</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>evaluated</declname>
+        </param>
+        <briefdescription>
+<para>Evaluate spline. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">para_coord</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Parametric coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">evaluated</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="196" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="494" bodyend="498"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a1623b3917d83d47770045b0277ae0702" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyDerivative</definition>
+        <argsstring>(const double *para_coord, const int *orders, double *derived) const</argsstring>
+        <name>SplinepyDerivative</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a1623b3917d83d47770045b0277ae0702">SplinepyDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a7d654e8ba079c395e1003593088d3106">SplinepyDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a7d654e8ba079c395e1003593088d3106">SplinepyDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a1623b3917d83d47770045b0277ae0702">SplinepyDerivative</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>orders</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>derived</declname>
+        </param>
+        <briefdescription>
+<para>Evaluate spline derivatives. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">para_coord</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Parametric coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">orders</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">derived</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="203" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="500" bodyend="505"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a8a41f8be9a9f5508406f8fedbe5c0499" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyJacobian</definition>
+        <argsstring>(const double *para_coord, double *jacobian) const</argsstring>
+        <name>SplinepyJacobian</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a082fa04363d7823b4657cb5a1b5669ac">SplinepyJacobian</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1afcc0eca9e90bc2626b5a97fead06d9b6">SplinepyJacobian</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1afcc0eca9e90bc2626b5a97fead06d9b6">SplinepyJacobian</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a082fa04363d7823b4657cb5a1b5669ac">SplinepyJacobian</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>jacobian</declname>
+        </param>
+        <briefdescription>
+<para>Evaluate jacobians on spline. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">para_coord</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Parametric coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">jacobian</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="210" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="507" bodyend="511"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a5c804a4b323dcae914442ef3836f5ec9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyBasis</definition>
+        <argsstring>(const double *para_coord, double *basis) const</argsstring>
+        <name>SplinepyBasis</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a5c804a4b323dcae914442ef3836f5ec9">SplinepyBasis</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a50e29ae33a6e4bb268dd5a4ef371b3bd">SplinepyBasis</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a50e29ae33a6e4bb268dd5a4ef371b3bd">SplinepyBasis</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a5c804a4b323dcae914442ef3836f5ec9">SplinepyBasis</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>basis</declname>
+        </param>
+        <briefdescription>
+<para>Retrieve basis. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">para_coord</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Parametric coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">basis</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="216" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="513" bodyend="517"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a26f85766cf788dbcfc3b304900c18b49" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyBasisDerivative</definition>
+        <argsstring>(const double *para_coord, const int *order, double *basis) const</argsstring>
+        <name>SplinepyBasisDerivative</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a2858ead137ca708d2bfeccdae6e7ac45">SplinepyBasisDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1ac5b096806c4cd9447bf3b59921ddfc29">SplinepyBasisDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1ac5b096806c4cd9447bf3b59921ddfc29">SplinepyBasisDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a2858ead137ca708d2bfeccdae6e7ac45">SplinepyBasisDerivative</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>basis</declname>
+        </param>
+        <briefdescription>
+<para>Retrieve basis function derivative. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">para_coord</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Parametric coordinates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">order</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">basis</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="222" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="519" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a80ef44d7b6a5f9250fc26fd0fe2923aa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepySupport</definition>
+        <argsstring>(const double *para_coord, int *support) const</argsstring>
+        <name>SplinepySupport</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a80ef44d7b6a5f9250fc26fd0fe2923aa">SplinepySupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18">SplinepySupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1aad466357960a590d8a452bb9b3cf0f18">SplinepySupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a80ef44d7b6a5f9250fc26fd0fe2923aa">SplinepySupport</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>int *</type>
+          <declname>support</declname>
+        </param>
+        <briefdescription>
+<para>Spline Support IDs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="227" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="527" bodyend="531"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a20722d779bdedf75284890abe61cce7f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyBasisAndSupport</definition>
+        <argsstring>(const double *para_coord, double *basis, int *support) const</argsstring>
+        <name>SplinepyBasisAndSupport</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a20722d779bdedf75284890abe61cce7f">SplinepyBasisAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a10f13720963256edc8ea3597fff70dec">SplinepyBasisAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a10f13720963256edc8ea3597fff70dec">SplinepyBasisAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a20722d779bdedf75284890abe61cce7f">SplinepyBasisAndSupport</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>basis</declname>
+        </param>
+        <param>
+          <type>int *</type>
+          <declname>support</declname>
+        </param>
+        <briefdescription>
+<para>Basis Function values and their support IDs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="230" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="533" bodyend="539"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a7db518859493e6f59eddcfd643ac0fd9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyBasisDerivativeAndSupport</definition>
+        <argsstring>(const double *para_coord, const int *orders, double *basis, int *support) const</argsstring>
+        <name>SplinepyBasisDerivativeAndSupport</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1ac61583ad2cb14834fa073d1f0d58c604">SplinepyBasisDerivativeAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a5f579d3e5401be64ef8ec3f8c95e9dd6">SplinepyBasisDerivativeAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a5f579d3e5401be64ef8ec3f8c95e9dd6">SplinepyBasisDerivativeAndSupport</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1ac61583ad2cb14834fa073d1f0d58c604">SplinepyBasisDerivativeAndSupport</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>orders</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>basis</declname>
+        </param>
+        <param>
+          <type>int *</type>
+          <declname>support</declname>
+        </param>
+        <briefdescription>
+<para>Basis Function Derivative and their support IDs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="235" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="541" bodyend="548"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a655dd76f93a8a1ca02b8bb1fecb83c82" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyPlantNewKdTreeForProximity</definition>
+        <argsstring>(const int *resolutions, const int &amp;nthreads)</argsstring>
+        <name>SplinepyPlantNewKdTreeForProximity</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a655dd76f93a8a1ca02b8bb1fecb83c82">SplinepyPlantNewKdTreeForProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a22488930b1700b805f5a5e948e2fbf4c">SplinepyPlantNewKdTreeForProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a22488930b1700b805f5a5e948e2fbf4c">SplinepyPlantNewKdTreeForProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a655dd76f93a8a1ca02b8bb1fecb83c82">SplinepyPlantNewKdTreeForProximity</reimplementedby>
+        <param>
+          <type>const int *</type>
+          <declname>resolutions</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>nthreads</declname>
+        </param>
+        <briefdescription>
+<para>Plants KdTree of sampled spline with given resolution. KdTree is required for proximity queries. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="242" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="550" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a311f2f145c25efbf07a4127a93fd728f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyVerboseProximity</definition>
+        <argsstring>(const double *query, const double &amp;tolerance, const int &amp;max_iterations, const bool tight_bounds, double *para_coord, double *phys_coord, double *phys_diff, double &amp;distance, double &amp;convergence_norm, double *first_derivatives, double *second_derivatives) const</argsstring>
+        <name>SplinepyVerboseProximity</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a311f2f145c25efbf07a4127a93fd728f">SplinepyVerboseProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a84d1acf1be097f8e35a12c43f6f4c4f2">SplinepyVerboseProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a84d1acf1be097f8e35a12c43f6f4c4f2">SplinepyVerboseProximity</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a311f2f145c25efbf07a4127a93fd728f">SplinepyVerboseProximity</reimplementedby>
+        <param>
+          <type>const double *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>tolerance</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+          <declname>max_iterations</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>tight_bounds</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>phys_coord</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>phys_diff</declname>
+        </param>
+        <param>
+          <type>double &amp;</type>
+          <declname>distance</declname>
+        </param>
+        <param>
+          <type>double &amp;</type>
+          <declname>convergence_norm</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>first_derivatives</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>second_derivatives</declname>
+        </param>
+        <briefdescription>
+<para>Verbose proximity query - make sure to plant a kdtree first. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="246" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="557" bodyend="571"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a78beda53207c40f7f809f8bb3454d164" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void SplinepyElevateDegree</definition>
+        <argsstring>(const int &amp;para_dims, const int multiplicity=1)</argsstring>
+        <name>SplinepyElevateDegree</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1afb7b9a66f7bb2a06001bbaa6fe4b059e">SplinepyElevateDegree</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1af03150e973b9a12015b3ee7945d3fa57">SplinepyElevateDegree</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1af03150e973b9a12015b3ee7945d3fa57">SplinepyElevateDegree</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1afb7b9a66f7bb2a06001bbaa6fe4b059e">SplinepyElevateDegree</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>para_dims</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>multiplicity</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>Spline degree elevation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="259" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="573" bodyend="578"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1abdc29d91239f8cbc6d80deab29327567" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool SplinepyReduceDegree</definition>
+        <argsstring>(const int &amp;para_dims, const double &amp;tolerance)</argsstring>
+        <name>SplinepyReduceDegree</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1aa180de3e9ee55ed0b6857401423d7d55">SplinepyReduceDegree</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1aa180de3e9ee55ed0b6857401423d7d55">SplinepyReduceDegree</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>para_dims</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>tolerance</declname>
+        </param>
+        <briefdescription>
+<para>Spline degree reduction. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="263" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="580" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1aeee448dc5071048348878fb3f2cf6637" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>int</type>
+        <definition>int SplinepyInsertKnot</definition>
+        <argsstring>(const int &amp;para_dim, const double &amp;knot, const int multiplicity=1)</argsstring>
+        <name>SplinepyInsertKnot</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a5b63e6458cf833910c28aec1ab48dc00">SplinepyInsertKnot</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a5b63e6458cf833910c28aec1ab48dc00">SplinepyInsertKnot</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>knot</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>multiplicity</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>Spline knot insertion. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="267" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="588" bodyend="594"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a87f592bab9442f544762bf187c21d819" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool SplinepyRemoveKnot</definition>
+        <argsstring>(const int &amp;para_dim, const double &amp;knot, const double &amp;tolerance)</argsstring>
+        <name>SplinepyRemoveKnot</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a76d88d7ec305769215551668be88214a">SplinepyRemoveKnot</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a76d88d7ec305769215551668be88214a">SplinepyRemoveKnot</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>knot</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>tolerance</declname>
+        </param>
+        <briefdescription>
+<para>Spline knot removal. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="272" column="16" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="596" bodyend="602"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a9b314b6a49745e77cce147e1ddde407e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; std::vector&lt; int &gt; &gt;</type>
+        <definition>std::vector&lt; std::vector&lt; int &gt; &gt; SplinepyKnotMultiplicities</definition>
+        <argsstring>() const</argsstring>
+        <name>SplinepyKnotMultiplicities</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1adff57da32b261fc1eb98abf13233bef9">SplinepyKnotMultiplicities</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1adff57da32b261fc1eb98abf13233bef9">SplinepyKnotMultiplicities</reimplementedby>
+        <briefdescription>
+<para>Spline knot multiplicity per dimension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="277" column="23" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="604" bodyend="609"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a99ff3ac5c14681c4a3410ac4fc15ec5a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyMultiply</definition>
+        <argsstring>(const std::shared_ptr&lt; SplinepyBase &gt; &amp;a) const</argsstring>
+        <name>SplinepyMultiply</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a99ff3ac5c14681c4a3410ac4fc15ec5a">SplinepyMultiply</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a99ff3ac5c14681c4a3410ac4fc15ec5a">SplinepyMultiply</reimplementedby>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>Spline multiplication. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="281" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="612" bodyend="616"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a115e11c597c41143a487bac1564f306f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyAdd</definition>
+        <argsstring>(const std::shared_ptr&lt; SplinepyBase &gt; &amp;a) const</argsstring>
+        <name>SplinepyAdd</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a115e11c597c41143a487bac1564f306f">SplinepyAdd</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a115e11c597c41143a487bac1564f306f">SplinepyAdd</reimplementedby>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>Spline addition. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="285" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="619" bodyend="623"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1af05fe3b20aed88bea1f16b634e3ddb19" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCompose</definition>
+        <argsstring>(const std::shared_ptr&lt; SplinepyBase &gt; &amp;inner_function) const</argsstring>
+        <name>SplinepyCompose</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1af05fe3b20aed88bea1f16b634e3ddb19">SplinepyCompose</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1af05fe3b20aed88bea1f16b634e3ddb19">SplinepyCompose</reimplementedby>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>inner_function</declname>
+        </param>
+        <briefdescription>
+<para>Spline composition. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="289" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="625" bodyend="630"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a8e0877c5aa9d0880e837c4f8e081d651" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &gt;</type>
+        <definition>std::vector&lt; std::shared_ptr&lt; SplinepyBase &gt; &gt; SplinepyComposeSensitivities</definition>
+        <argsstring>(const std::shared_ptr&lt; SplinepyBase &gt; &amp;inner_function) const</argsstring>
+        <name>SplinepyComposeSensitivities</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a8e0877c5aa9d0880e837c4f8e081d651">SplinepyComposeSensitivities</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a8e0877c5aa9d0880e837c4f8e081d651">SplinepyComposeSensitivities</reimplementedby>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>inner_function</declname>
+        </param>
+        <briefdescription>
+<para>Spline composition sensitivities with respect to the outer spline&apos;s control point positions. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="294" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="633" bodyend="639"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1aa14f7f52b84375357c04e829276386a8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &gt;</type>
+        <definition>std::vector&lt; std::shared_ptr&lt; SplinepyBase &gt; &gt; SplinepySplit</definition>
+        <argsstring>(const int &amp;para_dim, const double &amp;location) const</argsstring>
+        <name>SplinepySplit</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a58e861256bd97c949018429e88bf2df9">SplinepySplit</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a58e861256bd97c949018429e88bf2df9">SplinepySplit</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>location</declname>
+        </param>
+        <briefdescription>
+<para>Spline Split - single split. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="299" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="642" bodyend="646"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1ad30620aeaaad6a9db0816696fbd87179" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyDerivativeSpline</definition>
+        <argsstring>(const int *orders) const</argsstring>
+        <name>SplinepyDerivativeSpline</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1ad30620aeaaad6a9db0816696fbd87179">SplinepyDerivativeSpline</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1ad30620aeaaad6a9db0816696fbd87179">SplinepyDerivativeSpline</reimplementedby>
+        <param>
+          <type>const int *</type>
+          <declname>orders</declname>
+        </param>
+        <briefdescription>
+<para>Derivative spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="303" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="649" bodyend="654"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a89017250bfdb853c3bd01a41d7828a13" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &gt;</type>
+        <definition>std::vector&lt; std::shared_ptr&lt; SplinepyBase &gt; &gt; SplinepyExtractBezierPatches</definition>
+        <argsstring>() const</argsstring>
+        <name>SplinepyExtractBezierPatches</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a89017250bfdb853c3bd01a41d7828a13">SplinepyExtractBezierPatches</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a37c647b9c74e36f1c809d8c0dbb17580">SplinepyExtractBezierPatches</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a37c647b9c74e36f1c809d8c0dbb17580">SplinepyExtractBezierPatches</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a89017250bfdb853c3bd01a41d7828a13">SplinepyExtractBezierPatches</reimplementedby>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> patch extraction. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="307" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="657" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a50217282b435afd4c8db596f147f88ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyExtractBoundary</definition>
+        <argsstring>(const int &amp;boundary_id)</argsstring>
+        <name>SplinepyExtractBoundary</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a50217282b435afd4c8db596f147f88ce">SplinepyExtractBoundary</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1afccd6b3327213012b3c3bfddcb083139">SplinepyExtractBoundary</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1NullSpline_1afccd6b3327213012b3c3bfddcb083139">SplinepyExtractBoundary</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1afccd6b3327213012b3c3bfddcb083139">SplinepyExtractBoundary</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a50217282b435afd4c8db596f147f88ce">SplinepyExtractBoundary</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>boundary_id</declname>
+        </param>
+        <briefdescription>
+<para>Boundary spline extraction - TODO: const. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="311" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="665" bodyend="670"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a531c1b5ece7f10875a4d5dac7598668b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyExtractDim</definition>
+        <argsstring>(const int &amp;phys_dim) const</argsstring>
+        <name>SplinepyExtractDim</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a531c1b5ece7f10875a4d5dac7598668b">SplinepyExtractDim</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a531c1b5ece7f10875a4d5dac7598668b">SplinepyExtractDim</reimplementedby>
+        <param>
+          <type>const int &amp;</type>
+          <declname>phys_dim</declname>
+        </param>
+        <briefdescription>
+<para>Scalar Spline extraction from dim - TODO: const. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="315" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="673" bodyend="678"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a04cd334a9c81663a688f9a42f10348d4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCompositionDerivative</definition>
+        <argsstring>(const std::shared_ptr&lt; SplinepyBase &gt; &amp;inner, const std::shared_ptr&lt; SplinepyBase &gt; &amp;inner_derivative) const</argsstring>
+        <name>SplinepyCompositionDerivative</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a04cd334a9c81663a688f9a42f10348d4">SplinepyCompositionDerivative</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a04cd334a9c81663a688f9a42f10348d4">SplinepyCompositionDerivative</reimplementedby>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>inner</declname>
+        </param>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt; &amp;</type>
+          <declname>inner_derivative</declname>
+        </param>
+        <briefdescription>
+<para>Derivative of composition. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="318" column="27" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="680" bodyend="687"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1acc36e2767ff06648d5e325bb2bb61e8a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyDeepCopy</definition>
+        <argsstring>() const</argsstring>
+        <name>SplinepyDeepCopy</name>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Bezier_1a296ff957b200c50aadee703157f2f1ff">SplinepyDeepCopy</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1BSpline_1a296ff957b200c50aadee703157f2f1ff">SplinepyDeepCopy</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1Nurbs_1a296ff957b200c50aadee703157f2f1ff">SplinepyDeepCopy</reimplementedby>
+        <reimplementedby refid="classsplinepy_1_1splines_1_1RationalBezier_1a296ff957b200c50aadee703157f2f1ff">SplinepyDeepCopy</reimplementedby>
+        <briefdescription>
+<para>Deep copy of current spline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="323" column="27" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="689" bodyend="693"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a570e95158a7ef8c3d65a883524bfe843" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCreate</definition>
+        <argsstring>(const int para_dim=0, const int dim=0, const int *degrees=nullptr, const std::vector&lt; std::vector&lt; double &gt;&gt; *knot_vectors=nullptr, double *control_points=nullptr, double *weights=nullptr)</argsstring>
+        <name>SplinepyCreate</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+          <defval>nullptr</defval>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; double &gt;&gt; *</type>
+          <declname>knot_vectors</declname>
+          <defval>nullptr</defval>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>control_points</declname>
+          <defval>nullptr</defval>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>weights</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+<para>Dynamically create correct type of spline based on input. Returned as shared pointer of <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="72" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="37" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a6197098cf037e4eac451a8e916b930ab" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCreateBezier</definition>
+        <argsstring>(const int para_dim, const int dim, const int *degrees, const double *control_points)</argsstring>
+        <name>SplinepyCreateBezier</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <briefdescription>
+<para>Dynamic creation of templated bezier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="81" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="78" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1aad8af300d6750fbfdc9bd07e6b880a2f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCreateRationalBezier</definition>
+        <argsstring>(const int para_dim, const int dim, const int *degrees, const double *control_points, const double *weights)</argsstring>
+        <name>SplinepyCreateRationalBezier</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>Dynamic creation of templated rational bezier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="88" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="142" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a2552b5bc29ddb7181f31ef6df08d82b1" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCreateBSpline</definition>
+        <argsstring>(const int para_dim, const int dim, const int *degrees, const std::vector&lt; std::vector&lt; double &gt;&gt; *knot_vectors, double *control_points)</argsstring>
+        <name>SplinepyCreateBSpline</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; double &gt;&gt; *</type>
+          <declname>knot_vectors</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>control_points</declname>
+        </param>
+        <briefdescription>
+<para>Dynamic creation of templated bspline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="96" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="218" bodyend="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a94259ef86c46a1f7a889a910dfbe56fb" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SplinepyBase &gt; SplinepyCreateNurbs</definition>
+        <argsstring>(const int para_dim, const int dim, const int *degrees, const std::vector&lt; std::vector&lt; double &gt;&gt; *knot_vectors, double *control_points, double *weights)</argsstring>
+        <name>SplinepyCreateNurbs</name>
+        <param>
+          <type>const int</type>
+          <declname>para_dim</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::vector&lt; double &gt;&gt; *</type>
+          <declname>knot_vectors</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>Dynamic creation of templated nurbs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="104" column="3" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="291" bodyend="373"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a9bc5332b3f0f6aa06e959d5c73e54f7f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool SplinepySplineNameMatches</definition>
+        <argsstring>(const SplinepyBase &amp;a, const SplinepyBase &amp;b, const std::string description=&quot;&quot;, const bool raise=false)</argsstring>
+        <name>SplinepySplineNameMatches</name>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const std::string</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>raise</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Check if name matches and throw(=raise) if desired. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="112" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="375" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a922a33f1754656830dda4933f294fa41" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool SplinepyParaDimMatches</definition>
+        <argsstring>(const SplinepyBase &amp;a, const SplinepyBase &amp;b, const std::string description=&quot;&quot;, const bool raise=false)</argsstring>
+        <name>SplinepyParaDimMatches</name>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const std::string</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>raise</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Check if para_dim matches and throw(=raise) if desired. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="118" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="394" bodyend="412"/>
+      </memberdef>
+      <memberdef kind="function" id="classsplinepy_1_1splines_1_1SplinepyBase_1a14e31715a0972b74b13776d636b700dc" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool SplinepyDimMatches</definition>
+        <argsstring>(const SplinepyBase &amp;a, const SplinepyBase &amp;b, const std::string description=&quot;&quot;, const bool raise=false)</argsstring>
+        <name>SplinepyDimMatches</name>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase</ref> &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const std::string</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>raise</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Check if dim matches and throw(=raise) if desired. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="124" column="15" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/splinepy_base.cpp" bodystart="414" bodyend="432"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Spline base to enable dynamic use of template splines. Member functions are prepended with &quot;Splinepy&quot;. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="4">
+        <label>NullSpline</label>
+        <link refid="classsplinepy_1_1splines_1_1NullSpline"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>SplinepyBase</label>
+        <link refid="classsplinepy_1_1splines_1_1SplinepyBase"/>
+      </node>
+      <node id="5">
+        <label>Nurbs&lt; para_dim &gt;</label>
+        <link refid="classsplinepy_1_1splines_1_1Nurbs"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>RationalBezier&lt; para_dim, dim &gt;</label>
+        <link refid="classsplinepy_1_1splines_1_1RationalBezier"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Bezier&lt; para_dim, dim &gt;</label>
+        <link refid="classsplinepy_1_1splines_1_1Bezier"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>BSpline&lt; para_dim &gt;</label>
+        <link refid="classsplinepy_1_1splines_1_1BSpline"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>SplinepyBase</label>
+        <link refid="classsplinepy_1_1splines_1_1SplinepyBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" line="41" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/splinepy_base.hpp" bodystart="41" bodyend="324"/>
+    <listofallmembers>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" prot="protected" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>control_point_pointers_</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>ControlPointPointers_</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a115e11c597c41143a487bac1564f306f" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyAdd</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a300fda0bc3091ee8328d7e3ccf83c889" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyBase</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a5c804a4b323dcae914442ef3836f5ec9" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyBasis</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a20722d779bdedf75284890abe61cce7f" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyBasisAndSupport</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a26f85766cf788dbcfc3b304900c18b49" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyBasisDerivative</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7db518859493e6f59eddcfd643ac0fd9" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyBasisDerivativeAndSupport</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af05fe3b20aed88bea1f16b634e3ddb19" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCompose</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a8e0877c5aa9d0880e837c4f8e081d651" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyComposeSensitivities</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a04cd334a9c81663a688f9a42f10348d4" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCompositionDerivative</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a82c7531c75207a9c4c1ce2ee287d6d80" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyControlMeshResolutions</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af20c63586810ad81b86a126d2a3ebff2" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyControlPointPointers</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a570e95158a7ef8c3d65a883524bfe843" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCreate</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a6197098cf037e4eac451a8e916b930ab" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCreateBezier</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a2552b5bc29ddb7181f31ef6df08d82b1" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCreateBSpline</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a94259ef86c46a1f7a889a910dfbe56fb" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCreateNurbs</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aad8af300d6750fbfdc9bd07e6b880a2f" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCreateRationalBezier</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af304b3a49872cd3b06e5d4719e4919d2" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyCurrentProperties</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1acc36e2767ff06648d5e325bb2bb61e8a" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyDeepCopy</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a1623b3917d83d47770045b0277ae0702" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyDerivative</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ad30620aeaaad6a9db0816696fbd87179" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyDerivativeSpline</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae2dd295617527f88b933ca007619ba06" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyDim</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a14e31715a0972b74b13776d636b700dc" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyDimMatches</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a78beda53207c40f7f809f8bb3454d164" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyElevateDegree</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af44d40483deab0f4f5d3901073b63c2c" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyEvaluate</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a89017250bfdb853c3bd01a41d7828a13" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyExtractBezierPatches</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a50217282b435afd4c8db596f147f88ce" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyExtractBoundary</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a531c1b5ece7f10875a4d5dac7598668b" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyExtractDim</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a937737f903b962b14b75911ad87ea980" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyGrevilleAbscissae</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1af3bd0735a49bd8e375b06f562d3f3341" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyHasKnotVectors</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aeee448dc5071048348878fb3f2cf6637" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyInsertKnot</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae791a517504d63316946462ffd75a597" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyIsNull</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a94e746bab5a7210db8dae6981a6aef14" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyIsRational</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a8a41f8be9a9f5508406f8fedbe5c0499" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyJacobian</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a9b314b6a49745e77cce147e1ddde407e" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyKnotMultiplicities</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aec3f80474d3a3e1c2681b9b188c8f4b4" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyKnotVector</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a99ff3ac5c14681c4a3410ac4fc15ec5a" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyMultiply</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ae1c06aea93c8a42d13959c78481416b8" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyNumberOfControlPoints</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ade6ccd2d2e8897dab6f3950b4b905f48" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyNumberOfSupports</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a997118cc64f6c3d827933652a0e06a25" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyParaDim</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a922a33f1754656830dda4933f294fa41" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyParaDimMatches</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a54dcf4b4f9ebd93c047a2de6b4b8ec23" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyParameterSpace</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1ad2869f6460d00786e925884afda6ab16" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyParametricBounds</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a655dd76f93a8a1ca02b8bb1fecb83c82" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyPlantNewKdTreeForProximity</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1abdc29d91239f8cbc6d80deab29327567" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyReduceDegree</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a87f592bab9442f544762bf187c21d819" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyRemoveKnot</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a96f3192b27218f7d53d83cf18bf5ee81" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepySplineName</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a9bc5332b3f0f6aa06e959d5c73e54f7f" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepySplineNameMatches</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aa14f7f52b84375357c04e829276386a8" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepySplit</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a80ef44d7b6a5f9250fc26fd0fe2923aa" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepySupport</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a311f2f145c25efbf07a4127a93fd728f" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyVerboseProximity</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a34564c79b8de33a2ad8bbbc2b7499c23" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyWeightedControlPointPointers</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a955f6e0c10f3df22e8d13034b9b619f7" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyWeightPointers</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1abefc95435c3aa85747558d2f74cfd1f3" prot="public" virt="pure-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>SplinepyWhatAmI</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1adc055961fdb5902289317a57a4e01a1b" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>WeightedControlPointPointers_</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1a4f5e1e4fe61bfc1f496d90985e18a938" prot="public" virt="non-virtual"><scope>splinepy::splines::SplinepyBase</scope><name>WeightPointers_</name></member>
+      <member refid="classsplinepy_1_1splines_1_1SplinepyBase_1aea386b22415f301117a669e1fa04d55c" prot="public" virt="virtual"><scope>splinepy::splines::SplinepyBase</scope><name>~SplinepyBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,716 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="splines_2bspline_8hpp" kind="file" language="C++">
+    <compoundname>splines/bspline.hpp</compoundname>
+    <includes local="no">BSplineLib/Splines/b_spline.hpp</includes>
+    <includes refid="proximity_8hpp" local="yes">splinepy/proximity/proximity.hpp</includes>
+    <includes refid="basis__functions_8hpp" local="yes">splinepy/splines/helpers/basis_functions.hpp</includes>
+    <includes refid="extract_8hpp" local="yes">splinepy/splines/helpers/extract.hpp</includes>
+    <includes refid="properties_8hpp" local="yes">splinepy/splines/helpers/properties.hpp</includes>
+    <includes refid="scalar__type__wrapper_8hpp" local="yes">splinepy/splines/helpers/scalar_type_wrapper.hpp</includes>
+    <includes refid="splinepy__base_8hpp" local="yes">splinepy/splines/splinepy_base.hpp</includes>
+    <includes refid="explicit_2bspline_8hpp" local="yes">splinepy/explicit/bspline.hpp</includes>
+    <includedby refid="bspline__explicit_8cpp" local="no">bspline_explicit.cpp</includedby>
+    <includedby refid="py__spline_8cpp" local="yes">py_spline.cpp</includedby>
+    <includedby refid="py__spline__reader_8cpp" local="yes">py_spline_reader.cpp</includedby>
+    <includedby refid="splinepy__base_8cpp" local="no">splinepy_base.cpp</includedby>
+    <incdepgraph>
+      <node id="26">
+        <label>BSplineLib/Utilities/math_operations.hpp</label>
+      </node>
+      <node id="18">
+        <label>iterator</label>
+      </node>
+      <node id="8">
+        <label>splinepy/utils/coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>splinepy/splines/helpers/scalar_type_wrapper.hpp</label>
+        <link refid="scalar__type__wrapper_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>cmath</label>
+      </node>
+      <node id="5">
+        <label>splinepy/splines/splinepy_base.hpp</label>
+        <link refid="splinepy__base_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>cassert</label>
+      </node>
+      <node id="13">
+        <label>stdexcept</label>
+      </node>
+      <node id="19">
+        <label>numeric</label>
+      </node>
+      <node id="24">
+        <label>splinepy/splines/helpers/basis_functions.hpp</label>
+        <link refid="basis__functions_8hpp"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>BSplineLib/Splines/b_spline.hpp</label>
+      </node>
+      <node id="21">
+        <label>splinepy/utils/grid_points.hpp</label>
+        <link refid="grid__points_8hpp"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>splinepy/explicit/bspline.hpp</label>
+        <link refid="explicit_2bspline_8hpp"/>
+      </node>
+      <node id="10">
+        <label>splinepy/utils/print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>BSplineLib/Utilities/index.hpp</label>
+      </node>
+      <node id="3">
+        <label>splinepy/proximity/proximity.hpp</label>
+        <link refid="proximity_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>vector</label>
+      </node>
+      <node id="22">
+        <label>utility</label>
+      </node>
+      <node id="16">
+        <label>array</label>
+      </node>
+      <node id="12">
+        <label>sstream</label>
+      </node>
+      <node id="14">
+        <label>splinepy/utils/arrays.hpp</label>
+        <link refid="arrays_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>splinepy/splines/helpers/properties.hpp</label>
+        <link refid="properties_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>splinepy/splines/helpers/extract.hpp</label>
+        <link refid="extract_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>iostream</label>
+      </node>
+      <node id="4">
+        <label>napf.hpp</label>
+      </node>
+      <node id="20">
+        <label>type_traits</label>
+      </node>
+      <node id="23">
+        <label>splinepy/utils/default_initialization_allocator.hpp</label>
+        <link refid="default__initialization__allocator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>algorithm</label>
+      </node>
+      <node id="25">
+        <label>BSplineLib/ParameterSpaces/parameter_space.hpp</label>
+      </node>
+      <node id="6">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>py_spline.cpp</label>
+        <link refid="py__spline_8cpp"/>
+      </node>
+      <node id="2">
+        <label>bspline_explicit.cpp</label>
+        <link refid="bspline__explicit_8cpp"/>
+      </node>
+      <node id="1">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>splinepy_base.cpp</label>
+        <link refid="splinepy__base_8cpp"/>
+      </node>
+      <node id="4">
+        <label>py_spline_reader.cpp</label>
+        <link refid="py__spline__reader_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classsplinepy_1_1splines_1_1BSpline" prot="public">splinepy::splines::BSpline</innerclass>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1splines">splinepy::splines</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">//<sp/>SplineLib</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;BSplineLib/Splines/b_spline.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="proximity_8hpp" kindref="compound">splinepy/proximity/proximity.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="basis__functions_8hpp" kindref="compound">splinepy/splines/helpers/basis_functions.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="extract_8hpp" kindref="compound">splinepy/splines/helpers/extract.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="properties_8hpp" kindref="compound">splinepy/splines/helpers/properties.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="scalar__type__wrapper_8hpp" kindref="compound">splinepy/splines/helpers/scalar_type_wrapper.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="splinepy__base_8hpp" kindref="compound">splinepy/splines/splinepy_base.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1splines" kindref="compound">splinepy::splines</ref><sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>para_dim&gt;</highlight></codeline>
+<codeline lineno="44" refid="classsplinepy_1_1splines_1_1BSpline" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref>,</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>bsplinelib::splines::BSpline&lt;para_dim&gt;<sp/>{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="48" refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>constexpr<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref><sp/>=<sp/>para_dim;</highlight></codeline>
+<codeline lineno="50" refid="classsplinepy_1_1splines_1_1BSpline_1a61ce0c82e3321630130cde7c22bba55d" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>constexpr<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a61ce0c82e3321630130cde7c22bba55d" kindref="member">kIsRational</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="52" refid="classsplinepy_1_1splines_1_1BSpline_1a2f325b26d4ab0f18cd453c784ff1d0c9" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>constexpr<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a2f325b26d4ab0f18cd453c784ff1d0c9" kindref="member">kHasKnotVectors</ref><sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>TODO<sp/>remove<sp/>afterwards</highlight></codeline>
+<codeline lineno="56" refid="classsplinepy_1_1splines_1_1BSpline_1a929598a182c3b81b720ad9a6dc256c4a" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a929598a182c3b81b720ad9a6dc256c4a" kindref="member">para_dim_</ref><sp/>=<sp/>para_dim;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>self</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>s_para_dim&gt;</highlight></codeline>
+<codeline lineno="60" refid="classsplinepy_1_1splines_1_1BSpline_1a031cfc67ae5fe3dc5df751f226fd3406" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SelfTemplate_</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline&lt;s_para_dim&gt;</ref>;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>boundary</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62" refid="classsplinepy_1_1splines_1_1BSpline_1a7e9d611431179672d9ae6970eb2a5a7e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BoundaryType_</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref>&lt;para_dim<sp/>-<sp/>1&gt;;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>splinepy</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="classsplinepy_1_1splines_1_1BSpline_1ad0d9b5c506ab3573df65a8d5a14ad73a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">SplinepyBase_</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref>;</highlight></codeline>
+<codeline lineno="66" refid="classsplinepy_1_1splines_1_1BSpline_1af2a9841bfd6f3753f41e328aa4310be1" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1af2a9841bfd6f3753f41e328aa4310be1" kindref="member">ControlPointPointers_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a047bd01588a876ffd02dca249fe94cb5" kindref="member">SplinepyBase_::ControlPointPointers_</ref>;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>splinelib</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref><sp/>=<sp/>bsplinelib::splines::BSpline&lt;para_dim&gt;;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b_para_dim&gt;</highlight></codeline>
+<codeline lineno="71" refid="classsplinepy_1_1splines_1_1BSpline_1a6e3dfc7daeb578c54fc0e984ad9f8fd7" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a6e3dfc7daeb578c54fc0e984ad9f8fd7" kindref="member">BaseTemplate_</ref><sp/>=<sp/>bsplinelib::splines::BSpline&lt;b_para_dim&gt;;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>parameter<sp/>space</highlight></codeline>
+<codeline lineno="74" refid="classsplinepy_1_1splines_1_1BSpline_1a20870b9160eae832517f663003ae24fc" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a20870b9160eae832517f663003ae24fc" kindref="member">ParameterSpace_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::ParameterSpace_;</highlight></codeline>
+<codeline lineno="76" refid="classsplinepy_1_1splines_1_1BSpline_1adc5ad717de7fad3a3ee96504ac2ea07c" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1adc5ad717de7fad3a3ee96504ac2ea07c" kindref="member">Degrees_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ParameterSpace_::Degrees_;</highlight></codeline>
+<codeline lineno="78" refid="classsplinepy_1_1splines_1_1BSpline_1a80fab9148dab1f93aca30768997d6c9c" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a80fab9148dab1f93aca30768997d6c9c" kindref="member">Degree_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Degrees_::value_type;</highlight></codeline>
+<codeline lineno="80" refid="classsplinepy_1_1splines_1_1BSpline_1a9b34c3ea005ed1dd25ba751e5e53f1ee" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a9b34c3ea005ed1dd25ba751e5e53f1ee" kindref="member">KnotVectors_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ParameterSpace_::KnotVectors_;</highlight></codeline>
+<codeline lineno="82" refid="classsplinepy_1_1splines_1_1BSpline_1ab559c9152b4090fad482f1883738dab3" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ab559c9152b4090fad482f1883738dab3" kindref="member">KnotVector_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>KnotVectors_::value_type::element_type;</highlight></codeline>
+<codeline lineno="84" refid="classsplinepy_1_1splines_1_1BSpline_1a5a94d6442a3574855d282bd3b1a92d24" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a5a94d6442a3574855d282bd3b1a92d24" kindref="member">Knots_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::Base_::Knots_;</highlight></codeline>
+<codeline lineno="86" refid="classsplinepy_1_1splines_1_1BSpline_1a2274e8740c2987df3d330fc12aaecc46" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a2274e8740c2987df3d330fc12aaecc46" kindref="member">Knot_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::Knot_;</highlight></codeline>
+<codeline lineno="88" refid="classsplinepy_1_1splines_1_1BSpline_1a043a483863483e58be843ae8ecc55a96" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a043a483863483e58be843ae8ecc55a96" kindref="member">KnotRatios_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::ParameterSpace_::KnotRatios_;</highlight></codeline>
+<codeline lineno="90" refid="classsplinepy_1_1splines_1_1BSpline_1aa9b6e2f891e4bf9abd5d6d8051b97230" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aa9b6e2f891e4bf9abd5d6d8051b97230" kindref="member">KnotRatio_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>KnotRatios_::value_type;</highlight></codeline>
+<codeline lineno="92" refid="classsplinepy_1_1splines_1_1BSpline_1a0a86f29c6556481ec8b89601dd9d26c4" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a0a86f29c6556481ec8b89601dd9d26c4" kindref="member">ParametricCoordinate_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::ParametricCoordinate_;</highlight></codeline>
+<codeline lineno="93" refid="classsplinepy_1_1splines_1_1BSpline_1a97df7363d9f19c8b1943ac28b3867088" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a97df7363d9f19c8b1943ac28b3867088" kindref="member">ScalarParametricCoordinate_</ref><sp/>=</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ParametricCoordinate_::value_type;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>vector<sp/>space</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="classsplinepy_1_1splines_1_1BSpline_1a72c1f105c5d5771614c19d88df40c31e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a72c1f105c5d5771614c19d88df40c31e" kindref="member">VectorSpace_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::VectorSpace_;</highlight></codeline>
+<codeline lineno="97" refid="classsplinepy_1_1splines_1_1BSpline_1a0a9107ffb4cefd99b60e2f4610abb02b" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a0a9107ffb4cefd99b60e2f4610abb02b" kindref="member">PhysicalSpace_</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a72c1f105c5d5771614c19d88df40c31e" kindref="member">VectorSpace_</ref>;</highlight></codeline>
+<codeline lineno="98" refid="classsplinepy_1_1splines_1_1BSpline_1acef79325f0f261682cbc24ff910098cc" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1acef79325f0f261682cbc24ff910098cc" kindref="member">Coordinates_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>VectorSpace_::Coordinates_;</highlight></codeline>
+<codeline lineno="99" refid="classsplinepy_1_1splines_1_1BSpline_1a19b20a06fe0be91929026adae2978441" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a19b20a06fe0be91929026adae2978441" kindref="member">Coordinate_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::Coordinate_;</highlight></codeline>
+<codeline lineno="100" refid="classsplinepy_1_1splines_1_1BSpline_1acf52f8bfd5466bbb7b2d607de305fdf7" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1acf52f8bfd5466bbb7b2d607de305fdf7" kindref="member">ScalarCoordinate_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Coordinate_::value_type;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>frequently<sp/>used<sp/>types</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="classsplinepy_1_1splines_1_1BSpline_1afa3c295d17d44d8600ac460f857f66e0" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afa3c295d17d44d8600ac460f857f66e0" kindref="member">Derivative_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::Derivative_;</highlight></codeline>
+<codeline lineno="103" refid="classsplinepy_1_1splines_1_1BSpline_1ac6da1daeb00717554acdb6a402f7c7e8" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ac6da1daeb00717554acdb6a402f7c7e8" kindref="member">Dimension_</ref><sp/>=<sp/>bsplinelib::Dimension;</highlight></codeline>
+<codeline lineno="104" refid="classsplinepy_1_1splines_1_1BSpline_1adb22bc1e9d18d27e973b877451564ec6" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1adb22bc1e9d18d27e973b877451564ec6" kindref="member">Tolerance_</ref><sp/>=<sp/>bsplinelib::splines::Tolerance;</highlight></codeline>
+<codeline lineno="105" refid="classsplinepy_1_1splines_1_1BSpline_1a5b55bb6cb18dcc78653d0ed10ebdbeb1" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a5b55bb6cb18dcc78653d0ed10ebdbeb1" kindref="member">OutputInformation_</ref><sp/>=</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>bsplinelib::Tuple&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ParameterSpace_::OutputInformation_,</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>VectorSpace_::OutputInformation_&gt;;</highlight></codeline>
+<codeline lineno="108" refid="classsplinepy_1_1splines_1_1BSpline_1a2062f583d300416c3a883d7e82f39b81" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a2062f583d300416c3a883d7e82f39b81" kindref="member">Index_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::Base_::Index_;</highlight></codeline>
+<codeline lineno="109" refid="classsplinepy_1_1splines_1_1BSpline_1a7b972c161a9363ecf0f282df86bbf84f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a7b972c161a9363ecf0f282df86bbf84f" kindref="member">IndexLength_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Index_::Length_;</highlight></codeline>
+<codeline lineno="110" refid="classsplinepy_1_1splines_1_1BSpline_1ad21312923c2a26df579f7d9f26cd31df" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ad21312923c2a26df579f7d9f26cd31df" kindref="member">IndexValue_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Index_::Value_;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Some<sp/>private<sp/>ones.<sp/>Here<sp/>we<sp/>make<sp/>it<sp/>public</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112" refid="classsplinepy_1_1splines_1_1BSpline_1a980671554592380731175871f48954b9" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a980671554592380731175871f48954b9" kindref="member">BezierInformation_</ref><sp/>=</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::ParameterSpace_::BezierInformation_;</highlight></codeline>
+<codeline lineno="114" refid="classsplinepy_1_1splines_1_1BSpline_1acb13e0e4fd7c95a10ed80f49f1c2f011" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1acb13e0e4fd7c95a10ed80f49f1c2f011" kindref="member">BinomialRatios_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Base_::ParameterSpace_::BinomialRatios_;</highlight></codeline>
+<codeline lineno="115" refid="classsplinepy_1_1splines_1_1BSpline_1af1d01a690d8a691995bdb40ac185f463" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1af1d01a690d8a691995bdb40ac185f463" kindref="member">BinomialRatio_</ref><sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BinomialRatios_::value_type;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Advanced<sp/>use</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117" refid="classsplinepy_1_1splines_1_1BSpline_1af25be4433e4f4a2cdaba20195b042eff" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1proximity_1_1Proximity" kindref="compound">Proximity_</ref><sp/>=<sp/><ref refid="classsplinepy_1_1proximity_1_1Proximity" kindref="compound">splinepy::proximity::Proximity</ref>;</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124" refid="classsplinepy_1_1splines_1_1BSpline_1ac32267e6cf2f415e76c5d48281919528" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ac32267e6cf2f415e76c5d48281919528" kindref="member">CreateBase</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>degrees,</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;double&gt;&gt;&amp;<sp/>knot_vectors,</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>control_points,</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim)<sp/>{</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>process<sp/>all<sp/>the<sp/>info<sp/>and<sp/>turn<sp/>them<sp/>into<sp/>SplineLib<sp/>types<sp/>to<sp/>initialize</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Base_.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Prepare<sp/>temporary<sp/>containers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1adc5ad717de7fad3a3ee96504ac2ea07c" kindref="member">Degrees_</ref><sp/>sl_degrees;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>std::array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a5a94d6442a3574855d282bd3b1a92d24" kindref="member">Knots_</ref><sp/>sl_knots;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>std::vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a9b34c3ea005ed1dd25ba751e5e53f1ee" kindref="member">KnotVectors_</ref><sp/>sl_knot_vectors;<sp/></highlight><highlight class="comment">//<sp/>std::array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1acef79325f0f261682cbc24ff910098cc" kindref="member">Coordinates_</ref><sp/>sl_control_points;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ncps{1};</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Formulate<sp/>degrees<sp/>and<sp/>knotvectors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>degrees</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sl_degrees[i]<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a80fab9148dab1f93aca30768997d6c9c" kindref="member">Degree_</ref>(degrees[i]);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>knot<sp/>vectors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>knot_vector<sp/>=<sp/>knot_vectors[i];</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>nkv<sp/>=<sp/>knot_vector.size();</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sl_knots.clear();</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sl_knots.reserve(nkv);</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>try<sp/>if<sp/>this<sp/>works<sp/>after<sp/>namedtype<sp/>ext</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>sl_knots<sp/>=<sp/>knot_vector;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>nkv;<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sl_knots.emplace_back(<ref refid="classsplinepy_1_1splines_1_1BSpline_1a2274e8740c2987df3d330fc12aaecc46" kindref="member">Knot_</ref>{knot_vector[j]});</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr<sp/>sl_knot_vector{std::make_shared&lt;KnotVector_&gt;(sl_knots)};</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sl_knot_vectors[i]<sp/>=<sp/>sl_knot_vector;</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ncps<sp/>*=<sp/>nkv<sp/>-<sp/>degrees[i]<sp/>-<sp/>1;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Formulate<sp/>ParameterSpace</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sl_parameter_space<sp/>=</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::make_shared&lt;ParameterSpace_&gt;(sl_knot_vectors,<sp/>sl_degrees);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Formulate<sp/>control_points<sp/>-<sp/>this<sp/>will<sp/>be<sp/>a<sp/>view.<sp/>make<sp/>sure<sp/>to<sp/>keep<sp/>the</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>pointer<sp/>alive</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/>sl_control_points.SetData(control_points);</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/>sl_control_points.SetShape(ncps,<sp/>dim);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sl_vector_space<sp/>=</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::make_shared&lt;VectorSpace_&gt;(std::move(sl_control_points));</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>init</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref>(sl_parameter_space,<sp/>sl_vector_space);</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179" refid="classsplinepy_1_1splines_1_1BSpline_1ac593154654dc28bb40f6d079226e9c28" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ac593154654dc28bb40f6d079226e9c28" kindref="member">BSpline</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>degrees,</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;double&gt;&gt;&amp;<sp/>knot_vectors,</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>control_points,</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim)</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref>(<ref refid="classsplinepy_1_1splines_1_1BSpline_1ac32267e6cf2f415e76c5d48281919528" kindref="member">CreateBase</ref>(degrees,<sp/>knot_vectors,<sp/>control_points,<sp/>dim))<sp/>{}</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187" refid="classsplinepy_1_1splines_1_1BSpline_1a756dbf0e9ba484a59d33469ed652495f" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a756dbf0e9ba484a59d33469ed652495f" kindref="member">BSpline</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref>&amp;<sp/>other)<sp/>:<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref>(static_cast&lt;const<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1abbb2d8a20c2659bc4aaa1db144002d2b" kindref="member">Base_</ref>&amp;&gt;(other))<sp/>{}</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>Base_::Base_;</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193" refid="classsplinepy_1_1splines_1_1BSpline_1a4456a1cfe7545048c31366a6fe0dde7f" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1adc5ad717de7fad3a3ee96504ac2ea07c" kindref="member">Degrees_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4456a1cfe7545048c31366a6fe0dde7f" kindref="member">GetDegrees</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kindref="member">GetParameterSpace</ref>().GetDegrees();</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198" refid="classsplinepy_1_1splines_1_1BSpline_1a3c840f740f31771132abddd743dcf4a8" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a9b34c3ea005ed1dd25ba751e5e53f1ee" kindref="member">KnotVectors_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a3c840f740f31771132abddd743dcf4a8" kindref="member">GetKnotVectors</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kindref="member">GetParameterSpace</ref>().GetKnotVectors();</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203" refid="classsplinepy_1_1splines_1_1BSpline_1afec5511510398a7261801ff1a9ec39c6" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1acef79325f0f261682cbc24ff910098cc" kindref="member">Coordinates_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afec5511510398a7261801ff1a9ec39c6" kindref="member">GetCoordinates</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" kindref="member">GetVectorSpace</ref>().GetCoordinates();</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>required<sp/>implementations</highlight></codeline>
+<codeline lineno="209" refid="classsplinepy_1_1splines_1_1BSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" refkind="member"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" kindref="member">SplinepyParaDim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight></codeline>
+<codeline lineno="212" refid="classsplinepy_1_1splines_1_1BSpline_1addafa95d18f804ff9b6565cc69b9b441" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1addafa95d18f804ff9b6565cc69b9b441" kindref="member">SplinepyDim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1py_1a6ca8877984225027549de04c2388d551" kindref="member">Base_::Dim</ref>();<sp/>}</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight></codeline>
+<codeline lineno="215" refid="classsplinepy_1_1splines_1_1BSpline_1ae9e589febdb3931dc5edf33b83e6ed81" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ae9e589febdb3931dc5edf33b83e6ed81" kindref="member">SplinepySplineName</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;BSpline&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218" refid="classsplinepy_1_1splines_1_1BSpline_1a0164ebf3b3d2364894b747ab27772bfe" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a0164ebf3b3d2364894b747ab27772bfe" kindref="member">SplinepyWhatAmI</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;BSpline,<sp/>parametric<sp/>dimension:<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="classsplinepy_1_1splines_1_1BSpline_1ad0b0e5b72a509032ee74ce3af1df08ca" kindref="member">SplinepyParaDim</ref>())</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>physical<sp/>dimension:<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(<ref refid="classsplinepy_1_1splines_1_1BSpline_1addafa95d18f804ff9b6565cc69b9b441" kindref="member">SplinepyDim</ref>());</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight></codeline>
+<codeline lineno="224" refid="classsplinepy_1_1splines_1_1BSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a11ac3093e1244d3bcf9e8434acc37a5f" kindref="member">SplinepyHasKnotVectors</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a2f325b26d4ab0f18cd453c784ff1d0c9" kindref="member">kHasKnotVectors</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227" refid="classsplinepy_1_1splines_1_1BSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aa69c5b2aa3411e4f1b78332e0b6a2265" kindref="member">SplinepyIsRational</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a61ce0c82e3321630130cde7c22bba55d" kindref="member">kIsRational</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230" refid="classsplinepy_1_1splines_1_1BSpline_1ab155088195abe36b77efe299d1ef338d" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ab155088195abe36b77efe299d1ef338d" kindref="member">SplinepyNumberOfControlPoints</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" kindref="member">GetVectorSpace</ref>().GetNumberOfCoordinates();</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"></highlight></codeline>
+<codeline lineno="235" refid="classsplinepy_1_1splines_1_1BSpline_1a3359640a16e7af39e032fbd3e9b93318" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a3359640a16e7af39e032fbd3e9b93318" kindref="member">SplinepyNumberOfSupports</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a85e5be7173a8c83be2f6c74ad47a46bb" kindref="member">splinepy::splines::helpers::GetNumberOfSupports</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="241" refid="classsplinepy_1_1splines_1_1BSpline_1afbc69546e8f79d8f846fbe3bb8e06130" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afbc69546e8f79d8f846fbe3bb8e06130" kindref="member">SplinepyCurrentProperties</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>degrees,</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::vector&lt;double&gt;&gt;*<sp/>knot_vectors,</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>control_points,</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>weights<sp/></highlight><highlight class="comment">/*<sp/>untouched<sp/>*/</highlight><highlight class="normal">)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>parameter_space<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kindref="member">GetParameterSpace</ref>();</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>vector_space<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" kindref="member">GetVectorSpace</ref>();</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>degrees</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(degrees)<sp/>{</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(std::size_t<sp/>i{};<sp/>i<sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>degrees[i]<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(parameter_space.GetDegrees()[i]);</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"></highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>knot_vectors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(knot_vectors)<sp/>{</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>core_kvs<sp/>=<sp/>parameter_space.GetKnotVectors();</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>knot_vectors-&gt;clear();</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>knot_vectors-&gt;reserve(<ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>);</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(std::size_t<sp/>i{};<sp/>i<sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>core_kv<sp/>=<sp/>*core_kvs[i];</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::size_t<sp/>kvsize<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal">std::size_t</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(core_kv.GetSize());</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;double&gt;<sp/>kv;</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kv.reserve(kvsize);</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Index<sp/>wants<sp/>int</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>static_cast&lt;int&gt;(kvsize);<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kv.emplace_back(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(core_kv[bsplinelib::Index{j}]));</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>knot_vectors-&gt;push_back(std::move(kv));</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>control_points</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(control_points)<sp/>{</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>contiguous!</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>coords<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afec5511510398a7261801ff1a9ec39c6" kindref="member">GetCoordinates</ref>();</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>std::copy(coords.begin(),<sp/>coords.end(),<sp/>control_points);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"></highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;bsplinelib::parameter_spaces::ParameterSpaceBase&gt;</highlight></codeline>
+<codeline lineno="283" refid="classsplinepy_1_1splines_1_1BSpline_1ad6c3fa6228d61c1674e431d3851a8786" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ad6c3fa6228d61c1674e431d3851a8786" kindref="member">SplinepyParameterSpace</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Base_::Base_::parameter_space_;</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;bsplinelib::parameter_spaces::KnotVector&gt;</highlight></codeline>
+<codeline lineno="288" refid="classsplinepy_1_1splines_1_1BSpline_1a62b70c236fdbd8198586e3b3411f3d80" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a62b70c236fdbd8198586e3b3411f3d80" kindref="member">SplinepyKnotVector</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>p_dim)<sp/>{</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!(p_dim<sp/>&lt;<sp/>para_dim))<sp/>{</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a012d99626ae7c9c6e90195d6d2ed2ad8" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;Invalid<sp/>parametric<sp/>dimension.<sp/>Should<sp/>be<sp/>smaller<sp/>than&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>para_dim);</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Base_::Base_::parameter_space_-&gt;GetKnotVectors()[p_dim];</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"></highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ControlPointPointers_&gt;</highlight></codeline>
+<codeline lineno="298" refid="classsplinepy_1_1splines_1_1BSpline_1ad3225a4b5d51b3a21fab0d4af5bea44b" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ad3225a4b5d51b3a21fab0d4af5bea44b" kindref="member">SplinepyControlPointPointers</ref>()<sp/>{</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ncps<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ab155088195abe36b77efe299d1ef338d" kindref="member">SplinepyNumberOfControlPoints</ref>();</highlight></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" kindref="member">SplinepyBase_::control_point_pointers_</ref></highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" kindref="member">SplinepyBase_::control_point_pointers_</ref>-&gt;<ref refid="namespacesplinepy_1_1py_1a02809e044aead8a77e50077b38e60529" kindref="member">Len</ref>()<sp/>==<sp/>ncps)<sp/>{</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" kindref="member">SplinepyBase_::control_point_pointers_</ref>;</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cpp<sp/>=<sp/>std::make_shared&lt;ControlPointPointers_&gt;();</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/>cpp-&gt;dim_<sp/>=<sp/><ref refid="namespacesplinepy_1_1py_1a6ca8877984225027549de04c2388d551" kindref="member">Base_::Dim</ref>();</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/>cpp-&gt;coordinate_begins_.reserve(ncps);</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>coord_2d<sp/>=<sp/>Base_::vector_space_-&gt;GetCoordinates();</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>ncps;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cpp-&gt;coordinate_begins_.push_back(&amp;coord_2d(i,<sp/>0));</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"></highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1SplinepyBase_1a7f833d90cb628ca8f7c2f6a2d9607c1d" kindref="member">SplinepyBase_::control_point_pointers_</ref><sp/>=<sp/>cpp;</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>cpp;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight></codeline>
+<codeline lineno="318" refid="classsplinepy_1_1splines_1_1BSpline_1a9784014998b254ace83bf0ce81d4d85f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a9784014998b254ace83bf0ce81d4d85f" kindref="member">SplinepyParametricBounds</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_bounds)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>pbounds<sp/>=<sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a7602f13d93f009d510e06319ff15ff33" kindref="member">splinepy::splines::helpers::GetParametricBounds</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(std::size_t<sp/>i{};<sp/>i<sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref>;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="321"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>lower<sp/>bounds</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="322"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>para_bounds[i]<sp/>=<sp/>pbounds[0][i];</highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>upper<sp/>bounds</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>para_bounds[<ref refid="classsplinepy_1_1splines_1_1BSpline_1a8032d06d9c896fd0a551f5070eea21c5" kindref="member">kParaDim</ref><sp/>+<sp/>i]<sp/>=<sp/>pbounds[1][i];</highlight></codeline>
+<codeline lineno="325"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="326"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="327"><highlight class="normal"></highlight></codeline>
+<codeline lineno="328" refid="classsplinepy_1_1splines_1_1BSpline_1a7da40985234c8eb3bca9ca82cd0b1428" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a7da40985234c8eb3bca9ca82cd0b1428" kindref="member">SplinepyControlMeshResolutions</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>control_mesh_res)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="329"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cm_res<sp/>=</highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a97e747d67be547c7d8ef4b11a5e80f68" kindref="member">splinepy::splines::helpers::GetControlMeshResolutions</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"><sp/><sp/><sp/><sp/>std::copy_n(cm_res.begin(),<sp/>para_dim,<sp/>control_mesh_res);</highlight></codeline>
+<codeline lineno="332"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="333"><highlight class="normal"></highlight></codeline>
+<codeline lineno="344"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="345" refid="classsplinepy_1_1splines_1_1BSpline_1a15d33b3d5e816d319737c5e4c109e8d0" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a15d33b3d5e816d319737c5e4c109e8d0" kindref="member">SplinepyGrevilleAbscissae</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>greville_abscissae,</highlight></codeline>
+<codeline lineno="346"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>i_para_dim,</highlight></codeline>
+<codeline lineno="347"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>duplicate_tolerance)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1aa9925bb7bb124b27286fc142645ea018" kindref="member">splinepy::splines::helpers::GetGrevilleAbscissae</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="349"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>greville_abscissae,</highlight></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i_para_dim,</highlight></codeline>
+<codeline lineno="351"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>duplicate_tolerance);</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="353"><highlight class="normal"></highlight></codeline>
+<codeline lineno="354" refid="classsplinepy_1_1splines_1_1BSpline_1a920537be0e6844b2d11fd37eaea260ff" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a920537be0e6844b2d11fd37eaea260ff" kindref="member">SplinepyEvaluate</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>evaluated)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/>Base_::Evaluate(para_coord,<sp/>evaluated);</highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="358" refid="classsplinepy_1_1splines_1_1BSpline_1a7d654e8ba079c395e1003593088d3106" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a7d654e8ba079c395e1003593088d3106" kindref="member">SplinepyDerivative</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="359"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>orders,</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>derived)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/>Base_::EvaluateDerivative(para_coord,<sp/>orders,<sp/>derived);</highlight></codeline>
+<codeline lineno="362"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="363"><highlight class="normal"></highlight></codeline>
+<codeline lineno="364" refid="classsplinepy_1_1splines_1_1BSpline_1afcc0eca9e90bc2626b5a97fead06d9b6" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afcc0eca9e90bc2626b5a97fead06d9b6" kindref="member">SplinepyJacobian</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="365"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>jacobians)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="366"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1aaad4ffee231d04ff5eabe2c65bd2e9a8" kindref="member">splinepy::splines::helpers::ScalarTypeJacobian</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="367"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>para_coord,</highlight></codeline>
+<codeline lineno="368"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>jacobians);</highlight></codeline>
+<codeline lineno="369"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="370"><highlight class="normal"></highlight></codeline>
+<codeline lineno="371" refid="classsplinepy_1_1splines_1_1BSpline_1a50e29ae33a6e4bb268dd5a4ef371b3bd" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a50e29ae33a6e4bb268dd5a4ef371b3bd" kindref="member">SplinepyBasis</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>basis)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="372"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a701b1ee5e5523ef0aabe51ae50aec6be" kindref="member">splinepy::splines::helpers::BSplineBasis</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,<sp/>para_coord,<sp/>basis);</highlight></codeline>
+<codeline lineno="373"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="374"><highlight class="normal"></highlight></codeline>
+<codeline lineno="375" refid="classsplinepy_1_1splines_1_1BSpline_1ac5b096806c4cd9447bf3b59921ddfc29" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ac5b096806c4cd9447bf3b59921ddfc29" kindref="member">SplinepyBasisDerivative</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="376"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>order,</highlight></codeline>
+<codeline lineno="377"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>basis_der)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="378"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a99526fdb0b3b82f24413f2d52fa465a8" kindref="member">splinepy::splines::helpers::BSplineBasisDerivative</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="379"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>para_coord,</highlight></codeline>
+<codeline lineno="380"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>order,</highlight></codeline>
+<codeline lineno="381"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>basis_der);</highlight></codeline>
+<codeline lineno="382"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="383"><highlight class="normal"></highlight></codeline>
+<codeline lineno="384" refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18" kindref="member">SplinepySupport</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>support)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="385"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1ae886b3af80688caf098c00d4bf632879" kindref="member">splinepy::splines::helpers::BSplineSupport</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,<sp/>para_coord,<sp/>support);</highlight></codeline>
+<codeline lineno="386"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="387"><highlight class="normal"></highlight></codeline>
+<codeline lineno="389" refid="classsplinepy_1_1splines_1_1BSpline_1a10f13720963256edc8ea3597fff70dec" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a10f13720963256edc8ea3597fff70dec" kindref="member">SplinepyBasisAndSupport</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="390"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>basis,</highlight></codeline>
+<codeline lineno="391"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>support)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="392"><highlight class="normal"></highlight></codeline>
+<codeline lineno="393"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a50e29ae33a6e4bb268dd5a4ef371b3bd" kindref="member">SplinepyBasis</ref>(para_coord,<sp/>basis);</highlight></codeline>
+<codeline lineno="394"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18" kindref="member">SplinepySupport</ref>(para_coord,<sp/>support);</highlight></codeline>
+<codeline lineno="395"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="396"><highlight class="normal"></highlight></codeline>
+<codeline lineno="398" refid="classsplinepy_1_1splines_1_1BSpline_1a5f579d3e5401be64ef8ec3f8c95e9dd6" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a5f579d3e5401be64ef8ec3f8c95e9dd6" kindref="member">SplinepyBasisDerivativeAndSupport</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="399"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>orders,</highlight></codeline>
+<codeline lineno="400"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>basis_der,</highlight></codeline>
+<codeline lineno="401"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>support)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="402"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ac5b096806c4cd9447bf3b59921ddfc29" kindref="member">SplinepyBasisDerivative</ref>(para_coord,<sp/>orders,<sp/>basis_der);</highlight></codeline>
+<codeline lineno="403"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aad466357960a590d8a452bb9b3cf0f18" kindref="member">SplinepySupport</ref>(para_coord,<sp/>support);</highlight></codeline>
+<codeline lineno="404"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="405"><highlight class="normal"></highlight></codeline>
+<codeline lineno="406" refid="classsplinepy_1_1splines_1_1BSpline_1a22488930b1700b805f5a5e948e2fbf4c" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a22488930b1700b805f5a5e948e2fbf4c" kindref="member">SplinepyPlantNewKdTreeForProximity</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>resolutions,</highlight></codeline>
+<codeline lineno="407"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>nthreads)<sp/>{</highlight></codeline>
+<codeline lineno="408"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ae9c2e3de194c9487a6f9aef3060903ec" kindref="member">GetProximity</ref>().<ref refid="classsplinepy_1_1proximity_1_1Proximity_1a78f057726c4086c6aaa4ef6f88e35b7a" kindref="member">PlantNewKdTree</ref>(resolutions,<sp/>nthreads);</highlight></codeline>
+<codeline lineno="409"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="410"><highlight class="normal"></highlight></codeline>
+<codeline lineno="412" refid="classsplinepy_1_1splines_1_1BSpline_1a84d1acf1be097f8e35a12c43f6f4c4f2" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a84d1acf1be097f8e35a12c43f6f4c4f2" kindref="member">SplinepyVerboseProximity</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>query,</highlight></codeline>
+<codeline lineno="413"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance,</highlight></codeline>
+<codeline lineno="414"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>max_iterations,</highlight></codeline>
+<codeline lineno="415"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tight_bounds,</highlight></codeline>
+<codeline lineno="416"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>para_coord,</highlight></codeline>
+<codeline lineno="417"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>phys_coord,</highlight></codeline>
+<codeline lineno="418"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>phys_diff,</highlight></codeline>
+<codeline lineno="419"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>distance,</highlight></codeline>
+<codeline lineno="420"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>convergence_norm,</highlight></codeline>
+<codeline lineno="421"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>first_derivatives,</highlight></codeline>
+<codeline lineno="422"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>second_derivatives)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="423"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ae9c2e3de194c9487a6f9aef3060903ec" kindref="member">GetProximity</ref>().<ref refid="classsplinepy_1_1proximity_1_1Proximity_1af82b608c2d0ceac506ffa6b8230efd5e" kindref="member">VerboseQuery</ref>(query,</highlight></codeline>
+<codeline lineno="424"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tolerance,</highlight></codeline>
+<codeline lineno="425"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>max_iterations,</highlight></codeline>
+<codeline lineno="426"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tight_bounds,</highlight></codeline>
+<codeline lineno="427"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>para_coord,</highlight></codeline>
+<codeline lineno="428"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>phys_coord,</highlight></codeline>
+<codeline lineno="429"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>phys_diff,</highlight></codeline>
+<codeline lineno="430"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>distance,</highlight></codeline>
+<codeline lineno="431"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>convergence_norm,</highlight></codeline>
+<codeline lineno="432"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>first_derivatives,</highlight></codeline>
+<codeline lineno="433"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_derivatives);</highlight></codeline>
+<codeline lineno="434"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="435"><highlight class="normal"></highlight></codeline>
+<codeline lineno="436" refid="classsplinepy_1_1splines_1_1BSpline_1af03150e973b9a12015b3ee7945d3fa57" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1af03150e973b9a12015b3ee7945d3fa57" kindref="member">SplinepyElevateDegree</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>p_dim,</highlight></codeline>
+<codeline lineno="437"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>multiplicity<sp/>=<sp/>1)<sp/>{</highlight></codeline>
+<codeline lineno="438"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1af08c758f2ee6ce109789332bd7c83cb1" kindref="member">splinepy::splines::helpers::ScalarTypeElevateDegree</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="439"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>p_dim,</highlight></codeline>
+<codeline lineno="440"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>multiplicity);</highlight></codeline>
+<codeline lineno="441"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="442"><highlight class="normal"></highlight></codeline>
+<codeline lineno="443" refid="classsplinepy_1_1splines_1_1BSpline_1aa180de3e9ee55ed0b6857401423d7d55" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aa180de3e9ee55ed0b6857401423d7d55" kindref="member">SplinepyReduceDegree</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>p_dim,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance)<sp/>{</highlight></codeline>
+<codeline lineno="444"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1aa42eef74f70fed5db000351dd6f84358" kindref="member">splinepy::splines::helpers::ScalarTypeReduceDegree</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="445"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>p_dim,</highlight></codeline>
+<codeline lineno="446"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tolerance);</highlight></codeline>
+<codeline lineno="447"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="448"><highlight class="normal"></highlight></codeline>
+<codeline lineno="449" refid="classsplinepy_1_1splines_1_1BSpline_1a5b63e6458cf833910c28aec1ab48dc00" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a5b63e6458cf833910c28aec1ab48dc00" kindref="member">SplinepyInsertKnot</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>p_dim,</highlight></codeline>
+<codeline lineno="450"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>knot,</highlight></codeline>
+<codeline lineno="451"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>multiplicity<sp/>=<sp/>1)<sp/>{</highlight></codeline>
+<codeline lineno="452"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a6dcd426d8f7ea59e414c7e1ba4fc1f7e" kindref="member">splinepy::splines::helpers::ScalarTypeInsertKnot</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="453"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>p_dim,</highlight></codeline>
+<codeline lineno="454"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>knot,</highlight></codeline>
+<codeline lineno="455"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>multiplicity);</highlight></codeline>
+<codeline lineno="456"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="457"><highlight class="normal"></highlight></codeline>
+<codeline lineno="458" refid="classsplinepy_1_1splines_1_1BSpline_1a76d88d7ec305769215551668be88214a" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a76d88d7ec305769215551668be88214a" kindref="member">SplinepyRemoveKnot</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>p_dim,</highlight></codeline>
+<codeline lineno="459"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>knot,</highlight></codeline>
+<codeline lineno="460"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>tolerance)<sp/>{</highlight></codeline>
+<codeline lineno="461"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a64fa41c4a96e6ae83d468e1164021a7a" kindref="member">splinepy::splines::helpers::ScalarTypeRemoveKnot</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="462"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>p_dim,</highlight></codeline>
+<codeline lineno="463"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>knot,</highlight></codeline>
+<codeline lineno="464"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tolerance);</highlight></codeline>
+<codeline lineno="465"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="466"><highlight class="normal"></highlight></codeline>
+<codeline lineno="467" refid="classsplinepy_1_1splines_1_1BSpline_1adff57da32b261fc1eb98abf13233bef9" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::vector&lt;std::vector&lt;int&gt;&gt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1adff57da32b261fc1eb98abf13233bef9" kindref="member">SplinepyKnotMultiplicities</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="468"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kindref="member">GetParameterSpace</ref>().KnotMultiplicities();</highlight></codeline>
+<codeline lineno="469"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="470"><highlight class="normal"></highlight></codeline>
+<codeline lineno="471"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;SplinepyBase&gt;</highlight></codeline>
+<codeline lineno="472" refid="classsplinepy_1_1splines_1_1BSpline_1afccd6b3327213012b3c3bfddcb083139" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1afccd6b3327213012b3c3bfddcb083139" kindref="member">SplinepyExtractBoundary</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>boundary_id)<sp/>{</highlight></codeline>
+<codeline lineno="473"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1abf555888abb017a2eb52dbe6c81f3955" kindref="member">splinepy::splines::helpers::ExtractBoundaryMeshSlice</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="474"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boundary_id);</highlight></codeline>
+<codeline lineno="475"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="476"><highlight class="normal"></highlight></codeline>
+<codeline lineno="478"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::vector&lt;std::shared_ptr&lt;SplinepyBase&gt;&gt;</highlight></codeline>
+<codeline lineno="479" refid="classsplinepy_1_1splines_1_1BSpline_1a37c647b9c74e36f1c809d8c0dbb17580" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a37c647b9c74e36f1c809d8c0dbb17580" kindref="member">SplinepyExtractBezierPatches</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="480"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a86d5fb909736e3e591d169c303b1a376" kindref="member">splinepy::splines::helpers::ExtractBezierPatches</ref>(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="481"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="482"><highlight class="normal"></highlight></codeline>
+<codeline lineno="484" refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a20870b9160eae832517f663003ae24fc" kindref="member">ParameterSpace_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a4874da9fb79799d367ff8f2167fa3a99" kindref="member">GetParameterSpace</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="485"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*Base_::Base_::parameter_space_;</highlight></codeline>
+<codeline lineno="486"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="487"><highlight class="normal"></highlight></codeline>
+<codeline lineno="489" refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a72c1f105c5d5771614c19d88df40c31e" kindref="member">VectorSpace_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a23f016ed4d98a6cf5b5d6361e6764d68" kindref="member">GetVectorSpace</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="490"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*Base_::vector_space_;</highlight></codeline>
+<codeline lineno="491"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="492"><highlight class="normal"></highlight></codeline>
+<codeline lineno="494" refid="classsplinepy_1_1splines_1_1BSpline_1ae9c2e3de194c9487a6f9aef3060903ec" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/><ref refid="classsplinepy_1_1proximity_1_1Proximity" kindref="compound">Proximity_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ae9c2e3de194c9487a6f9aef3060903ec" kindref="member">GetProximity</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*<ref refid="classsplinepy_1_1splines_1_1BSpline_1aabba7d9e4f876f453ecee9d09ac5dc2c" kindref="member">proximity_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="496" refid="classsplinepy_1_1splines_1_1BSpline_1ae2f9dba293ec9b163a2957be0e440f50" refkind="member"><highlight class="normal"><sp/><sp/>constexpr<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1proximity_1_1Proximity" kindref="compound">Proximity_</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1ae2f9dba293ec9b163a2957be0e440f50" kindref="member">GetProximity</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>*<ref refid="classsplinepy_1_1splines_1_1BSpline_1aabba7d9e4f876f453ecee9d09ac5dc2c" kindref="member">proximity_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="497"><highlight class="normal"></highlight></codeline>
+<codeline lineno="499" refid="classsplinepy_1_1splines_1_1BSpline_1a296ff957b200c50aadee703157f2f1ff" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;SplinepyBase&gt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1a296ff957b200c50aadee703157f2f1ff" kindref="member">SplinepyDeepCopy</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="500"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::make_shared&lt;BSpline&gt;(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="501"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="502"><highlight class="normal"></highlight></codeline>
+<codeline lineno="503"><highlight class="normal"></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="505" refid="classsplinepy_1_1splines_1_1BSpline_1aabba7d9e4f876f453ecee9d09ac5dc2c" refkind="member"><highlight class="normal"><sp/><sp/>std::unique_ptr&lt;Proximity_&gt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline_1aabba7d9e4f876f453ecee9d09ac5dc2c" kindref="member">proximity_</ref><sp/>=<sp/>std::make_unique&lt;Proximity_&gt;(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="506"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="507"><highlight class="normal"></highlight></codeline>
+<codeline lineno="508"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>splinepy::splines<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="509"><highlight class="normal"></highlight></codeline>
+<codeline lineno="510"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="explicit_2bspline_8hpp" kindref="compound">splinepy/explicit/bspline.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/bspline.hpp"/>
+  </compounddef>
+</doxygen>

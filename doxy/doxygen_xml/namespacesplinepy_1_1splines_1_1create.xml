@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacesplinepy_1_1splines_1_1create" kind="namespace" language="C++">
+    <compoundname>splinepy::splines::create</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1aade4ea29deb4a1697966c7b102f6d9d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateBezier1</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points)</argsstring>
+        <name>CreateBezier1</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/bezier1.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/bezier1.cpp" bodystart="31" bodyend="66" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_bezier.hpp" declline="35" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1a6fdc3f59aa5135692b3c8b7440dcb3c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateBezier2</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points)</argsstring>
+        <name>CreateBezier2</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/bezier2.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/bezier2.cpp" bodystart="31" bodyend="67" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_bezier.hpp" declline="38" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1aeff31c4728ad825ee13af0874ce895af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateBezier3</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points)</argsstring>
+        <name>CreateBezier3</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/bezier3.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/bezier3.cpp" bodystart="31" bodyend="67" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_bezier.hpp" declline="41" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1a133205d2377199b333b5439ef323a288" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateRationalBezier1</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points, const double *weights)</argsstring>
+        <name>CreateRationalBezier1</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated rational </para>
+        </briefdescription>
+        <detaileddescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier1.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier1.cpp" bodystart="31" bodyend="89" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_rational_bezier.hpp" declline="34" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1a20c5933b52cc5ddd5368ab548b416e1d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateRationalBezier2</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points, const double *weights)</argsstring>
+        <name>CreateRationalBezier2</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier2.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier2.cpp" bodystart="31" bodyend="90" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_rational_bezier.hpp" declline="40" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1create_1a9cec82a50d342fcb43608432cb7c5c1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; CreateRationalBezier3</definition>
+        <argsstring>(const int dim, const int *degrees, const double *control_points, const double *weights)</argsstring>
+        <name>CreateRationalBezier3</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>const int *</type>
+          <declname>degrees</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>control_points</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>weights</declname>
+        </param>
+        <briefdescription>
+<para>dynamic creation of templated <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier3.cpp" line="31" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/create/rational_bezier3.cpp" bodystart="31" bodyend="90" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_rational_bezier.hpp" declline="46" declcolumn="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/create/create_bezier.hpp" line="31" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.add\_fields
+==========================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.add_fields

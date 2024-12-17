@@ -1,0 +1,6 @@
+splinepy.helpme.integrate.physical\_function
+============================================
+
+.. currentmodule:: splinepy.helpme.integrate
+
+.. autofunction:: physical_function
