@@ -25,6 +25,16 @@ class CubeVoid(_TileBase):
     _para_dim = 3
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 4
+    _sensitivities_implemented = True
+    # TODO: clever parameter bounds and checks if given parametrization would
+    # still lie in unit cube
+    _parameter_bounds = [
+        [0.0, 1.0],
+        [0.0, 1.0],
+        [-_np.pi / 2, _np.pi / 2],
+        [-_np.pi / 2, _np.pi / 2],
+    ]
+    _parameters_shape = (1, 4)
 
     # Aux values
     _sphere_ctps = _np.array(
@@ -54,7 +64,7 @@ class CubeVoid(_TileBase):
 
     def _rotation_matrix_y_deriv(self, angle):
         cc, ss = _np.cos(angle), _np.sin(angle)
-        return _np.array([[-ss, 0, -cc], [0, 1, 0], [cc, 0, -ss]])
+        return _np.array([[-ss, 0, -cc], [0, 0, 0], [cc, 0, -ss]])
 
     def create_tile(
         self,
@@ -91,7 +101,9 @@ class CubeVoid(_TileBase):
         derivatives : list<list<splines>> / None
         """  # set to default if nothing is given
         if parameters is None:
-            parameters = _np.array([0.5, 0.5, 0, 0]).reshape(1, 1, 4)
+            parameters = _np.array([0.5, 0.5, 0, 0]).reshape(
+                self._parameters_shape
+            )
 
         # Create center ellipsoid
         # RotY * RotX * DIAG(r_x, r_yz) * T_base

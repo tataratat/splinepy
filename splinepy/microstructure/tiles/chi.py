@@ -16,8 +16,11 @@ class Chi(_TileBase):
 
     _dim = 2
     _para_dim = 1
-    _evaluation_points = _np.array([[0.5, 0.5]])
+    _evaluation_points = _np.array([[0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
+    _parameters_shape = (1, 1)
 
     def create_tile(
         self,
@@ -48,11 +51,16 @@ class Chi(_TileBase):
             )
             parameters = _np.array([[_np.pi / 8]])
         else:
+            angle_bounds = self._parameter_bounds[0]
             if not (
-                _np.all(parameters >= -_np.pi * 0.5)
-                and _np.all(parameters < _np.pi * 0.5)
+                _np.all(parameters >= angle_bounds[0])
+                and _np.all(parameters < angle_bounds[1])
             ):
-                raise ValueError("The parameter must be in -Pi/2 and Pi/2")
+                error_message = (
+                    f"The parameter must be in {angle_bounds[0]}"
+                    + f"and {angle_bounds[1]}"
+                )
+                raise ValueError(error_message)
             pass
         self.check_params(parameters)
 
@@ -75,12 +83,13 @@ class Chi(_TileBase):
                 s = r * _np.sin(alpha)
                 c = r * _np.cos(alpha)
             else:
-                alpha = parameter_sensitivities[0, 0, i_derivative - 1]
+                alpha = parameters[0, 0] + _np.pi / 4
+                dalpha = float(parameter_sensitivities[0, 0, i_derivative - 1])
                 v_one_half = 0.0
                 v_zero = 0.0
                 r = _np.sqrt(0.125)
-                s = r * _np.cos(alpha)
-                c = -r * _np.sin(alpha)
+                s = dalpha * r * _np.cos(alpha)
+                c = dalpha * -r * _np.sin(alpha)
 
             # Init return value
             spline_list = []

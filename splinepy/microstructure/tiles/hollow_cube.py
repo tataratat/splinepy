@@ -28,6 +28,9 @@ class HollowCube(_TileBase):
         ]
     )
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _parameter_bounds = [[0.0, 0.5]] * 7
+    _parameters_shape = (7, 1)
 
     def create_tile(
         self,
@@ -65,17 +68,8 @@ class HollowCube(_TileBase):
 
         self.check_params(parameters)
 
-        if not (
-            _np.all(parameters[:, :2] > 0.0)
-            and _np.all(parameters[:, :2] < 0.5)
-        ):
+        if not _np.all((parameters > 0.0) & (parameters < 0.5)):
             raise ValueError("The wall thickness must be in (0.0 and 0.5)")
-
-        if not _np.all(
-            (parameters[:, 2:] > _np.deg2rad(-30))
-            and (parameters[:, 2:] < _np.deg2rad(30))
-        ):
-            raise ValueError("Rotation is only allowed between +-30 deg")
 
         if self.check_param_derivatives(parameter_sensitivities):
             n_derivatives = parameter_sensitivities.shape[2]
