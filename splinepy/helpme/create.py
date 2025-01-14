@@ -298,6 +298,337 @@ def revolved(
     return type(spline)(**spline_dict)
 
 
+def swept(
+    cross_section,
+    trajectory,
+    cross_section_normal=None,
+    set_on_trajectory=False,
+    rotation_adaption=None,
+):
+    """
+    Sweeps a cross-section along a trajectory. The cross-section
+    receives rotation into the direction of the trajectory tangent
+    vector and is then placed either at the evaluation points of the
+    trajectory's knots or at the trajectory's control points. This
+    depends on the value of the set_on_trajectory parameter. It can
+    create both a surface or a solid, depending on the dimension of
+    the cross-section.
+
+    The sweeping process has some limitations, since the cross-section
+    cannot be preserved exactly along the whole trajectory.
+
+    The maths behind can be found in the NURBS Book, Piegl & Tiller,
+    2nd edition, chapter 10.4 Swept Surfaces.
+
+    Parameters
+    ----------
+    cross_section : Spline
+      Cross-section to be swept
+    trajectory : Spline
+      Trajectory along which the cross-section is swept
+    cross_section_normal : np.array
+      Normal vector of the cross-section
+      Default is [0, 0, 1]
+    set_on_trajectory : bool
+      If True, the cross-section will be placed at the evaluation
+      points of the trajectory's knots. If False, the cross-section
+      will be placed at the control points of the trajectory.
+      Default is False.
+    rotation_adaption : float
+      Angle in radians by which the cross-section is rotated around
+      the trajectory tangent vector. This is an additional rotation
+      if the user wants to adapt the cross-section rotation.
+      Example with rectangular cross-section:
+      .         x
+      .       x   x                                      x x x x x
+      .     x       x                                    x       x
+      .   x           x    --> rotation around pi/4 -->  x       x
+      .     x       x                                    x       x
+      .       x   x                                      x x x x x
+      .         x
+
+    Returns
+    -------
+    swept_spline : Spline
+      Spline resulting from the sweep
+    """
+
+    from splinepy import NURBS as _NURBS
+    from splinepy import BSpline as _BSpline
+    from splinepy import Spline
+
+    ### INPUT CHECKS ###
+
+    if isinstance(cross_section, Spline) and isinstance(trajectory, Spline):
+        if not isinstance(cross_section, (_BSpline, _NURBS)):
+            raise TypeError(
+                "cross_section must be an instance of BSpline or NURBS"
+            )
+        if not isinstance(trajectory, (_BSpline, _NURBS)):
+            raise TypeError(
+                "trajectory must be an instance of BSpline or NURBS"
+            )
+    else:
+        raise TypeError(
+            "cross_section and trajectory must be instances of Spline"
+        )
+    if not trajectory.para_dim == 1:
+        raise ValueError("trajectory must have a parametric dimension of 1")
+    if not isinstance(set_on_trajectory, bool):
+        raise TypeError("set_on_trajectory must be a boolean")
+
+    if cross_section_normal is not None and not len(cross_section_normal) == 3:
+        raise ValueError(
+            "cross_section_normal must be a 3D vector (array of length 3)"
+        )
+    # setting default value for cross_section_normal
+    if cross_section_normal is None:
+        cross_section_normal = _np.array([0, 0, 1])
+        # add debug message
+        _log.debug("No cross_section_normal given. Defaulting to [0, 0, 1].")
+
+    ### STARTING CALCULATIONS ###
+
+    # make copies so we can work on it inplace
+    trajectory = trajectory.create.embedded(3)
+    cross_section = cross_section.create.embedded(3)
+
+    # initialize parameter values
+    par_value = trajectory.greville_abscissae()
+    par_value = par_value.reshape(-1, 1)
+
+    ### TRANSFORMATION MATRICES ###
+
+    # tangent vector 'e1' of trajectory at parameter value 0
+    e1 = trajectory.derivative([par_value[0]], [1])
+    e1 = (e1 / _np.linalg.norm(e1)).ravel()
+
+    # evaluating a vector normal to e1
+    vec = [-e1[1], e1[0], -e1[2]]
+    B = []
+    # avoid dividing by zero
+    temp_cross = _np.cross(e1, vec)
+    if _np.linalg.norm(temp_cross) > _settings.TOLERANCE:
+        B.append(temp_cross / _np.linalg.norm(temp_cross))
+    else:
+        vec = [e1[2], -e1[1], e1[0]]
+        temp_cross = _np.cross(e1, vec)
+        B.append(temp_cross / _np.linalg.norm(temp_cross))
+        # add debug message
+        _log.debug(
+            "Division by zero occurred. Using alternative vector for B."
+        )
+
+    # initialize transformation matrices and tangent-vector-collection
+    T = []
+    A = []
+    tang_collection = []
+
+    # evaluating transformation matrices for each trajectory point
+    for i in range(len(par_value)):
+        # calculation according to NURBS Book, eq. 10.27
+        # tangent vector e1 on trajectory at parameter value i
+        e1 = trajectory.derivative([par_value[i]], [1])
+        if _np.linalg.norm(e1) < _settings.TOLERANCE:
+            e1 = tang_collection[-1]
+            # add debug message
+            _log.debug(
+                f"Division by zero occurred. Applying an approximation "
+                f"by using the previous tangent e1 for parametric value {par_value[i]}"
+            )
+        e1 = (e1 / _np.linalg.norm(e1)).ravel()
+        # collecting tangent vectors for later use
+        tang_collection.append(e1)
+
+        # projecting B_(i) onto the plane normal to e1
+        B.append(B[i] - _np.dot(B[i], e1) * e1)
+        if _np.linalg.norm(B[i + 1]) < _settings.TOLERANCE:
+            _log.warning(
+                f"Vector B[{i + 1}] is close to zero. Adjusting "
+                f"to avoid division by zero."
+            )
+            B[i + 1] += _settings.TOLERANCE
+        B[i + 1] /= _np.linalg.norm(B[i + 1])
+
+        # defining e2 and e3 vectors
+        e3 = B[i + 1]
+        e2 = _np.cross(e3, e1)
+
+        # array of transformation matrices from global to local coordinates
+        T.append(_np.vstack((e1, e2, e3)))
+
+        # array of transformation matrices from local to global coordinates
+        A.append(_np.linalg.inv(T[i]))
+
+    # separate procedure, if trajectory is closed and B[0] != B[-1]
+    # recalculate B-vector and middle the values between B and B_rec
+    # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
+    is_trajectory_closed = _np.array_equal(
+        trajectory.evaluate([[0]]), trajectory.evaluate([par_value[-1]])
+    )
+    is_B_start_equal_B_end = _np.array_equal(B[0], B[-1])
+
+    if is_trajectory_closed and not is_B_start_equal_B_end:
+        # reset transformation matrices
+        T = []
+        A = []
+        # preallocate B_rec
+        B_rec = [None] * len(B)
+        # make sure start of B_rec is equal to the end of B
+        B_rec[0] = B[-1]
+        # redo the calculation of B using tang_collection from before
+        # in order to avoid recalculating the tangent vectors;
+        # calculation according to NURBS Book, eq. 10.27
+        for i in range(len(par_value)):
+            B_rec[i + 1] = (
+                B_rec[i]
+                - _np.dot(B_rec[i], tang_collection[i]) * tang_collection[i]
+            )
+            if _np.linalg.norm(B_rec[i + 1]) < _settings.TOLERANCE:
+                _log.warning(
+                    f"Vector B_rec[{i + 1}] is close to zero. Adjusting "
+                    f"to avoid division by zero."
+                )
+                B_rec[i + 1] += _settings.TOLERANCE
+            B_rec[i + 1] /= _np.linalg.norm(B_rec[i + 1])
+            # middle point between B and B_rec
+            B_rec[i + 1] = (B[i + 1] + B_rec[i + 1]) * 0.5
+            # normalizing B_rec
+            B_rec[i + 1] /= _np.linalg.norm(B_rec[i + 1])
+            # defining e2 and e3 axis-vectors
+            e3 = B_rec[i + 1]
+            e2 = _np.cross(e3, tang_collection[i])
+
+            # array of transformation matrices from global to local coordinates
+            T.append(_np.vstack((tang_collection[i], e2, e3)))
+
+            # array of transformation matrices from local to global coordinates
+            A.append(_np.linalg.inv(T[i]))
+
+        # check if the beginning and the end of the B-vector are the same
+        if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
+            _log.warning(
+                "Vector calculation is not exact due to the trajectory being closed"
+                " with non-matching tangent vectors at start and end points."
+            )
+
+    ### ROTATION MATRIX ###
+    # rotates cross-section normal vector into global e1 direction
+
+    # skip calculation if cross-section normal vector is default
+    if _np.array_equal(cross_section_normal, _np.array([0, 0, 1])):
+        R = _np.array([[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [-1.0, 0.0, 0.0]])
+    # else, calculate rotation matrix for given cross-section normal vector
+    else:
+        # calculate angle of cross-section normal vector around e2-axis
+        angle_of_cs_normal_1 = _np.arctan2(
+            cross_section_normal[2], cross_section_normal[0]
+        )
+
+        # calculate angle of cross-section normal vector around e3-axis
+        angle_of_cs_normal_2 = _np.arctan2(
+            cross_section_normal[1], cross_section_normal[2]
+        )
+
+        # calculate rotation matrix for cross-section normal vector
+        R1 = _arr.rotation_matrix_around_axis(
+            axis=[0, 1, 0], rotation=angle_of_cs_normal_1, degree=False
+        )
+        R2 = _arr.rotation_matrix_around_axis(
+            axis=[0, 0, 1], rotation=angle_of_cs_normal_2, degree=False
+        )
+        R = _np.matmul(R2, R1)
+
+    # rotate cross-section around trajectory tangent vector (e1) if wanted
+    if rotation_adaption is not None:
+        try:
+            rotation_adaption = float(rotation_adaption)
+        except TypeError:
+            raise TypeError(
+                "rotation_adaption must be a number (float, int) or None"
+            )
+
+        R = _np.matmul(
+            _arr.rotation_matrix_around_axis(
+                axis=[1, 0, 0], rotation=rotation_adaption, degree=False
+            ),
+            R,
+        )
+
+    # remove numerical noise
+    R = _np.where(_np.abs(R) < _settings.TOLERANCE, 0, R)
+
+    ### SWEEPING PROCESS ###
+
+    # evaluate center of cross-section and translate to origin
+    cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
+    cs_center = cross_section.evaluate(
+        cross_para_center.reshape(-1, cross_section.para_dim)
+    ).ravel()
+    cross_section.control_points -= cs_center
+
+    # set cross-section control points along trajectory
+    swept_spline_cps = []
+    for i, par_val in enumerate(par_value):
+        temp_csp = []
+        # evaluate trajectory if user wants to set cross-section on trajectory.
+        if set_on_trajectory:
+            evals = trajectory.evaluate([par_val]).ravel()
+        # place every control point of cross-section separately
+        for cscp in cross_section.control_points:
+            # rotate cross-section in trajectory direction
+            normal_cscp = _np.matmul(R, cscp)
+            # transform cross-section to global coordinates
+            normal_cscp = _np.matmul(A[i], normal_cscp)
+            # check if user wants to place cross-section at
+            # evaluation points or control points of trajectory
+            if set_on_trajectory:
+                # translate cross-section to trajectory evaluation point
+                normal_cscp += evals
+            else:
+                # translate cross-section to trajectory control point
+                normal_cscp += trajectory.control_points[i]
+            # append control point to list
+            temp_csp.append(normal_cscp)
+
+        # collect all control points
+        swept_spline_cps.append(_np.array(temp_csp))
+
+    # create spline dictionary
+    dict_swept_spline = {
+        "degrees": [*cross_section.degrees, *trajectory.degrees],
+        "knot_vectors": [
+            *cross_section.knot_vectors,
+            *trajectory.knot_vectors,
+        ],
+        "control_points": _np.asarray(swept_spline_cps).reshape(
+            -1, cross_section.dim
+        ),
+    }
+
+    # add weights properly if spline is rational
+    if cross_section.is_rational or trajectory.is_rational:
+
+        def weights(spline):
+            if spline.is_rational:
+                return spline.weights
+            return _np.ones(spline.control_points.shape[0])
+
+        trajectory_weights = weights(trajectory)
+        cross_section_weights = weights(cross_section)
+        dict_swept_spline["weights"] = _np.outer(
+            trajectory_weights, cross_section_weights
+        ).reshape(-1, 1)
+        spline_type = _NURBS
+    else:
+        spline_type = _BSpline
+
+    # create swept spline
+    swept_spline = spline_type(**dict_swept_spline)
+
+    return swept_spline
+
+
 def from_bounds(parametric_bounds, physical_bounds):
     """Creates a minimal spline with given parametric bounds, physical bounds.
     Physical bounds can have less or equal number of
