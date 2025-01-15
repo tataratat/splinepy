@@ -50,7 +50,13 @@ def make_bounds_feasible(bounds):
 
 @mark.parametrize("tile_class", all_tile_classes)
 def test_tile_class(tile_class):
-    """Checks if all tile classes have the appropriate members and functions."""
+    """Checks if all tile classes have the appropriate members and functions.
+
+    Parameters
+    ---------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    """
     required_class_variables = {
         "_para_dim": int,
         "_dim": int,
@@ -98,7 +104,13 @@ def test_tile_class(tile_class):
 @mark.parametrize("tile_class", all_tile_classes)
 def test_tile_bounds(tile_class):
     """Test if tile is still in unit cube at the bounds. Checks default and also
-    non-default parameter values."""
+    non-default parameter values.
+
+    Parameters
+    ---------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    """
     tile_creator = tile_class()
     # Create tile with default parameters
     tile_patches, _ = tile_creator.create_tile()
@@ -125,7 +137,13 @@ def test_tile_bounds(tile_class):
 
 @mark.parametrize("tile_class", all_tile_classes)
 def test_tile_closure(tile_class):
-    """Check if closing tiles also lie in unit cube."""
+    """Check if closing tiles also lie in unit cube.
+
+    Parameters
+    ---------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    """
 
     # Skip tile if if does not support closure
     if "_closure_directions" not in dir(tile_class):
@@ -166,19 +184,22 @@ def test_tile_closure(tile_class):
 
 
 @mark.parametrize("tile_class", all_tile_classes)
-def test_tile_derivatives(tile_class, np_rng, heps=1e-7, n_test_points=10):
+def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
     """Testing the correctness of the tile derivatives using Finite Differences.
     This includes every closure and no closure, every parameter and every patch
     by evaluating at random points and for random parameters.
 
     Parameters
     ---------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    np_rng: numpy.random._generator.Generator
+        Default random number generator
     heps: float
-        Perturbation size for finite difference evaluation
+        Perturbation size for finite difference evaluation. Defined in conftest.py
     n_test_points: int
-        Number of testing points in the parametric domain
+        Number of testing points in the parametric domain. Defined in conftest.py
     """
-
     tile_creator = tile_class()
     # Skip test if tile class has no implemented sensitivities
     if not tile_creator._sensitivities_implemented:
@@ -253,5 +274,7 @@ def test_tile_derivatives(tile_class, np_rng, heps=1e-7, n_test_points=10):
                     + f"{tile_class}, with closure {closure},  parameter "
                     + f"{i_parameter+1}/{n_info_per_eval_point} at patch "
                     + f"{i_patch+1}/{n_patches} does not match the derivative "
-                    + "obtained using Finite Differences"
+                    + "obtained using Finite Differences at the following evaluation "
+                    + "points:\n"
+                    + str(eval_points)
                 )
