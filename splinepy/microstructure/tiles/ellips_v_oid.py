@@ -7,6 +7,9 @@ from splinepy.microstructure.tiles.tile_base import TileBase as _TileBase
 class EllipsVoid(_TileBase):
     """Void in form of an ellipsoid set into a unit cell.
 
+    TODO: Currently this tile is skipped for testing, since the control points easily
+    lie outside of the unit cube, even though the tile itself lies within it
+
     The Ellips(v)oid :D
 
     Parametrization acts on the elipsoid's orientation as well as on its
