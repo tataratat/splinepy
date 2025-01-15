@@ -15,7 +15,7 @@ def error_log(*args):
 
 @pytest.fixture
 def np_rng():
-    return np.random.default_rng()
+    return np.random.default_rng(seed=0)
 
 
 # query points
@@ -39,6 +39,23 @@ def queries_3D():
         [0.5623, 0.0089, 0.99],
         [0.0431, 0.2, 0.523],
     ]
+
+
+# hard-coded values to keep the same for derivative/sensitivity calculations
+@pytest.fixture
+def heps():
+    """
+    Perturbation/step size for finite difference evaluation of derivative/sensitivity
+    """
+    return 1e-7
+
+
+@pytest.fixture
+def n_test_points():
+    """
+    Number of random testing points (in parametric domain)
+    """
+    return 10
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
