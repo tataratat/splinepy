@@ -148,5 +148,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps=1e-7, n_test_points=10):
                 ), (
                     "Implemented derivative calculation for tile class"
                     + f"{tile_class}, at patch {k_patch+1}/{n_patches} does not "
-                    + "match the derivative obtained using Finite Differences"
+                    + "match the derivative obtained using Finite Differences at "
+                    + "the following evaluation points:\n"
+                    + str(eval_points)
                 )
