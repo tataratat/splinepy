@@ -105,12 +105,7 @@ def test_tile_bounds(tile_class):
     check_control_points(tile_patches)
 
     # Skip certain classes for testing
-    skip_tile_class = False
-    for skip_tile in skip_tiles:
-        if tile_class is skip_tile:
-            skip_tile_class = True
-            break
-    if skip_tile_class:
+    if tile_class in skip_tiles:
         return
 
     # Go through all extremes of parameters and ensure that also they create
@@ -149,12 +144,7 @@ def test_tile_closure(tile_class):
 
     # Also check non-default parameters
     # Skip certain classes for testing
-    skip_tile_class = False
-    for skip_tile in skip_tiles:
-        if tile_class is skip_tile:
-            skip_tile_class = True
-            break
-    if skip_tile_class:
+    if tile_class in skip_tiles:
         return
 
     # Go through all extremes of parameters and ensure that also they create
