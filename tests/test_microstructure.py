@@ -17,7 +17,13 @@ CLOSURE_FAILS = [ms.tiles.HollowOctagonExtrude, ms.tiles.InverseCross3D]
 
 @mark.parametrize("tile_class", all_tile_classes)
 def test_closing_face(tile_class):
-    """Check if closing face is working"""
+    """Check if closing face is working
+
+    Parameters
+    ---------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    """
 
     def check_if_closed(multipatch, closure_direction):
         """Helper function to see if multipatch has a closing surface
@@ -83,17 +89,22 @@ def test_closing_face(tile_class):
 
 
 @mark.parametrize("tile_class", all_tile_classes)
-def test_macro_sensitivities(tile_class, np_rng, heps=1e-7, n_test_points=10):
+def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
     """Testing the correctness of the derivatives of the whole microstructure w.r.t.
     the deformation function's control points. It is tested by evaluating the derivative
     obtained via finite differences. The values are evaluated at random points.
 
     Parameters
     ----------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile
+    np_rng: numpy.random._generator.Generator
+        Default random number generator
     heps: float
-        Perturbation size for finite difference evaluation
+        Perturbation size for finite difference evaluation. Defined in conftest.py
     n_test_points: int
-        Number of testing points int the parametric domain"""
+        Number of testing points int the parametric domain. Defined in conftest.py
+    """
 
     tile_creator = tile_class()
     deformation_function_orig = box(*BOX_DIMENSIONS[: tile_creator._dim])
