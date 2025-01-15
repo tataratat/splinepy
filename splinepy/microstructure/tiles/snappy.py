@@ -8,6 +8,9 @@ class Snappy(_TileBase):
     """Snap-through tile consisting of a thin truss and a thick truss that
     collide into each other.
 
+    # TODO: currently the tile parameters are not implemented as the parameters variable
+            therefore, no parameter sensitivities are calculated
+
     .. raw:: html
 
         <p><a href="../_static/Snappy.html">Fullscreen</a>.</p>
