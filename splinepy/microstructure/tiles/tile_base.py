@@ -30,7 +30,6 @@ class TileBase(_SplinepyBase):
             )
         return attr
 
-    @classmethod
     @property
     def evaluation_points(cls):
         """Positions in the parametrization function to be evaluated when tile
@@ -46,7 +45,6 @@ class TileBase(_SplinepyBase):
         """
         return cls._raise_if_not_set_else_return("_evaluation_points")
 
-    @classmethod
     @property
     def dim(cls):
         """Returns dimensionality in physical space of the Microtile.
@@ -61,7 +59,6 @@ class TileBase(_SplinepyBase):
         """
         return cls._raise_if_not_set_else_return("_dim")
 
-    @classmethod
     @property
     def para_dim(cls):
         """Returns dimensionality in parametric space of the Microtile.
