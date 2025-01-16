@@ -277,4 +277,8 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
                     + "obtained using Finite Differences at the following evaluation "
                     + "points:\n"
                     + str(eval_points)
+                    + "\nImplemented derivative:\n"
+                    + str(deriv_orig)
+                    + "\nFinite difference derivative:\n"
+                    + str(deriv_fd)
                 )
