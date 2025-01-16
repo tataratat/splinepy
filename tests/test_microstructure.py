@@ -153,6 +153,12 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
             for k_patch, patch_deriv_implemented, patch_deriv_fd in zip(
                 range(n_patches), deriv_evaluations, fd_sensitivity
             ):
+                # Verify derivative shapes
+                assert patch_deriv_implemented.shape[1] == dim, (
+                    "The derivative at "
+                    + f"patch {k_patch} has the wrong dimensions."
+                )
+                # Assert correctness of sensitivity
                 assert np.allclose(
                     -patch_deriv_implemented[:, jj_dim],
                     patch_deriv_fd[:, jj_dim],
@@ -162,4 +168,8 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
                     + "match the derivative obtained using Finite Differences at "
                     + "the following evaluation points:\n"
                     + str(eval_points)
+                    + "\nImplemented derivative:\n"
+                    + str(patch_deriv_implemented[:, jj_dim])
+                    + "\nFinite difference derivative:\n"
+                    + str(patch_deriv_fd[:, jj_dim])
                 )
