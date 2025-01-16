@@ -31,6 +31,7 @@ class HollowCube(_TileBase):
     _sensitivities_implemented = True
     _parameter_bounds = [[0.0, 0.5]] * 7
     _parameters_shape = (7, 1)
+    _default_parameter_value = 0.2
 
     def create_tile(
         self,
@@ -57,26 +58,10 @@ class HollowCube(_TileBase):
         microtile_list : list(splines)
         """
 
-        if parameters is None:
-            self._logd("Setting parameters to default value (0.2)")
-            parameters = (
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                ).reshape(-1, 1)
-                * 0.2
-            )
-
-        self.check_params(parameters)
-
-        if not _np.all((parameters > 0.0) & (parameters < 0.5)):
-            raise ValueError("The wall thickness must be in (0.0 and 0.5)")
-
-        if self.check_param_derivatives(parameter_sensitivities):
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         splines = []
 
