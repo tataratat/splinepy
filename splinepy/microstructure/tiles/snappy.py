@@ -353,8 +353,9 @@ class Snappy(_TileBase):
             if param < 0:
                 raise ValueError("Invalid parameter, must be > 0.")
 
-        if not ((contact_length > 0) and (contact_length < 0.49)):
-            raise ValueError("The length of a side must be in (0.01, 0.49)")
+        self._check_custom_parameter(
+            contact_length, "contact length", 0.0, 0.49
+        )
 
         # Check horizontal parameters
         if not ((r + contact_length) < 0.5):

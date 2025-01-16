@@ -37,6 +37,7 @@ class InverseCross3D(_TileBase):
     _closure_directions = ["z_min", "z_max"]
     _parameter_bounds = [[0.2, 0.3]] * 6  # For default values
     _parameters_shape = (6, 1)
+    _default_parameter_value = 0.21
 
     def _closing_tile(
         self,
@@ -74,37 +75,17 @@ class InverseCross3D(_TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
-        if parameters is None:
-            self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = (
-                _np.ones(
-                    (
-                        self._evaluation_points.shape[0],
-                        self._n_info_per_eval_point,
-                    )
-                )
-                * 0.2
-            )
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
-        self.check_params(parameters)
-
-        if parameter_sensitivities is not None:
-            self.check_param_derivatives(parameter_sensitivities)
-
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
-
-        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
-            raise ValueError("Thickness out of range (0, .5)")
-
-        if not (0.0 < float(boundary_width) < 0.5):
-            raise ValueError("Boundary Width is out of range")
-
-        if not (0.0 < float(filling_height) < 1.0):
-            raise ValueError("Filling must  be in (0,1)")
+        self._check_custom_parameter(
+            boundary_width, "boundary width", 0.0, 0.5
+        )
+        self._check_custom_parameter(
+            filling_height, "filling height", 0.0, 1.0
+        )
 
         splines = []
 
@@ -1069,43 +1050,25 @@ class InverseCross3D(_TileBase):
         microtile_list : list(splines)
         """
 
-        if not isinstance(center_expansion, float):
-            raise ValueError("Invalid type for center_expansion")
-
-        if not ((center_expansion > 0.5) and (center_expansion < 1.5)):
-            raise ValueError("Center Expansion must be in (.5, 1.5)")
+        self._check_custom_parameter(
+            center_expansion, "center expansion", 0.5, 1.5
+        )
 
         # Check if all radii are in allowed range
         max_radius = min(0.5, (0.5 / center_expansion))
         max_radius = min(max_radius, separator_distance)
         min_radius = max(0.5 - separator_distance, 0)
 
-        # set to default if nothing is given
-        if parameters is None:
-            self._logd("Setting branch thickness to default 0.2")
-            parameters = (
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        self.check_params(parameters)
-
-        if parameter_sensitivities is not None:
-            self.check_param_derivatives(parameter_sensitivities)
-
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         if _np.any(parameters < min_radius) or _np.any(
             parameters > max_radius
         ):
             raise ValueError(
-                f"Radii must be in (0,{max_radius}) for "
+                f"Radii must be in ({min_radius},{max_radius}) for "
                 f"center_expansion {center_expansion}"
             )
 

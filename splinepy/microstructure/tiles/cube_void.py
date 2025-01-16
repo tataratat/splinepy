@@ -35,6 +35,7 @@ class CubeVoid(_TileBase):
         [-_np.pi / 2, _np.pi / 2],
     ]
     _parameters_shape = (1, 4)
+    _default_parameter_value = _np.array([[0.5, 0.5, 0.0, 0.0]])
 
     # Aux values
     _sphere_ctps = _np.array(
@@ -100,22 +101,15 @@ class CubeVoid(_TileBase):
         microtile_list : list(splines)
         derivatives : list<list<splines>> / None
         """  # set to default if nothing is given
-        if parameters is None:
-            parameters = _np.array([0.5, 0.5, 0, 0]).reshape(
-                self._parameters_shape
-            )
+
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         # Create center ellipsoid
         # RotY * RotX * DIAG(r_x, r_yz) * T_base
         [r_x, r_yz, rot_x, rot_y] = parameters.flatten()
-
-        # Check if user requests derivative splines
-        if self.check_param_derivatives(parameter_sensitivities):
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
 
         # Prepare auxiliary matrices and values
         diag = _np.diag([r_x, r_yz, r_yz])
