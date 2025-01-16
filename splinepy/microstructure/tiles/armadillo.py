@@ -31,6 +31,7 @@ class Armadillo(_TileBase):
     ]
     _parameter_bounds = [[0.0, 0.5]]
     _parameters_shape = (1, 1)
+    _default_parameter_value = 0.2
 
     def _closing_tile(
         self,
@@ -69,35 +70,14 @@ class Armadillo(_TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
-        if not isinstance(contact_length, float):
-            raise ValueError("Invalid Type for radius")
+        self._check_custom_parameter(
+            contact_length, "contact length", 0.0, 0.99
+        )
 
-        if not ((contact_length > 0) and (contact_length < 0.99)):
-            raise ValueError("The length of a side must be in (0.01, 0.99)")
-
-        if parameters is None:
-            self._logd("Setting parameters to default values (0.2)")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        self.check_params(parameters)
-        self.check_param_derivatives(parameter_sensitivities)
-
-        if parameter_sensitivities is not None:
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
-
-        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):
@@ -5062,35 +5042,14 @@ class Armadillo(_TileBase):
         derivative_list : list / None
         """
 
-        if not isinstance(contact_length, float):
-            raise ValueError("Invalid Type for radius")
+        self._check_custom_parameter(
+            contact_length, "contact length", 0.0, 0.99
+        )
 
-        if not ((contact_length > 0) and (contact_length < 0.99)):
-            raise ValueError("The length of a side must be in (0.01, 0.99)")
-
-        if parameters is None:
-            self._logd("Setting parameters to default values (0.2)")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        self.check_params(parameters)
-        self.check_param_derivatives(parameter_sensitivities)
-
-        if parameter_sensitivities is not None:
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
-
-        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         if closure is not None:
             return self._closing_tile(

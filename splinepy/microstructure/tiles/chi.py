@@ -21,6 +21,7 @@ class Chi(_TileBase):
     _sensitivities_implemented = True
     _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
     _parameters_shape = (1, 1)
+    _default_parameter_value = _np.pi / 8
 
     def create_tile(
         self,
@@ -44,33 +45,10 @@ class Chi(_TileBase):
         microtile_list : list(splines)
         """
 
-        # set to default if nothing is given
-        if parameters is None:
-            self._logd(
-                "Tile request is not parametrized, setting default Pi/8"
-            )
-            parameters = _np.array([[_np.pi / 8]])
-        else:
-            angle_bounds = self._parameter_bounds[0]
-            if not (
-                _np.all(parameters >= angle_bounds[0])
-                and _np.all(parameters < angle_bounds[1])
-            ):
-                error_message = (
-                    f"The parameter must be in {angle_bounds[0]}"
-                    + f"and {angle_bounds[1]}"
-                )
-                raise ValueError(error_message)
-            pass
-        self.check_params(parameters)
-
-        # Check if user requests derivative splines
-        if self.check_param_derivatives(parameter_sensitivities):
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):

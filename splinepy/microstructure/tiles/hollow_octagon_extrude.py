@@ -19,10 +19,10 @@ class HollowOctagonExtrude(_TileBase):
     _evaluation_points = _np.array([[0.5, 0.5, 0.5]])
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
-    # TODO: closure in create_tile still missing
     _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
     _parameter_bounds = [[0.0, 0.5]]
     _parameters_shape = (1, 1)
+    _default_parameter_value = 0.2
 
     def create_tile(
         self,
@@ -56,27 +56,16 @@ class HollowOctagonExtrude(_TileBase):
         derivatives: list<list<splines>> / None
         """
 
-        if not isinstance(contact_length, float):
-            raise ValueError("Invalid Type for radius")
+        self._check_custom_parameter(
+            contact_length, "contact length", 0.0, 0.99
+        )
+        # Process input
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
-        if not ((contact_length > 0) and (contact_length < 0.99)):
-            raise ValueError("The length of a side must be in (0.01, 0.99)")
-
-        if parameters is None:
-            self._logd("Setting parameters to default values (0.2)")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        if parameter_sensitivities is not None:
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        v_h_void = parameters[0, 0]
 
         if closure is not None:
             return self._closing_tile(
@@ -85,15 +74,6 @@ class HollowOctagonExtrude(_TileBase):
                 closure=closure,
                 contact_length=contact_length,
                 **kwargs,
-            )
-
-        self.check_params(parameters)
-        self.check_param_derivatives(parameter_sensitivities)
-
-        v_h_void = parameters[0, 0]
-        if not ((v_h_void > 0.0) and (v_h_void < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.0 and 0.5)"
             )
 
         splines = []
@@ -259,7 +239,7 @@ class HollowOctagonExtrude(_TileBase):
     def _closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # TODO
+        parameter_sensitivities=None,
         contact_length=0.2,
         closure=None,
     ):
@@ -291,40 +271,13 @@ class HollowOctagonExtrude(_TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
-        if parameters is None:
-            self._log("Tile request is not parametrized, setting default 0.2")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
+        # Process input
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
-        if not (_np.all(parameters[0] > 0) and _np.all(parameters[0] < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
-
-        self.check_params(parameters)
-
-        if parameter_sensitivities is not None:
-            self.check_param_derivatives(parameter_sensitivities)
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
-
-        # Check whether parameter is within bounds
         v_h_void = parameters[0, 0]
-        para_bound_lower, para_bound_upper = self._parameter_bounds[0]
-        if not (
-            (v_h_void > para_bound_lower) and (v_h_void < para_bound_upper)
-        ):
-            raise ValueError(
-                f"The thickness of the wall must be in ({para_bound_lower} and "
-                + f"{para_bound_upper})"
-            )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):
