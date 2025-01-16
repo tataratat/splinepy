@@ -146,7 +146,7 @@ def test_tile_closure(tile_class):
     """
 
     # Skip tile if if does not support closure
-    if "_closure_directions" not in dir(tile_class):
+    if tile_class._closure_directions is None:
         return
     tile_creator = tile_class()
     # Go through all implemented closure directions
@@ -215,7 +215,7 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
     # Test no closure as well as ...
     closure_directions = [None]
     # ... every closure implemented
-    if "_closure_directions" in dir(tile_creator):
+    if tile_creator._closure_directions is not None:
         closure_directions += tile_creator._closure_directions
 
     # Retrieve shape values of parameters

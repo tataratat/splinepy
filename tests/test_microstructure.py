@@ -66,7 +66,7 @@ def test_closing_face(tile_class):
         ), f"The closure of the {closure_direction}_max surface is not complete"
 
     # Skip tile if it doesn't support closure
-    if "_closure_directions" not in dir(tile_class):
+    if tile_class._closure_directions is None:
         return
 
     # TODO: right now skip tiles which have faulty closures
