@@ -45,7 +45,12 @@ def queries_3D():
 @pytest.fixture
 def heps():
     """
-    Perturbation/step size for finite difference evaluation of derivative/sensitivity
+    Perturbation/step size for finite difference evaluation of derivative/sensitivity.
+
+    The value 1e-7 is arbitrary, but is a a compromise between:
+    - Being small enough to ensure the finite difference calculation being accurate
+        enough
+    - Being large enough to avoid round-off error in floating-point arithmetic
     """
     return 1e-7
 
@@ -54,6 +59,8 @@ def heps():
 def n_test_points():
     """
     Number of random testing points (in parametric domain)
+
+    The number 10 is arbitrary and should ensure to have good test coverage
     """
     return 10
 
