@@ -33,6 +33,8 @@ class Armadillo(_TileBase):
     _parameters_shape = (1, 1)
     _default_parameter_value = 0.2
 
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.99]
+
     def _closing_tile(
         self,
         parameters=None,
@@ -71,7 +73,7 @@ class Armadillo(_TileBase):
             raise ValueError("No closing direction given")
 
         self._check_custom_parameter(
-            contact_length, "contact length", 0.0, 0.99
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
         )
 
         parameters, n_derivatives, derivatives = self._process_input(
@@ -5043,7 +5045,7 @@ class Armadillo(_TileBase):
         """
 
         self._check_custom_parameter(
-            contact_length, "contact length", 0.0, 0.99
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
         )
 
         parameters, n_derivatives, derivatives = self._process_input(
