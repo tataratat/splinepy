@@ -36,6 +36,10 @@ class Cross3DLinear(_TileBase):
     _parameters_shape = (6, 1)
     _default_parameter_value = 0.2
 
+    _BOUNDARY_WIDTH_BOUNDS = [0.0, 0.5]
+    _FILLING_HEIGHT_BOUNDS = [0.0, 1.0]
+    _CENTER_EXPANSION_BOUNDS = [0.5, 1.5]
+
     def _closing_tile(
         self,
         parameters=None,
@@ -81,10 +85,10 @@ class Cross3DLinear(_TileBase):
         )
 
         self._check_custom_parameter(
-            boundary_width, "boundary width", 0.0, 0.5
+            boundary_width, "boundary width", self._BOUNDARY_WIDTH_BOUNDS
         )
         self._check_custom_parameter(
-            filling_height, "filling height", 0.0, 1.0
+            filling_height, "filling height", self._FILLING_HEIGHT_BOUNDS
         )
 
         splines = []
@@ -467,7 +471,7 @@ class Cross3DLinear(_TileBase):
         """
 
         self._check_custom_parameter(
-            center_expansion, "center expansion", 0.5, 1.5
+            center_expansion, "center expansion", self._CENTER_EXPANSION_BOUNDS
         )
 
         parameters, n_derivatives, derivatives = self._process_input(

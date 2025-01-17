@@ -28,6 +28,8 @@ class Snappy(_TileBase):
     _parameter_bounds = []
     _parameters_shape = ()
 
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.49]
+
     def _closing_tile(
         self,
         parameters=None,
@@ -69,8 +71,6 @@ class Snappy(_TileBase):
             raise ValueError("No closing direction given")
 
         # TODO: parameters are not implemented, therefore do not check params
-        if parameters is not None:
-            self.check_params(parameters)
 
         if parameter_sensitivities is not None:
             raise NotImplementedError(
@@ -354,7 +354,7 @@ class Snappy(_TileBase):
                 raise ValueError("Invalid parameter, must be > 0.")
 
         self._check_custom_parameter(
-            contact_length, "contact length", 0.0, 0.49
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
         )
 
         # Check horizontal parameters

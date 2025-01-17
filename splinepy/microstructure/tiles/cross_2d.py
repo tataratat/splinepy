@@ -34,6 +34,10 @@ class Cross2D(_TileBase):
     _parameters_shape = (4, 1)
     _default_parameter_value = 0.2
 
+    _BOUNDARY_WIDTH_BOUNDS = [0.0, 0.5]
+    _FILLING_HEIGHT_BOUNDS = [0.0, 1.0]
+    _CENTER_EXPANSION_BOUNDS = [0.5, 1.5]
+
     def _closing_tile(
         self,
         parameters=None,
@@ -79,10 +83,10 @@ class Cross2D(_TileBase):
         )
 
         self._check_custom_parameter(
-            boundary_width, "boundary width", 0.0, 0.5
+            boundary_width, "boundary width", self._BOUNDARY_WIDTH_BOUNDS
         )
         self._check_custom_parameter(
-            filling_height, "filling height", 0.0, 1.0
+            filling_height, "filling height", self._FILLING_HEIGHT_BOUNDS
         )
 
         splines = []
@@ -403,7 +407,7 @@ class Cross2D(_TileBase):
         """
 
         self._check_custom_parameter(
-            center_expansion, "center expansion", 0.5, 1.5
+            center_expansion, "center expansion", self._CENTER_EXPANSION_BOUNDS
         )
 
         parameters, n_derivatives, derivatives = self._process_input(
@@ -412,7 +416,7 @@ class Cross2D(_TileBase):
         )
 
         max_radius = min(0.5, (0.5 / center_expansion))
-        if not _np.all(parameters < max_radius):
+        if not (_np.all(parameters > 0) and _np.all(parameters < max_radius)):
             raise ValueError(f"Thickness out of range (0, {max_radius})")
 
         # Closure requested, pass to function
