@@ -25,6 +25,8 @@ class DoubleLattice(_TileBase):
     _parameters_shape = (1, 2)
     _default_parameter_value = 0.1
 
+    _CONTACT_LENGTH_BOUNDS = [0.0, 1.0]
+
     def create_tile(
         self,
         parameters=None,
@@ -55,7 +57,7 @@ class DoubleLattice(_TileBase):
         microtile_list : list(splines)
         """
         self._check_custom_parameter(
-            contact_length, "contact length", 0.0, 1.0
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
         )
 
         parameters, n_derivatives, derivatives = self._process_input(

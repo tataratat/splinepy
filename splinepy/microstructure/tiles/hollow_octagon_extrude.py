@@ -24,6 +24,8 @@ class HollowOctagonExtrude(_TileBase):
     _parameters_shape = (1, 1)
     _default_parameter_value = 0.2
 
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.99]
+
     def create_tile(
         self,
         parameters=None,
@@ -57,7 +59,7 @@ class HollowOctagonExtrude(_TileBase):
         """
 
         self._check_custom_parameter(
-            contact_length, "contact length", 0.0, 0.99
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
         )
         # Process input
         parameters, n_derivatives, derivatives = self._process_input(
