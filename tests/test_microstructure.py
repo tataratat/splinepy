@@ -12,6 +12,9 @@ BOX_DIMENSIONS = [1, 1, 1]
 EPS = 1e-7
 
 # TODO: the following tiles fail the closure test
+# HollowOctagonExtrude has no closure
+# InverseCross3D's closure is special: it does not fill the whole unit cube and does not
+#                   fully cover the closing face
 CLOSURE_FAILS = [ms.tiles.HollowOctagonExtrude, ms.tiles.InverseCross3D]
 
 
@@ -58,12 +61,14 @@ def test_closing_face(tile_class):
         face_min_area = sum([volume(patch) for patch in min_patches.patches])
         face_max_area = sum([volume(patch) for patch in max_patches.patches])
 
-        assert (
-            face_min_area > 1.0 - EPS
-        ), f"The closure of the {closure_direction}_min surface is not complete"
-        assert (
-            face_max_area > 1.0 - EPS
-        ), f"The closure of the {closure_direction}_max surface is not complete"
+        assert face_min_area > 1.0 - EPS, (
+            f"The closure of the {closure_direction}_min surface is not complete. "
+            f"Expected area of 1, got {face_min_area}"
+        )
+        assert face_max_area > 1.0 - EPS, (
+            f"The closure of the {closure_direction}_max surface is not complete. "
+            f"Expected area of 1, got{face_max_area}"
+        )
 
     # Skip tile if it doesn't support closure
     if tile_class._closure_directions is None:
