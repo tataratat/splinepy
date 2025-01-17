@@ -6,6 +6,28 @@ from splinepy._base import SplinepyBase as _SplinepyBase
 class TileBase(_SplinepyBase):
     """
     Base class for tile objects
+
+    Attributes
+    ---------------
+    _dim: int
+        Dimension in physical space
+    _para_dim: int
+        Dimension in parametric space
+    _evaluation_points: np.ndarray (2D)
+        Points in parametric space where tile parameters are evaluated. Each parameter
+        is attributed one evaluation point. This is used for the parametrization spline.
+    _n_info_per_eval_point: int
+        Number of tile parameters per evaluation point
+    _sensitivities_implemented: bool
+        Whether sensitivities w.r.t. tile parameters are implemented
+    _closure_directions: list<str>
+        List of directions in which the closure has been implemented
+    _parameter_bounds: list<list<float>>
+        List of bounds for the tile parameters
+    _parameters_shape: tuple<int>
+        Shape of parameters array
+    _default_parameter_value: float/np.ndarray
+        Default values for all tile parameters
     """
 
     _dim = None
@@ -93,7 +115,7 @@ class TileBase(_SplinepyBase):
         return cls._raise_if_not_set_else_return("_para_dim")
 
     @property
-    def sensitivites_implemented(cls):
+    def sensitivities_implemented(cls):
         """Returns whether sensitivities are implemented for the microtile
 
         Parameters
@@ -305,7 +327,7 @@ class TileBase(_SplinepyBase):
 
         return parameters, n_derivatives, derivatives
 
-    def _check_custom_parameter(self, value, param_name, min_bound, max_bound):
+    def _check_custom_parameter(self, value, param_name, bounds):
         """Check if a custom tile parameter (e.g. contact length) is within bounds
 
         Parameters
@@ -314,11 +336,15 @@ class TileBase(_SplinepyBase):
             Value of the custom parameter
         param_name: str
             Name of custom parameter
-        min_bound: float
-            Lower bound for parameter
-        max_bound: float
-            Upper bound for parameter
+        bounds: list<int>
+            List of min. and max. bound
         """
+        assert isinstance(bounds, list), "Bounds has to be a list"
+        assert (
+            len(bounds) == 2
+        ), "Bounds must consist of a min. and a max. value"
+        min_bound, max_bound = bounds
+
         if not isinstance(value, float):
             raise ValueError(f"Invalid type for {param_name}")
 
