@@ -73,13 +73,14 @@ def test_tile_class(tile_class):
     # Class must have function create_tile()
     assert hasattr(
         tile_class, "create_tile"
-    ), "Tile class must have create_tile()"
+    ), f"Tile class {tile_class.__name__} must have create_tile() method"
     # Tile must be able to take parameters and sensitivities as input
     create_parameters = getfullargspec(tile_class.create_tile).args
     for required_param in ["parameters", "parameter_sensitivities"]:
-        assert (
-            required_param in create_parameters
-        ), f"create_tile() must have '{required_param}' as an input parameter"
+        assert required_param in create_parameters, (
+            f"{tile_class.__name__}.create_tile() must have '{required_param}' as an "
+            "input parameter"
+        )
 
     # Ensure closure can be handled correctly
     if "closure" in create_parameters:
@@ -99,6 +100,37 @@ def test_tile_class(tile_class):
         assert isinstance(
             eval(f"tile_class.{required_variable}"), var_type
         ), f"Variable {required_variable} needs to be of type {var_type}"
+
+    # Check default parameter value if there is one
+    if tile_class._parameters_shape != ():
+        # Assert that there is a default value
+        assert hasattr(tile_class, "_default_parameter_value"), (
+            f'{tile_class.__name__} must have "_default_parameter_value" as a class '
+            " attribute."
+        )
+        # Check the default value's type
+        default_value = tile_class._default_parameter_value
+        if isinstance(default_value, np.ndarray):
+            # Check the dimensions
+            assert default_value.shape == tile_class._parameters_shape, (
+                f"Default parameter values for tile {tile_class.__name__} has the wrong"
+                " dimensions"
+            )
+            # Check if default values are within bounds
+            default_value = default_value.ravel()
+        elif not isinstance(default_value, float):
+            raise ValueError(
+                f"Default parameter value for tile {tile_class.__name__} must either be"
+                "a float or a numpy array"
+            )
+
+        # Check if default values are within bounds
+        parameter_bounds = np.asarray(tile_class._parameter_bounds)
+        lower_bounds = parameter_bounds[:, 0]
+        upper_bounds = parameter_bounds[:, 1]
+        assert np.all(
+            (default_value > lower_bounds) & (default_value < upper_bounds)
+        ), f"Default parameter value of tile {tile_class.__name__} is not within bounds"
 
 
 @mark.parametrize("tile_class", all_tile_classes)
@@ -154,9 +186,10 @@ def test_tile_closure(tile_class):
         tile_patches, sensitivities = tile_creator.create_tile(
             closure=closure_direction
         )
-        assert (
-            sensitivities is None
-        ), "Ensure sensitivities for closure are None if no sensitivities are asked"
+        assert sensitivities is None, (
+            f"Expected sensitivities to be None for closure {closure_direction} "
+            + f"when no sensitivities are requested, got {sensitivities}"
+        )
 
         check_control_points(tile_patches)
 
@@ -205,12 +238,15 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
     if not tile_creator._sensitivities_implemented:
         return
 
-    # Choose random parameter(s) within bounds
-    parameter_bounds = np.array(tile_creator._parameter_bounds)
-    parameters = parameter_bounds[:, 0] + np_rng.random(
-        len(parameter_bounds)
-    ) * np.ptp(parameter_bounds, axis=1)
-    parameters = parameters.reshape(tile_creator._parameters_shape)
+    def generate_random_parameters(tile_creator, np_rng):
+        """Generate random parameters within bounds"""
+        parameter_bounds = np.array(tile_creator._parameter_bounds)
+        parameters = parameter_bounds[:, 0] + np_rng.random(
+            len(parameter_bounds)
+        ) * np.ptp(parameter_bounds, axis=1)
+        return parameters.reshape(tile_creator._parameters_shape)
+
+    parameters = generate_random_parameters(tile_creator, np_rng)
 
     # Test no closure as well as ...
     closure_directions = [None]
