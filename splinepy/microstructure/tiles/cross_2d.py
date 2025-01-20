@@ -28,11 +28,17 @@ class Cross2D(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
     _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
-    _parameter_bounds = [
-        [0.0, 0.5]
-    ] * 4  # valid for default center_expansion=1.0
     _parameters_shape = (4, 1)
     _default_parameter_value = 0.2
+
+    # Default value of center_expansion
+    _center_expansion = 1.0
+
+    # Dynamical computation of parameter bounds depending on center expansion
+    @property
+    def _parameter_bounds(self):
+        max_radius = min(0.5, (0.5 / self._center_expansion))
+        return [[0.0, max_radius]] * 4
 
     _BOUNDARY_WIDTH_BOUNDS = [0.0, 0.5]
     _FILLING_HEIGHT_BOUNDS = [0.0, 1.0]
@@ -410,14 +416,12 @@ class Cross2D(_TileBase):
             center_expansion, "center expansion", self._CENTER_EXPANSION_BOUNDS
         )
 
+        self._center_expansion = center_expansion
+
         parameters, n_derivatives, derivatives = self._process_input(
             parameters=parameters,
             parameter_sensitivities=parameter_sensitivities,
         )
-
-        max_radius = min(0.5, (0.5 / center_expansion))
-        if not (_np.all(parameters > 0) and _np.all(parameters < max_radius)):
-            raise ValueError(f"Thickness out of range (0, {max_radius})")
 
         # Closure requested, pass to function
         if closure is not None:

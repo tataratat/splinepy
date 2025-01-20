@@ -30,11 +30,17 @@ class Cross3D(_TileBase):
     _n_info_per_eval_point = 1
     _sensitivities_implemented = True
     _closure_directions = ["z_min", "z_max"]
-    _parameter_bounds = [
-        [0.0, 0.5]
-    ] * 6  # valid for default center_expansion=1.0
     _parameters_shape = (6, 1)
     _default_parameter_value = 0.2
+
+    # Default value of center_expansion
+    _center_expansion = 1.0
+
+    # Dynamical computation of parameter bounds depending on center expansion
+    @property
+    def _parameter_bounds(self):
+        max_radius = min(0.5, (0.5 / self._center_expansion))
+        return [[0.0, max_radius]] * 6
 
     _BOUNDARY_WIDTH_BOUNDS = [0.0, 0.5]
     _FILLING_HEIGHT_BOUNDS = [0.0, 1.0]
@@ -518,18 +524,12 @@ class Cross3D(_TileBase):
             center_expansion, "center expansion", self._CENTER_EXPANSION_BOUNDS
         )
 
+        self._center_expansion = center_expansion
+
         parameters, n_derivatives, derivatives = self._process_input(
             parameters=parameters,
             parameter_sensitivities=parameter_sensitivities,
         )
-
-        # Max radius, so there is no tanglement in the crosstile
-        max_radius = min(0.5, (0.5 / center_expansion))
-        if _np.any(parameters > max_radius):
-            raise ValueError(
-                f"Radii must be in (0,{max_radius}) for "
-                f"center_expansion {center_expansion}"
-            )
 
         if closure is not None:
             if closure not in self._closure_directions:
