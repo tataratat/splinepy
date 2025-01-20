@@ -32,7 +32,7 @@ class Snappy(_TileBase):
 
     def _closing_tile(
         self,
-        parameters=None,
+        parameters=None,  # noqa: ARG002
         parameter_sensitivities=None,  # TODO
         closure=None,
         contact_length=0.1,
