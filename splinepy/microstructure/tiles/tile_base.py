@@ -348,7 +348,7 @@ class TileBase(_SplinepyBase):
         ), "Bounds must consist of a min. and a max. value"
         min_bound, max_bound = bounds
 
-        if not isinstance(value, float):
+        if not isinstance(value, (int, float)):
             raise ValueError(f"Invalid type for {param_name}")
 
         if not ((value > min_bound) and (value < max_bound)):
