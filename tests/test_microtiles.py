@@ -1,7 +1,7 @@
 from inspect import getfullargspec
 
 import numpy as np
-from pytest import mark
+from pytest import mark, skip
 
 import splinepy.microstructure as ms
 from splinepy.utils.data import cartesian_product as _cartesian_product
@@ -9,6 +9,18 @@ from splinepy.utils.data import cartesian_product as _cartesian_product
 EPS = 1e-8
 
 all_tile_classes = list(ms.tiles.everything().values())
+# Tile classes where closure should be tested
+tile_classes_with_closure = [
+    tile_class
+    for tile_class in all_tile_classes
+    if tile_class._closure_directions is not None
+]
+# Tile classes where sensitivities should be tested
+tile_classes_with_sensitivities = [
+    tile_class
+    for tile_class in all_tile_classes
+    if tile_class._sensitivities_implemented
+]
 
 # Skip certain tile classes for parameters testing
 skip_tiles = [
@@ -105,7 +117,7 @@ def test_tile_class(tile_class):
             required_variable in members
         ), f"Tile class {tile_name} needs to have member variable '{required_variable}'"
         assert isinstance(
-            eval(f"tile_instance.{required_variable}"), var_type
+            getattr(tile_instance, required_variable), var_type
         ), (
             f"Variable {required_variable} needs to be of type {var_type} and not"
             f"{required_variable}"
@@ -130,7 +142,7 @@ def test_tile_class(tile_class):
             default_value = default_value.ravel()
         elif not isinstance(default_value, float):
             raise ValueError(
-                f"Default parameter value for tile {tile_name} must either be"
+                f"Default parameter value for tile {tile_name} must either be "
                 "a float or a numpy array"
             )
 
@@ -160,7 +172,10 @@ def test_tile_bounds(tile_class):
 
     # Skip certain classes for testing
     if tile_class in skip_tiles:
-        return
+        skip(
+            "Known issue: skip bound test for non-default parameter values for tile "
+            f"{tile_class.__name__}"
+        )
 
     # Go through all extremes of parameters and ensure that also they create
     # tiles within unit square/cube
@@ -177,7 +192,7 @@ def test_tile_bounds(tile_class):
         check_control_points(tile_patches)
 
 
-@mark.parametrize("tile_class", all_tile_classes)
+@mark.parametrize("tile_class", tile_classes_with_closure)
 def test_tile_closure(tile_class):
     """Check if closing tiles also lie in unit cube.
 
@@ -186,10 +201,11 @@ def test_tile_closure(tile_class):
     tile_class: tile class in splinepy.microstructure.tiles
         Microtile
     """
+    tile_name = tile_class.__name__
 
     # Skip tile if if does not support closure
     if tile_class._closure_directions is None:
-        return
+        skip(f"Tile {tile_name} does not have a closure implementation. Skip")
     tile_creator = tile_class()
     # Go through all implemented closure directions
     for closure_direction in tile_creator._closure_directions:
@@ -206,7 +222,10 @@ def test_tile_closure(tile_class):
     # Also check non-default parameters
     # Skip certain classes for testing
     if tile_class in skip_tiles:
-        return
+        skip(
+            "Known issue: skip closure test for non-default parameter for tile "
+            f"{tile_name}"
+        )
 
     # Go through all extremes of parameters and ensure that also they create
     # tiles within unit square/cube
@@ -226,7 +245,7 @@ def test_tile_closure(tile_class):
             check_control_points(tile_patches)
 
 
-@mark.parametrize("tile_class", all_tile_classes)
+@mark.parametrize("tile_class", tile_classes_with_sensitivities)
 def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
     """Testing the correctness of the tile derivatives using Finite Differences.
     This includes every closure and no closure, every parameter and every patch
@@ -246,7 +265,7 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
     tile_creator = tile_class()
     # Skip test if tile class has no implemented sensitivities
     if not tile_creator._sensitivities_implemented:
-        return
+        skip(f"Tile {tile_class.__name__} has no sensitivities implemented")
 
     def generate_random_parameters(tile_creator, np_rng):
         """Generate random parameters within bounds"""
@@ -315,16 +334,13 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
             for i_patch, deriv_orig, deriv_fd in zip(
                 range(n_patches), deriv_evaluations, fd_sensitivities
             ):
-                assert np.allclose(deriv_orig, deriv_fd), (
-                    "Implemented derivative calculation for tile class"
-                    + f"{tile_class}, with closure {closure},  parameter "
-                    + f"{i_parameter+1}/{n_info_per_eval_point} at patch "
-                    + f"{i_patch+1}/{n_patches} does not match the derivative "
-                    + "obtained using Finite Differences at the following evaluation "
-                    + "points:\n"
-                    + str(eval_points)
-                    + "\nImplemented derivative:\n"
-                    + str(deriv_orig)
-                    + "\nFinite difference derivative:\n"
-                    + str(deriv_fd)
+                message = (
+                    f"Implemented derivative calculation for tile class {tile_class} "
+                    f"with closure {closure}, parameter {i_parameter+1}/"
+                    f"{n_info_per_eval_point} at patch {i_patch+1}/{n_patches} does not"
+                    f" match the derivative obtained using Finite Differences at the "
+                    f"following evaluation points:\n {eval_points}\nImplemented "
+                    f"derivative:\n{deriv_orig}\nFinite Difference derivative:\n"
+                    f"{deriv_fd}"
                 )
+                assert np.allclose(deriv_orig, deriv_fd), message
