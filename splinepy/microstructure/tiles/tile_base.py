@@ -129,7 +129,7 @@ class TileBase(_SplinepyBase):
         return cls._raise_if_not_set_else_return("_sensitivities_implemented")
 
     @property
-    def closure_directions(self):
+    def closure_directions(cls):
         """Returns the available closure directions of the microtile
 
         Parameters
@@ -140,11 +140,14 @@ class TileBase(_SplinepyBase):
         -------
         directions: None/list<str>
         """
-        return self._closure_directions
+        return cls._closure_directions
 
     @property
-    def parameter_bounds(cls):
-        """Returns the bounds for the microtiles' parameters
+    def parameter_bounds(self):
+        """Returns the bounds for the microtiles' parameters.
+
+        Depending on the tile, parameter bounds can change (e.g. Cross2D). Therefore, it
+        is instance-dependent and self instead of cls is used.
 
         Parameters
         ----------
@@ -154,7 +157,7 @@ class TileBase(_SplinepyBase):
         -------
         bounds: list<list<float>>
         """
-        return cls._raise_if_not_set_else_return("_parameter_bounds")
+        return self._raise_if_not_set_else_return("_parameter_bounds")
 
     @property
     def parameters_shape(cls):
