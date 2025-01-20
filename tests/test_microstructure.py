@@ -1,11 +1,17 @@
 import numpy as np
-from pytest import mark
+from pytest import mark, skip
 
 import splinepy.microstructure as ms
 from splinepy.helpme.create import box
 from splinepy.helpme.integrate import volume
 
 all_tile_classes = list(ms.tiles.everything().values())
+# Tile classes where closure should be tested
+tile_classes_with_closure = [
+    tile_class
+    for tile_class in all_tile_classes
+    if tile_class._closure_directions is not None
+]
 
 TILING = [2, 2, 2]
 BOX_DIMENSIONS = [1, 1, 1]
@@ -18,7 +24,7 @@ EPS = 1e-7
 CLOSURE_FAILS = [ms.tiles.HollowOctagonExtrude, ms.tiles.InverseCross3D]
 
 
-@mark.parametrize("tile_class", all_tile_classes)
+@mark.parametrize("tile_class", tile_classes_with_closure)
 def test_closing_face(tile_class):
     """Check if closing face is working
 
@@ -27,6 +33,19 @@ def test_closing_face(tile_class):
     tile_class: tile class in splinepy.microstructure.tiles
         Microtile
     """
+
+    # Skip tile if it doesn't support closure
+    if tile_class._closure_directions is None:
+        skip(
+            f"Tile {tile_class.__name__} does not have a closure implementation. Skip"
+        )
+
+    # TODO: right now skip tiles which have faulty closures
+    if tile_class in CLOSURE_FAILS:
+        skip(
+            f"Known issue: skip closure test for {tile_class.__name__}, which may have "
+            "closure implementation"
+        )
 
     def check_if_closed(multipatch, closure_direction):
         """Helper function to see if multipatch has a closing surface
@@ -67,16 +86,8 @@ def test_closing_face(tile_class):
         )
         assert face_max_area > 1.0 - EPS, (
             f"The closure of the {closure_direction}_max surface is not complete. "
-            f"Expected area of 1, got{face_max_area}"
+            f"Expected area of 1, instead got {face_max_area}"
         )
-
-    # Skip tile if it doesn't support closure
-    if tile_class._closure_directions is None:
-        return
-
-    # TODO: right now skip tiles which have faulty closures
-    if tile_class in CLOSURE_FAILS:
-        return
 
     tile_creator = tile_class()
     generator = ms.microstructure.Microstructure(
@@ -108,7 +119,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
     heps: float
         Perturbation size for finite difference evaluation. Defined in conftest.py
     n_test_points: int
-        Number of testing points int the parametric domain. Defined in conftest.py
+        Number of testing points in the parametric domain. Defined in conftest.py
     """
 
     tile_creator = tile_class()
