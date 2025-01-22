@@ -95,6 +95,8 @@ for i in range(len(ukv[0]) - 1):
             ukv[1][j + 1],
         )
         det_jacs = np.linalg.det(geometry.jacobian(mapped_positions))
+        # Scale jacobian by element size
+        det_jacs *= (ukv[0][i + 1] - ukv[0][i]) * (ukv[1][j + 1] - ukv[1][j])
 
         # RHS
         # q : quadrature point | d: dim
