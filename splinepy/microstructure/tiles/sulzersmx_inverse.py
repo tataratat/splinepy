@@ -23,6 +23,7 @@ class SulzerSMXInverse(_TileBase):
     _n_info_per_eval_point = 1
     _parameter_bounds = [[0.0, 0.5], [0.0, 0.5]]
     _parameters_shape = (2, 1)
+    _sensitivities_implemented = False
 
     def create_tile(
         self,
@@ -89,6 +90,9 @@ class SulzerSMXInverse(_TileBase):
         if closure is not None:
             raise NotImplementedError("Closure not implemented!")
 
+        # Helper array for defining x-component of control points
+        e = _np.ones((4, 1))
+
         splines = []
         for i_derivative in range(n_derivatives + 1):
             if i_derivative == 0:
@@ -111,308 +115,240 @@ class SulzerSMXInverse(_TileBase):
             spline_list = []
 
             # Define control points of crossbars
-            front_bottom = _np.array(
+            xs_front = _np.vstack((v_zero * e, v_one_half * e))
+            xs_back = _np.vstack((v_one_half * e, v_one * e))
+
+            # Define the y- and z-coordinates of the triangle on the bottom
+            triangle_bottom_sw = _np.array(
                 [
-                    [v_zero, v_zero, thickness_front],
-                    [v_zero, v_zero, thickness_front + triangle_height],
+                    [v_zero, thickness_front],
+                    [v_zero, v_one_half],
                     [
-                        v_zero,
-                        triangle_height,
-                        thickness_front + triangle_height,
+                        triangle_height * 0.5,
+                        v_one_half - triangle_height * 0.5,
                     ],
-                    [v_zero, v_zero, v_one - thickness_back],
-                    [v_one_half, v_zero, thickness_front],
-                    [v_one_half, v_zero, thickness_front + triangle_height],
-                    [
-                        v_one_half,
-                        triangle_height,
-                        thickness_front + triangle_height,
-                    ],
-                    [v_one_half, v_zero, v_one - thickness_back],
+                    [triangle_height / 3, v_one_half],
                 ]
             )
 
-            back_bottom = _np.array(
+            triangle_bottom_se = _np.array(
                 [
-                    [v_one_half, v_zero, thickness_front],
-                    [v_one_half, v_zero, thickness_front + triangle_height],
+                    [v_zero, v_one_half],
+                    [v_zero, v_one - thickness_back],
+                    [triangle_height / 3, v_one_half],
                     [
-                        v_one_half,
-                        triangle_height,
-                        thickness_front + triangle_height,
+                        triangle_height * 0.5,
+                        v_one_half + triangle_height * 0.5,
                     ],
-                    [v_one_half, v_zero, v_one - thickness_back],
-                    [v_one, v_zero, thickness_front],
-                    [v_one, v_zero, thickness_front + triangle_height],
-                    [
-                        v_one,
-                        triangle_height,
-                        thickness_front + triangle_height,
-                    ],
-                    [v_one, v_zero, v_one - thickness_back],
                 ]
             )
-
-            front_bottom_bar = _np.array(
+            triangle_bottom_n = _np.array(
                 [
-                    [v_zero, v_zero, v_one - thickness_back],
-                    [v_zero, thickness_back, v_one],
                     [
-                        v_zero,
-                        triangle_height,
-                        thickness_front + triangle_height,
+                        triangle_height * 0.5,
+                        v_one_half - triangle_height * 0.5,
                     ],
+                    [triangle_height / 3, v_one_half],
+                    [triangle_height, v_one_half],
                     [
-                        v_zero,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
-                    ],
-                    [v_one_half, v_zero, v_one - thickness_back],
-                    [v_one_half, thickness_back, v_one],
-                    [
-                        v_one_half,
-                        triangle_height,
-                        thickness_front + triangle_height,
-                    ],
-                    [
-                        v_one_half,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
+                        triangle_height * 0.5,
+                        v_one_half + triangle_height * 0.5,
                     ],
                 ]
             )
 
-            front_right = _np.array(
+            triangle_right_s = _np.array(
                 [
-                    [v_zero, thickness_back, v_one],
-                    [v_zero, thickness_back + triangle_height, v_one],
                     [
-                        v_zero,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
+                        v_one_half - triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
                     ],
-                    [v_zero, v_one - thickness_front, v_one],
-                    [v_one_half, thickness_back, v_one],
-                    [v_one_half, thickness_back + triangle_height, v_one],
-                    [
-                        v_one_half,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
-                    ],
-                    [v_one_half, v_one - thickness_front, v_one],
+                    [thickness_back, v_one],
+                    [v_one_half, v_one - triangle_height / 3],
+                    [v_one_half, v_one],
                 ]
             )
 
-            back_right = _np.array(
+            triangle_right_n = _np.array(
                 [
-                    [v_one_half, thickness_back, v_one],
-                    [v_one_half, thickness_back + triangle_height, v_one],
+                    [v_one_half, v_one - triangle_height / 3],
+                    [v_one_half, v_one],
                     [
-                        v_one_half,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
+                        v_one_half + triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
                     ],
-                    [v_one_half, v_one - thickness_front, v_one],
-                    [v_one, thickness_back, v_one],
-                    [v_one, thickness_back + triangle_height, v_one],
-                    [
-                        v_one,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
-                    ],
-                    [v_one, v_one - thickness_front, v_one],
+                    [v_one - thickness_front, v_one],
                 ]
             )
 
-            front_top = _np.array(
+            triangle_right_w = _np.array(
                 [
+                    [v_one_half, v_one - triangle_height],
                     [
-                        v_zero,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
+                        v_one_half - triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
                     ],
-                    [v_zero, v_one, v_one - thickness_front],
-                    [v_zero, v_one, thickness_back],
-                    [v_zero, v_one, thickness_back + triangle_height],
                     [
-                        v_one_half,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
+                        v_one_half + triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
                     ],
-                    [v_one_half, v_one, v_one - thickness_front],
-                    [v_one_half, v_one, thickness_back],
-                    [v_one_half, v_one, thickness_back + triangle_height],
+                    [v_one_half, v_one - triangle_height / 3],
                 ]
             )
 
-            back_top = _np.array(
-                [
-                    [
-                        v_one_half,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [v_one_half, v_one, v_one - thickness_front],
-                    [v_one_half, v_one, thickness_back],
-                    [v_one_half, v_one, thickness_back + triangle_height],
-                    [
-                        v_one,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [v_one, v_one, v_one - thickness_front],
-                    [v_one, v_one, thickness_back],
-                    [v_one, v_one, thickness_back + triangle_height],
-                ]
-            )
-
-            front_top_bar = _np.array(
-                [
-                    [
-                        v_zero,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [
-                        v_zero,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [v_zero, v_one - thickness_back, v_zero],
-                    [v_zero, v_one, thickness_back],
-                    [
-                        v_one_half,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [
-                        v_one_half,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [v_one_half, v_one - thickness_back, v_zero],
-                    [v_one_half, v_one, thickness_back],
-                ]
-            )
-
-            front_left = _np.array(
-                [
-                    [v_zero, thickness_front, v_zero],
-                    [
-                        v_zero,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [v_zero, thickness_front + triangle_height, v_zero],
-                    [v_zero, v_one - thickness_back, v_zero],
-                    [v_one_half, thickness_front, v_zero],
-                    [
-                        v_one_half,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [v_one_half, thickness_front + triangle_height, v_zero],
-                    [v_one_half, v_one - thickness_back, v_zero],
-                ]
-            )
-
-            back_left = _np.array(
-                [
-                    [v_one_half, thickness_front, v_zero],
-                    [
-                        v_one_half,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [v_one_half, thickness_front + triangle_height, v_zero],
-                    [v_one_half, v_one - thickness_back, v_zero],
-                    [v_one, thickness_front, v_zero],
-                    [
-                        v_one,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [v_one, thickness_front + triangle_height, v_zero],
-                    [v_one, v_one - thickness_back, v_zero],
-                ]
-            )
-
-            back_top_bar = _np.array(
-                [
-                    [
-                        v_one_half,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [
-                        v_one_half,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
-                    ],
-                    [v_one_half, v_one, v_one - thickness_front],
-                    [v_one_half, v_one - thickness_front, v_one],
-                    [
-                        v_one,
-                        v_one - triangle_height,
-                        thickness_back + triangle_height,
-                    ],
-                    [
-                        v_one,
-                        thickness_back + triangle_height,
-                        v_one - triangle_height,
-                    ],
-                    [v_one, v_one, v_one - thickness_front],
-                    [v_one, v_one - thickness_front, v_one],
-                ]
-            )
-
-            back_bottom_bar = _np.array(
-                [
-                    [v_one_half, thickness_front, v_zero],
-                    [v_one_half, v_zero, thickness_front],
-                    [
-                        v_one_half,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [
-                        v_one_half,
-                        triangle_height,
-                        thickness_front + triangle_height,
-                    ],
-                    [v_one, thickness_front, v_zero],
-                    [v_one, v_zero, thickness_front],
-                    [
-                        v_one,
-                        thickness_front + triangle_height,
-                        triangle_height,
-                    ],
-                    [
-                        v_one,
-                        triangle_height,
-                        thickness_front + triangle_height,
-                    ],
-                ]
-            )
-
-            # Append all the patches into list
-            for control_points in [
-                front_bottom,
-                front_bottom_bar,
-                front_right,
-                front_top,
-                front_top_bar,
-                front_left,
-                back_bottom,
-                back_right,
-                back_top_bar,
-                back_top,
-                back_left,
-                back_bottom_bar,
-            ]:
-                spline_list.append(
-                    _Bezier(degrees=[1, 1, 1], control_points=control_points)
+            triangle_top_nw, triangle_top_ne, triangle_top_s = (
+                _np.hstack(
+                    (
+                        v_one - cps[:, 0].reshape(-1, 1),
+                        cps[:, 1].reshape(-1, 1),
+                    )
                 )
+                for cps in [
+                    triangle_bottom_sw,
+                    triangle_bottom_se,
+                    triangle_bottom_n,
+                ]
+            )
+
+            triangle_left_s, triangle_left_n, triangle_left_e = (
+                _np.hstack(
+                    (
+                        cps[:, 0].reshape(-1, 1),
+                        v_one - cps[:, 1].reshape(-1, 1),
+                    )
+                )
+                for cps in [
+                    triangle_right_s,
+                    triangle_right_n,
+                    triangle_right_w,
+                ]
+            )
+
+            # Create patches which have front as well as back
+            for yz_cps in [
+                triangle_bottom_sw,
+                triangle_bottom_se,
+                triangle_bottom_n,
+                triangle_top_nw,
+                triangle_top_ne,
+                triangle_top_s,
+                triangle_right_s,
+                triangle_right_n,
+                triangle_right_w,
+                triangle_left_s,
+                triangle_left_n,
+                triangle_left_e,
+            ]:
+                for xs in [xs_front, xs_back]:
+                    control_points = _np.hstack((xs, _np.tile(yz_cps, [2, 1])))
+                    spline_list.append(
+                        _Bezier(
+                            degrees=[1, 1, 1], control_points=control_points
+                        )
+                    )
+
+            # Create the bars
+            front_bottom_bar_s = _np.array(
+                [
+                    [
+                        triangle_height * 0.5,
+                        v_one - thickness_back - triangle_height * 0.5,
+                    ],
+                    [v_zero, v_one - thickness_back],
+                    [
+                        thickness_back + triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
+                    ],
+                    [thickness_back, v_one],
+                ]
+            )
+
+            front_bottom_bar_n = _np.array(
+                [
+                    [triangle_height, v_one_half],
+                    [
+                        triangle_height * 0.5,
+                        v_one - thickness_back - triangle_height * 0.5,
+                    ],
+                    [v_one_half, v_one - triangle_height],
+                    [
+                        thickness_back + triangle_height * 0.5,
+                        v_one - triangle_height * 0.5,
+                    ],
+                ]
+            )
+
+            # Helper functions for control point translation
+            def identity_function(cps):
+                return cps
+
+            def opposite_corner_function(cps):
+                return v_one - cps
+
+            # Append bar patches to spline list
+            for yz_cps in [front_bottom_bar_s, front_bottom_bar_n]:
+                # 1: create front bottom, 2: create front top
+                for translation_function in [
+                    identity_function,
+                    opposite_corner_function,
+                ]:
+                    yz_cps_translated = translation_function(yz_cps)
+                    control_points = _np.hstack(
+                        (xs_front, _np.tile(yz_cps_translated, [2, 1]))
+                    )
+                    spline_list.append(
+                        _Bezier(
+                            degrees=[1, 1, 1], control_points=control_points
+                        )
+                    )
+
+            # Define bar control points
+            back_bottom_bar_s = _np.array(
+                [
+                    [v_zero, thickness_front],
+                    [
+                        triangle_height * 0.5,
+                        v_one_half - triangle_height * 0.5,
+                    ],
+                    [thickness_front, v_zero],
+                    [
+                        v_one_half - triangle_height * 0.5,
+                        triangle_height * 0.5,
+                    ],
+                ]
+            )
+
+            back_bottom_bar_n = _np.array(
+                [
+                    [
+                        triangle_height * 0.5,
+                        v_one_half - triangle_height * 0.5,
+                    ],
+                    [triangle_height, v_one_half],
+                    [
+                        v_one_half - triangle_height * 0.5,
+                        triangle_height * 0.5,
+                    ],
+                    [v_one_half, triangle_height],
+                ]
+            )
+
+            # Add back bar patches to spline list
+            for yz_cps in [back_bottom_bar_s, back_bottom_bar_n]:
+                # 1: create back bottom, 2: create back top bar
+                for translation_function in [
+                    identity_function,
+                    opposite_corner_function,
+                ]:
+                    yz_cps_translated = translation_function(yz_cps)
+                    control_points = _np.hstack(
+                        (xs_back, _np.tile(yz_cps_translated, [2, 1]))
+                    )
+                    spline_list.append(
+                        _Bezier(
+                            degrees=[1, 1, 1], control_points=control_points
+                        )
+                    )
 
             if i_derivative == 0:
                 splines = spline_list.copy()
