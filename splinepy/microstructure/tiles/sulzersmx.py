@@ -40,6 +40,7 @@ class SulzerSMX(_TileBase):
         [-0.5, 0.5],
     ]
     _parameters_shape = (6, 1)
+    _sensitivities_implemented = False
 
     def create_tile(
         self,
