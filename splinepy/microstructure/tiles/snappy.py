@@ -28,7 +28,7 @@ class Snappy(_TileBase):
     _parameter_bounds = []
     _parameters_shape = ()
 
-    _CONTACT_LENGTH_BOUNDS = [0.0, 0.49]
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.5]
 
     def _closing_tile(
         self,
@@ -69,8 +69,6 @@ class Snappy(_TileBase):
         """
         if closure is None:
             raise ValueError("No closing direction given")
-
-        # TODO: parameters are not implemented, therefore do not check params
 
         if parameter_sensitivities is not None:
             raise NotImplementedError(
@@ -295,7 +293,7 @@ class Snappy(_TileBase):
                 _Bezier(degrees=[3, 1], control_points=spline_5)
             )
         else:
-            raise ValueError(
+            raise NotImplementedError(
                 "Closing tile is only implemented for y-enclosure"
             )
 
@@ -349,7 +347,7 @@ class Snappy(_TileBase):
 
         for param in [a, b, c, r, contact_length]:
             if not isinstance(param, float):
-                raise ValueError(f"Invalid Type, {param} is not float")
+                raise TypeError(f"Invalid Type, {param} is not float")
             if param < 0:
                 raise ValueError("Invalid parameter, must be > 0.")
 
