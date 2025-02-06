@@ -23,10 +23,10 @@ tile_classes_with_sensitivities = [
 ]
 
 # Skip certain tile classes for parameters testing
-skip_tiles = [
-    ms.tiles.EllipsVoid,  # Control points easily lie outside unitcube
-    ms.tiles.Snappy,  # Has no "parameters"
-]
+skip_tiles = {
+    ms.tiles.EllipsVoid: "control points easily lie outside unitcube",
+    ms.tiles.Snappy: "has no 'parameters' implemented",
+}
 
 
 def check_control_points(tile_patches):
@@ -35,9 +35,11 @@ def check_control_points(tile_patches):
     # Go through all patches
     for tile_patch in tile_patches:
         cps = tile_patch.control_points
-        assert np.all(
-            (cps >= 0.0 - EPS) & (cps <= 1.0 + EPS)
-        ), "Control points of tile must lie inside the unit square/cube"
+        assert np.all((cps >= 0.0 - EPS) & (cps <= 1.0 + EPS)), (
+            "Control points of tile must lie inside the unit square/cube. "
+            + "Found points outside bounds: "
+            f"{cps[~((cps >= 0.0 - EPS) & (cps <= 1.0 + EPS))]}"
+        )
 
 
 def make_bounds_feasible(bounds):
@@ -174,7 +176,7 @@ def test_tile_bounds(tile_class):
     if tile_class in skip_tiles:
         skip(
             "Known issue: skip bound test for non-default parameter values for tile "
-            f"{tile_class.__name__}"
+            f"{tile_class.__name__}. Reason: {skip_tiles[tile_class]}"
         )
 
     # Go through all extremes of parameters and ensure that also they create
@@ -224,7 +226,7 @@ def test_tile_closure(tile_class):
     if tile_class in skip_tiles:
         skip(
             "Known issue: skip closure test for non-default parameter for tile "
-            f"{tile_name}"
+            f"{tile_name}. Reason: {skip_tiles[tile_class]}"
         )
 
     # Go through all extremes of parameters and ensure that also they create
