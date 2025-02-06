@@ -65,6 +65,14 @@ def n_test_points():
     return 10
 
 
+@pytest.fixture
+def big_perturbation():
+    """Value for perturbation of parameters value
+
+    The number 0.1 is small enough to fit the range of most tile parameters"""
+    return 0.1
+
+
 # initializing a spline should be a test itself, so provide `dict_spline`
 # this is "iga-book"'s fig 2.15.
 @pytest.fixture
