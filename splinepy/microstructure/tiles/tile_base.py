@@ -146,8 +146,8 @@ class TileBase(_SplinepyBase):
     def parameter_bounds(self):
         """Returns the bounds for the microtiles' parameters.
 
-        Depending on the tile, parameter bounds can change (e.g. Cross2D). Therefore, it
-        is instance-dependent and self instead of cls is used.
+        Depending on the tile, parameter bounds can dynamically change (e.g. Cross2D).
+        Therefore, it is instance-dependent and self instead of cls is used.
 
         Parameters
         ----------
