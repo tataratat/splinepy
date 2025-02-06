@@ -13,15 +13,17 @@ tile_classes_with_closure = [
     if tile_class._closure_directions is not None
 ]
 
+# Fixed auxiliary variables specific to microstructure testing
 TILING = [2, 2, 2]
 BOX_DIMENSIONS = [1, 1, 1]
 EPS = 1e-7
 
-# TODO: the following tiles fail the closure test
-# HollowOctagonExtrude has no closure
-# InverseCross3D's closure is special: it does not fill the whole unit cube and does not
-#                   fully cover the closing face
-CLOSURE_FAILS = [ms.tiles.HollowOctagonExtrude, ms.tiles.InverseCross3D]
+# TODO(#458): the following tiles fail the closure test
+CLOSURE_FAILS = {
+    ms.tiles.HollowOctagonExtrude: "has no closure implemented",
+    ms.tiles.InverseCross3D: "closure is special: it does not fill the whole unit "
+    + "cube and does not fully cover the closing face",
+}
 
 
 @mark.parametrize("tile_class", tile_classes_with_closure)
@@ -42,9 +44,10 @@ def test_closing_face(tile_class):
 
     # TODO: right now skip tiles which have faulty closures
     if tile_class in CLOSURE_FAILS:
+        reason = CLOSURE_FAILS[tile_class]
         skip(
-            f"Known issue: skip closure test for {tile_class.__name__}, which may have "
-            "closure implementation"
+            f"Known issue: skip closure test for {tile_class.__name__}, "
+            f"reason: {reason}"
         )
 
     def check_if_closed(multipatch, closure_direction):
