@@ -342,10 +342,11 @@ class TileBase(_SplinepyBase):
         bounds: list<int>
             List of min. and max. bound
         """
-        assert isinstance(bounds, list), "Bounds has to be a list"
-        assert (
-            len(bounds) == 2
-        ), "Bounds must consist of a min. and a max. value"
+
+        if not isinstance(bounds, list):
+            raise TypeError("bounds has to be a list")
+        if len(bounds) != 2:
+            raise ValueError("Bounds must consist of a min. and a max. value")
         min_bound, max_bound = bounds
 
         if not isinstance(value, (int, float)):
