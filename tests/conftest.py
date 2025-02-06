@@ -47,12 +47,12 @@ def heps():
     """
     Perturbation/step size for finite difference evaluation of derivative/sensitivity.
 
-    The value 1e-7 is arbitrary, but is a a compromise between:
+    The value 1e-4 is arbitrary, but is a a compromise between:
     - Being small enough to ensure the finite difference calculation being accurate
         enough
     - Being large enough to avoid round-off error in floating-point arithmetic
     """
-    return 1e-7
+    return 1e-5
 
 
 @pytest.fixture
@@ -71,6 +71,18 @@ def big_perturbation():
 
     The number 0.1 is small enough to fit the range of most tile parameters"""
     return 0.1
+
+
+@pytest.fixture
+def fd_derivative_stepsizes_and_weights():
+    """Stepsizes and weights for the calculation of the derivative using finite
+    differences. Using fourth-order accurate centered scheme.
+
+    Returns
+    -------
+    stepsizes_and_weights, denominator: dict<int:int>
+    """
+    return {-2: 1 / 12, -1: -8 / 12, 1: 8 / 12, 2: -1 / 12}
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
