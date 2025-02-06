@@ -1,7 +1,7 @@
 from inspect import getfullargspec
 
 import numpy as np
-from pytest import mark, skip
+from pytest import mark, raises, skip
 
 import splinepy.microstructure as ms
 from splinepy.utils.data import cartesian_product as _cartesian_product
@@ -344,3 +344,71 @@ def test_tile_derivatives(tile_class, np_rng, heps, n_test_points):
                     f"{deriv_fd}"
                 )
                 assert np.allclose(deriv_orig, deriv_fd), message
+
+
+@mark.parametrize("tile_class", all_tile_classes)
+def test_invalid_parameter_values(tile_class, big_perturbation):
+    """Testing whether the tile class correctly raises an error if invalid parameters
+    are given. Current tests include too low or too high parameter values and wrong
+    shapes of the parameter array.
+
+    Parameters
+    ----------
+    tile_class: tile class in splinepy.microstructure.tiles
+        Microtile class
+    """
+    tile_creator = tile_class()
+    # For certain tiles skip tests
+    if len(tile_creator._parameter_bounds) == 0:
+        skip(
+            f"Skip check for invalid parameters for tile {tile_class.__name__} "
+            "since there are no parameter bounds implemented for this tile"
+        )
+
+    parameter_bounds = np.asarray(tile_creator._parameter_bounds)
+
+    # Check if tile class correctly raises an error if parameter values are too low
+    parameters_too_low = (
+        parameter_bounds[:, 0].reshape(tile_creator._parameters_shape)
+        - big_perturbation
+    )
+    with raises(ValueError) as exc_info_low:
+        tile_creator.create_tile(parameters=parameters_too_low)
+    # Check if the exception message calls TileBase.check_params()
+    assert "must be within the following bounds: lower: " in str(
+        exc_info_low.value
+    ), (
+        f"Tile class {tile_class.__name__} must call TileBase.check_params() and raise",
+        " a ValueError if parameters values are too low",
+    )
+
+    # Check the same if parameter values are too high
+    parameters_too_high = (
+        parameter_bounds[:, 1].reshape(tile_creator._parameters_shape)
+        + big_perturbation
+    )
+    with raises(ValueError) as exc_info_high:
+        tile_creator.create_tile(parameters=parameters_too_high)
+    # Check if the exception message calls TileBase.check_params()
+    assert "must be within the following bounds: lower: " in str(
+        exc_info_high.value
+    ), (
+        f"Tile class {tile_class.__name__} must call TileBase.check_params() and raise",
+        " a ValueError if parameters values are too high",
+    )
+
+    # Test if error is correctly thrown if the parameter shape is incompatible
+    # Take parameters in the middle of the bounds and double the array size
+    parameters_middle = np.mean(parameter_bounds, axis=1).reshape(
+        tile_creator._parameters_shape
+    )
+    parameters_middle = np.tile(parameters_middle, [2, 1])
+    # Check if the error is correctly raised
+    with raises(TypeError) as exc_info_size:
+        tile_creator.create_tile(parameters=parameters_middle)
+    assert "Mismatch in parameter size, expected" in str(
+        exc_info_size.value
+    ), (
+        f"Tile class {tile_class.__name__} must call TileBase.check_params() and raise",
+        " a TypeError if the given parameters have the wrong shape",
+    )
