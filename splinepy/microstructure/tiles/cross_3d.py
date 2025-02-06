@@ -534,7 +534,8 @@ class Cross3D(_TileBase):
         if closure is not None:
             if closure not in self._closure_directions:
                 raise NotImplementedError(
-                    f"Closure '{closure}' not implemented"
+                    f"Closure '{closure}' not implemented. Supported closures are: "
+                    + f"{self._closure_directions}"
                 )
             return self._closing_tile(
                 parameters=parameters,
