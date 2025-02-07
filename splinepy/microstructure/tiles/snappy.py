@@ -346,8 +346,10 @@ class Snappy(_TileBase):
         """
 
         for param in [a, b, c, r, contact_length]:
-            if not isinstance(param, float):
-                raise TypeError(f"Invalid Type, {param} is not float")
+            if not isinstance(param, (int, float)):
+                raise TypeError(
+                    f"Invalid Type, {param} is neither int nor float"
+                )
             if param < 0:
                 raise ValueError("Invalid parameter, must be > 0.")
 
