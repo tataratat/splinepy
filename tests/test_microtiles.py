@@ -6,6 +6,7 @@ from pytest import mark, raises, skip
 import splinepy.microstructure as ms
 from splinepy.utils.data import cartesian_product as _cartesian_product
 
+# Tolerance value for checking control points
 EPS = 1e-8
 
 all_tile_classes = list(ms.tiles.everything().values())
@@ -31,14 +32,14 @@ skip_tiles = {
 
 def check_control_points(tile_patches):
     """Helper function. Check if all of tile's control points all lie within unit
-    square/cube"""
+    square/cube. The tolerance is defined by EPS"""
     # Go through all patches
     for tile_patch in tile_patches:
         cps = tile_patch.control_points
-        assert np.all((cps >= 0.0 - EPS) & (cps <= 1.0 + EPS)), (
+        valid_cp_indices = (cps >= 0.0 - EPS) & (cps <= 1.0 + EPS)
+        assert np.all(valid_cp_indices), (
             "Control points of tile must lie inside the unit square/cube. "
-            + "Found points outside bounds: "
-            f"{cps[~((cps >= 0.0 - EPS) & (cps <= 1.0 + EPS))]}"
+            + f"Found points outside bounds: {cps[~(valid_cp_indices)]}"
         )
 
 
@@ -121,8 +122,8 @@ def test_tile_class(tile_class):
         assert isinstance(
             getattr(tile_instance, required_variable), var_type
         ), (
-            f"Variable {required_variable} needs to be of type {var_type} and not"
-            f"{required_variable}"
+            f"Variable {required_variable} must be of type {var_type}, but found type "
+            f"{type(getattr(tile_instance, required_variable))}"
         )
 
     # Check default parameter value if there is one
