@@ -224,9 +224,12 @@ class TileBase(_SplinepyBase):
                 parameters.ravel() < upper_bounds
             )
             if not _np.all(within_bounds):
+                out_of_bounds = parameters[
+                    ~within_bounds.reshape(parameters.shape)
+                ]
                 raise ValueError(
-                    f"The parameters {parameters} must be within the following bounds: "
-                    + f"lower: {lower_bounds} and upper: {upper_bounds}"
+                    f"The following parameters are out of bounds: {out_of_bounds}. ",
+                    f"Expected bounds: lower: {lower_bounds} and upper: {upper_bounds}",
                 )
 
         return True
