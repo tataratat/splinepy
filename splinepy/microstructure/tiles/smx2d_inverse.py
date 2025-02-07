@@ -71,106 +71,339 @@ class SMX2DInverse(_TileBase):
                 v_one_half = 0.5
                 v_one = 1.0
 
-                # Auxiliary values
-                triangle_height = 0.5 * (v_one - bar_thickness - bar_thickness)
+                th_ne, th_se, th_sw, th_nw = parameters.ravel()
             else:
                 raise NotImplementedError(
                     "Derivatives not implemented for this tile"
                 )
 
+            # Define crossing points of bars, analytically computed beforehand
+            crossing_s_x = (
+                -th_ne * th_se * th_sw
+                + th_ne * th_sw
+                + th_nw * th_se * th_sw
+                - th_nw * th_se
+                - th_nw * th_sw
+                + th_nw
+                + th_se
+                - 1
+            ) / (
+                -th_ne * th_se
+                + th_ne
+                - th_nw * th_sw
+                + th_nw
+                + th_se
+                + th_sw
+                - 2
+            )
+            crossing_s_y = (
+                -th_ne * th_nw * th_se
+                - th_ne * th_nw * th_sw
+                + th_ne * th_nw
+                + th_ne * th_se
+                + th_ne * th_sw
+                - th_ne
+                + th_nw * th_se
+                + th_nw * th_sw
+                - th_nw
+                - th_se
+                - th_sw
+                + 1
+            ) / (
+                th_ne * th_se
+                - th_ne
+                + th_nw * th_sw
+                - th_nw
+                - th_se
+                - th_sw
+                + 2
+            )
+            crossing_w_x = (
+                th_ne * th_nw * th_se
+                - th_ne * th_nw
+                + th_ne * th_se * th_sw
+                - th_ne * th_se
+                - th_ne * th_sw
+                + th_ne
+                - th_nw * th_se
+                + th_nw
+                - th_se * th_sw
+                + th_se
+                + th_sw
+                - 1
+            ) / (
+                -th_ne * th_nw
+                + th_ne
+                + th_nw
+                - th_se * th_sw
+                + th_se
+                + th_sw
+                - 2
+            )
+            crossing_w_y = (
+                th_ne * th_nw * th_sw
+                - th_ne * th_sw
+                - th_nw * th_se * th_sw
+                + th_nw * th_se
+                - th_nw
+                + th_se * th_sw
+                - th_se
+                + 1
+            ) / (
+                th_ne * th_nw
+                - th_ne
+                - th_nw
+                + th_se * th_sw
+                - th_se
+                - th_sw
+                + 2
+            )
+            crossing_e_x = (
+                -th_ne * th_nw * th_sw
+                + th_ne * th_sw
+                - th_nw * th_se * th_sw
+                + th_nw * th_se
+                + th_nw * th_sw
+                - 1
+            ) / (
+                -th_ne * th_nw
+                + th_ne
+                + th_nw
+                - th_se * th_sw
+                + th_se
+                + th_sw
+                - 2
+            )
+            crossing_e_y = (
+                th_ne * th_nw * th_se
+                - th_ne * th_se * th_sw
+                + th_ne * th_sw
+                - th_ne
+                - th_nw * th_se
+                + th_se * th_sw
+                - th_sw
+                + 1
+            ) / (
+                th_ne * th_nw
+                - th_ne
+                - th_nw
+                + th_se * th_sw
+                - th_se
+                - th_sw
+                + 2
+            )
+            crossing_n_x = (
+                -th_ne * th_nw * th_se
+                + th_ne * th_nw * th_sw
+                - th_ne * th_sw
+                + th_ne
+                + th_nw * th_se
+                - th_nw * th_sw
+                + th_sw
+                - 1
+            ) / (
+                -th_ne * th_se
+                + th_ne
+                - th_nw * th_sw
+                + th_nw
+                + th_se
+                + th_sw
+                - 2
+            )
+            crossing_n_y = (
+                th_ne * th_se * th_sw
+                - th_ne * th_sw
+                + th_nw * th_se * th_sw
+                - th_nw * th_se
+                - th_se * th_sw
+                + 1
+            ) / (
+                th_ne * th_se
+                - th_ne
+                + th_nw * th_sw
+                - th_nw
+                - th_se
+                - th_sw
+                + 2
+            )
+
             spline_list = []
 
-            # Create triangle
-            triangle_sw = _np.array(
-                [
-                    [v_zero, bar_thickness],
-                    [v_zero, v_one_half],
-                    [
-                        triangle_height * 0.5,
-                        v_one_half - triangle_height * 0.5,
-                    ],
-                    [triangle_height / 3, v_one_half],
-                ]
-            )
-
-            triangle_se = _np.array(
-                [
-                    [v_zero, v_one_half],
-                    [v_zero, v_one - bar_thickness],
-                    [triangle_height / 3, v_one_half],
-                    [
-                        triangle_height * 0.5,
-                        v_one_half + triangle_height * 0.5,
-                    ],
-                ]
-            )
-            triangle_n = _np.array(
-                [
-                    [
-                        triangle_height * 0.5,
-                        v_one_half - triangle_height * 0.5,
-                    ],
-                    [triangle_height / 3, v_one_half],
-                    [triangle_height, v_one_half],
-                    [
-                        triangle_height * 0.5,
-                        v_one_half + triangle_height * 0.5,
-                    ],
-                ]
-            )
-
-            # Define bar control points
+            # Define control points
             sw_bar_bottom = _np.array(
                 [
-                    [v_zero, bar_thickness],
+                    [th_sw, v_zero],
+                    [crossing_s_x, crossing_s_y],
+                    [th_sw / 2, th_sw / 2],
                     [
-                        triangle_height * 0.5,
-                        v_one_half - triangle_height * 0.5,
-                    ],
-                    [bar_thickness, v_zero],
-                    [
-                        v_one_half - triangle_height * 0.5,
-                        triangle_height * 0.5,
+                        (crossing_w_x + crossing_s_x) / 2,
+                        (crossing_w_y + crossing_s_y) / 2,
                     ],
                 ]
             )
 
             sw_bar_top = _np.array(
                 [
+                    [th_sw / 2, th_sw / 2],
                     [
-                        triangle_height * 0.5,
-                        v_one_half - triangle_height * 0.5,
+                        (crossing_w_x + crossing_s_x) / 2,
+                        (crossing_w_y + crossing_s_y) / 2,
                     ],
-                    [triangle_height, v_one_half],
-                    [
-                        v_one_half - triangle_height * 0.5,
-                        triangle_height * 0.5,
-                    ],
-                    [v_one_half, triangle_height],
+                    [v_zero, th_sw],
+                    [crossing_w_x, crossing_w_y],
                 ]
             )
 
-            # Transformation function to rotate recurrent patterns
-            def rotate_function(cps):
-                return _np.hstack(
-                    (
-                        cps[:, 1].reshape(-1, 1),
-                        v_one - cps[:, 0].reshape(-1, 1),
-                    )
-                )
+            se_bar_bottom = _np.array(
+                [
+                    [crossing_s_x, crossing_s_y],
+                    [v_one - th_se, v_zero],
+                    [
+                        (crossing_s_x + crossing_e_x) / 2,
+                        (crossing_s_y + crossing_e_y) / 2,
+                    ],
+                    [v_one - th_se / 2, th_se / 2],
+                ]
+            )
 
-            for patch_yz_cps in [
-                triangle_sw,
-                triangle_se,
-                triangle_n,
+            se_bar_top = _np.array(
+                [
+                    [
+                        (crossing_s_x + crossing_e_x) / 2,
+                        (crossing_s_y + crossing_e_y) / 2,
+                    ],
+                    [v_one - th_se / 2, th_se / 2],
+                    [crossing_e_x, crossing_e_y],
+                    [v_one, th_se],
+                ]
+            )
+
+            nw_bar_bottom = _np.array(
+                [
+                    [v_zero, v_one - th_nw],
+                    [crossing_w_x, crossing_w_y],
+                    [th_nw / 2, v_one - th_nw / 2],
+                    [
+                        (crossing_w_x + crossing_n_x) / 2,
+                        (crossing_w_y + crossing_n_y) / 2,
+                    ],
+                ]
+            )
+
+            nw_bar_top = _np.array(
+                [
+                    [th_nw / 2, v_one - th_nw / 2],
+                    [
+                        (crossing_w_x + crossing_n_x) / 2,
+                        (crossing_w_y + crossing_n_y) / 2,
+                    ],
+                    [th_nw, v_one],
+                    [crossing_n_x, crossing_n_y],
+                ]
+            )
+
+            ne_bar_bottom = _np.array(
+                [
+                    [crossing_e_x, crossing_e_y],
+                    [v_one, v_one - th_ne],
+                    [
+                        (crossing_e_x + crossing_n_x) / 2,
+                        (crossing_e_y + crossing_n_y) / 2,
+                    ],
+                    [v_one - th_ne / 2, v_one - th_ne / 2],
+                ]
+            )
+
+            ne_bar_top = _np.array(
+                [
+                    [
+                        (crossing_e_x + crossing_n_x) / 2,
+                        (crossing_e_y + crossing_n_y) / 2,
+                    ],
+                    [v_one - th_ne / 2, v_one - th_ne / 2],
+                    [crossing_n_x, crossing_n_y],
+                    [v_one - th_ne, v_one],
+                ]
+            )
+
+            # Define control points for middle part
+            middle_s = _np.array(
+                [
+                    [crossing_s_x, crossing_s_y],
+                    [
+                        (crossing_s_x + crossing_e_x) / 2,
+                        (crossing_s_y + crossing_e_y) / 2,
+                    ],
+                    [
+                        (crossing_s_x + crossing_w_x) / 2,
+                        (crossing_s_y + crossing_w_y) / 2,
+                    ],
+                    [v_one_half, v_one_half],
+                ]
+            )
+
+            middle_w = _np.array(
+                [
+                    [
+                        (crossing_s_x + crossing_w_x) / 2,
+                        (crossing_s_y + crossing_w_y) / 2,
+                    ],
+                    [v_one_half, v_one_half],
+                    [crossing_w_x, crossing_w_y],
+                    [
+                        (crossing_n_x + crossing_w_x) / 2,
+                        (crossing_n_y + crossing_w_y) / 2,
+                    ],
+                ]
+            )
+
+            middle_e = _np.array(
+                [
+                    [
+                        (crossing_s_x + crossing_e_x) / 2,
+                        (crossing_s_y + crossing_e_y) / 2,
+                    ],
+                    [crossing_e_x, crossing_e_y],
+                    [v_one_half, v_one_half],
+                    [
+                        (crossing_n_x + crossing_e_x) / 2,
+                        (crossing_n_y + crossing_e_y) / 2,
+                    ],
+                ]
+            )
+
+            middle_n = _np.array(
+                [
+                    [v_one_half, v_one_half],
+                    [
+                        (crossing_n_x + crossing_e_x) / 2,
+                        (crossing_n_y + crossing_e_y) / 2,
+                    ],
+                    [
+                        (crossing_n_x + crossing_w_x) / 2,
+                        (crossing_n_y + crossing_w_y) / 2,
+                    ],
+                    [crossing_n_x, crossing_n_y],
+                ]
+            )
+
+            for control_points in [
                 sw_bar_bottom,
                 sw_bar_top,
+                se_bar_bottom,
+                se_bar_top,
+                nw_bar_top,
+                nw_bar_bottom,
+                ne_bar_bottom,
+                ne_bar_top,
+                middle_s,
+                middle_w,
+                middle_e,
+                middle_n,
             ]:
-                for _ in range(4):
-                    patch_yz_cps = rotate_function(patch_yz_cps)
-                    spline_list.append(
-                        _Bezier(degrees=[1, 1], control_points=patch_yz_cps)
-                    )
+                spline_list.append(
+                    _Bezier(degrees=[1, 1], control_points=control_points)
+                )
 
             if i_derivative == 0:
                 splines = spline_list.copy()
