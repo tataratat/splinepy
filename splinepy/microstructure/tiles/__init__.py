@@ -17,6 +17,8 @@ from splinepy.microstructure.tiles import (
     hollow_octagon,
     hollow_octagon_extrude,
     inverse_cross_3d,
+    smx2d,
+    # smx2d_inverse,
     snappy,
     tile_base,
 )
@@ -34,6 +36,9 @@ from splinepy.microstructure.tiles.hollow_octagon_extrude import (
     HollowOctagonExtrude,
 )
 from splinepy.microstructure.tiles.inverse_cross_3d import InverseCross3D
+from splinepy.microstructure.tiles.smx2d import SMX2D
+
+# from splinepy.microstructure.tiles.smx2d_inverse import SMX2DInverse
 from splinepy.microstructure.tiles.snappy import Snappy
 from splinepy.microstructure.tiles.sulzersmx import SulzerSMX
 from splinepy.microstructure.tiles.sulzersmx_inverse import SulzerSMXInverse
@@ -53,8 +58,11 @@ __all__ = [
     "hollow_octagon",
     "hollow_octagon_extrude",
     "inverse_cross_3d",
+    "smx2d",
+    # "smx2d_inverse",
     "snappy",
     "sulzersmx",
+    "sulzersmx_inverse",
     "tile_base",
     "Armadillo",
     "Chi",
@@ -68,6 +76,8 @@ __all__ = [
     "HollowOctagon",
     "HollowOctagonExtrude",
     "InverseCross3D",
+    "SMX2D",
+    # "SMX2DInverse",
     "Snappy",
     "SulzerSMX",
     "SulzerSMXInverse",
