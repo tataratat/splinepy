@@ -47,7 +47,7 @@ def heps():
     """
     Perturbation/step size for finite difference evaluation of derivative/sensitivity.
 
-    The value 1e-5 is arbitrary, but is a a compromise between:
+    The value 1e-5 is arbitrary, but is a compromise between:
     - Being small enough to ensure the finite difference calculation being accurate
     - Being large enough to avoid round-off error in floating-point arithmetic
     """
@@ -59,7 +59,8 @@ def n_test_points():
     """
     Number of random testing points (in parametric domain)
 
-    The number 10 is arbitrary and should ensure to have good test coverage
+    The number 10 is arbitrary and should ensure to have good test coverage. Increasing
+    this number could yield more thorough tests at the cost of longer runtime.
     """
     return 10
 
@@ -68,7 +69,9 @@ def n_test_points():
 def big_perturbation():
     """Value for perturbation of parameters value
 
-    The number 0.1 is small enough to fit the range of most tile parameters"""
+    The number 0.1 is chosen arbitrarily. This value is for testing out of bounds
+    parameter values. It is designed to add to the maximum or subtract from the
+    minimum bound to delibarately make the values out of the bounds."""
     return 0.1
 
 
