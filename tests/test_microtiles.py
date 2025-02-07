@@ -420,7 +420,7 @@ def test_invalid_parameter_values(tile_class, big_perturbation):
     with raises(ValueError) as exc_info_low:
         tile_creator.create_tile(parameters=parameters_too_low)
     # Check if the exception message calls TileBase.check_params()
-    assert "must be within the following bounds: lower: " in str(
+    assert "The following parameters are out of bounds: " in str(
         exc_info_low.value
     ), (
         f"Tile class {tile_class.__name__} must call TileBase.check_params() and raise",
@@ -435,7 +435,7 @@ def test_invalid_parameter_values(tile_class, big_perturbation):
     with raises(ValueError) as exc_info_high:
         tile_creator.create_tile(parameters=parameters_too_high)
     # Check if the exception message calls TileBase.check_params()
-    assert "must be within the following bounds: lower: " in str(
+    assert "The following parameters are out of bounds: " in str(
         exc_info_high.value
     ), (
         f"Tile class {tile_class.__name__} must call TileBase.check_params() and raise",

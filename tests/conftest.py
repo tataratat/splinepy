@@ -47,9 +47,8 @@ def heps():
     """
     Perturbation/step size for finite difference evaluation of derivative/sensitivity.
 
-    The value 1e-4 is arbitrary, but is a a compromise between:
+    The value 1e-5 is arbitrary, but is a a compromise between:
     - Being small enough to ensure the finite difference calculation being accurate
-        enough
     - Being large enough to avoid round-off error in floating-point arithmetic
     """
     return 1e-5
