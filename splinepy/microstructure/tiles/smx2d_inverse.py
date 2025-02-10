@@ -33,7 +33,7 @@ class SMX2DInverse(_TileBase):
         self,
         parameters=None,
         parameter_sensitivities=None,
-        closure=None,
+        closure=None,  # noqa ARG002
         **kwargs,  # noqa ARG002
     ):
         """Create a tile based on the parameters which describe the thicknesses of
@@ -61,8 +61,6 @@ class SMX2DInverse(_TileBase):
             parameters=parameters,
             parameter_sensitivities=parameter_sensitivities,
         )
-
-        bar_thickness = 0.2
 
         splines = []
         for i_derivative in range(n_derivatives + 1):
@@ -387,6 +385,149 @@ class SMX2DInverse(_TileBase):
                 ]
             )
 
+            # Define the patches for the triangle
+            # Define the middle points of the triangles
+            triangle_s_middle = [
+                (th_se + crossing_s_x + v_one - th_se) / 3,
+                crossing_s_y / 3,
+            ]
+            triangle_w_middle = [
+                crossing_w_x / 3,
+                (th_sw + crossing_w_y + v_one - th_nw) / 3,
+            ]
+            triangle_e_middle = [
+                (2 * v_one + crossing_e_x) / 3,
+                (th_se + crossing_e_y + v_one - th_ne) / 3,
+            ]
+            triangle_n_middle = [
+                (th_nw + crossing_n_x + v_one - th_ne) / 3,
+                (2 * v_one + crossing_n_y) / 3,
+            ]
+
+            # South triangle
+            triangle_s_sw = _np.array(
+                [
+                    [th_sw, v_zero],
+                    [triangle_s_middle[0], v_zero],
+                    [(th_sw + crossing_s_x) / 2, crossing_s_y / 2],
+                    triangle_s_middle,
+                ]
+            )
+
+            triangle_s_se = _np.array(
+                [
+                    [triangle_s_middle[0], v_zero],
+                    [v_one - th_se, v_zero],
+                    triangle_s_middle,
+                    [(crossing_s_x + v_one - th_se) / 2, crossing_s_y / 2],
+                ]
+            )
+
+            triangle_s_n = _np.array(
+                [
+                    [(th_sw + crossing_s_x) / 2, crossing_s_y / 2],
+                    triangle_s_middle,
+                    [crossing_s_x, crossing_s_y],
+                    [(crossing_s_x + v_one - th_se) / 2, crossing_s_y / 2],
+                ]
+            )
+
+            # West triangle
+            triangle_w_s = _np.array(
+                [
+                    [v_zero, th_sw],
+                    [crossing_w_x / 2, (th_sw + crossing_w_y) / 2],
+                    [v_zero, triangle_w_middle[1]],
+                    triangle_w_middle,
+                ]
+            )
+
+            triangle_w_n = _np.array(
+                [
+                    [v_zero, triangle_w_middle[1]],
+                    triangle_w_middle,
+                    [v_zero, v_one - th_nw],
+                    [crossing_w_x / 2, (v_one - th_nw + crossing_w_y) / 2],
+                ]
+            )
+
+            triangle_w_e = _np.array(
+                [
+                    [crossing_w_x / 2, (th_sw + crossing_w_y) / 2],
+                    [crossing_w_x, crossing_w_y],
+                    triangle_w_middle,
+                    [crossing_w_x / 2, (v_one - th_nw + crossing_w_y) / 2],
+                ]
+            )
+
+            # East triangle
+            triangle_e_s = _np.array(
+                [
+                    [(v_one + crossing_e_x) / 2, (th_se + crossing_e_y) / 2],
+                    [v_one, th_se],
+                    triangle_e_middle,
+                    [v_one, crossing_e_y],
+                ]
+            )
+
+            triangle_e_n = _np.array(
+                [
+                    triangle_e_middle,
+                    [v_one, crossing_e_y],
+                    [
+                        (v_one + crossing_e_x) / 2,
+                        (crossing_e_y + v_one - th_ne) / 2,
+                    ],
+                    [v_one, v_one - th_ne],
+                ]
+            )
+
+            triangle_e_w = _np.array(
+                [
+                    [crossing_e_x, crossing_e_y],
+                    [(crossing_e_x + v_one) / 2, (crossing_e_y + th_se) / 2],
+                    [
+                        (v_one + crossing_e_x) / 2,
+                        (crossing_e_y + v_one - th_ne) / 2,
+                    ],
+                    triangle_e_middle,
+                ]
+            )
+
+            # North triangle
+            triangle_n_s = _np.array(
+                [
+                    [crossing_n_x, crossing_n_y],
+                    [
+                        (crossing_n_x + v_one - th_ne) / 2,
+                        (crossing_n_y + v_one) / 2,
+                    ],
+                    [(crossing_n_x + th_nw) / 2, (crossing_n_y + v_one) / 2],
+                    triangle_n_middle,
+                ]
+            )
+
+            triangle_n_nw = _np.array(
+                [
+                    [(crossing_n_x + th_nw) / 2, (crossing_n_y + v_one) / 2],
+                    triangle_n_middle,
+                    [th_nw, v_one],
+                    [crossing_n_x, v_one],
+                ]
+            )
+
+            triangle_n_ne = _np.array(
+                [
+                    [
+                        (crossing_n_x + v_one - th_ne) / 2,
+                        (crossing_n_y + v_one) / 2,
+                    ],
+                    [v_one - th_ne, v_one],
+                    triangle_n_middle,
+                    [crossing_n_x, v_one],
+                ]
+            )
+
             for control_points in [
                 sw_bar_bottom,
                 sw_bar_top,
@@ -400,6 +541,18 @@ class SMX2DInverse(_TileBase):
                 middle_w,
                 middle_e,
                 middle_n,
+                triangle_s_sw,
+                triangle_s_se,
+                triangle_s_n,
+                triangle_w_s,
+                triangle_w_n,
+                triangle_w_e,
+                triangle_e_s,
+                triangle_e_n,
+                triangle_e_w,
+                triangle_n_s,
+                triangle_n_nw,
+                triangle_n_ne,
             ]:
                 spline_list.append(
                     _Bezier(degrees=[1, 1], control_points=control_points)
