@@ -66,7 +66,6 @@ class SMX2DInverse(_TileBase):
         for i_derivative in range(n_derivatives + 1):
             if i_derivative == 0:
                 v_zero = 0.0
-                v_one_half = 0.5
                 v_one = 1.0
 
                 th_ne, th_se, th_sw, th_nw = parameters.ravel()
@@ -228,6 +227,7 @@ class SMX2DInverse(_TileBase):
             spline_list = []
 
             # Define control points
+            # Bars
             sw_bar_bottom = _np.array(
                 [
                     [th_sw, v_zero],
@@ -324,83 +324,40 @@ class SMX2DInverse(_TileBase):
                 ]
             )
 
-            # Define control points for middle part
-            middle_s = _np.array(
-                [
-                    [crossing_s_x, crossing_s_y],
-                    [
-                        (crossing_s_x + crossing_e_x) / 2,
-                        (crossing_s_y + crossing_e_y) / 2,
-                    ],
-                    [
-                        (crossing_s_x + crossing_w_x) / 2,
-                        (crossing_s_y + crossing_w_y) / 2,
-                    ],
-                    [v_one_half, v_one_half],
-                ]
-            )
-
-            middle_w = _np.array(
-                [
-                    [
-                        (crossing_s_x + crossing_w_x) / 2,
-                        (crossing_s_y + crossing_w_y) / 2,
-                    ],
-                    [v_one_half, v_one_half],
-                    [crossing_w_x, crossing_w_y],
-                    [
-                        (crossing_n_x + crossing_w_x) / 2,
-                        (crossing_n_y + crossing_w_y) / 2,
-                    ],
-                ]
-            )
-
-            middle_e = _np.array(
-                [
-                    [
-                        (crossing_s_x + crossing_e_x) / 2,
-                        (crossing_s_y + crossing_e_y) / 2,
-                    ],
-                    [crossing_e_x, crossing_e_y],
-                    [v_one_half, v_one_half],
-                    [
-                        (crossing_n_x + crossing_e_x) / 2,
-                        (crossing_n_y + crossing_e_y) / 2,
-                    ],
-                ]
-            )
-
-            middle_n = _np.array(
-                [
-                    [v_one_half, v_one_half],
-                    [
-                        (crossing_n_x + crossing_e_x) / 2,
-                        (crossing_n_y + crossing_e_y) / 2,
-                    ],
-                    [
-                        (crossing_n_x + crossing_w_x) / 2,
-                        (crossing_n_y + crossing_w_y) / 2,
-                    ],
-                    [crossing_n_x, crossing_n_y],
-                ]
-            )
-
             # Define the patches for the triangle
-            # Define the middle points of the triangles
+            # Define the middle points of the triangles, not as the triangle's centroid
+            # but rather as a point connecting the triangle's innermost point to the
+            # connecting point at the tile's interface
+
+            # Connecting points at the interface
+            connecting_interface_point_s_x = (
+                th_sw + (v_one - th_sw - th_se) / 2
+            )
+            connecting_interface_point_w_y = (
+                th_sw + (v_one - th_sw - th_nw) / 2
+            )
+            connecting_interface_point_e_y = (
+                th_se + (v_one - th_se - th_ne) / 2
+            )
+            connecting_interface_point_n_x = (
+                th_nw + (v_one - th_nw - th_ne) / 2
+            )
+
+            # Triangle middle points
             triangle_s_middle = [
-                (th_se + crossing_s_x + v_one - th_se) / 3,
+                (2 * connecting_interface_point_s_x + crossing_s_x) / 3,
                 crossing_s_y / 3,
             ]
             triangle_w_middle = [
                 crossing_w_x / 3,
-                (th_sw + crossing_w_y + v_one - th_nw) / 3,
+                (2 * connecting_interface_point_w_y + crossing_w_y) / 3,
             ]
             triangle_e_middle = [
                 (2 * v_one + crossing_e_x) / 3,
-                (th_se + crossing_e_y + v_one - th_ne) / 3,
+                (2 * connecting_interface_point_e_y + crossing_e_y) / 3,
             ]
             triangle_n_middle = [
-                (th_nw + crossing_n_x + v_one - th_ne) / 3,
+                (2 * connecting_interface_point_n_x + crossing_n_x) / 3,
                 (2 * v_one + crossing_n_y) / 3,
             ]
 
@@ -408,7 +365,7 @@ class SMX2DInverse(_TileBase):
             triangle_s_sw = _np.array(
                 [
                     [th_sw, v_zero],
-                    [triangle_s_middle[0], v_zero],
+                    [connecting_interface_point_s_x, v_zero],
                     [(th_sw + crossing_s_x) / 2, crossing_s_y / 2],
                     triangle_s_middle,
                 ]
@@ -416,7 +373,7 @@ class SMX2DInverse(_TileBase):
 
             triangle_s_se = _np.array(
                 [
-                    [triangle_s_middle[0], v_zero],
+                    [connecting_interface_point_s_x, v_zero],
                     [v_one - th_se, v_zero],
                     triangle_s_middle,
                     [(crossing_s_x + v_one - th_se) / 2, crossing_s_y / 2],
@@ -437,14 +394,14 @@ class SMX2DInverse(_TileBase):
                 [
                     [v_zero, th_sw],
                     [crossing_w_x / 2, (th_sw + crossing_w_y) / 2],
-                    [v_zero, triangle_w_middle[1]],
+                    [v_zero, connecting_interface_point_w_y],
                     triangle_w_middle,
                 ]
             )
 
             triangle_w_n = _np.array(
                 [
-                    [v_zero, triangle_w_middle[1]],
+                    [v_zero, connecting_interface_point_w_y],
                     triangle_w_middle,
                     [v_zero, v_one - th_nw],
                     [crossing_w_x / 2, (v_one - th_nw + crossing_w_y) / 2],
@@ -466,14 +423,14 @@ class SMX2DInverse(_TileBase):
                     [(v_one + crossing_e_x) / 2, (th_se + crossing_e_y) / 2],
                     [v_one, th_se],
                     triangle_e_middle,
-                    [v_one, crossing_e_y],
+                    [v_one, connecting_interface_point_e_y],
                 ]
             )
 
             triangle_e_n = _np.array(
                 [
                     triangle_e_middle,
-                    [v_one, crossing_e_y],
+                    [v_one, connecting_interface_point_e_y],
                     [
                         (v_one + crossing_e_x) / 2,
                         (crossing_e_y + v_one - th_ne) / 2,
@@ -512,7 +469,7 @@ class SMX2DInverse(_TileBase):
                     [(crossing_n_x + th_nw) / 2, (crossing_n_y + v_one) / 2],
                     triangle_n_middle,
                     [th_nw, v_one],
-                    [crossing_n_x, v_one],
+                    [connecting_interface_point_n_x, v_one],
                 ]
             )
 
@@ -524,7 +481,7 @@ class SMX2DInverse(_TileBase):
                     ],
                     [v_one - th_ne, v_one],
                     triangle_n_middle,
-                    [crossing_n_x, v_one],
+                    [connecting_interface_point_n_x, v_one],
                 ]
             )
 
@@ -537,10 +494,6 @@ class SMX2DInverse(_TileBase):
                 nw_bar_bottom,
                 ne_bar_bottom,
                 ne_bar_top,
-                middle_s,
-                middle_w,
-                middle_e,
-                middle_n,
                 triangle_s_sw,
                 triangle_s_se,
                 triangle_s_n,
