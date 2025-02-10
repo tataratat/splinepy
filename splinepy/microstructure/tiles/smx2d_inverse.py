@@ -231,96 +231,90 @@ class SMX2DInverse(_TileBase):
             sw_bar_bottom = _np.array(
                 [
                     [th_sw, v_zero],
-                    [crossing_s_x, crossing_s_y],
-                    [th_sw / 2, th_sw / 2],
-                    [
-                        (crossing_w_x + crossing_s_x) / 2,
-                        (crossing_w_y + crossing_s_y) / 2,
-                    ],
+                    [(th_sw + crossing_s_x) / 2, crossing_s_y / 2],
+                    [v_zero, th_sw],
+                    [crossing_w_x / 2, (th_sw + crossing_w_y) / 2],
                 ]
             )
 
             sw_bar_top = _np.array(
                 [
-                    [th_sw / 2, th_sw / 2],
-                    [
-                        (crossing_w_x + crossing_s_x) / 2,
-                        (crossing_w_y + crossing_s_y) / 2,
-                    ],
-                    [v_zero, th_sw],
+                    [(th_sw + crossing_s_x) / 2, crossing_s_y / 2],
+                    [crossing_s_x, crossing_s_y],
+                    [crossing_w_x / 2, (th_sw + crossing_w_y) / 2],
                     [crossing_w_x, crossing_w_y],
                 ]
             )
 
             se_bar_bottom = _np.array(
                 [
-                    [crossing_s_x, crossing_s_y],
                     [v_one - th_se, v_zero],
-                    [
-                        (crossing_s_x + crossing_e_x) / 2,
-                        (crossing_s_y + crossing_e_y) / 2,
-                    ],
-                    [v_one - th_se / 2, th_se / 2],
+                    [v_one, th_se],
+                    [(v_one - th_se + crossing_s_x) / 2, crossing_s_y / 2],
+                    [(crossing_e_x + v_one) / 2, (th_se + crossing_e_y) / 2],
                 ]
             )
 
             se_bar_top = _np.array(
                 [
-                    [
-                        (crossing_s_x + crossing_e_x) / 2,
-                        (crossing_s_y + crossing_e_y) / 2,
-                    ],
-                    [v_one - th_se / 2, th_se / 2],
+                    [(v_one - th_se + crossing_s_x) / 2, crossing_s_y / 2],
+                    [(crossing_e_x + v_one) / 2, (th_se + crossing_e_y) / 2],
+                    [crossing_s_x, crossing_s_y],
                     [crossing_e_x, crossing_e_y],
-                    [v_one, th_se],
                 ]
             )
 
             nw_bar_bottom = _np.array(
                 [
-                    [v_zero, v_one - th_nw],
                     [crossing_w_x, crossing_w_y],
-                    [th_nw / 2, v_one - th_nw / 2],
+                    [crossing_n_x, crossing_n_y],
+                    [crossing_w_x / 2, (crossing_w_y + v_one - th_nw) / 2],
                     [
-                        (crossing_w_x + crossing_n_x) / 2,
-                        (crossing_w_y + crossing_n_y) / 2,
+                        (th_nw + crossing_n_x) / 2,
+                        (v_one + crossing_n_y) / 2,
                     ],
                 ]
             )
 
             nw_bar_top = _np.array(
                 [
-                    [th_nw / 2, v_one - th_nw / 2],
+                    [crossing_w_x / 2, (crossing_w_y + v_one - th_nw) / 2],
                     [
-                        (crossing_w_x + crossing_n_x) / 2,
-                        (crossing_w_y + crossing_n_y) / 2,
+                        (th_nw + crossing_n_x) / 2,
+                        (v_one + crossing_n_y) / 2,
                     ],
+                    [v_zero, v_one - th_nw],
                     [th_nw, v_one],
-                    [crossing_n_x, crossing_n_y],
                 ]
             )
 
             ne_bar_bottom = _np.array(
                 [
+                    [crossing_n_x, crossing_n_y],
                     [crossing_e_x, crossing_e_y],
-                    [v_one, v_one - th_ne],
                     [
-                        (crossing_e_x + crossing_n_x) / 2,
-                        (crossing_e_y + crossing_n_y) / 2,
+                        (crossing_n_x + v_one - th_ne) / 2,
+                        (crossing_n_y + v_one) / 2,
                     ],
-                    [v_one - th_ne / 2, v_one - th_ne / 2],
+                    [
+                        (crossing_e_x + v_one) / 2,
+                        (crossing_e_y + v_one - th_ne) / 2,
+                    ],
                 ]
             )
 
             ne_bar_top = _np.array(
                 [
                     [
-                        (crossing_e_x + crossing_n_x) / 2,
-                        (crossing_e_y + crossing_n_y) / 2,
+                        (crossing_n_x + v_one - th_ne) / 2,
+                        (crossing_n_y + v_one) / 2,
                     ],
-                    [v_one - th_ne / 2, v_one - th_ne / 2],
-                    [crossing_n_x, crossing_n_y],
+                    [
+                        (crossing_e_x + v_one) / 2,
+                        (crossing_e_y + v_one - th_ne) / 2,
+                    ],
                     [v_one - th_ne, v_one],
+                    [v_one, v_one - th_ne],
                 ]
             )
 
