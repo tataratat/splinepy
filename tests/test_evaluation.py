@@ -505,7 +505,7 @@ def test_assertions_jacobian(request, splinetype):
         ValueError,
         match=r"Query request out of bounds in parametric dimension 0. "
         r"Detected query \[-0.1  0. \] at positions 0, which is out of"
-        r" bounds with minimum values \[1. 1.\].",
+        r" bounds with minimum values \[0. 0.\].",
     ):
         spline.jacobian(queries=[[-0.1, 0.0], [0.4, 0.6]])
 
