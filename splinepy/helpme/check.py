@@ -40,7 +40,7 @@ def valid_queries(spline, queries):
             f"Query request out of bounds in parametric dimension "
             f"{error_dim}. Detected query {queries[error_query,:]} at "
             f"positions {error_query}, which is out of bounds with "
-            f"minimum values {bounds[1,:]}."
+            f"minimum values {bounds[0,:]}."
         )
 
     # Check maximum value
