@@ -34,7 +34,7 @@ def valid_queries(spline, queries):
     # Check minimum value
     min_query = _np.min(queries, axis=0)
     if _np.any(bounds[0, :] > min_query):
-        error_dim = _np.where(bounds[1, :] > min_query)[0][0]
+        error_dim = _np.where(bounds[0, :] > min_query)[0][0]
         error_query = _np.argmin(queries, axis=0)[error_dim]
         raise ValueError(
             f"Query request out of bounds in parametric dimension "
