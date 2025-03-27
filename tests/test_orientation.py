@@ -1,13 +1,13 @@
 """Test Orientation between adjacent spline patches
-         2--3
-         |C |
-         0--1
-    0--1 2--3 1--3
-    |D | |A | | B|
-    2--3 0--1 0--2
-         1--0
-    |    |E |
-    O-   3--2
+     2--3
+     |C |
+     0--1
+0--1 2--3 1--3
+|D | |A | | B|
+2--3 0--1 0--2
+     1--0
+|    |E |
+O-   3--2
 """
 
 import numpy as np

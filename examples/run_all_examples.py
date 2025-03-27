@@ -1,5 +1,4 @@
-"""Call all *.py files in the working directory.
-"""
+"""Call all *.py files in the working directory."""
 
 import glob
 import itertools
