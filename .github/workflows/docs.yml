@@ -24,12 +24,12 @@ jobs:
         doxygen Doxyfile
 
     - name: Set up  python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
     - name: build splinepy linux
-      run: CC=clang-14 CXX=clang++-14 pip install ".[test]" -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
+      run: CC=clang CXX=clang++ pip install ".[test]" -v --config-settings=cmake.args=-DSPLINEPY_MORE=OFF
 
     - name: test
       run: |
@@ -44,7 +44,7 @@ jobs:
         sphinx-build -W -b html docs/source docs/build
 
     - name: deploy docs only if it is pushed to main
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       with:
         #publish_branch: gh-pages
