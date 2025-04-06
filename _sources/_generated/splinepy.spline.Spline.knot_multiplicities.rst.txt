@@ -1,0 +1,6 @@
+splinepy.spline.Spline.knot\_multiplicities
+===========================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.knot_multiplicities

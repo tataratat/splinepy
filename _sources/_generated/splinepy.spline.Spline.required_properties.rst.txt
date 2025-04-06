@@ -1,0 +1,6 @@
+splinepy.spline.Spline.required\_properties
+===========================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.required_properties

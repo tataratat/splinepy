@@ -1,0 +1,6 @@
+splinepy.helpme.ffd.FFD.spline
+==============================
+
+.. currentmodule:: splinepy.helpme.ffd
+
+.. autoproperty:: FFD.spline

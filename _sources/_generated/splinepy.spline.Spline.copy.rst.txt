@@ -1,0 +1,6 @@
+splinepy.spline.Spline.copy
+===========================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.copy

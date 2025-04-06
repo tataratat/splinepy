@@ -1,0 +1,6 @@
+splinepy.spline.Spline.export
+=============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.export

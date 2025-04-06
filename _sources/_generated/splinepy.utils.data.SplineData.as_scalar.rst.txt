@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.as\_scalar
+=========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.as_scalar

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.WeightPointers.sync
+===========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: WeightPointers.sync

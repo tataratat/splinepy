@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.proximities
+================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.proximities

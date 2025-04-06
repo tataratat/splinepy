@@ -1,0 +1,50 @@
+splinepy.helpme.visualize.SplineShowOption
+==========================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. autoclass:: SplineShowOption
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       SplineShowOption.clear
+     
+     
+       SplineShowOption.copy_valid_options
+     
+     
+       SplineShowOption.get
+     
+     
+       SplineShowOption.items
+     
+     
+       SplineShowOption.keys
+     
+     
+       SplineShowOption.pop
+     
+     
+       SplineShowOption.update
+     
+     
+       SplineShowOption.valid_keys
+     
+     
+       SplineShowOption.values
+     
+   
+   
+
+   
+   
+   

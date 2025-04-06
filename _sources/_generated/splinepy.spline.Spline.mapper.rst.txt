@@ -1,0 +1,6 @@
+splinepy.spline.Spline.mapper
+=============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.mapper

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.compose\_sensitivities
+==============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: compose_sensitivities

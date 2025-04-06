@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.boundary\_patch\_ids
+===================================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.boundary_patch_ids

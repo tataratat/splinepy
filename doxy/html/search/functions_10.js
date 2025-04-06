@@ -1,0 +1,13 @@
+var searchData=
+[
+  ['raisemismatch_0',['raisemismatch',['../namespacesplinepy_1_1py.html#ad44754525d67fa05e6c0ce206df156d2',1,'splinepy::py::RaiseMismatch(const CoreSplineVector &amp;splist, const std::string name, const int para_dim, const int dim, const IntVector &amp;degrees, const IntVector &amp;control_mesh_resolutions, const int nthreads)'],['../namespacesplinepy_1_1py.html#a147e1ba3d98f6b649a9a618600b60eb2',1,'splinepy::py::RaiseMismatch(const CoreSplineVector &amp;splist0, const CoreSplineVector &amp;splist1, const bool name, const bool dimensionality, const int field_dim, const bool degrees, const bool control_mesh_resolutions, const int nthreads)']]],
+  ['rationalbezier_1',['rationalbezier',['../classsplinepy_1_1splines_1_1RationalBezier.html#a2195be1cb2827491a2cbb4f5d41f0d56',1,'splinepy::splines::RationalBezier::RationalBezier(const int *degrees, const double *control_points, const double *weights)'],['../classsplinepy_1_1splines_1_1RationalBezier.html#aebc814e7556505fdbffacf8d70b18201',1,'splinepy::splines::RationalBezier::RationalBezier(const Base_ &amp;rhs)']]],
+  ['rationalbsplinebasis_2',['rationalbsplinebasis',['../namespacesplinepy_1_1splines_1_1helpers.html#a36ea760ec632730cc5c6ef4c9355e7e2',1,'splinepy::splines::helpers::RationalBSplineBasis(const SplineType &amp;spline, const QueryType *para_coord, const SupportType &amp;support)'],['../namespacesplinepy_1_1splines_1_1helpers.html#af2a9d10e794892f98419b40a09569308',1,'splinepy::splines::helpers::RationalBSplineBasis(const SplineType &amp;spline, const QueryType *para_coord)']]],
+  ['rationalbsplinebasisderivative_3',['RationalBSplineBasisDerivative',['../namespacesplinepy_1_1splines_1_1helpers.html#a6fa166807085ad342586b22e4d7cc250',1,'splinepy::splines::helpers']]],
+  ['readiges_4',['ReadIges',['../namespacesplinepy_1_1py.html#a38937802a3bd2f0a81c289ff1a5f4010',1,'splinepy::py']]],
+  ['reallocate_5',['reallocate',['../classsplinepy_1_1utils_1_1Array.html#a68c19a2b0c830726dc9070fc61e054c6',1,'splinepy::utils::Array::Reallocate(const IndexType &amp;size)'],['../classsplinepy_1_1utils_1_1Array.html#a5936300d802fdbb05407bcd51d53c8b5',1,'splinepy::utils::Array::Reallocate(const Ts &amp;... shape)']]],
+  ['reducedegrees_6',['ReduceDegrees',['../classsplinepy_1_1py_1_1PySpline.html#a00b28c3c7d392225ed4f6f3a106fc724',1,'splinepy::py::PySpline']]],
+  ['removeknots_7',['RemoveKnots',['../namespacesplinepy_1_1py.html#a7f79a0f29cc7760709a673fad41b280c',1,'splinepy::py']]],
+  ['resetroworder_8',['ResetRowOrder',['../classsplinepy_1_1utils_1_1Matrix.html#a1676ce98ba97c9736c56f4ffa77b9bda',1,'splinepy::utils::Matrix']]],
+  ['roworder_9',['RowOrder',['../classsplinepy_1_1utils_1_1Matrix.html#ab67f1ab0d37dd65a65bcf0fbd5ec7da9',1,'splinepy::utils::Matrix']]]
+];

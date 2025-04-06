@@ -1,0 +1,6 @@
+splinepy.helpme.extract.control\_volumes
+========================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autofunction:: control_volumes

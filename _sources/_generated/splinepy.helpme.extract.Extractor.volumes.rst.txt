@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.volumes
+=========================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.volumes

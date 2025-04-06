@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.composition\_derivative
+===============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: composition_derivative

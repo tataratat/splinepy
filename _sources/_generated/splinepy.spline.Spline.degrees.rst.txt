@@ -1,0 +1,6 @@
+splinepy.spline.Spline.degrees
+==============================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.degrees

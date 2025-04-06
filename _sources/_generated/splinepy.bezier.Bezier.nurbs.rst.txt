@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.nurbs
+============================
+
+.. currentmodule:: splinepy.bezier
+
+.. autoproperty:: Bezier.nurbs

@@ -1,0 +1,1402 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacesplinepy_1_1splines_1_1helpers" kind="namespace" language="C++">
+    <compoundname>splinepy::splines::helpers</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a4de99879874cc2864c019df6c903eb79" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename BasisValueType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>constexpr void BezierBasis</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, BasisValueType *basis)</argsstring>
+        <name>BezierBasis</name>
+        <qualifiedname>splinepy::splines::helpers::BezierBasis</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BasisValueType</ref> *</type>
+          <declname>basis</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> basis - scalar io here. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="36" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="36" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a4e838747145568e6771fb8476c3b5117" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+          <param>
+            <type>typename BasisValueType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>constexpr void BezierBasisDerivative</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const OrderType *order, BasisValueType *basis_der)</argsstring>
+        <name>BezierBasisDerivative</name>
+        <qualifiedname>splinepy::splines::helpers::BezierBasisDerivative</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BasisValueType</ref> *</type>
+          <declname>basis_der</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> basis derivative - scalar io here. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="58" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="58" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1abf9a88c7faacd5255eddc1423e474071" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename SupportType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>constexpr void BezierSupport</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, SupportType *support)</argsstring>
+        <name>BezierSupport</name>
+        <qualifiedname>splinepy::splines::helpers::BezierSupport</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SupportType</ref> *</type>
+          <declname>support</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="86" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="86" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a85579912224a4d458fe5593962d781c0" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename ContainerType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> std::array&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ContainerType</ref>, SplineType::kParaDim &gt;</type>
+        <definition>constexpr std::array&lt; ContainerType, SplineType::kParaDim &gt; BSplineBasisPerParametricDimension</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord)</argsstring>
+        <name>BSplineBasisPerParametricDimension</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineBasisPerParametricDimension</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref> Basis functions per dimension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="100" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="100" bodyend="110"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1aa9f47aac0b288fcd765c8d03af1eb3eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &gt;</type>
+        <definition>std::vector&lt; int &gt; BSplineSupport</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord)</argsstring>
+        <name>BSplineSupport</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineSupport</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref> Basis support. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="114" column="20" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="114" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1ad9f319bafdeb1aa8369745abe1d8fbd9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename SupportType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void BSplineSupport</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, SupportType *out_support)</argsstring>
+        <name>BSplineSupport</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineSupport</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SupportType</ref> *</type>
+          <declname>out_support</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="146" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="146" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1ae44a62edfd9112bb16aa66ad6d4d1991" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">auto</ref></type>
+        <definition>constexpr auto NonRationalBSplineBasis</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord)</argsstring>
+        <name>NonRationalBSplineBasis</name>
+        <qualifiedname>splinepy::splines::helpers::NonRationalBSplineBasis</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <briefdescription>
+<para>pure bspline basis. We recommend using <ref refid="namespacesplinepy_1_1splines_1_1helpers_1af6771bad4ac46dcf8c2d55d23a632f53" kindref="member">BSplineBasis()</ref> instead of this </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="155" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="155" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a36ea760ec632730cc5c6ef4c9355e7e2" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename SupportType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> std::vector&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> &gt;</type>
+        <definition>constexpr std::vector&lt; QueryType &gt; RationalBSplineBasis</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const SupportType &amp;support)</argsstring>
+        <name>RationalBSplineBasis</name>
+        <qualifiedname>splinepy::splines::helpers::RationalBSplineBasis</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SupportType</ref> &amp;</type>
+          <declname>support</declname>
+        </param>
+        <briefdescription>
+<para>nurbs basis. We recommend using <ref refid="namespacesplinepy_1_1splines_1_1helpers_1af6771bad4ac46dcf8c2d55d23a632f53" kindref="member">BSplineBasis()</ref> instead of this </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="170" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="170" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1af2a9d10e794892f98419b40a09569308" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> std::vector&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> &gt;</type>
+        <definition>constexpr std::vector&lt; QueryType &gt; RationalBSplineBasis</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord)</argsstring>
+        <name>RationalBSplineBasis</name>
+        <qualifiedname>splinepy::splines::helpers::RationalBSplineBasis</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <briefdescription>
+<para>nurbs basis. We recommend using <ref refid="namespacesplinepy_1_1splines_1_1helpers_1af6771bad4ac46dcf8c2d55d23a632f53" kindref="member">BSplineBasis()</ref> instead of this </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="204" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="204" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1af6771bad4ac46dcf8c2d55d23a632f53" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename BasisType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>constexpr void BSplineBasis</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, BasisType *basis)</argsstring>
+        <name>BSplineBasis</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineBasis</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BasisType</ref> *</type>
+          <declname>basis</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref> Basis functions. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="212" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="212" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a2854eb439b5843dceafb1cb972568eaa" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">auto</ref></type>
+        <definition>constexpr auto BSplineBasisDerivativePerParametricDimension</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const OrderType *order)</argsstring>
+        <name>BSplineBasisDerivativePerParametricDimension</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineBasisDerivativePerParametricDimension</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref> Basis functions derivative per dimension. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="228" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="228" bodyend="239"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a356bdf6e61d2a190a781f36412c558e1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+        </templateparamlist>
+        <type>bsplinelib::parameter_spaces::BasisValues</type>
+        <definition>bsplinelib::parameter_spaces::BasisValues NonRationalBSplineBasisDerivative</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const OrderType *order)</argsstring>
+        <name>NonRationalBSplineBasisDerivative</name>
+        <qualifiedname>splinepy::splines::helpers::NonRationalBSplineBasisDerivative</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref> Basis functions der. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="244" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="244" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a6fa166807085ad342586b22e4d7cc250" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+        </templateparamlist>
+        <type>bsplinelib::parameter_spaces::BasisValues</type>
+        <definition>bsplinelib::parameter_spaces::BasisValues RationalBSplineBasisDerivative</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const OrderType *order)</argsstring>
+        <name>RationalBSplineBasisDerivative</name>
+        <qualifiedname>splinepy::splines::helpers::RationalBSplineBasisDerivative</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+<para>adapted from bezman </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="258" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="258" bodyend="384"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a656ec579ece1984d9daada99c1846d1c" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+          <param>
+            <type>typename BasisType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">constexpr</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>constexpr void BSplineBasisDerivative</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *para_coord, const OrderType *order, BasisType *basis_der)</argsstring>
+        <name>BSplineBasisDerivative</name>
+        <qualifiedname>splinepy::splines::helpers::BSplineBasisDerivative</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>para_coord</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BasisType</ref> *</type>
+          <declname>basis_der</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="390" column="23" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" bodystart="390" bodyend="403"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1ac6319f0a68ca229fdd1f75ed366eccf2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref></type>
+        <definition>int ExtractBoundaryFromAxisAndExtrema</definition>
+        <argsstring>(const int &amp;axis, const int &amp;extreme)</argsstring>
+        <name>ExtractBoundaryFromAxisAndExtrema</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractBoundaryFromAxisAndExtrema</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>axis</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>extreme</declname>
+        </param>
+        <briefdescription>
+<para>Determine boundary ID from axis and extrem-value. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" line="39" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" bodystart="39" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1adedbea6623aea6743b2b49c336d71558" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename VectorType</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; ExtractControlMeshSliceFromIDs</definition>
+        <argsstring>(const SplineType &amp;spline, const VectorType &amp;indices, const int &amp;plane_normal_axis)</argsstring>
+        <name>ExtractControlMeshSliceFromIDs</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractControlMeshSliceFromIDs</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">VectorType</ref> &amp;</type>
+          <declname>indices</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>plane_normal_axis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" line="47" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" bodystart="47" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a8f7d70c32275230dd17b4479f8b5d320" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; ExtractBoundaryMeshSlice</definition>
+        <argsstring>(const SplineType &amp;spline, const int &amp;boundary_id)</argsstring>
+        <name>ExtractBoundaryMeshSlice</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractBoundaryMeshSlice</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>boundary_id</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" line="148" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" bodystart="148" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1abde64cb35991da416313105000f70c85" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; ExtractControlMeshSlice</definition>
+        <argsstring>(const SplineType &amp;spline, const int &amp;plane_normal_axis, const int &amp;plane_id)</argsstring>
+        <name>ExtractControlMeshSlice</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractControlMeshSlice</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>plane_normal_axis</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>plane_id</declname>
+        </param>
+        <briefdescription>
+<para>returns boundary spline, which has one less para_dim. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" line="177" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" bodystart="177" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a2cdf12123838ad703b58e369f120b83f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::vector&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &gt; &gt;</type>
+        <definition>std::vector&lt; std::vector&lt; int &gt; &gt; ExtractBezierPatchIDs</definition>
+        <argsstring>(const std::vector&lt; std::vector&lt; int &gt; &gt; &amp;knot_multiplicities, const int *degrees)</argsstring>
+        <name>ExtractBezierPatchIDs</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractBezierPatchIDs</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> std::vector&lt; std::vector&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &gt; &gt; &amp;</type>
+          <declname>knot_multiplicities</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> *</type>
+          <declname>degrees</declname>
+        </param>
+        <briefdescription>
+<para>Extract <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> Patch IDs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function assumed that repeated knots have been inserted, such that the continuity at each knot is C0. It returns the indices that are associated to the individual bezier patches and returns a vector of ID lists that can be used to create the new splines</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>knot_multiplicities</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>multiplicies of each unique knot per dim </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>degrees</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to degrees vector </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>std::vector&lt;std::vector&lt;int&gt;&gt; </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/src/splines/helpers/extract.cpp" line="30" column="1" bodyfile="/home/runner/work/splinepy/splinepy/src/splines/helpers/extract.cpp" bodystart="30" bodyend="116" declfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" declline="215" declcolumn="1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1adaefa093328da4859a3430ceffcfc9db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classsplinepy_1_1splines_1_1SplinepyBase" kindref="compound">splinepy::splines::SplinepyBase</ref> &gt; &gt;</type>
+        <definition>std::vector&lt; std::shared_ptr&lt; splinepy::splines::SplinepyBase &gt; &gt; ExtractBezierPatches</definition>
+        <argsstring>(const SplineType &amp;spline)</argsstring>
+        <name>ExtractBezierPatches</name>
+        <qualifiedname>splinepy::splines::helpers::ExtractBezierPatches</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+<para>Extracts <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> patches of a B-Spline/NURBS type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>as_base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>flag to determine input type avoid circular dependency </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>SplineType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spline-type (NURBS of <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">BSpline</ref>) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>spline to be separated </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>auto vector of <ref refid="classsplinepy_1_1splines_1_1Bezier" kindref="compound">Bezier</ref> types, either Rational or polynomial </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" line="227" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/extract.hpp" bodystart="227" bodyend="332"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1af4b967f5e9791d08765978c0764ac052" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type>std::array&lt; std::array&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">double</ref>, SplineType::kParaDim &gt;, 2 &gt;</type>
+        <definition>std::array&lt; std::array&lt; double, SplineType::kParaDim &gt;, 2 &gt; GetParametricBounds</definition>
+        <argsstring>(const SplineType &amp;spline)</argsstring>
+        <name>GetParametricBounds</name>
+        <qualifiedname>splinepy::splines::helpers::GetParametricBounds</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+<para>Returns parametric bounds as (para_dim x 2) array. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" line="36" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" bodystart="36" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a2fa2ed4ede6ec0430d5e4e58798fe867" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref></type>
+        <definition>int GetNumberOfSupports</definition>
+        <argsstring>(const SplineType &amp;spline)</argsstring>
+        <name>GetNumberOfSupports</name>
+        <qualifiedname>splinepy::splines::helpers::GetNumberOfSupports</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" line="60" column="12" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" bodystart="60" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a4232babd776b3fe98f06d804ef050669" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename ResolutionType</type>
+            <defval>int</defval>
+          </param>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type>std::array&lt; <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ResolutionType</ref>, SplineType::kParaDim &gt;</type>
+        <definition>std::array&lt; ResolutionType, SplineType::kParaDim &gt; GetControlMeshResolutions</definition>
+        <argsstring>(const SplineType &amp;spline)</argsstring>
+        <name>GetControlMeshResolutions</name>
+        <qualifiedname>splinepy::splines::helpers::GetControlMeshResolutions</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" line="71" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" bodystart="71" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1abfc43a22576958845ecfe6da3f2b6450" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void GetGrevilleAbscissae</definition>
+        <argsstring>(const SplineType &amp;spline, double *greville_abscissae, const int &amp;i_para_dim, const double &amp;duplicate_tolerance)</argsstring>
+        <name>GetGrevilleAbscissae</name>
+        <qualifiedname>splinepy::splines::helpers::GetGrevilleAbscissae</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">double</ref> *</type>
+          <declname>greville_abscissae</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref> &amp;</type>
+          <declname>i_para_dim</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">double</ref> &amp;</type>
+          <declname>duplicate_tolerance</declname>
+        </param>
+        <briefdescription>
+<para>Computes Greville Abscissae. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>SplineType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Input Splines </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">greville_abscissae</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output 1D array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">i_para_dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>parametric dimension along which greville abscissaes are computed </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">duplicate_tolerance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if negative two greville abscissae can be equal, positive tolerance to avoid duplication of greville abscissae. Made to comply with C^(-1) splines. Tolerance represents difference between two greville abscissae for them to be considered equal </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" line="104" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp" bodystart="104" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a926b732bfbdf62dacfe35576115e1475" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OutputType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeEvaluate</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *query, OutputType *output)</argsstring>
+        <name>ScalarTypeEvaluate</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeEvaluate</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OutputType</ref> *</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>bezman spline evaluation (single query). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="36" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="36" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a1697acd5a2a386ccbd52e4c8abecee93" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename OutputType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeBoundaryCenters</definition>
+        <argsstring>(const SplineType &amp;spline, OutputType *output)</argsstring>
+        <name>ScalarTypeBoundaryCenters</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeBoundaryCenters</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OutputType</ref> *</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>Computes parametric coordinate of boundary centers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>SplineType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>OutputType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>output</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>should have size of 2 * para_dim * para_dim </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="67" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="67" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a8b7d01e34dbbc6ce6649809fddf5a568" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename OutputType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeEvaluateBoundaryCenters</definition>
+        <argsstring>(const SplineType &amp;spline, OutputType *output)</argsstring>
+        <name>ScalarTypeEvaluateBoundaryCenters</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeEvaluateBoundaryCenters</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OutputType</ref> *</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>Evaluate Splines at boundary face centers output should have size of 2 * para_dim * dim. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="97" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="97" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1ac9a300962dc3f218e017dce6e233d62b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OrderType</type>
+          </param>
+          <param>
+            <type>typename OutputType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeDerivative</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *query, const OrderType *order, OutputType *output)</argsstring>
+        <name>ScalarTypeDerivative</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeDerivative</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OrderType</ref> *</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OutputType</ref> *</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>bezman spline derivatives (single query). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="124" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="124" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a7cd24749fd73c9786e92f5d225bd619c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename OutputType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeJacobian</definition>
+        <argsstring>(const SplineType &amp;spline, const QueryType *query, OutputType *output)</argsstring>
+        <name>ScalarTypeJacobian</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeJacobian</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref> *</type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">OutputType</ref> *</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>inserts jacobian into requested pointer for single query </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>SplineType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of core spline </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>QueryType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spline-Type dependent query type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>OutputType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>mostly double* </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>spline for evaluation (core) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>query</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>position for evaluation </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>output</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="165" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="165" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1af4eb2f765b32ff1b1fcc70ade77b8808" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">void</ref></type>
+        <definition>void ScalarTypeElevateDegree</definition>
+        <argsstring>(SplineType &amp;spline, const QueryType query, const IntType multiplicity=1)</argsstring>
+        <name>ScalarTypeElevateDegree</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeElevateDegree</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref></type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">IntType</ref></type>
+          <declname>multiplicity</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>single degree elevation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="199" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="199" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a6bf8e119e3aa827bf9be9b38b7a367a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename ToleranceType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">bool</ref></type>
+        <definition>bool ScalarTypeReduceDegree</definition>
+        <argsstring>(SplineType &amp;spline, const QueryType query, const ToleranceType tolerance)</argsstring>
+        <name>ScalarTypeReduceDegree</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeReduceDegree</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref></type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ToleranceType</ref></type>
+          <declname>tolerance</declname>
+        </param>
+        <briefdescription>
+<para>single degree reduction </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="216" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="216" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a0f81fae1972ebd8567c845604a7050d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryDimType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">int</ref></type>
+        <definition>int ScalarTypeInsertKnot</definition>
+        <argsstring>(SplineType &amp;spline, const QueryDimType query_dim, const QueryType query, const IntType multiplicity)</argsstring>
+        <name>ScalarTypeInsertKnot</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeInsertKnot</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryDimType</ref></type>
+          <declname>query_dim</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref></type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">const</ref> <ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">IntType</ref></type>
+          <declname>multiplicity</declname>
+        </param>
+        <briefdescription>
+<para>Inserts knot at given location with given multiplicity. It returns number of successful multiplicity. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>SplineType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>QueryDimType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>QueryType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>IntType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>spline</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>query_dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>query</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>multiplicity</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="240" column="5" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="240" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1splines_1_1helpers_1a734a05cf12838cb80d7b9ee81e4b2e7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename SplineType</type>
+          </param>
+          <param>
+            <type>typename QueryDimType</type>
+          </param>
+          <param>
+            <type>typename QueryType</type>
+          </param>
+          <param>
+            <type>typename ToleranceType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">bool</ref></type>
+        <definition>bool ScalarTypeRemoveKnot</definition>
+        <argsstring>(SplineType &amp;spline, QueryDimType query_dim, QueryType query, ToleranceType tolerance)</argsstring>
+        <name>ScalarTypeRemoveKnot</name>
+        <qualifiedname>splinepy::splines::helpers::ScalarTypeRemoveKnot</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref> &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryDimType</ref></type>
+          <declname>query_dim</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">QueryType</ref></type>
+          <declname>query</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ToleranceType</ref></type>
+          <declname>tolerance</declname>
+        </param>
+        <briefdescription>
+<para>single knot removal </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" line="276" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/scalar_type_wrapper.hpp" bodystart="276" bodyend="293"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/basis_functions.hpp" line="32" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.cube\_void.CubeVoid
+=================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cube_void
+
+.. autoclass:: CubeVoid
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       CubeVoid.check_param_derivatives
+     
+     
+       CubeVoid.check_params
+     
+     
+       CubeVoid.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

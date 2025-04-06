@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.tobytes
+==============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.tobytes

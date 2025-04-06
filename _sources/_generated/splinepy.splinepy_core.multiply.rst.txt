@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.multiply
+================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: multiply
