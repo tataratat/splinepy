@@ -29,4 +29,4 @@ def test_knot_vectors(splinetype, request):
         spline.knot_multiplicities,
         spline.knot_vectors,
     ):
-        assert np.allclose(np.array(spl_kv), np.repeat(u_kv, kn_m))
+        assert np.allclose(spl_kv.numpy(), np.repeat(u_kv, kn_m))

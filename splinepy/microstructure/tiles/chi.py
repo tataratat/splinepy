@@ -16,8 +16,12 @@ class Chi(_TileBase):
 
     _dim = 2
     _para_dim = 1
-    _evaluation_points = _np.array([[0.5, 0.5]])
+    _evaluation_points = _np.array([[0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _parameter_bounds = [[-_np.pi / 2, _np.pi / 2]]
+    _parameters_shape = (1, 1)
+    _default_parameter_value = _np.pi / 8
 
     def create_tile(
         self,
@@ -41,28 +45,10 @@ class Chi(_TileBase):
         microtile_list : list(splines)
         """
 
-        # set to default if nothing is given
-        if parameters is None:
-            self._logd(
-                "Tile request is not parametrized, setting default Pi/8"
-            )
-            parameters = _np.array([[_np.pi / 8]])
-        else:
-            if not (
-                _np.all(parameters >= -_np.pi * 0.5)
-                and _np.all(parameters < _np.pi * 0.5)
-            ):
-                raise ValueError("The parameter must be in -Pi/2 and Pi/2")
-            pass
-        self.check_params(parameters)
-
-        # Check if user requests derivative splines
-        if self.check_param_derivatives(parameter_sensitivities):
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):
@@ -75,12 +61,13 @@ class Chi(_TileBase):
                 s = r * _np.sin(alpha)
                 c = r * _np.cos(alpha)
             else:
-                alpha = parameter_sensitivities[0, 0, i_derivative - 1]
+                alpha = parameters[0, 0] + _np.pi / 4
+                dalpha = float(parameter_sensitivities[0, 0, i_derivative - 1])
                 v_one_half = 0.0
                 v_zero = 0.0
                 r = _np.sqrt(0.125)
-                s = r * _np.cos(alpha)
-                c = -r * _np.sin(alpha)
+                s = dalpha * r * _np.cos(alpha)
+                c = dalpha * -r * _np.sin(alpha)
 
             # Init return value
             spline_list = []
