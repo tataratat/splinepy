@@ -221,14 +221,66 @@ def parametric_function(
 
 
 def physical_function(
-    function,  # noqa ARG001
-    orders,  # noqa ARG001
+    spline,
+    function,
+    orders=None,
 ):
-    """Integrate a function defined within the physical domain"""
-    raise NotImplementedError(
-        "Function not implemented yet. Please feel free to write an issue, if "
-        "you need it: github.com/tatarata/splinepy/issues"
-    )
+    """Integrate a function defined within the physical domain
+
+    Parameters
+    ----------
+    spline : Spline
+        The geometry over which the function is integrated
+    function : Callable
+        The user-defined function to integrate. Can also be vector-valued
+    orders : optional
+        Quadrature order in parametric domain for numerical integration
+
+    Returns
+    -------
+    integral : np.ndarray
+        The computed integral. It is vector-valued if function is vector-valued
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check i_nput type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("integration only works for splines")
+
+    # Retrieve aux info
+    meas = _get_integral_measure(spline)
+    positions, weights = _get_quadrature_information(spline, orders)
+
+    # Calculate Volume
+    if spline.has_knot_vectors:
+        # positions must be mapped into each knot-element
+        para_view = spline.create.parametric_view(axes=False)
+
+        # get initial shape
+        initial = function([positions[0]])
+        result = _np.zeros(initial.shape[1])
+        for bezier_element in para_view.extract.beziers():
+            quad_positions = bezier_element.evaluate(positions)
+            element_meas = _get_integral_measure(bezier_element)
+            physical_positions = spline.evaluate(quad_positions)
+            result += _np.einsum(
+                "i...,i,i->...",
+                function(physical_positions),
+                element_meas(bezier_element, positions)
+                * meas(spline, quad_positions),
+                weights,
+                optimize=True,
+            )
+
+    else:
+        result = _np.einsum(
+            "i...,i,i->...",
+            function(positions),
+            meas(spline, positions),
+            weights,
+            optimize=True,
+        )
+    return result
 
 
 class Integrator:
@@ -261,3 +313,7 @@ class Integrator:
     @_wraps(parametric_function)
     def parametric_function(self, *args, **kwargs):
         return parametric_function(self._helpee, *args, **kwargs)
+
+    @_wraps(physical_function)
+    def physical_function(self, *args, **kwargs):
+        return physical_function(self._helpee, *args, **kwargs)

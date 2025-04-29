@@ -198,3 +198,38 @@ def test_function_integration(np_rng):
         [bspline.integrate.volume(), col1_factor * bspline.integrate.volume()],
         bspline.integrate.parametric_function(volume_function),
     )
+
+
+def test_physical_function_integration(np_rng):
+    # Analytical integral of y*(5-y) over [0,1]x[0,5] rectangle
+    integral_analytical = 125 / 6
+
+    def parabolic_function(points):
+        if isinstance(points, list):
+            y = points[0][1]
+        elif isinstance(points, np.ndarray):
+            y = points[:, 1]
+        else:
+            raise TypeError("Unsupported type for points")
+        return (y * (5 - y)).reshape(-1, 1)
+
+    # Create rectangle domain
+    xlin, ylin = np.linspace(0, 1, 3), np.linspace(0, 5, 3)
+    control_points = np.vstack(
+        [array.ravel() for array in np.meshgrid(xlin, ylin)]
+    ).T
+    rectangle = splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+        control_points=control_points,
+    )
+
+    # Insert random knots along both parametric dimensions
+    rectangle.insert_knots(0, np_rng.random(2))
+    rectangle.insert_knots(1, np_rng.random(2))
+
+    integral = splinepy.helpme.integrate.physical_function(
+        rectangle, parabolic_function
+    )
+
+    assert np.allclose(integral, integral_analytical)
