@@ -8,6 +8,9 @@ class Snappy(_TileBase):
     """Snap-through tile consisting of a thin truss and a thick truss that
     collide into each other.
 
+    # TODO: currently the tile parameters are not implemented as the parameters variable
+            therefore, no parameter sensitivities are calculated
+
     .. raw:: html
 
         <p><a href="../_static/Snappy.html">Fullscreen</a>.</p>
@@ -20,10 +23,16 @@ class Snappy(_TileBase):
     # dummy values - not used
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = False
+    _closure_directions = ["y_min", "y_max"]
+    _parameter_bounds = []
+    _parameters_shape = ()
+
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.5]
 
     def _closing_tile(
         self,
-        parameters=None,
+        parameters=None,  # noqa: ARG002
         parameter_sensitivities=None,  # TODO
         closure=None,
         contact_length=0.1,
@@ -60,8 +69,6 @@ class Snappy(_TileBase):
         """
         if closure is None:
             raise ValueError("No closing direction given")
-
-        self.check_params(parameters)
 
         if parameter_sensitivities is not None:
             raise NotImplementedError(
@@ -220,7 +227,6 @@ class Snappy(_TileBase):
             spline_list.append(
                 _Bezier(degrees=[3, 1], control_points=spline_10)
             )
-            return spline_list
         elif closure == "y_max":
             spline_1 = _np.array(
                 [
@@ -286,11 +292,12 @@ class Snappy(_TileBase):
             spline_list.append(
                 _Bezier(degrees=[3, 1], control_points=spline_5)
             )
-            return (spline_list, None)
         else:
-            raise ValueError(
+            raise NotImplementedError(
                 "Closing tile is only implemented for y-enclosure"
             )
+
+        return (spline_list, None)
 
     def create_tile(
         self,
@@ -339,13 +346,16 @@ class Snappy(_TileBase):
         """
 
         for param in [a, b, c, r, contact_length]:
-            if not isinstance(param, float):
-                raise ValueError(f"Invalid Type, {param} is not float")
+            if not isinstance(param, (int, float)):
+                raise TypeError(
+                    f"Invalid Type, {param} is neither int nor float"
+                )
             if param < 0:
                 raise ValueError("Invalid parameter, must be > 0.")
 
-        if not ((contact_length > 0) and (contact_length < 0.49)):
-            raise ValueError("The length of a side must be in (0.01, 0.49)")
+        self._check_custom_parameter(
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
+        )
 
         # Check horizontal parameters
         if not ((r + contact_length) < 0.5):
@@ -362,7 +372,7 @@ class Snappy(_TileBase):
 
         if parameters is not None:
             raise NotImplementedError(
-                "Parametriazation is not implemented for this tile yet"
+                "Parametrization is not implemented for this tile yet"
             )
 
         if parameter_sensitivities is not None:
