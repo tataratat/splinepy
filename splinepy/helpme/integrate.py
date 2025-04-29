@@ -160,6 +160,79 @@ def volume(spline, orders=None):
     return volume
 
 
+def _user_function(
+    spline,
+    function,
+    orders=None,
+    physical=False,
+):
+    """Integrate a function defined within the selected domain
+
+    Parameters
+    ----------
+    spline : Spline
+        (self if called via integrator)
+    function : Callable
+    orders : optional
+    physical : bool
+        If True, the function is defined in the physical domain. If False,
+        the function is defined in the parametric domain.
+        Default is False.
+
+    Returns
+    -------
+    integral : np.ndarray
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check input type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("integration only works for splines")
+
+    # Retrieve aux info
+    meas = _get_integral_measure(spline)
+    positions, weights = _get_quadrature_information(spline, orders)
+
+    # define function to integrate
+    def _function(position):
+        if physical:
+            return function(spline.evaluate(position))
+        else:
+            return function(position)
+
+    # Calculate Volume
+    if spline.has_knot_vectors:
+        # positions must be mapped into each knot-element
+        para_view = spline.create.parametric_view(axes=False)
+
+        # get initial shape
+        initial = function([positions[0]])
+        result = _np.zeros(initial.shape[1])
+        for bezier_element in para_view.extract.beziers():
+            # Get the bezier element scaling factor to get the correct
+            # element size from original knot element
+            knot_element_scaling_factor = _np.prod(
+                _np.diff(bezier_element.control_point_bounds, axis=0)
+            )
+            quad_positions = bezier_element.evaluate(positions)
+            result += _np.einsum(
+                "i...,i,i->...",
+                _function(quad_positions),
+                meas(spline, quad_positions) * knot_element_scaling_factor,
+                weights,
+                optimize=True,
+            )
+    else:
+        result = _np.einsum(
+            "i...,i,i->...",
+            _function(positions),
+            meas(spline, positions),
+            weights,
+            optimize=True,
+        )
+    return result
+
+
 def parametric_function(
     spline,
     function,
@@ -178,46 +251,7 @@ def parametric_function(
     -------
     integral : np.ndarray
     """
-    from splinepy.spline import Spline as _Spline
-
-    # Check i_nput type
-    if not isinstance(spline, _Spline):
-        raise NotImplementedError("integration only works for splines")
-
-    # Retrieve aux info
-    meas = _get_integral_measure(spline)
-    positions, weights = _get_quadrature_information(spline, orders)
-
-    # Calculate Volume
-    if spline.has_knot_vectors:
-        # positions must be mapped into each knot-element
-        para_view = spline.create.parametric_view(axes=False)
-
-        # get initial shape
-        initial = function([positions[0]])
-        result = _np.zeros(initial.shape[1])
-        for bezier_element in para_view.extract.beziers():
-            quad_positions = bezier_element.evaluate(positions)
-            result += _np.einsum(
-                "i...,i,i->...",
-                function(quad_positions),
-                meas(spline, quad_positions)
-                * _np.prod(
-                    _np.diff(bezier_element.control_point_bounds, axis=0)
-                ),
-                weights,
-                optimize=True,
-            )
-
-    else:
-        result = _np.einsum(
-            "i...,i,i->...",
-            function(positions),
-            meas(spline, positions),
-            weights,
-            optimize=True,
-        )
-    return result
+    return _user_function(spline, function, orders=orders, physical=False)
 
 
 def physical_function(
@@ -241,46 +275,7 @@ def physical_function(
     integral : np.ndarray
         The computed integral. It is vector-valued if function is vector-valued
     """
-    from splinepy.spline import Spline as _Spline
-
-    # Check i_nput type
-    if not isinstance(spline, _Spline):
-        raise NotImplementedError("integration only works for splines")
-
-    # Retrieve aux info
-    meas = _get_integral_measure(spline)
-    positions, weights = _get_quadrature_information(spline, orders)
-
-    # Calculate Volume
-    if spline.has_knot_vectors:
-        # positions must be mapped into each knot-element
-        para_view = spline.create.parametric_view(axes=False)
-
-        # get initial shape
-        initial = function([positions[0]])
-        result = _np.zeros(initial.shape[1])
-        for bezier_element in para_view.extract.beziers():
-            quad_positions = bezier_element.evaluate(positions)
-            element_meas = _get_integral_measure(bezier_element)
-            physical_positions = spline.evaluate(quad_positions)
-            result += _np.einsum(
-                "i...,i,i->...",
-                function(physical_positions),
-                element_meas(bezier_element, positions)
-                * meas(spline, quad_positions),
-                weights,
-                optimize=True,
-            )
-
-    else:
-        result = _np.einsum(
-            "i...,i,i->...",
-            function(positions),
-            meas(spline, positions),
-            weights,
-            optimize=True,
-        )
-    return result
+    return _user_function(spline, function, orders=orders, physical=True)
 
 
 class Integrator:
