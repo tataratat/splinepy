@@ -209,6 +209,24 @@ def process_file(
                 line = line.replace(item[1], str(new_path))  # noqa: PLW2901
             content += f"{line}"
 
+    # super special links (just special images) that the sphinx markdown
+    # parser won't correctly handle since they are in html tags.
+    special_links = get_special_links(content)
+    for item in special_links:
+        if not item[0].strip():
+            warnings.warn(
+                f"Empty link in `{file}`. Link name `{item[1]}` link path "
+                f"`{item[0]}`. Will ignore link.",
+                stacklevel=3,
+            )
+            continue
+        if item[0].startswith("http"):  # skip http links and anchors
+            continue
+        else:
+            # just link to static folder in docs
+            new_path = "_static/" + str(pathlib.Path(item[1]).name)
+            content = content.replace(item[1], str(new_path))
+
     os.chdir(original_cwd)
 
     if return_content:
