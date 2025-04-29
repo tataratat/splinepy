@@ -1,0 +1,6 @@
+splinepy.helpme.fit.surface
+===========================
+
+.. currentmodule:: splinepy.helpme.fit
+
+.. autofunction:: surface

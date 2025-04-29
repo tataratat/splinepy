@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.resize
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.resize

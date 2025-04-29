@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.basis\_derivative\_and\_support
+==========================================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.basis_derivative_and_support

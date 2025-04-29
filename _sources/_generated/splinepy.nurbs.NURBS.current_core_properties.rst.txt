@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.current\_core\_properties
+==============================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.current_core_properties

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.cube\_void.CubeVoid.check\_param\_derivatives
+===========================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cube_void
+
+.. automethod:: CubeVoid.check_param_derivatives

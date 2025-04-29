@@ -1,0 +1,33 @@
+.. _splinepy.multipatch:
+
+splinepy.multipatch
+===================
+
+.. automodule:: splinepy.multipatch
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Multipatch
+   
+   
+
+   
+   
+   
+
+
+

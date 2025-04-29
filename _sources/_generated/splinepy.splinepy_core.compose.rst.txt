@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.compose
+===============================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: compose

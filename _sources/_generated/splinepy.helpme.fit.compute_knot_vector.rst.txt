@@ -1,0 +1,6 @@
+splinepy.helpme.fit.compute\_knot\_vector
+=========================================
+
+.. currentmodule:: splinepy.helpme.fit
+
+.. autofunction:: compute_knot_vector

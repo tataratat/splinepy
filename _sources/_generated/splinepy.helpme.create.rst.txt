@@ -1,0 +1,56 @@
+.. _splinepy.helpme.create:
+
+splinepy.helpme.create
+======================
+
+.. automodule:: splinepy.helpme.create
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      arc
+      box
+      circle
+      cone
+      determinant_spline
+      disk
+      embedded
+      extruded
+      from_bounds
+      line
+      parametric_view
+      plate
+      pyramid
+      revolved
+      sphere
+      surface_circle
+      torus
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Creator
+   
+   
+
+   
+   
+   
+
+
+

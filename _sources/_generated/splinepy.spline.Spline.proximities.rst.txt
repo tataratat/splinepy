@@ -1,0 +1,6 @@
+splinepy.spline.Spline.proximities
+==================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.proximities

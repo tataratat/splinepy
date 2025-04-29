@@ -1,0 +1,6 @@
+splinepy.io.ioutils.make\_meaningful
+====================================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: make_meaningful

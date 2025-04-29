@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.ControlPointPointers.set\_rows
+======================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: ControlPointPointers.set_rows
