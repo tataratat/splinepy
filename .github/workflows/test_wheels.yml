@@ -1,17 +1,11 @@
-name: test wheel builds
+name: test wheels and artifact up/downloads
 
 on:
-  pull_request:
-    types: [labeled]
+  pull_request
 
 jobs:
   macos_wheel:
-    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-mac-test')
     runs-on: macos-13
-    strategy:
-      matrix:
-        arch: [x86_64]
-        cw_build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -20,23 +14,19 @@ jobs:
     - name: build wheels
       uses: pypa/cibuildwheel@v2.23.2
       env:
-        CIBW_ARCHS: ${{ matrix.arch }}
-        CIBW_BUILD: ${{ matrix.cw_build }}
+        CIBW_ARCHS: native
+        CIBW_BUILD: "cp313-*"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
+        SKBUILD_INSTALL_COMPONENTS: PythonModule
 
     - uses: actions/upload-artifact@v4
       with:
+        name: wheels-${{ strategy.job-index }}
         path: ./wheelhouse/*.whl
         retention-days: 1
 
-  macos_wheel_arm:
-    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-mac-test')
-
-    runs-on: macos-14
-    strategy:
-      matrix:
-        arch: [arm64]
-        cw_build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+  macos_wheel-m1:
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -45,23 +35,19 @@ jobs:
     - name: build wheels
       uses: pypa/cibuildwheel@v2.23.2
       env:
-        CIBW_ARCHS: ${{ matrix.arch }}
-        CIBW_BUILD: ${{ matrix.cw_build }}
+        CIBW_ARCHS: native
+        CIBW_BUILD: "cp313-*"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
+        SKBUILD_INSTALL_COMPONENTS: PythonModule
 
     - uses: actions/upload-artifact@v4
       with:
+        name: wheels-${{ strategy.job-index }}
         path: ./wheelhouse/*.whl
         retention-days: 1
-
 
   linux_wheel:
-    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-linux-test')
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [x86_64]
-        cw_build: ["cp38*many*", "cp39*many*", "cp310*many*", "cp311*many*", "cp312*many*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -70,22 +56,19 @@ jobs:
     - name: build wheels
       uses: pypa/cibuildwheel@v2.23.2
       env:
-        CIBW_ARCHS: ${{ matrix.arch }}
-        CIBW_BUILD: ${{ matrix.cw_build }}
+        CIBW_ARCHS: native
+        CIBW_BUILD: "cp313-*"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
+        SKBUILD_INSTALL_COMPONENTS: PythonModule
 
     - uses: actions/upload-artifact@v4
       with:
+        name: wheels-${{ strategy.job-index }}
         path: ./wheelhouse/*.whl
         retention-days: 1
 
   windows_wheel:
-    if: contains(github.event.label.name, 'cibuildwheel-test') || contains(github.event.label.name, 'cibuildwheel-windows-test')
     runs-on: windows-latest
-    strategy:
-      matrix:
-        arch: [AMD64]
-        cw_build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -94,13 +77,14 @@ jobs:
     - name: build wheels
       uses: pypa/cibuildwheel@v2.23.2
       env:
-        CIBW_ARCHS: ${{ matrix.arch }}
-        CIBW_BUILD: ${{ matrix.cw_build }}
-        CIBW_TEST_SKIP: "*-win_arm64"
+        CIBW_ARCHS: native
+        CIBW_BUILD: "cp313-*"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
+        SKBUILD_INSTALL_COMPONENTS: PythonModule
 
     - uses: actions/upload-artifact@v4
       with:
+        name: wheels-${{ strategy.job-index }}
         path: ./wheelhouse/*.whl
         retention-days: 1
 
@@ -116,5 +100,19 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
+        name: wheels-${{ strategy.job-index }}
         path: ./dist/*
         retention-days: 1
+
+
+  try_download_artifact:
+    needs: [macos_wheel, linux_wheel, windows_wheel, source_dist]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist
