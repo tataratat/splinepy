@@ -123,7 +123,7 @@ def error(*log):
     logger.error(" ".join(map(str, log)))
 
 
-def prepend_log(message, log_func):
+def prepend_log(message, log_func, as_method=True):
     """
     Prepend message before a logging function.
 
@@ -132,9 +132,12 @@ def prepend_log(message, log_func):
     message: str
     log_func: function
       one of the following - {info, debug, warning}
+    as_method: bool
+      If True, uses partialmethod instead of partial.
 
     Returns
     -------
     prepended: function
     """
-    return _functools.partial(log_func, message)
+    p = _functools.partialmethod if as_method else _functools.partial
+    return p(log_func, message)
