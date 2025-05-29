@@ -124,7 +124,7 @@ jobs:
 
 
   upload_pypi:
-    needs: [macos_wheel, linux_wheel, windows_wheel, source_dist]
+    needs: [macos_wheel, macos_wheel-m1, linux_wheel, windows_wheel, source_dist]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
