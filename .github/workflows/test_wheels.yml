@@ -57,7 +57,7 @@ jobs:
       uses: pypa/cibuildwheel@v2.23.2
       env:
         CIBW_ARCHS: native
-        CIBW_BUILD: "cp313-*"
+        CIBW_BUILD: "cp313-*many*"
         SPLINEPY_GITHUB_ACTIONS_BUILD: True
         SKBUILD_INSTALL_COMPONENTS: PythonModule
 
