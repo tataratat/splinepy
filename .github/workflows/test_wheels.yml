@@ -21,7 +21,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ strategy.job-index }}
+        name: wheels-macos-13
         path: ./wheelhouse/*.whl
         retention-days: 1
 
@@ -42,7 +42,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ strategy.job-index }}
+        name: wheels-macos
         path: ./wheelhouse/*.whl
         retention-days: 1
 
@@ -63,7 +63,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ strategy.job-index }}
+        name: wheels-linux
         path: ./wheelhouse/*.whl
         retention-days: 1
 
@@ -84,7 +84,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ strategy.job-index }}
+        name: wheels-windows
         path: ./wheelhouse/*.whl
         retention-days: 1
 
@@ -100,7 +100,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ strategy.job-index }}
+        name: wheels-source
         path: ./dist/*
         retention-days: 1
 
