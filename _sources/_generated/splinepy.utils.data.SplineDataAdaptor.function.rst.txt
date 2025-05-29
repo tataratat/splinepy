@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.function
+==============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoattribute:: SplineDataAdaptor.function

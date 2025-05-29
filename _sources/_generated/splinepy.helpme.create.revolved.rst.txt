@@ -1,0 +1,6 @@
+splinepy.helpme.create.revolved
+===============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: revolved

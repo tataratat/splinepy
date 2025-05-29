@@ -1,0 +1,59 @@
+splinepy.utils.data.SplineDataAdaptor
+=====================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoclass:: SplineDataAdaptor
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       SplineDataAdaptor.as_vertex_data
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         SplineDataAdaptor.data
+      
+      
+         SplineDataAdaptor.function
+      
+      
+         SplineDataAdaptor.locations
+      
+      
+         SplineDataAdaptor.is_spline
+      
+      
+         SplineDataAdaptor.has_function
+      
+      
+         SplineDataAdaptor.has_locations
+      
+      
+         SplineDataAdaptor.has_evaluate
+      
+      
+         SplineDataAdaptor.arrow_data_only
+      
+      
+         SplineDataAdaptor.parametric_bounds
+      
+   
+   

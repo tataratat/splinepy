@@ -1,0 +1,6 @@
+splinepy.helpme.ffd.FFD.showable
+================================
+
+.. currentmodule:: splinepy.helpme.ffd
+
+.. automethod:: FFD.showable

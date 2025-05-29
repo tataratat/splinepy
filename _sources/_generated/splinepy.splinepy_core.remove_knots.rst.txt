@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.remove\_knots
+=====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: remove_knots

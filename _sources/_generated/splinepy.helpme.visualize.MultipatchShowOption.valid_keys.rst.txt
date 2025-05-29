@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.MultipatchShowOption.valid\_keys
+==========================================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: MultipatchShowOption.valid_keys

@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.proximities
+======================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.proximities

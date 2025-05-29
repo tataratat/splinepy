@@ -1,0 +1,53 @@
+﻿.. _splinepy:
+
+splinepy
+========
+
+.. automodule:: splinepy
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      to_derived
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   bezier
+   bspline
+   cli
+   helpme
+   io
+   microstructure
+   multipatch
+   nurbs
+   rational_bezier
+   settings
+   spline
+   splinepy_core
+   utils
+

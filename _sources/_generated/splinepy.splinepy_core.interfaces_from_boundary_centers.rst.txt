@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.interfaces\_from\_boundary\_centers
+===========================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: interfaces_from_boundary_centers

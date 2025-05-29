@@ -1,0 +1,50 @@
+splinepy.microstructure.microstructure.Microstructure
+=====================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoclass:: Microstructure
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Microstructure.create
+     
+     
+       Microstructure.show
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         Microstructure.deformation_function
+      
+      
+         Microstructure.microtile
+      
+      
+         Microstructure.parameter_sensitivity_function
+      
+      
+         Microstructure.parametrization_function
+      
+      
+         Microstructure.tiling
+      
+   
+   

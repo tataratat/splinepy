@@ -1,0 +1,6 @@
+splinepy.utils.log.warning
+==========================
+
+.. currentmodule:: splinepy.utils.log
+
+.. autofunction:: warning

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.same\_spline\_with\_knot\_vectors
+=========================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: same_spline_with_knot_vectors

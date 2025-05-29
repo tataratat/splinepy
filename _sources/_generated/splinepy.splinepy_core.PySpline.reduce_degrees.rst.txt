@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PySpline.reduce\_degrees
+================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: PySpline.reduce_degrees

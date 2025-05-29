@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.clear
+====================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.clear

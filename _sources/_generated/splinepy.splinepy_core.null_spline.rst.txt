@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.null\_spline
+====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: null_spline

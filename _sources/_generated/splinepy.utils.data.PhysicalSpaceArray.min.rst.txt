@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.min
+==========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.min

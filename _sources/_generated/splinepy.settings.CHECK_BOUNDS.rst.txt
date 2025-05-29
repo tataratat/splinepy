@@ -1,0 +1,6 @@
+splinepy.settings.CHECK\_BOUNDS
+===============================
+
+.. currentmodule:: splinepy.settings
+
+.. autodata:: CHECK_BOUNDS

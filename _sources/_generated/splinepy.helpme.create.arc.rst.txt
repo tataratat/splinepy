@@ -1,0 +1,6 @@
+splinepy.helpme.create.arc
+==========================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: arc
