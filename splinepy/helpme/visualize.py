@@ -353,7 +353,12 @@ def _sample_arrow_data(spline, adata, sampled_spline, res):
         )
 
         # transfer options to sampled_spline
-        keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
+        keys = (
+            "arrow_data_scale",
+            "arrow_data_color",
+            "arrow_data",
+            "arrow_data_to_origin",
+        )
         spline.show_options.copy_valid_options(
             sampled_spline.show_options, keys
         )
@@ -393,7 +398,12 @@ def _sample_arrow_data(spline, adata, sampled_spline, res):
         loc_vertices.vertex_data[adata] = adata_values
 
         # transfer options
-        keys = ("arrow_data_scale", "arrow_data_color", "arrow_data")
+        keys = (
+            "arrow_data_scale",
+            "arrow_data_color",
+            "arrow_data",
+            "arrow_data_to_origin",
+        )
         spline.show_options.copy_valid_options(loc_vertices.show_options, keys)
 
         return loc_vertices
