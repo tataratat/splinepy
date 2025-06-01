@@ -1,0 +1,42 @@
+.. _splinepy.helpme.integrate:
+
+splinepy.helpme.integrate
+=========================
+
+.. automodule:: splinepy.helpme.integrate
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      parametric_function
+      physical_function
+      volume
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Integrator
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,1183 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.io.mfem &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/io/mfem';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.io.mfem</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.io.mfem</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Supports single nurbs export for mfem.</span>
+
+<span class="sd">Currently hardcoded for 2D-single-patch-splines.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ast</span><span class="w"> </span><span class="kn">import</span> <span class="n">literal_eval</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_gus</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.io.ioutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">dict_to_spline</span> <span class="k">as</span> <span class="n">_dict_to_spline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.io.ioutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">form_lines</span> <span class="k">as</span> <span class="n">_form_lines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.io.ioutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_meaningful</span> <span class="k">as</span> <span class="n">_make_meaningful</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.io.ioutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">next_line</span> <span class="k">as</span> <span class="n">_next_line</span>
+
+<span class="c1"># keywords : possible assert value</span>
+<span class="n">_mfem_meaningful_keywords</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;MFEM NURBS mesh v1.0&quot;</span><span class="p">:</span> <span class="s2">&quot;intro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dimension&quot;</span><span class="p">:</span> <span class="s2">&quot;para_dim&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;elements&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;boundary&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;vertices&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;knotvectors&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;FiniteElementSpace&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;FiniteElementCollection&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;VDim&quot;</span><span class="p">:</span> <span class="s2">&quot;dim&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Ordering&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.mfem.load.html#splinepy.io.mfem.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads mfem spline and returns a spline.</span>
+
+<span class="sd">    Supports 2D/3D single patch.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    fname: str</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    nurbs: dict</span>
+<span class="sd">      dict ready to be used for init.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>
+
+    <span class="n">mk</span> <span class="o">=</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="n">_mfem_meaningful_keywords</span><span class="p">)</span>
+    <span class="c1"># they follow a strict order or keywords, so just gather those in order</span>
+    <span class="c1"># Ordering is a hotkey because control points comes right after</span>
+    <span class="n">hotkeys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;knotvectors&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;weights&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ordering&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">nurbs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;knotvectors&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;Ordering&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">collect</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">single_line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">_make_meaningful</span><span class="p">(</span><span class="n">single_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">keyword_hit</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mk</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;double keyword hit!&quot;</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">keyword_hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">hotkeys</span><span class="p">:</span>
+                <span class="n">collect</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">current_key</span> <span class="o">=</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">continue</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">keyword_hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hotkeys</span><span class="p">:</span>
+                <span class="n">collect</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">current_key</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">collect</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyword_hit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">collect</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">collect</span><span class="p">:</span>
+                <span class="n">nurbs_dict</span><span class="p">[</span><span class="n">current_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+    <span class="c1"># parse nurbs_dict</span>
+    <span class="c1"># kvs</span>
+    <span class="n">knot_vectors_sec</span> <span class="o">=</span> <span class="n">nurbs_dict</span><span class="p">[</span><span class="s2">&quot;knotvectors&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">knot_vectors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">kvs</span> <span class="ow">in</span> <span class="n">knot_vectors_sec</span><span class="p">:</span>
+        <span class="n">knot_vectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">literal_eval</span><span class="p">(</span><span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="n">kvs</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">))</span>
+
+    <span class="c1"># parse degrees and get number of control points for consistency checks</span>
+    <span class="n">degrees</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ncps</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">kv</span> <span class="ow">in</span> <span class="n">knot_vectors</span><span class="p">:</span>
+        <span class="c1"># first value in kv is degrees</span>
+        <span class="n">degrees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kv</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># second value is number of control points</span>
+        <span class="n">ncps</span> <span class="o">*=</span> <span class="n">kv</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># ws</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">nurbs_dict</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span>  <span class="c1"># hopefully not too slow</span>
+    <span class="c1"># cps</span>
+    <span class="n">control_points</span> <span class="o">=</span> <span class="n">nurbs_dict</span><span class="p">[</span><span class="s2">&quot;Ordering&quot;</span><span class="p">]</span>
+    <span class="n">control_points</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">literal_eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">cp</span> <span class="ow">in</span> <span class="n">control_points</span>
+    <span class="p">]</span>
+
+    <span class="c1"># double check</span>
+    <span class="c1"># maybe separate them</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">ncps</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">ncps</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">nurbs_dict</span><span class="p">[</span><span class="s2">&quot;knotvectors&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">knot_vectors</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Inconsistent spline info in </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;ncps = </span><span class="si">{</span><span class="n">ncps</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;len(control_points) = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;len(weights) = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;len(degrees) = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;len(knot_vectors) = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">knot_vectors</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">mfem_dict_spline</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;degrees&quot;</span><span class="p">:</span> <span class="n">degrees</span><span class="p">,</span>
+        <span class="s2">&quot;knot_vectors&quot;</span><span class="p">:</span> <span class="n">knot_vectors</span><span class="p">,</span>
+        <span class="s2">&quot;control_points&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">control_points</span><span class="p">),</span>
+        <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">spline</span> <span class="o">=</span> <span class="n">_dict_to_spline</span><span class="p">([</span><span class="n">mfem_dict_spline</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">reorder</span> <span class="o">=</span> <span class="n">dof_mapping</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+
+    <span class="n">spline</span><span class="o">.</span><span class="n">cps</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">cps</span><span class="p">[</span><span class="n">reorder</span><span class="p">]</span>
+    <span class="n">spline</span><span class="o">.</span><span class="n">ws</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">ws</span><span class="p">[</span><span class="n">reorder</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">spline</span></div>
+
+
+
+<div class="viewcode-block" id="read_solution">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.mfem.read_solution.html#splinepy.io.mfem.read_solution">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_solution</span><span class="p">(</span>
+    <span class="n">fname</span><span class="p">,</span>
+    <span class="n">reference_nurbs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given solution and reference_nurbs, returns solution-nurbs-dict.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    fname: str</span>
+<span class="sd">    reference_nurbs: NURBS</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    solution_nurbs: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">hotkey</span> <span class="o">=</span> <span class="s2">&quot;Ordering&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">_next_line</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">collect</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">collect</span><span class="p">:</span>  <span class="c1"># check this first. should be true most time</span>
+                <span class="n">solution</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">literal_eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">hotkey</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">collect</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">_next_line</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_nurbs</span><span class="o">.</span><span class="n">control_points</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">solution</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Solution length does not match reference nurbs&quot;</span><span class="p">)</span>
+
+    <span class="n">mfem_dict_spline</span> <span class="o">=</span> <span class="n">reference_nurbs</span><span class="o">.</span><span class="n">todict</span><span class="p">()</span>
+
+    <span class="n">spline</span> <span class="o">=</span> <span class="n">_dict_to_spline</span><span class="p">([</span><span class="n">mfem_dict_spline</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">reorder</span> <span class="o">=</span> <span class="n">dof_mapping</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+
+    <span class="n">spline</span><span class="o">.</span><span class="n">cps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">solution</span><span class="p">)[</span><span class="n">reorder</span><span class="p">]</span>
+    <span class="n">spline</span><span class="o">.</span><span class="n">ws</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">ws</span><span class="p">[</span><span class="n">reorder</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">spline</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mfem_dof_map_2d</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dof mapping for 2D splines</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mi</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">multi_index</span>
+
+    <span class="n">to_m</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># corner vertices</span>
+    <span class="n">x_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mi</span><span class="p">[</span><span class="n">x_ids</span><span class="p">,</span> <span class="n">y_ids</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># edge vertices</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># bottom</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># top</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># left</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># right</span>
+
+    <span class="c1"># internal</span>
+    <span class="n">internal</span> <span class="o">=</span> <span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">internal</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">to_m</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">to_m</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mfem_dof_map_3d</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dof mapping for 3D splines</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mi</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">multi_index</span>
+
+    <span class="n">to_m</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># corner vertices</span>
+    <span class="n">x_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">mi</span><span class="p">[</span><span class="n">x_ids</span><span class="p">,</span> <span class="n">y_ids</span><span class="p">,</span> <span class="n">z_ids</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># edges</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 1</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># 2</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 3</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># 4</span>
+
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 5</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 6</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 7</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 8</span>
+
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 9</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 10</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 11</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 12</span>
+
+    <span class="c1"># faces - this one is extra funky</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 1</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 2</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 3</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 4</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 5</span>
+    <span class="n">faces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># 6</span>
+
+    <span class="c1"># internal - thank you for being so friendly</span>
+    <span class="n">internal</span> <span class="o">=</span> <span class="n">mi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># merge them</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+    <span class="n">to_m</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">internal</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">to_m</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">to_m</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="dof_mapping">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.mfem.dof_mapping.html#splinepy.io.mfem.dof_mapping">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dof_mapping</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MFEM stores vertices in a special order. This function gives dof index</span>
+<span class="sd">    mapping between splinepy and mfem</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spline: Spline</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    to_mfem: list</span>
+<span class="sd">    from_mfem: array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_mfem_dof_map_2d</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_mfem_dof_map_3d</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supports para_dim of 2 and 3&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_cartesian">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.mfem.export_cartesian.html#splinepy.io.mfem.export_cartesian">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_cartesian</span><span class="p">(</span>
+    <span class="n">fname</span><span class="p">,</span>
+    <span class="n">spline_list</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export list of bezier splines in mfem export.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname: string</span>
+<span class="sd">      file name</span>
+<span class="sd">    bezier_list: list</span>
+<span class="sd">      list of bezier spline objects</span>
+<span class="sd">    tolerance : float</span>
+<span class="sd">      tolerance to collapse two neighboring points</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="c1"># Check first spline</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;export_cartesian expects list for export.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">spline_list</span> <span class="o">=</span> <span class="n">_Multipatch</span><span class="p">(</span><span class="n">splines</span><span class="o">=</span><span class="n">spline_list</span><span class="p">)</span>
+
+    <span class="c1"># Set Tolerance</span>
+    <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1e-5</span>
+
+    <span class="c1"># Set Problem dimensions</span>
+    <span class="n">para_dim</span> <span class="o">=</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">para_dim</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">dim</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">para_dim</span> <span class="o">==</span> <span class="n">dim</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dim</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">})):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only 2D2D or 3D3D splines are supported&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Auxiliary function to identify corner vertices of the underlying spline</span>
+    <span class="c1">#  representation. As this function requires the numeration of its</span>
+    <span class="c1"># underlying hypercube Element, the following part needs to be different</span>
+    <span class="c1"># for the 2D and the 3D case</span>
+    <span class="k">if</span> <span class="n">para_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">geometry_type</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">boundary_type</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">n_vertex_per_element</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">n_vertex_per_boundary</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_corner_vertex_ids</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+            <span class="n">cmr</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">control_mesh_resolutions</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Face enumeration is different from splinepy&#39;s</span>
+        <span class="n">sub_element_vertices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+        <span class="c1"># splinepy&#39;s face 3 corresponds to mfem&#39;s face 0</span>
+        <span class="n">splinepy_face_id_2_mfem_face_id</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">para_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">geometry_type</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">boundary_type</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">n_vertex_per_element</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">n_vertex_per_boundary</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_corner_vertex_ids</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+            <span class="n">cmr</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">control_mesh_resolutions</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cmr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">cmr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">sub_element_vertices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">splinepy_face_id_2_mfem_face_id</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+    <span class="c1"># Create a list of all corner vertices ordered by spline patch number</span>
+    <span class="n">corner_vertices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">spline</span><span class="o">.</span><span class="n">cps</span><span class="p">[</span><span class="n">_corner_vertex_ids</span><span class="p">(</span><span class="n">spline</span><span class="p">),</span> <span class="p">:]</span>
+            <span class="k">for</span> <span class="n">spline</span> <span class="ow">in</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">patches</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Retrieve information using bezman</span>
+    <span class="n">connectivity</span> <span class="o">=</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">interfaces</span>
+
+    <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">inverse_numeration</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">_gus</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">arr</span><span class="o">.</span><span class="n">close_rows</span><span class="p">(</span>
+        <span class="n">corner_vertices</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">return_intersection</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">vertex_ids</span> <span class="o">=</span> <span class="n">inverse_numeration</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_vertex_per_element</span><span class="p">)</span>
+    <span class="c1"># Get boundaries from interfaces</span>
+    <span class="n">boundary_elements</span><span class="p">,</span> <span class="n">boundary_faces</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">connectivity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">boundary_ids</span> <span class="o">=</span> <span class="o">-</span><span class="n">connectivity</span><span class="p">[</span><span class="n">boundary_elements</span><span class="p">,</span> <span class="n">boundary_faces</span><span class="p">]</span>
+    <span class="c1"># Convert from splinepy enumeration to mfem enumeration</span>
+    <span class="n">boundaries</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span>
+        <span class="n">vertex_ids</span><span class="p">[</span><span class="n">boundary_elements</span><span class="p">,</span> <span class="p">:],</span>
+        <span class="n">sub_element_vertices</span><span class="p">[</span><span class="n">splinepy_face_id_2_mfem_face_id</span><span class="p">[</span><span class="n">boundary_faces</span><span class="p">]],</span>
+        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Write all gathered information into a file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># Header</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MFEM NURBS mesh v1.0</span><span class="se">\n\n</span><span class="s2">dimension</span><span class="se">\n</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Elements</span>
+        <span class="n">n_elements</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spline_list</span><span class="o">.</span><span class="n">patches</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;elements</span><span class="se">\n</span><span class="si">{</span><span class="n">n_elements</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;1 </span><span class="si">{</span><span class="n">geometry_type</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">vertex_ids</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_vertex_per_element</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Boundaries</span>
+        <span class="n">n_boundaries</span> <span class="o">=</span> <span class="n">boundaries</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">boundary</span><span class="se">\n</span><span class="si">{</span><span class="n">n_boundaries</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Here currently all boundaries are set to 1</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">boundary_id</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">boundary_type</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">boundary_id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">boundaries</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_vertex_per_boundary</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                    <span class="n">boundary_ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Write number of edges 0, for auto knot2edge</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">edges</span><span class="se">\n</span><span class="si">{</span><span class="mi">0</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Write Number Of vertices</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">vertices</span><span class="se">\n</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">vertex_ids</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Export Splines</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;patches</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">spline</span> <span class="ow">in</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">patches</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;knotvectors</span><span class="se">\n</span><span class="si">{</span><span class="n">para_dim</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cmr</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">control_mesh_resolutions</span>
+            <span class="k">for</span> <span class="n">i_para_dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">para_dim</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spline</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i_para_dim</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmr</span><span class="p">[</span><span class="n">i_para_dim</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;knot_vectors&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;0.0 &quot;</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i_para_dim</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="s2">&quot;1.0 &quot;</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i_para_dim</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">kvi</span><span class="p">)</span> <span class="k">for</span> <span class="n">kvi</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">kvs</span><span class="p">[</span><span class="n">i_para_dim</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dimension</span><span class="se">\n</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;controlpoints_cartesian</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; 1.0&quot;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                            <span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                            <span class="n">spline</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="export">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.mfem.export.html#splinepy.io.mfem.export">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">nurbs</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports current nurbs in `mfem` format.</span>
+
+<span class="sd">    IDs of MFEM Geometry types are:</span>
+
+<span class="sd">    - Segment = 1</span>
+<span class="sd">    - Square = 3</span>
+<span class="sd">    - CUBS = 5</span>
+
+<span class="sd">    Sections required are:</span>
+
+<span class="sd">    - dimension  (space dim)</span>
+<span class="sd">    - elements</span>
+<span class="sd">    - boundary</span>
+<span class="sd">    - edges</span>
+<span class="sd">    - vertices</span>
+<span class="sd">    - knotvectors</span>
+<span class="sd">    - weights</span>
+<span class="sd">    - FiniteElementSpace</span>
+<span class="sd">    - FiniteElementCollection: &lt;name&gt;</span>
+<span class="sd">    - VDim</span>
+<span class="sd">    - Ordering (1?)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    nurbs: NURBS</span>
+<span class="sd">    fname: str</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">whatami</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;NURBS&quot;</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nurbs</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">nurbs</span>  <span class="c1"># turns it into nurbs</span>
+
+    <span class="n">intro_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+        <span class="s2">&quot;MFEM NURBS mesh v1.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;# Generated with splinepy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;# MFEM Geometry Types (see mesh/geom.hpp)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;# SEGMENT = 1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;# SQUARE  = 3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;# CUBE    = 5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">dimension_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+        <span class="s2">&quot;dimension&quot;</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">nurbs</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">elements_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;elements&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 3 0 1 2 3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">boundary_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;boundary&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 1 0 1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 1 2 3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;3 1 3 0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;4 1 1 2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">edges_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;edges&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 0 1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 3 2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 0 3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 1 2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">vertices_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;vertices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">elements_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span><span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1 5 0 1 2 3 4 5 6 7&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">boundary_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;boundary&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 3 3 2 1 0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 3 4 5 6 7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;3 3 0 1 5 4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;4 3 1 2 6 5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;5 3 2 3 7 6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;6 3 3 0 4 7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">edges_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;edges&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;12&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 0 1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 3 2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 4 5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;0 7 6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 0 3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 1 2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 4 7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;1 5 6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 0 4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 1 5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 2 6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;2 3 7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">vertices_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;vertices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;8&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mfem output support 2D and 3D splines.&quot;</span><span class="p">)</span>
+
+    <span class="n">cnr</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">control_mesh_resolutions</span>
+
+    <span class="c1"># This is reusable</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">kv_sec</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+        <span class="n">kvs</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+            <span class="s2">&quot;knotvectors&quot;</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="n">kvs2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">):</span>
+            <span class="n">kvs2</span> <span class="o">+=</span> <span class="n">_form_lines</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cnr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span><span class="n">i</span><span class="p">]))[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">kvs</span> <span class="o">=</span> <span class="n">kvs</span> <span class="o">+</span> <span class="n">kvs2</span>
+
+        <span class="n">kvs</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="c1"># missing empty line</span>
+        <span class="k">return</span> <span class="n">kvs</span>
+
+    <span class="n">knotvectors_sec</span> <span class="o">=</span> <span class="n">kv_sec</span><span class="p">(</span><span class="n">nurbs</span><span class="p">)</span>
+
+    <span class="c1"># disregard inverse</span>
+    <span class="n">reorder_ids</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dof_mapping</span><span class="p">(</span><span class="n">nurbs</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">_np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span>
+        <span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;float_kind&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="p">):</span>
+        <span class="c1"># weights - string operation</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nurbs</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">reorder_ids</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="n">weights_sec</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># remove []</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="n">weights_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># remove \n</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="n">weights_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># remove ,</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="n">weights_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># add \n</span>
+        <span class="n">weights_sec</span> <span class="o">=</span> <span class="s2">&quot;weights</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">weights_sec</span>  <span class="c1"># add title</span>
+        <span class="n">weights_sec</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>  <span class="c1"># empty line</span>
+
+        <span class="c1"># cps</span>
+        <span class="n">cps_sec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nurbs</span><span class="o">.</span><span class="n">control_points</span><span class="p">[</span><span class="n">reorder_ids</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">cps_sec</span> <span class="o">=</span> <span class="n">cps_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># remove [</span>
+        <span class="n">cps_sec</span> <span class="o">=</span> <span class="n">cps_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># remove ,</span>
+        <span class="n">cps_sec</span> <span class="o">=</span> <span class="n">cps_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># remove \n</span>
+        <span class="n">cps_sec</span> <span class="o">=</span> <span class="n">cps_sec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># replace ] with \n</span>
+
+    <span class="n">fe_space_sec</span> <span class="o">=</span> <span class="n">_form_lines</span><span class="p">(</span>
+        <span class="s2">&quot;FiniteElementSpace&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;FiniteElementCollection: NURBS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VDim: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nurbs</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span>
+        <span class="s2">&quot;Ordering: 1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">intro_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dimension_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">elements_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">boundary_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">edges_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vertices_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">knotvectors_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">weights_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fe_space_sec</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cps_sec</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

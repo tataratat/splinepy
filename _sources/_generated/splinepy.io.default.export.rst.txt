@@ -1,0 +1,6 @@
+splinepy.io.default.export
+==========================
+
+.. currentmodule:: splinepy.io.default
+
+.. autofunction:: export

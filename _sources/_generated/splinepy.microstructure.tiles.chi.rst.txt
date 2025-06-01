@@ -1,0 +1,33 @@
+.. _splinepy.microstructure.tiles.chi:
+
+splinepy.microstructure.tiles.chi
+=================================
+
+.. automodule:: splinepy.microstructure.tiles.chi
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Chi
+   
+   
+
+   
+   
+   
+
+
+

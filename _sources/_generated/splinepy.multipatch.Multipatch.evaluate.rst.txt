@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.evaluate
+=======================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.evaluate

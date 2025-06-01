@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.clear
+====================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.clear

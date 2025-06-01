@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.current\_core\_properties
+==================================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.current_core_properties

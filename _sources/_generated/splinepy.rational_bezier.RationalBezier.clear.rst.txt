@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.clear
+==============================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.clear

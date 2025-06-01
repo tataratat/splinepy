@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.SplineShowOption.valid\_keys
+======================================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: SplineShowOption.valid_keys

@@ -1,0 +1,6 @@
+splinepy.io.svg.export
+======================
+
+.. currentmodule:: splinepy.io.svg
+
+.. autofunction:: export

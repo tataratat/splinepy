@@ -1,0 +1,6 @@
+splinepy.io.gismo.AdditionalBlocks.add\_function
+================================================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. automethod:: AdditionalBlocks.add_function

@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.MultipatchShowOption.copy\_valid\_options
+===================================================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: MultipatchShowOption.copy_valid_options

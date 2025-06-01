@@ -1,0 +1,62 @@
+splinepy.helpme.extract.Extractor
+=================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autoclass:: Extractor
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Extractor.arrow_data
+     
+     
+       Extractor.bases
+     
+     
+       Extractor.beziers
+     
+     
+       Extractor.boundaries
+     
+     
+       Extractor.control_edges
+     
+     
+       Extractor.control_faces
+     
+     
+       Extractor.control_mesh
+     
+     
+       Extractor.control_points
+     
+     
+       Extractor.control_volumes
+     
+     
+       Extractor.edges
+     
+     
+       Extractor.faces
+     
+     
+       Extractor.spline
+     
+     
+       Extractor.volumes
+     
+   
+   
+
+   
+   
+   

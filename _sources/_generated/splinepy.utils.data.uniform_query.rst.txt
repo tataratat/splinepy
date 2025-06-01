@@ -1,0 +1,6 @@
+splinepy.utils.data.uniform\_query
+==================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autofunction:: uniform_query

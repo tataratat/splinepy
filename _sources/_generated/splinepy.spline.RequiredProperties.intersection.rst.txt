@@ -1,0 +1,6 @@
+splinepy.spline.RequiredProperties.intersection
+===============================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: RequiredProperties.intersection

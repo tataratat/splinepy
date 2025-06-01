@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.bases
+=======================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.bases

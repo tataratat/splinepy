@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PySpline.has\_knot\_vectors
+===================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PySpline.has_knot_vectors

@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.searchsorted
+===================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.searchsorted

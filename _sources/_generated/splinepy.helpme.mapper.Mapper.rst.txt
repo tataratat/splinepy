@@ -1,0 +1,50 @@
+splinepy.helpme.mapper.Mapper
+=============================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. autoclass:: Mapper
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Mapper.basis_function_derivatives
+     
+     
+       Mapper.basis_gradient_and_support
+     
+     
+       Mapper.basis_hessian_and_support
+     
+     
+       Mapper.basis_laplacian_and_support
+     
+     
+       Mapper.divergence
+     
+     
+       Mapper.field_derivatives
+     
+     
+       Mapper.gradient
+     
+     
+       Mapper.hessian
+     
+     
+       Mapper.laplacian
+     
+   
+   
+
+   
+   
+   

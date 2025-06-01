@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.same\_parametric\_bounds
+=============================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PyMultipatch.same_parametric_bounds

@@ -1,0 +1,834 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.helpme.ffd &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/helpme/ffd';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.helpme.ffd</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.helpme.ffd</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;splinepy/helpme/ffd.py.</span>
+
+<span class="sd">Freeform Deformation!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_gus</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SplinepyBase</span> <span class="k">as</span> <span class="n">_SplinepyBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.helpme.create</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_bounds</span> <span class="k">as</span> <span class="n">_from_bounds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.spline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_rescaled_vertices</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">vertices</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">scale</span><span class="p">))</span> <span class="o">+</span> <span class="n">offset</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_spline_para_dim_and_mesh_dim_matches</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="FFD">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.ffd.FFD.html#splinepy.helpme.ffd.FFD">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FFD</span><span class="p">(</span><span class="n">_SplinepyBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Free-form deformation is a method used to deform an object by a</span>
+<span class="sd">    deformation function. In our case the object is given via a mesh, the</span>
+<span class="sd">    currently supported mesh-types are gustaf.Vertices and its subclasses,</span>
+<span class="sd">    and the deformations function by a spline, supported splines are</span>
+<span class="sd">    splinepy.Spline and its subclasses.</span>
+<span class="sd">    The splines parametric dimension will be scaled in to a unit-hypercube</span>
+<span class="sd">    as well as the original meshes vertices.</span>
+
+<span class="sd">    The FFD class provides functions to modify the spline by completely</span>
+<span class="sd">    overwriting the spline whole spline or parts of it. To obtain the</span>
+<span class="sd">    deformed mesh mapped into the latest spline, retrieve the mesh</span>
+<span class="sd">    attribute.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh: gustaf.Vertices</span>
+<span class="sd">      Mesh used in the FFD. Defaults to None.</span>
+<span class="sd">    spline: splinepy.Spline</span>
+<span class="sd">      Spline used in the FFD. Defaults to None.</span>
+<span class="sd">    padding: float</span>
+<span class="sd">      Padding factor to scale mesh into spline&#39;s parametric space.</span>
+<span class="sd">      Ideally, this should be 0, but to avoid floating point issues during</span>
+<span class="sd">      evaluation, we apply default settings.TOLERANCE</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">spline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># init variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_scale</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_offset</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># use setters for attr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span> <span class="k">if</span> <span class="n">padding</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">padding</span>
+        <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="k">if</span> <span class="n">spline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spline</span> <span class="o">=</span> <span class="n">spline</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of current mesh. Before copying, it applies</span>
+<span class="sd">        deformation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        current_mesh: gustaf.Vertices or derived</span>
+<span class="sd">            Current Mesh with the deformation according to the current spline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># is there mesh?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please set mesh first.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># evaluate new vertices</span>
+        <span class="n">current_mesh</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="p">)(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spline</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># apply connectivity if applicable</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="p">,</span> <span class="s2">&quot;elements&quot;</span><span class="p">):</span>
+            <span class="n">current_mesh</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">current_mesh</span>
+
+    <span class="nd">@mesh</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets mesh. If it is first time, the copy of it will be saved as</span>
+<span class="sd">        original mesh. If spline is already defined and in transformed status,</span>
+<span class="sd">        it applies transformation directly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        mesh: gustaf.Vertices</span>
+<span class="sd">            Mesh used for the FFD</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_q_offset</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_q_scale</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># type check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">_gus</span><span class="o">.</span><span class="n">Vertices</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;mesh should be an instance of gus.Vertices&quot;</span><span class="p">)</span>
+
+        <span class="c1"># warn and erase existing spline if dimension doesn&#39;t match</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">_spline_para_dim_and_mesh_dim_matches</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spline</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logw</span><span class="p">(</span>
+                <span class="s2">&quot;Mismatch between mesh vertices&#39; dim and set spline&#39;s&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;para_dim.&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Deleting existing spline&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># create a spline if there isn&#39;t one</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Define a default spline if mesh is given but no spline</span>
+            <span class="n">par_dim</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># try to expand bounds same ratio as</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spline</span> <span class="o">=</span> <span class="n">_from_bounds</span><span class="p">([[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">par_dim</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">par_dim</span><span class="p">],</span> <span class="n">bounds</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;created default spline&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Setting mesh.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Mesh Info:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Vertices: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Bounds: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># keep original copy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Fitting mesh into spline&#39;s parametric space.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># get mesh bound to scale</span>
+        <span class="n">scaling_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># apply padding</span>
+        <span class="n">scaling_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span>
+        <span class="n">scaling_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span>
+
+        <span class="c1"># save mesh offset and scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_offset</span> <span class="o">=</span> <span class="n">scaling_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_scale</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">scaling_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">scaling_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># scale and offset vertices coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_scale</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Successfully scaled mesh vertices!&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a copy of the spline. Please use the setter to explicitly</span>
+<span class="sd">        make changes to the spline.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        self._spline: Spline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span>
+
+    <span class="nd">@spline</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spline</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets spline. The spline parametric range bounds will be converted</span>
+<span class="sd">        into the bounds [0,1]^para_dim.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        spline: Spline</span>
+<span class="sd">            New Spline for the next deformation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">spline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Spline</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;spline should be an instance of splinepy.Spline class&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">_spline_para_dim_and_mesh_dim_matches</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Spline&#39;s para_dim should match mesh vertices&#39; dim.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># copy input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># normalize if needed</span>
+        <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">has_knot_vectors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span><span class="o">.</span><span class="n">normalize_knot_vectors</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">padding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Padding ratio for fitting mesh inside spline&#39;s parametric dimension.</span>
+<span class="sd">        It should be a positive number.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        padding: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+
+    <span class="nd">@padding</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">padding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">padding</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Padding Setter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">padding</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Padding should be a positive number.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">padding</span> <span class="o">&lt;</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Padding is too small - &quot;</span>
+                <span class="s2">&quot;should be bigger than the tolerance (</span><span class="si">{settings.TOLERANCE}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">=</span> <span class="n">padding</span>
+
+        <span class="c1"># if there&#39;s q_vertices, reset mesh, so that new q_vertices are formed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_vertices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span>
+
+<div class="viewcode-block" id="FFD.show">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.ffd.FFD.show.html#splinepy.helpme.ffd.FFD.show">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visualize. Shows the deformed mesh and the current spline. Currently</span>
+<span class="sd">        visualization is limited to vedo.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        title: str</span>
+<span class="sd">            Title of the vedo window. Defaults to &quot;gustaf - FFD&quot;.</span>
+<span class="sd">        return_showable: bool</span>
+<span class="sd">            If true returns a dict of the showable items. Defaults to False.</span>
+<span class="sd">        return_gustaf: bool</span>
+<span class="sd">            Return dict of gustaf discrete objects, for example,</span>
+<span class="sd">            {Vertices, Edges, Faces}, instead of opening a window.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        kwargs: Any</span>
+<span class="sd">            Arbitrary keyword arguments. These are passed onto the vedo</span>
+<span class="sd">            functions. Please be aware, that no checking of these are performed</span>
+<span class="sd">            in this function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any:</span>
+<span class="sd">            Returns, if applicable, the vedo plotter. &#39;close=False&#39; as argument</span>
+<span class="sd">            to get the plotter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please set a mesh before calling show()&quot;</span><span class="p">)</span>
+        <span class="n">return_showable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_showable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">return_gustaf</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_gustaf&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;FFD&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_gustaf</span> <span class="ow">and</span> <span class="n">return_showable</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Either one of following params can be True: &quot;</span>
+                <span class="s2">&quot;{return_gustaf, return_showable} &quot;</span>
+                <span class="s2">&quot;You&#39;ve set both True.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">things_to_show</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">showable</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_gustaf</span> <span class="ow">or</span> <span class="n">return_showable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">things_to_show</span>
+
+        <span class="k">return</span> <span class="n">_gus</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;Original Mesh&quot;</span><span class="p">,</span> <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;original_mesh&quot;</span><span class="p">]],</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;Spline and Mesh&quot;</span><span class="p">,</span>
+                <span class="o">*</span><span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;spline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;mesh&quot;</span><span class="p">],</span>
+            <span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Deformed Mesh&quot;</span><span class="p">,</span> <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;mesh&quot;</span><span class="p">]],</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FFD.showable">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.ffd.FFD.showable.html#splinepy.helpme.ffd.FFD.showable">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">showable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of showable items to describe the FFD at the</span>
+<span class="sd">        current state.</span>
+
+<span class="sd">        See show() for more information. This function redirects to it</span>
+<span class="sd">        directly with the return_showable keyword set to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please set a mesh before calling show()&quot;</span><span class="p">)</span>
+
+        <span class="n">return_gustaf</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;return_gustaf&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">things_to_show</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># let&#39;s show faces at most, since volumes can take awhile</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span>
+        <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;volume&quot;</span><span class="p">:</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">_gus</span><span class="o">.</span><span class="n">Faces</span><span class="p">(</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">const_vertices</span><span class="p">,</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">()[</span><span class="n">mesh</span><span class="o">.</span><span class="n">single_faces</span><span class="p">()],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># original mesh</span>
+        <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;original_mesh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span>
+
+        <span class="c1"># current spline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;spline&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spline</span>
+
+        <span class="c1"># deformed mesh</span>
+        <span class="n">deformed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span>
+        <span class="n">things_to_show</span><span class="p">[</span><span class="s2">&quot;mesh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deformed</span>
+
+        <span class="k">if</span> <span class="n">return_gustaf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">things_to_show</span>
+
+        <span class="c1"># let&#39;s turn everything into showable and return</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">things_to_show</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">things_to_show</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">showable</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">things_to_show</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

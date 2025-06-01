@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.jacobian
+=============================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.jacobian

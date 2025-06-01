@@ -1,0 +1,6 @@
+splinepy.utils.data.MultipatchData.clear
+========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: MultipatchData.clear

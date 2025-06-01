@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.bezier
+=============================
+
+.. currentmodule:: splinepy.bezier
+
+.. autoproperty:: Bezier.bezier

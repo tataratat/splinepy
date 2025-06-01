@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.fill
+===========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.fill

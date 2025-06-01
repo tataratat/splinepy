@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.parameter\_sensitivity\_function
+======================================================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoproperty:: Microstructure.parameter_sensitivity_function
