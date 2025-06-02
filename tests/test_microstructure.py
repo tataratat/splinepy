@@ -21,8 +21,9 @@ EPS = 1e-7
 # TODO(#458): the following tiles fail the closure test
 CLOSURE_FAILS = {
     ms.tiles.HollowOctagonExtrude: "has no closure implemented",
-    ms.tiles.InverseCross3D: "closure is special: it does not fill the whole unit "
-    + "cube and does not fully cover the closing face",
+    ms.tiles.InverseCross3D: "closure is special: the generated tile is the inverse "
+    + "geometry of the closure tile of the Cross3D-tile, hence it itself does not fill"
+    + " the whole unit cube.",
 }
 
 
@@ -85,7 +86,7 @@ def test_closing_face(tile_class):
 
         assert face_min_area > 1.0 - EPS, (
             f"The closure of the {closure_direction}_min surface is not complete. "
-            f"Expected area of 1, got {face_min_area}"
+            f"Expected area of 1, instead got {face_min_area}"
         )
         assert face_max_area > 1.0 - EPS, (
             f"The closure of the {closure_direction}_max surface is not complete. "
@@ -158,8 +159,8 @@ def test_macro_sensitivities(tile_class, np_rng, h_eps, n_test_points):
         fd_sensitivity = [
             (patch_perturbed - patch_orig) / h_eps
             for patch_perturbed, patch_orig in zip(
-                microstructure_orig_evaluations,
                 microstructure_perturbed_evaluations,
+                microstructure_orig_evaluations,
             )
         ]
 
@@ -179,10 +180,10 @@ def test_macro_sensitivities(tile_class, np_rng, h_eps, n_test_points):
                 )
                 # Assert correctness of sensitivity
                 assert np.allclose(
-                    -patch_deriv_implemented[:, jj_dim],
+                    patch_deriv_implemented[:, jj_dim],
                     patch_deriv_fd[:, jj_dim],
                 ), (
-                    "Implemented derivative calculation for tile class"
+                    "Implemented derivative calculation for tile "
                     + f"{tile_class}, at patch {k_patch + 1}/{n_patches} does not "
                     + "match the derivative obtained using Finite Differences at "
                     + "the following evaluation points:\n"
