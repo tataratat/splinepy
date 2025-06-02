@@ -20,7 +20,6 @@ EPS = 1e-7
 
 # TODO(#458): the following tiles fail the closure test
 CLOSURE_FAILS = {
-    ms.tiles.HollowOctagonExtrude: "has no closure implemented",
     ms.tiles.InverseCross3D: "closure is special: the generated tile is the inverse "
     + "geometry of the closure tile of the Cross3D-tile, hence it itself does not fill"
     + " the whole unit cube.",
