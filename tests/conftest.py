@@ -71,7 +71,7 @@ def big_perturbation():
 
     The number 0.1 is chosen arbitrarily. This value is for testing out of bounds
     parameter values. It is designed to add to the maximum or subtract from the
-    minimum bound to delibarately make the values out of the bounds."""
+    minimum bound to deliberately make the values out of the bounds."""
     return 0.1
 
 

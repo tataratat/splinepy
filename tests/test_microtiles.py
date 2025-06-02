@@ -122,8 +122,8 @@ def test_tile_class(tile_class):
         assert isinstance(
             getattr(tile_instance, required_variable), var_type
         ), (
-            f"Variable {required_variable} must be of type {var_type}, but found type "
-            f"{type(getattr(tile_instance, required_variable))}"
+            f"Variable {required_variable} must be of type {var_type.__name__}, "
+            f"but found type {type(getattr(tile_instance, required_variable)).__name__}"
         )
 
     # Check default parameter value if there is one
