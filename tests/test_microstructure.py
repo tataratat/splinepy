@@ -108,7 +108,7 @@ def test_closing_face(tile_class):
 
 
 @mark.parametrize("tile_class", all_tile_classes)
-def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
+def test_macro_sensitivities(tile_class, np_rng, h_eps, n_test_points):
     """Testing the correctness of the derivatives of the whole microstructure w.r.t.
     the deformation function's control points. It is tested by evaluating the derivative
     obtained via finite differences. The values are evaluated at random points.
@@ -119,7 +119,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
         Microtile
     np_rng: numpy.random._generator.Generator
         Default random number generator
-    heps: float
+    h_eps: float
         Perturbation size for finite difference evaluation. Defined in conftest.py
     n_test_points: int
         Number of testing points in the parametric domain. Defined in conftest.py
@@ -147,7 +147,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
     for ii_ctps in range(n_cps):
         # Gradient through finite differences
         deformation_function_perturbed = deformation_function_orig.copy()
-        deformation_function_perturbed.cps[ii_ctps, :] += heps
+        deformation_function_perturbed.cps[ii_ctps, :] += h_eps
         generator.deformation_function = deformation_function_perturbed
         multipatch_perturbed = generator.create()
         microstructure_perturbed_evaluations = [
@@ -156,7 +156,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
         ]
         # Evaluate finite difference gradient
         fd_sensitivity = [
-            (patch_perturbed - patch_orig) / heps
+            (patch_perturbed - patch_orig) / h_eps
             for patch_perturbed, patch_orig in zip(
                 microstructure_orig_evaluations,
                 microstructure_perturbed_evaluations,
@@ -183,7 +183,7 @@ def test_macro_sensitivities(tile_class, np_rng, heps, n_test_points):
                     patch_deriv_fd[:, jj_dim],
                 ), (
                     "Implemented derivative calculation for tile class"
-                    + f"{tile_class}, at patch {k_patch+1}/{n_patches} does not "
+                    + f"{tile_class}, at patch {k_patch + 1}/{n_patches} does not "
                     + "match the derivative obtained using Finite Differences at "
                     + "the following evaluation points:\n"
                     + str(eval_points)

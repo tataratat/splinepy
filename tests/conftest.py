@@ -43,7 +43,7 @@ def queries_3D():
 
 # hard-coded values to keep the same for derivative/sensitivity calculations
 @pytest.fixture
-def heps():
+def h_eps():
     """
     Perturbation/step size for finite difference evaluation of derivative/sensitivity.
 

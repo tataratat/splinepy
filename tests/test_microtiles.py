@@ -129,10 +129,9 @@ def test_tile_class(tile_class):
     # Check default parameter value if there is one
     if tile_instance._parameters_shape != ():
         # Assert that there is a default value
-        assert hasattr(tile_instance, "_default_parameter_value"), (
-            f'{tile_name} must have "_default_parameter_value" as a class '
-            " attribute."
-        )
+        assert hasattr(
+            tile_instance, "_default_parameter_value"
+        ), f'{tile_name} must have "_default_parameter_value" as a class  attribute.'
         # Check the default value's type
         default_value = tile_instance._default_parameter_value
         if isinstance(default_value, np.ndarray):
@@ -252,7 +251,7 @@ def test_tile_closure(tile_class):
 def test_tile_derivatives(
     tile_class,
     np_rng,
-    heps,
+    h_eps,
     n_test_points,
     fd_derivative_stepsizes_and_weights,
 ):
@@ -266,7 +265,7 @@ def test_tile_derivatives(
         Microtile
     np_rng: numpy.random._generator.Generator
         Default random number generator
-    heps: float
+    h_eps: float
         Perturbation size for finite difference evaluation. Defined in conftest.py
     n_test_points: int
         Number of testing points in the parametric domain. Defined in conftest.py
@@ -329,14 +328,14 @@ def test_tile_derivatives(
         for stepsize, weighting in fd_derivative_stepsizes_and_weights.items():
             # Perturb parameter with respective stepsize
             parameters_perturbed = parameters.copy()
-            parameters_perturbed[:, i_parameter] += stepsize * heps
+            parameters_perturbed[:, i_parameter] += stepsize * h_eps
             # Create patches with perturbed parameter value
             splines_perturbed, _ = tile_creator.create_tile(
                 parameters=parameters_perturbed, closure=closure
             )
             fd_sensitivities += np.array(
                 [
-                    weighting / heps * spl.evaluate(eval_points)
+                    weighting / h_eps * spl.evaluate(eval_points)
                     for spl in splines_perturbed
                 ]
             )
@@ -382,12 +381,12 @@ def test_tile_derivatives(
             ):
                 message = (
                     f"Implemented derivative calculation for tile class {tile_class} "
-                    f"with closure {closure}, parameter {i_parameter+1}/"
-                    f"{n_info_per_eval_point} at patch {i_patch+1}/{n_patches} does not"
-                    f" match the derivative obtained using Finite Differences at the "
-                    f"following evaluation points:\n {eval_points}\nImplemented "
-                    f"derivative:\n{deriv_orig}\nFinite Difference derivative:\n"
-                    f"{deriv_fd}"
+                    f"with closure {closure}, parameter {i_parameter + 1}/"
+                    f"{n_info_per_eval_point} at patch {i_patch + 1}/{n_patches} does"
+                    " not match the derivative obtained using Finite Differences"
+                    f" at the following evaluation points:\n {eval_points}\n"
+                    "Implemented derivative:\n{deriv_orig}\n"
+                    f"Finite Difference derivative:\n{deriv_fd}"
                 )
                 assert np.allclose(deriv_orig, deriv_fd), message
 
