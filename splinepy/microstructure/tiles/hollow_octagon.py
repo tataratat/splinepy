@@ -18,11 +18,18 @@ class HollowOctagon(_TileBase):
     _para_dim = 2
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 1
+    _sensitivities_implemented = True
+    _closure_directions = ["x_min", "x_max", "y_min", "y_max"]
+    _parameter_bounds = [[0.0, 0.5]]
+    _parameters_shape = (1, 1)
+    _default_parameter_value = 0.2
+
+    _CONTACT_LENGTH_BOUNDS = [0.0, 0.99]
 
     def _closing_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # TODO
+        parameter_sensitivities=None,
         contact_length=0.2,
         closure=None,
     ):
@@ -51,359 +58,351 @@ class HollowOctagon(_TileBase):
         if closure is None:
             raise ValueError("No closing direction given")
 
-        if parameters is None:
-            self._log("Tile request is not parametrized, setting default 0.2")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
-
-        self.check_params(parameters)
-
-        if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
-
-        v_h_void = parameters[0, 0]
-        if not ((v_h_void > 0.01) and (v_h_void < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
-
-        spline_list = []
-        v_zero = 0.0
-        v_one_half = 0.5
-        v_one = 1.0
-        v_outer_c_h = contact_length * 0.5
-        v_inner_c_h = contact_length * parameters[0, 0]
-
-        if closure == "x_min":
-            # set points:
-            right = _np.array(
-                [
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                ]
-            )
-
-            right_top = _np.array(
-                [
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            bottom_left = _np.array(
-                [
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, v_zero],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [v_zero, v_zero],
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, v_one],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                ]
-            )
-
-            top_left = _np.array(
-                [
-                    [v_zero, v_one],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                ]
-            )
-
-            bottom_right = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                ]
-            )
-
-        elif closure == "x_max":
-            right = _np.array(
-                [
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, v_zero],
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_one],
-                ]
-            )
-
-            right_top = _np.array(
-                [
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_one],
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            bottom_left = _np.array(
-                [
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                ]
-            )
-
-            top_left = _np.array(
-                [
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                ]
-            )
-
-            bottom_right = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, v_zero],
-                ]
-            )
-
-        elif closure == "y_min":
-            # set points:
-            right = _np.array(
-                [
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                ]
-            )
-
-            right_top = _np.array(
-                [
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                ]
-            )
-
-            bottom_left = _np.array(
-                [
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_zero, v_zero],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                ]
-            )
-
-            top_left = _np.array(
-                [
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [v_one, v_zero],
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_zero, v_zero],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                ]
-            )
-
-            bottom_right = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_one, v_zero],
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                ]
-            )
-
-        elif closure == "y_max":
-            # set points:
-            right = _np.array(
-                [
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                ]
-            )
-
-            right_top = _np.array(
-                [
-                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_one, v_outer_c_h + v_one_half],
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_one, v_one],
-                ]
-            )
-
-            top = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_one, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                    [v_zero, v_one],
-                ]
-            )
-
-            bottom_left = _np.array(
-                [
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                ]
-            )
-
-            left = _np.array(
-                [
-                    [v_zero, -v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                ]
-            )
-
-            top_left = _np.array(
-                [
-                    [v_zero, v_outer_c_h + v_one_half],
-                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                    [v_zero, v_one],
-                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                ]
-            )
-
-            bottom = _np.array(
-                [
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [-v_outer_c_h + v_one_half, v_zero],
-                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                ]
-            )
-
-            bottom_right = _np.array(
-                [
-                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                    [v_outer_c_h + v_one_half, v_zero],
-                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                    [v_one, -v_outer_c_h + v_one_half],
-                ]
-            )
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=right))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=right_top))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=top_left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=top))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1], control_points=bottom_right)
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
         )
 
-        return (spline_list, None)
+        v_h_void = parameters[0, 0]
+
+        splines = []
+        for i_derivative in range(n_derivatives + 1):
+            if i_derivative == 0:
+                v_zero = 0.0
+                v_one_half = 0.5
+                v_one = 1.0
+                v_outer_c_h = contact_length * 0.5
+                v_inner_c_h = contact_length * v_h_void
+            else:
+                v_zero = 0.0
+                v_one_half = 0.0
+                v_one = 0.0
+                v_h_void = parameter_sensitivities[0, 0, i_derivative - 1]
+                v_outer_c_h = 0.0
+                v_inner_c_h = contact_length * v_h_void
+
+            spline_list = []
+
+            if closure == "x_min":
+                # set points:
+                right = _np.array(
+                    [
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                    ]
+                )
+
+                right_top = _np.array(
+                    [
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                bottom_left = _np.array(
+                    [
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, v_zero],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [v_zero, v_zero],
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, v_one],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    ]
+                )
+
+                top_left = _np.array(
+                    [
+                        [v_zero, v_one],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom_right = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                    ]
+                )
+
+            elif closure == "x_max":
+                right = _np.array(
+                    [
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, v_zero],
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_one],
+                    ]
+                )
+
+                right_top = _np.array(
+                    [
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_one],
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                bottom_left = _np.array(
+                    [
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    ]
+                )
+
+                top_left = _np.array(
+                    [
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom_right = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, v_zero],
+                    ]
+                )
+
+            elif closure == "y_min":
+                # set points:
+                right = _np.array(
+                    [
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                    ]
+                )
+
+                right_top = _np.array(
+                    [
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                    ]
+                )
+
+                bottom_left = _np.array(
+                    [
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_zero, v_zero],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    ]
+                )
+
+                top_left = _np.array(
+                    [
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [v_one, v_zero],
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_zero, v_zero],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom_right = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_one, v_zero],
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                    ]
+                )
+
+            elif closure == "y_max":
+                # set points:
+                right = _np.array(
+                    [
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                    ]
+                )
+
+                right_top = _np.array(
+                    [
+                        [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_one, v_outer_c_h + v_one_half],
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_one, v_one],
+                    ]
+                )
+
+                top = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_one, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                        [v_zero, v_one],
+                    ]
+                )
+
+                bottom_left = _np.array(
+                    [
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                    ]
+                )
+
+                left = _np.array(
+                    [
+                        [v_zero, -v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    ]
+                )
+
+                top_left = _np.array(
+                    [
+                        [v_zero, v_outer_c_h + v_one_half],
+                        [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                        [v_zero, v_one],
+                        [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom = _np.array(
+                    [
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [-v_outer_c_h + v_one_half, v_zero],
+                        [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    ]
+                )
+
+                bottom_right = _np.array(
+                    [
+                        [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                        [v_outer_c_h + v_one_half, v_zero],
+                        [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                        [v_one, -v_outer_c_h + v_one_half],
+                    ]
+                )
+
+            for control_points in [
+                right,
+                right_top,
+                bottom,
+                bottom_left,
+                left,
+                top_left,
+                top,
+                bottom_right,
+            ]:
+                spline_list.append(
+                    _Bezier(degrees=[1, 1], control_points=control_points)
+                )
+
+            if i_derivative == 0:
+                splines = spline_list.copy()
+            else:
+                derivatives.append(spline_list)
+
+        return (splines, derivatives)
 
     def create_tile(
         self,
         parameters=None,
-        parameter_sensitivities=None,  # TODO
+        parameter_sensitivities=None,
         contact_length=0.2,
         closure=None,
         **kwargs,  # noqa ARG002
@@ -435,140 +434,132 @@ class HollowOctagon(_TileBase):
         microtile_list : list(splines)
         derivatives: list<list<splines>> / None
         """
+        self._check_custom_parameter(
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
+        )
 
-        if not isinstance(contact_length, float):
-            raise ValueError("Invalid Type for radius")
-
-        if not ((contact_length > 0) and (contact_length < 0.99)):
-            raise ValueError("The length of a side must be in (0.01, 0.99)")
-
-        if parameters is None:
-            self._logd("Setting parameters to default values (0.2)")
-            parameters = _np.array(
-                _np.ones(
-                    (len(self._evaluation_points), self._n_info_per_eval_point)
-                )
-                * 0.2
-            )
-
-        if parameter_sensitivities is not None:
-            raise NotImplementedError(
-                "Derivatives are not implemented for this tile yet"
-            )
-
-        self.check_params(parameters)
-
-        v_h_void = parameters[0, 0]
-        if not (_np.all(parameters > 0) and _np.all(parameters < 0.5)):
-            raise ValueError(
-                "The thickness of the wall must be in (0.01 and 0.49)"
-            )
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         if closure is not None:
             return self._closing_tile(
                 parameters=parameters,
-                parameter_sensitivities=parameter_sensitivities,  # TODO
+                parameter_sensitivities=parameter_sensitivities,
                 contact_length=contact_length,
                 closure=closure,
             )
 
-        v_zero = 0.0
-        v_one_half = 0.5
-        v_one = 1.0
-        v_outer_c_h = contact_length * 0.5
-        v_inner_c_h = contact_length * parameters[0, 0]
+        splines = []
+        for i_derivative in range(n_derivatives + 1):
+            if i_derivative == 0:
+                v_zero = 0.0
+                v_one_half = 0.5
+                v_one = 1.0
+                v_h_void = parameters[0, 0]
+                v_outer_c_h = contact_length * 0.5
+                v_inner_c_h = contact_length * v_h_void
+            else:
+                v_zero = 0.0
+                v_one_half = 0.0
+                v_one = 0.0
+                v_h_void = parameter_sensitivities[0, 0, i_derivative - 1]
+                v_outer_c_h = 0.0
+                v_inner_c_h = contact_length * v_h_void
 
-        spline_list = []
+            spline_list = []
 
-        # set points:
-        right = _np.array(
-            [
-                [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                [v_one, -v_outer_c_h + v_one_half],
-                [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                [v_one, v_outer_c_h + v_one_half],
-            ]
-        )
+            # set points:
+            right = _np.array(
+                [
+                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                    [v_one, -v_outer_c_h + v_one_half],
+                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    [v_one, v_outer_c_h + v_one_half],
+                ]
+            )
 
-        right_top = _np.array(
-            [
-                [v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                [v_one, v_outer_c_h + v_one_half],
-                [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                [v_outer_c_h + v_one_half, v_one],
-            ]
-        )
+            right_top = _np.array(
+                [
+                    [v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    [v_one, v_outer_c_h + v_one_half],
+                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    [v_outer_c_h + v_one_half, v_one],
+                ]
+            )
 
-        top = _np.array(
-            [
-                [v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                [v_outer_c_h + v_one_half, v_one],
-                [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-                [-v_outer_c_h + v_one_half, v_one],
-            ]
-        )
+            top = _np.array(
+                [
+                    [v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    [v_outer_c_h + v_one_half, v_one],
+                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                    [-v_outer_c_h + v_one_half, v_one],
+                ]
+            )
 
-        bottom_left = _np.array(
-            [
-                [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                [v_zero, -v_outer_c_h + v_one_half],
-                [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                [-v_outer_c_h + v_one_half, v_zero],
-            ]
-        )
+            bottom_left = _np.array(
+                [
+                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                    [v_zero, -v_outer_c_h + v_one_half],
+                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    [-v_outer_c_h + v_one_half, v_zero],
+                ]
+            )
 
-        left = _np.array(
-            [
-                [v_zero, -v_outer_c_h + v_one_half],
-                [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                [v_zero, v_outer_c_h + v_one_half],
-                [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-            ]
-        )
+            left = _np.array(
+                [
+                    [v_zero, -v_outer_c_h + v_one_half],
+                    [-v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                    [v_zero, v_outer_c_h + v_one_half],
+                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                ]
+            )
 
-        top_left = _np.array(
-            [
-                [v_zero, v_outer_c_h + v_one_half],
-                [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
-                [-v_outer_c_h + v_one_half, v_one],
-                [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
-            ]
-        )
+            top_left = _np.array(
+                [
+                    [v_zero, v_outer_c_h + v_one_half],
+                    [-v_h_void + v_one_half, v_inner_c_h + v_one_half],
+                    [-v_outer_c_h + v_one_half, v_one],
+                    [-v_inner_c_h + v_one_half, v_h_void + v_one_half],
+                ]
+            )
 
-        bottom = _np.array(
-            [
-                [v_outer_c_h + v_one_half, v_zero],
-                [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                [-v_outer_c_h + v_one_half, v_zero],
-                [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-            ]
-        )
+            bottom = _np.array(
+                [
+                    [v_outer_c_h + v_one_half, v_zero],
+                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    [-v_outer_c_h + v_one_half, v_zero],
+                    [-v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                ]
+            )
 
-        bottom_right = _np.array(
-            [
-                [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
-                [v_outer_c_h + v_one_half, v_zero],
-                [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
-                [v_one, -v_outer_c_h + v_one_half],
-            ]
-        )
+            bottom_right = _np.array(
+                [
+                    [v_inner_c_h + v_one_half, -v_h_void + v_one_half],
+                    [v_outer_c_h + v_one_half, v_zero],
+                    [v_h_void + v_one_half, -v_inner_c_h + v_one_half],
+                    [v_one, -v_outer_c_h + v_one_half],
+                ]
+            )
 
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=right))
+            for control_points in [
+                right,
+                right_top,
+                bottom,
+                bottom_left,
+                left,
+                top_left,
+                top,
+                bottom_right,
+            ]:
+                spline_list.append(
+                    _Bezier(degrees=[1, 1], control_points=control_points)
+                )
 
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=right_top))
+            if i_derivative == 0:
+                splines = spline_list.copy()
+            else:
+                derivatives.append(spline_list)
 
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=bottom_left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=top_left))
-
-        spline_list.append(_Bezier(degrees=[1, 1], control_points=top))
-
-        spline_list.append(
-            _Bezier(degrees=[1, 1], control_points=bottom_right)
-        )
-
-        return (spline_list, None)
+        return (splines, derivatives)

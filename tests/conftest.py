@@ -15,7 +15,7 @@ def error_log(*args):
 
 @pytest.fixture
 def np_rng():
-    return np.random.default_rng()
+    return np.random.default_rng(seed=0)
 
 
 # query points
@@ -39,6 +39,52 @@ def queries_3D():
         [0.5623, 0.0089, 0.99],
         [0.0431, 0.2, 0.523],
     ]
+
+
+# hard-coded values to keep the same for derivative/sensitivity calculations
+@pytest.fixture
+def h_eps():
+    """
+    Perturbation/step size for finite difference evaluation of derivative/sensitivity.
+
+    The value 1e-5 is arbitrary, but is a compromise between:
+    - Being small enough to ensure the finite difference calculation being accurate
+    - Being large enough to avoid round-off error in floating-point arithmetic
+    """
+    return 1e-5
+
+
+@pytest.fixture
+def n_test_points():
+    """
+    Number of random testing points (in parametric domain)
+
+    The number 10 is arbitrary and should ensure to have good test coverage. Increasing
+    this number could yield more thorough tests at the cost of longer runtime.
+    """
+    return 10
+
+
+@pytest.fixture
+def big_perturbation():
+    """Value for perturbation of parameters value
+
+    The number 0.1 is chosen arbitrarily. This value is for testing out of bounds
+    parameter values. It is designed to add to the maximum or subtract from the
+    minimum bound to deliberately make the values out of the bounds."""
+    return 0.1
+
+
+@pytest.fixture
+def fd_derivative_stepsizes_and_weights():
+    """Stepsizes and weights for the calculation of the derivative using finite
+    differences. Using fourth-order accurate centered scheme.
+
+    Returns
+    -------
+    stepsizes_and_weights, denominator: dict<int:int>
+    """
+    return {-2: 1 / 12, -1: -8 / 12, 1: 8 / 12, 2: -1 / 12}
 
 
 # initializing a spline should be a test itself, so provide `dict_spline`
