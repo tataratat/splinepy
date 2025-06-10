@@ -35,6 +35,7 @@ SOFTWARE.
 #include "splinepy/splines/bspline.hpp"
 #include "splinepy/splines/nurbs.hpp"
 #include "splinepy/splines/rational_bezier.hpp"
+#include "splinepy/splines/splinepy_base.hpp"
 #include "splinepy/utils/arrays.hpp"
 #include "splinepy/utils/grid_points.hpp"
 #include "splinepy/utils/nthreads.hpp"
@@ -46,7 +47,7 @@ namespace splinepy::py {
 /// Runs sanity checks on inputs
 /// this will keep the reference of the kwargs that were used for init.
 /// @param kwargs
-void PySpline::NewCore(const py::kwargs& kwargs) {
+SplinepyBasePtr NewCore(const py::kwargs& kwargs) {
 
   // early exit if this is an incomplete kwargs call
   if (!kwargs.contains("degrees") || !kwargs.contains("control_points")) {
@@ -216,46 +217,22 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
   }
 
   // new assign
-  c_spline_ =
-      splinepy::splines::SplinepyBase::SplinepyCreate(para_dim,
-                                                      dim,
-                                                      degrees_ptr,
-                                                      knot_vectors_ptr,
-                                                      control_points_ptr,
-                                                      weights_ptr);
-  para_dim_ = c_spline_->SplinepyParaDim();
-  dim_ = c_spline_->SplinepyDim();
+  return splinepy::splines::SplinepyBase::SplinepyCreate(para_dim,
+                                                         dim,
+                                                         degrees_ptr,
+                                                         knot_vectors_ptr,
+                                                         control_points_ptr,
+                                                         weights_ptr);
 }
 
-/// will throw if c_spline_ is not initialized.
-/// use this for runtime core calls
-PySpline::CoreSpline_& PySpline::Core() {
-  if (!c_spline_) {
-    splinepy::utils::PrintAndThrowError("Core spline does not exist.",
-                                        "Please first initialize core spline.");
-  }
-
-  return c_spline_;
-}
-
-/// @brief Core spline
-const PySpline::CoreSpline_& PySpline::Core() const {
-  if (!c_spline_) {
-    splinepy::utils::PrintAndThrowError("Core spline does not exist.",
-                                        "Please first initialize core spline.");
-  }
-
-  return c_spline_;
-}
-
-py::array_t<int> PySpline::CurrentCoreDegrees() const {
+py::array_t<int> CurrentCoreDegrees(const SplinepyBasePtr& sbp) {
   py::array_t<int> degrees(para_dim_);
   int* degrees_ptr = static_cast<int*>(degrees.request().ptr);
-  Core()->SplinepyCurrentProperties(degrees_ptr, nullptr, nullptr, nullptr);
+  sbp->SplinepyCurrentProperties(degrees_ptr, nullptr, nullptr, nullptr);
   return degrees;
 }
 
-py::dict PySpline::CurrentCoreProperties() const {
+py::dict CurrentCoreProperties(const SplinepyBasePtr& sbp) {
   py::dict dict_spline;
 
   // prepare property arrays
@@ -310,7 +287,7 @@ py::dict PySpline::CurrentCoreProperties() const {
   return dict_spline;
 }
 
-py::tuple PySpline::CoordinatePointers() {
+py::tuple CoordinatePointers() {
   auto& core = *Core();
   if (core.SplinepyIsRational()) {
     auto wcpp = core.SplinepyWeightedControlPointPointers();
@@ -321,16 +298,16 @@ py::tuple PySpline::CoordinatePointers() {
 }
 
 std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
-PySpline::ParameterSpace() {
+ParameterSpace() {
   return Core()->SplinepyParameterSpace();
 }
 
 std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
-PySpline::KnotVector(const int para_dim) {
+KnotVector(const int para_dim) {
   return Core()->SplinepyKnotVector(para_dim);
 }
 
-py::array_t<double> PySpline::ParametricBounds() const {
+py::array_t<double> ParametricBounds() const {
   // prepare output - [[lower_bound], [upper_bound]]
   py::array_t<double> pbounds(2 * para_dim_);
   double* pbounds_ptr = static_cast<double*>(pbounds.request().ptr);
@@ -341,7 +318,7 @@ py::array_t<double> PySpline::ParametricBounds() const {
   return pbounds;
 }
 
-py::list PySpline::GrevilleAbscissae(const double duplicate_tolerance) const {
+py::list GrevilleAbscissae(const double duplicate_tolerance) const {
   // prepare output
   std::vector<int> cmr(para_dim_);
   Core()->SplinepyControlMeshResolutions(cmr.data());
@@ -363,7 +340,7 @@ py::list PySpline::GrevilleAbscissae(const double duplicate_tolerance) const {
   return list_of_greville_knots;
 }
 
-py::array_t<int> PySpline::ControlMeshResolutions() const {
+py::array_t<int> ControlMeshResolutions() const {
   // prepare output
   py::array_t<int> cmr(para_dim_);
   int* cmr_ptr = static_cast<int*>(cmr.request().ptr);
@@ -373,8 +350,7 @@ py::array_t<int> PySpline::ControlMeshResolutions() const {
   return cmr;
 }
 
-py::array_t<double> PySpline::Evaluate(py::array_t<double> queries,
-                                       int nthreads) const {
+py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
 
   // prepare output
@@ -397,8 +373,7 @@ py::array_t<double> PySpline::Evaluate(py::array_t<double> queries,
   return evaluated;
 }
 
-py::array_t<double> PySpline::Sample(py::array_t<int> resolutions,
-                                     int nthreads) const {
+py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const {
   CheckPyArraySize(resolutions, para_dim_, true);
 
   // get sampling bounds
@@ -431,8 +406,8 @@ py::array_t<double> PySpline::Sample(py::array_t<int> resolutions,
   return sampled;
 }
 
-py::array_t<double> PySpline::Jacobian(const py::array_t<double> queries,
-                                       const int nthreads) const {
+py::array_t<double> Jacobian(const py::array_t<double> queries,
+                             const int nthreads) const {
   // INFO : array entries are stored
   // [i_query * pdim * dim + i_paradim * dim + i_dim]
   // Check input
@@ -459,9 +434,9 @@ py::array_t<double> PySpline::Jacobian(const py::array_t<double> queries,
   return jacobians;
 }
 
-py::array_t<double> PySpline::Derivative(py::array_t<double> queries,
-                                         py::array_t<int> orders,
-                                         int nthreads) const {
+py::array_t<double> Derivative(py::array_t<double> queries,
+                               py::array_t<int> orders,
+                               int nthreads) const {
   // process input
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
@@ -505,8 +480,7 @@ py::array_t<double> PySpline::Derivative(py::array_t<double> queries,
   return derived;
 }
 
-py::array_t<int> PySpline::Support(py::array_t<double> queries,
-                                   int nthreads) const {
+py::array_t<int> Support(py::array_t<double> queries, int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
 
@@ -529,8 +503,7 @@ py::array_t<int> PySpline::Support(py::array_t<double> queries,
   return supports;
 }
 
-py::array_t<double> PySpline::Basis(py::array_t<double> queries,
-                                    int nthreads) const {
+py::array_t<double> Basis(py::array_t<double> queries, int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
 
@@ -553,8 +526,7 @@ py::array_t<double> PySpline::Basis(py::array_t<double> queries,
   return bases;
 }
 
-py::tuple PySpline::BasisAndSupport(py::array_t<double> queries,
-                                    int nthreads) const {
+py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
 
@@ -583,9 +555,9 @@ py::tuple PySpline::BasisAndSupport(py::array_t<double> queries,
   return py::make_tuple(basis, support);
 }
 
-py::array_t<double> PySpline::BasisDerivative(py::array_t<double> queries,
-                                              py::array_t<int> orders,
-                                              int nthreads) const {
+py::array_t<double> BasisDerivative(py::array_t<double> queries,
+                                    py::array_t<int> orders,
+                                    int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
   int n_orders{};
@@ -629,9 +601,9 @@ py::array_t<double> PySpline::BasisDerivative(py::array_t<double> queries,
   return basis_der;
 }
 
-py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
-                                              py::array_t<int> orders,
-                                              int nthreads) const {
+py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
+                                    py::array_t<int> orders,
+                                    int nthreads) const {
   CheckPyArrayShape(queries, {-1, para_dim_}, true);
   const int n_queries = queries.shape(0);
   int n_orders{};
@@ -683,8 +655,7 @@ py::tuple PySpline::BasisDerivativeAndSupport(py::array_t<double> queries,
   return py::make_tuple(basis_der, support);
 }
 
-py::tuple
-PySpline::Proximities(py::array_t<double> queries,
+py::tuple Proximities(py::array_t<double> queries,
                       py::array_t<int> initial_guess_sample_resolutions,
                       const double tolerance,
                       const int max_iterations,
@@ -781,7 +752,7 @@ PySpline::Proximities(py::array_t<double> queries,
                         second_derivatives);
 }
 
-void PySpline::ElevateDegrees(py::array_t<int> para_dims) {
+void ElevateDegrees(py::array_t<int> para_dims) {
   int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
   const int n_request = para_dims.size();
 
@@ -805,7 +776,7 @@ void PySpline::ElevateDegrees(py::array_t<int> para_dims) {
   }
 }
 
-py::list PySpline::ReduceDegrees(py::array_t<int> para_dims, double tolerance) {
+py::list ReduceDegrees(py::array_t<int> para_dims, double tolerance) {
   int* para_dims_ptr = static_cast<int*>(para_dims.request().ptr);
   const int n_request = para_dims.size();
 
@@ -829,12 +800,22 @@ py::object PySpline::ToDerived() {
 }
 
 void init_pyspline(py::module& m) {
+  py::class_<splinepy::splines::SplinepyBase,
+             std::shared_ptr<splinepy::splines::SplinepyBase>>
+      klas(m, "SplineBase");
+  klas.def("dim", &splinepy::splines::SplinepyBase::SplinepyIsNull);
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
       klasse(m, "PySpline");
 
   klasse.def(py::init<>())
       .def(py::init<py::kwargs>()) // doc here?
       .def(py::init<splinepy::py::PySpline&>())
+      //.def("get_core", &splinepy::py::PySpline::Core)
+      .def("get_core",
+           [](splinepy::py::PySpline& sp)
+               -> std::shared_ptr<splinepy::splines::SplinepyBase> {
+             return sp.Core();
+           })
       .def("_new_core", &splinepy::py::PySpline::NewCore)
       .def_readwrite("_data", &splinepy::py::PySpline::data_)
       .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
