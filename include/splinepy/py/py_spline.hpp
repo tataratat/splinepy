@@ -35,11 +35,13 @@ SOFTWARE.
 namespace splinepy::py {
 
 namespace py = pybind11;
+using SplinepyBase = splinepy::splines::SplinepyBase;
+using SplinepyBasePtr = std::shared_ptr<SplinepyBase>;
 
 template<typename ValueType>
-static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
-                              const std::vector<int>& shape,
-                              const bool throw_ = true) {
+bool CheckPyArrayShape(const py::array_t<ValueType> arr,
+                       const std::vector<int>& shape,
+                       const bool throw_ = true) {
   const std::size_t expected_dim = shape.size();
   if (expected_dim != static_cast<std::size_t>(arr.ndim())) {
     if (!throw_)
@@ -74,9 +76,9 @@ static bool CheckPyArrayShape(const py::array_t<ValueType> arr,
 }
 
 template<typename ValueType>
-static bool CheckPyArraySize(const py::array_t<ValueType> arr,
-                             const int size,
-                             const bool throw_ = true) {
+bool CheckPyArraySize(const py::array_t<ValueType> arr,
+                      const int size,
+                      const bool throw_ = true) {
   if (size != arr.size()) {
     if (!throw_)
       return false;
@@ -88,6 +90,122 @@ static bool CheckPyArraySize(const py::array_t<ValueType> arr,
   }
   return true;
 }
+
+/// @brief  Creates a corresponding spline based on kwargs
+/// Runs sanity checks on inputs
+/// this will keep the reference of the kwargs that were used for init.
+/// @param kwargs
+SplinepyBasePtr NewCore(const py::kwargs& kwargs);
+
+/* we probably won't need those wrappers */
+std::string WhatAmI(const SplinepyBasePtr&) const {
+  return Core()->SplinepyWhatAmI();
+}
+std::string Name(const SplinepyBasePtr&) const {
+  return Core()->SplinepySplineName();
+}
+bool HasKnotVectors(const SplinepyBasePtr&) const {
+  return Core()->SplinepyHasKnotVectors();
+}
+bool IsRational(const SplinepyBasePtr&) const {
+  return Core()->SplinepyIsRational();
+}
+
+/// As knot vectors and control points / weights has a specific initialization
+/// routines, we provide a separate degree getter to avoid calling
+/// CurrentCoreProperties() for a full properties copy.
+py::array_t<int> CurrentCoreDegrees(const SplinepyBasePtr&) const;
+
+/// Returns currunt properties of core spline
+/// similar to update_p
+py::dict CurrentCoreProperties(const SplinepyBasePtr&) const;
+
+/// Returns coordinate pointers in a tuple. For rational splines,
+/// This will return control_point_pointers and weight_pointers
+/// For non-rational splines, only the former.
+py::tuple CoordinatePointers(const SplinepyBasePtr&);
+
+/// AABB of spline parametric space
+py::array_t<double> ParametricBounds(const SplinepyBasePtr&) const;
+
+/// @brief Calculate Greville abscissae for Spline
+py::list GrevilleAbscissae(const SplinepyBasePtr&, const double tol) const;
+
+/// @brief Returns control mesh resolutions
+py::array_t<int> ControlMeshResolutions(const SplinepyBasePtr&) const;
+
+/// for BSplineLib
+
+/// @brief Returns ParameterSpace. meant to be called library internally to
+/// prepare ParameterSpaceBase (forms knot_vectors)
+std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+ParameterSpace();
+
+/// Returns knot vector of given dimension. meant to be called library
+/// internally to prepare KnotVector (forms each elements in knot_vectors)
+std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
+KnotVector(const int para_dim);
+
+/// @brief Evaluate spline at query points
+/// @param queries Query points
+/// @param nthreads Number of threads to use
+py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) const;
+
+/// Sample wraps evaluate to allow nthread executions
+/// Requires SplinepyParametricBounds
+py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const;
+
+/**
+ * @brief Evaluate the Jacobian at certain positions
+ *
+ * @param queries position in the parametric space
+ * @param nthreads number of threads for evaluation
+ * @return py::array_t<double>
+ */
+py::array_t<double> Jacobian(const py::array_t<double> queries,
+                             const int nthreads) const;
+
+/// spline derivatives
+py::array_t<double> Derivative(py::array_t<double> queries,
+                               py::array_t<int> orders,
+                               int nthreads) const;
+
+/// Basis support id
+py::array_t<int> Support(py::array_t<double> queries, int nthreads) const;
+
+/// Basis function values
+py::array_t<double> Basis(py::array_t<double> queries, int nthreads) const;
+
+/// Basis function values and support id
+py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) const;
+
+/// @brief Get basis derivative
+/// @param queries Query points
+/// @param orders
+/// @param nthreads number of threads to use
+py::array_t<double> BasisDerivative(py::array_t<double> queries,
+                                    py::array_t<int> orders,
+                                    int nthreads) const;
+
+/// Basis function values and support id
+py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
+                                    py::array_t<int> orders,
+                                    int nthreads) const;
+
+/// Proximity query (verbose)
+py::tuple Proximities(py::array_t<double> queries,
+                      py::array_t<int> initial_guess_sample_resolutions,
+                      const double tolerance,
+                      const int max_iterations,
+                      const bool aggresive_search_bounds,
+                      const int nthreads);
+
+/// (multiple) Degree elevation
+void ElevateDegrees(py::array_t<int> para_dims);
+
+/// (multiple) Degree Reduction
+/// returns a list of reduction result (bool)
+py::list ReduceDegrees(py::array_t<int> para_dims, double tolerance);
 
 /// True interface to python
 class PySpline {
@@ -131,122 +249,6 @@ public:
   /// @param another_py_spline_ptr
   PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
       : PySpline(*another_py_spline_ptr) {}
-
-  /// Creates a corresponding spline based on kwargs
-  /// similar to previous update_c()
-  /// Runs sanity checks on inputs
-  void NewCore(const py::kwargs& kwargs);
-
-  /// will throw if c_spline_ is not initialized.
-  /// use this for runtime core calls
-  CoreSpline_& Core();
-
-  /// @brief Core spline
-  const CoreSpline_& Core() const;
-
-  /// @brief What am I?
-  std::string WhatAmI() const { return Core()->SplinepyWhatAmI(); }
-  /// @brief Get spline name
-  std::string Name() const { return Core()->SplinepySplineName(); }
-  /// @brief Returns true iff spline has knot vectors
-  bool HasKnotVectors() const { return Core()->SplinepyHasKnotVectors(); }
-  /// @brief Returns True iff spline is rational. NURBS is rational,
-  /// for example.
-  bool IsRational() const { return Core()->SplinepyIsRational(); }
-
-  /// As knot vectors and control points / weights has a specific initialization
-  /// routines, we provide a separate degree getter to avoid calling
-  /// CurrentCoreProperties() for a full properties copy.
-  py::array_t<int> CurrentCoreDegrees() const;
-
-  /// Returns currunt properties of core spline
-  /// similar to update_p
-  py::dict CurrentCoreProperties() const;
-
-  /// Returns coordinate pointers in a tuple. For rational splines,
-  /// This will return control_point_pointers and weight_pointers
-  /// For non-rational splines, only the former.
-  py::tuple CoordinatePointers();
-
-  /// @brief Returns ParameterSpace. meant to be called library internally to
-  /// prepare ParameterSpaceBase (forms knot_vectors)
-  std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
-  ParameterSpace();
-
-  /// Returns knot vector of given dimension. meant to be called library
-  /// internally to prepare KnotVector (forms each elements in knot_vectors)
-  std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
-  KnotVector(const int para_dim);
-
-  /// AABB of spline parametric space
-  py::array_t<double> ParametricBounds() const;
-
-  /// @brief Calculate Greville abscissae for Spline
-  py::list GrevilleAbscissae(const double) const;
-
-  /// @brief Returns control mesh resolutions
-  py::array_t<int> ControlMeshResolutions() const;
-
-  /// @brief Evaluate spline at query points
-  /// @param queries Query points
-  /// @param nthreads Number of threads to use
-  py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) const;
-
-  /// Sample wraps evaluate to allow nthread executions
-  /// Requires SplinepyParametricBounds
-  py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const;
-
-  /**
-   * @brief Evaluate the Jacobian at certain positions
-   *
-   * @param queries position in the parametric space
-   * @param nthreads number of threads for evaluation
-   * @return py::array_t<double>
-   */
-  py::array_t<double> Jacobian(const py::array_t<double> queries,
-                               const int nthreads) const;
-
-  /// spline derivatives
-  py::array_t<double> Derivative(py::array_t<double> queries,
-                                 py::array_t<int> orders,
-                                 int nthreads) const;
-
-  /// Basis support id
-  py::array_t<int> Support(py::array_t<double> queries, int nthreads) const;
-
-  /// Basis function values
-  py::array_t<double> Basis(py::array_t<double> queries, int nthreads) const;
-
-  /// Basis function values and support id
-  py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) const;
-
-  /// @brief Get basis derivative
-  /// @param queries Query points
-  /// @param orders
-  /// @param nthreads number of threads to use
-  py::array_t<double> BasisDerivative(py::array_t<double> queries,
-                                      py::array_t<int> orders,
-                                      int nthreads) const;
-
-  /// Basis function values and support id
-  py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
-                                      py::array_t<int> orders,
-                                      int nthreads) const;
-
-  /// Proximity query (verbose)
-  py::tuple Proximities(py::array_t<double> queries,
-                        py::array_t<int> initial_guess_sample_resolutions,
-                        const double tolerance,
-                        const int max_iterations,
-                        const bool aggresive_search_bounds,
-                        const int nthreads);
-
-  /// (multiple) Degree elevation
-  void ElevateDegrees(py::array_t<int> para_dims);
-
-  /// (multiple) Degree Reduction
-  /// returns a list of reduction result (bool)
-  py::list ReduceDegrees(py::array_t<int> para_dims, double tolerance);
 
   /// @brief returns current spline as package's derived spline types based on
   /// splinepy.settings.NAME_TO_TYPE
