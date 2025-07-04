@@ -13,6 +13,7 @@ from splinepy.microstructure.tiles import (
     cube_void,
     double_lattice,
     ellips_v_oid,
+    hcross,
     hollow_cube,
     hollow_octagon,
     hollow_octagon_extrude,
@@ -28,6 +29,7 @@ from splinepy.microstructure.tiles.cross_3d_linear import Cross3DLinear
 from splinepy.microstructure.tiles.cube_void import CubeVoid
 from splinepy.microstructure.tiles.double_lattice import DoubleLattice
 from splinepy.microstructure.tiles.ellips_v_oid import EllipsVoid
+from splinepy.microstructure.tiles.hcross import HCross
 from splinepy.microstructure.tiles.hollow_cube import HollowCube
 from splinepy.microstructure.tiles.hollow_octagon import HollowOctagon
 from splinepy.microstructure.tiles.hollow_octagon_extrude import (
@@ -47,6 +49,7 @@ __all__ = [
     "cross_3d_linear",
     "double_lattice",
     "ellips_v_oid",
+    "hcross",
     "hollow_cube",
     "hollow_octagon",
     "hollow_octagon_extrude",
@@ -61,6 +64,7 @@ __all__ = [
     "CubeVoid",
     "DoubleLattice",
     "EllipsVoid",
+    "HCross",
     "HollowCube",
     "HollowOctagon",
     "HollowOctagonExtrude",
