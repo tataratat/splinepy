@@ -431,41 +431,10 @@ bool SplinepyBase::SplinepyDimMatches(const SplinepyBase& a,
   return true;
 }
 
-std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
-SplinepyBase::SplinepyParameterSpace() {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyParameterSpace not implemented for",
-      SplinepyWhatAmI());
-  return nullptr;
-}
-
-std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
-SplinepyBase::SplinepyKnotVector(const int p_dim) {
-  splinepy::utils::PrintAndThrowError("SplinepyKnotVector not implemented for",
-                                      SplinepyWhatAmI());
-  return nullptr;
-}
-
 std::shared_ptr<typename SplinepyBase::ControlPointPointers_>
 SplinepyBase::SplinepyControlPointPointers() {
   splinepy::utils::PrintAndThrowError(
       "SplinepyControlPointPointers not implemented for",
-      SplinepyWhatAmI());
-  return nullptr;
-}
-
-std::shared_ptr<typename SplinepyBase::WeightedControlPointPointers_>
-SplinepyBase::SplinepyWeightedControlPointPointers() {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyWeightedControlPointPointers not implemented for",
-      SplinepyWhatAmI());
-  return nullptr;
-}
-
-std::shared_ptr<typename SplinepyBase::WeightPointers_>
-SplinepyBase::SplinepyWeightPointers() {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyWeightPointers not implemented for",
       SplinepyWhatAmI());
   return nullptr;
 }
@@ -577,113 +546,20 @@ void SplinepyBase::SplinepyElevateDegree(const int& para_dims,
       SplinepyWhatAmI());
 }
 
-bool SplinepyBase::SplinepyReduceDegree(const int& para_dims,
-                                        const double& tolerance) {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyReduceDegree not implemented for",
-      SplinepyWhatAmI());
-  return false;
-}
-
-int SplinepyBase::SplinepyInsertKnot(const int& para_dim,
-                                     const double& knot,
-                                     const int multiplicity) {
-  splinepy::utils::PrintAndThrowError("SplinepyInsertKnot not implemented for",
-                                      SplinepyWhatAmI());
-  return -1;
-}
-
-bool SplinepyBase::SplinepyRemoveKnot(const int& para_dim,
-                                      const double& knot,
-                                      const double& tolerance) {
-  splinepy::utils::PrintAndThrowError("SplinepyRemoveKnot not implemented for",
-                                      SplinepyWhatAmI());
-  return false;
-}
-
-std::vector<std::vector<int>> SplinepyBase::SplinepyKnotMultiplicities() const {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyKnotMultiplicities not implemented for",
-      SplinepyWhatAmI());
-  return std::vector<std::vector<int>>{};
-};
-
-std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const {
-  splinepy::utils::PrintAndThrowError("SplinepyMultiply not implemented for",
-                                      SplinepyWhatAmI());
-  return std::shared_ptr<SplinepyBase>{};
-}
-
-std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const {
-  splinepy::utils::PrintAndThrowError("SplinepyAdd not implemented for",
-                                      SplinepyWhatAmI());
-  return std::shared_ptr<SplinepyBase>{};
-}
-
-std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCompose(
-    const std::shared_ptr<SplinepyBase>& inner_function) const {
-  splinepy::utils::PrintAndThrowError("SplinepyCompose not implemented for",
-                                      SplinepyWhatAmI());
-  return std::shared_ptr<SplinepyBase>{};
-}
-
-std::vector<std::shared_ptr<SplinepyBase>>
-SplinepyBase::SplinepyComposeSensitivities(
-    const std::shared_ptr<SplinepyBase>& inner_function) const {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyComposeSensitivities not implemented for",
-      SplinepyWhatAmI());
-  return std::vector<std::shared_ptr<SplinepyBase>>{};
-}
-
-std::vector<std::shared_ptr<SplinepyBase>>
-SplinepyBase::SplinepySplit(const int& para_dim, const double& location) const {
-  splinepy::utils::PrintAndThrowError("SplinepySplit not implemented for",
-                                      SplinepyWhatAmI());
-  return {std::shared_ptr<SplinepyBase>{}};
-}
-
-std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyDerivativeSpline(const int* orders) const {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyDerivativeSpline is not implemented for",
-      SplinepyWhatAmI());
-  return std::shared_ptr<SplinepyBase>{};
-}
-
-std::vector<std::shared_ptr<SplinepyBase>>
-SplinepyBase::SplinepyExtractBezierPatches() const {
+std::vector<std::shared_ptr<SplinepyBezier>>
+SplinepyBezier::SplinepyExtractBezierPatches() const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyBezierPatchExtraction is not implemented for",
       SplinepyWhatAmI());
-  return {std::shared_ptr<SplinepyBase>{}};
+  return {std::shared_ptr<SplinepyBezier>{}};
 }
 
-std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyExtractBoundary(const int& boundary_id) {
+std::shared_ptr<SplinepyBezier>
+SplinepyBezier::SplinepyExtractBoundary(const int& boundary_id) {
   splinepy::utils::PrintAndThrowError(
       "SplinepyExtractBoundary is not implemented for",
       SplinepyWhatAmI());
-  return {std::shared_ptr<SplinepyBase>{}};
-}
-
-std::shared_ptr<SplinepyBase>
-SplinepyBase::SplinepyExtractDim(const int& phys_dim) const {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyExtractDim is not implemented for",
-      SplinepyWhatAmI());
-  return {std::shared_ptr<SplinepyBase>{}};
-}
-
-std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyCompositionDerivative(
-    const std::shared_ptr<SplinepyBase>& inner,
-    const std::shared_ptr<SplinepyBase>& inner_derivative) const {
-  splinepy::utils::PrintAndThrowError(
-      "SplinepyCompositionDerivative is not implemented for",
-      SplinepyWhatAmI());
-  return {std::shared_ptr<SplinepyBase>{}};
+  return {std::shared_ptr<SplinepyBezier>{}};
 }
 
 std::shared_ptr<SplinepyBase> SplinepyBase::SplinepyDeepCopy() const {

@@ -149,7 +149,7 @@ public:
   /// @param data_pointer
   constexpr void SetData(DataType* data_pointer) {
     DestroyData();
-    data_ = data_pointer;
+    data_ = data_pointer; // doesn't own
   }
 
   /// @brief clears current data and sets given pointer as beginning of data
@@ -159,7 +159,7 @@ public:
   template<typename... Ts>
   constexpr void SetData(DataType* data_pointer, const Ts&... shape) {
     DestroyData();
-    data_ = data_pointer;
+    data_ = data_pointer; // doesn't own
     SetShape(shape...);
   }
 
@@ -298,6 +298,8 @@ public:
     strides_ = std::move(other.strides_);
     shape_ = std::move(other.shape_);
     other.own_data_ = false;
+    other.data_ = nullptr;
+    other.size_ = 0;
   }
 
   /// @brief copy assignment - need to make sure that you have enough space
@@ -330,6 +332,8 @@ public:
     strides_ = std::move(rhs.strides_);
     shape_ = std::move(rhs.shape_);
     rhs.own_data_ = false;
+    rhs.data_ = nullptr;
+    rhs.size_ = 0;
     return *this;
   }
 
@@ -569,7 +573,7 @@ public:
   constexpr IndexType NonZeros() const {
     IndexType n{};
     for (IndexType i{}; i < size_; ++i) {
-      if (n != static_cast<DataType>(0)) {
+      if (data_[i] != static_cast<DataType>(0)) {
         ++n;
       }
     }
@@ -636,6 +640,8 @@ void UniqueIndicesAndMultiplicities(
   // iterate unique and count multiplicity
   // we will check if the next indices are the same. if so, we will stop
   // counting multiplicity
+  if (unique.size() == 0)
+    return; // underflow guard
   const OutIndexType* arg_ptr = arg_sorted.begin();
   for (OutIndexType i{}; i < unique.size() - 1; ++i) {
     const OutIndexType u_next = unique[i + 1];

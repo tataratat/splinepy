@@ -27,12 +27,7 @@ SOFTWARE.
 #include <memory>
 #include <vector>
 
-#include <splinepy/utils/coordinate_pointers.hpp>
-
-namespace bsplinelib::parameter_spaces {
-class KnotVector;
-class ParameterSpaceBase;
-} // namespace bsplinelib::parameter_spaces
+#include "splinepy/utils/coordinate_pointers.hpp"
 
 namespace splinepy::splines {
 
@@ -145,7 +140,7 @@ public:
   virtual int SplinepyNumberOfSupports() const = 0;
   /// @brief Returns true iff spline is null-spline
   virtual bool SplinepyIsNull() const { return false; };
-  /// @brief Extract core spline properties. Similar to previous update_p
+  /// @brief Extract core spline properties. TODO: should be protected
   /// @param degrees
   /// @param knot_vectors
   /// @param control_points
@@ -156,15 +151,7 @@ public:
                             double* control_points,
                             double* weights) const = 0;
 
-  virtual std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
-  SplinepyParameterSpace();
-  virtual std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
-  SplinepyKnotVector(const int p_dim);
-
   virtual std::shared_ptr<ControlPointPointers_> SplinepyControlPointPointers();
-  virtual std::shared_ptr<WeightedControlPointPointers_>
-  SplinepyWeightedControlPointPointers();
-  virtual std::shared_ptr<WeightPointers_> SplinepyWeightPointers();
 
   /// @brief Parameter space AABB
   /// @param para_bounds
@@ -259,49 +246,6 @@ public:
   virtual void SplinepyElevateDegree(const int& para_dims,
                                      const int multiplicity = 1);
 
-  /// Spline degree reduction
-  virtual bool SplinepyReduceDegree(const int& para_dims,
-                                    const double& tolerance);
-
-  /// Spline knot insertion.
-  virtual int SplinepyInsertKnot(const int& para_dim,
-                                 const double& knot,
-                                 const int multiplicity = 1);
-
-  /// Spline knot removal.
-  virtual bool SplinepyRemoveKnot(const int& para_dim,
-                                  const double& knot,
-                                  const double& tolerance);
-
-  /// Spline knot multiplicity per dimension
-  virtual std::vector<std::vector<int>> SplinepyKnotMultiplicities() const;
-
-  /// Spline multiplication.
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyMultiply(const std::shared_ptr<SplinepyBase>& a) const;
-
-  /// Spline addition.
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyAdd(const std::shared_ptr<SplinepyBase>& a) const;
-
-  /// Spline composition.
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyCompose(const std::shared_ptr<SplinepyBase>& inner_function) const;
-
-  /// Spline composition sensitivities with respect to the outer spline's
-  /// control point positions
-  virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepyComposeSensitivities(
-      const std::shared_ptr<SplinepyBase>& inner_function) const;
-
-  /// Spline Split - single split
-  virtual std::vector<std::shared_ptr<SplinepyBase>>
-  SplinepySplit(const int& para_dim, const double& location) const;
-
-  /// Derivative spline
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyDerivativeSpline(const int* orders) const;
-
   /// Bezier patch extraction
   virtual std::vector<std::shared_ptr<SplinepyBase>>
   SplinepyExtractBezierPatches() const;
@@ -309,15 +253,6 @@ public:
   /// Boundary spline extraction - TODO: const
   virtual std::shared_ptr<SplinepyBase>
   SplinepyExtractBoundary(const int& boundary_id);
-
-  /// Scalar Spline extraction from dim - TODO: const
-  virtual std::shared_ptr<SplinepyBase>
-  SplinepyExtractDim(const int& phys_dim) const;
-
-  /// Derivative of composition
-  virtual std::shared_ptr<SplinepyBase> SplinepyCompositionDerivative(
-      const std::shared_ptr<SplinepyBase>& inner,
-      const std::shared_ptr<SplinepyBase>& inner_derivative) const;
 
   /// Deep copy of current spline
   virtual std::shared_ptr<SplinepyBase> SplinepyDeepCopy() const;
