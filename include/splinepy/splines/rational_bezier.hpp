@@ -32,7 +32,8 @@ SOFTWARE.
 #include <bezman/src/rational_bezier_spline.hpp>
 
 #include <splinepy/proximity/proximity.hpp>
-#include <splinepy/splines/splinepy_base.hpp>
+#include <splinepy/splines/splinepy_bezier.hpp>
+#include <splinepy/splines/splinepy_rational.hpp>
 
 namespace splinepy::splines {
 
@@ -46,7 +47,8 @@ using RationalBezierSplineType = bezman::RationalBezierSpline<
 /// @tparam para_dim
 /// @tparam dim
 template<std::size_t para_dim, std::size_t dim>
-class RationalBezier : public splinepy::splines::SplinepyBase,
+class RationalBezier : public splinepy::splines::SplinepyBezier,
+                       public splinepy::splines::SplinepyRational,
                        public RationalBezierSplineType<para_dim, dim> {
 public:
   /// @brief Parametric dimension

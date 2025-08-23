@@ -32,7 +32,8 @@ SOFTWARE.
 #include <splinepy/splines/helpers/extract.hpp>
 #include <splinepy/splines/helpers/properties.hpp>
 #include <splinepy/splines/helpers/scalar_type_wrapper.hpp>
-#include <splinepy/splines/splinepy_base.hpp>
+#include <splinepy/splines/splinepy_bspline.hpp>
+#include <splinepy/splines/splinepy_rational.hpp>
 
 namespace splinepy::splines {
 
@@ -41,7 +42,8 @@ namespace splinepy::splines {
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
 template<int para_dim>
-class Nurbs : public splinepy::splines::SplinepyBase,
+class Nurbs : public splinepy::splines::SplinepyBSpline,
+              public splinepy::splines::SplinepyRational,
               public bsplinelib::splines::Nurbs<para_dim> {
 public:
   /// @brief Dimension of parametric space

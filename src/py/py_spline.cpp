@@ -41,12 +41,73 @@ SOFTWARE.
 
 namespace splinepy::py {
 
+/* helper functions for sanity checking spline creation */
+
+template<typename T>
+bool IsAllPositive(const py::array_t<T>& arr) {
+  const T* ptr = static_cast<T*>(arr.request().ptr);
+  const auto size = arr.size();
+  for (std::remove_const_t<decltype(size)> i{}; i < size; ++i) {
+    if (!(ptr[i] > static_cast<T>(0))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+template<typename T>
+bool IsNotDecreasing(const py::array_t<T>& arr) {
+  T prev = std::numeric_limits<T>::lowest();
+  const T* ptr = static_cast<T*>(arr.request().ptr);
+  const auto size = arr.size();
+  for (const T* pointer = ptr; pointer < ptr + size; ++pointer) {
+    if (prev > *pointer) {
+      return false;
+    }
+    prev = *pointer;
+  }
+  return true;
+}
+
+py::array_t<double> PySpline::ParametricBounds() const {
+  // prepare output - [[lower_bound], [upper_bound]]
+  py::array_t<double> pbounds({2, para_dim_});
+  double* pbounds_ptr = static_cast<double*>(pbounds.request().ptr);
+
+  Base_::SplinepyParametricBounds(pbounds_ptr);
+
+  return pbounds;
+}
+
+py::list PySpline::GrevilleAbscissae(const double duplicate_tolerance) const {
+  // prepare output
+  std::vector<int> cmr(para_dim_);
+  Base_::SplinepyControlMeshResolutions(cmr.data());
+
+  splinepy::utils::
+      // Initialize return values
+      py::list list_of_greville_knots(para_dim_);
+
+  for (int i{}; i < para_dim_; i++) {
+    // Calculate Abscissae
+    py::array_t<double> greville_abscissae(cmr[i]);
+    double* greville_abscissae_ptr =
+        static_cast<double*>(greville_abscissae.request().ptr);
+    Core()->SplinepyGrevilleAbscissae(greville_abscissae_ptr,
+                                      i,
+                                      duplicate_tolerance);
+    list_of_greville_knots[i] = greville_abscissae;
+  }
+
+  return list_of_greville_knots;
+}
+
 /// @brief  Creates a corresponding spline based on kwargs
 /// similar to previous update_c()
 /// Runs sanity checks on inputs
 /// this will keep the reference of the kwargs that were used for init.
 /// @param kwargs
-void PySpline::NewCore(const py::kwargs& kwargs) {
+py::object NewCore(const py::kwargs& kwargs) {
 
   // early exit if this is an incomplete kwargs call
   if (!kwargs.contains("degrees") || !kwargs.contains("control_points")) {
@@ -199,8 +260,9 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
   }
 
   // maybe, get weights
+  py::array_t<double> w_array;
   if (kwargs.contains("weights")) {
-    auto w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
+    w_array = py::cast<py::array_t<double>>(kwargs["weights"]);
     data_["weights"] = w_array;
     weights_ptr = static_cast<double*>(w_array.request().ptr);
 
@@ -215,6 +277,16 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
     }
   }
 
+  if (!knot_vectors_ptr) {
+    if (!weights_ptr) {
+      return PyBezier::Create(d_array, cp_array);
+    }
+    return PyRationalBezier::Create(d_array, cp_array, w_array);
+  }
+
+  if (!weights_ptr) {
+    return PyBSpline::Create(d_array, knot_vectors, cp_array)
+  }
   // new assign
   c_spline_ =
       splinepy::splines::SplinepyBase::SplinepyCreate(para_dim,
@@ -223,8 +295,6 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
                                                       knot_vectors_ptr,
                                                       control_points_ptr,
                                                       weights_ptr);
-  para_dim_ = c_spline_->SplinepyParaDim();
-  dim_ = c_spline_->SplinepyDim();
 }
 
 /// will throw if c_spline_ is not initialized.
@@ -328,39 +398,6 @@ PySpline::ParameterSpace() {
 std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
 PySpline::KnotVector(const int para_dim) {
   return Core()->SplinepyKnotVector(para_dim);
-}
-
-py::array_t<double> PySpline::ParametricBounds() const {
-  // prepare output - [[lower_bound], [upper_bound]]
-  py::array_t<double> pbounds(2 * para_dim_);
-  double* pbounds_ptr = static_cast<double*>(pbounds.request().ptr);
-
-  Core()->SplinepyParametricBounds(pbounds_ptr);
-
-  pbounds.resize({2, para_dim_});
-  return pbounds;
-}
-
-py::list PySpline::GrevilleAbscissae(const double duplicate_tolerance) const {
-  // prepare output
-  std::vector<int> cmr(para_dim_);
-  Core()->SplinepyControlMeshResolutions(cmr.data());
-
-  // Initialize return values
-  py::list list_of_greville_knots(para_dim_);
-
-  for (int i{}; i < para_dim_; i++) {
-    // Calculate Abscissae
-    py::array_t<double> greville_abscissae(cmr[i]);
-    double* greville_abscissae_ptr =
-        static_cast<double*>(greville_abscissae.request().ptr);
-    Core()->SplinepyGrevilleAbscissae(greville_abscissae_ptr,
-                                      i,
-                                      duplicate_tolerance);
-    list_of_greville_knots[i] = greville_abscissae;
-  }
-
-  return list_of_greville_knots;
 }
 
 py::array_t<int> PySpline::ControlMeshResolutions() const {
@@ -832,31 +869,25 @@ void init_pyspline(py::module& m) {
   py::class_<splinepy::py::PySpline, std::shared_ptr<splinepy::py::PySpline>>
       klasse(m, "PySpline");
 
-  klasse.def(py::init<>())
-      .def(py::init<py::kwargs>()) // doc here?
-      .def(py::init<splinepy::py::PySpline&>())
-      .def("_new_core", &splinepy::py::PySpline::NewCore)
-      .def_readwrite("_data", &splinepy::py::PySpline::data_)
-      .def_readonly("para_dim", &splinepy::py::PySpline::para_dim_)
-      .def_readonly("dim", &splinepy::py::PySpline::dim_)
-      .def_property_readonly("whatami", &splinepy::py::PySpline::WhatAmI)
-      .def_property_readonly("name", &splinepy::py::PySpline::Name)
+  klasse..def_readonly("para_dim", &splinepy::py::PySpline::SplinepyParaDim)
+      .def_readonly("dim", &splinepy::py::PySpline::SplinepyDim)
+      .def_property_readonly("whatami",
+                             &splinepy::py::PySpline::SplinepyWhatAmI)
+      .def_property_readonly("name", &splinepy::py::PySpline::SplinepyName)
       .def_property_readonly("has_knot_vectors",
-                             &splinepy::py::PySpline::HasKnotVectors)
-      .def_property_readonly("is_rational", &splinepy::py::PySpline::IsRational)
+                             &splinepy::py::PySpline::SplinepyHasKnotVectors)
+      .def_property_readonly("is_rational",
+                             &splinepy::py::PySpline::SplinepyIsRational)
       .def_property_readonly("parametric_bounds",
                              &splinepy::py::PySpline::ParametricBounds)
       .def_property_readonly("control_mesh_resolutions",
                              &splinepy::py::PySpline::ControlMeshResolutions)
-      .def("_greville_abscissae_list",
+      .def("greville_abscissae",
            &splinepy::py::PySpline::GrevilleAbscissae,
            py::arg("duplicate_tolerance") = -1.0)
-      .def("current_core_properties",
-           &splinepy::py::PySpline::CurrentCoreProperties)
-      .def("_current_core_degrees", &splinepy::py::PySpline::CurrentCoreDegrees)
-      .def("_parameter_space", &splinepy::py::PySpline::ParameterSpace)
-      .def("_knot_vector", &splinepy::py::PySpline::KnotVector)
-      .def("_coordinate_pointers", &splinepy::py::PySpline::CoordinatePointers)
+      .def_property_readonly("degrees", &splinepy::py::PySpline::Degrees)
+      .def_property_readonly("control_points",
+                             &splinepy::py::PySpline::ControlPoints)
       .def("evaluate",
            &splinepy::py::PySpline::Evaluate,
            py::arg("queries"),

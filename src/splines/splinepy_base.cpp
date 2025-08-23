@@ -445,10 +445,21 @@ void SplinepyBase::SplinepyParametricBounds(double* para_bounds) const {
       SplinepyWhatAmI());
 }
 
+SplinepyBase::Array2D_ SplinepyBase::SplinepyParametricBounds() const {
+  Array2D_ pb(2, SplinepyParaDim());
+  SplinepyParametricBounds(pb.data());
+  return pb;
+}
+
 void SplinepyBase::SplinepyControlMeshResolutions(int* control_mesh_res) const {
   splinepy::utils::PrintAndThrowError(
       "SplinepyControlMeshResolutions not implemented for",
       SplinepyWhatAmI());
+}
+SplinepyBase::Array1I_ SplinepyBase::SplinepyControlMeshResolutions() const {
+  Array1I_ cmr(SplinepyParaDim());
+  SplinepyControlMeshResolutions(cmr.data());
+  return cmr;
 }
 
 void SplinepyBase::SplinepyGrevilleAbscissae(
@@ -458,6 +469,38 @@ void SplinepyBase::SplinepyGrevilleAbscissae(
   splinepy::utils::PrintAndThrowError(
       "SplinepyGrevilleAbscissae not implemented for",
       SplinepyWhatAmI());
+}
+
+SplinepyBase::Array1D_ SplinepyBase::SplinepyGrevilleAbscissae(
+    const int& i_para_dim,
+    const double& duplicate_tolerance) const {
+  const Array1I_ cmr = SplinepyControlMeshResolutions();
+  Array1D_ ga(cmr[i_para_dim]);
+  SplinepyGrevilleAbscissae(ga.data(), i_para_dim, duplicate_tolerance);
+  return ga;
+}
+
+SplinepyBase::Array2D_ SplinepyBase::SplinepyGrevilleAbscissae(
+    const double& duplicate_tolerance) const {
+  splinepy::utils::GridPoints grid{};
+  const int para_dim = SplinepyParaDim();
+  grid.entries_.resize(para_dim);
+  grid.dim_ = para_dim;
+  int len{1};
+
+  const Array1D_ cmr = SplinepyControlMeshResolutions();
+  for (int i{}; i < para_dim; ++i) {
+    auto& entry = grid.entries_[i];
+    entry.resize(cmr[i]);
+    SplinepyGrevilleAbscissae(entry.data(), i, duplicate_tolerance);
+
+    len *= cmr[i];
+  }
+
+  Array2D_ ga_cartesian(len, para_dim);
+  grid.Fill(ga_cartesian.data());
+
+  return ga_cartesian;
 }
 
 void SplinepyBase::SplinepyEvaluate(const double* para_coord,

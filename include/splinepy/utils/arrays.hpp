@@ -26,6 +26,7 @@ SOFTWARE.
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <cmath>
 #include <iterator>
 #include <numeric>
@@ -604,6 +605,12 @@ public:
     std::stable_sort(arg_sorted.begin(), arg_sorted.end(), arg_compare);
   }
 };
+
+/* Alias for frequently used types */
+using Array1I = Array<int, 1>;
+using Array2I = Array<int, 2>;
+using Array1D = Array<double, 1>;
+using Array2D = Array<double, 2>;
 
 template<typename InputArray, typename OutIndexType>
 void UniqueIndicesAndMultiplicities(

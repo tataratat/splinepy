@@ -24,6 +24,7 @@ SOFTWARE.
 
 #pragma once
 
+#include <cassert>
 #include <cmath>
 #include <numeric>
 #include <utility>
@@ -108,6 +109,10 @@ public:
   /// @brief fills array with full set of grid points
   /// @param grid_point_to_fill
   void Fill(double* grid_point_to_fill) const {
+    assert(len_ != 0);
+    assert(dim_ != 0);
+    assert(entries_.size() != 0);
+
     int i{}, tile{len_}, repeat{1};
     for (const auto& entry : entries_) {
       const int entry_size = entry.size();

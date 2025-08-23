@@ -28,8 +28,10 @@ SOFTWARE.
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
-// first four are required for Create* implementations
 #include "splinepy/splines/splinepy_base.hpp"
+#include "splinepy/splines/splinepy_bezier.hpp"
+#include "splinepy/splines/splinepy_bspline.hpp"
+#include "splinepy/splines/splinepy_rational.hpp"
 #include "splinepy/utils/print.hpp"
 
 namespace splinepy::py {
@@ -89,112 +91,29 @@ static bool CheckPyArraySize(const py::array_t<ValueType> arr,
   return true;
 }
 
-/// True interface to python
-class PySpline {
+class PySpline : public splinepy::splines::SplinepyBase {
 public:
-  using CoreSpline_ = typename std::shared_ptr<splinepy::splines::SplinepyBase>;
-
-  /// @brief Core spline
-  CoreSpline_ c_spline_ = nullptr;
-
-  // store very frequently used values - from python this will be readonly
-  /// @brief Dimension of parameter space
-  int para_dim_ = -1;
-  /// @brief Dimension of physical space
-  int dim_ = -1;
-
-  /// @brief Place to store and access from both python and cpp side.
-  py::dict data_;
-
-  // ctor
-  PySpline() = default;
-  /// @brief Move constructor
-  PySpline(PySpline&&) = default;
-  /// @brief Constructor
-  /// @param kwargs
-  PySpline(const py::kwargs& kwargs) { NewCore(kwargs); }
-  /// @brief Constructor
-  /// @param another_core
-  PySpline(const CoreSpline_& another_core) : c_spline_(another_core) {
-    para_dim_ = c_spline_->SplinepyParaDim();
-    dim_ = c_spline_->SplinepyDim();
-  }
-  /// @brief Constructor
-  /// @param another_py_spline
-  PySpline(PySpline& another_py_spline)
-      : c_spline_(another_py_spline.Core()),
-        para_dim_(another_py_spline.para_dim_),
-        dim_(another_py_spline.dim_) {
-    // nichts
-  }
-  /// @brief Constructor
-  /// @param another_py_spline_ptr
-  PySpline(const std::shared_ptr<PySpline>& another_py_spline_ptr)
-      : PySpline(*another_py_spline_ptr) {}
-
-  /// Creates a corresponding spline based on kwargs
-  /// similar to previous update_c()
-  /// Runs sanity checks on inputs
-  void NewCore(const py::kwargs& kwargs);
-
-  /// will throw if c_spline_ is not initialized.
-  /// use this for runtime core calls
-  CoreSpline_& Core();
-
-  /// @brief Core spline
-  const CoreSpline_& Core() const;
-
-  /// @brief What am I?
-  std::string WhatAmI() const { return Core()->SplinepyWhatAmI(); }
-  /// @brief Get spline name
-  std::string Name() const { return Core()->SplinepySplineName(); }
-  /// @brief Returns true iff spline has knot vectors
-  bool HasKnotVectors() const { return Core()->SplinepyHasKnotVectors(); }
-  /// @brief Returns True iff spline is rational. NURBS is rational,
-  /// for example.
-  bool IsRational() const { return Core()->SplinepyIsRational(); }
-
-  /// As knot vectors and control points / weights has a specific initialization
-  /// routines, we provide a separate degree getter to avoid calling
-  /// CurrentCoreProperties() for a full properties copy.
-  py::array_t<int> CurrentCoreDegrees() const;
-
-  /// Returns currunt properties of core spline
-  /// similar to update_p
-  py::dict CurrentCoreProperties() const;
-
-  /// Returns coordinate pointers in a tuple. For rational splines,
-  /// This will return control_point_pointers and weight_pointers
-  /// For non-rational splines, only the former.
-  py::tuple CoordinatePointers();
-
-  /// @brief Returns ParameterSpace. meant to be called library internally to
-  /// prepare ParameterSpaceBase (forms knot_vectors)
-  std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
-  ParameterSpace();
-
-  /// Returns knot vector of given dimension. meant to be called library
-  /// internally to prepare KnotVector (forms each elements in knot_vectors)
-  std::shared_ptr<bsplinelib::parameter_spaces::KnotVector>
-  KnotVector(const int para_dim);
+  using Base_ = splinepy::splines::SplinepyBase;
 
   /// AABB of spline parametric space
-  py::array_t<double> ParametricBounds() const;
+  virtual py::array_t<double> ParametricBounds() const;
 
-  /// @brief Calculate Greville abscissae for Spline
-  py::list GrevilleAbscissae(const double) const;
+  /// @brief Calculate Greville abscissae for Spline.
+  virtual py::array_t<double> GrevilleAbscissae(const double) const;
 
   /// @brief Returns control mesh resolutions
-  py::array_t<int> ControlMeshResolutions() const;
+  virtual py::array_t<int> ControlMeshResolutions() const;
 
   /// @brief Evaluate spline at query points
   /// @param queries Query points
   /// @param nthreads Number of threads to use
-  py::array_t<double> Evaluate(py::array_t<double> queries, int nthreads) const;
+  virtual py::array_t<double> Evaluate(py::array_t<double> queries,
+                                       int nthreads) const;
 
   /// Sample wraps evaluate to allow nthread executions
   /// Requires SplinepyParametricBounds
-  py::array_t<double> Sample(py::array_t<int> resolutions, int nthreads) const;
+  virtual py::array_t<double> Sample(py::array_t<int> resolutions,
+                                     int nthreads) const;
 
   /**
    * @brief Evaluate the Jacobian at certain positions
@@ -203,55 +122,178 @@ public:
    * @param nthreads number of threads for evaluation
    * @return py::array_t<double>
    */
-  py::array_t<double> Jacobian(const py::array_t<double> queries,
-                               const int nthreads) const;
+  virtual py::array_t<double> Jacobian(const py::array_t<double> queries,
+                                       const int nthreads) const;
 
   /// spline derivatives
-  py::array_t<double> Derivative(py::array_t<double> queries,
-                                 py::array_t<int> orders,
-                                 int nthreads) const;
+  virtual py::array_t<double> Derivative(py::array_t<double> queries,
+                                         py::array_t<int> orders,
+                                         int nthreads) const;
 
   /// Basis support id
-  py::array_t<int> Support(py::array_t<double> queries, int nthreads) const;
+  virtual py::array_t<int> Support(py::array_t<double> queries,
+                                   int nthreads) const;
 
   /// Basis function values
-  py::array_t<double> Basis(py::array_t<double> queries, int nthreads) const;
+  virtual py::array_t<double> Basis(py::array_t<double> queries,
+                                    int nthreads) const;
 
   /// Basis function values and support id
-  py::tuple BasisAndSupport(py::array_t<double> queries, int nthreads) const;
+  virtual py::tuple BasisAndSupport(py::array_t<double> queries,
+                                    int nthreads) const;
 
   /// @brief Get basis derivative
   /// @param queries Query points
   /// @param orders
   /// @param nthreads number of threads to use
-  py::array_t<double> BasisDerivative(py::array_t<double> queries,
-                                      py::array_t<int> orders,
-                                      int nthreads) const;
+  virtual py::array_t<double> BasisDerivative(py::array_t<double> queries,
+                                              py::array_t<int> orders,
+                                              int nthreads) const;
 
   /// Basis function values and support id
-  py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
-                                      py::array_t<int> orders,
-                                      int nthreads) const;
+  virtual py::tuple BasisDerivativeAndSupport(py::array_t<double> queries,
+                                              py::array_t<int> orders,
+                                              int nthreads) const;
 
   /// Proximity query (verbose)
-  py::tuple Proximities(py::array_t<double> queries,
-                        py::array_t<int> initial_guess_sample_resolutions,
-                        const double tolerance,
-                        const int max_iterations,
-                        const bool aggresive_search_bounds,
-                        const int nthreads);
+  virtual py::tuple
+  Proximities(py::array_t<double> queries,
+              py::array_t<int> initial_guess_sample_resolutions,
+              const double tolerance,
+              const int max_iterations,
+              const bool aggresive_search_bounds,
+              const int nthreads);
 
   /// (multiple) Degree elevation
-  void ElevateDegrees(py::array_t<int> para_dims);
+  virtual void ElevateDegrees(py::array_t<int> para_dims);
+
+  /// bezier patch extraction.
+  py::list ExtractBezierPatches(const std::shared_ptr<PySpline>& spline);
+
+  /// boundary spline extraction
+  py::list ExtractBoundaries(const std::shared_ptr<PySpline>& spline,
+                             const py::array_t<int>& boundary_ids);
+
+  virtual py::array_t<int> Degrees() const;
+  virtual py::object ControlPoints();
+
+protected:
+  /// @brief runtime registry for extension methods. Prio 0.
+  static py::dict ext_methods_registry_;
+  /// @brief runtime registry for helper classes. Prio 1.
+  static py::dict ext_helper_registry_;
+  /// @brief Subclassed (at python side) numpy class. Keeps track of inplace
+  /// changes.
+  py::object tracked_control_points_;
+  /// @brief Subclassed (at python side) numpy class. Keeps track of inplace
+  /// changes.
+  py::object tracked_weights_;
+
+  /// @brief Update backend control points
+  virtual void SyncControlPoints();
+  /// @brief Update tracked arrays (python)
+  virtual void SyncTrackedArrays();
+};
+class PyRational : public splinepy::splines::SplinepyRational {
+public:
+  /// @brief Returns tracked weights.
+  /// @return
+  virtual py::object Weights();
+};
+class PyBezier : public PySpline, public splinepy::splines::SplinepyBezier {
+public:
+  static std::shared_ptr<PyBezier>
+  Create(const py::array_t<int>& degrees,
+         const py::array_t<double>& control_points);
+
+  /// spline multiplication - currently only for bezier
+  std::shared_ptr<PySpline> Multiply(const std::shared_ptr<PySpline>& a,
+                                     const std::shared_ptr<PySpline>& b);
+
+  /// spline addition - currently only for bezier
+  std::shared_ptr<PySpline> Add(const std::shared_ptr<PySpline>& a,
+                                const std::shared_ptr<PySpline>& b);
+
+  /// spline composition - currently only for bezier
+  std::shared_ptr<PySpline> Compose(const std::shared_ptr<PySpline>& outer,
+                                    const std::shared_ptr<PySpline>& inner);
+
+  /**
+   * @brief Compute the sensitivities with respect to the control points of the
+   * outer function given a composition
+   *
+   * @param inner Inner function (Bezier type)
+   * @param outer Outer Function (Bezier type)
+   * @return py::list list of Bezier splines representing the derivatives
+   */
+  py::list ComposeSensitivities(const std::shared_ptr<PySpline>& inner,
+                                const std::shared_ptr<PySpline>& outer);
+
+  /// spline derivative spline
+  std::shared_ptr<PySpline>
+  DerivativeSpline(const std::shared_ptr<PySpline>& spline,
+                   py::array_t<int> orders);
+
+  /// spline split - returns py::list of PySplines
+  py::list Split(const std::shared_ptr<PySpline>& spline,
+                 int p_dim,
+                 py::array_t<double> locations);
+
+  /// extract a single physical dimension from a spline
+  std::shared_ptr<PySpline> ExtractDim(const std::shared_ptr<PySpline>& spline,
+                                       int phys_dim);
+
+  /// composition derivative
+  std::shared_ptr<PySpline>
+  CompositionDerivative(const std::shared_ptr<PySpline>& outer,
+                        const std::shared_ptr<PySpline>& inner,
+                        const std::shared_ptr<PySpline>& inner_derivative);
+};
+
+class PyRationalBezier : public PyBezier,
+                         public PyRational,
+                         public splinepy::splines::SplinepyBezier {
+public:
+  static std::shared_ptr<PyRationalBezier>
+  Create(const py::array_t<int>& degrees,
+         const py::array_t<double>& control_points,
+         const py::array_t<double>& weights);
+
+  virtual py::object Weights();
+};
+
+class PyBSpline : public PySpline, public splinepy::splines::SplinepyBSpline {
+  static std::shared_ptr<PyBSpline>
+  Create(const py::array_t<int>& degrees,
+         const py::list& knot_vectors,
+         const py::array_t<double>& control_points);
+
+  bool HasKnotVectors() const;
 
   /// (multiple) Degree Reduction
   /// returns a list of reduction result (bool)
   py::list ReduceDegrees(py::array_t<int> para_dims, double tolerance);
 
-  /// @brief returns current spline as package's derived spline types based on
-  /// splinepy.settings.NAME_TO_TYPE
-  /// @return
-  py::object ToDerived();
-};
+  /// @brief Returns ParameterSpace. meant to be called library internally to
+  /// prepare ParameterSpaceBase (forms knot_vectors)
+  std::shared_ptr<bsplinelib::parameter_spaces::ParameterSpaceBase>
+  ParameterSpace();
 
+  /// (multiple) knot insertion, single dimension
+  py::array_t<bool> InsertKnots(int para_dim, py::array_t<double> knots);
+
+  /// (multiple) knot removal, single dimension
+  py::list
+  RemoveKnots(int para_dim, py::array_t<double> knots, double tolerance);
+};
+class PyNURBS : public PyBSpline,
+                public PyRational public splinepy::splines::SplinepyBSpline {
+  static std::shared_ptr<PyNURBS>
+  Create(const py::array_t<int>& degrees,
+         const py::list& knot_vectors,
+         const py::array_t<double>& control_points,
+         const py::array_t<double>& weights);
+
+  virtual py::object Weights();
+};
 } // namespace splinepy::py

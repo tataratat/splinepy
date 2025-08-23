@@ -27,6 +27,7 @@ SOFTWARE.
 #include <memory>
 #include <vector>
 
+#include "splinepy/utils/arrays.hpp"
 #include "splinepy/utils/coordinate_pointers.hpp"
 
 namespace splinepy::splines {
@@ -41,6 +42,10 @@ public:
   using WeightedControlPointPointers_ = splinepy::utils::ControlPointPointers;
   /// Pointers to weights
   using WeightPointers_ = splinepy::utils::WeightPointers;
+  /// Dynamic arrays
+  using Array1D_ = splinepy::utils::Array<double, 1>;
+  using Array2D_ = splinepy::utils::Array<double, 2>;
+  using Array1I_ = splinepy::utils::Array<int, 1>;
 
 protected:
   /// each class creates only once and returns shared_ptr second time.
@@ -156,10 +161,12 @@ public:
   /// @brief Parameter space AABB
   /// @param para_bounds
   virtual void SplinepyParametricBounds(double* para_bounds) const;
+  virtual Array2D_ SplinepyParametricBounds() const;
 
   /// Control mesh resoltuons - number of control points per para dim
   /// @param control_mesh_res
   virtual void SplinepyControlMeshResolutions(int* control_mesh_res) const;
+  virtual Array1I_ SplinepyControlMeshResolutions() const;
 
   /// @brief Calculate Greville abscissae for Spline (required for e.g.
   /// collocation)
@@ -176,6 +183,14 @@ public:
   SplinepyGrevilleAbscissae(double* greville_abscissae,
                             const int& i_para_dim,
                             const double& duplicate_tolerance) const;
+  virtual Array1D_
+  SplinepyGrevilleAbscissae(const int& i_para_dim,
+                            const double& duplicate_tolerance) const;
+  /// @brief Greville abscissae points throughout the whole spline
+  /// @param duplicate_tolerance
+  /// @return
+  virtual Array2D_
+  SplinepyGrevilleAbscissae(const double& duplicate_tolerance) const;
 
   /// @brief Evaluate spline
   /// @param[in] para_coord Parametric coordinates

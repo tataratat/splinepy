@@ -32,7 +32,7 @@ SOFTWARE.
 #include <bezman/src/point.hpp>
 
 #include "splinepy/proximity/proximity.hpp"
-#include "splinepy/splines/splinepy_base.hpp"
+#include "splinepy/splines/splinepy_bezier.hpp"
 
 namespace splinepy::splines {
 
@@ -46,7 +46,7 @@ using BezierSplineType = bezman::BezierSpline<
 /// @tparam para_dim Dimension of parametric space
 /// @tparam dim Dimension of physical space
 template<std::size_t para_dim, std::size_t dim>
-class Bezier : public splinepy::splines::SplinepyBase,
+class Bezier : public splinepy::splines::SplinepyBezier,
                public BezierSplineType<para_dim, dim> {
 public:
   /// @brief Parametric space dimension
