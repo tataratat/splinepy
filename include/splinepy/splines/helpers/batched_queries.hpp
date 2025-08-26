@@ -11,6 +11,8 @@ using Array1I = splinepy::utils::Array1I;
 using Array2I = splinepy::utils::Array2I;
 using Array1D = splinepy::utils::Array1D;
 using Array2D = splinepy::utils::Array2D;
+using Array3D = splinepy::utils::Array3D;
+using Array4D = splinepy::utils::Array4D;
 
 void Evaluate(const SplinepyBase& spline,
               const Array2D& queries,

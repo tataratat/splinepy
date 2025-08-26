@@ -272,7 +272,7 @@ public:
   /// @param data_pointer
   /// @param ...shape
   template<typename... Ts>
-  Array(DataType* data_pointer, const Ts&... shape) {
+  explicit Array(DataType* data_pointer, const Ts&... shape) {
     SetData(data_pointer);
     SetShape(shape...);
   }
@@ -344,6 +344,7 @@ public:
   /// @brief Returns const shape object
   /// @return
   constexpr const ShapeType_& Shape() const { return shape_; }
+  constexpr IndexType Shape(const IndexType i) const { return shape_.at(i); }
 
   /// @brief Returns const strides object
   /// @return
@@ -611,6 +612,8 @@ using Array1I = Array<int, 1>;
 using Array2I = Array<int, 2>;
 using Array1D = Array<double, 1>;
 using Array2D = Array<double, 2>;
+using Array3D = Array<double, 3>;
+using Array4D = Array<double, 4>;
 
 template<typename InputArray, typename OutIndexType>
 void UniqueIndicesAndMultiplicities(

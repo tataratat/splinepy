@@ -33,6 +33,7 @@ SOFTWARE.
 // following four are required for Create* implementations
 #include "splinepy/splines/bezier.hpp"
 #include "splinepy/splines/bspline.hpp"
+#include "splinepy/splines/helpers/batched_queries.hpp"
 #include "splinepy/splines/nurbs.hpp"
 #include "splinepy/splines/rational_bezier.hpp"
 #include "splinepy/utils/arrays.hpp"
@@ -41,11 +42,16 @@ SOFTWARE.
 
 namespace splinepy::py {
 
+template<typename T>
+T* Ptr(py::array_t<T>& arr) {
+  return static_cast<T*>(arr.request().ptr);
+}
+
 /* helper functions for sanity checking spline creation */
 
 template<typename T>
 bool IsAllPositive(const py::array_t<T>& arr) {
-  const T* ptr = static_cast<T*>(arr.request().ptr);
+  const T* ptr = Ptr(arr);
   const auto size = arr.size();
   for (std::remove_const_t<decltype(size)> i{}; i < size; ++i) {
     if (!(ptr[i] > static_cast<T>(0))) {
@@ -58,7 +64,7 @@ bool IsAllPositive(const py::array_t<T>& arr) {
 template<typename T>
 bool IsNotDecreasing(const py::array_t<T>& arr) {
   T prev = std::numeric_limits<T>::lowest();
-  const T* ptr = static_cast<T*>(arr.request().ptr);
+  const T* ptr = Ptr(arr);
   const auto size = arr.size();
   for (const T* pointer = ptr; pointer < ptr + size; ++pointer) {
     if (prev > *pointer) {
@@ -72,10 +78,7 @@ bool IsNotDecreasing(const py::array_t<T>& arr) {
 py::array_t<double> PySpline::ParametricBounds() const {
   // prepare output - [[lower_bound], [upper_bound]]
   py::array_t<double> pbounds({2, para_dim_});
-  double* pbounds_ptr = static_cast<double*>(pbounds.request().ptr);
-
-  Base_::SplinepyParametricBounds(pbounds_ptr);
-
+  Base_::SplinepyParametricBounds(Ptr(pbounds));
   return pbounds;
 }
 
@@ -412,25 +415,18 @@ py::array_t<int> PySpline::ControlMeshResolutions() const {
 
 py::array_t<double> PySpline::Evaluate(py::array_t<double> queries,
                                        int nthreads) const {
-  CheckPyArrayShape(queries, {-1, para_dim_}, true);
 
   // prepare output
-  const int n_queries = queries.shape(0);
-  py::array_t<double> evaluated(n_queries * dim_);
-  double* evaluated_ptr = static_cast<double*>(evaluated.request().ptr);
+  py::array_t<double> evaluated({queries.shape(0), SplinepyDim()});
 
-  // prepare vectorized evaluate queries
-  double* queries_ptr = static_cast<double*>(queries.request().ptr);
-  auto evaluate = [&](const int begin, const int end, int) {
-    for (int i{begin}; i < end; ++i) {
-      Core()->SplinepyEvaluate(&queries_ptr[i * para_dim_],
-                               &evaluated_ptr[i * dim_]);
-    }
-  };
+  splinepy::splines::helpers::Evaluate(
+      *this,
+      {Ptr(queries), queries.shape(0), queries.shape(1)},
+      {Ptr(evaluated), evaluated.shape(0), evaluated.shape(1)},
+      nthreads);
 
   splinepy::utils::NThreadExecution(evaluate, n_queries, nthreads);
 
-  evaluated.resize({n_queries, dim_});
   return evaluated;
 }
 
