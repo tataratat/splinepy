@@ -86,11 +86,11 @@ modified = nurbs.copy()
 # 1. all at once
 modified.control_points /= 2.0
 # 2. indexwise (flat indexing)
-modified.control_points[[3, 4, 5]] *= [1.3, 2.]
+modified.control_points[[3, 4, 5]] *= [1.3, 2.0]
 # 3. with grid-like indexing using multi_index helper
 multi_index = modified.multi_index
-modified.control_points[multi_index[0, 1]] = [-1.5, -.3]
-modified.control_points[multi_index[2, :]] += [2., .1]
+modified.control_points[multi_index[0, 1]] = [-1.5, -0.3]
+modified.control_points[multi_index[2, :]] += [2.0, 0.1]
 
 modified.show()  # visualize Nr. 1
 
@@ -98,7 +98,7 @@ modified.show()  # visualize Nr. 1
 modified.elevate_degrees([0, 1])
 modified.show()  # visualize Nr. 2
 
-modified.insert_knots(1, [.5])
+modified.insert_knots(1, [0.5])
 modified.show()  # visualize Nr. 3
 ```
 
@@ -136,6 +136,7 @@ We also implemented [point inversion](https://tataratat.github.io/splinepy/_gene
 para_coordinates = nurbs.proximities(physical_coordinates)
 
 import numpy as np
+
 assert np.allclose(queries, para_coordinates)
 ```
 In cases, where you may have to compute derivatives at the inverted locations or you just want to know more information about the search, you can set the keyword `return_verbose=True`:
@@ -160,8 +161,12 @@ Here are some highlights.
 ```python
 # basic splines
 box = splinepy.helpme.create.box(1, 2, 3)  # length per dim
-disk = splinepy.helpme.create.disk(outer_radius=3, inner_radius=2, angle=256)
-torus = splinepy.helpme.create.torus(torus_radius=3, section_outer_radius=1.5)
+disk = splinepy.helpme.create.disk(
+    outer_radius=3, inner_radius=2, angle=256
+)
+torus = splinepy.helpme.create.torus(
+    torus_radius=3, section_outer_radius=1.5
+)
 
 splinepy.show(["box", box], ["disk", disk], ["torus", torus])
 ```
@@ -170,7 +175,9 @@ For the latter, you can directly access such functions through [spline.create](h
 ```python
 # based on existing splines
 extruded = nurbs.create.extruded(extrusion_vector=[1, 2, 3])
-revolved = nurbs.create.revolved(axis=[1, 0, 0], center=[-1, -1, 0], angle=50)
+revolved = nurbs.create.revolved(
+    axis=[1, 0, 0], center=[-1, -1, 0], angle=50
+)
 
 splinepy.show(["extruded", extruded], ["revolved", revolved])
 ```
@@ -187,7 +194,7 @@ mesh = nurbs.extract.faces([201, 33])  # specify sample resolutions
 splinepy.show(
     ["control mesh", control_mesh.to_edges()],
     ["control points", control_points],
-    ["spline", mesh]
+    ["spline", mesh],
 )
 ```
 ![extract_mesh](docs/source/_static/readme_extract_mesh.png)
@@ -195,16 +202,23 @@ or part of splines from an existing spline using [spline.extract](https://tatara
 ```python
 # extract splines
 boundaries = nurbs.extract.boundaries()
-partial = nurbs.extract.spline(0, [.5, .78])
-partial_partial = nurbs.extract.spline(0, [.1, .3]).extract.spline(1, [.65, .9])
-bases = nurbs.extract.bases() # basis functions as splines
+partial = nurbs.extract.spline(0, [0.5, 0.78])
+partial_partial = nurbs.extract.spline(0, [0.1, 0.3]).extract.spline(
+    1, [0.65, 0.9]
+)
+bases = nurbs.extract.bases()  # basis functions as splines
 # insert knots to increase number of bezier patches
 inserted = nurbs.copy()
-inserted.insert_knots(0, [.13, .87])
+inserted.insert_knots(0, [0.13, 0.87])
 beziers_patches = inserted.extract.beziers()
 
 splinepy.show(
-    ["boundaries and part of splines", boundaries, partial, partial_partial],
+    [
+        "boundaries and part of splines",
+        boundaries,
+        partial,
+        partial_partial,
+    ],
     ["beziers", beziers_patches],
     ["bases", bases],
 )
@@ -223,7 +237,7 @@ mesh = splinepy.helpme.create.torus(2, 1).extract.faces([100, 100, 100])
 # initialize ffd and move control points
 ffd = splinepy.FFD(mesh=mesh)
 multi_index = ffd.spline.multi_index
-ffd.spline.control_points[multi_index[-1,:,-1]] += [3, .5, .1]
+ffd.spline.control_points[multi_index[-1, :, -1]] += [3, 0.5, 0.1]
 
 ffd.show()
 
@@ -236,9 +250,14 @@ deformed = ffd.mesh
 #### 4.4 Fitting
 You can [fit](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit) your point data using splines.
 ```python
-
-data = [[-0.955,  0.293], [-0.707,  0.707], [-0.293,  0.955],
-        [-1.911,  0.587], [-1.414,  1.414], [-0.587,  1.911]]
+data = [
+    [-0.955, 0.293],
+    [-0.707, 0.707],
+    [-0.293, 0.955],
+    [-1.911, 0.587],
+    [-1.414, 1.414],
+    [-0.587, 1.911],
+]
 
 curve, residual_curve = splinepy.helpme.fit.curve(data, degree=2)
 # you can also use any existing spline's basis
@@ -339,18 +358,20 @@ For that, we provide a [Multipatch](https://tataratat.github.io/splinepy/_genera
 # use previously generated microtiles
 interface_info_array = generated.interfaces
 
+
 # Mark boundaries to set boundary conditions
 # In case of micro structure, you can use outer spline's boundary
 def is_left_bdr(x):
     left = nurbs.extract.boundaries()[3]
     return (left.proximities(x, return_verbose=True)[3] < 1e-8).ravel()
 
+
 generated.boundary_from_function(is_left_bdr, boundary_id=5)
 
 splinepy.show(
     ["All", generated],
     ["Boundaries", generated.boundary_multipatch()],
-    ["Boundary 5", generated.boundary_multipatch(5)]
+    ["Boundary 5", generated.boundary_multipatch(5)],
 )
 
 # export for the solver
