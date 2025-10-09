@@ -224,7 +224,10 @@ def export(fname, splines):
 
             # Write knot vectors where required
             if isinstance(spline, _BSplineBase):
-                f.writelines("    [KV " + " ".join([str(k) for k in kv]) + "]\n" for kv in spline.knot_vectors)
+                f.writelines(
+                    "    [KV " + " ".join([str(k) for k in kv]) + "]\n"
+                    for kv in spline.knot_vectors
+                )
 
             # Determine weighted control points
             if spline.is_rational:
