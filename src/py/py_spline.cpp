@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 #include <algorithm>
+#include <limits>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -106,7 +107,7 @@ void PySpline::NewCore(const py::kwargs& kwargs) {
       knot_vector.reserve(n_knots);
 
       int nknots{0};
-      prev_knot = -1.;
+      prev_knot = std::numeric_limits<double>::lowest();
       for (py::handle k : kvs[i_para]) {
         this_knot = k.cast<double>();
 

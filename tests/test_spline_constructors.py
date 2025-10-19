@@ -14,6 +14,15 @@ def test_BSplines(np_rng):
         knot_vectors=[[0, 0, 1, 1], [0, 0, 0.4, 0.5, 0.7, 1, 1]],
         control_points=np_rng.random((10, 2)),
     )
+    # No assertion query; unclamped, uniform knot-vector
+    splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[
+            [-4, -3, -2, -1, 0, 1, 2, 3, 4],
+            [-15, -10, -5, 0, 5, 10, 15],
+        ],
+        control_points=np_rng.random((6 * 4, 2)),
+    )
     # Check control points
     with pytest.raises(
         RuntimeError,
