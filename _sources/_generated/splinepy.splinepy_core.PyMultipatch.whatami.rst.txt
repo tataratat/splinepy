@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.whatami
+============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PyMultipatch.whatami

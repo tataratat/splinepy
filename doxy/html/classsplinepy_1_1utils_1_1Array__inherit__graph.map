@@ -1,0 +1,15 @@
+<map id="Array&lt; DataType, dim, IndexType &gt;" name="Array&lt; DataType, dim, IndexType &gt;">
+<area shape="rect" id="Node000001" title="fully dynamic array" alt="" coords="581,5,788,405"/>
+<area shape="rect" id="Node000002" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="5,475,212,861"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="569,254,487,292,397,341,307,401,264,434,225,470,214,482,210,478,221,466,261,430,304,396,394,337,485,288,567,249"/>
+<area shape="rect" id="Node000003" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="236,475,443,861"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="573,327,513,396,456,470,445,485,441,482,452,466,509,393,569,323"/>
+<area shape="rect" id="Node000004" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="467,475,673,861"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="634,419,620,476,615,474,629,418"/>
+<area shape="rect" id="Node000005" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="697,475,904,861"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="741,418,755,474,750,476,735,419"/>
+<area shape="rect" id="Node000006" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="928,475,1135,861"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="800,322,861,392,919,466,930,482,926,485,915,470,857,395,796,325"/>
+<area shape="rect" id="Node000007" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="1159,468,1365,868"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="802,249,885,287,976,337,1067,396,1110,430,1149,466,1160,478,1157,482,1145,470,1106,434,1064,401,973,341,882,292,800,254"/>
+</map>

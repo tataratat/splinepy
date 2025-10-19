@@ -1,0 +1,6 @@
+splinepy.helpme.create.line
+===========================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: line

@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.derivative\_spline
+===========================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.derivative_spline

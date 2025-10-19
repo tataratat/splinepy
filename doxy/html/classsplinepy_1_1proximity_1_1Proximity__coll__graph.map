@@ -1,0 +1,11 @@
+<map id="Proximity" name="Proximity">
+<area shape="rect" id="Node000001" title="A helper class to perform proximity operations for splines." alt="" coords="275,956,433,1241"/>
+<area shape="rect" id="Node000002" href="$classsplinepy_1_1splines_1_1SplinepyBase.html" title="Spline base to enable dynamic use of template splines. Member functions are prepended with &quot;Splinepy&quot;..." alt="" coords="5,468,255,893"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="247,893,272,940,268,943,242,895"/>
+<area shape="rect" id="Node000003" href="$classsplinepy_1_1utils_1_1GridPoints.html" title="GridPoints based dynamic grid point sampler." alt="" coords="279,538,429,823"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="357,824,357,940,351,940,351,824"/>
+<area shape="rect" id="Node000004" href="$classsplinepy_1_1utils_1_1Array.html" title=" " alt="" coords="453,488,660,873"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="484,875,456,933,443,959,438,956,452,931,479,872"/>
+<area shape="rect" id="Node000005" href="$classsplinepy_1_1utils_1_1Array.html" title="fully dynamic array" alt="" coords="453,5,660,405"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="559,419,559,488,554,488,554,419"/>
+</map>

@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.microtile
+===============================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoproperty:: Microstructure.microtile

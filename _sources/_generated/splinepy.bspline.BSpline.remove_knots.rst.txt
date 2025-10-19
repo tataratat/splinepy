@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.remove\_knots
+======================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.remove_knots

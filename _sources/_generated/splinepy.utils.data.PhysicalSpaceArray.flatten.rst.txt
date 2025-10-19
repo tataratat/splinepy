@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.flatten
+==============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.flatten

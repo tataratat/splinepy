@@ -1,0 +1,1247 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Introduction to Splines &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spline_intro';</script>
+    <link rel="icon" href="_static/favicon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="CONTRIBUTING.html" />
+    <link rel="prev" title="Install guide" href="index.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Introduction to Splines</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="introduction-to-splines">
+<h1>Introduction to Splines<a class="headerlink" href="#introduction-to-splines" title="Link to this heading">#</a></h1>
+<section id="a-general-introduction-to-splines">
+<h2>A general introduction to splines<a class="headerlink" href="#a-general-introduction-to-splines" title="Link to this heading">#</a></h2>
+<p>A spline is a very flexible and in particular smooth way of representing geometry. As such, splines have enjoyed great success in particular in design, be it engineering design or architecture. The following description is inspired by the books of Rogers as well as Piegl and Tiller (see section Further reading for the exact reference).</p>
+<p>Splines come in many colors and facets, but there are a few properties that the most common ones (Bézier splines, B-splines, and NURBS) share:</p>
+<ol class="arabic simple">
+<li><p>Splines are parametric geometry descriptions. This means that each spline coordinate is expressed as a function of a local parameter. Assume that we are dealing with a spline curve, which is embedded in a two-dimensional space. Then the coordinates <span class="math notranslate nohighlight">\((x,y)\)</span> are computed as <span class="math notranslate nohighlight">\((x(u),y(u))\)</span>, where <span class="math notranslate nohighlight">\(u\)</span> is the local parameter. An example could be <span class="math notranslate nohighlight">\(x(u)=\cos(u),y(u)=\sin(u)\)</span>, which represents the unit circle. Usually, the local parameter is normalized, meaning that it takes on the value of <span class="math notranslate nohighlight">\(0\)</span> at one end of the curve and the value of <span class="math notranslate nohighlight">\(1\)</span> at the other end of the curve. Notice that parameterizations are not unique and one can represent the same geometry using different parameterizations.</p></li>
+<li><p>The dimension of the geometric entity (i.e., 1D for a curve, 2D for a surface, 3D for a volume, etc.) determines the dimension of the parameter space. This means that a curve always has one local parameter, a curve two, etc.</p></li>
+<li><p>In many cases, one is faced with so-called immersions, i.e., a spline of lower dimension is embedded into a higher-dimensional space, such as a curve into a 2D space. For this reason, the dimension of the parameter space (defined in <span class="math notranslate nohighlight">\(\pmb{u}\)</span>-coordinates) does not necessarily match the dimension of embedding space, which we will call the global space (defined in <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>-coordinates).</p></li>
+<li><p>The general equation for a spline curve <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> is</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\mathbf{S} = \sum_{i=1}^n N_i(u) \mathbf{P}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(N\)</span> denotes the basis functions, <span class="math notranslate nohighlight">\(\mathbf{P}\)</span> the coordinates of the control points, and <span class="math notranslate nohighlight">\(n\)</span> the number of basis functions / control points. Geometrically, this means that one selects a certain number of points in the global space (i.e., the control points) and these points are “connected” using the basis functions. Notice that for splines, the basis functions can take on values within the interval <span class="math notranslate nohighlight">\([0,1]\)</span>. However, they will usually never reach the value of one. As a consequence, the control points are not interpolated (meaning that the spline does not go through them), but they only guide the spline.</p>
+<ol class="arabic simple">
+<li><p>Higher-dimensional splines are derived from 1D-splines in a tensor-product fashion. This means that the control points are then arranged in structured grids and the basis functions are computed as a product of the univariate basis functions <span class="math notranslate nohighlight">\(N_i(u)\)</span> and <span class="math notranslate nohighlight">\(M_j(\eta)\)</span>. Consider the example of a splines surface:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\mathbf{S}(u, \eta) = \sum_{i=1}^n \sum_{j=1}^m N_i(u) M_j(\eta) \mathbf{P}_{i,j}\]</div>
+<p>Notice that the structure of <span class="math notranslate nohighlight">\(N_i\)</span> and <span class="math notranslate nohighlight">\(M_j\)</span> is exactly the same. They are simply defined in different coordinate directions.</p>
+<section id="in-which-situations-are-splines-helpful">
+<h3>In which situations are splines helpful?<a class="headerlink" href="#in-which-situations-are-splines-helpful" title="Link to this heading">#</a></h3>
+<p>As previously mentioned, splines, or in particular non-uniform rational B-spline (NURBS), constitute the basis of computer aided design. However, this is not where the stories of splines ends. They are also very helpful in geometry representation for shape optimization, fitting of data points, but most of all, have become an important means also in numerical analysis. Here, we refer to the idea of isogeometric analysis (IGA), proposed by Hughes, Cottrell and Bazilevs in 2005.</p>
+</section>
+</section>
+<section id="an-introduction-to-different-spline-types">
+<h2>An introduction to different spline types<a class="headerlink" href="#an-introduction-to-different-spline-types" title="Link to this heading">#</a></h2>
+<p>As described in the introduction, the principal structure of most spline types is the same. The only difference between the considered spline types are the definition of the basis functions <span class="math notranslate nohighlight">\(N_i\)</span>. In the following, we will introduce the basis functions for four different spline types and discuss the specific properties they yield. We will restrict ourselves to the univariate basis functions and ask the reader to keep in mind that from there, one can derive the higher-dimensional basis functions as tensor products.</p>
+<section id="bezier-splines">
+<h3>Bézier splines<a class="headerlink" href="#bezier-splines" title="Link to this heading">#</a></h3>
+<p>Named after Pierre Bézier (1910-1999), a French engineer at Renault and one of the founders of CAD/CAM systems, Bézier splines were one of the earliest spline representations. They use Bernstein polynomials as their basis function, which are defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[N_{i,p}(u)=\frac{(p)!}{(i-1)!(p+1-i)!}u^{i-1}(1-u)^{p+1-i} ,\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}u &amp;\in [0;1],\\0^{0} &amp;\equiv 1,\\0! &amp;= 1,\end{aligned}\end{align} \]</div>
+<p>and the fixed relation between degree of the polynomial <span class="math notranslate nohighlight">\(p\)</span> and number of control points <span class="math notranslate nohighlight">\(n\)</span></p>
+<div class="math notranslate nohighlight">
+\[n=p+1 .\]</div>
+<p>This means that the number of control points cannot be chosen freely, but is fixed the moment the degree has been chosen. Actually, this is a good moment to point to a terminology conflict that becomes very apparent, when geometers and analysts try to communicate: While a geometer uses the terms <code class="docutils literal notranslate"><span class="pre">degree</span></code> and <code class="docutils literal notranslate"><span class="pre">order</span></code> differently, assuming that order= degree+1, an analyst will tend to use those two terms interchangeably, meaning that order = degree.</p>
+<p>After this basic definition, we will continue with a few examples.</p>
+<section id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h4>
+<p><strong>Example 1</strong>: Bézier curve with <span class="math notranslate nohighlight">\(n=2\)</span> control points and degree <span class="math notranslate nohighlight">\(p=1\)</span>
+In this case, there are two basis functions, both of degree <span class="math notranslate nohighlight">\(1\)</span>. We denote the basis functions as <span class="math notranslate nohighlight">\(N_{i,p}\)</span>, where <span class="math notranslate nohighlight">\(i\)</span> indicates the number of the basis function and <span class="math notranslate nohighlight">\(p\)</span> the degree of the basis function.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}N_{1,1}(u)&amp;=\frac{1!}{0!1!}u^{0}(1-u)^{1}=1-u ,\\N_{2,1}(u)&amp;=\frac{1!}{1!0!}u^{1}(1-u)^{0}=u .\end{aligned}\end{align} \]</div>
+<p>The resulting spline curve can then be computed as follows:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{S}(u)=(1-u)\mathbf{P}_{1}+u \mathbf{P}_{2} .\]</div>
+<p><strong>Example 2</strong>: Bézier curve with <span class="math notranslate nohighlight">\(n=3\)</span> control points and degree <span class="math notranslate nohighlight">\(p=2\)</span></p>
+<p>noindent In this case, there are three basis functions, all of degree <span class="math notranslate nohighlight">\(2\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}N_{1,2}(u)&amp;=\frac{2!}{0!(2!)}u^{0}(1-u)^{2}=(1-u)^{2}\\N_{2,2}(u)&amp;=\frac{2!}{1!(1!)}u^{1}(1-u)^{1}=2u (1-u)\\N_{3,2}(u)&amp;=\frac{2!}{2!(0!)}u^{1}(1-u)^{0}=u^{2}\end{aligned}\end{align} \]</div>
+<p>The resulting spline curve can then be computed as follows:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{S}(u)=(1-u)^{2}\mathbf{P}_{1}+2u (1-u)\mathbf{P}_{2}+u^{2}\mathbf{P}_{3}\]</div>
+</section>
+<section id="properties-of-bezier-curves">
+<h4>Properties of Bézier curves<a class="headerlink" href="#properties-of-bezier-curves" title="Link to this heading">#</a></h4>
+<p>Bézier curves have the following properties:</p>
+<ul class="simple">
+<li><p>The curve is contained in the convex hull of the control polygon (i.e. the largest convex polygon defined by the CPs).</p></li>
+<li><p>The basis functions are real and (non-zero) throughout the entire definition space.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{P}_{1}=\mathbf{S}(0)\)</span> and <span class="math notranslate nohighlight">\(\mathbf{P}_{n}=\mathbf{S}(1)\)</span>. This follows from:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}N_{1,p}(0)&amp;=\underbrace{\frac{p!}{0!p!}}_{=1}\underbrace{0^{0}}_{=1}\underbrace{(1-0)^{p}}_{=1}=1\\N_{i,p}(0)&amp;=\frac{p!}{(i-1)!p!}0^{i-1}(1-0)^{p+1-i}=0\qquad\text{if }i\neq 1\\C(0)&amp;=1\cdot P_{1}\end{aligned}\end{align} \]</div>
+<p>A similar argument can be made for <span class="math notranslate nohighlight">\(\mathbf{P}_n\)</span>.</p>
+<ul class="simple">
+<li><p>Bernstein polynomials form a partition  of unity.</p></li>
+</ul>
+</section>
+<section id="drawbacks-of-bezier-curves">
+<h4>Drawbacks of Bézier curves<a class="headerlink" href="#drawbacks-of-bezier-curves" title="Link to this heading">#</a></h4>
+<p>In modern CAD systems, Bézier curves no longer play a role. This is due to two drawbacks:</p>
+<ol class="arabic simple">
+<li><p>Important types of curves cannot be represented using polynomials and thus also not with a Bézier spline, which has a polynomial basis. These include conic sections like circles, cylinders, cones, spheres, etc..</p></li>
+<li><p>The control over the curve geometry is not sufficiently local (single segment curve). A high polynomial degree is required to satisfy a large number of constraints, i.e., complex shapes.</p></li>
+</ol>
+</section>
+<section id="rational-bezier-splines">
+<h4>Rational Bézier splines<a class="headerlink" href="#rational-bezier-splines" title="Link to this heading">#</a></h4>
+<p>One of the drawbacks of Bézier spline listed above is that it cannot be used to represent certain conic sections exactly. To this end, rational functions are needed. In this case, we will use rational functions defined via the ratio of two polynomials. The new basis function becomes:</p>
+<div class="math notranslate nohighlight">
+\[R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} .\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(N_{i,p}\)</span> are the Bernstein polynomials discussed above. <span class="math notranslate nohighlight">\(\omega_i\)</span> is a so-called weight. <span class="math notranslate nohighlight">\(\omega_i\)</span> is greater than zero and provides a measure to scale the influence of a certain control point. If the weight tends to zero, the control point is technically excluded from the spline computation. If the weight becomes large, the spline moves very close to the respective control point. If all weights are equal, one retrieves a the Bézier spline (the weights cancel and the denominator than becomes zero due to the partition of unity property.</p>
+</section>
+<section id="properties-of-rational-bezier-splines">
+<h4>Properties of Rational Bézier splines<a class="headerlink" href="#properties-of-rational-bezier-splines" title="Link to this heading">#</a></h4>
+<p>The same properties of Bézier splines hold.</p>
+</section>
+</section>
+<section id="b-splines">
+<h3>B-splines<a class="headerlink" href="#b-splines" title="Link to this heading">#</a></h3>
+<p>Just like the Bézier basis functions, B-spline basis functions are polynomials. The key difference is that they are non-zero in only a portion of the parameter space. In other words, the basis functions have local support and this is what, in contrast to Bézier splines, gives us local control over the spline. In order to indicate where the support of each basis function begins and ends, we define a series of break points. These break points are called knots. The collection of knots forms the knot vector <span class="math notranslate nohighlight">\(u\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[u=[u_{1}=0,u_{2},\dots,u_{n}=1]\qquad \underbrace{0\le u\le 1}_{\text{ parameter space}} .\]</div>
+<p>The entries of the knot vector form a non-decreasing sequence: <span class="math notranslate nohighlight">\(u_{i}\le u_{i+1}\)</span>. It is however possible to repeat knot values. The interval <span class="math notranslate nohighlight">\([u_{i},u_{i+1}]\)</span> is called the <span class="math notranslate nohighlight">\(i\)</span>-th knot span. The length (meaning number of entries) of the knot vector, <span class="math notranslate nohighlight">\(m\)</span>, is fixed as</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}&amp;m=n+p+1\\&amp;n:\text{ number of basis functions/CPs}\\&amp;p:\text{ degree} \nonumber\end{aligned}\end{align} \]</div>
+<p>An example of a knot vector could be:</p>
+<div class="math notranslate nohighlight">
+\[u=[0, 0, 0.5, 1, 1] .\]</div>
+<p>It has a length of <span class="math notranslate nohighlight">\(m=5\)</span> and contains four knot spans. The first knot span is <span class="math notranslate nohighlight">\([0,0]\)</span> with a length of <span class="math notranslate nohighlight">\(0\)</span>, the second knot span is <span class="math notranslate nohighlight">\([0,0.5]\)</span> with a length of <span class="math notranslate nohighlight">\(0.5\)</span>, etc..</p>
+<p>There are different types of knot vectors:</p>
+<ul class="simple">
+<li><p>open  <span class="math notranslate nohighlight">\(\leftrightarrow\)</span> periodic</p></li>
+</ul>
+<p>In an open knot vector, the first and last value appears <span class="math notranslate nohighlight">\(p+1\)</span> times. A knot vector is called periodic, if it is not open. <span class="math notranslate nohighlight">\(u=[0,0,0,0.5,1,1,1]\)</span> is an open knot vector if <span class="math notranslate nohighlight">\(p=2\)</span>.</p>
+<ul class="simple">
+<li><p>uniform  <span class="math notranslate nohighlight">\(\leftrightarrow\)</span> non-uniform In a uniform knot vector, the knots are equally spaced in the parameter space, e.g., <span class="math notranslate nohighlight">\(u=[0,0.2,0.4,0.6,0.8,1]\)</span>. A knot vector is called non-uniform, if this condition is not fulfilled. An exception to this rule are repeated knot values in the beginning or end of the knot vector, e.g., <span class="math notranslate nohighlight">\([0,0,0,0.5,1,1,1]\)</span>. This knot vector is then still called uniform, if all middle knots are equally spaced.</p></li>
+</ul>
+<p>Once the knot vector has been specified, the basis functions <span class="math notranslate nohighlight">\(N_{i,p}\)</span> can be defined. Again, <span class="math notranslate nohighlight">\(i\)</span> indicates the number of the basis function and <span class="math notranslate nohighlight">\(p\)</span> the degree.  <span class="math notranslate nohighlight">\(N_{i,p}\)</span> is defined by the Cox-de Boor recurrence formula. The starting point are constant basis functions (<span class="math notranslate nohighlight">\(p=0\)</span>) defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}N_{i,0}(u)=
+ \begin{cases}
+   1,  &amp; \quad u_{i}\le u &lt; u_{i+1} \qquad (i\text{th knot span}), \\\\
+   0,  &amp; \quad \text{otherwise.}
+ \end{cases}\end{split}\]</div>
+<p>Subsequently, the degree of the basis function can be raised bit by bit using</p>
+<div class="math notranslate nohighlight">
+\[N_{i,p}(u)=\frac{u-u_{i}}{u_{i+p}-u_{i}}N_{i,p-1}(u)+\frac{u_{i+p+1}-u}{u_{i+p+1}-u_{i+1}}N_{i+1,p-1}(u) ,\]</div>
+<p>until the desired degree has been reached.</p>
+<section id="properties-of-b-spline-basis-functions">
+<h4>Properties of B-spline basis functions:<a class="headerlink" href="#properties-of-b-spline-basis-functions" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>constitute a partition of unity <span class="math notranslate nohighlight">\(\sum_{i=1}^{n}N_{i,p}(u)=1\)</span></p></li>
+<li><p>non-negative</p></li>
+<li><p>continuously differentiable within knot spans, <span class="math notranslate nohighlight">\(p-k\)</span> times continuously differentiable across knots (<span class="math notranslate nohighlight">\(k\)</span>: multiplicity of knot)</p></li>
+<li><p>computation of a set of basis functions requires a knot vector <span class="math notranslate nohighlight">\(u\)</span> and a degree <span class="math notranslate nohighlight">\(p\)</span></p></li>
+<li><p>basis functions are non-zero in <span class="math notranslate nohighlight">\([u_{i},u_{i+p+1})\)</span>, i.e., in <span class="math notranslate nohighlight">\(p+1\)</span> knot spans</p></li>
+<li><p>in each knot span, <span class="math notranslate nohighlight">\(p+1\)</span> basis function will be nonzero</p></li>
+<li><p>each basis function attains exactly one maximum in the interval <span class="math notranslate nohighlight">\([u_{p+1},u_{n+1}]\)</span>, except for the case <span class="math notranslate nohighlight">\(p=0\)</span></p></li>
+<li><p>if the number of basis functions is <span class="math notranslate nohighlight">\(p+1\)</span>, the B-spline basis reduces to the Bézier basis</p></li>
+</ul>
+</section>
+</section>
+<section id="non-uniform-rational-b-splines-nurbs">
+<h3>Non-uniform rational B-splines (NURBS)<a class="headerlink" href="#non-uniform-rational-b-splines-nurbs" title="Link to this heading">#</a></h3>
+<p>In an argument similar to rational Bézier splines, NURBS are the rational counterpart of B-splines. In fact, a NURBS entity in <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span> is obtained by the projective transformation of a B-spline entity in <span class="math notranslate nohighlight">\(\mathbb{R}^{d+1}\)</span>.</p>
+<p>The NURBS basis functions <span class="math notranslate nohighlight">\(R_{i,p}\)</span> are computed using the B-spline basis functions <span class="math notranslate nohighlight">\(N_{i,p}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[R_{i,p}=\frac{N_{i,p}(u)\omega_{i}}{W(u)}=\frac{N_{i,p}(u)\omega_{i}}{\sum_{\hat{i}=1}^{n}N_{\hat{i},p}(u)\omega_{\hat{i}}} .\]</div>
+<p>Again, <span class="math notranslate nohighlight">\(\omega_i\)</span> is a weight.</p>
+<section id="properties-of-nurbs-basis-functions">
+<h4>Properties of NURBS basis functions:<a class="headerlink" href="#properties-of-nurbs-basis-functions" title="Link to this heading">#</a></h4>
+<p>The same properties of B-spline basis functions hold with the following additions:</p>
+<ul class="simple">
+<li><p>computation of a set of basis functions additionally requires the weights <span class="math notranslate nohighlight">\(\{\omega_i\}\)</span></p></li>
+<li><p>if all weights are equal (<span class="math notranslate nohighlight">\(\omega_i=a\)</span> for all <span class="math notranslate nohighlight">\(i\)</span> and arbitrary <span class="math notranslate nohighlight">\(a \neq 0\)</span>), the NURBS basis reduces to the B-spline basis</p></li>
+</ul>
+<!-- # A selection of spline operations offered by splinepy --></section>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<p>As further reading, we suggest</p>
+<ol class="arabic simple">
+<li><p>Rogers, David F. An introduction to NURBS: with historical perspective. Morgan Kaufmann, 2001.</p></li>
+<li><p>Piegl, Les, and Wayne Tiller. The NURBS book. Springer Science and Business Media, 1996.</p></li>
+<li><p>Hughes, Thomas JR, John A. Cottrell, and Yuri Bazilevs. Isogeometric analysis: CAD, finite elements, NURBS, exact geometry and mesh refinement. Computer methods in applied mechanics and engineering 194, no. 39-41 (2005): 4135-4195.</p></li>
+</ol>
+</section>
+</section>
+<section id="spline-visualization">
+<h1>Spline visualization<a class="headerlink" href="#spline-visualization" title="Link to this heading">#</a></h1>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<p>One of the highlights of splinepy is that we can visualize splines.
+Most of the classes have their own <code class="docutils literal notranslate"><span class="pre">show()</span></code> function to visualize current state of each object.
+Visualizations utilize mesh types and data structures of <span class="raw-html-md"><a href='https://tataratat.github.io/gustaf/'>gustaf</a></span>.
+Then, actual rendering happens with <span class="raw-html-md"><a href='https://vedo.embl.es'>vedo</a></span> - a powerful scientific analysis and visualization library - check them out for details!</p>
+<p>The following will give a brief introduction to spline visualization.</p>
+<section id="creating-a-basic-nurbs">
+<h3>Creating a basic NURBS<a class="headerlink" href="#creating-a-basic-nurbs" title="Link to this heading">#</a></h3>
+<a class="reference external image-reference" href="../source/_static/readme_nurbs.png"><img alt="NURBS" src="_images/readme_nurbs.png" />
+</a>
+<p>Here, we start by creating a NURBS object with array-like inputs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">splinepy</span>
+
+<span class="c1"># Initialize nurbs with any array-like input</span>
+<span class="n">nurbs</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">NURBS</span><span class="p">(</span>
+    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">knot_vectors</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">weights</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># vizusalize</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-show-options">
+<h3>Setting show_options<a class="headerlink" href="#setting-show-options" title="Link to this heading">#</a></h3>
+<a class="reference external image-reference" href="../source/_static/plotting_show_options.png"><img alt="plotting_show_options" src="_images/plotting_show_options.png" />
+</a>
+<p>You can also customize visualization by setting <strong>*show_options*</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pink&quot;</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;control_point_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># You can use `update()` to set multiple options at once</span>
+<span class="c1"># As visualization runs through mesh based engines, you can set sampling</span>
+<span class="c1"># resolutions per dimension.</span>
+<span class="c1"># In case of int, it will apply that for all dimension</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">control_mesh_c</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">resolutions</span><span class="o">=</span><span class="p">[</span><span class="mi">201</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="plotting-data-on-spline">
+<h3>Plotting data on spline<a class="headerlink" href="#plotting-data-on-spline" title="Link to this heading">#</a></h3>
+<a class="reference external image-reference" href="../source/_static/plotting_data.png"><img alt="plotting_data" src="_images/plotting_data.png" />
+</a>
+<p>You can easily plot data on splines.
+Scalar data can be represented with a colormap and vector data can be represented with arrows.
+You can take a look at <span class="raw-html-md"><a href='https://github.com/tataratat/splinepy/blob/main/examples/show_spline_data.py'>this example</a></span> for detailed introduction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># set data - we will plot self spline, which will plot coordinates</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">spline_data</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nurbs</span>
+
+<span class="c1"># then, set in show_options the name of the data</span>
+<span class="c1"># &quot;data&quot; keyword will process any data as scalar - in case of vector data,</span>
+<span class="c1"># it will take the norms</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;coords&quot;</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;scalarbar3d&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Nr. 1</span>
+
+<span class="c1"># at the same time, you can plot vector data</span>
+<span class="c1"># the keyword here is &quot;arrow_data&quot;</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;arrow_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;coords&quot;</span>
+
+<span class="c1"># by default, this will place an arrow at each sampling location which most of</span>
+<span class="c1"># the time is too many. With &quot;arrow_data_on&quot;, you can specify locations</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;arrow_data_on&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">uniform_query</span><span class="p">(</span>
+    <span class="n">nurbs</span><span class="o">.</span><span class="n">parametric_bounds</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Nr. 2</span>
+
+<span class="c1"># to turn off, just set None or pop()</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show_options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># Nr. 3</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Take a look at the <span class="raw-html-md"><a href='https://github.com/tataratat/splinepy/tree/main/examples'>examples folder</a></span> for more!</p>
+</section>
+<section id="notebook-plotting">
+<h3>Notebook plotting<a class="headerlink" href="#notebook-plotting" title="Link to this heading">#</a></h3>
+<p>You can also plot your splines inside a notebook. For this you need to change the vedo backend to ‘k3d’. To do this you need to add the following lines to the top of the notebook.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vedo</span>
+
+<span class="n">vedo</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">default_backend</span> <span class="o">=</span> <span class="s2">&quot;k3d&quot;</span>
+</pre></div>
+</div>
+<p>After this most functionality of the normal plotting should be available to you. Please write an issue if you find something that you can plot in a script but not in a notebook. There is one known issue regarding number of Line objects that we can plot (limited to 200 from <code class="docutils literal notranslate"><span class="pre">vedo</span></code>). We are working on a solution, but meanwhile, plotting curves is limited to resolutions of 201; for 2D/3D splines you can turn off <code class="docutils literal notranslate"><span class="pre">knots</span></code> in <code class="docutils literal notranslate"><span class="pre">show_options</span></code>. An example is provided in the folder <code class="docutils literal notranslate"><span class="pre">examples/ipynb</span></code>.</p>
+</section>
+</section>
+<section id="list-of-show-options">
+<h2>List of show_options<a class="headerlink" href="#list-of-show-options" title="Link to this heading">#</a></h2>
+<section id="splineshowoption">
+<h3>SplineShowOption<a class="headerlink" href="#splineshowoption" title="Link to this heading">#</a></h3>
+<details><summary><strong>c</strong></summary><p><p>Color in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>alpha</strong></summary><p><p>Transparency in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>data</strong></summary><p><p>Name of vertex_data to show. Object must have vertex_data with the same name.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vertex_ids</strong></summary><p><p>Show ids of vertices</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>element_ids</strong></summary><p><p>Show ids of elements</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>lighting</strong></summary><p><p>Lighting options {‘default’, ‘metallic’, ‘plastic’, ‘shiny’, ‘glossy’, ‘ambient’, ‘off’}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap</strong></summary><p><p>Colormap for vertex_data plots.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vmin</strong></summary><p><p>Minimum value for cmap</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vmax</strong></summary><p><p>Maximum value for cmap</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap_alpha</strong></summary><p><p>Colormap Transparency in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap_n_colors</strong></summary><p><p>Set the number of available colors</p>
+<ul>
+<li><p><em>allowed types</em>: ( int,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>scalarbar</strong></summary><p><p>Scalarbar describing cmap. At least an empty dict or dict with following items are accepted: {title: str, pos: tuple, title_yoffset: int, font_size: int, nlabels: int, c: str, horizontal: bool, use_alpha: bool, label_format: str}. Setting bool will add a default scalarbar</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>scalarbar3d</strong></summary><p><p>3D scalarbar describing cmap. At least an empty dict or dict with following items are accepted: {title: str, pos: tuple, size: list, title_font: str, title_xoffset: float, title_yoffset: float, title_size: float, title_rotation: float, nlabels: int, label_font: str, label_size: float, label_offset: float, label_rotation: int, label_format: str, draw_box: bool, above_text: str, below_text: str, nan_text: str, categories: list}</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data</strong></summary><p><p>Name of vertex_data to plot as arrow. Corresponding data should be at least 2D. If you want more control over arrows, consider creating edges using gus.create.edges.from_data().</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_scale</strong></summary><p><p>Scaling factor for arrow data.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_color</strong></summary><p><p>Color for arrow data. Can be either cmap name or color. For cmap, colors are based on the size of the arrows.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_to_origin</strong></summary><p><p>Points arrow data to geometric origin. By default, arrows point away from origin. When enabled, arrows are shifted backwards by their own magnitudes. Works in conjunction with arrow_data and arrow_data_scale options.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>axes</strong></summary><p><p>Configure a specific axes with options. Expect dict(), but setting True will set a default axes. For full options, see <a class="reference external" href="https://vedo.embl.es/autodocs/content/vedo/addons.html#vedo.addons.Axes">https://vedo.embl.es/autodocs/content/vedo/addons.html#vedo.addons.Axes</a></p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knots</strong></summary><p><p>Show spline’s knots.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_c</strong></summary><p><p>Knot color.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_lw</strong></summary><p><p>Line width of knots. Number of pixels. Applicable to para_dim &gt; 1.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  float)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_alpha</strong></summary><p><p>Transparency of knots in range [0, 1]. Applicable to para_dim &gt; 1</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_points</strong></summary><p><p>Show spline’s control points.Options propagates to control mesh, unless it is specified.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_r</strong></summary><p><p>Control point radius</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_c</strong></summary><p><p>Color of control_points in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_alpha</strong></summary><p><p>Transparency of control points in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_ids</strong></summary><p><p>Show ids of control_points.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh</strong></summary><p><p>Show spline’s control mesh.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh_c</strong></summary><p><p>Color of control_mesh in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh_lw</strong></summary><p><p>Line width of control mesh. Number of pixels</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>resolutions</strong></summary><p><p>Sampling resolution for spline.</p>
+<ul>
+<li><p><em>allowed types</em>: ( int,  list,  tuple,  numpy.ndarray)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>lw</strong></summary><p><p>Line width 1D spline.Applicable to para_dim &gt; 1.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>fitting_queries</strong></summary><p><p>Shows fitting queries if they are locally saved in splines.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_on</strong></summary><p><p>Specify parametric coordinates to place arrow_data.</p>
+<ul>
+<li><p><em>allowed types</em>: ( list,  tuple,  numpy.ndarray)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+</section>
+<section id="multipatchshowoption">
+<h3>MultipatchShowOption<a class="headerlink" href="#multipatchshowoption" title="Link to this heading">#</a></h3>
+<details><summary><strong>c</strong></summary><p><p>Color in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>alpha</strong></summary><p><p>Transparency in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>data</strong></summary><p><p>Name of vertex_data to show. Object must have vertex_data with the same name.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vertex_ids</strong></summary><p><p>Show ids of vertices</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>element_ids</strong></summary><p><p>Show ids of elements</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>lighting</strong></summary><p><p>Lighting options {‘default’, ‘metallic’, ‘plastic’, ‘shiny’, ‘glossy’, ‘ambient’, ‘off’}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap</strong></summary><p><p>Colormap for vertex_data plots.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vmin</strong></summary><p><p>Minimum value for cmap</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>vmax</strong></summary><p><p>Maximum value for cmap</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap_alpha</strong></summary><p><p>Colormap Transparency in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>cmap_n_colors</strong></summary><p><p>Set the number of available colors</p>
+<ul>
+<li><p><em>allowed types</em>: ( int,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>scalarbar</strong></summary><p><p>Scalarbar describing cmap. At least an empty dict or dict with following items are accepted: {title: str, pos: tuple, title_yoffset: int, font_size: int, nlabels: int, c: str, horizontal: bool, use_alpha: bool, label_format: str}. Setting bool will add a default scalarbar</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>scalarbar3d</strong></summary><p><p>3D scalarbar describing cmap. At least an empty dict or dict with following items are accepted: {title: str, pos: tuple, size: list, title_font: str, title_xoffset: float, title_yoffset: float, title_size: float, title_rotation: float, nlabels: int, label_font: str, label_size: float, label_offset: float, label_rotation: int, label_format: str, draw_box: bool, above_text: str, below_text: str, nan_text: str, categories: list}</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data</strong></summary><p><p>Name of vertex_data to plot as arrow. Corresponding data should be at least 2D. If you want more control over arrows, consider creating edges using gus.create.edges.from_data().</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_scale</strong></summary><p><p>Scaling factor for arrow data.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_color</strong></summary><p><p>Color for arrow data. Can be either cmap name or color. For cmap, colors are based on the size of the arrows.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>arrow_data_to_origin</strong></summary><p><p>Points arrow data to geometric origin. By default, arrows point away from origin. When enabled, arrows are shifted backwards by their own magnitudes. Works in conjunction with arrow_data and arrow_data_scale options.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>axes</strong></summary><p><p>Configure a specific axes with options. Expect dict(), but setting True will set a default axes. For full options, see <a class="reference external" href="https://vedo.embl.es/autodocs/content/vedo/addons.html#vedo.addons.Axes">https://vedo.embl.es/autodocs/content/vedo/addons.html#vedo.addons.Axes</a></p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,  dict)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knots</strong></summary><p><p>Show spline’s knots.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_c</strong></summary><p><p>Knot color.</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_lw</strong></summary><p><p>Line width of knots. Number of pixels. Applicable to para_dim &gt; 1.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  float)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>knot_alpha</strong></summary><p><p>Transparency of knots in range [0, 1]. Applicable to para_dim &gt; 1</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_points</strong></summary><p><p>Show spline’s control points.Options propagates to control mesh, unless it is specified.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_r</strong></summary><p><p>Control point radius</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_c</strong></summary><p><p>Color of control_points in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_alpha</strong></summary><p><p>Transparency of control points in range [0, 1].</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_point_ids</strong></summary><p><p>Show ids of control_points.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh</strong></summary><p><p>Show spline’s control mesh.</p>
+<ul>
+<li><p><em>allowed types</em>: ( bool,)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh_c</strong></summary><p><p>Color of control_mesh in {rgb, RGB, str of (hex, name), int}</p>
+<ul>
+<li><p><em>allowed types</em>: ( str,  tuple,  list,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>control_mesh_lw</strong></summary><p><p>Line width of control mesh. Number of pixels</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>resolutions</strong></summary><p><p>Sampling resolution for spline.</p>
+<ul>
+<li><p><em>allowed types</em>: ( int,  list,  tuple,  numpy.ndarray)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+<details><summary><strong>lw</strong></summary><p><p>Line width 1D spline.Applicable to para_dim &gt; 1.</p>
+<ul>
+<li><p><em>allowed types</em>: ( float,  int)</p></li>
+<li><p><em>default</em>: None</p>
+</p></details></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Install guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="CONTRIBUTING.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Contributing</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Introduction to Splines</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-general-introduction-to-splines">A general introduction to splines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-which-situations-are-splines-helpful">In which situations are splines helpful?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-introduction-to-different-spline-types">An introduction to different spline types</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bezier-splines">Bézier splines</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-bezier-curves">Properties of Bézier curves</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#drawbacks-of-bezier-curves">Drawbacks of Bézier curves</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rational-bezier-splines">Rational Bézier splines</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-rational-bezier-splines">Properties of Rational Bézier splines</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#b-splines">B-splines</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-b-spline-basis-functions">Properties of B-spline basis functions:</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-uniform-rational-b-splines-nurbs">Non-uniform rational B-splines (NURBS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-of-nurbs-basis-functions">Properties of NURBS basis functions:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#spline-visualization">Spline visualization</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-basic-nurbs">Creating a basic NURBS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-show-options">Setting show_options</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-data-on-spline">Plotting data on spline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notebook-plotting">Notebook plotting</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-of-show-options">List of show_options</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splineshowoption">SplineShowOption</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multipatchshowoption">MultipatchShowOption</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/spline_intro.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

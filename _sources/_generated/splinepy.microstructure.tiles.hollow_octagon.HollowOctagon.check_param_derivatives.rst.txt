@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.hollow\_octagon.HollowOctagon.check\_param\_derivatives
+=====================================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_octagon
+
+.. automethod:: HollowOctagon.check_param_derivatives

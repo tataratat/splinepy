@@ -1,0 +1,41 @@
+splinepy.splinepy\_core.ControlPointPointers
+============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: ControlPointPointers
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       ControlPointPointers.dim
+     
+     
+       ControlPointPointers.len
+     
+     
+       ControlPointPointers.set_row
+     
+     
+       ControlPointPointers.set_rows
+     
+     
+       ControlPointPointers.sync
+     
+     
+       ControlPointPointers.sync_rows
+     
+   
+   
+
+   
+   
+   

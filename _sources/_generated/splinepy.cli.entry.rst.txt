@@ -1,0 +1,6 @@
+splinepy.cli.entry
+==================
+
+.. currentmodule:: splinepy.cli
+
+.. autofunction:: entry

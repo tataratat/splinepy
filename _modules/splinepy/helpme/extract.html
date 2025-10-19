@@ -1,0 +1,1306 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.helpme.extract &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/helpme/extract';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.helpme.extract</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.helpme.extract</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span> <span class="k">as</span> <span class="n">_wraps</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="kn">import</span> <span class="n">Edges</span> <span class="k">as</span> <span class="n">_Edges</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="kn">import</span> <span class="n">Faces</span> <span class="k">as</span> <span class="n">_Faces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vertices</span> <span class="k">as</span> <span class="n">_Vertices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="kn">import</span> <span class="n">Volumes</span> <span class="k">as</span> <span class="n">_Volumes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf.create.edges</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_data</span> <span class="k">as</span> <span class="n">_from_data</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">connec</span> <span class="k">as</span> <span class="n">_connec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gustaf.utils.arr</span><span class="w"> </span><span class="kn">import</span> <span class="n">enforce_len</span> <span class="k">as</span> <span class="n">_enforce_len</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.helpme</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize</span> <span class="k">as</span> <span class="n">_visualize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span> <span class="k">as</span> <span class="n">_log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">cartesian_product</span> <span class="k">as</span> <span class="n">_cartesian_product</span>
+
+
+<div class="viewcode-block" id="edges">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.edges.html#splinepy.helpme.extract.edges">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span>
+    <span class="n">spline</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">all_knots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract edges (lines) from a given spline, or multipatch object. Only</span>
+<span class="sd">    entity you can extract without dimension limit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline/ Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    resolution: int or list</span>
+<span class="sd">      samples per parametric dimension</span>
+<span class="sd">    all_knots: bool</span>
+<span class="sd">      Switch to allow all knot-line extraction or just contour (para_dim&gt;0)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    edges: Edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># get a single value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">resolution</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="c1"># ensure int</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">range_to_edges</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">resolution</span><span class="p">),</span>
+            <span class="n">closed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">e</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">))]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_Edges</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span>
+            <span class="n">edges</span><span class="o">=</span><span class="n">e</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># for para_dim &gt; 1, we support array-like resolutions</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+
+        <span class="c1"># recursion for Multipatch splines</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_Edges</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">edges</span><span class="p">(</span><span class="n">spline</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span> <span class="n">all_knots</span><span class="o">=</span><span class="n">all_knots</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">patches</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Single patch case</span>
+        <span class="k">if</span> <span class="n">all_knots</span><span class="p">:</span>
+            <span class="n">relevant_knots</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">unique_knots</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">relevant_knots</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">parametric_bounds</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="n">temp_edges</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># edges&#39; is not a valid syntax</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">):</span>
+            <span class="n">split_knots</span> <span class="o">=</span> <span class="n">relevant_knots</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">split_knots</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">n_knot_lines</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split_knots</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="c1"># Create query points</span>
+            <span class="c1"># Sampling along a line can be done using cartesian product,</span>
+            <span class="c1"># however, to preserve the correct order we need to permute the</span>
+            <span class="c1"># columns, example:</span>
+            <span class="c1">#</span>
+            <span class="c1"># [y0, x, z]    [x, y0, z]</span>
+            <span class="c1"># [y1, x, z] -&gt; [x, y1, z]</span>
+            <span class="c1"># [y2, x, z]    [x, y2, z]</span>
+            <span class="n">reorder_mask</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">extract_knot_queries</span> <span class="o">=</span> <span class="n">_cartesian_product</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">spline</span><span class="o">.</span><span class="n">parametric_bounds</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">resolution</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+                <span class="o">+</span> <span class="n">split_knots</span><span class="p">,</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)[:,</span> <span class="n">reorder_mask</span><span class="p">]</span>
+
+            <span class="c1"># Retrieve connectivity to be repeated</span>
+            <span class="n">single_line_connectivity</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">range_to_edges</span><span class="p">(</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">resolution</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                <span class="n">closed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">temp_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Edges</span><span class="p">(</span>
+                    <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">extract_knot_queries</span><span class="p">),</span>
+                    <span class="n">edges</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">single_line_connectivity</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">j</span>
+                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_knot_lines</span><span class="p">)</span>
+                        <span class="p">]</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_Edges</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">temp_edges</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_uniform_3d_faces</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+    <span class="c1"># Extract boundaries and sample from boundaries</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;Multipatch&quot;</span><span class="p">]):</span>
+        <span class="n">boundaries</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">boundaries</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;Multipatch&quot;</span><span class="p">](</span>
+            <span class="n">splines</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">boundaries</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="n">n_faces</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">res</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">f_loc</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_quad_faces</span><span class="p">(</span><span class="n">_enforce_len</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">face_connectivity</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_faces</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">boundaries</span><span class="o">.</span><span class="n">patches</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="c1"># Create Connectivity for Multipatches</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">boundaries</span><span class="o">.</span><span class="n">patches</span><span class="p">)):</span>
+        <span class="n">face_connectivity</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_faces</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_faces</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_loc</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">i</span> <span class="o">*</span> <span class="n">vertices</span>
+        <span class="p">)</span>
+
+    <span class="c1"># make faces and merge vertices before returning</span>
+    <span class="k">return</span> <span class="n">_Faces</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">boundaries</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">faces</span><span class="o">=</span><span class="n">face_connectivity</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="faces">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.faces.html#splinepy.helpme.extract.faces">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">faces</span><span class="p">(</span>
+    <span class="n">spline</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="p">,</span>
+    <span class="n">watertight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract faces from spline. Valid iff para_dim is one of the following:</span>
+<span class="sd">    {2, 3}. In case of {3}, it will return only surfaces. If internal faces are</span>
+<span class="sd">    desired, used `spline.extract.volumes().faces()`. Note that dimension</span>
+<span class="sd">    higher than 3 is not showable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    resolution: int or list</span>
+<span class="sd">      samples per parametric dimension.</span>
+<span class="sd">    watertight: bool</span>
+<span class="sd">      Default is True. Only related to para_dim = 3 splines. If False,</span>
+<span class="sd">      overlapping vertices at boundary edges won&#39;t be merged.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    faces: faces</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+            <span class="n">n_faces</span> <span class="o">=</span> <span class="p">(</span><span class="n">resolution</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="n">resolution</span><span class="o">**</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span>
+            <span class="n">f_loc</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_quad_faces</span><span class="p">(</span>
+                <span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">face_connectivity</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_faces</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="c1"># Create Connectivity for Multipatches</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">)):</span>
+                <span class="n">face_connectivity</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_faces</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_faces</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_loc</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="n">i</span> <span class="o">*</span> <span class="n">vertices</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">face_connectivity</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_quad_faces</span><span class="p">(</span>
+                <span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="n">_Faces</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
+            <span class="n">faces</span><span class="o">=</span><span class="n">face_connectivity</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">full_res</span> <span class="o">=</span> <span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">full_res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">full_res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">full_res</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span>
+        <span class="p">):</span>
+            <span class="n">faces</span> <span class="o">=</span> <span class="n">_uniform_3d_faces</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">full_res</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># single patch should support varying resolution sample</span>
+            <span class="n">b_faces</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">boundaries</span><span class="p">()):</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">full_res</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">pop_dim</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">pop_dim</span><span class="p">)</span>
+
+                <span class="n">b_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">_Faces</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_quad_faces</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+                <span class="p">)</span>
+
+            <span class="n">faces</span> <span class="o">=</span> <span class="n">_Faces</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">b_faces</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spline to make faces.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">watertight</span><span class="p">:</span>
+        <span class="n">faces</span><span class="o">.</span><span class="n">merge_vertices</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">faces</span></div>
+
+
+
+<div class="viewcode-block" id="volumes">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.volumes.html#splinepy.helpme.extract.volumes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">volumes</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">watertight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract volumes from spline. Valid iff spline.para_dim == 3.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    resolution: int or list</span>
+<span class="sd">      Sample resolution</span>
+<span class="sd">    watertight : bool</span>
+<span class="sd">      Return watertight mesh</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    volumes: Volumes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">spline</span><span class="o">.</span><span class="n">dim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Volume extraction from a spline is only valid for &quot;</span>
+            <span class="s2">&quot;para_dim: 3 dim: 3 splines.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Resolution for sampling must be integer type for Multipatch &quot;</span>
+                <span class="s2">&quot;objects&quot;</span>
+            <span class="p">)</span>
+        <span class="n">p_connect</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_hexa_volumes</span><span class="p">(</span><span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">n_elements_per_patch</span> <span class="o">=</span> <span class="n">p_connect</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_vertices_per_patch</span> <span class="o">=</span> <span class="n">resolution</span><span class="o">**</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span>
+        <span class="n">connectivity</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">n_elements_per_patch</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">),</span> <span class="n">p_connect</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">)):</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span>
+                <span class="n">i</span> <span class="o">*</span> <span class="n">n_elements_per_patch</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_elements_per_patch</span><span class="p">,</span>
+                <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">connectivity</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_connect</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n_vertices_per_patch</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">connectivity</span> <span class="o">=</span> <span class="n">_connec</span><span class="o">.</span><span class="n">make_hexa_volumes</span><span class="p">(</span><span class="n">_enforce_len</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># Create volumes</span>
+    <span class="n">volumes</span> <span class="o">=</span> <span class="n">_Volumes</span><span class="p">(</span>
+        <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
+        <span class="n">volumes</span><span class="o">=</span><span class="n">connectivity</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">watertight</span><span class="p">:</span>
+        <span class="n">volumes</span><span class="o">.</span><span class="n">merge_vertices</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">volumes</span></div>
+
+
+
+<div class="viewcode-block" id="control_points">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.control_points.html#splinepy.helpme.extract.control_points">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">control_points</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts control points and return as vertices. Same can be achieved by</span>
+<span class="sd">    doing `gustaf.Vertices(spline.control_points)`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    cps_as_Vertices: Vertices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_Vertices</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="control_edges">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.control_edges.html#splinepy.helpme.extract.control_edges">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">control_edges</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract control edges (mesh). Valid iff para_dim is 1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    edges: Edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spline type!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="c1"># @todo avoid loop and transfer range_to_edges to cpp</span>
+        <span class="k">return</span> <span class="n">_Edges</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">control_edges</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_Edges</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">,</span>
+            <span class="n">edges</span><span class="o">=</span><span class="n">_connec</span><span class="o">.</span><span class="n">range_to_edges</span><span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">),</span> <span class="n">closed</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="control_faces">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.control_faces.html#splinepy.helpme.extract.control_faces">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">control_faces</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract control face (mesh). Valid iff para_dim is 2.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    faces: Faces</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spline type!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="c1"># @todo avoid loop and transfer range_to_edges to cpp</span>
+        <span class="k">return</span> <span class="n">_Faces</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">control_faces</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_Faces</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">,</span>
+            <span class="n">faces</span><span class="o">=</span><span class="n">_connec</span><span class="o">.</span><span class="n">make_quad_faces</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">control_mesh_resolutions</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="control_volumes">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.control_volumes.html#splinepy.helpme.extract.control_volumes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">control_volumes</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract control volumes (mesh). Valid iff para_dim is 3.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    volumes: Volumes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spline type!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="c1"># @todo avoid loop and transfer range_to_edges to cpp</span>
+        <span class="k">return</span> <span class="n">_Volumes</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">control_volumes</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">patches</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_Volumes</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">,</span>
+            <span class="n">volumes</span><span class="o">=</span><span class="n">_connec</span><span class="o">.</span><span class="n">make_hexa_volumes</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">control_mesh_resolutions</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="control_mesh">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.control_mesh.html#splinepy.helpme.extract.control_mesh">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">control_mesh</span><span class="p">(</span><span class="n">spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calls control_edges, control_faces, control_volumes based on current</span>
+<span class="sd">    spline.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    control_mesh: Edges or Faces or Volumes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">control_edges</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">control_faces</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">control_volumes</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid para_dim to extract control_mesh. Supports 1 to 3.&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="spline">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.spline.html#splinepy.helpme.extract.spline">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">spline</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">para_dim</span><span class="p">,</span> <span class="n">split_plane</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a sub spline from a given representation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    para_dim : int</span>
+<span class="sd">      parametric dimension to be extracted</span>
+<span class="sd">    split_plane : float / tuple&lt;float, float&gt;</span>
+<span class="sd">      interval or value in parametric space to be extracted from the spline</span>
+<span class="sd">      representation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.spline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+    <span class="c1"># Check type</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Spline</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown spline representation passed to sub spline&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check arguments for sanity</span>
+    <span class="k">if</span> <span class="n">para_dim</span> <span class="o">&gt;</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Requested parametric dimension exceeds spline&#39;s parametric&quot;</span>
+            <span class="s2">&quot; dimensionality.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># create 1d array for easy type / size check</span>
+    <span class="n">split_plane</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">split_plane</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">split_plane</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;split_plane must be floating type.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">split_plane</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;split_plane must have size of 1 or 2.&quot;</span><span class="p">)</span>
+
+    <span class="n">is_interval</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_plane</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+    <span class="c1"># Check if is bezier-type</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spline</span><span class="o">.</span><span class="n">has_knot_vectors</span><span class="p">:</span>
+        <span class="n">spline_copy</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">nurbs</span> <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">is_rational</span> <span class="k">else</span> <span class="n">spline</span><span class="o">.</span><span class="n">bspline</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">spline_copy</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spline_copy</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Will do nothing if spline already has sufficient number of knots</span>
+        <span class="c1"># at given position go to c^-1 extraction</span>
+        <span class="n">spline_copy</span><span class="o">.</span><span class="n">insert_knots</span><span class="p">(</span><span class="n">para_dim</span><span class="p">,</span> <span class="n">split_plane</span><span class="p">)</span>
+
+    <span class="c1"># start and end id. indices correspond to [first dim][first appearance]</span>
+    <span class="n">start_id</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">spline_copy</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">-</span> <span class="n">split_plane</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="o">&lt;</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="o">-</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">end_id</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">spline_copy</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">-</span> <span class="n">split_plane</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">&lt;</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="o">-</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Use MultiIndex for extraction</span>
+    <span class="n">mi</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">multi_index</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spline_copy</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_interval</span><span class="p">:</span>
+        <span class="c1"># Check if boundary</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">spline_copy</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span><span class="n">para_dim</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">split_plane</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">&lt;</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span>
+        <span class="p">):</span>
+            <span class="n">start_id</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">indices</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_id</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">indices</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start_id</span><span class="p">,</span> <span class="n">end_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">mi</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span>
+
+    <span class="c1"># Return new_spline</span>
+    <span class="n">spline_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">cps</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">degrees</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_interval</span><span class="p">:</span>
+        <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">para_dim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">has_knot_vectors</span><span class="p">:</span>
+        <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">knot_vectors</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_interval</span><span class="p">:</span>
+            <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">para_dim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">][</span><span class="n">para_dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span>
+                <span class="n">para_dim</span>
+            <span class="p">][</span><span class="n">start_id</span> <span class="p">:</span> <span class="p">(</span><span class="n">end_id</span> <span class="o">+</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">para_dim</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">is_rational</span><span class="p">:</span>
+        <span class="n">spline_info</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline_copy</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">spline</span><span class="p">)(</span><span class="o">**</span><span class="n">spline_info</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="boundaries">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.boundaries.html#splinepy.helpme.extract.boundaries">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">boundaries</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">boundary_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts boundary spline.</span>
+
+<span class="sd">    The boundaries deducted from the parametric axis which is normal to the</span>
+<span class="sd">    boundary (:math:`j`), if the boundary is at parametric axis position</span>
+<span class="sd">    :math:`x_{j}=x_{j_{min}}` the corresponding boundary is :math:`2j`, else at</span>
+<span class="sd">    parametric axis position :math:`x_j=x_{j_{min}}` the boundary is</span>
+<span class="sd">    :math:`2j+1`</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    spline: Spline / Multipatch</span>
+<span class="sd">      (`self`-argument if called via extract member of a spline)</span>
+<span class="sd">    boundary_ids: list</span>
+<span class="sd">      Only considered for Spline. Default is None and returns all boundaries.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    boundary_spline: type(self)</span>
+<span class="sd">        boundary spline, which has one less para_dim</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">splinepy_core</span> <span class="k">as</span> <span class="n">_core</span>
+
+    <span class="c1"># Pass to respective c++ implementation</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">spline</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bids</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">boundary_ids</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">boundary_ids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nb">type</span><span class="p">(</span><span class="n">spline</span><span class="p">)(</span><span class="n">spline</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">_core</span><span class="o">.</span><span class="n">extract_boundaries</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">bids</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="arrow_data">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.arrow_data.html#splinepy.helpme.extract.arrow_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">arrow_data</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">adata_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates edges that represent arrow_data.</span>
+<span class="sd">    This function respects entries in show_options.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spline: Spline</span>
+<span class="sd">    adata_name: str</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    adata_edges: gus.Edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">adata_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">spline_data</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;given splines does not have arrow data - </span><span class="si">{</span><span class="n">adata_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">default_res</span> <span class="o">=</span> <span class="mi">10</span> <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Multi&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">100</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">show_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resolutions&quot;</span><span class="p">,</span> <span class="n">default_res</span><span class="p">)</span>
+    <span class="n">sampled_spline</span> <span class="o">=</span> <span class="n">_visualize</span><span class="o">.</span><span class="n">_sample_spline</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+
+    <span class="n">adata</span> <span class="o">=</span> <span class="n">_visualize</span><span class="o">.</span><span class="n">_sample_arrow_data</span><span class="p">(</span>
+        <span class="n">spline</span><span class="p">,</span> <span class="n">adata_name</span><span class="p">,</span> <span class="n">sampled_spline</span><span class="p">,</span> <span class="n">_enforce_len</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># if `on` is specified, arrow_data will be a vertices, else it&#39;s processed</span>
+    <span class="c1"># within sampled_spline</span>
+    <span class="n">gus_mesh</span> <span class="o">=</span> <span class="n">sampled_spline</span> <span class="k">if</span> <span class="n">adata</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">adata</span>
+
+    <span class="n">arrow_data_value</span> <span class="o">=</span> <span class="n">gus_mesh</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">as_arrow</span><span class="p">(</span><span class="n">adata_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># if data and origin does not have save dimension, they can&#39;t be</span>
+    <span class="c1"># represented as edges.</span>
+    <span class="c1"># We can either raise error or return gus_mesh. We will do the latter</span>
+    <span class="c1"># One can extract origin and value using gus_mesh.vertices and</span>
+    <span class="c1"># gus_mesh.vertex_data[adata_name]</span>
+    <span class="k">if</span> <span class="n">arrow_data_value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">spline</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;dimension mismatch between arrow_data and spline.&quot;</span>
+            <span class="s2">&quot;returning sampled mesh as is (not as gus.Edges).&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">gus_mesh</span>
+
+    <span class="n">as_edges</span> <span class="o">=</span> <span class="n">_from_data</span><span class="p">(</span>
+        <span class="n">gus_mesh</span><span class="p">,</span>
+        <span class="n">arrow_data_value</span><span class="p">,</span>
+        <span class="n">gus_mesh</span><span class="o">.</span><span class="n">show_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arrow_data_scale&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">data_norm</span><span class="o">=</span><span class="n">gus_mesh</span><span class="o">.</span><span class="n">vertex_data</span><span class="o">.</span><span class="n">as_scalar</span><span class="p">(</span><span class="n">adata</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">as_edges</span></div>
+
+
+
+<div class="viewcode-block" id="bases">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.bases.html#splinepy.helpme.extract.bases">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bases</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parametric_view</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates spline that represents basis functions of given ids.</span>
+<span class="sd">    Parametric bounds equals to the given spline.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spline: Spline</span>
+<span class="sd">    ids: list</span>
+<span class="sd">      Supports ids of basis functions. Default is None and returns all supports</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    basis_splines: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if none, extract all</span>
+    <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">))</span>
+
+    <span class="c1"># type check</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bases ids (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span><span class="si">}</span><span class="s2">) should be a list.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># first, create conforming parametric view</span>
+    <span class="k">if</span> <span class="n">parametric_view</span><span class="p">:</span>
+        <span class="n">conform_para_view</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">parametric_view</span><span class="p">(</span>
+            <span class="n">axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conform</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">base_basis</span> <span class="o">=</span> <span class="n">conform_para_view</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">base_basis</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># for template, the last axis should be all zero</span>
+    <span class="c1"># also, set control point show_option to False</span>
+    <span class="n">base_basis</span><span class="o">.</span><span class="n">control_points</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">base_basis</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># loop and e</span>
+    <span class="n">basis_splines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="n">basis_i</span> <span class="o">=</span> <span class="n">base_basis</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">basis_i</span><span class="o">.</span><span class="n">control_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">basis_i</span><span class="o">.</span><span class="n">show_options</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">basis_splines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">basis_i</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">basis_splines</span></div>
+
+
+
+<div class="viewcode-block" id="Extractor">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.html#splinepy.helpme.extract.Extractor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Extractor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to allow direct extraction from spline obj (BSpline or</span>
+<span class="sd">    NURBS). Internal use only.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; spline_faces = my_spline.extract.faces()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_helpee&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spl</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spl</span><span class="p">,</span> <span class="p">(</span><span class="n">_Spline</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Extractor expects a Spline or Multipatch type&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span> <span class="o">=</span> <span class="n">spl</span>
+
+<div class="viewcode-block" id="Extractor.edges">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.edges.html#splinepy.helpme.extract.Extractor.edges">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.faces">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.faces.html#splinepy.helpme.extract.Extractor.faces">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">faces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.volumes">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.volumes.html#splinepy.helpme.extract.Extractor.volumes">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">volumes</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">volumes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.control_points">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.control_points.html#splinepy.helpme.extract.Extractor.control_points">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">control_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.control_edges">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.control_edges.html#splinepy.helpme.extract.Extractor.control_edges">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">control_edges</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">control_edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.control_faces">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.control_faces.html#splinepy.helpme.extract.Extractor.control_faces">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">control_faces</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">control_faces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.control_volumes">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.control_volumes.html#splinepy.helpme.extract.Extractor.control_volumes">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">control_volumes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.control_mesh">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.control_mesh.html#splinepy.helpme.extract.Extractor.control_mesh">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">control_mesh</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">control_mesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.beziers">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.beziers.html#splinepy.helpme.extract.Extractor.beziers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beziers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract all (rational) Bezier patches within a given spline</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        beziers : list</span>
+<span class="sd">          List of all individual bezier patches representing the non-zero</span>
+<span class="sd">          knot-spans</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="o">.</span><span class="n">has_knot_vectors</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="o">.</span><span class="n">extract_bezier_patches</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Extractor.boundaries">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.boundaries.html#splinepy.helpme.extract.Extractor.boundaries">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">boundaries</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.spline">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.spline.html#splinepy.helpme.extract.Extractor.spline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">splitting_plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract a spline from a spline.</span>
+
+<span class="sd">        Use a (number of) splitting planes to extract a subsection from the</span>
+<span class="sd">        parametric domain of it.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        splitting_plane : int or dictionary {int : (float, float)}</span>
+<span class="sd">          if int : parametric dimension to be extracted</span>
+<span class="sd">          if dict : list of splitting planes and ranges to be passed</span>
+<span class="sd">        interval : float or tuple&lt;float,float&gt;</span>
+<span class="sd">          interval or value in parametric space to be extracted from the</span>
+<span class="sd">          spline representation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">splitting_plane</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Arguments incompatible expect dictionary&quot;</span><span class="p">)</span>
+            <span class="n">splitting_plane</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">splitting_plane</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">spline_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">splitting_plane</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">spline_copy</span> <span class="o">=</span> <span class="n">spline</span><span class="p">(</span><span class="n">spline_copy</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">spline_copy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="n">splitting_plane</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.arrow_data">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.arrow_data.html#splinepy.helpme.extract.Extractor.arrow_data">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">arrow_data</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">arrow_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">arrow_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.bases">
+<a class="viewcode-back" href="../../../_generated/splinepy.helpme.extract.Extractor.bases.html#splinepy.helpme.extract.Extractor.bases">[docs]</a>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">bases</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpee</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

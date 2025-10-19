@@ -1,0 +1,6 @@
+splinepy.helpme.fit.solve\_for\_control\_points
+===============================================
+
+.. currentmodule:: splinepy.helpme.fit
+
+.. autofunction:: solve_for_control_points

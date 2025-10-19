@@ -1,0 +1,6 @@
+splinepy.bspline.BSplineBase.clear
+==================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSplineBase.clear

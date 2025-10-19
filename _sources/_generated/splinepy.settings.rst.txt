@@ -1,0 +1,35 @@
+.. _splinepy.settings:
+
+splinepy.settings
+=================
+
+.. automodule:: splinepy.settings
+
+   
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      TOLERANCE
+      NTHREADS
+      NAME_TO_TYPE
+      CHECK_BOUNDS
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

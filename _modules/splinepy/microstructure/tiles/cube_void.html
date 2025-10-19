@@ -1,0 +1,730 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.microstructure.tiles.cube_void &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/microstructure/tiles/cube_void';</script>
+    <link rel="icon" href="../../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../tiles.html" class="nav-link">splinepy.microstructure.tiles</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.microstructure.tiles.cube_void</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.microstructure.tiles.cube_void</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.bezier</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bezier</span> <span class="k">as</span> <span class="n">_Bezier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.microstructure.tiles.tile_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TileBase</span> <span class="k">as</span> <span class="n">_TileBase</span>
+
+
+<div class="viewcode-block" id="CubeVoid">
+<a class="viewcode-back" href="../../../../_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.html#splinepy.microstructure.tiles.cube_void.CubeVoid">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CubeVoid</span><span class="p">(</span><span class="n">_TileBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Void in form of an cuboid set into a unit cell.</span>
+
+<span class="sd">    Parametrization acts on the cuboid&#39;s orientation as well as on its</span>
+<span class="sd">    expansion (radii in x and y/z direction).</span>
+
+<span class="sd">    Used in ADAMM test case for Hutchinson.</span>
+
+<span class="sd">    See create_tile for more information</span>
+
+<span class="sd">    .. raw:: html</span>
+
+<span class="sd">        &lt;p&gt;&lt;a href=&quot;../_static/CubeVoid.html&quot;&gt;Fullscreen&lt;/a&gt;.&lt;/p&gt;</span>
+<span class="sd">        &lt;embed type=&quot;text/html&quot; width=&quot;100%&quot; height=&quot;400&quot; src=&quot;../_static/CubeVoid.html&quot; /&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="n">_dim</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">_para_dim</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">_evaluation_points</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+    <span class="n">_n_info_per_eval_point</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="c1"># Aux values</span>
+    <span class="n">_sphere_ctps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rotation_matrix_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="n">cc</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">ss</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">,</span> <span class="n">cc</span><span class="p">]])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rotation_matrix_x_deriv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="n">cc</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">,</span> <span class="n">cc</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">cc</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">]])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rotation_matrix_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="n">cc</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cc</span><span class="p">]])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rotation_matrix_y_deriv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="n">cc</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">_np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="n">ss</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">cc</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">cc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">]])</span>
+
+<div class="viewcode-block" id="CubeVoid.create_tile">
+<a class="viewcode-back" href="../../../../_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.create_tile.html#splinepy.microstructure.tiles.cube_void.CubeVoid.create_tile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_tile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">parameter_sensitivities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>  <span class="c1"># noqa ARG002</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a full cuboid with a cuboidal void in the center, that has</span>
+<span class="sd">        a rotation applied in the form</span>
+
+<span class="sd">        T = RotY * RotX * Tz</span>
+
+<span class="sd">        Parameters are stored as a 4 dimensional field. The entries represent:</span>
+<span class="sd">        p_0 -&gt; expansion along x-axis</span>
+<span class="sd">        p_1 -&gt; expansion along y/z axis</span>
+<span class="sd">        p_2 -&gt; rotation around x-axis</span>
+<span class="sd">        p_3 -&gt; rotation around y-axis</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters : np.array</span>
+<span class="sd">          Defines 4 values necessary for tile definition</span>
+<span class="sd">          1. expansion in cuboid void in x-axis</span>
+<span class="sd">          2. expansion of cuboid void in y- and z-axis</span>
+<span class="sd">          3. rotation around x-axis</span>
+<span class="sd">          4. rotation around y- and z-axis</span>
+<span class="sd">        parameter_sensitivities: np.array</span>
+<span class="sd">          Sensitivities of all 4 values with respect to some number of external</span>
+<span class="sd">          design variables</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        microtile_list : list(splines)</span>
+<span class="sd">        derivatives : list&lt;list&lt;splines&gt;&gt; / None</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># set to default if nothing is given</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># Create center ellipsoid</span>
+        <span class="c1"># RotY * RotX * DIAG(r_x, r_yz) * T_base</span>
+        <span class="p">[</span><span class="n">r_x</span><span class="p">,</span> <span class="n">r_yz</span><span class="p">,</span> <span class="n">rot_x</span><span class="p">,</span> <span class="n">rot_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="c1"># Check if user requests derivative splines</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param_derivatives</span><span class="p">(</span><span class="n">parameter_sensitivities</span><span class="p">):</span>
+            <span class="n">n_derivatives</span> <span class="o">=</span> <span class="n">parameter_sensitivities</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">derivatives</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_derivatives</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">derivatives</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Prepare auxiliary matrices and values</span>
+        <span class="n">diag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">r_x</span><span class="p">,</span> <span class="n">r_yz</span><span class="p">,</span> <span class="n">r_yz</span><span class="p">])</span>
+        <span class="n">rotMx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_matrix_x</span><span class="p">(</span><span class="n">rot_x</span><span class="p">)</span>
+        <span class="n">rotMy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_matrix_y</span><span class="p">(</span><span class="n">rot_y</span><span class="p">)</span>
+
+        <span class="c1"># Start assembly</span>
+        <span class="n">splines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i_derivative</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_derivatives</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">spline_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># Constant auxiliary values</span>
+            <span class="k">if</span> <span class="n">i_derivative</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">v_one_half</span> <span class="o">=</span> <span class="mf">0.5</span>
+                <span class="n">v_one</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">v_zero</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">ctps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                    <span class="s2">&quot;ij,jk,kl,ml-&gt;mi&quot;</span><span class="p">,</span>
+                    <span class="n">rotMy</span><span class="p">,</span>
+                    <span class="n">rotMx</span><span class="p">,</span>
+                    <span class="n">diag</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_ctps</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                    <span class="n">optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="p">[</span><span class="n">dr_x</span><span class="p">,</span> <span class="n">dr_yz</span><span class="p">,</span> <span class="n">drot_x</span><span class="p">,</span> <span class="n">drot_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameter_sensitivities</span><span class="p">[</span>
+                    <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i_derivative</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="n">v_one_half</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">v_one</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">v_zero</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">ddiag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">dr_x</span><span class="p">,</span> <span class="n">dr_yz</span><span class="p">,</span> <span class="n">dr_yz</span><span class="p">])</span>
+                <span class="n">drotMx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_matrix_x_deriv</span><span class="p">(</span><span class="n">rot_x</span><span class="p">)</span>
+                <span class="n">drotMy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_matrix_y_deriv</span><span class="p">(</span><span class="n">rot_y</span><span class="p">)</span>
+                <span class="n">ctps_mat</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">drot_y</span>
+                    <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                        <span class="s2">&quot;ij,jk,kl-&gt;il&quot;</span><span class="p">,</span>
+                        <span class="n">drotMy</span><span class="p">,</span>
+                        <span class="n">rotMx</span><span class="p">,</span>
+                        <span class="n">diag</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="n">drot_x</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,jk,kl-&gt;il&quot;</span><span class="p">,</span> <span class="n">rotMy</span><span class="p">,</span> <span class="n">drotMx</span><span class="p">,</span> <span class="n">diag</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,jk,kl-&gt;il&quot;</span><span class="p">,</span> <span class="n">rotMy</span><span class="p">,</span> <span class="n">rotMx</span><span class="p">,</span> <span class="n">ddiag</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">ctps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="n">ctps_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sphere_ctps</span><span class="p">)</span>
+
+            <span class="n">ctps</span> <span class="o">+=</span> <span class="p">[</span><span class="n">v_one_half</span><span class="p">,</span> <span class="n">v_one_half</span><span class="p">,</span> <span class="n">v_one_half</span><span class="p">]</span>
+            <span class="c1"># Start the assembly</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c1"># Y-Axis</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">:],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c1"># Z-Axis</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="p">:],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">spline_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_Bezier</span><span class="p">(</span>
+                    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_zero</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                        <span class="n">ctps</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">[</span><span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">,</span> <span class="n">v_one</span><span class="p">],</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Pass to output</span>
+            <span class="k">if</span> <span class="n">i_derivative</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">splines</span> <span class="o">=</span> <span class="n">spline_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">derivatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spline_list</span><span class="p">)</span>
+
+        <span class="c1"># Return results</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">splines</span><span class="p">,</span> <span class="n">derivatives</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

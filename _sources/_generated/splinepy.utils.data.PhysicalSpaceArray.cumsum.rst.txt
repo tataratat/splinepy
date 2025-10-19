@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.cumsum
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.cumsum

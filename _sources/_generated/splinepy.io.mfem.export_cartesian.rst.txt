@@ -1,0 +1,6 @@
+splinepy.io.mfem.export\_cartesian
+==================================
+
+.. currentmodule:: splinepy.io.mfem
+
+.. autofunction:: export_cartesian
