@@ -35,7 +35,7 @@ repos:
     additional_dependencies: [tomli]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.3
+  rev: v0.14.1
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
@@ -59,7 +59,7 @@ repos:
     additional_dependencies: [tomli]
 
 - repo: https://github.com/keewis/blackdoc
-  rev: v0.4.3
+  rev: v0.4.4
   hooks:
   - id: blackdoc
     additional_dependencies: [tomli]
