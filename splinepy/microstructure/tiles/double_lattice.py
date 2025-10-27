@@ -20,6 +20,12 @@ class DoubleLattice(_TileBase):
     _para_dim = 2
     _evaluation_points = _np.array([[0.5, 0.5]])
     _n_info_per_eval_point = 2
+    _sensitivities_implemented = True
+    _parameter_bounds = [[0.0, 1 / (2 * (1 + _np.sqrt(2)))]] * 2
+    _parameters_shape = (1, 2)
+    _default_parameter_value = 0.1
+
+    _CONTACT_LENGTH_BOUNDS = [0.0, 1.0]
 
     def create_tile(
         self,
@@ -44,38 +50,20 @@ class DoubleLattice(_TileBase):
           correlates with thickness of branches and entouring wall
         contact_length : double
           required for conformity between tiles, sets the length of the center
-          block on the tiles boundary
+          block on the tile's boundary
 
         Returns
         -------
         microtile_list : list(splines)
         """
-        if not isinstance(contact_length, float):
-            raise ValueError("Invalid Type")
-        if not ((contact_length > 0.0) and (contact_length < 1.0)):
-            raise ValueError("Contact length must be in (0.,1.)")
+        self._check_custom_parameter(
+            contact_length, "contact length", self._CONTACT_LENGTH_BOUNDS
+        )
 
-        # set to default if nothing is given
-        if parameters is None:
-            self._logd("Tile request is not parametrized, setting default 0.2")
-            parameters = _np.ones((1, 2)) * 0.1
-        if not (
-            _np.all(parameters > 0)
-            and _np.all(parameters < 0.5 / (1 + _np.sqrt(2)))
-        ):
-            raise ValueError(
-                "Parameters must be between 0.01 and 0.5/(1+sqrt(2))=0.207"
-            )
-
-        self.check_params(parameters)
-
-        # Check if user requests derivative splines
-        if self.check_param_derivatives(parameter_sensitivities):
-            n_derivatives = parameter_sensitivities.shape[2]
-            derivatives = []
-        else:
-            n_derivatives = 0
-            derivatives = None
+        parameters, n_derivatives, derivatives = self._process_input(
+            parameters=parameters,
+            parameter_sensitivities=parameter_sensitivities,
+        )
 
         splines = []
         for i_derivative in range(n_derivatives + 1):

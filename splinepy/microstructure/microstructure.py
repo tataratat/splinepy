@@ -9,7 +9,7 @@ from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
 class Microstructure(_SplinepyBase):
-    """Helper class to facilitatae the construction of microstructures."""
+    """Helper class to facilitate the construction of microstructures."""
 
     def __init__(
         self,
@@ -18,7 +18,7 @@ class Microstructure(_SplinepyBase):
         microtile=None,
         parametrization_function=None,
     ):
-        """Helper class to facilitatae the construction of microstructures.
+        """Helper class to facilitate the construction of microstructures.
 
         Parameters
         ----------
@@ -427,8 +427,8 @@ class Microstructure(_SplinepyBase):
     def create(
         self,
         closing_face=None,
-        knot_span_wise=None,
-        macro_sensitivities=None,
+        knot_span_wise=True,
+        macro_sensitivities=False,
         **kwargs,
     ):
         """Create a Microstructure.
@@ -455,11 +455,12 @@ class Microstructure(_SplinepyBase):
         if not self._sanity_check():
             raise ValueError("Not enough information provided, abort")
 
-        # Set default values
-        if knot_span_wise is None:
-            knot_span_wise = True
-        if macro_sensitivities is None:
-            macro_sensitivities = False
+        assert isinstance(
+            knot_span_wise, bool
+        ), "knot_span_wise must be a bool"
+        assert isinstance(
+            macro_sensitivities, bool
+        ), "macro_senstivities must be a bool"
 
         # check if user wants closed structure
         if closing_face is not None:
@@ -533,7 +534,7 @@ class Microstructure(_SplinepyBase):
         if macro_sensitivities or parameter_sensitivities:
             spline_list_derivs = [
                 []
-                for i in range(
+                for _ in range(
                     n_parameter_sensitivities + n_macro_sensitivities
                 )
             ]
