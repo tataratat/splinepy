@@ -31,7 +31,7 @@ class TileBase(_SplinepyBase):
         return attr
 
     @property
-    def evaluation_points(cls):
+    def evaluation_points(self):
         """Positions in the parametrization function to be evaluated when tile
         is constructed prior to composition.
 
@@ -43,7 +43,7 @@ class TileBase(_SplinepyBase):
         -------
         evaluation_points : np.ndarray(6,3)
         """
-        return cls._raise_if_not_set_else_return("_evaluation_points")
+        return self._raise_if_not_set_else_return("_evaluation_points")
 
     @property
     def dim(self):
