@@ -59,23 +59,14 @@ class HollowCube(_TileBase):
             parameters = (
                 _np.ones(
                     (len(self._evaluation_points), self._n_info_per_eval_point)
-                ).reshape(-1, 1)
+                )
                 * 0.2
             )
 
         self.check_params(parameters)
 
-        if not (
-            _np.all(parameters[:, :2] > 0.0)
-            and _np.all(parameters[:, :2] < 0.5)
-        ):
+        if not (_np.all(parameters > 0.0) and _np.all(parameters < 0.5)):
             raise ValueError("The wall thickness must be in (0.0 and 0.5)")
-
-        if not _np.all(
-            (parameters[:, 2:] > _np.deg2rad(-30))
-            and (parameters[:, 2:] < _np.deg2rad(30))
-        ):
-            raise ValueError("Rotation is only allowed between +-30 deg")
 
         if self.check_param_derivatives(parameter_sensitivities):
             n_derivatives = parameter_sensitivities.shape[2]
