@@ -602,6 +602,19 @@ void GetInterfaceOrientation(
   const int& dim_ = pyspline_start->SplinepyDim();
 
   // Checks
+  if ((para_dim_ < 2) || (dim_ < 2)) {
+    splinepy::utils::PrintAndThrowError(
+        "Spline Orientation can not be checked, either spline is "
+        "one-dimensional ",
+        para_dim_,
+        "D -> ",
+        dim_,
+        "D, the adjacent one has dimensions ",
+        pyspline_end->SplinepyParaDim(),
+        "D -> ",
+        pyspline_end->SplinepyDim(),
+        "D.");
+  }
   if ((para_dim_ != pyspline_end->SplinepyParaDim())
       || (dim_ != pyspline_end->SplinepyDim())) {
     splinepy::utils::PrintAndThrowError(
@@ -610,10 +623,6 @@ void GetInterfaceOrientation(
         para_dim_,
         "D -> ",
         dim_,
-        "D, the adjacent one has dimensions ",
-        pyspline_end->SplinepyParaDim(),
-        "D -> ",
-        pyspline_end->SplinepyDim(),
         "D.");
   }
 
