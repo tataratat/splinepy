@@ -1544,6 +1544,9 @@ void PyMultipatch::AddFields(py::list& fields,
   const auto n_current_fields = static_cast<int>(field_multipatches_.size());
   const auto n_new_fields = static_cast<int>(fields.size());
 
+  // Reference to original interfaces (required for extraction)
+  const py::array_t<int> geometric_interfaces = GetInterfaces(false);
+
   // some hint values for null splines
   const int para_dim = ParaDim();
 
@@ -1562,6 +1565,7 @@ void PyMultipatch::AddFields(py::list& fields,
 
       field_ptrs[i] =
           std::make_shared<PyMultipatch>(casted_list, 1, para_dim, field_dim);
+      field_ptrs[i]->SetInterfaces(geometric_interfaces);
 
       // propagate same_parametric_bounds_ flag
       field_ptrs[i]->same_parametric_bounds_ = same_parametric_bounds_;
