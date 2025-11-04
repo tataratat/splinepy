@@ -705,6 +705,42 @@ void GetInterfaceOrientation(
   }
 }
 
+void PyMultipatch::SetInterfaceOrientations(
+    const py::array_t<int>& interface_orientations) {
+
+  // Check if interfaces are already available
+  if (interfaces_.size() == 0) {
+    splinepy::utils::PrintAndThrowError(
+        "Interfaces need to be computed or set first, because they will be "
+        "reset upon recomputation");
+  }
+
+  // Check if the shape of the interface orientation is usable
+  int para_dim = ParaDim();
+  const int n_faces_per_element = 2 * para_dim;
+  // 4 includes - patch id start, face id start, patch id end, face id end
+  const int n_entries_per_line = 4 + 2 * para_dim;
+  // Loop over interfaces to compute number of interfaces
+  const int* interfaces_ptr =
+      static_cast<int*>(GetInterfaces(false).request().ptr);
+  int number_of_interfaces{};
+  for (int i_interface{}; i_interface < interfaces_.size(); i_interface++) {
+    if (interfaces_ptr[i_interface] >= 0) {
+      // interface found
+      if (interfaces_ptr[i_interface] > i_interface) {
+        number_of_interfaces++;
+      }
+    }
+  }
+
+  // size check
+  splinepy::py::CheckPyArrayShape(interface_orientations,
+                                  {number_of_interfaces, n_entries_per_line},
+                                  true);
+
+  interface_orientations_ = interface_orientations;
+}
+
 py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
                                                         const int n_threads) {
 
@@ -1763,6 +1799,9 @@ void init_multipatch(py::module_& m) {
            &PyMultipatch::GetInterfaceOrientations,
            py::arg("tolerance"),
            py::arg("nthreads") = 1)
+      .def("set_interface_orientations",
+           &PyMultipatch::SetInterfaceOrientations,
+           py::arg("interface_orientations"))
       //.def("", &PyMultipatch::)
       ;
 }

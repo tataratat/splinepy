@@ -152,6 +152,31 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
             nthreads=_default_if_none(nthreads, _settings.NTHREADS),
         )
 
+    def set_interface_orientations(self, interface_orientations):
+        """
+        Interface orientations are usually computed using the jacobian at face
+        centers. This is not always possible, e.g., if the spline is
+        representing a scalar field on a geometry. This function can be used to
+        manually set the orientations to prepare the spline for export.
+
+        Notes
+        -----
+        The interfaces **must** be set prior to the orientations, as the
+        interface orientations count the interfaces between splines to make
+        sure they match.
+
+        Parameters
+        ----------
+        interface_orientations : np.array (np.int64)
+          interface orientations between patches
+          shape {n_interfaces , 4 + 2 * para_dim}
+
+        Returns
+        -------
+        None
+        """
+        super().set_interface_orientations(interface_orientations)
+
     @property
     def boundaries(self):
         """

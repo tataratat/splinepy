@@ -393,6 +393,13 @@ public:
   py::array_t<int> GetInterfaceOrientations(const double tolerance,
                                             const int n_threads);
 
+  /// @brief Set the Boundary Orientations object
+  ///
+  /// Performs sanity checks
+  /// @param interface_orientations
+  /// @return
+  void SetInterfaceOrientations(const py::array_t<int>& interface_orientations);
+
   /// @brief Gets IDs of boundary patch
   /// @param bid boundary ID to be extracted
   py::array_t<int> BoundaryPatchIds(const int bid);
