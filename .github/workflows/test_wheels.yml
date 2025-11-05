@@ -21,7 +21,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: wheels-15-intel
+        name: wheels-macos-15-intel
         path: ./wheelhouse/*.whl
         retention-days: 1
 
