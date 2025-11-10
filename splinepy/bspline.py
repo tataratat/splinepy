@@ -319,7 +319,6 @@ class BSplineBase(_spline.Spline):
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
-
         return removed
 
     def normalize_knot_vectors(self):
