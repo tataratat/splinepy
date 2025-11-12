@@ -161,9 +161,12 @@ class Multipatch(_SplinepyBase, _PyMultipatch):
 
         Notes
         -----
-        The interfaces **must** be set prior to the orientations, as the
-        interface orientations count the interfaces between splines to make
-        sure they match.
+        The interfaces **must** be set before the orientations, as the
+        interface orientations count the interfaces between splines to ensure
+        they match. This function does not include any checks to verify
+        whether the interfaces exist, since performing such a check would
+        trigger their computation — which might not be possible for scalar
+        splines (the main intended use case for this function).
 
         Parameters
         ----------
