@@ -602,24 +602,21 @@ void GetInterfaceOrientation(
   const int& dim_ = pyspline_start->SplinepyDim();
 
   // Checks
-  if ((para_dim_ < 2) || (dim_ < 2)) {
+  if (para_dim_ < 2) {
     splinepy::utils::PrintAndThrowError(
-        "Spline Orientation can not be checked, either spline is "
-        "one-dimensional ",
-        para_dim_,
-        "D -> ",
-        dim_,
-        "D, the adjacent one has dimensions ",
-        pyspline_end->SplinepyParaDim(),
-        "D -> ",
-        pyspline_end->SplinepyDim(),
-        "D.");
+        "Curves are not supported for automatic computatation of interface "
+        "orientations");
+  }
+  if (dim_ < 2) {
+    splinepy::utils::PrintAndThrowError(
+        "Scalar splines are not supported for automatic computation of "
+        "interface orientations");
   }
   if ((para_dim_ != pyspline_end->SplinepyParaDim())
       || (dim_ != pyspline_end->SplinepyDim())) {
     splinepy::utils::PrintAndThrowError(
-        "Spline Orientation can not be checked, as they have mismatching"
-        "dimensionality start spline has dimensions ",
+        "Spline Orientation can not be checked, as they have mismatching "
+        "dimensionality. Current spline has dimensions ",
         para_dim_,
         "D -> ",
         dim_,
@@ -711,15 +708,15 @@ void PyMultipatch::SetInterfaceOrientations(
   // Check if interfaces are already available
   if (interfaces_.size() == 0) {
     splinepy::utils::PrintAndThrowError(
-        "Interfaces need to be computed or set first, because they will be "
-        "reset upon recomputation");
+        "Interfaces need to be computed or set first, because orientations "
+        "will be reset upon their recomputation");
   }
 
   // Check if the shape of the interface orientation is usable
   int para_dim = ParaDim();
   const int n_faces_per_element = 2 * para_dim;
   // 4 includes - patch id start, face id start, patch id end, face id end
-  const int n_entries_per_line = 4 + 2 * para_dim;
+  const int n_entries_per_line = 4 + n_faces_per_element;
   // Loop over interfaces to compute number of interfaces
   const int* interfaces_ptr =
       static_cast<int*>(GetInterfaces(false).request().ptr);
@@ -756,7 +753,7 @@ py::array_t<int> PyMultipatch::GetInterfaceOrientations(const double tolerance,
 
   const int n_faces_per_element = 2 * para_dim;
   // 4 includes - patch id start, face id start, patch id end, face id end
-  const int n_entries_per_line = 4 + 2 * para_dim;
+  const int n_entries_per_line = 4 + n_faces_per_element;
 
   // Make sure Interfaces are available
   const int* interfaces_ptr =
