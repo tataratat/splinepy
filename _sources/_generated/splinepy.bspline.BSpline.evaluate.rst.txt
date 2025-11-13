@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.evaluate
+=================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.evaluate

@@ -1,0 +1,6 @@
+splinepy.bspline.BSplineBase.elevate\_degrees
+=============================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSplineBase.elevate_degrees

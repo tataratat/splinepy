@@ -1,0 +1,6 @@
+splinepy.helpme.create.Creator.extruded
+=======================================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. automethod:: Creator.extruded

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.is\_minimal
+===================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: is_minimal

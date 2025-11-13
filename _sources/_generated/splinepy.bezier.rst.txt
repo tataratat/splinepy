@@ -1,0 +1,34 @@
+.. _splinepy.bezier:
+
+splinepy.bezier
+===============
+
+.. automodule:: splinepy.bezier
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Bezier
+      BezierBase
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+splinepy.helpme.create.parametric\_view
+=======================================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: parametric_view

@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.derivative\_spline
+=========================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.derivative_spline

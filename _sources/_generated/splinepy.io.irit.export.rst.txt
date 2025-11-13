@@ -1,0 +1,6 @@
+splinepy.io.irit.export
+=======================
+
+.. currentmodule:: splinepy.io.irit
+
+.. autofunction:: export

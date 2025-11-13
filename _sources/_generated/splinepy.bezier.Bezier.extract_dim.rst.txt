@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.extract\_dim
+===================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.extract_dim

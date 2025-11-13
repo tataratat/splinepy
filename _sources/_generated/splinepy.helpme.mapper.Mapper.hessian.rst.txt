@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.hessian
+=====================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.hessian

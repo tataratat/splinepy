@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.choose
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.choose

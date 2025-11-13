@@ -1,0 +1,34 @@
+.. _splinepy.cli:
+
+splinepy.cli
+============
+
+.. automodule:: splinepy.cli
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      convert
+      entry
+      show
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

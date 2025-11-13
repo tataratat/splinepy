@@ -1,0 +1,6 @@
+splinepy.spline.Spline.control\_mesh\_resolutions
+=================================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.control_mesh_resolutions

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.armadillo.Armadillo.check\_params
+===============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.armadillo
+
+.. automethod:: Armadillo.check_params

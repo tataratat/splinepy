@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.by\_dim
+=====================================
+
+.. currentmodule:: splinepy.microstructure.tiles
+
+.. autofunction:: by_dim

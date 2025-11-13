@@ -1,0 +1,6 @@
+splinepy.utils.data.make\_matrix
+================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autofunction:: make_matrix

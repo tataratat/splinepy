@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.sample
+===========================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.sample

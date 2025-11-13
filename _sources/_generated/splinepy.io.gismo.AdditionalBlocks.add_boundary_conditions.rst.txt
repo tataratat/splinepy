@@ -1,0 +1,6 @@
+splinepy.io.gismo.AdditionalBlocks.add\_boundary\_conditions
+============================================================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. automethod:: AdditionalBlocks.add_boundary_conditions

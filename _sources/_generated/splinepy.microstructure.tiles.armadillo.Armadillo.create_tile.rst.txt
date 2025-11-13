@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.armadillo.Armadillo.create\_tile
+==============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.armadillo
+
+.. automethod:: Armadillo.create_tile

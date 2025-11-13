@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.argmax
+=============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.argmax

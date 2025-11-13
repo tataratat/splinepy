@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.tiling
+============================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoproperty:: Microstructure.tiling

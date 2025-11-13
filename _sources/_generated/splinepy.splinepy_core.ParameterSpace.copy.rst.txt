@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.ParameterSpace.copy
+===========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: ParameterSpace.copy

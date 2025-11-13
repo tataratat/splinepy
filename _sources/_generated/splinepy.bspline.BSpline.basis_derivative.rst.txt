@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.basis\_derivative
+==========================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.basis_derivative

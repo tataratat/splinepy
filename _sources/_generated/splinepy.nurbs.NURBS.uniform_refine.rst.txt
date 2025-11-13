@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.uniform\_refine
+====================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.uniform_refine

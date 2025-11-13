@@ -1,0 +1,6 @@
+splinepy.utils.data.cartesian\_product
+======================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autofunction:: cartesian_product

@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.ellips\_v\_oid.EllipsVoid.create\_tile
+====================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.ellips_v_oid
+
+.. automethod:: EllipsVoid.create_tile

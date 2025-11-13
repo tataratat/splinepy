@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.divergence
+========================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.divergence

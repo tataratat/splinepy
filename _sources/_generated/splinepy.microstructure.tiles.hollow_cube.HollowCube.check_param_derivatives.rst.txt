@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.hollow\_cube.HollowCube.check\_param\_derivatives
+===============================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_cube
+
+.. automethod:: HollowCube.check_param_derivatives

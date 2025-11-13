@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.bezier\_extraction\_matrix
+==================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: bezier_extraction_matrix

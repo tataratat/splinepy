@@ -1,0 +1,36 @@
+.. _splinepy.helpme.fit:
+
+splinepy.helpme.fit
+===================
+
+.. automodule:: splinepy.helpme.fit
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compute_knot_vector
+      curve
+      parameterize
+      solve_for_control_points
+      surface
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

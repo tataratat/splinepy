@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.insert\_knots
+======================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.insert_knots

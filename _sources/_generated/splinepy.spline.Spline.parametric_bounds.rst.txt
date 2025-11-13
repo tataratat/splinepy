@@ -1,0 +1,6 @@
+splinepy.spline.Spline.parametric\_bounds
+=========================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.parametric_bounds

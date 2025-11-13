@@ -1,0 +1,33 @@
+.. _splinepy.rational_bezier:
+
+splinepy.rational\_bezier
+=========================
+
+.. automodule:: splinepy.rational_bezier
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      RationalBezier
+   
+   
+
+   
+   
+   
+
+
+

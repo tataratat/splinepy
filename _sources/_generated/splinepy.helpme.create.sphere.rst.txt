@@ -1,0 +1,6 @@
+splinepy.helpme.create.sphere
+=============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: sphere

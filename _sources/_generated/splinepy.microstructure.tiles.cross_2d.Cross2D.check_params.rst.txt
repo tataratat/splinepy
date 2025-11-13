@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.cross\_2d.Cross2D.check\_params
+=============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cross_2d
+
+.. automethod:: Cross2D.check_params

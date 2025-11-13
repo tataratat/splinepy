@@ -1,0 +1,1182 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>splinepy.utils.data.MultipatchData.as_scalar &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_generated/splinepy.utils.data.MultipatchData.as_scalar';</script>
+    <link rel="icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="splinepy.utils.data.MultipatchData.clear" href="splinepy.utils.data.MultipatchData.clear.html" />
+    <link rel="prev" title="splinepy.utils.data.MultipatchData.as_arrow" href="splinepy.utils.data.MultipatchData.as_arrow.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="splinepy.html">splinepy</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="splinepy.to_derived.html">splinepy.to_derived</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.bezier.html">splinepy.bezier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.bezier.Bezier.html">splinepy.bezier.Bezier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.basis.html">splinepy.bezier.Bezier.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.basis_and_support.html">splinepy.bezier.Bezier.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.basis_derivative.html">splinepy.bezier.Bezier.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.basis_derivative_and_support.html">splinepy.bezier.Bezier.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.clear.html">splinepy.bezier.Bezier.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.compose.html">splinepy.bezier.Bezier.compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.composition_derivative.html">splinepy.bezier.Bezier.composition_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.copy.html">splinepy.bezier.Bezier.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.current_core_properties.html">splinepy.bezier.Bezier.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.derivative.html">splinepy.bezier.Bezier.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.derivative_spline.html">splinepy.bezier.Bezier.derivative_spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.elevate_degrees.html">splinepy.bezier.Bezier.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.evaluate.html">splinepy.bezier.Bezier.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.export.html">splinepy.bezier.Bezier.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.extract_dim.html">splinepy.bezier.Bezier.extract_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.greville_abscissae.html">splinepy.bezier.Bezier.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.jacobian.html">splinepy.bezier.Bezier.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.mapper.html">splinepy.bezier.Bezier.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.proximities.html">splinepy.bezier.Bezier.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.reduce_degrees.html">splinepy.bezier.Bezier.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.sample.html">splinepy.bezier.Bezier.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.show.html">splinepy.bezier.Bezier.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.showable.html">splinepy.bezier.Bezier.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.split.html">splinepy.bezier.Bezier.split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.support.html">splinepy.bezier.Bezier.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.todict.html">splinepy.bezier.Bezier.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.bezier.html">splinepy.bezier.Bezier.bezier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.bspline.html">splinepy.bezier.Bezier.bspline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.nurbs.html">splinepy.bezier.Bezier.nurbs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.Bezier.rationalbezier.html">splinepy.bezier.Bezier.rationalbezier</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.bezier.BezierBase.html">splinepy.bezier.BezierBase</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.basis.html">splinepy.bezier.BezierBase.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.basis_and_support.html">splinepy.bezier.BezierBase.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.basis_derivative.html">splinepy.bezier.BezierBase.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.basis_derivative_and_support.html">splinepy.bezier.BezierBase.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.clear.html">splinepy.bezier.BezierBase.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.compose.html">splinepy.bezier.BezierBase.compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.composition_derivative.html">splinepy.bezier.BezierBase.composition_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.copy.html">splinepy.bezier.BezierBase.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.current_core_properties.html">splinepy.bezier.BezierBase.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.derivative.html">splinepy.bezier.BezierBase.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.derivative_spline.html">splinepy.bezier.BezierBase.derivative_spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.elevate_degrees.html">splinepy.bezier.BezierBase.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.evaluate.html">splinepy.bezier.BezierBase.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.export.html">splinepy.bezier.BezierBase.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.extract_dim.html">splinepy.bezier.BezierBase.extract_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.greville_abscissae.html">splinepy.bezier.BezierBase.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.jacobian.html">splinepy.bezier.BezierBase.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.mapper.html">splinepy.bezier.BezierBase.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.proximities.html">splinepy.bezier.BezierBase.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.reduce_degrees.html">splinepy.bezier.BezierBase.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.sample.html">splinepy.bezier.BezierBase.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.show.html">splinepy.bezier.BezierBase.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.showable.html">splinepy.bezier.BezierBase.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.split.html">splinepy.bezier.BezierBase.split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.support.html">splinepy.bezier.BezierBase.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bezier.BezierBase.todict.html">splinepy.bezier.BezierBase.todict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.bspline.html">splinepy.bspline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.bspline.BSpline.html">splinepy.bspline.BSpline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.basis.html">splinepy.bspline.BSpline.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.basis_and_support.html">splinepy.bspline.BSpline.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.basis_derivative.html">splinepy.bspline.BSpline.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.basis_derivative_and_support.html">splinepy.bspline.BSpline.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.clear.html">splinepy.bspline.BSpline.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.copy.html">splinepy.bspline.BSpline.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.current_core_properties.html">splinepy.bspline.BSpline.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.derivative.html">splinepy.bspline.BSpline.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.elevate_degrees.html">splinepy.bspline.BSpline.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.evaluate.html">splinepy.bspline.BSpline.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.export.html">splinepy.bspline.BSpline.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.extract_bezier_patches.html">splinepy.bspline.BSpline.extract_bezier_patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.greville_abscissae.html">splinepy.bspline.BSpline.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.insert_knots.html">splinepy.bspline.BSpline.insert_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.jacobian.html">splinepy.bspline.BSpline.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.knot_insertion_matrix.html">splinepy.bspline.BSpline.knot_insertion_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.mapper.html">splinepy.bspline.BSpline.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.normalize_knot_vectors.html">splinepy.bspline.BSpline.normalize_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.proximities.html">splinepy.bspline.BSpline.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.reduce_degrees.html">splinepy.bspline.BSpline.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.remove_knots.html">splinepy.bspline.BSpline.remove_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.sample.html">splinepy.bspline.BSpline.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.show.html">splinepy.bspline.BSpline.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.showable.html">splinepy.bspline.BSpline.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.support.html">splinepy.bspline.BSpline.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.todict.html">splinepy.bspline.BSpline.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.uniform_refine.html">splinepy.bspline.BSpline.uniform_refine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.bspline.html">splinepy.bspline.BSpline.bspline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSpline.nurbs.html">splinepy.bspline.BSpline.nurbs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.bspline.BSplineBase.html">splinepy.bspline.BSplineBase</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.basis.html">splinepy.bspline.BSplineBase.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.basis_and_support.html">splinepy.bspline.BSplineBase.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.basis_derivative.html">splinepy.bspline.BSplineBase.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.basis_derivative_and_support.html">splinepy.bspline.BSplineBase.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.clear.html">splinepy.bspline.BSplineBase.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.copy.html">splinepy.bspline.BSplineBase.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.current_core_properties.html">splinepy.bspline.BSplineBase.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.derivative.html">splinepy.bspline.BSplineBase.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.elevate_degrees.html">splinepy.bspline.BSplineBase.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.evaluate.html">splinepy.bspline.BSplineBase.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.export.html">splinepy.bspline.BSplineBase.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.extract_bezier_patches.html">splinepy.bspline.BSplineBase.extract_bezier_patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.greville_abscissae.html">splinepy.bspline.BSplineBase.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.insert_knots.html">splinepy.bspline.BSplineBase.insert_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.jacobian.html">splinepy.bspline.BSplineBase.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.knot_insertion_matrix.html">splinepy.bspline.BSplineBase.knot_insertion_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.mapper.html">splinepy.bspline.BSplineBase.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.normalize_knot_vectors.html">splinepy.bspline.BSplineBase.normalize_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.proximities.html">splinepy.bspline.BSplineBase.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.reduce_degrees.html">splinepy.bspline.BSplineBase.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.remove_knots.html">splinepy.bspline.BSplineBase.remove_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.sample.html">splinepy.bspline.BSplineBase.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.show.html">splinepy.bspline.BSplineBase.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.showable.html">splinepy.bspline.BSplineBase.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.support.html">splinepy.bspline.BSplineBase.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.todict.html">splinepy.bspline.BSplineBase.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.bspline.BSplineBase.uniform_refine.html">splinepy.bspline.BSplineBase.uniform_refine</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.cli.html">splinepy.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.cli.convert.html">splinepy.cli.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.cli.entry.html">splinepy.cli.entry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.cli.show.html">splinepy.cli.show</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.helpme.html">splinepy.helpme</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.check.html">splinepy.helpme.check</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.check.clamped_knot_vectors.html">splinepy.helpme.check.clamped_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.check.valid_queries.html">splinepy.helpme.check.valid_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.check.Checker.html">splinepy.helpme.check.Checker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.create.html">splinepy.helpme.create</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.arc.html">splinepy.helpme.create.arc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.box.html">splinepy.helpme.create.box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.circle.html">splinepy.helpme.create.circle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.cone.html">splinepy.helpme.create.cone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.determinant_spline.html">splinepy.helpme.create.determinant_spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.disk.html">splinepy.helpme.create.disk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.embedded.html">splinepy.helpme.create.embedded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.extruded.html">splinepy.helpme.create.extruded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.from_bounds.html">splinepy.helpme.create.from_bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.line.html">splinepy.helpme.create.line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.parametric_view.html">splinepy.helpme.create.parametric_view</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.plate.html">splinepy.helpme.create.plate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.pyramid.html">splinepy.helpme.create.pyramid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.revolved.html">splinepy.helpme.create.revolved</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.sphere.html">splinepy.helpme.create.sphere</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.surface_circle.html">splinepy.helpme.create.surface_circle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.torus.html">splinepy.helpme.create.torus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.create.Creator.html">splinepy.helpme.create.Creator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.extract.html">splinepy.helpme.extract</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.arrow_data.html">splinepy.helpme.extract.arrow_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.bases.html">splinepy.helpme.extract.bases</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.boundaries.html">splinepy.helpme.extract.boundaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.control_edges.html">splinepy.helpme.extract.control_edges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.control_faces.html">splinepy.helpme.extract.control_faces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.control_mesh.html">splinepy.helpme.extract.control_mesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.control_points.html">splinepy.helpme.extract.control_points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.control_volumes.html">splinepy.helpme.extract.control_volumes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.edges.html">splinepy.helpme.extract.edges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.faces.html">splinepy.helpme.extract.faces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.spline.html">splinepy.helpme.extract.spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.volumes.html">splinepy.helpme.extract.volumes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.extract.Extractor.html">splinepy.helpme.extract.Extractor</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.ffd.html">splinepy.helpme.ffd</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.ffd.FFD.html">splinepy.helpme.ffd.FFD</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.fit.html">splinepy.helpme.fit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.fit.compute_knot_vector.html">splinepy.helpme.fit.compute_knot_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.fit.curve.html">splinepy.helpme.fit.curve</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.fit.parameterize.html">splinepy.helpme.fit.parameterize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.fit.solve_for_control_points.html">splinepy.helpme.fit.solve_for_control_points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.fit.surface.html">splinepy.helpme.fit.surface</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.integrate.html">splinepy.helpme.integrate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.integrate.parametric_function.html">splinepy.helpme.integrate.parametric_function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.integrate.physical_function.html">splinepy.helpme.integrate.physical_function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.integrate.volume.html">splinepy.helpme.integrate.volume</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.integrate.Integrator.html">splinepy.helpme.integrate.Integrator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.mapper.html">splinepy.helpme.mapper</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.mapper.Mapper.html">splinepy.helpme.mapper.Mapper</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.multi_index.html">splinepy.helpme.multi_index</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.multi_index.MultiIndex.html">splinepy.helpme.multi_index.MultiIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.reparametrize.html">splinepy.helpme.reparametrize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.reparametrize.flip_axes.html">splinepy.helpme.reparametrize.flip_axes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.reparametrize.permute_parametric_axes.html">splinepy.helpme.reparametrize.permute_parametric_axes</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.helpme.visualize.html">splinepy.helpme.visualize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.visualize.make_showable.html">splinepy.helpme.visualize.make_showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.visualize.show.html">splinepy.helpme.visualize.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.visualize.MultipatchShowOption.html">splinepy.helpme.visualize.MultipatchShowOption</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.helpme.visualize.SplineShowOption.html">splinepy.helpme.visualize.SplineShowOption</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.io.html">splinepy.io</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.cats.html">splinepy.io.cats</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.cats.export.html">splinepy.io.cats.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.cats.load.html">splinepy.io.cats.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.default.html">splinepy.io.default</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.default.export.html">splinepy.io.default.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.default.load.html">splinepy.io.default.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.gismo.html">splinepy.io.gismo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.gismo.export.html">splinepy.io.gismo.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.gismo.load.html">splinepy.io.gismo.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.gismo.AdditionalBlocks.html">splinepy.io.gismo.AdditionalBlocks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.iges.html">splinepy.io.iges</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.iges.export.html">splinepy.io.iges.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.iges.load.html">splinepy.io.iges.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.ioutils.html">splinepy.io.ioutils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.abs_fname.html">splinepy.io.ioutils.abs_fname</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.dict_to_spline.html">splinepy.io.ioutils.dict_to_spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.expand_tabs.html">splinepy.io.ioutils.expand_tabs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.form_lines.html">splinepy.io.ioutils.form_lines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.make_meaningful.html">splinepy.io.ioutils.make_meaningful</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.ioutils.next_line.html">splinepy.io.ioutils.next_line</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.irit.html">splinepy.io.irit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.irit.export.html">splinepy.io.irit.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.irit.load.html">splinepy.io.irit.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.json.html">splinepy.io.json</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.json.export.html">splinepy.io.json.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.json.load.html">splinepy.io.json.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.mfem.html">splinepy.io.mfem</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.mfem.dof_mapping.html">splinepy.io.mfem.dof_mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.mfem.export.html">splinepy.io.mfem.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.mfem.export_cartesian.html">splinepy.io.mfem.export_cartesian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.mfem.load.html">splinepy.io.mfem.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.mfem.read_solution.html">splinepy.io.mfem.read_solution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.npz.html">splinepy.io.npz</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.npz.export.html">splinepy.io.npz.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.npz.load.html">splinepy.io.npz.load</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.io.svg.html">splinepy.io.svg</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.io.svg.export.html">splinepy.io.svg.export</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.microstructure.html">splinepy.microstructure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.microstructure.microstructure.html">splinepy.microstructure.microstructure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.microstructure.Microstructure.html">splinepy.microstructure.microstructure.Microstructure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.microstructure.tiles.html">splinepy.microstructure.tiles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.by_dim.html">splinepy.microstructure.tiles.by_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.everything.html">splinepy.microstructure.tiles.everything</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.get.html">splinepy.microstructure.tiles.get</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.show.html">splinepy.microstructure.tiles.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.armadillo.html">splinepy.microstructure.tiles.armadillo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.chi.html">splinepy.microstructure.tiles.chi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.cross_2d.html">splinepy.microstructure.tiles.cross_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.cross_3d.html">splinepy.microstructure.tiles.cross_3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.cross_3d_linear.html">splinepy.microstructure.tiles.cross_3d_linear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.cube_void.html">splinepy.microstructure.tiles.cube_void</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.double_lattice.html">splinepy.microstructure.tiles.double_lattice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.ellips_v_oid.html">splinepy.microstructure.tiles.ellips_v_oid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.hollow_cube.html">splinepy.microstructure.tiles.hollow_cube</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.hollow_octagon.html">splinepy.microstructure.tiles.hollow_octagon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.hollow_octagon_extrude.html">splinepy.microstructure.tiles.hollow_octagon_extrude</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.inverse_cross_3d.html">splinepy.microstructure.tiles.inverse_cross_3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.snappy.html">splinepy.microstructure.tiles.snappy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.microstructure.tiles.tile_base.html">splinepy.microstructure.tiles.tile_base</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.multipatch.html">splinepy.multipatch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.multipatch.Multipatch.html">splinepy.multipatch.Multipatch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.add_fields.html">splinepy.multipatch.Multipatch.add_fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.boundaries_from_continuity.html">splinepy.multipatch.Multipatch.boundaries_from_continuity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.boundary_from_function.html">splinepy.multipatch.Multipatch.boundary_from_function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.boundary_multipatch.html">splinepy.multipatch.Multipatch.boundary_multipatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.boundary_patch_ids.html">splinepy.multipatch.Multipatch.boundary_patch_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.clear.html">splinepy.multipatch.Multipatch.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.combine_boundaries.html">splinepy.multipatch.Multipatch.combine_boundaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.control_point_offsets.html">splinepy.multipatch.Multipatch.control_point_offsets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.determine_interfaces.html">splinepy.multipatch.Multipatch.determine_interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.evaluate.html">splinepy.multipatch.Multipatch.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.get_interfaces.html">splinepy.multipatch.Multipatch.get_interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.interface_orientations.html">splinepy.multipatch.Multipatch.interface_orientations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.sample.html">splinepy.multipatch.Multipatch.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.set_boundary.html">splinepy.multipatch.Multipatch.set_boundary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.set_interface_orientations.html">splinepy.multipatch.Multipatch.set_interface_orientations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.set_interfaces.html">splinepy.multipatch.Multipatch.set_interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.show.html">splinepy.multipatch.Multipatch.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.showable.html">splinepy.multipatch.Multipatch.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.sub_multipatch.html">splinepy.multipatch.Multipatch.sub_multipatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.boundaries.html">splinepy.multipatch.Multipatch.boundaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.dim.html">splinepy.multipatch.Multipatch.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.extract.html">splinepy.multipatch.Multipatch.extract</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.fields.html">splinepy.multipatch.Multipatch.fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.interfaces.html">splinepy.multipatch.Multipatch.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.para_dim.html">splinepy.multipatch.Multipatch.para_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.patches.html">splinepy.multipatch.Multipatch.patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.show_options.html">splinepy.multipatch.Multipatch.show_options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.spline_data.html">splinepy.multipatch.Multipatch.spline_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.multipatch.Multipatch.sub_patch_centers.html">splinepy.multipatch.Multipatch.sub_patch_centers</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.nurbs.html">splinepy.nurbs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.nurbs.NURBS.html">splinepy.nurbs.NURBS</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.basis.html">splinepy.nurbs.NURBS.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.basis_and_support.html">splinepy.nurbs.NURBS.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.basis_derivative.html">splinepy.nurbs.NURBS.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.basis_derivative_and_support.html">splinepy.nurbs.NURBS.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.clear.html">splinepy.nurbs.NURBS.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.copy.html">splinepy.nurbs.NURBS.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.current_core_properties.html">splinepy.nurbs.NURBS.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.derivative.html">splinepy.nurbs.NURBS.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.elevate_degrees.html">splinepy.nurbs.NURBS.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.evaluate.html">splinepy.nurbs.NURBS.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.export.html">splinepy.nurbs.NURBS.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.extract_bezier_patches.html">splinepy.nurbs.NURBS.extract_bezier_patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.greville_abscissae.html">splinepy.nurbs.NURBS.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.insert_knots.html">splinepy.nurbs.NURBS.insert_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.jacobian.html">splinepy.nurbs.NURBS.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.knot_insertion_matrix.html">splinepy.nurbs.NURBS.knot_insertion_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.mapper.html">splinepy.nurbs.NURBS.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.normalize_knot_vectors.html">splinepy.nurbs.NURBS.normalize_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.proximities.html">splinepy.nurbs.NURBS.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.reduce_degrees.html">splinepy.nurbs.NURBS.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.remove_knots.html">splinepy.nurbs.NURBS.remove_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.sample.html">splinepy.nurbs.NURBS.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.show.html">splinepy.nurbs.NURBS.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.showable.html">splinepy.nurbs.NURBS.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.support.html">splinepy.nurbs.NURBS.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.todict.html">splinepy.nurbs.NURBS.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.uniform_refine.html">splinepy.nurbs.NURBS.uniform_refine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.nurbs.NURBS.nurbs.html">splinepy.nurbs.NURBS.nurbs</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.rational_bezier.html">splinepy.rational_bezier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.html">splinepy.rational_bezier.RationalBezier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.basis.html">splinepy.rational_bezier.RationalBezier.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.basis_and_support.html">splinepy.rational_bezier.RationalBezier.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.basis_derivative.html">splinepy.rational_bezier.RationalBezier.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.basis_derivative_and_support.html">splinepy.rational_bezier.RationalBezier.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.clear.html">splinepy.rational_bezier.RationalBezier.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.compose.html">splinepy.rational_bezier.RationalBezier.compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.composition_derivative.html">splinepy.rational_bezier.RationalBezier.composition_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.copy.html">splinepy.rational_bezier.RationalBezier.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.current_core_properties.html">splinepy.rational_bezier.RationalBezier.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.derivative.html">splinepy.rational_bezier.RationalBezier.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.derivative_spline.html">splinepy.rational_bezier.RationalBezier.derivative_spline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.elevate_degrees.html">splinepy.rational_bezier.RationalBezier.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.evaluate.html">splinepy.rational_bezier.RationalBezier.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.export.html">splinepy.rational_bezier.RationalBezier.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.extract_dim.html">splinepy.rational_bezier.RationalBezier.extract_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.greville_abscissae.html">splinepy.rational_bezier.RationalBezier.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.jacobian.html">splinepy.rational_bezier.RationalBezier.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.mapper.html">splinepy.rational_bezier.RationalBezier.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.proximities.html">splinepy.rational_bezier.RationalBezier.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.reduce_degrees.html">splinepy.rational_bezier.RationalBezier.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.sample.html">splinepy.rational_bezier.RationalBezier.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.show.html">splinepy.rational_bezier.RationalBezier.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.showable.html">splinepy.rational_bezier.RationalBezier.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.split.html">splinepy.rational_bezier.RationalBezier.split</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.support.html">splinepy.rational_bezier.RationalBezier.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.todict.html">splinepy.rational_bezier.RationalBezier.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.nurbs.html">splinepy.rational_bezier.RationalBezier.nurbs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.rational_bezier.RationalBezier.rationalbezier.html">splinepy.rational_bezier.RationalBezier.rationalbezier</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.settings.html">splinepy.settings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.settings.TOLERANCE.html">splinepy.settings.TOLERANCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.settings.NTHREADS.html">splinepy.settings.NTHREADS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.settings.NAME_TO_TYPE.html">splinepy.settings.NAME_TO_TYPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.settings.CHECK_BOUNDS.html">splinepy.settings.CHECK_BOUNDS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.spline.html">splinepy.spline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.spline.RequiredProperties.html">splinepy.spline.RequiredProperties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.RequiredProperties.intersection.html">splinepy.spline.RequiredProperties.intersection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.RequiredProperties.of.html">splinepy.spline.RequiredProperties.of</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.RequiredProperties.union.html">splinepy.spline.RequiredProperties.union</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.spline.Spline.html">splinepy.spline.Spline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.basis.html">splinepy.spline.Spline.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.basis_and_support.html">splinepy.spline.Spline.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.basis_derivative.html">splinepy.spline.Spline.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.basis_derivative_and_support.html">splinepy.spline.Spline.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.clear.html">splinepy.spline.Spline.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.copy.html">splinepy.spline.Spline.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.current_core_properties.html">splinepy.spline.Spline.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.derivative.html">splinepy.spline.Spline.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.elevate_degrees.html">splinepy.spline.Spline.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.evaluate.html">splinepy.spline.Spline.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.export.html">splinepy.spline.Spline.export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.greville_abscissae.html">splinepy.spline.Spline.greville_abscissae</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.jacobian.html">splinepy.spline.Spline.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.mapper.html">splinepy.spline.Spline.mapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.proximities.html">splinepy.spline.Spline.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.reduce_degrees.html">splinepy.spline.Spline.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.sample.html">splinepy.spline.Spline.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.show.html">splinepy.spline.Spline.show</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.showable.html">splinepy.spline.Spline.showable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.support.html">splinepy.spline.Spline.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.todict.html">splinepy.spline.Spline.todict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.check.html">splinepy.spline.Spline.check</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.control_mesh_resolutions.html">splinepy.spline.Spline.control_mesh_resolutions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.control_point_bounds.html">splinepy.spline.Spline.control_point_bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.control_points.html">splinepy.spline.Spline.control_points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.cps.html">splinepy.spline.Spline.cps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.create.html">splinepy.spline.Spline.create</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.degrees.html">splinepy.spline.Spline.degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.dim.html">splinepy.spline.Spline.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.ds.html">splinepy.spline.Spline.ds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.extract.html">splinepy.spline.Spline.extract</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.has_knot_vectors.html">splinepy.spline.Spline.has_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.integrate.html">splinepy.spline.Spline.integrate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.is_rational.html">splinepy.spline.Spline.is_rational</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.knot_multiplicities.html">splinepy.spline.Spline.knot_multiplicities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.knot_vectors.html">splinepy.spline.Spline.knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.kvs.html">splinepy.spline.Spline.kvs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.multi_index.html">splinepy.spline.Spline.multi_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.name.html">splinepy.spline.Spline.name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.para_dim.html">splinepy.spline.Spline.para_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.parametric_bounds.html">splinepy.spline.Spline.parametric_bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.required_properties.html">splinepy.spline.Spline.required_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.show_options.html">splinepy.spline.Spline.show_options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.spline_data.html">splinepy.spline.Spline.spline_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.unique_knots.html">splinepy.spline.Spline.unique_knots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.weights.html">splinepy.spline.Spline.weights</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.whatami.html">splinepy.spline.Spline.whatami</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.spline.Spline.ws.html">splinepy.spline.Spline.ws</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="splinepy.splinepy_core.html">splinepy.splinepy_core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.add.html">splinepy.splinepy_core.add</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.annul_core.html">splinepy.splinepy_core.annul_core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.bezier_extraction_matrix.html">splinepy.splinepy_core.bezier_extraction_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.boundaries_from_continuity.html">splinepy.splinepy_core.boundaries_from_continuity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.boundary_centers.html">splinepy.splinepy_core.boundary_centers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.build_type.html">splinepy.splinepy_core.build_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.compose.html">splinepy.splinepy_core.compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.compose_sensitivities.html">splinepy.splinepy_core.compose_sensitivities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.composition_derivative.html">splinepy.splinepy_core.composition_derivative</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.core_id.html">splinepy.splinepy_core.core_id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.core_ref_count.html">splinepy.splinepy_core.core_ref_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.derivative_spline.html">splinepy.splinepy_core.derivative_spline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.export_iges.html">splinepy.splinepy_core.export_iges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.extract_all_boundary_splines.html">splinepy.splinepy_core.extract_all_boundary_splines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.extract_bezier_patches.html">splinepy.splinepy_core.extract_bezier_patches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.extract_boundaries.html">splinepy.splinepy_core.extract_boundaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.extract_dim.html">splinepy.splinepy_core.extract_dim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.global_knot_insertion_matrix.html">splinepy.splinepy_core.global_knot_insertion_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.has_core.html">splinepy.splinepy_core.has_core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.insert_knots.html">splinepy.splinepy_core.insert_knots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.interfaces_from_boundary_centers.html">splinepy.splinepy_core.interfaces_from_boundary_centers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.is_minimal.html">splinepy.splinepy_core.is_minimal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.knot_insertion_matrix.html">splinepy.splinepy_core.knot_insertion_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.multiply.html">splinepy.splinepy_core.multiply</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.null_spline.html">splinepy.splinepy_core.null_spline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.read_iges.html">splinepy.splinepy_core.read_iges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.remove_knots.html">splinepy.splinepy_core.remove_knots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.same_spline_with_knot_vectors.html">splinepy.splinepy_core.same_spline_with_knot_vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="splinepy.splinepy_core.split.html">splinepy.splinepy_core.split</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.html">splinepy.splinepy_core.ControlPointPointers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.dim.html">splinepy.splinepy_core.ControlPointPointers.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.len.html">splinepy.splinepy_core.ControlPointPointers.len</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.set_row.html">splinepy.splinepy_core.ControlPointPointers.set_row</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.set_rows.html">splinepy.splinepy_core.ControlPointPointers.set_rows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.sync.html">splinepy.splinepy_core.ControlPointPointers.sync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ControlPointPointers.sync_rows.html">splinepy.splinepy_core.ControlPointPointers.sync_rows</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.html">splinepy.splinepy_core.KnotVector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.find_span.html">splinepy.splinepy_core.KnotVector.find_span</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.multiplicities.html">splinepy.splinepy_core.KnotVector.multiplicities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.numpy.html">splinepy.splinepy_core.KnotVector.numpy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.scale.html">splinepy.splinepy_core.KnotVector.scale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.KnotVector.unique.html">splinepy.splinepy_core.KnotVector.unique</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.ParameterSpace.html">splinepy.splinepy_core.ParameterSpace</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ParameterSpace.copy.html">splinepy.splinepy_core.ParameterSpace.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.ParameterSpace.unique_knots.html">splinepy.splinepy_core.ParameterSpace.unique_knots</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.html">splinepy.splinepy_core.PyMultipatch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.add_fields.html">splinepy.splinepy_core.PyMultipatch.add_fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.boundary_multipatch.html">splinepy.splinepy_core.PyMultipatch.boundary_multipatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.boundary_patch_ids.html">splinepy.splinepy_core.PyMultipatch.boundary_patch_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.clear.html">splinepy.splinepy_core.PyMultipatch.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.control_point_offsets.html">splinepy.splinepy_core.PyMultipatch.control_point_offsets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.evaluate.html">splinepy.splinepy_core.PyMultipatch.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.fields.html">splinepy.splinepy_core.PyMultipatch.fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.get_interfaces.html">splinepy.splinepy_core.PyMultipatch.get_interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.interface_orientations.html">splinepy.splinepy_core.PyMultipatch.interface_orientations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.sample.html">splinepy.splinepy_core.PyMultipatch.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.set_interface_orientations.html">splinepy.splinepy_core.PyMultipatch.set_interface_orientations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.set_interfaces.html">splinepy.splinepy_core.PyMultipatch.set_interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.sub_multipatch.html">splinepy.splinepy_core.PyMultipatch.sub_multipatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.sub_patch_centers.html">splinepy.splinepy_core.PyMultipatch.sub_patch_centers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.control_points.html">splinepy.splinepy_core.PyMultipatch.control_points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.dim.html">splinepy.splinepy_core.PyMultipatch.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.n_default_threads.html">splinepy.splinepy_core.PyMultipatch.n_default_threads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.name.html">splinepy.splinepy_core.PyMultipatch.name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.para_dim.html">splinepy.splinepy_core.PyMultipatch.para_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.patches.html">splinepy.splinepy_core.PyMultipatch.patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.same_parametric_bounds.html">splinepy.splinepy_core.PyMultipatch.same_parametric_bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.tolerance.html">splinepy.splinepy_core.PyMultipatch.tolerance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PyMultipatch.whatami.html">splinepy.splinepy_core.PyMultipatch.whatami</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.PySpline.html">splinepy.splinepy_core.PySpline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.basis.html">splinepy.splinepy_core.PySpline.basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.basis_and_support.html">splinepy.splinepy_core.PySpline.basis_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.basis_derivative.html">splinepy.splinepy_core.PySpline.basis_derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.basis_derivative_and_support.html">splinepy.splinepy_core.PySpline.basis_derivative_and_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.current_core_properties.html">splinepy.splinepy_core.PySpline.current_core_properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.derivative.html">splinepy.splinepy_core.PySpline.derivative</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.elevate_degrees.html">splinepy.splinepy_core.PySpline.elevate_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.evaluate.html">splinepy.splinepy_core.PySpline.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.jacobian.html">splinepy.splinepy_core.PySpline.jacobian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.proximities.html">splinepy.splinepy_core.PySpline.proximities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.reduce_degrees.html">splinepy.splinepy_core.PySpline.reduce_degrees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.sample.html">splinepy.splinepy_core.PySpline.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.support.html">splinepy.splinepy_core.PySpline.support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.control_mesh_resolutions.html">splinepy.splinepy_core.PySpline.control_mesh_resolutions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.dim.html">splinepy.splinepy_core.PySpline.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.has_knot_vectors.html">splinepy.splinepy_core.PySpline.has_knot_vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.is_rational.html">splinepy.splinepy_core.PySpline.is_rational</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.name.html">splinepy.splinepy_core.PySpline.name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.para_dim.html">splinepy.splinepy_core.PySpline.para_dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.parametric_bounds.html">splinepy.splinepy_core.PySpline.parametric_bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.PySpline.whatami.html">splinepy.splinepy_core.PySpline.whatami</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.html">splinepy.splinepy_core.WeightPointers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.dim.html">splinepy.splinepy_core.WeightPointers.dim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.len.html">splinepy.splinepy_core.WeightPointers.len</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.set_row.html">splinepy.splinepy_core.WeightPointers.set_row</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.set_rows.html">splinepy.splinepy_core.WeightPointers.set_rows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.sync.html">splinepy.splinepy_core.WeightPointers.sync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.splinepy_core.WeightPointers.sync_rows.html">splinepy.splinepy_core.WeightPointers.sync_rows</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="splinepy.utils.html">splinepy.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="splinepy.utils.data.html">splinepy.utils.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.cartesian_product.html">splinepy.utils.data.cartesian_product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.enforce_contiguous.html">splinepy.utils.data.enforce_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.enforce_contiguous_values.html">splinepy.utils.data.enforce_contiguous_values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.make_matrix.html">splinepy.utils.data.make_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.uniform_query.html">splinepy.utils.data.uniform_query</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="splinepy.utils.data.MultipatchData.html">splinepy.utils.data.MultipatchData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.PhysicalSpaceArray.html">splinepy.utils.data.PhysicalSpaceArray</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.SplineData.html">splinepy.utils.data.SplineData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.data.SplineDataAdaptor.html">splinepy.utils.data.SplineDataAdaptor</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="splinepy.utils.log.html">splinepy.utils.log</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.configure.html">splinepy.utils.log.configure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.debug.html">splinepy.utils.log.debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.error.html">splinepy.utils.log.error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.info.html">splinepy.utils.log.info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.prepend_log.html">splinepy.utils.log.prepend_log</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splinepy.utils.log.warning.html">splinepy.utils.log.warning</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api_reference.html" class="nav-link">API References</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../python_api.html" class="nav-link">&lt;no title&gt;</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="splinepy.html" class="nav-link">splinepy</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="splinepy.utils.html" class="nav-link">splinepy.utils</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="splinepy.utils.data.html" class="nav-link">splinepy.utils.data</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="splinepy.utils.data.MultipatchData.html" class="nav-link">splinepy.utils.data.MultipatchData</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.utils.data.MultipatchData.as_scalar</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="splinepy-utils-data-multipatchdata-as-scalar">
+<h1>splinepy.utils.data.MultipatchData.as_scalar<a class="headerlink" href="#splinepy-utils-data-multipatchdata-as-scalar" title="Link to this heading">#</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="splinepy.utils.data.MultipatchData.as_scalar">
+<span class="sig-prename descclassname"><span class="pre">MultipatchData.</span></span><span class="sig-name descname"><span class="pre">as_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/splinepy/utils/data.html#MultipatchData.as_scalar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#splinepy.utils.data.MultipatchData.as_scalar" title="Link to this definition">#</a></dt>
+<dd><p>Return scalar value at given resolutions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>)</p></li>
+<li><p><strong>resolutions</strong> (<em>list</em><em> or </em><em>tuple</em>)</p></li>
+<li><p><strong>default</strong> (<em>object</em>) – Default is None and will return is key doesn’t exist</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>value</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="splinepy.utils.data.MultipatchData.as_arrow.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">splinepy.utils.data.MultipatchData.as_arrow</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="splinepy.utils.data.MultipatchData.clear.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">splinepy.utils.data.MultipatchData.clear</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#splinepy.utils.data.MultipatchData.as_scalar"><code class="docutils literal notranslate"><span class="pre">MultipatchData.as_scalar()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_generated/splinepy.utils.data.MultipatchData.as_scalar.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

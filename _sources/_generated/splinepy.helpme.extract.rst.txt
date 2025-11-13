@@ -1,0 +1,51 @@
+.. _splinepy.helpme.extract:
+
+splinepy.helpme.extract
+=======================
+
+.. automodule:: splinepy.helpme.extract
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      arrow_data
+      bases
+      boundaries
+      control_edges
+      control_faces
+      control_mesh
+      control_points
+      control_volumes
+      edges
+      faces
+      spline
+      volumes
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Extractor
+   
+   
+
+   
+   
+   
+
+
+

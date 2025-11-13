@@ -1,0 +1,33 @@
+.. _splinepy.microstructure.tiles.cube_void:
+
+splinepy.microstructure.tiles.cube\_void
+========================================
+
+.. automodule:: splinepy.microstructure.tiles.cube_void
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      CubeVoid
+   
+   
+
+   
+   
+   
+
+
+

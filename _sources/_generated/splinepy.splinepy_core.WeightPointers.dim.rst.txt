@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.WeightPointers.dim
+==========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: WeightPointers.dim

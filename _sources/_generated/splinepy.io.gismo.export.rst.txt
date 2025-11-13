@@ -1,0 +1,6 @@
+splinepy.io.gismo.export
+========================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. autofunction:: export

@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.reduce\_degrees
+========================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.reduce_degrees

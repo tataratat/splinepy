@@ -1,0 +1,6 @@
+splinepy.cli.convert
+====================
+
+.. currentmodule:: splinepy.cli
+
+.. autofunction:: convert

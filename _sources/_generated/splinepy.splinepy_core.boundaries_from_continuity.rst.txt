@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.boundaries\_from\_continuity
+====================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: boundaries_from_continuity

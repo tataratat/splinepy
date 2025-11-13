@@ -1,0 +1,6 @@
+splinepy.utils.data.MultipatchData.get
+======================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: MultipatchData.get

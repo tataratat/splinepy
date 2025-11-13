@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.arrow\_data
+=============================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.arrow_data

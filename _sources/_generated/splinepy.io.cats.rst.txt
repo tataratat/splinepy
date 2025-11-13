@@ -1,0 +1,33 @@
+.. _splinepy.io.cats:
+
+splinepy.io.cats
+================
+
+.. automodule:: splinepy.io.cats
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

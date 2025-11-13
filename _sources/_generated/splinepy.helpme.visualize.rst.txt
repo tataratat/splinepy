@@ -1,0 +1,42 @@
+.. _splinepy.helpme.visualize:
+
+splinepy.helpme.visualize
+=========================
+
+.. automodule:: splinepy.helpme.visualize
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      make_showable
+      show
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      MultipatchShowOption
+      SplineShowOption
+   
+   
+
+   
+   
+   
+
+
+

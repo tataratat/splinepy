@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.double\_lattice.DoubleLattice.check\_param\_derivatives
+=====================================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.double_lattice
+
+.. automethod:: DoubleLattice.check_param_derivatives

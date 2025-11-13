@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.snappy.Snappy.create\_tile
+========================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.snappy
+
+.. automethod:: Snappy.create_tile

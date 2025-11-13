@@ -1,0 +1,6 @@
+splinepy.cli.show
+=================
+
+.. currentmodule:: splinepy.cli
+
+.. autofunction:: show

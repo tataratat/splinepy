@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.show\_options
+============================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. autoproperty:: Multipatch.show_options

@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.pop
+==================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.pop

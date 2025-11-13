@@ -1,0 +1,33 @@
+.. _splinepy.helpme.ffd:
+
+splinepy.helpme.ffd
+===================
+
+.. automodule:: splinepy.helpme.ffd
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      FFD
+   
+   
+
+   
+   
+   
+
+
+

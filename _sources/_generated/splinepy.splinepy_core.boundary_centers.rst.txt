@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.boundary\_centers
+=========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: boundary_centers

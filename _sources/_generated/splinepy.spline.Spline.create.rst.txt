@@ -1,0 +1,6 @@
+splinepy.spline.Spline.create
+=============================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.create

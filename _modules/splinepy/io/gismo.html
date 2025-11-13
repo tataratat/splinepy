@@ -1,0 +1,1485 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.io.gismo &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/io/gismo';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.io.gismo</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.io.gismo</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">base64</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_ET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">_python_version</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">enforce_contiguous</span> <span class="k">as</span> <span class="n">_enforce_contiguous</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">debug</span> <span class="k">as</span> <span class="n">_debug</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">warning</span> <span class="k">as</span> <span class="n">_warning</span>
+
+
+<div class="viewcode-block" id="AdditionalBlocks">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.AdditionalBlocks.html#splinepy.io.gismo.AdditionalBlocks">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdditionalBlocks</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to manage additional XML blocks for gismo export, including boundary</span>
+<span class="sd">    conditions, function definitions, and assembly options. Each block is stored as a</span>
+<span class="sd">    Python dictionary, which is then later handled by the export function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="AdditionalBlocks.add_boundary_conditions">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.AdditionalBlocks.add_boundary_conditions.html#splinepy.io.gismo.AdditionalBlocks.add_boundary_conditions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_boundary_conditions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">block_id</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">,</span>
+        <span class="n">function_list</span><span class="p">,</span>
+        <span class="n">bc_list</span><span class="p">,</span>
+        <span class="n">cv_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">unknown_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">multipatch_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Python dictionary of boundary function&#39;s block to be used in</span>
+<span class="sd">        gismo export function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block_id : int</span>
+<span class="sd">            ID number of boundaryConditions-block</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            Dimension of physical space</span>
+<span class="sd">        function_list : list&lt;str/tuple&lt;str,str,...&gt;&gt;</span>
+<span class="sd">            List of functions where entries are strings of the function of the BC.</span>
+<span class="sd">            If tuple is given, it will be interpreted as component-wise functions</span>
+<span class="sd">            (e.g. for vector valued functions)</span>
+<span class="sd">        bc_list : list&lt;tuple&lt;str, str, int&gt;&gt;</span>
+<span class="sd">            List of which boundary attains which type of boundary condition. First</span>
+<span class="sd">            entry is the boundary name, second the type of condition (e.g.</span>
+<span class="sd">            &quot;Dirichlet&quot;), third is on which variable/unknown it should be applied</span>
+<span class="sd">        cv_list : list&lt;tuple&lt;str, str, str, str&gt;&gt;</span>
+<span class="sd">            List of which corner values of each patch should have a boundary condition.</span>
+<span class="sd">            First entry is the variable/unknown, second the patch number, third is on</span>
+<span class="sd">            which corner it should be applied and fourth is the function or value</span>
+<span class="sd">        unknown_id : int (0)</span>
+<span class="sd">            ID of the unknown/variable on which this boundaryConditions block should be</span>
+<span class="sd">            applied</span>
+<span class="sd">        multipatch_id : int (0)</span>
+<span class="sd">            ID of the multipatch</span>
+<span class="sd">        comment: str</span>
+<span class="sd">            Comment above boundaryFunctions-block</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bc_dict_for_xml</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">bc_dict_for_xml</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;boundaryConditions&quot;</span>
+        <span class="n">bc_dict_for_xml</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_id</span><span class="p">),</span>
+            <span class="s2">&quot;multipatch&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">multipatch_id</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Define functions</span>
+        <span class="n">children_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">func_text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">function_list</span><span class="p">):</span>
+            <span class="n">function_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;Function&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FunctionExpr&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span>
+                    <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func_text</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_text</span>
+            <span class="c1"># Else vector-valued function</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">component_index</span><span class="p">)},</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">single_func_text</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">component_index</span><span class="p">,</span> <span class="n">single_func_text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                        <span class="n">func_text</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+
+            <span class="n">children_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function_dict</span><span class="p">)</span>
+
+        <span class="n">children_list</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;bc&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">bidname</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">bctype</span><span class="p">,</span>
+                    <span class="s2">&quot;unknown&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">unknown_id</span><span class="p">),</span>
+                    <span class="c1"># component omitted, might be sth for vector-valued unknowns</span>
+                    <span class="s2">&quot;function&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_id</span><span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">bidname</span><span class="p">,</span> <span class="n">bctype</span><span class="p">,</span> <span class="n">block_id</span> <span class="ow">in</span> <span class="n">bc_list</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">cv_unknown</span><span class="p">,</span> <span class="n">cv_patch</span><span class="p">,</span> <span class="n">cv_corner</span><span class="p">,</span> <span class="n">cv_function</span> <span class="ow">in</span> <span class="n">cv_list</span><span class="p">:</span>
+            <span class="n">function_dict_cv</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;cv&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;unknown&quot;</span><span class="p">:</span> <span class="n">cv_unknown</span><span class="p">,</span>
+                    <span class="s2">&quot;patch&quot;</span><span class="p">:</span> <span class="n">cv_patch</span><span class="p">,</span>
+                    <span class="s2">&quot;corner&quot;</span><span class="p">:</span> <span class="n">cv_corner</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">cv_function</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">children_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function_dict_cv</span><span class="p">)</span>
+
+        <span class="n">bc_dict_for_xml</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">children_list</span>
+
+        <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bc_dict_for_xml</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bc_dict_for_xml</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AdditionalBlocks.add_function">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.AdditionalBlocks.add_function.html#splinepy.io.gismo.AdditionalBlocks.add_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">block_id</span><span class="p">,</span> <span class="n">function_string</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Python dictionary of custom function&#39;s block to be used in</span>
+<span class="sd">        gismo export function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim: int</span>
+<span class="sd">            Physical dimension of the problem</span>
+<span class="sd">        id: int</span>
+<span class="sd">            ID of function block</span>
+<span class="sd">        function_string: str or tuple&lt;str,str&gt;</span>
+<span class="sd">            Function as string. If tuple is given, function will be vector-valued.</span>
+<span class="sd">        comment: str</span>
+<span class="sd">            Comment above function block</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">function_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Function&quot;</span>
+        <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_id</span><span class="p">),</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FunctionExpr&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Scalar-valued function</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function_string</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">function_string</span>
+        <span class="c1"># Vector-valued function</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">component_index</span><span class="p">)},</span>
+                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">function_component_string</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">component_index</span><span class="p">,</span> <span class="n">function_component_string</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                    <span class="n">function_string</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+
+        <span class="c1"># Add comment if given</span>
+        <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">function_dict</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AdditionalBlocks.add_assembly_options">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.AdditionalBlocks.add_assembly_options.html#splinepy.io.gismo.AdditionalBlocks.add_assembly_options">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_assembly_options</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">block_id</span><span class="p">,</span>
+        <span class="n">dirichlet_strategy</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+        <span class="n">dirichlet_values</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+        <span class="n">interface_strategy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">bda</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">bdb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">bdo</span><span class="o">=</span><span class="mf">0.333</span><span class="p">,</span>
+        <span class="n">qua</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">qub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">qurule</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Python dictionary of g+smo assembly options to be used in gismo</span>
+<span class="sd">        export function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block_id: int</span>
+<span class="sd">            ID of the OptionList-block</span>
+<span class="sd">        dirichlet_strategy: int</span>
+<span class="sd">            Method for enforcement of Dirichlet BCs [11..14]</span>
+<span class="sd">        dirichlet_values: int</span>
+<span class="sd">            Method for computation of Dirichlet DoF values [100..103]</span>
+<span class="sd">        interface_strategy: int</span>
+<span class="sd">            Method of treatment of patch interfaces [0..3]</span>
+<span class="sd">        bda: int</span>
+<span class="sd">            Estimated nonzeros per column of the matrix: bdA*deg + bdB</span>
+<span class="sd">        bdb: int</span>
+<span class="sd">            Estimated nonzeros per column of the matrix: bdA*deg + bdB</span>
+<span class="sd">        bdo: int</span>
+<span class="sd">            Overhead of sparse mem. allocation: (1+bdO)(bdA*deg + bdB) [0..1]</span>
+<span class="sd">        qua: int</span>
+<span class="sd">            Number of quadrature points: quA*deg + quB</span>
+<span class="sd">        qub: int</span>
+<span class="sd">            Number of quadrature points: quA*deg + quB</span>
+<span class="sd">        qurule: int</span>
+<span class="sd">            Quadrature rule [1:GaussLegendre,2:GaussLobatto]</span>
+<span class="sd">        comment: str</span>
+<span class="sd">            Comment above OptionList-block</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;DirichletStrategy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;DirichletValues&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;InterfaceStrategy&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bdA&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bdB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bdO&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quA&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quRule&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Method for enforcement of Dirichlet BCs [11..14]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Method for computation of Dirichlet DoF values [100..103]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Method of treatment of patch interfaces [0..3]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Estimated nonzeros per column of the matrix: bdA*deg + bdB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Estimated nonzeros per column of the matrix: bdA*deg + bdB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Overhead of sparse mem. allocation: (1+bdO)(bdA*deg + bdB) [0..1]&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Number of quadrature points: quA*deg + quB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Number of quadrature points: quA*deg + quB&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Quadrature rule [1:GaussLegendre,2:GaussLobatto]&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">dirichlet_strategy</span><span class="p">,</span>
+            <span class="n">dirichlet_values</span><span class="p">,</span>
+            <span class="n">interface_strategy</span><span class="p">,</span>
+            <span class="n">bda</span><span class="p">,</span>
+            <span class="n">bdb</span><span class="p">,</span>
+            <span class="n">bdo</span><span class="p">,</span>
+            <span class="n">qua</span><span class="p">,</span>
+            <span class="n">qub</span><span class="p">,</span>
+            <span class="n">qurule</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">number_types</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;real&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;real&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;real&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">assembly_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">assembly_dict</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;OptionList&quot;</span>
+        <span class="n">assembly_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">block_id</span><span class="p">)}</span>
+        <span class="n">assembly_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    &quot;</span>
+
+        <span class="n">children_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">number_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="n">descriptions</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">number_types</span>
+        <span class="p">):</span>
+            <span class="n">children_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="n">number_type</span><span class="p">,</span>
+                    <span class="s2">&quot;attributes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                        <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+                        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                    <span class="p">},</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="n">assembly_dict</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">children_list</span>
+
+        <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">assembly_dict</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assembly_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AdditionalBlocks.to_list">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.AdditionalBlocks.to_list.html#splinepy.io.gismo.AdditionalBlocks.to_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of created XML-blocks</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+<span class="sd">        blocks: list&lt;dict&gt;</span>
+<span class="sd">            List of XML-blocks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_spline_to_ET</span><span class="p">(</span>
+    <span class="n">root</span><span class="p">,</span>
+    <span class="n">multipatch</span><span class="p">,</span>
+    <span class="n">index_offset</span><span class="p">,</span>
+    <span class="n">fields_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">as_base64</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">field_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write spline data to xml element in gismo format</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : ElementTree.Subelement</span>
+<span class="sd">      branch in element tree to which the spline info is to be added</span>
+<span class="sd">    multipatch : Multipatch</span>
+<span class="sd">      Multipatch containing the information requested</span>
+<span class="sd">    index_offset : int</span>
+<span class="sd">      index_offset for ids in xml export</span>
+<span class="sd">      (All geometries are assigned individual ids that must be unique in the</span>
+<span class="sd">      xml file)</span>
+<span class="sd">    fields_only : bool (False)</span>
+<span class="sd">      If set, exports only the fields associated to the multipatch data</span>
+<span class="sd">    as_base64 : bool (False)</span>
+<span class="sd">      If set, coordinates, weights and knot-vectors are exported in B64</span>
+<span class="sd">    field_mask : array-like</span>
+<span class="sd">      Selection of active fields to be exported into the fields file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.spline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+    <span class="k">if</span> <span class="n">fields_only</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">fields_only</span> <span class="ow">and</span> <span class="n">field_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_mask</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;field_mask must be list of integers&quot;</span><span class="p">)</span>
+        <span class="n">field_mask</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">_enforce_contiguous</span><span class="p">(</span><span class="n">field_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">asarray</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Check if range is valid</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">field_mask</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">field_mask</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;field_mask contains unsupported range, must be within &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(0, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_array_to_text</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">is_matrix</span><span class="p">,</span> <span class="n">as_b64</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">as_b64</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">_enforce_contiguous</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">asarray</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_matrix</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">array</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">array</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fields_only</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">field_mask</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">))</span>
+        <span class="n">supports</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">field_mask</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">patches</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">],</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Sanity check (see error message)</span>
+        <span class="n">n_patches_in_support</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">supports</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">supports</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">n_patches_in_support</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The requested field(s) can not be exported, because the patch &quot;</span>
+                <span class="s2">&quot;ids of the field support (i.e., where the fields are non-zero)&quot;</span>
+                <span class="s2">&quot; is not contiguous. This can be the case, if a field is only &quot;</span>
+                <span class="s2">&quot;non-zero on patches [0,1,4]. This case is currently not &quot;</span>
+                <span class="s2">&quot;supported. If required, it is possible to (1) change the input&quot;</span>
+                <span class="s2">&quot; routine and export a patch-mapping (former patch id to new &quot;</span>
+                <span class="s2">&quot;patch id or (2) add zero-valued splines to fill the gaps. &quot;</span>
+                <span class="s2">&quot;Please feel free to write an issue on github.com/taratat/&quot;</span>
+                <span class="s2">&quot;splinepy for additional information.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Very unintuitive solution to counting the support ids #indextrick</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">supports</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;stable&quot;</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">supports</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">bincount</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">supports</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># Get number of occurrences for previous element to correct index shift</span>
+        <span class="n">index_shift</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bincount</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]))</span>
+        <span class="n">counter</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">index_shift</span><span class="p">,</span> <span class="n">bincount</span><span class="p">)</span>
+        <span class="n">supports</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
+
+        <span class="c1"># Write Matrix</span>
+        <span class="n">design_v_support</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span>
+            <span class="s2">&quot;Matrix&quot;</span><span class="p">,</span>
+            <span class="n">cols</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">supports</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+            <span class="n">rows</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">supports</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">design_v_support</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">supports</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_patches_in_support</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">patches</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">spline</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">patches</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fields_only</span><span class="p">:</span>
+            <span class="c1"># Check supports</span>
+            <span class="n">support</span> <span class="o">=</span> <span class="n">field_mask</span><span class="p">[</span><span class="n">supports</span><span class="p">[</span><span class="n">supports</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">support</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">coefs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">patches</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">control_points</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">support</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">multipatch</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">weights</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">support</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coefs</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">control_points</span>
+            <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">weights</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">spline</span><span class="p">),</span> <span class="n">_Spline</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;One of the splines handed to export is not a valid spline&quot;</span>
+                <span class="s2">&quot; representation&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Transform bezier types, as they are not supported in gismo</span>
+        <span class="k">if</span> <span class="n">spline</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Bezier&quot;</span><span class="p">):</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s2">&quot;BSpline&quot;</span>
+            <span class="n">spline</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">bspline</span>  <span class="c1"># noqa PLW2901</span>
+        <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;RationalBezier&quot;</span><span class="p">):</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s2">&quot;Nurbs&quot;</span>
+            <span class="n">spline</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">nurbs</span>  <span class="c1"># noqa PLW2901</span>
+        <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;BSpline&quot;</span><span class="p">):</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s2">&quot;BSpline&quot;</span>
+        <span class="k">elif</span> <span class="n">spline</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;NURBS&quot;</span><span class="p">):</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s2">&quot;Nurbs&quot;</span>
+
+        <span class="c1"># Start element definition</span>
+        <span class="n">spline_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span>
+            <span class="s2">&quot;Geometry&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span> <span class="o">+</span> <span class="n">index_offset</span><span class="p">),</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Tensor&quot;</span> <span class="o">+</span> <span class="n">type_name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Define Basis functions</span>
+        <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+            <span class="n">spline_basis_base</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">spline_element</span><span class="p">,</span>
+                <span class="s2">&quot;Basis&quot;</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Tensor&quot;</span> <span class="o">+</span> <span class="n">type_name</span> <span class="o">+</span> <span class="s2">&quot;Basis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">spline_basis</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">spline_basis_base</span><span class="p">,</span>
+                <span class="s2">&quot;Basis&quot;</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;TensorBSplineBasis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spline_basis</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">spline_element</span><span class="p">,</span>
+                <span class="s2">&quot;Basis&quot;</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Tensor&quot;</span> <span class="o">+</span> <span class="n">type_name</span> <span class="o">+</span> <span class="s2">&quot;Basis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Set the format flag for output type</span>
+        <span class="n">format_flag</span> <span class="o">=</span> <span class="s2">&quot;B64Float64&quot;</span> <span class="k">if</span> <span class="n">as_base64</span> <span class="k">else</span> <span class="s2">&quot;ASCII&quot;</span>
+
+        <span class="k">for</span> <span class="n">i_para</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">para_dim</span><span class="p">):</span>
+            <span class="n">basis_fun</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">spline_basis</span><span class="p">,</span>
+                <span class="s2">&quot;Basis&quot;</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i_para</span><span class="p">),</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;BSplineBasis&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">knot_vector</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">basis_fun</span><span class="p">,</span>
+                <span class="s2">&quot;KnotVector&quot;</span><span class="p">,</span>
+                <span class="n">degree</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">spline</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i_para</span><span class="p">]),</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">format_flag</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">knot_vector</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_array_to_text</span><span class="p">(</span>
+                <span class="n">spline</span><span class="o">.</span><span class="n">knot_vectors</span><span class="p">[</span><span class="n">i_para</span><span class="p">],</span> <span class="kc">False</span><span class="p">,</span> <span class="n">as_base64</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">in</span> <span class="n">spline</span><span class="o">.</span><span class="n">required_properties</span><span class="p">:</span>
+            <span class="c1"># Add weights</span>
+            <span class="n">weights_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">spline_basis_base</span><span class="p">,</span>
+                <span class="s2">&quot;weights&quot;</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">format_flag</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">weights_element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_array_to_text</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">as_base64</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+            <span class="n">spline_element</span><span class="p">,</span>
+            <span class="s2">&quot;coefs&quot;</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">format_flag</span><span class="p">,</span>
+            <span class="n">geoDim</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">coefs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">coords</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_array_to_text</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">as_base64</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">n_patches_in_support</span>
+
+
+<div class="viewcode-block" id="export">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.export.html#splinepy.io.gismo.export">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span>
+    <span class="n">fname</span><span class="p">,</span>
+    <span class="n">multipatch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">labeled_boundaries</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">additional_blocks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">export_fields</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">field_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">as_base64</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export as gismo readable xml geometry file</span>
+<span class="sd">    Use gismo-specific xml-keywords to export (list of) splines. All Bezier</span>
+<span class="sd">    patches are excluded as their respective non uniform counterpart</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : string</span>
+<span class="sd">      name of the output file</span>
+<span class="sd">    spline_list : Multipatch (preferred)</span>
+<span class="sd">      (list of) Spline-Types in splinepy format</span>
+<span class="sd">    indent: bool</span>
+<span class="sd">      Appends white spaces using xml.etree.ElementTree.indent, if possible.</span>
+<span class="sd">    labeled_boundaries : bool</span>
+<span class="sd">      Writes boundaries with labels into the MultiPatch part of the XML</span>
+<span class="sd">    additional_blocks : list</span>
+<span class="sd">      List of dictionaries, that specify model related options, like boundary</span>
+<span class="sd">      conditions, assembler options, etc.. The dictionaries must have the</span>
+<span class="sd">      following keys, &#39;tag&#39;-&gt;string, &#39;text&#39;-&gt;string (optional),</span>
+<span class="sd">      &#39;attributes&#39;-&gt;dictionary (optional), &#39;children&#39;-&gt;list in the same format</span>
+<span class="sd">      (optional)</span>
+<span class="sd">    export_fields : bool</span>
+<span class="sd">      Export fields to separate file ending with fields.xml, e.g.,</span>
+<span class="sd">      filename.xml.fields.xml. Only non-zero splines are exported to save</span>
+<span class="sd">      memory</span>
+<span class="sd">    field_mask : list</span>
+<span class="sd">      Selection of active fields that are exported (to save memory and speed up</span>
+<span class="sd">      export)</span>
+<span class="sd">    as_base64 : bool (False)</span>
+<span class="sd">      If set, coordinates, weights and knot-vectors are exported in B64</span>
+<span class="sd">      encoding. Available in gismo, once gismo/gismo#634 merges.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.spline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spline</span> <span class="k">as</span> <span class="n">_Spline</span>
+
+    <span class="c1"># First transform spline-data into a multipatch-data if required</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">multipatch</span><span class="p">),</span> <span class="n">_Spline</span><span class="p">):</span>
+        <span class="c1"># Transform to list</span>
+        <span class="n">multipatch</span> <span class="o">=</span> <span class="p">[</span><span class="n">multipatch</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multipatch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Transform to multipatch</span>
+        <span class="n">multipatch</span> <span class="o">=</span> <span class="n">_Multipatch</span><span class="p">(</span><span class="n">splines</span><span class="o">=</span><span class="n">multipatch</span><span class="p">)</span>
+        <span class="n">_warning</span><span class="p">(</span>
+            <span class="s2">&quot;No interfaces (i.e. inter-face connectivity) information is&quot;</span>
+            <span class="s2">&quot; given. Try converting list to Multipatch object. Interfaces&quot;</span>
+            <span class="s2">&quot;will be computed on the fly as a result.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multipatch</span><span class="p">,</span> <span class="n">_Multipatch</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;export Function expects list for multipatch argument&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fname argument must be string&quot;</span><span class="p">)</span>
+
+    <span class="c1"># All entries in gismo xml file have a unique ID</span>
+    <span class="n">xml_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
+    <span class="n">index_offset</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="c1"># licked it so its ours</span>
+    <span class="n">xml_data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="n">_ET</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span>
+            <span class="s2">&quot;generated by splinepy https://github.com/tataratat/splinepy&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># First export Multipatch information</span>
+    <span class="n">multipatch_element</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+        <span class="n">xml_data</span><span class="p">,</span> <span class="s2">&quot;MultiPatch&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">parDim</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">para_dim</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">patch_range</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+        <span class="n">multipatch_element</span><span class="p">,</span> <span class="s2">&quot;patches&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;id_range&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Retrieve all interfaces (negative numbers refer to boundaries)</span>
+    <span class="n">interface_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">multipatch_element</span><span class="p">,</span> <span class="s2">&quot;interfaces&quot;</span><span class="p">)</span>
+    <span class="n">global_interface_id</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">global_interface_id</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_warning</span><span class="p">(</span><span class="s2">&quot;No inter-face connections were found.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Reminder: Face enumeration starts at 1 in gismo (i.e. requires an</span>
+        <span class="c1"># offset of 1) Copy to not overwrite original interface orientations</span>
+        <span class="n">interface_array</span> <span class="o">=</span> <span class="n">multipatch</span><span class="o">.</span><span class="n">interface_orientations</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Apply offsets</span>
+        <span class="n">interface_array</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">index_offset</span>
+        <span class="n">interface_array</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Gismo starts counting at 1</span>
+
+        <span class="n">interface_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interface_array</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">labeled_boundaries</span><span class="p">:</span>
+        <span class="c1"># Export geometric boundaries and set a label</span>
+        <span class="k">for</span> <span class="n">boundary_id</span><span class="p">,</span> <span class="n">face_id_list</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="n">multipatch</span><span class="o">.</span><span class="n">boundaries</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="n">boundary_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">multipatch_element</span><span class="p">,</span>
+                <span class="s2">&quot;boundary&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;BID&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">boundary_id</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">boundary_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">patch_id</span> <span class="o">+</span> <span class="n">index_offset</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">local_face_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">patch_id</span><span class="p">,</span> <span class="n">local_face_id</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">face_id_list</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># This is valid in the old format (1. list all boundaries, 2. set BCs)</span>
+        <span class="c1"># Start extracting all boundaries</span>
+        <span class="c1"># Boundaries are stored as patch-id (global) face-id (local)</span>
+        <span class="n">boundary_spline</span><span class="p">,</span> <span class="n">boundary_face</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">boundary_spline</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">boundary_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">multipatch_element</span><span class="p">,</span> <span class="s2">&quot;boundary&quot;</span><span class="p">)</span>
+            <span class="n">boundary_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">sid</span> <span class="o">+</span> <span class="n">index_offset</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">bid</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">boundary_spline</span><span class="p">,</span> <span class="n">boundary_face</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="c1">###</span>
+        <span class="c1"># Boundary conditions</span>
+        <span class="c1">###</span>
+        <span class="c1"># If there are multiple boundary IDs write them into boundary</span>
+        <span class="c1"># conditions and fill with dummy values</span>
+        <span class="c1"># Note here, that the boundary conditions are always stored in the</span>
+        <span class="c1"># local enumeration system of them multipatch</span>
+        <span class="n">boundary_condition_list</span> <span class="o">=</span> <span class="n">multipatch</span><span class="o">.</span><span class="n">boundaries</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boundary_condition_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bcs_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                <span class="n">xml_data</span><span class="p">,</span>
+                <span class="s2">&quot;boundaryConditions&quot;</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">multipatch</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">patches</span><span class="p">)),</span>
+            <span class="p">)</span>
+            <span class="n">bcs_data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="n">_ET</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Please fill boundary conditions here&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">bc_data_i</span> <span class="ow">in</span> <span class="n">boundary_condition_list</span><span class="p">:</span>
+                <span class="n">bc</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                    <span class="n">bcs_data</span><span class="p">,</span> <span class="s2">&quot;bc&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Dirichlet&quot;</span><span class="p">,</span> <span class="n">unknown</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+                <span class="p">)</span>
+                <span class="n">bc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">sid</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">bid</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bc_data_i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bc_data_i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+    <span class="c1">###</span>
+    <span class="c1"># Individual spline data</span>
+    <span class="c1">###</span>
+    <span class="c1"># Export fields first, as all necessary information is already available</span>
+    <span class="k">if</span> <span class="n">export_fields</span><span class="p">:</span>
+        <span class="n">field_xml</span> <span class="o">=</span> <span class="n">_copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">xml_data</span><span class="p">)</span>
+
+        <span class="n">n_patches</span> <span class="o">=</span> <span class="n">_spline_to_ET</span><span class="p">(</span>
+            <span class="n">field_xml</span><span class="p">,</span>
+            <span class="n">multipatch</span><span class="p">,</span>
+            <span class="n">index_offset</span><span class="p">,</span>
+            <span class="n">fields_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">as_base64</span><span class="o">=</span><span class="n">as_base64</span><span class="p">,</span>
+            <span class="n">field_mask</span><span class="o">=</span><span class="n">field_mask</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">field_xml</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;MultiPatch&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;patches&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index_offset</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_patches</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="o">+</span><span class="w"> </span><span class="n">index_offset</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">_python_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">indent</span><span class="p">:</span>
+            <span class="n">_ET</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">field_xml</span><span class="p">)</span>
+        <span class="n">file_content</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">field_xml</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;.fields.xml&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+
+    <span class="n">n_patches</span> <span class="o">=</span> <span class="n">_spline_to_ET</span><span class="p">(</span>
+        <span class="n">xml_data</span><span class="p">,</span>
+        <span class="n">multipatch</span><span class="p">,</span>
+        <span class="n">index_offset</span><span class="p">,</span>
+        <span class="n">as_base64</span><span class="o">=</span><span class="n">as_base64</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_patches</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">multipatch</span><span class="o">.</span><span class="n">patches</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Help - some patches were not recognised&quot;</span><span class="p">)</span>
+
+    <span class="n">patch_range</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index_offset</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_patches</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">index_offset</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Add additional options to the xml file</span>
+    <span class="k">if</span> <span class="n">additional_blocks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Verify that the list stored in the correct format</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">additional_blocks</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">additional_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">additional_blocks</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_apply_options</span><span class="p">(</span><span class="n">ETelement</span><span class="p">,</span> <span class="n">options_list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">gismo_dictionary</span> <span class="ow">in</span> <span class="n">options_list</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">gismo_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Gismo option in unsupported format, tag must be set, &quot;</span>
+                        <span class="s2">&quot;please check out export documentation&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">attributes</span> <span class="o">=</span> <span class="n">gismo_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">option_text</span> <span class="o">=</span> <span class="n">gismo_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">comment_text</span> <span class="o">=</span> <span class="n">gismo_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="c1"># If comment is provided, add it above XML-block</span>
+                <span class="k">if</span> <span class="n">comment_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">xml_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_ET</span><span class="o">.</span><span class="n">Comment</span><span class="p">(</span><span class="n">comment_text</span><span class="p">))</span>
+                <span class="n">optional_data</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span>
+                    <span class="n">ETelement</span><span class="p">,</span>
+                    <span class="n">name</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">attributes</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">option_text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">optional_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">option_text</span>
+                <span class="k">if</span> <span class="n">gismo_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;children&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">_apply_options</span><span class="p">(</span>
+                        <span class="n">optional_data</span><span class="p">,</span>
+                        <span class="n">options_list</span><span class="o">=</span><span class="n">gismo_dictionary</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">],</span>
+                    <span class="p">)</span>
+
+        <span class="n">_apply_options</span><span class="p">(</span><span class="n">xml_data</span><span class="p">,</span> <span class="n">additional_blocks</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">_python_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">indent</span><span class="p">:</span>
+        <span class="c1"># Pretty printing xml with indent only exists in version &gt; 3.9</span>
+        <span class="n">_ET</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">xml_data</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">_python_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">9</span> <span class="ow">and</span> <span class="n">indent</span><span class="p">:</span>
+        <span class="n">_debug</span><span class="p">(</span>
+            <span class="s2">&quot;Indented xml output is only supported from &gt; python3.9.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Output will not be indented.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Current python version: </span><span class="si">{</span><span class="n">_python_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">file_content</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">xml_data</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../../_generated/splinepy.io.gismo.load.html#splinepy.io.gismo.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">load_options</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read gismo-keyword specified xml file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : str</span>
+<span class="sd">      filename of the gismo xml</span>
+<span class="sd">    load_options : bool</span>
+<span class="sd">      Retrieve additional options (else - multipatch/geometry only)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spline_dic_list : Multipatch</span>
+<span class="sd">      Multipatch object with list of splines in NAME_TO_TYPE-type</span>
+<span class="sd">    options : list</span>
+<span class="sd">      List of additional options, like boundary conditions and functions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.multipatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Multipatch</span> <span class="k">as</span> <span class="n">_Multipatch</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_matrix_from_node</span><span class="p">(</span><span class="n">xml_node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xml_node : XMLElementTree</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array : np.array</span>
+<span class="sd">          numpy array in unspecified type, one-dimensional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_from_keyword</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;b64float64&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+            <span class="s2">&quot;b64float32&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="s2">&quot;b64uint16&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint16</span><span class="p">,</span>
+            <span class="s2">&quot;b64uint32&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span>
+            <span class="s2">&quot;b64uint64&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span>
+            <span class="s2">&quot;b64int16&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span>
+            <span class="s2">&quot;b64int32&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span>
+            <span class="s2">&quot;b64int64&quot;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Check format</span>
+        <span class="n">format_flag</span> <span class="o">=</span> <span class="n">xml_node</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">format_flag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;ascii&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_node</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="c1"># Check for all excepted binary flags</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">type_from_keyword</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">format_flag</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Unknown format in xml file: &quot;</span> <span class="o">+</span> <span class="n">format_flag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+            <span class="n">_base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">xml_node</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Auxiliary function to unravel</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">retrieve_from_basis_</span><span class="p">(</span><span class="n">ETelement</span><span class="p">,</span> <span class="n">SPdict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;nurbs&quot;</span> <span class="ow">in</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="c1"># Recursive call for knot_vector</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">ETelement</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;weights&quot;</span> <span class="ow">in</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                    <span class="n">SPdict</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_matrix_from_node</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;basis&quot;</span> <span class="ow">in</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">retrieve_from_basis_</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">SPdict</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;bspline&quot;</span> <span class="ow">in</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="n">para_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ETelement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;basis&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">knotvector</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">para_dim</span>
+            <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">para_dim</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">ETelement</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;bsplinebasis&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">child</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Something went wrong&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;knotvector&quot;</span> <span class="ow">in</span> <span class="n">child</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span>
+                    <span class="n">kv</span> <span class="o">=</span> <span class="n">_matrix_from_node</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">knotvector</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">kv</span>
+                    <span class="n">degrees</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">])</span>
+            <span class="n">SPdict</span><span class="p">[</span><span class="s2">&quot;knot_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">knotvector</span>
+            <span class="n">SPdict</span><span class="p">[</span><span class="s2">&quot;degrees&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">degrees</span>
+
+    <span class="c1"># Auxiliary function to store additional information in dictionary</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_dictionary</span><span class="p">(</span><span class="n">ETelement</span><span class="p">):</span>
+        <span class="n">new_dictionary</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">new_dictionary</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">tag</span>
+        <span class="n">new_dictionary</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">attrib</span>
+        <span class="n">new_dictionary</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">new_dictionary</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">ETelement</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;./*&quot;</span><span class="p">):</span>
+            <span class="n">new_dictionary</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_dictionary</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_dictionary</span>
+
+    <span class="c1"># Parse XML file</span>
+    <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing xml-file &#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&#39; ...&quot;</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">_ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+    <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;XML-file parsed start conversion&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Init return value</span>
+    <span class="n">list_of_splines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_of_options</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">interface_array</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">invalid_integer</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99919412</span>
+    <span class="c1"># Splines start with the keyword Geometry</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MultiPatch&quot;</span><span class="p">):</span>
+            <span class="n">parametric_dimension</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;parDim&quot;</span><span class="p">])</span>
+            <span class="c1"># Patch ids</span>
+            <span class="n">patch_element</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;patches&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">patch_element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;Unsupported format&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">patch_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;id_range&quot;</span><span class="p">:</span>
+                <span class="n">_debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Invalid patch type </span><span class="si">{</span><span class="n">patch_element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">patch_range</span> <span class="o">=</span> <span class="n">_matrix_from_node</span><span class="p">(</span><span class="n">patch_element</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">patch_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n_splines</span> <span class="o">=</span> <span class="n">patch_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">patch_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">number_of_faces</span> <span class="o">=</span> <span class="n">parametric_dimension</span> <span class="o">*</span> <span class="mi">2</span>
+
+            <span class="c1"># Extract interfaces and boundaries</span>
+            <span class="n">interfaces_element</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;interfaces&quot;</span><span class="p">)</span>
+            <span class="n">interface_array</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_splines</span><span class="p">,</span> <span class="n">number_of_faces</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">invalid_integer</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">interfaces_element</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">interfaces_element</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># This can occur if only one patch is in a Multipatch</span>
+                <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;No connectivity found&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">interface_information</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">_matrix_from_node</span><span class="p">(</span><span class="n">interfaces_element</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_faces</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="c1"># Assign interfaces</span>
+                <span class="n">interface_array</span><span class="p">[</span>
+                    <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                    <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">number_of_faces</span>
+                    <span class="o">+</span> <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
+                    <span class="o">-</span> <span class="mi">1</span>
+                <span class="p">)</span>
+                <span class="n">interface_array</span><span class="p">[</span>
+                    <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                    <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">number_of_faces</span>
+                    <span class="o">+</span> <span class="n">interface_information</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="o">-</span> <span class="mi">1</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Extract interfaces and boundaries</span>
+            <span class="n">boundary_elements</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;boundary&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boundary_elements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_debug</span><span class="p">(</span><span class="s2">&quot;No boundary information found&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">boundary_element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                    <span class="n">boundary_elements</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">boundary_element</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">boundary_information</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">_matrix_from_node</span><span class="p">(</span><span class="n">boundary_element</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">interface_array</span><span class="p">[</span>
+                        <span class="n">boundary_information</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                        <span class="n">boundary_information</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">id</span>
+
+        <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Geometry&quot;</span><span class="p">):</span>
+            <span class="n">spline_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found new spline in xml with id </span><span class="si">{</span><span class="n">child</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">child</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;basis&quot;</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">retrieve_from_basis_</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">spline_dict</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">info</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;coef&quot;</span><span class="p">):</span>
+                    <span class="n">dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geoDim&quot;</span><span class="p">))</span>
+                    <span class="n">spline_dict</span><span class="p">[</span><span class="s2">&quot;control_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_matrix_from_node</span><span class="p">(</span>
+                        <span class="n">info</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">spline_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weights&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">list_of_splines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;BSpline&quot;</span><span class="p">](</span><span class="o">**</span><span class="n">spline_dict</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">list_of_splines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;NURBS&quot;</span><span class="p">](</span><span class="o">**</span><span class="n">spline_dict</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">load_options</span><span class="p">:</span>
+            <span class="n">list_of_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_dictionary</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found unsupported keyword </span><span class="si">{</span><span class="n">child</span><span class="o">.</span><span class="n">tag</span><span class="si">}</span><span class="s2">, which will be&quot;</span>
+                <span class="s2">&quot; ignored&quot;</span>
+            <span class="p">)</span>
+            <span class="k">continue</span>
+
+    <span class="n">_debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found a total of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="sa">f</span><span class="s2">&quot;BSplines and NURBS&quot;</span><span class="p">)</span>
+    <span class="n">multipatch</span> <span class="o">=</span> <span class="n">_Multipatch</span><span class="p">(</span><span class="n">list_of_splines</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">interface_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">invalid_integer</span> <span class="ow">in</span> <span class="n">interface_array</span><span class="p">:</span>
+            <span class="n">_warning</span><span class="p">(</span><span class="s2">&quot;Unmatched faces or insufficient information in xml file&quot;</span><span class="p">)</span>
+            <span class="n">invalid_splines</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">interface_array</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="n">_warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Check faces with ids </span><span class="si">{</span><span class="n">invalid_splines</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_warning</span><span class="p">(</span><span class="s2">&quot;Interface information ignored&quot;</span><span class="p">)</span>
+
+        <span class="n">multipatch</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">=</span> <span class="n">interface_array</span>
+
+    <span class="k">if</span> <span class="n">load_options</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">multipatch</span><span class="p">,</span> <span class="n">list_of_options</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">multipatch</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

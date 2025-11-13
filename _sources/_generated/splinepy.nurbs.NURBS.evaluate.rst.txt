@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.evaluate
+=============================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.evaluate

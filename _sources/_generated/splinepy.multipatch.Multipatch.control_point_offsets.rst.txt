@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.control\_point\_offsets
+======================================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.control_point_offsets

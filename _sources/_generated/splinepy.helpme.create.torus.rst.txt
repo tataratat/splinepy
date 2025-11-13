@@ -1,0 +1,6 @@
+splinepy.helpme.create.torus
+============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: torus

@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.export
+=============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.export

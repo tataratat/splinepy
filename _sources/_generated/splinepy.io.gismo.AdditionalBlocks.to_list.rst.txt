@@ -1,0 +1,6 @@
+splinepy.io.gismo.AdditionalBlocks.to\_list
+===========================================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. automethod:: AdditionalBlocks.to_list

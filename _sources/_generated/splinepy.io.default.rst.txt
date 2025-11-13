@@ -1,0 +1,33 @@
+.. _splinepy.io.default:
+
+splinepy.io.default
+===================
+
+.. automodule:: splinepy.io.default
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

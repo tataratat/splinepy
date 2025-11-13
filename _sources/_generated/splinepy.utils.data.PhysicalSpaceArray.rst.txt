@@ -1,0 +1,217 @@
+splinepy.utils.data.PhysicalSpaceArray
+======================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoclass:: PhysicalSpaceArray
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       PhysicalSpaceArray.all
+     
+     
+       PhysicalSpaceArray.any
+     
+     
+       PhysicalSpaceArray.argmax
+     
+     
+       PhysicalSpaceArray.argmin
+     
+     
+       PhysicalSpaceArray.argpartition
+     
+     
+       PhysicalSpaceArray.argsort
+     
+     
+       PhysicalSpaceArray.astype
+     
+     
+       PhysicalSpaceArray.byteswap
+     
+     
+       PhysicalSpaceArray.choose
+     
+     
+       PhysicalSpaceArray.clip
+     
+     
+       PhysicalSpaceArray.compress
+     
+     
+       PhysicalSpaceArray.conj
+     
+     
+       PhysicalSpaceArray.conjugate
+     
+     
+       PhysicalSpaceArray.copy
+     
+     
+       PhysicalSpaceArray.cumprod
+     
+     
+       PhysicalSpaceArray.cumsum
+     
+     
+       PhysicalSpaceArray.diagonal
+     
+     
+       PhysicalSpaceArray.dot
+     
+     
+       PhysicalSpaceArray.dump
+     
+     
+       PhysicalSpaceArray.dumps
+     
+     
+       PhysicalSpaceArray.fill
+     
+     
+       PhysicalSpaceArray.flatten
+     
+     
+       PhysicalSpaceArray.full_row_indices
+     
+     
+       PhysicalSpaceArray.getfield
+     
+     
+       PhysicalSpaceArray.item
+     
+     
+       PhysicalSpaceArray.max
+     
+     
+       PhysicalSpaceArray.mean
+     
+     
+       PhysicalSpaceArray.min
+     
+     
+       PhysicalSpaceArray.nonzero
+     
+     
+       PhysicalSpaceArray.partition
+     
+     
+       PhysicalSpaceArray.prod
+     
+     
+       PhysicalSpaceArray.put
+     
+     
+       PhysicalSpaceArray.ravel
+     
+     
+       PhysicalSpaceArray.repeat
+     
+     
+       PhysicalSpaceArray.reshape
+     
+     
+       PhysicalSpaceArray.resize
+     
+     
+       PhysicalSpaceArray.round
+     
+     
+       PhysicalSpaceArray.row_indices
+     
+     
+       PhysicalSpaceArray.searchsorted
+     
+     
+       PhysicalSpaceArray.setfield
+     
+     
+       PhysicalSpaceArray.setflags
+     
+     
+       PhysicalSpaceArray.sort
+     
+     
+       PhysicalSpaceArray.squeeze
+     
+     
+       PhysicalSpaceArray.std
+     
+     
+       PhysicalSpaceArray.sum
+     
+     
+       PhysicalSpaceArray.swapaxes
+     
+     
+       PhysicalSpaceArray.take
+     
+     
+       PhysicalSpaceArray.to_device
+     
+     
+       PhysicalSpaceArray.tobytes
+     
+     
+       PhysicalSpaceArray.tofile
+     
+     
+       PhysicalSpaceArray.tolist
+     
+     
+       PhysicalSpaceArray.tostring
+     
+     
+       PhysicalSpaceArray.trace
+     
+     
+       PhysicalSpaceArray.transpose
+     
+     
+       PhysicalSpaceArray.var
+     
+     
+       PhysicalSpaceArray.view
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   
+   

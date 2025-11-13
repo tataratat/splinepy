@@ -1,0 +1,6 @@
+splinepy.io.irit.load
+=====================
+
+.. currentmodule:: splinepy.io.irit
+
+.. autofunction:: load

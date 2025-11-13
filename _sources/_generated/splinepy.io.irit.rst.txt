@@ -1,0 +1,33 @@
+.. _splinepy.io.irit:
+
+splinepy.io.irit
+================
+
+.. automodule:: splinepy.io.irit
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

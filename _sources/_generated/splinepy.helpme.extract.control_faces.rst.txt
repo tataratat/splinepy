@@ -1,0 +1,6 @@
+splinepy.helpme.extract.control\_faces
+======================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autofunction:: control_faces

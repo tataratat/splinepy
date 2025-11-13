@@ -1,0 +1,6 @@
+splinepy.helpme.extract.control\_mesh
+=====================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autofunction:: control_mesh

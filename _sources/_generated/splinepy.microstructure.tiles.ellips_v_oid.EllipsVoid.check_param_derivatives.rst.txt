@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.ellips\_v\_oid.EllipsVoid.check\_param\_derivatives
+=================================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.ellips_v_oid
+
+.. automethod:: EllipsVoid.check_param_derivatives

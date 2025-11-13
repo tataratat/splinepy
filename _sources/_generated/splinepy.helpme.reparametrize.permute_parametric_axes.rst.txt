@@ -1,0 +1,6 @@
+splinepy.helpme.reparametrize.permute\_parametric\_axes
+=======================================================
+
+.. currentmodule:: splinepy.helpme.reparametrize
+
+.. autofunction:: permute_parametric_axes

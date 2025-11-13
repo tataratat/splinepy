@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.add
+===========================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: add

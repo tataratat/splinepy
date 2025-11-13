@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.para\_dim
+==============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PyMultipatch.para_dim

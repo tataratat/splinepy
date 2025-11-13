@@ -1,0 +1,6 @@
+splinepy.utils.log.info
+=======================
+
+.. currentmodule:: splinepy.utils.log
+
+.. autofunction:: info

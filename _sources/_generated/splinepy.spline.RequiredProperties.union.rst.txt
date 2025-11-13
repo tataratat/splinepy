@@ -1,0 +1,6 @@
+splinepy.spline.RequiredProperties.union
+========================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: RequiredProperties.union

@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.sample
+=============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.sample

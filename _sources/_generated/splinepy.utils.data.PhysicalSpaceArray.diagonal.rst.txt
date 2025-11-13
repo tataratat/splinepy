@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.diagonal
+===============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.diagonal

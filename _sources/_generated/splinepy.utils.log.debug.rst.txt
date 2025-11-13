@@ -1,0 +1,6 @@
+splinepy.utils.log.debug
+========================
+
+.. currentmodule:: splinepy.utils.log
+
+.. autofunction:: debug

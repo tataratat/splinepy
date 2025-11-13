@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.core\_id
+================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: core_id

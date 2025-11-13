@@ -1,0 +1,6 @@
+splinepy.spline.Spline.evaluate
+===============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.evaluate

@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.edges
+=======================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.edges

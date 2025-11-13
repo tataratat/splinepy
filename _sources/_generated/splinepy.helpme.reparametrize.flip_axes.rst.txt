@@ -1,0 +1,6 @@
+splinepy.helpme.reparametrize.flip\_axes
+========================================
+
+.. currentmodule:: splinepy.helpme.reparametrize
+
+.. autofunction:: flip_axes

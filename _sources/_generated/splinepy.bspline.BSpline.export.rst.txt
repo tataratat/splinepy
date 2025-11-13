@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.export
+===============================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.export

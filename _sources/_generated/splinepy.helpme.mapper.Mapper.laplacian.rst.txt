@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.laplacian
+=======================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.laplacian

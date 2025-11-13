@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.evaluate
+===============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.evaluate

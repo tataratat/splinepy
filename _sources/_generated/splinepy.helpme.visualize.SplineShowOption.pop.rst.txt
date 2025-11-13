@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.SplineShowOption.pop
+==============================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: SplineShowOption.pop

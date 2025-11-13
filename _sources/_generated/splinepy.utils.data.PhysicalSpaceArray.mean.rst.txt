@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.mean
+===========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.mean

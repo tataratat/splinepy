@@ -1,0 +1,6 @@
+splinepy.spline.Spline.elevate\_degrees
+=======================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.elevate_degrees

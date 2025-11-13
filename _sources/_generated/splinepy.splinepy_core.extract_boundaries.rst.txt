@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.extract\_boundaries
+===========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: extract_boundaries

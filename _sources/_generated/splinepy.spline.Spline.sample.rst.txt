@@ -1,0 +1,6 @@
+splinepy.spline.Spline.sample
+=============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.sample

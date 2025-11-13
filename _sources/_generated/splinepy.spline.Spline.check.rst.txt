@@ -1,0 +1,6 @@
+splinepy.spline.Spline.check
+============================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.check

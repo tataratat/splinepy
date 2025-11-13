@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.cross\_3d.Cross3D.check\_params
+=============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cross_3d
+
+.. automethod:: Cross3D.check_params

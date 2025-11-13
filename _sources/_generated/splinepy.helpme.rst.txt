@@ -1,0 +1,43 @@
+.. _splinepy.helpme:
+
+splinepy.helpme
+===============
+
+.. automodule:: splinepy.helpme
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template:
+   :recursive:
+
+   check
+   create
+   extract
+   ffd
+   fit
+   integrate
+   mapper
+   multi_index
+   reparametrize
+   visualize
+

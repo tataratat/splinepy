@@ -1,0 +1,6 @@
+splinepy.helpme.fit.parameterize
+================================
+
+.. currentmodule:: splinepy.helpme.fit
+
+.. autofunction:: parameterize

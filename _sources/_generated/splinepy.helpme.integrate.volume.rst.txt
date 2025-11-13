@@ -1,0 +1,6 @@
+splinepy.helpme.integrate.volume
+================================
+
+.. currentmodule:: splinepy.helpme.integrate
+
+.. autofunction:: volume

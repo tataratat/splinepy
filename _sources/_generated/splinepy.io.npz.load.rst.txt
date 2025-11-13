@@ -1,0 +1,6 @@
+splinepy.io.npz.load
+====================
+
+.. currentmodule:: splinepy.io.npz
+
+.. autofunction:: load

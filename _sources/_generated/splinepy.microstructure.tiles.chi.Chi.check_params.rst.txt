@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.chi.Chi.check\_params
+===================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.chi
+
+.. automethod:: Chi.check_params

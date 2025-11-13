@@ -1,0 +1,6 @@
+splinepy.spline.Spline.support
+==============================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.support

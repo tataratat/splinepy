@@ -1,0 +1,633 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="coordinate__pointers_8hpp" kind="file" language="C++">
+    <compoundname>coordinate_pointers.hpp</compoundname>
+    <includes local="no">cassert</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">vector</includes>
+    <includes refid="print_8hpp" local="yes">splinepy/utils/print.hpp</includes>
+    <includedby refid="coordinate__pointers_8cpp" local="yes">coordinate_pointers.cpp</includedby>
+    <includedby refid="py__coordinate__pointers_8cpp" local="yes">py_coordinate_pointers.cpp</includedby>
+    <includedby refid="splinepy__base_8hpp" local="no">splinepy_base.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>splinepy/utils/print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cassert</label>
+      </node>
+      <node id="6">
+        <label>iostream</label>
+      </node>
+      <node id="3">
+        <label>memory</label>
+      </node>
+      <node id="7">
+        <label>sstream</label>
+      </node>
+      <node id="8">
+        <label>stdexcept</label>
+      </node>
+      <node id="4">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="52">
+        <label>proximity.hpp</label>
+        <link refid="proximity_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
+        <label>py_knot_insertion_matrix.hpp</label>
+        <link refid="py__knot__insertion__matrix_8hpp"/>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="56">
+        <label>py_multipatch.hpp</label>
+        <link refid="py__multipatch_8hpp"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>py_spline.hpp</label>
+        <link refid="py__spline_8hpp"/>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+      </node>
+      <node id="57">
+        <label>py_spline_exporter.hpp</label>
+        <link refid="py__spline__exporter_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="49">
+        <label>py_spline_extensions.hpp</label>
+        <link refid="py__spline__extensions_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bezier.hpp</label>
+        <link refid="splines_2bezier_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>bezier.inl</label>
+        <link refid="bezier_8inl"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>create_bezier.hpp</label>
+        <link refid="create__bezier_8hpp"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>create_rational_bezier.hpp</label>
+        <link refid="create__rational__bezier_8hpp"/>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="42">
+        <label>extract.hpp</label>
+        <link refid="extract_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="47">
+        <label>null_spline.hpp</label>
+        <link refid="null__spline_8hpp"/>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>nurbs.hpp</label>
+        <link refid="splines_2nurbs_8hpp"/>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>rational_bezier.hpp</label>
+        <link refid="splines_2rational__bezier_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>rational_bezier.inl</label>
+        <link refid="rational__bezier_8inl"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>splinepy_base.hpp</label>
+        <link refid="splinepy__base_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bezier_explicit1.cpp</label>
+        <link refid="bezier__explicit1_8cpp"/>
+      </node>
+      <node id="7">
+        <label>bezier_explicit10.cpp</label>
+        <link refid="bezier__explicit10_8cpp"/>
+      </node>
+      <node id="8">
+        <label>bezier_explicit2.cpp</label>
+        <link refid="bezier__explicit2_8cpp"/>
+      </node>
+      <node id="9">
+        <label>bezier_explicit3.cpp</label>
+        <link refid="bezier__explicit3_8cpp"/>
+      </node>
+      <node id="10">
+        <label>bezier_explicit4.cpp</label>
+        <link refid="bezier__explicit4_8cpp"/>
+      </node>
+      <node id="11">
+        <label>bezier_explicit5.cpp</label>
+        <link refid="bezier__explicit5_8cpp"/>
+      </node>
+      <node id="12">
+        <label>bezier_explicit6.cpp</label>
+        <link refid="bezier__explicit6_8cpp"/>
+      </node>
+      <node id="13">
+        <label>bezier_explicit7.cpp</label>
+        <link refid="bezier__explicit7_8cpp"/>
+      </node>
+      <node id="14">
+        <label>bezier_explicit8.cpp</label>
+        <link refid="bezier__explicit8_8cpp"/>
+      </node>
+      <node id="15">
+        <label>bezier_explicit9.cpp</label>
+        <link refid="bezier__explicit9_8cpp"/>
+      </node>
+      <node id="40">
+        <label>bspline_explicit.cpp</label>
+        <link refid="bspline__explicit_8cpp"/>
+      </node>
+      <node id="45">
+        <label>nurbs_explicit.cpp</label>
+        <link refid="nurbs__explicit_8cpp"/>
+      </node>
+      <node id="29">
+        <label>rational_bezier_explicit1.cpp</label>
+        <link refid="rational__bezier__explicit1_8cpp"/>
+      </node>
+      <node id="30">
+        <label>rational_bezier_explicit10.cpp</label>
+        <link refid="rational__bezier__explicit10_8cpp"/>
+      </node>
+      <node id="31">
+        <label>rational_bezier_explicit2.cpp</label>
+        <link refid="rational__bezier__explicit2_8cpp"/>
+      </node>
+      <node id="32">
+        <label>rational_bezier_explicit3.cpp</label>
+        <link refid="rational__bezier__explicit3_8cpp"/>
+      </node>
+      <node id="33">
+        <label>rational_bezier_explicit4.cpp</label>
+        <link refid="rational__bezier__explicit4_8cpp"/>
+      </node>
+      <node id="34">
+        <label>rational_bezier_explicit5.cpp</label>
+        <link refid="rational__bezier__explicit5_8cpp"/>
+      </node>
+      <node id="35">
+        <label>rational_bezier_explicit6.cpp</label>
+        <link refid="rational__bezier__explicit6_8cpp"/>
+      </node>
+      <node id="36">
+        <label>rational_bezier_explicit7.cpp</label>
+        <link refid="rational__bezier__explicit7_8cpp"/>
+      </node>
+      <node id="37">
+        <label>rational_bezier_explicit8.cpp</label>
+        <link refid="rational__bezier__explicit8_8cpp"/>
+      </node>
+      <node id="38">
+        <label>rational_bezier_explicit9.cpp</label>
+        <link refid="rational__bezier__explicit9_8cpp"/>
+      </node>
+      <node id="53">
+        <label>proximity.cpp</label>
+        <link refid="proximity_8cpp"/>
+      </node>
+      <node id="3">
+        <label>py_coordinate_pointers.cpp</label>
+        <link refid="py__coordinate__pointers_8cpp"/>
+      </node>
+      <node id="46">
+        <label>py_knot_insertion_matrix.cpp</label>
+        <link refid="py__knot__insertion__matrix_8cpp"/>
+      </node>
+      <node id="48">
+        <label>py_multipatch.cpp</label>
+        <link refid="py__multipatch_8cpp"/>
+      </node>
+      <node id="21">
+        <label>py_spline.cpp</label>
+        <link refid="py__spline_8cpp"/>
+      </node>
+      <node id="50">
+        <label>py_spline_exporter.cpp</label>
+        <link refid="py__spline__exporter_8cpp"/>
+      </node>
+      <node id="51">
+        <label>py_spline_extensions.cpp</label>
+        <link refid="py__spline__extensions_8cpp"/>
+      </node>
+      <node id="41">
+        <label>py_spline_reader.cpp</label>
+        <link refid="py__spline__reader_8cpp"/>
+      </node>
+      <node id="17">
+        <label>bezier1.cpp</label>
+        <link refid="bezier1_8cpp"/>
+      </node>
+      <node id="18">
+        <label>bezier2.cpp</label>
+        <link refid="bezier2_8cpp"/>
+      </node>
+      <node id="19">
+        <label>bezier3.cpp</label>
+        <link refid="bezier3_8cpp"/>
+      </node>
+      <node id="26">
+        <label>rational_bezier1.cpp</label>
+        <link refid="rational__bezier1_8cpp"/>
+      </node>
+      <node id="27">
+        <label>rational_bezier2.cpp</label>
+        <link refid="rational__bezier2_8cpp"/>
+      </node>
+      <node id="28">
+        <label>rational_bezier3.cpp</label>
+        <link refid="rational__bezier3_8cpp"/>
+      </node>
+      <node id="43">
+        <label>extract.cpp</label>
+        <link refid="extract_8cpp"/>
+      </node>
+      <node id="20">
+        <label>splinepy_base.cpp</label>
+        <link refid="splinepy__base_8cpp"/>
+      </node>
+      <node id="2">
+        <label>coordinate_pointers.cpp</label>
+        <link refid="coordinate__pointers_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structsplinepy_1_1utils_1_1ControlPointPointers" prot="public">splinepy::utils::ControlPointPointers</innerclass>
+    <innerclass refid="structsplinepy_1_1utils_1_1WeightPointers" prot="public">splinepy::utils::WeightPointers</innerclass>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1utils">splinepy::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cassert&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="print_8hpp" kindref="compound">splinepy/utils/print.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1utils" kindref="compound">splinepy::utils</ref><sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>IndexType,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SizeType&gt;</highlight></codeline>
+<codeline lineno="37" refid="namespacesplinepy_1_1utils_1a253d81e24ad31e70679e4aa7631bfcb3" refkind="member"><highlight class="normal">IndexType<sp/><ref refid="namespacesplinepy_1_1utils_1a253d81e24ad31e70679e4aa7631bfcb3" kindref="member">WrapId</ref>(IndexType<sp/>i,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SizeType<sp/>n)<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(i<sp/>&lt;<sp/>0)<sp/>{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>+=<sp/>n;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(i<sp/>&lt;<sp/>0<sp/>||<sp/>(SizeType)<sp/>i<sp/>&gt;=<sp/>n)<sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a3e3aaa6844b55c96f7b5b81be2f1b339" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight><highlight class="stringliteral">&quot;Index<sp/>out<sp/>of<sp/>range&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="keyword">struct<sp/></highlight><highlight class="normal">WeightPointers;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="structsplinepy_1_1utils_1_1ControlPointPointers" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers" kindref="compound">ControlPointPointers</ref><sp/>{</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" refkind="member"><highlight class="normal"><sp/><sp/>std::vector&lt;double*&gt;<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" kindref="member">coordinate_begins_</ref>;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref>{-1};</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" kindref="member">for_rational_</ref>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" refkind="member"><highlight class="normal"><sp/><sp/>std::shared_ptr&lt;WeightPointers&gt;<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" kindref="member">weight_pointers_</ref><sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" kindref="member">invalid_</ref>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" kindref="member">Len</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" kindref="member">coordinate_begins_</ref>.size();<sp/>}</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" kindref="member">Dim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>assert(<ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref><sp/>&gt;<sp/>0);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref>;</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a4b56d928685606c8838f951276e816d2" kindref="member">SetRow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_sized_value&gt;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" kindref="member">SetRows</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>ids,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_rows,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae439260e416f2cd8a082b5bf1412d99" kindref="member">Sync</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values);</highlight></codeline>
+<codeline lineno="107"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="structsplinepy_1_1utils_1_1WeightPointers" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structsplinepy_1_1utils_1_1WeightPointers" kindref="compound">WeightPointers</ref><sp/>{</highlight></codeline>
+<codeline lineno="116" refid="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" refkind="member"><highlight class="normal"><sp/><sp/>std::vector&lt;double*&gt;<sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" kindref="member">weights_</ref>;</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120" refid="structsplinepy_1_1utils_1_1WeightPointers_1a5f242cdfd4e9f2337e42449cfdaecbd2" refkind="member"><highlight class="normal"><sp/><sp/>std::weak_ptr&lt;ControlPointPointers&gt;<sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a5f242cdfd4e9f2337e42449cfdaecbd2" kindref="member">control_point_pointers_</ref>;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>{1};</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126" refid="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" kindref="member">invalid_</ref>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129" refid="structsplinepy_1_1utils_1_1WeightPointers_1a084daa1edcc4d58991ca7dcbb09f42df" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a084daa1edcc4d58991ca7dcbb09f42df" kindref="member">Len</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a183a139331c6f77e2f52373efab37530" kindref="member">weights_</ref>.size();<sp/>}</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132" refid="structsplinepy_1_1utils_1_1WeightPointers_1aef6f9581b5fbe9ebe1178958db29d389" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1aef6f9581b5fbe9ebe1178958db29d389" kindref="member">Dim</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/>assert(<ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref><sp/>&gt;<sp/>0);</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a453424b2c6030131d0c0b103fc2d5141" kindref="member">dim_</ref>;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/>};</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" kindref="member">SetRow</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>value);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_sized_value&gt;</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" kindref="member">SetRows</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>ids,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_rows,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1aae439260e416f2cd8a082b5bf1412d99" kindref="member">Sync</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values);</highlight></codeline>
+<codeline lineno="148"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_sized_values&gt;</highlight></codeline>
+<codeline lineno="151" refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a427a8dd5f040f698d84f5165011f478d" kindref="member">ControlPointPointers::SetRows</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>ids,</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_rows,</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values)<sp/>{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a61f88c45e5f87ab25227cea9eb14002e" kindref="member">invalid_</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>dim<sp/>=<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aef6f9581b5fbe9ebe1178958db29d389" kindref="member">Dim</ref>();</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>len<sp/>=<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a084daa1edcc4d58991ca7dcbb09f42df" kindref="member">Len</ref>();</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1a75abd54c090db8c7118d1113a677f22f" kindref="member">for_rational_</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>weights<sp/>=<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1ad4b7aa50cf02274963cdb83849bba47d" kindref="member">weight_pointers_</ref>-&gt;weights_;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>n_rows;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>id</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>current_id<sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a253d81e24ad31e70679e4aa7631bfcb3" kindref="member">WrapId</ref>(ids[i],<sp/>len);</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>destinations<sp/>and<sp/>sources</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">*<sp/>current_coord<sp/>=<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" kindref="member">coordinate_begins_</ref>[current_id];</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>current_value;</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(same_sized_values)<sp/>{</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_value<sp/>=<sp/>&amp;values[current_id<sp/>*<sp/>dim];</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_value<sp/>=<sp/>&amp;values[i<sp/>*<sp/>dim];</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>current_weight<sp/>=<sp/>*weights[current_id];</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>dim;<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>saves<sp/>weighted<sp/>control<sp/>points</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_coord[j]<sp/>=<sp/>current_value[j]<sp/>*<sp/>current_weight;</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>n_rows;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>id</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>current_id<sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a253d81e24ad31e70679e4aa7631bfcb3" kindref="member">WrapId</ref>(ids[i],<sp/>len);</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>destinations<sp/>and<sp/>sources</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">*<sp/>current_coord<sp/>=<sp/><ref refid="structsplinepy_1_1utils_1_1ControlPointPointers_1aae86b1329a574402c3b3963b4dc47389" kindref="member">coordinate_begins_</ref>[current_id];</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>current_value;</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(same_sized_values)<sp/>{</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_value<sp/>=<sp/>&amp;values[current_id<sp/>*<sp/>dim];</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_value<sp/>=<sp/>&amp;values[i<sp/>*<sp/>dim];</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>dim;<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>saves<sp/>weighted<sp/>control<sp/>points</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>current_coord[j]<sp/>=<sp/>current_value[j];</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="199"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>same_sized_values&gt;</highlight></codeline>
+<codeline lineno="202" refid="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a427a8dd5f040f698d84f5165011f478d" kindref="member">WeightPointers::SetRows</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>ids,</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_rows,</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>values)<sp/>{</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a61f88c45e5f87ab25227cea9eb14002e" kindref="member">invalid_</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>n_rows;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(same_sized_values)<sp/>{</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" kindref="member">SetRow</ref>(ids[i],<sp/>values[ids[i]]);</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structsplinepy_1_1utils_1_1WeightPointers_1a4f186789f85286bf17e1c973aa4efb90" kindref="member">SetRow</ref>(ids[i],<sp/>values[i]);</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="216"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>splinepy::utils</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp"/>
+  </compounddef>
+</doxygen>

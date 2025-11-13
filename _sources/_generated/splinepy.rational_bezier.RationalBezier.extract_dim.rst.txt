@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.extract\_dim
+=====================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.extract_dim

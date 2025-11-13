@@ -1,0 +1,21 @@
+<map id="splinepy_base.hpp" name="splinepy_base.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="27,5,170,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,167,83,192"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,32,55,155,50,153,92,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="107,167,170,192"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,30,135,153,130,154,99,31"/>
+<area shape="rect" id="Node000004" href="$coordinate__pointers_8hpp.html" title=" " alt="" coords="137,79,319,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="119,29,187,69,184,74,116,33"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="185,121,85,164,82,159,183,116"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="208,121,164,159,160,155,205,117"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="195,167,264,192"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="231,119,232,153,226,153,226,119"/>
+<area shape="rect" id="Node000006" href="$print_8hpp.html" title=" " alt="" coords="288,167,459,192"/>
+<area shape="poly" id="edge7_Node000004_Node000006" title=" " alt="" coords="264,116,341,158,339,162,262,121"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="232,240,312,265"/>
+<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="359,194,301,234,298,230,356,190"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="336,240,411,265"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="376,192,376,226,371,226,371,192"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="435,240,522,265"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="392,190,452,230,449,235,389,194"/>
+</map>

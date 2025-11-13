@@ -1,0 +1,32 @@
+splinepy.spline.RequiredProperties
+==================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoclass:: RequiredProperties
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       RequiredProperties.intersection
+     
+     
+       RequiredProperties.of
+     
+     
+       RequiredProperties.union
+     
+   
+   
+
+   
+   
+   

@@ -1,0 +1,6 @@
+splinepy.settings.NAME\_TO\_TYPE
+================================
+
+.. currentmodule:: splinepy.settings
+
+.. autodata:: NAME_TO_TYPE

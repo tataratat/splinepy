@@ -1,0 +1,92 @@
+splinepy.splinepy\_core.PySpline
+================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: PySpline
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       PySpline.basis
+     
+     
+       PySpline.basis_and_support
+     
+     
+       PySpline.basis_derivative
+     
+     
+       PySpline.basis_derivative_and_support
+     
+     
+       PySpline.current_core_properties
+     
+     
+       PySpline.derivative
+     
+     
+       PySpline.elevate_degrees
+     
+     
+       PySpline.evaluate
+     
+     
+       PySpline.jacobian
+     
+     
+       PySpline.proximities
+     
+     
+       PySpline.reduce_degrees
+     
+     
+       PySpline.sample
+     
+     
+       PySpline.support
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         PySpline.control_mesh_resolutions
+      
+      
+         PySpline.dim
+      
+      
+         PySpline.has_knot_vectors
+      
+      
+         PySpline.is_rational
+      
+      
+         PySpline.name
+      
+      
+         PySpline.para_dim
+      
+      
+         PySpline.parametric_bounds
+      
+      
+         PySpline.whatami
+      
+   
+   

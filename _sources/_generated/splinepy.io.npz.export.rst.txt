@@ -1,0 +1,6 @@
+splinepy.io.npz.export
+======================
+
+.. currentmodule:: splinepy.io.npz
+
+.. autofunction:: export

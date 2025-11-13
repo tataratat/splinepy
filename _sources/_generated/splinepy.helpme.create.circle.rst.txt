@@ -1,0 +1,6 @@
+splinepy.helpme.create.circle
+=============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: circle

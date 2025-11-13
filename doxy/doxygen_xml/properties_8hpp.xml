@@ -1,0 +1,480 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="properties_8hpp" kind="file" language="C++">
+    <compoundname>properties.hpp</compoundname>
+    <includes local="no">array</includes>
+    <includes local="yes">BSplineLib/Utilities/index.hpp</includes>
+    <includedby refid="bezier_8inl" local="yes">bezier.inl</includedby>
+    <includedby refid="splines_2bspline_8hpp" local="yes">bspline.hpp</includedby>
+    <includedby refid="extract_8hpp" local="yes">extract.hpp</includedby>
+    <includedby refid="splines_2nurbs_8hpp" local="no">nurbs.hpp</includedby>
+    <includedby refid="proximity_8cpp" local="yes">proximity.cpp</includedby>
+    <includedby refid="rational__bezier_8inl" local="no">rational_bezier.inl</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>properties.hpp</label>
+        <link refid="properties_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>BSplineLib/Utilities/index.hpp</label>
+      </node>
+      <node id="2">
+        <label>array</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>bezier.hpp</label>
+        <link refid="splines_2bezier_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>bezier.inl</label>
+        <link refid="bezier_8inl"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="36">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>create_bezier.hpp</label>
+        <link refid="create__bezier_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>create_rational_bezier.hpp</label>
+        <link refid="create__rational__bezier_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="39">
+        <label>extract.hpp</label>
+        <link refid="extract_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>properties.hpp</label>
+        <link refid="properties_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="41">
+        <label>nurbs.hpp</label>
+        <link refid="splines_2nurbs_8hpp"/>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>rational_bezier.hpp</label>
+        <link refid="splines_2rational__bezier_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>rational_bezier.inl</label>
+        <link refid="rational__bezier_8inl"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>bezier_explicit1.cpp</label>
+        <link refid="bezier__explicit1_8cpp"/>
+      </node>
+      <node id="5">
+        <label>bezier_explicit10.cpp</label>
+        <link refid="bezier__explicit10_8cpp"/>
+      </node>
+      <node id="6">
+        <label>bezier_explicit2.cpp</label>
+        <link refid="bezier__explicit2_8cpp"/>
+      </node>
+      <node id="7">
+        <label>bezier_explicit3.cpp</label>
+        <link refid="bezier__explicit3_8cpp"/>
+      </node>
+      <node id="8">
+        <label>bezier_explicit4.cpp</label>
+        <link refid="bezier__explicit4_8cpp"/>
+      </node>
+      <node id="9">
+        <label>bezier_explicit5.cpp</label>
+        <link refid="bezier__explicit5_8cpp"/>
+      </node>
+      <node id="10">
+        <label>bezier_explicit6.cpp</label>
+        <link refid="bezier__explicit6_8cpp"/>
+      </node>
+      <node id="11">
+        <label>bezier_explicit7.cpp</label>
+        <link refid="bezier__explicit7_8cpp"/>
+      </node>
+      <node id="12">
+        <label>bezier_explicit8.cpp</label>
+        <link refid="bezier__explicit8_8cpp"/>
+      </node>
+      <node id="13">
+        <label>bezier_explicit9.cpp</label>
+        <link refid="bezier__explicit9_8cpp"/>
+      </node>
+      <node id="37">
+        <label>bspline_explicit.cpp</label>
+        <link refid="bspline__explicit_8cpp"/>
+      </node>
+      <node id="42">
+        <label>nurbs_explicit.cpp</label>
+        <link refid="nurbs__explicit_8cpp"/>
+      </node>
+      <node id="26">
+        <label>rational_bezier_explicit1.cpp</label>
+        <link refid="rational__bezier__explicit1_8cpp"/>
+      </node>
+      <node id="27">
+        <label>rational_bezier_explicit10.cpp</label>
+        <link refid="rational__bezier__explicit10_8cpp"/>
+      </node>
+      <node id="28">
+        <label>rational_bezier_explicit2.cpp</label>
+        <link refid="rational__bezier__explicit2_8cpp"/>
+      </node>
+      <node id="29">
+        <label>rational_bezier_explicit3.cpp</label>
+        <link refid="rational__bezier__explicit3_8cpp"/>
+      </node>
+      <node id="30">
+        <label>rational_bezier_explicit4.cpp</label>
+        <link refid="rational__bezier__explicit4_8cpp"/>
+      </node>
+      <node id="31">
+        <label>rational_bezier_explicit5.cpp</label>
+        <link refid="rational__bezier__explicit5_8cpp"/>
+      </node>
+      <node id="32">
+        <label>rational_bezier_explicit6.cpp</label>
+        <link refid="rational__bezier__explicit6_8cpp"/>
+      </node>
+      <node id="33">
+        <label>rational_bezier_explicit7.cpp</label>
+        <link refid="rational__bezier__explicit7_8cpp"/>
+      </node>
+      <node id="34">
+        <label>rational_bezier_explicit8.cpp</label>
+        <link refid="rational__bezier__explicit8_8cpp"/>
+      </node>
+      <node id="35">
+        <label>rational_bezier_explicit9.cpp</label>
+        <link refid="rational__bezier__explicit9_8cpp"/>
+      </node>
+      <node id="44">
+        <label>proximity.cpp</label>
+        <link refid="proximity_8cpp"/>
+      </node>
+      <node id="43">
+        <label>py_knot_insertion_matrix.cpp</label>
+        <link refid="py__knot__insertion__matrix_8cpp"/>
+      </node>
+      <node id="19">
+        <label>py_spline.cpp</label>
+        <link refid="py__spline_8cpp"/>
+      </node>
+      <node id="38">
+        <label>py_spline_reader.cpp</label>
+        <link refid="py__spline__reader_8cpp"/>
+      </node>
+      <node id="15">
+        <label>bezier1.cpp</label>
+        <link refid="bezier1_8cpp"/>
+      </node>
+      <node id="16">
+        <label>bezier2.cpp</label>
+        <link refid="bezier2_8cpp"/>
+      </node>
+      <node id="17">
+        <label>bezier3.cpp</label>
+        <link refid="bezier3_8cpp"/>
+      </node>
+      <node id="23">
+        <label>rational_bezier1.cpp</label>
+        <link refid="rational__bezier1_8cpp"/>
+      </node>
+      <node id="24">
+        <label>rational_bezier2.cpp</label>
+        <link refid="rational__bezier2_8cpp"/>
+      </node>
+      <node id="25">
+        <label>rational_bezier3.cpp</label>
+        <link refid="rational__bezier3_8cpp"/>
+      </node>
+      <node id="40">
+        <label>extract.cpp</label>
+        <link refid="extract_8cpp"/>
+      </node>
+      <node id="18">
+        <label>splinepy_base.cpp</label>
+        <link refid="splinepy__base_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1splines">splinepy::splines</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1splines_1_1helpers">splinepy::splines::helpers</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;array&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;BSplineLib/Utilities/index.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1splines_1_1helpers" kindref="compound">splinepy::splines::helpers</ref><sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SplineType&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>std::array&lt;std::array&lt;double,<sp/>SplineType::kParaDim&gt;,<sp/>2&gt;</highlight></codeline>
+<codeline lineno="36" refid="namespacesplinepy_1_1splines_1_1helpers_1af4b967f5e9791d08765978c0764ac052" refkind="member"><highlight class="normal"><ref refid="namespacesplinepy_1_1splines_1_1helpers_1af4b967f5e9791d08765978c0764ac052" kindref="member">GetParametricBounds</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/>std::array&lt;std::array&lt;double,<sp/>SplineType::kParaDim&gt;,<sp/>2&gt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>{};</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(!SplineType::kHasKnotVectors)<sp/>{</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>[0].fill(0.);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>[1].fill(1.);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parameter_space</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1a9e4b9f65410e7ecd17951d6b4bf48273" kindref="member">GetParameterSpace</ref>();</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parameter_space</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1ae5849b2a4fd2d20449a37c940d175c83" kindref="member">GetDegrees</ref>();</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>{};</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knotvector</ref><sp/>:<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parameter_space</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1a16c49bad96cce2cbb33682045e05d78b" kindref="member">GetKnotVectors</ref>())<sp/>{</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degree_value</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>];</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>[0][<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>]<sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knotvector</ref>-&gt;operator[](<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degree_value</ref>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>[1][<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>]<sp/>=</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knotvector</ref>-&gt;operator[](<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knotvector</ref>-&gt;GetSize()<sp/>-<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degree_value</ref><sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">parametric_bounds</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SplineType&gt;</highlight></codeline>
+<codeline lineno="60" refid="namespacesplinepy_1_1splines_1_1helpers_1a2fa2ed4ede6ec0430d5e4e58798fe867" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a2fa2ed4ede6ec0430d5e4e58798fe867" kindref="member">GetNumberOfSupports</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1ae5849b2a4fd2d20449a37c940d175c83" kindref="member">GetDegrees</ref>();</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">n_supports</ref>{1};</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>{};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref><sp/>&lt;<sp/>SplineType::kParaDim;<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">n_supports</ref><sp/>*=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>])<sp/>+<sp/>1;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">n_supports</ref>;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ResolutionType<sp/>=<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SplineType&gt;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>std::array&lt;ResolutionType,<sp/>SplineType::kParaDim&gt;</highlight></codeline>
+<codeline lineno="71" refid="namespacesplinepy_1_1splines_1_1helpers_1a4232babd776b3fe98f06d804ef050669" refkind="member"><highlight class="normal"><ref refid="namespacesplinepy_1_1splines_1_1helpers_1a4232babd776b3fe98f06d804ef050669" kindref="member">GetControlMeshResolutions</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/>std::array&lt;ResolutionType,<sp/>SplineType::kParaDim&gt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">control_mesh_res</ref>;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1ae5849b2a4fd2d20449a37c940d175c83" kindref="member">GetDegrees</ref>();</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(SplineType::kHasKnotVectors)<sp/>{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1a16c49bad96cce2cbb33682045e05d78b" kindref="member">GetKnotVectors</ref>();</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>{};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref><sp/>&lt;<sp/>SplineType::kParaDim;<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">control_mesh_res</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>]<sp/>=</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal"><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ResolutionType</ref></highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>]-&gt;GetSize())</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal"><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ResolutionType</ref></highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>])<sp/>-<sp/>1;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>{};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref><sp/>&lt;<sp/>SplineType::kParaDim;<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">control_mesh_res</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>]<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal"><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">ResolutionType</ref></highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i</ref>])<sp/>+<sp/>1;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">control_mesh_res</ref>;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SplineType&gt;</highlight></codeline>
+<codeline lineno="104" refid="namespacesplinepy_1_1splines_1_1helpers_1abfc43a22576958845ecfe6da3f2b6450" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1splines_1_1helpers_1abfc43a22576958845ecfe6da3f2b6450" kindref="member">GetGrevilleAbscissae</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">SplineType</ref>&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>,</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>,</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>,</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">duplicate_tolerance</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Precompute<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1ae5849b2a4fd2d20449a37c940d175c83" kindref="member">GetDegrees</ref>();</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Determine<sp/>size<sp/>using<sp/>control<sp/>point<sp/>resolution</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">cmr</ref><sp/>=<sp/>[&amp;]()<sp/>{</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(SplineType::kHasKnotVectors)<sp/>{</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1a16c49bad96cce2cbb33682045e05d78b" kindref="member">GetKnotVectors</ref>();</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>]-&gt;GetSize())</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>])<sp/>-<sp/>1;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>])<sp/>+<sp/>1;</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/>}();</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Fill<sp/>vector<sp/>with<sp/>points</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">inv_factor</ref><sp/>=<sp/>1.<sp/>/<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>]);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>{};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">cmr</ref>;<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(SplineType::kHasKnotVectors)<sp/>{</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">spline</ref>.<ref refid="classsplinepy_1_1splines_1_1BSpline_1a16c49bad96cce2cbb33682045e05d78b" kindref="member">GetKnotVectors</ref>()[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>];</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">factor</ref>{};</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">k</ref>{0};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">k</ref><sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">degrees</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">i_para_dim</ref>];<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">k</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">factor</ref><sp/>+=</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">knot_vectors</ref>-&gt;operator[](</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>bsplinelib::Index(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">k</ref><sp/>+<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>+<sp/>1));</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>]<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">inv_factor</ref><sp/>*<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">factor</ref>);</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>]<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">inv_factor</ref><sp/>*<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>);</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>There<sp/>can<sp/>be<sp/>no<sp/>duplicates<sp/>for<sp/>bezier<sp/>types,<sp/>but<sp/>if<sp/>C^(-1),<sp/>duplicates<sp/>in</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>knot<sp/>vector<sp/>result<sp/>in<sp/>duplicate<sp/>greville<sp/>abscissae<sp/>which<sp/>can<sp/>lead<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>problems<sp/>in<sp/>further<sp/>computations,<sp/>solved<sp/>by<sp/>mean<sp/>filtering<sp/>with<sp/>neighbors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">constexpr</highlight><highlight class="normal"><sp/>(SplineType::kHasKnotVectors)<sp/>{</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">duplicate_tolerance</ref><sp/>&gt;<sp/>0.0)<sp/>{</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">previous_knot</ref>{<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[1]};</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>{2};<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">cmr</ref><sp/>-<sp/>1;<sp/>++<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(std::abs(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">previous_knot</ref><sp/>-<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>])</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">duplicate_tolerance</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>@todo<sp/>make<sp/>a<sp/>dynamic<sp/>tolerance</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>-<sp/>1]<sp/>=</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.5<sp/>*<sp/>(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>-<sp/>2]<sp/>+<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>-<sp/>1]);</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>]<sp/>=</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.5<sp/>*<sp/>(<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>]<sp/>+<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref><sp/>+<sp/>1]);</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">previous_knot</ref><sp/>=<sp/><ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">greville_abscissae</ref>[<ref refid="classsplinepy_1_1splines_1_1BSpline" kindref="compound">j</ref>];</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="159"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>splinepy::splines::helpers</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/splines/helpers/properties.hpp"/>
+  </compounddef>
+</doxygen>

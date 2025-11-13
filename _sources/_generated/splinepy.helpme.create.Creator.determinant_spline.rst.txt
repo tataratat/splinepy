@@ -1,0 +1,6 @@
+splinepy.helpme.create.Creator.determinant\_spline
+==================================================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. automethod:: Creator.determinant_spline

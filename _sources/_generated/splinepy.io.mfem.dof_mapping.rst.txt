@@ -1,0 +1,6 @@
+splinepy.io.mfem.dof\_mapping
+=============================
+
+.. currentmodule:: splinepy.io.mfem
+
+.. autofunction:: dof_mapping

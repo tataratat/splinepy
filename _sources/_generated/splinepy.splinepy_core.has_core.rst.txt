@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.has\_core
+=================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: has_core

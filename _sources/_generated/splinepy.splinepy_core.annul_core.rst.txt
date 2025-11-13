@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.annul\_core
+===================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: annul_core

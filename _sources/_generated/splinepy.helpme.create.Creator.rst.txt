@@ -1,0 +1,38 @@
+splinepy.helpme.create.Creator
+==============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autoclass:: Creator
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Creator.determinant_spline
+     
+     
+       Creator.embedded
+     
+     
+       Creator.extruded
+     
+     
+       Creator.parametric_view
+     
+     
+       Creator.revolved
+     
+   
+   
+
+   
+   
+   

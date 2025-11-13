@@ -1,0 +1,6 @@
+splinepy.io.mfem.load
+=====================
+
+.. currentmodule:: splinepy.io.mfem
+
+.. autofunction:: load

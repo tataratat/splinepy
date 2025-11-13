@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.extract\_bezier\_patches
+=============================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.extract_bezier_patches

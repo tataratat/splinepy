@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.ParameterSpace.unique\_knots
+====================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: ParameterSpace.unique_knots

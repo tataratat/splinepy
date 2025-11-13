@@ -1,0 +1,6 @@
+splinepy.helpme.create.surface\_circle
+======================================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: surface_circle

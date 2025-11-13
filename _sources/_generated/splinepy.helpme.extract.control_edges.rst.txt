@@ -1,0 +1,6 @@
+splinepy.helpme.extract.control\_edges
+======================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autofunction:: control_edges

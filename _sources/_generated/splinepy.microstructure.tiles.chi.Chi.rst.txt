@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.chi.Chi
+=====================================
+
+.. currentmodule:: splinepy.microstructure.tiles.chi
+
+.. autoclass:: Chi
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Chi.check_param_derivatives
+     
+     
+       Chi.check_params
+     
+     
+       Chi.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

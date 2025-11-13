@@ -1,0 +1,6 @@
+splinepy.io.gismo.AdditionalBlocks.add\_assembly\_options
+=========================================================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. automethod:: AdditionalBlocks.add_assembly_options

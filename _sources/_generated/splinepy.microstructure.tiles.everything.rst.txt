@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.everything
+========================================
+
+.. currentmodule:: splinepy.microstructure.tiles
+
+.. autofunction:: everything

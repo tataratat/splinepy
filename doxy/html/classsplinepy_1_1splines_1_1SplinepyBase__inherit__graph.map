@@ -1,0 +1,13 @@
+<map id="SplinepyBase" name="SplinepyBase">
+<area shape="rect" id="Node000001" title="Spline base to enable dynamic use of template splines. Member functions are prepended with &quot;Splinepy&quot;..." alt="" coords="449,5,698,431"/>
+<area shape="rect" id="Node000002" href="$classsplinepy_1_1splines_1_1BSpline.html" title="BSpline class." alt="" coords="5,486,203,851"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="438,301,325,382,268,429,217,480,205,494,201,490,213,477,265,425,321,377,435,297"/>
+<area shape="rect" id="Node000003" href="$classsplinepy_1_1splines_1_1Bezier.html" title="Bezier class." alt="" coords="227,486,424,851"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="452,444,427,490,422,487,447,441"/>
+<area shape="rect" id="Node000004" href="$classsplinepy_1_1splines_1_1NullSpline.html" title="Null Spline. Placeholder spline that only implements evaluate to return zeros." alt="" coords="449,496,698,841"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="576,445,576,496,571,496,571,445"/>
+<area shape="rect" id="Node000005" href="$classsplinepy_1_1splines_1_1Nurbs.html" title="Non&#45;uniform rational B&#45;spline (NURBS) class." alt="" coords="723,486,920,851"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="699,441,725,487,720,490,695,444"/>
+<area shape="rect" id="Node000006" href="$classsplinepy_1_1splines_1_1RationalBezier.html" title="Rational Bezier (Spline)" alt="" coords="944,479,1141,859"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="711,297,825,377,882,425,934,477,946,490,942,494,930,480,879,429,822,382,708,301"/>
+</map>

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.set\_interfaces
+====================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: PyMultipatch.set_interfaces

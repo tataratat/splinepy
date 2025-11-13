@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.nurbs
+==============================
+
+.. currentmodule:: splinepy.bspline
+
+.. autoproperty:: BSpline.nurbs

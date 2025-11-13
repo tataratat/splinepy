@@ -1,0 +1,6 @@
+splinepy.io.ioutils.form\_lines
+===============================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: form_lines

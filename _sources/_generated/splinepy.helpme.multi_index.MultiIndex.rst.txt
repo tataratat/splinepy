@@ -1,0 +1,23 @@
+splinepy.helpme.multi\_index.MultiIndex
+=======================================
+
+.. currentmodule:: splinepy.helpme.multi_index
+
+.. autoclass:: MultiIndex
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+   
+   
+
+   
+   
+   

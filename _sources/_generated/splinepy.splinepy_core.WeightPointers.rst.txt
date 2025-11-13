@@ -1,0 +1,41 @@
+splinepy.splinepy\_core.WeightPointers
+======================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: WeightPointers
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       WeightPointers.dim
+     
+     
+       WeightPointers.len
+     
+     
+       WeightPointers.set_row
+     
+     
+       WeightPointers.set_rows
+     
+     
+       WeightPointers.sync
+     
+     
+       WeightPointers.sync_rows
+     
+   
+   
+
+   
+   
+   

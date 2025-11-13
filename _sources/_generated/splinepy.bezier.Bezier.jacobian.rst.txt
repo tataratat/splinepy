@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.jacobian
+===============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.jacobian

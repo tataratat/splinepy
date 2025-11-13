@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.greville\_abscissae
+============================================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.greville_abscissae

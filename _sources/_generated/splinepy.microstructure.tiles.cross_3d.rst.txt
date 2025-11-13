@@ -1,0 +1,33 @@
+.. _splinepy.microstructure.tiles.cross_3d:
+
+splinepy.microstructure.tiles.cross\_3d
+=======================================
+
+.. automodule:: splinepy.microstructure.tiles.cross_3d
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Cross3D
+   
+   
+
+   
+   
+   
+
+
+

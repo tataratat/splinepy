@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.parametrization\_function
+===============================================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoproperty:: Microstructure.parametrization_function

@@ -1,0 +1,6 @@
+splinepy.spline.Spline.unique\_knots
+====================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.unique_knots

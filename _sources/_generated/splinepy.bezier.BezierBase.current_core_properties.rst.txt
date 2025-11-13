@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.current\_core\_properties
+====================================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.current_core_properties

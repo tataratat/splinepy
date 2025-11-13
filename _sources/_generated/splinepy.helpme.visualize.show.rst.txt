@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.show
+==============================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. autofunction:: show

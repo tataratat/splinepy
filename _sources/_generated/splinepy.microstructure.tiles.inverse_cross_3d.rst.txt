@@ -1,0 +1,33 @@
+.. _splinepy.microstructure.tiles.inverse_cross_3d:
+
+splinepy.microstructure.tiles.inverse\_cross\_3d
+================================================
+
+.. automodule:: splinepy.microstructure.tiles.inverse_cross_3d
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      InverseCross3D
+   
+   
+
+   
+   
+   
+
+
+

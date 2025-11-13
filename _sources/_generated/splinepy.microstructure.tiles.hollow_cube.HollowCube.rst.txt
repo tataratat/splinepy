@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.hollow\_cube.HollowCube
+=====================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.hollow_cube
+
+.. autoclass:: HollowCube
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       HollowCube.check_param_derivatives
+     
+     
+       HollowCube.check_params
+     
+     
+       HollowCube.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

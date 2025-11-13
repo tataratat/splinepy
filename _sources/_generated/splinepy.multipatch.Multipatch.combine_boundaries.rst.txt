@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.combine\_boundaries
+==================================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.combine_boundaries

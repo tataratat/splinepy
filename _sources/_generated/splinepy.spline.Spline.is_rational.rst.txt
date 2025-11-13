@@ -1,0 +1,6 @@
+splinepy.spline.Spline.is\_rational
+===================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.is_rational

@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.KnotVector.find\_span
+=============================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: KnotVector.find_span

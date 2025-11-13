@@ -1,0 +1,33 @@
+.. _splinepy.io.npz:
+
+splinepy.io.npz
+===============
+
+.. automodule:: splinepy.io.npz
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

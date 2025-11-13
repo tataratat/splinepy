@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.composition\_derivative
+==============================================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.composition_derivative

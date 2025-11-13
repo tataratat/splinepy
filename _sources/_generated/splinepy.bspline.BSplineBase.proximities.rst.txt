@@ -1,0 +1,6 @@
+splinepy.bspline.BSplineBase.proximities
+========================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSplineBase.proximities

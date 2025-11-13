@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.reshape
+==============================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.reshape

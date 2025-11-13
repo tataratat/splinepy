@@ -1,0 +1,6 @@
+splinepy.spline.Spline.extract
+==============================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.extract

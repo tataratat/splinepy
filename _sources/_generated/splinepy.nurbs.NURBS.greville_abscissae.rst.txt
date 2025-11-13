@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.greville\_abscissae
+========================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.greville_abscissae

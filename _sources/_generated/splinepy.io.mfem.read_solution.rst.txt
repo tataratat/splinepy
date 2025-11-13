@@ -1,0 +1,6 @@
+splinepy.io.mfem.read\_solution
+===============================
+
+.. currentmodule:: splinepy.io.mfem
+
+.. autofunction:: read_solution

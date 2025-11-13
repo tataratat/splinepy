@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.show
+==========================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. automethod:: Microstructure.show

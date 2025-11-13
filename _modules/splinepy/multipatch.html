@@ -1,0 +1,1198 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.multipatch &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/multipatch';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.multipatch</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.multipatch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Multipatch Spline Configuration</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SplinepyBase</span> <span class="k">as</span> <span class="n">_SplinepyBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.helpme</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize</span> <span class="k">as</span> <span class="n">_visualize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.helpme.extract</span><span class="w"> </span><span class="kn">import</span> <span class="n">Extractor</span> <span class="k">as</span> <span class="n">_Extractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.spline</span><span class="w"> </span><span class="kn">import</span> <span class="n">_default_if_none</span><span class="p">,</span> <span class="n">_get_helper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.splinepy_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyMultipatch</span> <span class="k">as</span> <span class="n">_PyMultipatch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.splinepy_core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">boundaries_from_continuity</span> <span class="k">as</span> <span class="n">_boundaries_from_continuity</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipatchData</span> <span class="k">as</span> <span class="n">_MultipatchData</span>
+
+
+<div class="viewcode-block" id="Multipatch">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Multipatch</span><span class="p">(</span><span class="n">_SplinepyBase</span><span class="p">,</span> <span class="n">_PyMultipatch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    System of patches to store information such as boundaries and</span>
+<span class="sd">    interfaces</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;_extractor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_show_options&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_spline_data&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">__show_option__</span> <span class="o">=</span> <span class="n">_visualize</span><span class="o">.</span><span class="n">SplineShowOption</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">splines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">spline</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multipatch</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        splines : list-like</span>
+<span class="sd">          List of splines to store as multipatch</span>
+<span class="sd">        interfaces : array-like</span>
+<span class="sd">          Defines the connectivity in between patches</span>
+<span class="sd">        spline : PyMultipatch</span>
+<span class="sd">          keyword only argument, implemented to support to_derived() interface.</span>
+<span class="sd">          calls move constructor.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Init values</span>
+        <span class="k">if</span> <span class="n">spline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spline</span><span class="p">,</span> <span class="n">_PyMultipatch</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;spline must be PyMultipatch.&quot;</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">spline</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">splines</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">splines</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Initialized Multipatch object&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">interfaces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">=</span> <span class="n">interfaces</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">patches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of splines in splinepy format</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        patches : list</span>
+<span class="sd">         list of splines that are stored in the multipatch system</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">patches</span>
+
+    <span class="nd">@patches</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">patches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_splines</span><span class="p">):</span>
+        <span class="n">_PyMultipatch</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_splines</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine the interfaces of a given multipatch system</span>
+
+<span class="sd">        Returns its interfaces in the form as an array of size</span>
+<span class="sd">        n_patches x n_sides_per_patch</span>
+
+<span class="sd">        The interfaces are stored as indices. If the index is negative, the ID</span>
+<span class="sd">        is referring to a boundary (e.g. for boundary conditions). If the</span>
+<span class="sd">        number is positive, the ID refers to the global face-id, which is</span>
+<span class="sd">        composed of the element ID and the local face ID :</span>
+<span class="sd">        global_face = local_face + number_of_faces_per_element * element_id</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. code-block ::</span>
+
+<span class="sd">          O -- 3 -- O O -- 3 -- O</span>
+<span class="sd">          |         | |         |</span>
+<span class="sd">          0    0    1 0    1    1</span>
+<span class="sd">          |         | |         |</span>
+<span class="sd">          O -- 2 -- O O -- 2 -- O</span>
+
+<span class="sd">        would be stored as:</span>
+
+<span class="sd">        .. code-block ::</span>
+
+<span class="sd">          [</span>
+<span class="sd">            [-1, 4, -1, -1],</span>
+<span class="sd">            [1, -1, -1, -1]</span>
+<span class="sd">          ]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        interfaces : np.ndarray</span>
+<span class="sd">          inter-patch connectivitiy and boundaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># empty list as input will compute interfaces based on input</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_interfaces</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@interfaces</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;super() checks validity of input&quot;&quot;&quot;</span>
+        <span class="c1"># Assignment</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_interfaces</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Multipatch.interface_orientations">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.interface_orientations.html#splinepy.multipatch.Multipatch.interface_orientations">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interface_orientations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine orientation between adjacent splines which is required, e.g.,</span>
+<span class="sd">        for gismo export and orientation check</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tolerance : double</span>
+<span class="sd">          normed distance between two neighboring points to be considered equal</span>
+<span class="sd">        nthreads : int</span>
+<span class="sd">          Number of threads to be used for extraction, defaults to</span>
+<span class="sd">          settings.NTHREADS</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        interface_orientations : np.array (np.int64)</span>
+<span class="sd">          description of the orientations between adjacent splines in a</span>
+<span class="sd">          multipatch object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">interface_orientations</span><span class="p">(</span>
+            <span class="n">tolerance</span><span class="o">=</span><span class="n">_default_if_none</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span><span class="p">),</span>
+            <span class="n">nthreads</span><span class="o">=</span><span class="n">_default_if_none</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.set_interface_orientations">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.set_interface_orientations.html#splinepy.multipatch.Multipatch.set_interface_orientations">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_interface_orientations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_orientations</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interface orientations are usually computed using the jacobian at face</span>
+<span class="sd">        centers. This is not always possible, e.g., if the spline is</span>
+<span class="sd">        representing a scalar field on a geometry. This function can be used to</span>
+<span class="sd">        manually set the orientations to prepare the spline for export.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The interfaces **must** be set before the orientations, as the</span>
+<span class="sd">        interface orientations count the interfaces between splines to ensure</span>
+<span class="sd">        they match. This function does not include any checks to verify</span>
+<span class="sd">        whether the interfaces exist, since performing such a check would</span>
+<span class="sd">        trigger their computation — which might not be possible for scalar</span>
+<span class="sd">        splines (the main intended use case for this function).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        interface_orientations : np.array (np.int64)</span>
+<span class="sd">          interface orientations between patches</span>
+<span class="sd">          shape {n_interfaces , 4 + 2 * para_dim}</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_interface_orientations</span><span class="p">(</span><span class="n">interface_orientations</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Boundaries are stored within the interfaces array as negative entries</span>
+
+<span class="sd">        Negative entries mean, that there is a boundary, the absolute value</span>
+<span class="sd">        holds the boundary ID</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        boundaries : list&lt;np.ndarray&gt;</span>
+<span class="sd">          list of 2D arrays, representing the patch and face ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get minimum boundary id - boundary ids are stored as negative values</span>
+        <span class="n">max_BID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="n">boundary_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i_bid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_BID</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracting boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">i_bid</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">boundary_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">==</span> <span class="n">i_bid</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">boundary_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> boundary &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;elements on boundary </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">i_bid</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">boundary_list</span>
+
+<div class="viewcode-block" id="Multipatch.boundary_multipatch">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.boundary_multipatch.html#splinepy.multipatch.Multipatch.boundary_multipatch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundary_multipatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bid</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract all boundary patches of a given Multipatch system as splines</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bid : int</span>
+<span class="sd">          boundary id to extract, (default all if bid&lt;0)</span>
+<span class="sd">        nthreads : int</span>
+<span class="sd">          Number of threads to be used for extraction, defaults to</span>
+<span class="sd">          settings.NTHREADS</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        boundary_multipatch : Multipatch</span>
+<span class="sd">          Embedded splines representing boundaries of system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nthreads</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span>
+
+        <span class="c1"># apply nthreads</span>
+        <span class="n">previous_nthreads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_default_threads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_default_threads</span> <span class="o">=</span> <span class="n">nthreads</span>
+
+        <span class="n">b_patches</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">(</span><span class="n">bid</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_default_threads</span> <span class="o">=</span> <span class="n">previous_nthreads</span>
+
+        <span class="k">return</span> <span class="n">b_patches</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.set_boundary">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.set_boundary.html#splinepy.multipatch.Multipatch.set_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_boundary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spline_ids</span><span class="p">,</span>
+        <span class="n">boundary_faces</span><span class="p">,</span>
+        <span class="n">boundary_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a boundary to a specific set of spline and spline-</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spline_ids : np.ndarray</span>
+<span class="sd">          array of spline-ids that are assigned a boundary</span>
+<span class="sd">        boundary_faces : np.ndarray</span>
+<span class="sd">          array of corresponding faces to be assigned a boundary</span>
+<span class="sd">        boundary_id : int</span>
+<span class="sd">          boundary_id to be assigned. If not chosen set to new lowest value</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get minimum boundary id - boundary ids are stored as negative values</span>
+        <span class="n">max_BID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">boundary_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_BID</span> <span class="o">=</span> <span class="n">max_BID</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Make sure its negative</span>
+            <span class="n">new_BID</span> <span class="o">=</span> <span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">boundary_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">new_BID</span> <span class="o">&lt;</span> <span class="n">max_BID</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                    <span class="s2">&quot;Adding new boundary elements to existing &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;boundary new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">old_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">spline_ids</span><span class="p">,</span> <span class="n">boundary_faces</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;spline_ids and boundary_faces need to be one-dimensional, &quot;</span>
+                <span class="s2">&quot;array-like objects to access 2D interface numpy array&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># raise if any old indices include non-negative entries</span>
+        <span class="c1"># as it indicates that it&#39;s not a boundary sub-patch</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">old_indices</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;One or more of the assigned boundary elements are not&quot;</span>
+                <span class="s2">&quot; on the patch surface, please check topology&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># set boundary id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">spline_ids</span><span class="p">,</span> <span class="n">boundary_faces</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_BID</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">para_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parametric dimension of the splineset</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        para_dim : int</span>
+<span class="sd">          Parametric dimensionality of the multipatch system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">para_dim</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Physical dimension of the splineset</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">          Physical dimensionality of the multipatch system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dim</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub_patch_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluated centers of the individual patches, used to determine</span>
+<span class="sd">        connectivity and identify boundaries based on position</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spline_centers : np.ndarray</span>
+<span class="sd">          coordinates of the patch-boundary centers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sub_patch_centers</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Multipatch.determine_interfaces">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.determine_interfaces.html#splinepy.multipatch.Multipatch.determine_interfaces">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">determine_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recompute</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve interfaces info</span>
+
+<span class="sd">        Stores new information as interfaces</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tolerance : double</span>
+<span class="sd">          normed distance between two neighboring points to be considered equal</span>
+<span class="sd">        recompute : bool (False)</span>
+<span class="sd">          Enforce recomputation of interfaces</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        interfaces : array-like (n_patch x n_boundaries)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tolerance</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span>
+
+        <span class="c1"># save previous default tol</span>
+        <span class="n">previous_tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tolerance</span>
+
+        <span class="c1"># set given tolerance and compute interfaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance</span> <span class="o">=</span> <span class="n">tolerance</span>
+
+        <span class="c1"># Enforces computation only if recompute or non-available</span>
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_interfaces</span><span class="p">(</span><span class="n">recompute</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Successfully provided new interfaces using uff algorithm&quot;</span><span class="p">)</span>
+
+        <span class="c1"># set default tol back</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance</span> <span class="o">=</span> <span class="n">previous_tol</span>
+
+        <span class="k">return</span> <span class="n">interfaces</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.boundary_from_function">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.boundary_from_function.html#splinepy.multipatch.Multipatch.boundary_from_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundary_from_function</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">,</span>
+        <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">boundary_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses all faces, that were identified as boundaries in the</span>
+<span class="sd">        interfaces array and checks if they fit a boundary function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : Callable</span>
+<span class="sd">          Function called on every boundary center point to check if it is on</span>
+<span class="sd">          the boundary, returns bool-type</span>
+<span class="sd">        mask : array-like</span>
+<span class="sd">          If assigned, takes only boundaries with matching ids</span>
+<span class="sd">        boundary_id : int</span>
+<span class="sd">          boundary_id to be assigned. If not chosen set to new lowest value</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get minimum boundary id - boundary ids are stored as negative values</span>
+        <span class="n">max_BID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">boundary_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_BID</span> <span class="o">=</span> <span class="n">max_BID</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Make sure its negative</span>
+            <span class="n">new_BID</span> <span class="o">=</span> <span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">boundary_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">new_BID</span> <span class="o">&lt;</span> <span class="n">max_BID</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                    <span class="s2">&quot;Adding new boundary elements to existing &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;boundary new boundary with ID </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_BID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># retrieve all boundary elements</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boundary_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">boundary_ids</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
+
+        <span class="c1"># Check if there is a boundary</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boundary_ids</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                <span class="s2">&quot;No boundary elements could be identified that match &quot;</span>
+                <span class="s2">&quot;requirements&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Check all face centers</span>
+        <span class="n">relevant_boundary_centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_patch_centers</span><span class="p">[</span>
+            <span class="n">boundary_ids</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="p">:</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Cols and Rows</span>
+        <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_ids</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">boundary_ids</span><span class="p">)</span>
+
+        <span class="c1"># Function is applied to all face centers</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_boundary_bools</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">relevant_boundary_centers</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Function is not applicable to array. Function layout must&quot;</span>
+                <span class="s2">&quot; f(array&lt;n_face_points,dim&gt;) -&gt; bools&lt;n_face_points&gt;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Assign new boundary ID to interfaces array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span>
+            <span class="n">row_ids</span><span class="p">[</span><span class="n">new_boundary_bools</span><span class="p">],</span> <span class="n">col_ids</span><span class="p">[</span><span class="n">new_boundary_bools</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">new_BID</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spline_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Spline data helper for splines. @todo (does not do anything at the</span>
+<span class="sd">        moment)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spline_data: MultipatchData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_get_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_spline_data&quot;</span><span class="p">,</span> <span class="n">_MultipatchData</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show option manager for Multipatches.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        show_options: SplineShowOption</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_get_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_show_options&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__show_option__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Multipatch.showable">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.showable.html#splinepy.multipatch.Multipatch.showable">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">showable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equivalent to</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            splinepy.helpme.visualize.show(</span>
+<span class="sd">                spline, return_showable=True, **kwargs</span>
+<span class="sd">            )</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kwargs: kwargs</span>
+<span class="sd">          see splinepy.helpme.visualize.show</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spline_showable: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_visualize</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_showable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.show">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.show.html#splinepy.multipatch.Multipatch.show">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_visualize</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.boundaries_from_continuity">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.boundaries_from_continuity.html#splinepy.multipatch.Multipatch.boundaries_from_continuity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundaries_from_continuity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starting from a seed position, the splines are propagated until they</span>
+<span class="sd">        reach a kink (no g1 continuity). This uses the spline boundary</span>
+<span class="sd">        information and determines the interface information.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nthreads : int</span>
+<span class="sd">          Number of threads to be used to determine boundaries and aux values</span>
+<span class="sd">        tolerance : double</span>
+<span class="sd">          Tolerance between two normal vectors [cos(angle)] to be considered G1</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tolerance</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">TOLERANCE</span>
+        <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nthreads</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span>
+        <span class="n">b_patches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+
+        <span class="c1"># Pass information to c++ backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="s2">&quot;Start propagation of information...&quot;</span><span class="p">)</span>
+        <span class="n">n_new_boundaries</span> <span class="o">=</span> <span class="n">_boundaries_from_continuity</span><span class="p">(</span>
+            <span class="n">b_patches</span><span class="o">.</span><span class="n">patches</span><span class="p">,</span>
+            <span class="n">b_patches</span><span class="o">.</span><span class="n">interfaces</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">,</span>
+            <span class="n">tolerance</span><span class="p">,</span>
+            <span class="n">nthreads</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_new_boundaries</span><span class="si">}</span><span class="s2"> new boundaries were assigned&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.combine_boundaries">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.combine_boundaries.html#splinepy.multipatch.Multipatch.combine_boundaries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combine_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combines all boundaries that match an id from the mask to a single</span>
+<span class="sd">        boundary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mask : array-like</span>
+<span class="sd">          List of boundary ids to be reassigned a new combined ID</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># retrieve all boundary elements</span>
+        <span class="n">boundary_ids</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boundary_ids</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                <span class="s2">&quot;No boundary elements could be identified that match &quot;</span>
+                <span class="s2">&quot;requirements&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="n">boundary_ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.add_fields">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.add_fields.html#splinepy.multipatch.Multipatch.add_fields">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_fields</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">,</span>
+        <span class="n">field_dim</span><span class="p">,</span>
+        <span class="n">check_compliance</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">check_conformity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add fields using lists of splines</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fields : list</span>
+<span class="sd">          Any number of list of splines to represent n-dimensional field with</span>
+<span class="sd">          equal parametric dimensionality</span>
+<span class="sd">        field_dim: int</span>
+<span class="sd">          Dimensionality of the individual fields</span>
+<span class="sd">        check_compliance : bool (True)</span>
+<span class="sd">          Check if field list is admissible, by comparing the parametric</span>
+<span class="sd">          dimensionality of the field entries with the spline list, and compare</span>
+<span class="sd">          patch sizes</span>
+<span class="sd">        check_conformity : bool (True)</span>
+<span class="sd">          Check for conformity between patches and fields by comparing degrees</span>
+<span class="sd">          and control-mesh-resolutions</span>
+<span class="sd">        nthreads : int</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nthreads</span> <span class="o">=</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_fields</span><span class="p">(</span>
+            <span class="n">fields</span><span class="p">,</span>
+            <span class="n">field_dim</span><span class="p">,</span>
+            <span class="n">check_compliance</span><span class="p">,</span>
+            <span class="n">check_compliance</span><span class="p">,</span>
+            <span class="n">check_conformity</span><span class="p">,</span>
+            <span class="n">check_conformity</span><span class="p">,</span>
+            <span class="n">nthreads</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save fields as individual splines on patches</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fields : list&lt;Multipatch&gt;</span>
+<span class="sd">          List of all field representation in the form of list of splines</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Multipatch.sample">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.sample.html#splinepy.multipatch.Multipatch.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolutions</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uniformly sample along each parametric dimensions from spline.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        resolutions: int</span>
+<span class="sd">        nthreads: int</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        results: (math.product(resolutions), dim) np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolutions</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span>
+            <span class="n">resolutions</span><span class="p">,</span> <span class="s2">&quot;__getitem__&quot;</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+                <span class="s2">&quot;sample() only supports uniform sample. Taking first entry.&quot;</span>
+            <span class="p">)</span>
+            <span class="c1"># for now, just take the first elem</span>
+            <span class="n">resolutions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resolutions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logd</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Sampling </span><span class="si">{</span><span class="n">resolutions</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">para_dim</span><span class="si">}</span><span class="s2"> points from spline.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="n">resolutions</span><span class="p">,</span>
+            <span class="n">nthreads</span><span class="o">=</span><span class="n">_default_if_none</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span><span class="p">),</span>
+            <span class="n">same_parametric_bounds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Multipatch.evaluate">
+<a class="viewcode-back" href="../../_generated/splinepy.multipatch.Multipatch.evaluate.html#splinepy.multipatch.Multipatch.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate each individual spline at specific parametric positions. To be</span>
+<span class="sd">        used with caution, as there is no check if the queries are within the</span>
+<span class="sd">        parametric bounds if settings.CHECK_BOUNDS is set to false.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        queries: (n, para_dim) array-like</span>
+<span class="sd">        nthreads: int</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        results: (math.product(resolutions), dim) np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+            <span class="n">queries</span><span class="p">,</span>
+            <span class="n">nthreads</span><span class="o">=</span><span class="n">_default_if_none</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NTHREADS</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Extractor object to provide extract functionality for</span>
+<span class="sd">        multiple splines</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        extractor: Extractor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_get_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_extractor&quot;</span><span class="p">,</span> <span class="n">_Extractor</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

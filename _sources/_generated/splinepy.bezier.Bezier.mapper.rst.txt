@@ -1,0 +1,6 @@
+splinepy.bezier.Bezier.mapper
+=============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: Bezier.mapper

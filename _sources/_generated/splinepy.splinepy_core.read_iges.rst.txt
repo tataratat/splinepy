@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.read\_iges
+==================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: read_iges

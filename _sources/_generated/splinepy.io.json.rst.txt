@@ -1,0 +1,33 @@
+.. _splinepy.io.json:
+
+splinepy.io.json
+================
+
+.. automodule:: splinepy.io.json
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

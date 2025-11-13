@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.copy
+===========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.copy

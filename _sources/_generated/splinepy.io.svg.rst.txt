@@ -1,0 +1,32 @@
+.. _splinepy.io.svg:
+
+splinepy.io.svg
+===============
+
+.. automodule:: splinepy.io.svg
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

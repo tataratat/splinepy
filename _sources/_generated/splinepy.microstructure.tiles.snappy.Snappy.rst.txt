@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.snappy.Snappy
+===========================================
+
+.. currentmodule:: splinepy.microstructure.tiles.snappy
+
+.. autoclass:: Snappy
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       Snappy.check_param_derivatives
+     
+     
+       Snappy.check_params
+     
+     
+       Snappy.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

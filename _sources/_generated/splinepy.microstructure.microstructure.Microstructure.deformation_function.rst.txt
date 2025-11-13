@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.deformation\_function
+===========================================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. autoproperty:: Microstructure.deformation_function

@@ -1,0 +1,6 @@
+splinepy.microstructure.microstructure.Microstructure.create
+============================================================
+
+.. currentmodule:: splinepy.microstructure.microstructure
+
+.. automethod:: Microstructure.create

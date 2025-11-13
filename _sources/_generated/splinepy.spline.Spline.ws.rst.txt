@@ -1,0 +1,6 @@
+splinepy.spline.Spline.ws
+=========================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.ws

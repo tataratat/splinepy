@@ -1,0 +1,6 @@
+splinepy.io.cats.load
+=====================
+
+.. currentmodule:: splinepy.io.cats
+
+.. autofunction:: load

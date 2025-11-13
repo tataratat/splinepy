@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.build\_type
+===================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: build_type

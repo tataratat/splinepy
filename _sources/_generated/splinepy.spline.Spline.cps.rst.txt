@@ -1,0 +1,6 @@
+splinepy.spline.Spline.cps
+==========================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.cps

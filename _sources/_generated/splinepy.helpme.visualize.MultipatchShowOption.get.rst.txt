@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.MultipatchShowOption.get
+==================================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: MultipatchShowOption.get

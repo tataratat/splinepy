@@ -1,0 +1,6 @@
+splinepy.helpme.create.plate
+============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: plate

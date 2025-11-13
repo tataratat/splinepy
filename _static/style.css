@@ -1,0 +1,6 @@
+div.document div.documentwrapper {
+    max-width: 97%;
+}
+html[data-theme="dark"] .bd-content img:not(.only-dark):not(.dark-light) {
+    background: None;
+}

@@ -1,0 +1,73 @@
+.. _splinepy.splinepy_core:
+
+splinepy.splinepy\_core
+=======================
+
+.. automodule:: splinepy.splinepy_core
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      add
+      annul_core
+      bezier_extraction_matrix
+      boundaries_from_continuity
+      boundary_centers
+      build_type
+      compose
+      compose_sensitivities
+      composition_derivative
+      core_id
+      core_ref_count
+      derivative_spline
+      export_iges
+      extract_all_boundary_splines
+      extract_bezier_patches
+      extract_boundaries
+      extract_dim
+      global_knot_insertion_matrix
+      has_core
+      insert_knots
+      interfaces_from_boundary_centers
+      is_minimal
+      knot_insertion_matrix
+      multiply
+      null_spline
+      read_iges
+      remove_knots
+      same_spline_with_knot_vectors
+      split
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      ControlPointPointers
+      KnotVector
+      ParameterSpace
+      PyMultipatch
+      PySpline
+      WeightPointers
+   
+   
+
+   
+   
+   
+
+
+

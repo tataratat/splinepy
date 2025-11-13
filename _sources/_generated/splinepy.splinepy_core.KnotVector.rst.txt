@@ -1,0 +1,38 @@
+splinepy.splinepy\_core.KnotVector
+==================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: KnotVector
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       KnotVector.find_span
+     
+     
+       KnotVector.multiplicities
+     
+     
+       KnotVector.numpy
+     
+     
+       KnotVector.scale
+     
+     
+       KnotVector.unique
+     
+   
+   
+
+   
+   
+   

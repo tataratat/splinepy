@@ -1,0 +1,33 @@
+.. _splinepy.nurbs:
+
+splinepy.nurbs
+==============
+
+.. automodule:: splinepy.nurbs
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      NURBS
+   
+   
+
+   
+   
+   
+
+
+

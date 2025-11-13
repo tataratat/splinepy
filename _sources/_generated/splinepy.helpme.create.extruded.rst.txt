@@ -1,0 +1,6 @@
+splinepy.helpme.create.extruded
+===============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: extruded

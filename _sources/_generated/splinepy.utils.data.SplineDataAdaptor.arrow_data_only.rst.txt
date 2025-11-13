@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.arrow\_data\_only
+=======================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoattribute:: SplineDataAdaptor.arrow_data_only

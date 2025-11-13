@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.reduce\_degrees
+========================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.reduce_degrees

@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.control\_points
+=================================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.control_points

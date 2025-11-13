@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.copy
+=============================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.copy

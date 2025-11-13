@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.basis\_derivative\_and\_support
+====================================================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.basis_derivative_and_support

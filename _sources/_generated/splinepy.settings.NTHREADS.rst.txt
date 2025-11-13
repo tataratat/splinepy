@@ -1,0 +1,6 @@
+splinepy.settings.NTHREADS
+==========================
+
+.. currentmodule:: splinepy.settings
+
+.. autodata:: NTHREADS

@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.is\_spline
+================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoattribute:: SplineDataAdaptor.is_spline

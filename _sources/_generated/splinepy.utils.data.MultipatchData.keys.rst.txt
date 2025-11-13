@@ -1,0 +1,6 @@
+splinepy.utils.data.MultipatchData.keys
+=======================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: MultipatchData.keys

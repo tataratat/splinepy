@@ -1,0 +1,6 @@
+splinepy.helpme.create.pyramid
+==============================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: pyramid

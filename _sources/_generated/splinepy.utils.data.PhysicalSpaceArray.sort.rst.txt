@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.sort
+===========================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.sort

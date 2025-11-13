@@ -1,0 +1,6 @@
+splinepy.io.iges.load
+=====================
+
+.. currentmodule:: splinepy.io.iges
+
+.. autofunction:: load

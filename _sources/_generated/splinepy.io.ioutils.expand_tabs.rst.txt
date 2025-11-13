@@ -1,0 +1,6 @@
+splinepy.io.ioutils.expand\_tabs
+================================
+
+.. currentmodule:: splinepy.io.ioutils
+
+.. autofunction:: expand_tabs

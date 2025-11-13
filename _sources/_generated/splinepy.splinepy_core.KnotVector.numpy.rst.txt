@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.KnotVector.numpy
+========================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. automethod:: KnotVector.numpy

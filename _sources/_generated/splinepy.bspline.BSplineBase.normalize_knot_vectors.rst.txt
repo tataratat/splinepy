@@ -1,0 +1,6 @@
+splinepy.bspline.BSplineBase.normalize\_knot\_vectors
+=====================================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSplineBase.normalize_knot_vectors

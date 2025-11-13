@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PySpline.dim
+====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PySpline.dim

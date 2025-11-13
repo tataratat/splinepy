@@ -1,0 +1,6 @@
+splinepy.rational\_bezier.RationalBezier.mapper
+===============================================
+
+.. currentmodule:: splinepy.rational_bezier
+
+.. automethod:: RationalBezier.mapper

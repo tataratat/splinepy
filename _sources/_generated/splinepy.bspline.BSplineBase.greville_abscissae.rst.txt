@@ -1,0 +1,6 @@
+splinepy.bspline.BSplineBase.greville\_abscissae
+================================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSplineBase.greville_abscissae

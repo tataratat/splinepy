@@ -1,0 +1,6 @@
+splinepy.helpme.extract.spline
+==============================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. autofunction:: spline

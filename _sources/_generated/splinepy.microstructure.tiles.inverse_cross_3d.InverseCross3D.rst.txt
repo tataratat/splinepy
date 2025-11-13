@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.inverse\_cross\_3d.InverseCross3D
+===============================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.inverse_cross_3d
+
+.. autoclass:: InverseCross3D
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       InverseCross3D.check_param_derivatives
+     
+     
+       InverseCross3D.check_params
+     
+     
+       InverseCross3D.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

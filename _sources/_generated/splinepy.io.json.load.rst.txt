@@ -1,0 +1,6 @@
+splinepy.io.json.load
+=====================
+
+.. currentmodule:: splinepy.io.json
+
+.. autofunction:: load

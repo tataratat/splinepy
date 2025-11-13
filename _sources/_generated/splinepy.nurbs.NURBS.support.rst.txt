@@ -1,0 +1,6 @@
+splinepy.nurbs.NURBS.support
+============================
+
+.. currentmodule:: splinepy.nurbs
+
+.. automethod:: NURBS.support

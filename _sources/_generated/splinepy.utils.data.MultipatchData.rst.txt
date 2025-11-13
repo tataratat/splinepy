@@ -1,0 +1,50 @@
+splinepy.utils.data.MultipatchData
+==================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoclass:: MultipatchData
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       MultipatchData.as_arrow
+     
+     
+       MultipatchData.as_scalar
+     
+     
+       MultipatchData.clear
+     
+     
+       MultipatchData.get
+     
+     
+       MultipatchData.items
+     
+     
+       MultipatchData.keys
+     
+     
+       MultipatchData.pop
+     
+     
+       MultipatchData.update
+     
+     
+       MultipatchData.values
+     
+   
+   
+
+   
+   
+   

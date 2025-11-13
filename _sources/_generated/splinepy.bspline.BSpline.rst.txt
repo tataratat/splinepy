@@ -1,0 +1,143 @@
+splinepy.bspline.BSpline
+========================
+
+.. currentmodule:: splinepy.bspline
+
+.. autoclass:: BSpline
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       BSpline.basis
+     
+     
+       BSpline.basis_and_support
+     
+     
+       BSpline.basis_derivative
+     
+     
+       BSpline.basis_derivative_and_support
+     
+     
+       BSpline.clear
+     
+     
+       BSpline.copy
+     
+     
+       BSpline.current_core_properties
+     
+     
+       BSpline.derivative
+     
+     
+       BSpline.elevate_degrees
+     
+     
+       BSpline.evaluate
+     
+     
+       BSpline.export
+     
+     
+       BSpline.extract_bezier_patches
+     
+     
+       BSpline.greville_abscissae
+     
+     
+       BSpline.insert_knots
+     
+     
+       BSpline.jacobian
+     
+     
+       BSpline.knot_insertion_matrix
+     
+     
+       BSpline.mapper
+     
+     
+       BSpline.normalize_knot_vectors
+     
+     
+       BSpline.proximities
+     
+     
+       BSpline.reduce_degrees
+     
+     
+       BSpline.remove_knots
+     
+     
+       BSpline.sample
+     
+     
+       BSpline.show
+     
+     
+       BSpline.showable
+     
+     
+       BSpline.support
+     
+     
+       BSpline.todict
+     
+     
+       BSpline.uniform_refine
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         BSpline.bspline
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+         BSpline.nurbs
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   
+   

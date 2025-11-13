@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.export\_iges
+====================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autofunction:: export_iges

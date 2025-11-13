@@ -1,0 +1,6 @@
+splinepy.settings.TOLERANCE
+===========================
+
+.. currentmodule:: splinepy.settings
+
+.. autodata:: TOLERANCE

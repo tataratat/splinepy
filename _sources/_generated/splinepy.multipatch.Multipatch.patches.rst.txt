@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.patches
+======================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. autoproperty:: Multipatch.patches

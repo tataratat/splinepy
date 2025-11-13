@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineDataAdaptor.parametric\_bounds
+========================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. autoattribute:: SplineDataAdaptor.parametric_bounds

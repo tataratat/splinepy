@@ -1,0 +1,545 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="grid__points_8hpp" kind="file" language="C++">
+    <compoundname>grid_points.hpp</compoundname>
+    <includes local="no">cmath</includes>
+    <includes local="no">numeric</includes>
+    <includes local="no">utility</includes>
+    <includes refid="default__initialization__allocator_8hpp" local="no">splinepy/utils/default_initialization_allocator.hpp</includes>
+    <includes refid="print_8hpp" local="no">splinepy/utils/print.hpp</includes>
+    <includedby refid="extract_8hpp" local="yes">extract.hpp</includedby>
+    <includedby refid="proximity_8hpp" local="yes">proximity.hpp</includedby>
+    <includedby refid="py__multipatch_8cpp" local="yes">py_multipatch.cpp</includedby>
+    <includedby refid="py__spline_8cpp" local="yes">py_spline.cpp</includedby>
+    <incdepgraph>
+      <node id="5">
+        <label>splinepy/utils/default_initialization_allocator.hpp</label>
+        <link refid="default__initialization__allocator_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>grid_points.hpp</label>
+        <link refid="grid__points_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>splinepy/utils/print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cmath</label>
+      </node>
+      <node id="9">
+        <label>iostream</label>
+      </node>
+      <node id="6">
+        <label>memory</label>
+      </node>
+      <node id="3">
+        <label>numeric</label>
+      </node>
+      <node id="10">
+        <label>sstream</label>
+      </node>
+      <node id="11">
+        <label>stdexcept</label>
+      </node>
+      <node id="7">
+        <label>type_traits</label>
+      </node>
+      <node id="4">
+        <label>utility</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="44">
+        <label>proximity.hpp</label>
+        <link refid="proximity_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>bezier.hpp</label>
+        <link refid="splines_2bezier_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>bezier.inl</label>
+        <link refid="bezier_8inl"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>create_bezier.hpp</label>
+        <link refid="create__bezier_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>create_rational_bezier.hpp</label>
+        <link refid="create__rational__bezier_8hpp"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>extract.hpp</label>
+        <link refid="extract_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="41">
+        <label>nurbs.hpp</label>
+        <link refid="splines_2nurbs_8hpp"/>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>rational_bezier.hpp</label>
+        <link refid="splines_2rational__bezier_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>rational_bezier.inl</label>
+        <link refid="rational__bezier_8inl"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>grid_points.hpp</label>
+        <link refid="grid__points_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bezier_explicit1.cpp</label>
+        <link refid="bezier__explicit1_8cpp"/>
+      </node>
+      <node id="6">
+        <label>bezier_explicit10.cpp</label>
+        <link refid="bezier__explicit10_8cpp"/>
+      </node>
+      <node id="7">
+        <label>bezier_explicit2.cpp</label>
+        <link refid="bezier__explicit2_8cpp"/>
+      </node>
+      <node id="8">
+        <label>bezier_explicit3.cpp</label>
+        <link refid="bezier__explicit3_8cpp"/>
+      </node>
+      <node id="9">
+        <label>bezier_explicit4.cpp</label>
+        <link refid="bezier__explicit4_8cpp"/>
+      </node>
+      <node id="10">
+        <label>bezier_explicit5.cpp</label>
+        <link refid="bezier__explicit5_8cpp"/>
+      </node>
+      <node id="11">
+        <label>bezier_explicit6.cpp</label>
+        <link refid="bezier__explicit6_8cpp"/>
+      </node>
+      <node id="12">
+        <label>bezier_explicit7.cpp</label>
+        <link refid="bezier__explicit7_8cpp"/>
+      </node>
+      <node id="13">
+        <label>bezier_explicit8.cpp</label>
+        <link refid="bezier__explicit8_8cpp"/>
+      </node>
+      <node id="14">
+        <label>bezier_explicit9.cpp</label>
+        <link refid="bezier__explicit9_8cpp"/>
+      </node>
+      <node id="38">
+        <label>bspline_explicit.cpp</label>
+        <link refid="bspline__explicit_8cpp"/>
+      </node>
+      <node id="42">
+        <label>nurbs_explicit.cpp</label>
+        <link refid="nurbs__explicit_8cpp"/>
+      </node>
+      <node id="27">
+        <label>rational_bezier_explicit1.cpp</label>
+        <link refid="rational__bezier__explicit1_8cpp"/>
+      </node>
+      <node id="28">
+        <label>rational_bezier_explicit10.cpp</label>
+        <link refid="rational__bezier__explicit10_8cpp"/>
+      </node>
+      <node id="29">
+        <label>rational_bezier_explicit2.cpp</label>
+        <link refid="rational__bezier__explicit2_8cpp"/>
+      </node>
+      <node id="30">
+        <label>rational_bezier_explicit3.cpp</label>
+        <link refid="rational__bezier__explicit3_8cpp"/>
+      </node>
+      <node id="31">
+        <label>rational_bezier_explicit4.cpp</label>
+        <link refid="rational__bezier__explicit4_8cpp"/>
+      </node>
+      <node id="32">
+        <label>rational_bezier_explicit5.cpp</label>
+        <link refid="rational__bezier__explicit5_8cpp"/>
+      </node>
+      <node id="33">
+        <label>rational_bezier_explicit6.cpp</label>
+        <link refid="rational__bezier__explicit6_8cpp"/>
+      </node>
+      <node id="34">
+        <label>rational_bezier_explicit7.cpp</label>
+        <link refid="rational__bezier__explicit7_8cpp"/>
+      </node>
+      <node id="35">
+        <label>rational_bezier_explicit8.cpp</label>
+        <link refid="rational__bezier__explicit8_8cpp"/>
+      </node>
+      <node id="36">
+        <label>rational_bezier_explicit9.cpp</label>
+        <link refid="rational__bezier__explicit9_8cpp"/>
+      </node>
+      <node id="45">
+        <label>proximity.cpp</label>
+        <link refid="proximity_8cpp"/>
+      </node>
+      <node id="43">
+        <label>py_knot_insertion_matrix.cpp</label>
+        <link refid="py__knot__insertion__matrix_8cpp"/>
+      </node>
+      <node id="46">
+        <label>py_multipatch.cpp</label>
+        <link refid="py__multipatch_8cpp"/>
+      </node>
+      <node id="20">
+        <label>py_spline.cpp</label>
+        <link refid="py__spline_8cpp"/>
+      </node>
+      <node id="39">
+        <label>py_spline_reader.cpp</label>
+        <link refid="py__spline__reader_8cpp"/>
+      </node>
+      <node id="16">
+        <label>bezier1.cpp</label>
+        <link refid="bezier1_8cpp"/>
+      </node>
+      <node id="17">
+        <label>bezier2.cpp</label>
+        <link refid="bezier2_8cpp"/>
+      </node>
+      <node id="18">
+        <label>bezier3.cpp</label>
+        <link refid="bezier3_8cpp"/>
+      </node>
+      <node id="24">
+        <label>rational_bezier1.cpp</label>
+        <link refid="rational__bezier1_8cpp"/>
+      </node>
+      <node id="25">
+        <label>rational_bezier2.cpp</label>
+        <link refid="rational__bezier2_8cpp"/>
+      </node>
+      <node id="26">
+        <label>rational_bezier3.cpp</label>
+        <link refid="rational__bezier3_8cpp"/>
+      </node>
+      <node id="40">
+        <label>extract.cpp</label>
+        <link refid="extract_8cpp"/>
+      </node>
+      <node id="19">
+        <label>splinepy_base.cpp</label>
+        <link refid="splinepy__base_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classsplinepy_1_1utils_1_1GridPoints" prot="public">splinepy::utils::GridPoints</innerclass>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1utils">splinepy::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;numeric&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;utility&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="default__initialization__allocator_8hpp" kindref="compound">splinepy/utils/default_initialization_allocator.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="print_8hpp" kindref="compound">splinepy/utils/print.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1utils" kindref="compound">splinepy::utils</ref><sp/>{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="classsplinepy_1_1utils_1_1GridPoints" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classsplinepy_1_1utils_1_1GridPoints" kindref="compound">GridPoints</ref><sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="40" refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using<sp/></highlight><highlight class="normal"><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_</ref><sp/>=<sp/><ref refid="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" kindref="member">splinepy::utils::DefaultInitializationVector&lt;T&gt;</ref>;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="classsplinepy_1_1utils_1_1GridPoints_1a414219f98e2bc7fd0cbed64ab70ab02e" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;double&gt;</ref><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a414219f98e2bc7fd0cbed64ab70ab02e" kindref="member">bounds_</ref>;</highlight></codeline>
+<codeline lineno="45" refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;int&gt;</ref><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kindref="member">resolutions_</ref>;</highlight></codeline>
+<codeline lineno="47" refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;Vector_&lt;double&gt;</ref>&gt;<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kindref="member">entries_</ref>;</highlight></codeline>
+<codeline lineno="49" refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;double&gt;</ref><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" kindref="member">step_size_</ref>;</highlight></codeline>
+<codeline lineno="51" refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kindref="member">len_</ref>;</highlight></codeline>
+<codeline lineno="53" refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref>;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="classsplinepy_1_1utils_1_1GridPoints_1ad227d250713ca3d1e28e69446d8883f8" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1ad227d250713ca3d1e28e69446d8883f8" kindref="member">GridPoints</ref>()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="56" refid="classsplinepy_1_1utils_1_1GridPoints_1a85aaee125991db5ad7a0b988538b3eb2" refkind="member"><highlight class="normal"><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a85aaee125991db5ad7a0b988538b3eb2" kindref="member">GridPoints</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>bounds,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>resolutions)<sp/>{</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" kindref="member">SetUp</ref>(dim,<sp/>bounds,<sp/>resolutions);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a1931f14fef50e8d8b7d06c2bfc2b5921" kindref="member">SetUp</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>bounds,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>resolutions)<sp/>{</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref><sp/>=<sp/>dim;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kindref="member">len_</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>linspace<sp/>and<sp/>prepare<sp/>possible<sp/>entries<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kindref="member">entries_</ref>.resize(dim);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kindref="member">resolutions_</ref>.resize(dim);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" kindref="member">step_size_</ref>.resize(dim);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>dim;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>res<sp/>=<sp/>resolutions[i];</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(res<sp/>&lt;<sp/>2)<sp/>{</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacesplinepy_1_1utils_1a3e3aaa6844b55c96f7b5b81be2f1b339" kindref="member">splinepy::utils::PrintAndThrowError</ref>(</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;Resolutions<sp/>for<sp/>GridPoints<sp/>can&apos;t<sp/>be<sp/>less<sp/>than<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;2.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kindref="member">len_</ref><sp/>*=<sp/>res;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kindref="member">resolutions_</ref>[i]<sp/>=<sp/>res;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;double&gt;</ref>&amp;<sp/>entryvec<sp/>=<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kindref="member">entries_</ref>[i];</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>entryvec.resize(res);</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>step_size<sp/>=<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a7d5796b8247d83429451149106488bd5" kindref="member">step_size_</ref>[i];</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>current<sp/>lower<sp/>and<sp/>upper<sp/>bounds</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>lower<sp/>=<sp/>bounds[i];</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&amp;<sp/>upper<sp/>=<sp/>bounds[i<sp/>+<sp/>dim];</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>get<sp/>step<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>step_size<sp/>=<sp/>(upper<sp/>-<sp/>lower)<sp/>/<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(res<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>linspace</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>res;<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>entryvec[j]<sp/>=<sp/>lower<sp/>+<sp/>(step_size<sp/>*<sp/>j);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100" refid="classsplinepy_1_1utils_1_1GridPoints_1a813f37203931095ef0fb60f38df1961f" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a813f37203931095ef0fb60f38df1961f" kindref="member">IdToGridPoint</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>grid_point)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>tmp{</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">};</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{0};<sp/>i<sp/>&lt;<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref>;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>grid_point[i]<sp/>=<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kindref="member">entries_</ref>[i][tmp<sp/>%<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kindref="member">resolutions_</ref>[i]];</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>tmp<sp/>/=<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1afeed8aa0fe39b60b71691ee26f44ccdd" kindref="member">resolutions_</ref>[i];</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110" refid="classsplinepy_1_1utils_1_1GridPoints_1a0c5cc66a8b72aa62858806e262ddf44e" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a0c5cc66a8b72aa62858806e262ddf44e" kindref="member">Fill</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">*<sp/>grid_point_to_fill)</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{},<sp/>tile{<ref refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kindref="member">len_</ref>},<sp/>repeat{1};</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>entry<sp/>:<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a6985da8a74b174b441578628bbe3e8eb" kindref="member">entries_</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>entry_size<sp/>=<sp/>entry.size();</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>tile<sp/>/=<sp/>entry_size;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>output_id{i};</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j{};<sp/>j<sp/>&lt;<sp/>tile;<sp/>++j)<sp/>{</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>e<sp/>:<sp/>entry)<sp/>{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k{};<sp/>k<sp/>&lt;<sp/>repeat;<sp/>++k)<sp/>{</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>grid_point_to_fill[output_id]<sp/>=<sp/>e;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>output_id<sp/>+=<sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a844805bf936642eb8849d76b506abf8d" kindref="member">dim_</ref>;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++i;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>repeat<sp/>*=<sp/>entry_size;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134" refid="classsplinepy_1_1utils_1_1GridPoints_1a38a7d35e4d312659d74078a3262428e0" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;int&gt;</ref><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a38a7d35e4d312659d74078a3262428e0" kindref="member">IdsOnHyperPlane</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>grid_resolutions,</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>dim,</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>plane_normal_axis,</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>plane_id)<sp/>{</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Determine<sp/>size<sp/>of<sp/>return<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n_points_on_plane{1};</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i_pd{};<sp/>i_pd<sp/>&lt;<sp/>dim;<sp/>i_pd++)<sp/>{</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(i_pd<sp/>==<sp/>plane_normal_axis)</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">continue</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>n_points_on_plane<sp/>*=<sp/>grid_resolutions[i_pd];</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>local_to_global_bd_id<sp/>=<sp/>[&amp;](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>local_id)<sp/>{</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>combined_offsets{1},<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">{local_id},<sp/>global_id{};</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i_pdc{};<sp/>i_pdc<sp/>&lt;<sp/>dim;<sp/>++i_pdc)<sp/>{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>res<sp/>=<sp/>grid_resolutions[i_pdc];</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(i_pdc<sp/>==<sp/>plane_normal_axis)<sp/>{</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>global_id<sp/>+=<sp/>combined_offsets<sp/>*<sp/>plane_id;</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Determine<sp/>index<sp/>in<sp/>coordinate<sp/>indexing<sp/>system</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>rasterized_index<sp/>=<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal"><sp/>%<sp/>res;</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Use<sp/>the<sp/>current<sp/>id<sp/>to<sp/>update<sp/>the<sp/>global<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>global_id<sp/>+=<sp/>rasterized_index<sp/>*<sp/>combined_offsets;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update<sp/>the<sp/>copy<sp/>of<sp/>the<sp/>index<sp/>to<sp/>search<sp/>for<sp/>next<sp/>slice</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal"><sp/>-=<sp/>rasterized_index;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal"><sp/>/=<sp/>res;</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>combined_offsets<sp/>*=<sp/>res;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>global_id;</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Fill<sp/>return<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1abff8ca21f34f68796ce6b1ac52e4608e" kindref="member">Vector_&lt;int&gt;</ref><sp/>return_list(n_points_on_plane);</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i{};<sp/>i<sp/>&lt;<sp/>n_points_on_plane;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>return_list[i]<sp/>=<sp/>local_to_global_bd_id(i);</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>return_list;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175" refid="classsplinepy_1_1utils_1_1GridPoints_1a24926108b770033792d015cb86aeffb3" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a24926108b770033792d015cb86aeffb3" kindref="member">Size</ref>()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classsplinepy_1_1utils_1_1GridPoints_1a78e1c71bafa0934192e646f9d9265c66" kindref="member">len_</ref>;<sp/>}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>splinepy::utils<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/grid_points.hpp"/>
+  </compounddef>
+</doxygen>

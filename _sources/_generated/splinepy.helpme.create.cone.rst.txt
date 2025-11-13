@@ -1,0 +1,6 @@
+splinepy.helpme.create.cone
+===========================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: cone

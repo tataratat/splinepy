@@ -1,0 +1,872 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>splinepy.bezier &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/splinepy/bezier';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="../../_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../splinepy.html" class="nav-link">splinepy</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">splinepy.bezier</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for splinepy.bezier</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span> <span class="k">as</span> <span class="n">_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">spline</span> <span class="k">as</span> <span class="n">_spline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">splinepy_core</span> <span class="k">as</span> <span class="n">_splinepy_core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">splinepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">_utils</span>
+
+
+<div class="viewcode-block" id="BezierBase">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.html#splinepy.bezier.BezierBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BezierBase</span><span class="p">(</span><span class="n">_spline</span><span class="o">.</span><span class="n">Spline</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Bezier Base. Contains extra operations that are only</span>
+<span class="sd">    available for bezier families.</span>
+
+<span class="sd">    Passes all arguments to :code:`super.__init__()`, see :class:`.Spline`.</span>
+
+<span class="sd">    Beziers are a special type of spline where the basis functions have</span>
+<span class="sd">    a global support. The basis functions are given by the so-called</span>
+<span class="sd">    *Berstein polynomials*</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            B^{i;p}(u) = \binom{p}{i} u^i (1-u)^{p-i}</span>
+
+<span class="sd">    The parametric domain of a Bezier spline is always a multi-dimensional</span>
+<span class="sd">    hypercube, that is :math:`\Omega_{param}=[0,1]^{N_{param}}`.</span>
+<span class="sd">    We refer to the documentation of the classes :class:`.Bezier` and</span>
+<span class="sd">    :class:`.RationalBezier` for explanations how to construct splines using</span>
+<span class="sd">    Berstein polynomials as basis.</span>
+
+<span class="sd">    Moreover, we like to make the point that Bezier splines can also be seen</span>
+<span class="sd">    as a special type of B-Splines with open knot vectors (i.e., the first and</span>
+<span class="sd">    last entry are repeated :math:`p+1`-times) that do not feature additional</span>
+<span class="sd">    internal knots.</span>
+
+<span class="sd">    For usage examples, we once again refer to the derived classes</span>
+<span class="sd">    :class:`.Bezier` and :class:`.RationalBezier`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloads multiplication between splines with different types of</span>
+<span class="sd">        degrees</span>
+
+<span class="sd">        The resulting spline fulfills the equation</span>
+<span class="sd">          factora(t) * factorb(t) = result(t)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        factor :  float or BezierBase</span>
+<span class="sd">          Spline with compatible dimensionality</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        multiplied : Bezier or RationalBezier</span>
+<span class="sd">          New spline with updated types</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># scalar</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+                <span class="n">control_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_points</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span>
+                <span class="n">degrees</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Supports only Bezier families</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">BezierBase</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Multiplication with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span><span class="si">}</span><span class="s2">-type is not supported.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># multiply - dimension compatibility is checked in cpp side</span>
+        <span class="n">multiplied</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+
+        <span class="c1"># return corresponding type</span>
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">multiplied</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">spline</span><span class="o">=</span><span class="n">multiplied</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summand</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the spline that forms the sum of the summand and the</span>
+<span class="sd">        current spline (function argument)</span>
+
+<span class="sd">        The resulting spline fulfils the equation</span>
+<span class="sd">          self(t) + summand(t) = result(t)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        summand: type(self)</span>
+<span class="sd">          spline with same parametric and physical dimension</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        added: type(self)</span>
+<span class="sd">          New spline that describes sum</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># same type check, same para dim check, same dim check done in cpp</span>
+        <span class="n">added</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summand</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">spline</span><span class="o">=</span><span class="n">added</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BezierBase.derivative_spline">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.derivative_spline.html#splinepy.bezier.BezierBase.derivative_spline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">derivative_spline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the spline that describes the requested derivative in a</span>
+<span class="sd">        close-form representation of the the same spline-type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orders: (para_dim,) array-like</span>
+<span class="sd">          requested orders</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        derivative_spline : BezierBase</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Ensure array-type</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="n">_utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">enforce_contiguous</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+        <span class="c1"># dimension compatibility checked in cpp</span>
+        <span class="n">derivative_spline</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">derivative_spline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orders</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">derivative_spline</span><span class="o">.</span><span class="n">name</span><span class="p">](</span>
+            <span class="n">spline</span><span class="o">=</span><span class="n">derivative_spline</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BezierBase.compose">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner_function</span><span class="p">,</span> <span class="n">compute_sensitivities</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the spline that forms the composition of the inner function</span>
+<span class="sd">        spline (function argument), using the caller spline as the outer (or</span>
+<span class="sd">        deformation function).</span>
+
+<span class="sd">        Given an outer function :math:`\mathcal{T}` and an inner function</span>
+<span class="sd">        (spline) :math:`\mathcal{K}`, this function returns a new spline</span>
+<span class="sd">        function :math:`\mathcal{M}` that represents the composition:</span>
+
+<span class="sd">        .. math:: \mathcal{M}(\mathbf{u}) =</span>
+<span class="sd">                  \mathcal{T}\big(\mathcal{K}(\mathbf{u})\big)</span>
+<span class="sd">                  \quad \forall \mathbf{u}</span>
+
+<span class="sd">        If the flag `compute_sensitivities` is set, compose also returns the</span>
+<span class="sd">        derivative of the composed spline with respect to the outer function&#39;s</span>
+<span class="sd">        control point positions. This corresponds to the basis function</span>
+<span class="sd">        representation (which is given by a scalar valued spline).</span>
+<span class="sd">        This functionality differs from :func:`.composition_derivative`, which</span>
+<span class="sd">        computes the derivatives concerning the inner functions geometric</span>
+<span class="sd">        parametrization.</span>
+
+<span class="sd">        Given an outer function :math:`\mathcal{T}` with control points</span>
+<span class="sd">        :math:`C_i` and an inner function :math:`\mathcal{K}`. This function</span>
+<span class="sd">        computes:</span>
+
+<span class="sd">        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial C_i}</span>
+<span class="sd">                  (\mathbf{u}) =</span>
+<span class="sd">                  B_i\big(\mathcal{K}\big)(\mathbf{u}) \quad \forall \mathbf{u}</span>
+
+<span class="sd">        where :math:`B_i` represents the basis function associated to control</span>
+<span class="sd">        point :math:`C_i`.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inner_function : BezierBase</span>
+<span class="sd">          Bezier-Type Spline that represents inner function</span>
+<span class="sd">        compute_sensitivities : bool</span>
+<span class="sd">          Flag for return values. If set to true returns also sensitivities,</span>
+<span class="sd">          default False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        composed : BezierBase</span>
+<span class="sd">          Composed function</span>
+<span class="sd">        sensitivities : list (optional)</span>
+<span class="sd">          List all splines that represents the derivatives with respect to</span>
+<span class="sd">          internal control points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># dimension compatibility checked in cpp</span>
+        <span class="n">composed</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner_function</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compute_sensitivities</span><span class="p">:</span>
+            <span class="n">composed_sensivities</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">compose_sensitivities</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">inner_function</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">composed</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">spline</span><span class="o">=</span><span class="n">composed</span><span class="p">),</span>
+                <span class="p">[</span>
+                    <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">spline</span><span class="o">=</span><span class="n">cc</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">composed_sensivities</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">composed</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">spline</span><span class="o">=</span><span class="n">composed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BezierBase.composition_derivative">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.composition_derivative.html#splinepy.bezier.BezierBase.composition_derivative">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">composition_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">inner_derivative</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Derivative of composition when given the differentiated inner function</span>
+<span class="sd">        with constant outer function. This function differs from</span>
+<span class="sd">        :func:`.compose_sensitivities`, which computes the derivatives</span>
+<span class="sd">        concerning the outer function&#39;s control point positions.</span>
+
+<span class="sd">        Given an outer function :math:`\mathcal{T}` and an inner function</span>
+<span class="sd">        :math:`\mathcal{K}` with its derivative with respect to some design</span>
+<span class="sd">        variable :math:`\alpha`, i.e.,</span>
+<span class="sd">        :math:`\frac{\partial \mathcal{K}}{\partial \alpha}`, this function</span>
+<span class="sd">        returns the derivative of the composed geometry in the form</span>
+<span class="sd">        :math:`\frac{\partial \mathcal{T}(\mathcal{K})}{\partial\alpha}` by</span>
+<span class="sd">        computing.</span>
+
+<span class="sd">        .. math:: \frac{\partial\mathcal{T}(\mathcal{K})}{\partial\alpha} =</span>
+<span class="sd">                  \frac{\partial \mathcal{T}}{\partial u}(\mathcal{K})\cdot</span>
+<span class="sd">                  \frac{\partial \mathcal{K}}{\partial \alpha}</span>
+
+<span class="sd">        Here :math:`u` refers to the parametric coordinates of the deformation</span>
+<span class="sd">        function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inner: BezierBase</span>
+<span class="sd">        inner_derivative: BezierBase</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        composition_der: BezierBase</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># compatibility check is done in cpp</span>
+        <span class="n">composition_der</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">composition_derivative</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">inner_derivative</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="n">composition_der</span><span class="o">.</span><span class="n">name</span><span class="p">](</span>
+            <span class="n">spline</span><span class="o">=</span><span class="n">composition_der</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BezierBase.split">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.split.html#splinepy.bezier.BezierBase.split">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para_dim</span><span class="p">,</span> <span class="n">locations</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits spline at given locations along the given para_dim.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        para_dim: int</span>
+<span class="sd">        locations: array-like</span>
+<span class="sd">          Should be in range of (0, 1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        split: list</span>
+<span class="sd">          list of split splines. Self stays intact.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">locations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">min</span><span class="p">(</span><span class="n">locations</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid split location. Should be in (0, 1).&quot;</span><span class="p">)</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">_splinepy_core</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para_dim</span><span class="p">,</span> <span class="n">locations</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">spline</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="BezierBase.extract_dim">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.BezierBase.extract_dim.html#splinepy.bezier.BezierBase.extract_dim">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts a single physical dimension of a spline.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim: int</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        extracted: type(self)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t extract (</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">) dim from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">whatami</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">spline</span><span class="o">=</span><span class="n">_splinepy_core</span><span class="o">.</span><span class="n">extract_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Bezier">
+<a class="viewcode-back" href="../../_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bezier</span><span class="p">(</span><span class="n">BezierBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bezier (Spline).</span>
+
+<span class="sd">    Passes all arguments to :code:`super.__init__()`, see :class:`.BezierBase`.</span>
+
+<span class="sd">    We can distinguish between different types of splines depending on the</span>
+<span class="sd">    dimension of the parametric space.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        For simplicity, we restrict ourselves to the three most common types</span>
+<span class="sd">        of splines in the following, namely curves, surfaces and volumes,</span>
+<span class="sd">        although :code:`splinepy` also supports higher dimensions, see</span>
+<span class="sd">        the documentation of :class:`.Spline` for more information.</span>
+
+<span class="sd">    1. A spline of degree :math:`p` with :math:`(p+1)` control points</span>
+<span class="sd">    :math:`P^i\in\mathbb{R}^{N_{phys}}` and a one-dimensional parameter space</span>
+<span class="sd">    (i.e., :math:`N_{param}=1`) corresponds to a line embedded into the</span>
+<span class="sd">    physical space:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            C(u) = \sum_{i=0}^{l} B^{i;p}(u) P^i</span>
+
+<span class="sd">    2. A spline of degrees :math:`p,q` with :math:`(p+1)\cdot(q+1)` control</span>
+<span class="sd">    points :math:`P^{i,j}\in\mathbb{R}^{N_{phys}}` and a two-dimensional</span>
+<span class="sd">    parameter space (i.e., :math:`N_{param}=2`) corresponds to a surface,</span>
+<span class="sd">    embedded into the physical space:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            S(u,v) = \sum_{i=0}^{l} \sum_{j=0}^{m} B^{i;p}(u) B^{j;q}(v)</span>
+<span class="sd">                P^{i,j}</span>
+
+<span class="sd">    Due to the tensor-product nature of the Bezier basis functions, this is</span>
+<span class="sd">    often rewritten as in terms of multi-variate basis functions</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            \tilde{B}^{i,j;p,q}(u,v) := B^{i;p}(u) B^{j;q}(v)</span>
+
+<span class="sd">    3. A spline of degrees :math:`p,q,r` with :math:`(p+1)\cdot(q+1)\cdot(r+1)`</span>
+<span class="sd">    control points :math:`P^{i,j,k}\in\mathbb{R}^{N_{phys}}` and a</span>
+<span class="sd">    three-dimensional parameter space (i.e., :math:`N_{param}=3`) corresponds</span>
+<span class="sd">    to a volume, embedded into the physical space:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            V^B(u,v,w) = \sum_{i=0}^{l} \sum_{j=0}^{m} \sum_{k=0}^{n}</span>
+<span class="sd">                B^{i;p}(u) B^{j;q}(v) B^{k;r}(w) P^{i,j,k}</span>
+
+<span class="sd">    Here, we can introduce the multi-variate basis functions</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">            \tilde{B}^{i,j,k;p,q,r}(u,v,w) := B^{i;p}(u) B^{j;q}(v)</span>
+<span class="sd">                B^{k;r}(w)</span>
+
+<span class="sd">    Higher-dimensional instances are constructed accordingly.</span>
+
+<span class="sd">    **Usage**:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        # Polynomial Bezier surface</span>
+<span class="sd">        polynomial_bezier = splinepy.Bezier(</span>
+<span class="sd">            degrees=[2, 1],</span>
+<span class="sd">            control_points=[</span>
+<span class="sd">                [0.0, 0.0],</span>
+<span class="sd">                [1.0, 0.0],</span>
+<span class="sd">                [2.0, 1.0],</span>
+<span class="sd">                [0.0, 2.0],</span>
+<span class="sd">                [1.0, 1.0],</span>
+<span class="sd">                [2.0, 2.0],</span>
+<span class="sd">            ],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    degrees: (para_dim,) list-like</span>
+<span class="sd">    control_points: (m, dim) list-like</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spline</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">spline</span><span class="o">=</span><span class="n">spline</span><span class="p">,</span>
+            <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">,</span>
+            <span class="n">control_points</span><span class="o">=</span><span class="n">control_points</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bezier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">saved_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rationalbezier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;RationalBezier&quot;</span><span class="p">](</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">todict</span><span class="p">(),</span> <span class="n">weights</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">cps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bspline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;BSpline&quot;</span><span class="p">](</span>
+            <span class="n">spline</span><span class="o">=</span><span class="n">_splinepy_core</span><span class="o">.</span><span class="n">same_spline_with_knot_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nurbs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_settings</span><span class="o">.</span><span class="n">NAME_TO_TYPE</span><span class="p">[</span><span class="s2">&quot;NURBS&quot;</span><span class="p">](</span>
+            <span class="n">spline</span><span class="o">=</span><span class="n">_splinepy_core</span><span class="o">.</span><span class="n">same_spline_with_knot_vectors</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rationalbezier</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

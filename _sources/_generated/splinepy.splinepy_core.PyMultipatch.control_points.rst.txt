@@ -1,0 +1,6 @@
+splinepy.splinepy\_core.PyMultipatch.control\_points
+====================================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoproperty:: PyMultipatch.control_points

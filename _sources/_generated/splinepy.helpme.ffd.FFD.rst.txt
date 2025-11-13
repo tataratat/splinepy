@@ -1,0 +1,44 @@
+splinepy.helpme.ffd.FFD
+=======================
+
+.. currentmodule:: splinepy.helpme.ffd
+
+.. autoclass:: FFD
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       FFD.show
+     
+     
+       FFD.showable
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+         FFD.mesh
+      
+      
+         FFD.padding
+      
+      
+         FFD.spline
+      
+   
+   

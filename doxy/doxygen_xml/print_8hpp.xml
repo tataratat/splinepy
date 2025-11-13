@@ -1,0 +1,600 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="print_8hpp" kind="file" language="C++">
+    <compoundname>print.hpp</compoundname>
+    <includes local="no">iostream</includes>
+    <includes local="no">sstream</includes>
+    <includes local="no">stdexcept</includes>
+    <includedby refid="arrays_8hpp" local="yes">arrays.hpp</includedby>
+    <includedby refid="bezier_8inl" local="yes">bezier.inl</includedby>
+    <includedby refid="coordinate__pointers_8hpp" local="yes">coordinate_pointers.hpp</includedby>
+    <includedby refid="extract_8hpp" local="yes">extract.hpp</includedby>
+    <includedby refid="grid__points_8hpp" local="no">grid_points.hpp</includedby>
+    <includedby refid="proximity_8cpp" local="yes">proximity.cpp</includedby>
+    <includedby refid="py__coordinate__pointers_8cpp" local="yes">py_coordinate_pointers.cpp</includedby>
+    <includedby refid="py__knot__insertion__matrix_8cpp" local="yes">py_knot_insertion_matrix.cpp</includedby>
+    <includedby refid="py__knot__vector_8cpp" local="yes">py_knot_vector.cpp</includedby>
+    <includedby refid="py__multipatch_8cpp" local="yes">py_multipatch.cpp</includedby>
+    <includedby refid="py__parameter__space_8cpp" local="yes">py_parameter_space.cpp</includedby>
+    <includedby refid="py__spline_8hpp" local="yes">py_spline.hpp</includedby>
+    <includedby refid="py__spline__exporter_8cpp" local="yes">py_spline_exporter.cpp</includedby>
+    <includedby refid="py__spline__reader_8cpp" local="yes">py_spline_reader.cpp</includedby>
+    <includedby refid="splinepy__base_8cpp" local="no">splinepy_base.cpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>iostream</label>
+      </node>
+      <node id="3">
+        <label>sstream</label>
+      </node>
+      <node id="4">
+        <label>stdexcept</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="45">
+        <label>proximity.hpp</label>
+        <link refid="proximity_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="59">
+        <label>py_knot_insertion_matrix.hpp</label>
+        <link refid="py__knot__insertion__matrix_8hpp"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+      </node>
+      <node id="60">
+        <label>py_multipatch.hpp</label>
+        <link refid="py__multipatch_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="58">
+        <label>py_spline.hpp</label>
+        <link refid="py__spline_8hpp"/>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+      </node>
+      <node id="61">
+        <label>py_spline_exporter.hpp</label>
+        <link refid="py__spline__exporter_8hpp"/>
+        <childnode refid="57" relation="include">
+        </childnode>
+      </node>
+      <node id="56">
+        <label>py_spline_extensions.hpp</label>
+        <link refid="py__spline__extensions_8hpp"/>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>bezier.hpp</label>
+        <link refid="splines_2bezier_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>bezier.inl</label>
+        <link refid="bezier_8inl"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>bspline.hpp</label>
+        <link refid="splines_2bspline_8hpp"/>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>create_bezier.hpp</label>
+        <link refid="create__bezier_8hpp"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>create_rational_bezier.hpp</label>
+        <link refid="create__rational__bezier_8hpp"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>extract.hpp</label>
+        <link refid="extract_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="49">
+        <label>scalar_type_wrapper.hpp</label>
+        <link refid="scalar__type__wrapper_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="55">
+        <label>null_spline.hpp</label>
+        <link refid="null__spline_8hpp"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+      </node>
+      <node id="42">
+        <label>nurbs.hpp</label>
+        <link refid="splines_2nurbs_8hpp"/>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>rational_bezier.hpp</label>
+        <link refid="splines_2rational__bezier_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>rational_bezier.inl</label>
+        <link refid="rational__bezier_8inl"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="54">
+        <label>splinepy_base.hpp</label>
+        <link refid="splinepy__base_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>arrays.hpp</label>
+        <link refid="arrays_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>coordinate_pointers.hpp</label>
+        <link refid="coordinate__pointers_8hpp"/>
+        <childnode refid="52" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>grid_points.hpp</label>
+        <link refid="grid__points_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>print.hpp</label>
+        <link refid="print_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>bezier_explicit1.cpp</label>
+        <link refid="bezier__explicit1_8cpp"/>
+      </node>
+      <node id="7">
+        <label>bezier_explicit10.cpp</label>
+        <link refid="bezier__explicit10_8cpp"/>
+      </node>
+      <node id="8">
+        <label>bezier_explicit2.cpp</label>
+        <link refid="bezier__explicit2_8cpp"/>
+      </node>
+      <node id="9">
+        <label>bezier_explicit3.cpp</label>
+        <link refid="bezier__explicit3_8cpp"/>
+      </node>
+      <node id="10">
+        <label>bezier_explicit4.cpp</label>
+        <link refid="bezier__explicit4_8cpp"/>
+      </node>
+      <node id="11">
+        <label>bezier_explicit5.cpp</label>
+        <link refid="bezier__explicit5_8cpp"/>
+      </node>
+      <node id="12">
+        <label>bezier_explicit6.cpp</label>
+        <link refid="bezier__explicit6_8cpp"/>
+      </node>
+      <node id="13">
+        <label>bezier_explicit7.cpp</label>
+        <link refid="bezier__explicit7_8cpp"/>
+      </node>
+      <node id="14">
+        <label>bezier_explicit8.cpp</label>
+        <link refid="bezier__explicit8_8cpp"/>
+      </node>
+      <node id="15">
+        <label>bezier_explicit9.cpp</label>
+        <link refid="bezier__explicit9_8cpp"/>
+      </node>
+      <node id="39">
+        <label>bspline_explicit.cpp</label>
+        <link refid="bspline__explicit_8cpp"/>
+      </node>
+      <node id="43">
+        <label>nurbs_explicit.cpp</label>
+        <link refid="nurbs__explicit_8cpp"/>
+      </node>
+      <node id="28">
+        <label>rational_bezier_explicit1.cpp</label>
+        <link refid="rational__bezier__explicit1_8cpp"/>
+      </node>
+      <node id="29">
+        <label>rational_bezier_explicit10.cpp</label>
+        <link refid="rational__bezier__explicit10_8cpp"/>
+      </node>
+      <node id="30">
+        <label>rational_bezier_explicit2.cpp</label>
+        <link refid="rational__bezier__explicit2_8cpp"/>
+      </node>
+      <node id="31">
+        <label>rational_bezier_explicit3.cpp</label>
+        <link refid="rational__bezier__explicit3_8cpp"/>
+      </node>
+      <node id="32">
+        <label>rational_bezier_explicit4.cpp</label>
+        <link refid="rational__bezier__explicit4_8cpp"/>
+      </node>
+      <node id="33">
+        <label>rational_bezier_explicit5.cpp</label>
+        <link refid="rational__bezier__explicit5_8cpp"/>
+      </node>
+      <node id="34">
+        <label>rational_bezier_explicit6.cpp</label>
+        <link refid="rational__bezier__explicit6_8cpp"/>
+      </node>
+      <node id="35">
+        <label>rational_bezier_explicit7.cpp</label>
+        <link refid="rational__bezier__explicit7_8cpp"/>
+      </node>
+      <node id="36">
+        <label>rational_bezier_explicit8.cpp</label>
+        <link refid="rational__bezier__explicit8_8cpp"/>
+      </node>
+      <node id="37">
+        <label>rational_bezier_explicit9.cpp</label>
+        <link refid="rational__bezier__explicit9_8cpp"/>
+      </node>
+      <node id="46">
+        <label>proximity.cpp</label>
+        <link refid="proximity_8cpp"/>
+      </node>
+      <node id="53">
+        <label>py_coordinate_pointers.cpp</label>
+        <link refid="py__coordinate__pointers_8cpp"/>
+      </node>
+      <node id="44">
+        <label>py_knot_insertion_matrix.cpp</label>
+        <link refid="py__knot__insertion__matrix_8cpp"/>
+      </node>
+      <node id="63">
+        <label>py_knot_vector.cpp</label>
+        <link refid="py__knot__vector_8cpp"/>
+      </node>
+      <node id="50">
+        <label>py_multipatch.cpp</label>
+        <link refid="py__multipatch_8cpp"/>
+      </node>
+      <node id="47">
+        <label>py_parameter_space.cpp</label>
+        <link refid="py__parameter__space_8cpp"/>
+      </node>
+      <node id="21">
+        <label>py_spline.cpp</label>
+        <link refid="py__spline_8cpp"/>
+      </node>
+      <node id="57">
+        <label>py_spline_exporter.cpp</label>
+        <link refid="py__spline__exporter_8cpp"/>
+      </node>
+      <node id="48">
+        <label>py_spline_extensions.cpp</label>
+        <link refid="py__spline__extensions_8cpp"/>
+      </node>
+      <node id="40">
+        <label>py_spline_reader.cpp</label>
+        <link refid="py__spline__reader_8cpp"/>
+      </node>
+      <node id="17">
+        <label>bezier1.cpp</label>
+        <link refid="bezier1_8cpp"/>
+      </node>
+      <node id="18">
+        <label>bezier2.cpp</label>
+        <link refid="bezier2_8cpp"/>
+      </node>
+      <node id="19">
+        <label>bezier3.cpp</label>
+        <link refid="bezier3_8cpp"/>
+      </node>
+      <node id="25">
+        <label>rational_bezier1.cpp</label>
+        <link refid="rational__bezier1_8cpp"/>
+      </node>
+      <node id="26">
+        <label>rational_bezier2.cpp</label>
+        <link refid="rational__bezier2_8cpp"/>
+      </node>
+      <node id="27">
+        <label>rational_bezier3.cpp</label>
+        <link refid="rational__bezier3_8cpp"/>
+      </node>
+      <node id="41">
+        <label>extract.cpp</label>
+        <link refid="extract_8cpp"/>
+      </node>
+      <node id="20">
+        <label>splinepy_base.cpp</label>
+        <link refid="splinepy__base_8cpp"/>
+      </node>
+      <node id="52">
+        <label>coordinate_pointers.cpp</label>
+        <link refid="coordinate__pointers_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacesplinepy">splinepy</innernamespace>
+    <innernamespace refid="namespacesplinepy_1_1utils">splinepy::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">MIT<sp/>License</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"></highlight></codeline>
+<codeline lineno="4"><highlight class="comment">Copyright<sp/>(c)<sp/>2021<sp/>Jaewook<sp/>Lee</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"></highlight></codeline>
+<codeline lineno="6"><highlight class="comment">Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/>obtaining<sp/>a<sp/>copy</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">in<sp/>the<sp/>Software<sp/>without<sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights</highlight></codeline>
+<codeline lineno="9"><highlight class="comment">to<sp/>use,<sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/>sell</highlight></codeline>
+<codeline lineno="10"><highlight class="comment">copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/>Software<sp/>is</highlight></codeline>
+<codeline lineno="11"><highlight class="comment">furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/>conditions:</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment">The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/>included<sp/>in<sp/>all</highlight></codeline>
+<codeline lineno="14"><highlight class="comment">copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/>Software.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"></highlight></codeline>
+<codeline lineno="16"><highlight class="comment">THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND,<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="17"><highlight class="comment">IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY,</highlight></codeline>
+<codeline lineno="18"><highlight class="comment">FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE</highlight></codeline>
+<codeline lineno="19"><highlight class="comment">AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER</highlight></codeline>
+<codeline lineno="20"><highlight class="comment">LIABILITY,<sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/>FROM,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment">OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE</highlight></codeline>
+<codeline lineno="22"><highlight class="comment">SOFTWARE.</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sstream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdexcept&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacesplinepy_1_1utils" kindref="compound">splinepy::utils</ref><sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal">...<sp/>Args&gt;</highlight></codeline>
+<codeline lineno="34" refid="namespacesplinepy_1_1utils_1a6263ec53e00279041b31bf38567d58fa" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1utils_1a6263ec53e00279041b31bf38567d58fa" kindref="member">PrintInfo</ref>(Args&amp;&amp;...<sp/>args)<sp/>{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SPLINEPY<sp/>INFO<sp/>-<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/>((std::cout<sp/>&lt;&lt;<sp/>std::forward&lt;Args&gt;(args)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">),<sp/>...);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal">...<sp/>Args&gt;</highlight></codeline>
+<codeline lineno="42" refid="namespacesplinepy_1_1utils_1a87e05121319f45fc714fce8ddcd37450" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1utils_1a87e05121319f45fc714fce8ddcd37450" kindref="member">PrintDebug</ref>(Args&amp;&amp;...<sp/>args)<sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SPLINEPY<sp/>DEBUG<sp/>-<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/>((std::cout<sp/>&lt;&lt;<sp/>std::forward&lt;Args&gt;(args)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">),<sp/>...);</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal">...<sp/>Args&gt;</highlight></codeline>
+<codeline lineno="51" refid="namespacesplinepy_1_1utils_1a5cecf9742e7280b5aa80c1f817191cb2" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1utils_1a5cecf9742e7280b5aa80c1f817191cb2" kindref="member">PrintWarning</ref>(Args&amp;&amp;...<sp/>args)<sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SPLINEPY<sp/>WARNING<sp/>-<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/>((std::cout<sp/>&lt;&lt;<sp/>std::forward&lt;Args&gt;(args)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">),<sp/>...);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal">...<sp/>Args&gt;</highlight></codeline>
+<codeline lineno="58" refid="namespacesplinepy_1_1utils_1a3e3aaa6844b55c96f7b5b81be2f1b339" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacesplinepy_1_1utils_1a3e3aaa6844b55c96f7b5b81be2f1b339" kindref="member">PrintAndThrowError</ref>(Args&amp;&amp;...<sp/>args)<sp/>{</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/>std::stringstream<sp/>error_message{};</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/>error_message<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SPLINEPY<sp/>ERROR<sp/>-<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/>((error_message<sp/>&lt;&lt;<sp/>std::forward&lt;Args&gt;(args)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">),<sp/>...);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/>error_message<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/>std::runtime_error(error_message.str());</highlight></codeline>
+<codeline lineno="64"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>splinepy::utils<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp"/>
+  </compounddef>
+</doxygen>

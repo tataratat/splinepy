@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.sample
+=====================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.sample

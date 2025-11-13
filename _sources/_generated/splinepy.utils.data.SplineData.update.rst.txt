@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.update
+=====================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.update

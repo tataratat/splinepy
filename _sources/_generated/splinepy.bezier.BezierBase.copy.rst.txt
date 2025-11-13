@@ -1,0 +1,6 @@
+splinepy.bezier.BezierBase.copy
+===============================
+
+.. currentmodule:: splinepy.bezier
+
+.. automethod:: BezierBase.copy

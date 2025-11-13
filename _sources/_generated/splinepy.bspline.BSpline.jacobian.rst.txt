@@ -1,0 +1,6 @@
+splinepy.bspline.BSpline.jacobian
+=================================
+
+.. currentmodule:: splinepy.bspline
+
+.. automethod:: BSpline.jacobian

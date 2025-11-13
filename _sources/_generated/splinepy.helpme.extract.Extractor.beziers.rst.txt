@@ -1,0 +1,6 @@
+splinepy.helpme.extract.Extractor.beziers
+=========================================
+
+.. currentmodule:: splinepy.helpme.extract
+
+.. automethod:: Extractor.beziers

@@ -1,0 +1,6 @@
+splinepy.utils.data.PhysicalSpaceArray.full\_row\_indices
+=========================================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: PhysicalSpaceArray.full_row_indices

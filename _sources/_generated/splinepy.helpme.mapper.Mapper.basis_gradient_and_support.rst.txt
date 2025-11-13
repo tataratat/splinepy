@@ -1,0 +1,6 @@
+splinepy.helpme.mapper.Mapper.basis\_gradient\_and\_support
+===========================================================
+
+.. currentmodule:: splinepy.helpme.mapper
+
+.. automethod:: Mapper.basis_gradient_and_support

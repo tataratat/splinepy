@@ -1,0 +1,6 @@
+splinepy.helpme.visualize.SplineShowOption.copy\_valid\_options
+===============================================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. automethod:: SplineShowOption.copy_valid_options

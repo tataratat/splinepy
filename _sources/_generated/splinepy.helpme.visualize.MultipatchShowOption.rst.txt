@@ -1,0 +1,50 @@
+splinepy.helpme.visualize.MultipatchShowOption
+==============================================
+
+.. currentmodule:: splinepy.helpme.visualize
+
+.. autoclass:: MultipatchShowOption
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       MultipatchShowOption.clear
+     
+     
+       MultipatchShowOption.copy_valid_options
+     
+     
+       MultipatchShowOption.get
+     
+     
+       MultipatchShowOption.items
+     
+     
+       MultipatchShowOption.keys
+     
+     
+       MultipatchShowOption.pop
+     
+     
+       MultipatchShowOption.update
+     
+     
+       MultipatchShowOption.valid_keys
+     
+     
+       MultipatchShowOption.values
+     
+   
+   
+
+   
+   
+   
