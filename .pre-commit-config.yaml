@@ -29,19 +29,19 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/psf/black-pre-commit-mirror
-  rev: "25.9.0"
+  rev: "25.11.0"
   hooks:
   - id: black
     additional_dependencies: [tomli]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.3
+  rev: v0.14.5
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
 
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v21.1.2
+  rev: v21.1.5
   hooks:
   - id: clang-format
     types_or: [c, c++]
@@ -59,7 +59,7 @@ repos:
     additional_dependencies: [tomli]
 
 - repo: https://github.com/keewis/blackdoc
-  rev: v0.4.3
+  rev: v0.4.6
   hooks:
   - id: blackdoc
     additional_dependencies: [tomli]
