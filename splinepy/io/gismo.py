@@ -822,7 +822,7 @@ def load(fname, load_options=True):
         if format_flag.lower() == "ascii":
             return _np.fromstring(xml_node.text.replace("\n", " "), sep=" ")
         # Check for all excepted binary flags
-        format = type_from_keyword.get(format_flag.lower(), None)
+        format = type_from_keyword.get(format_flag.lower())
 
         if format is None:
             raise ValueError(

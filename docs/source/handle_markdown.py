@@ -35,7 +35,7 @@ def get_markdown_links(line: str) -> str:
         str: Markdown links.
     """
     possible = re.findall(r"\[(.*?)\]\((.*?)\)", line)
-    return possible if possible else ""
+    return possible or ""
 
 
 def get_special_links(line: str) -> List[Tuple[str, str]]:
@@ -52,7 +52,7 @@ def get_special_links(line: str) -> List[Tuple[str, str]]:
         x[::-1]
         for x in re.findall(r"<img src=\"(.*?)\".*title=\"(.*?)\">", line)
     ]
-    return possible if possible else ""
+    return possible or ""
 
 
 def get_github_path_from(link):
