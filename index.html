@@ -1,0 +1,945 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Install guide &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <link rel="icon" href="_static/favicon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction to Splines" href="spline_intro.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="toctree-wrapper compound">
+</div>
+<a class="reference external image-reference" href="../source/_static/splinepy_name.png"><img alt="txt_logo" src="_images/splinepy_name.png" />
+</a>
+<p><strong>splinepy - Library for prototyping spline geometries of arbitrary dimensions and degrees, and IGA</strong></p>
+<a class="reference external image-reference" href="https://github.com/tataratat/splinepy/actions"><img alt="workflow" src="https://github.com/tataratat/splinepy/actions/workflows/main.yml/badge.svg" />
+</a>
+<a class="reference external image-reference" href="https://badge.fury.io/py/splinepy"><img alt="PyPI version" src="https://badge.fury.io/py/splinepy.svg" />
+</a>
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/tataratat/try-splinepy/main"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" />
+</a>
+<a class="reference external image-reference" href="../source/_static/gallery.png"><img alt="gallery" src="_images/gallery.png" />
+</a>
+<section id="install-guide">
+<h1>Install guide<a class="headerlink" href="#install-guide" title="Link to this heading">#</a></h1>
+<p>splinepy wheels are available for python3.8+ for MacOS, Linux, and Windows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># including all optional dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;splinepy[all]&quot;</span><span class="w">  </span><span class="c1"># quotation marks required for some shells</span>
+<span class="c1"># or</span>
+pip<span class="w"> </span>install<span class="w"> </span>splinepy
+</pre></div>
+</div>
+<p>You can install it directly from the source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:tataratat/splinepy.git
+<span class="nb">cd</span><span class="w"> </span>splinepy
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h1>
+<p>Here are links to related documentation for the library:</p>
+<ul class="simple">
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy'>Documentation home</a></span></p></li>
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/spline_intro.html#introduction-to-splines'>Introduction to splines</a></span></p></li>
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/spline_intro.html#visualizing-splines'>Spline visualization</a></span></p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h1>
+<section id="create-a-spline">
+<h2>1. Create a spline<a class="headerlink" href="#create-a-spline" title="Link to this heading">#</a></h2>
+<p>Here, we will create a <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS'>NURBS</a> for the following example. Alternatively, we can also create <a href='https://tataratat.github.io/splinepy/_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier'>Bezier</a>, <a href='https://tataratat.github.io/splinepy/_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier'>RationalBezier</a>, and <a href='https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline'>BSpline</a></span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">splinepy</span>
+
+<span class="c1"># Initialize nurbs with any array-like input</span>
+<span class="n">nurbs</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">NURBS</span><span class="p">(</span>
+    <span class="n">degrees</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">knot_vectors</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">control_points</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">weights</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># vizusalize</span>
+<span class="n">nurbs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p align="center"><img src="_static/readme_nurbs.png" width="70%" title="nurbs"></p></section>
+<section id="modifications">
+<h2>2. Modifications<a class="headerlink" href="#modifications" title="Link to this heading">#</a></h2>
+<p>All the splines can be modified. For example, by</p>
+<ol class="arabic simple">
+<li><p>directly accessing properties,</p></li>
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees'>elevating degrees</a></span>,</p></li>
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.insert_knots.html#splinepy.bspline.BSplineBase.insert_knots'>inserting knots</a></span>,</p></li>
+<li><p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.reduce_degrees.html'>reducing degrees</a> and <a href='https://tataratat.github.io/splinepy/_generated/splinepy.bspline.BSplineBase.remove_knots.html'>removing knots</a></span> with a specified tolerance</p></li>
+</ol>
+<p><em>Note: currently {3, 4} are limited to BSpline families.</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># start with a copy of the original spline</span>
+<span class="n">modified</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># manipulate control points</span>
+<span class="c1"># 1. all at once</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">control_points</span> <span class="o">/=</span> <span class="mf">2.0</span>
+<span class="c1"># 2. indexwise (flat indexing)</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">control_points</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span> <span class="o">*=</span> <span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="c1"># 3. with grid-like indexing using multi_index helper</span>
+<span class="n">multi_index</span> <span class="o">=</span> <span class="n">modified</span><span class="o">.</span><span class="n">multi_index</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">control_points</span><span class="p">[</span><span class="n">multi_index</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">]</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">control_points</span><span class="p">[</span><span class="n">multi_index</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]]</span> <span class="o">+=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+
+<span class="n">modified</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># visualize Nr. 1</span>
+
+<span class="c1"># elevate degrees and insert knots</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">elevate_degrees</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># visualize Nr. 2</span>
+
+<span class="n">modified</span><span class="o">.</span><span class="n">insert_knots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="n">modified</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># visualize Nr. 3</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_modifications.png"><img alt="modifications" src="_images/readme_modifications.png" />
+</a>
+</section>
+<section id="evaluate">
+<h2>3. Evaluate<a class="headerlink" href="#evaluate" title="Link to this heading">#</a></h2>
+<p>You can evaluate spline’s basis functions, mapping, and their derivatives by giving parametric coordinate queries.
+They should be 2D array-like objects and functions return 2D np.ndarray.</p>
+<a class="reference external image-reference" href="../source/_static/readme_evaluate.png"><img alt="evaluate" src="_images/readme_evaluate.png" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, create parametric coordinate queries</span>
+<span class="n">queries</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>  <span class="c1"># first query</span>
+    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>  <span class="c1"># second query</span>
+    <span class="p">[</span><span class="mf">0.1156</span><span class="p">,</span> <span class="mf">0.9091</span><span class="p">],</span>  <span class="c1"># third query</span>
+<span class="p">]</span>
+
+<span class="c1"># evaluate basis, spline and derivatives.</span>
+<span class="c1"># for derivatives, specify order per parametric dimension.</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+<span class="n">basis_derivative</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">basis_derivative</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">physical_coordinates</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+<span class="n">physical_derivatives</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Many of splinepy’s multi-query functions can be executed in parallel using multithread executions on c++ side. For that, set either the global flag or pass the <code class="docutils literal notranslate"><span class="pre">nthreads</span></code> argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_basis0</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">splinepy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">NTHREADS</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">p_basis1</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">basis</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We also implemented <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.proximities.html#splinepy-spline-spline-proximities'>point inversion</a></span> for splines.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># see docs for options</span>
+<span class="n">para_coordinates</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">proximities</span><span class="p">(</span><span class="n">physical_coordinates</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">para_coordinates</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In cases, where you may have to compute derivatives at the inverted locations or you just want to know more information about the search, you can set the keyword <code class="docutils literal notranslate"><span class="pre">return_verbose=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
+    <span class="n">parametric_coordinates</span><span class="p">,</span>
+    <span class="n">physical_coordindates</span><span class="p">,</span>
+    <span class="n">physical_difference</span><span class="p">,</span>
+    <span class="n">distance</span><span class="p">,</span>
+    <span class="n">convergence_norm</span><span class="p">,</span>
+    <span class="n">first_derivatives</span><span class="p">,</span>
+    <span class="n">second_derivatives</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">proximities</span><span class="p">(</span><span class="n">physical_coordinates</span><span class="p">,</span> <span class="n">return_verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="helper-modules">
+<h2>4. Helper Modules<a class="headerlink" href="#helper-modules" title="Link to this heading">#</a></h2>
+<p>There’s a list of helper modules under the namespace <code class="docutils literal notranslate"><span class="pre">splinepy.helpme</span></code> to boost prototyping efficiencies. Please check out the full list <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.html'>here</a></span>!
+Here are some highlights.</p>
+<section id="create">
+<h3>4.1 Create<a class="headerlink" href="#create" title="Link to this heading">#</a></h3>
+<p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.create.html#module-splinepy.helpme.create'>splinepy.helpme.create</a></span> module can help you create several primitive shapes and another spline based on the existing spline.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># basic splines</span>
+<span class="n">box</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># length per dim</span>
+<span class="n">disk</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">disk</span><span class="p">(</span>
+    <span class="n">outer_radius</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">inner_radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">256</span>
+<span class="p">)</span>
+<span class="n">torus</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">torus</span><span class="p">(</span>
+    <span class="n">torus_radius</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">section_outer_radius</span><span class="o">=</span><span class="mf">1.5</span>
+<span class="p">)</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">([</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">box</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;disk&quot;</span><span class="p">,</span> <span class="n">disk</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;torus&quot;</span><span class="p">,</span> <span class="n">torus</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_create_basic.png"><img alt="create_basic" src="_images/readme_create_basic.png" />
+</a>
+<p>For the latter, you can directly access such functions through <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create'>spline.create</a></span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># based on existing splines</span>
+<span class="n">extruded</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">extruded</span><span class="p">(</span><span class="n">extrusion_vector</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">revolved</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">revolved</span><span class="p">(</span>
+    <span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">angle</span><span class="o">=</span><span class="mi">50</span>
+<span class="p">)</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">([</span><span class="s2">&quot;extruded&quot;</span><span class="p">,</span> <span class="n">extruded</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;revolved&quot;</span><span class="p">,</span> <span class="n">revolved</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_create_derived.png"><img alt="create_derived" src="_images/readme_create_derived.png" />
+</a>
+</section>
+</section>
+<section id="extract">
+<h2>4.2 Extract<a class="headerlink" href="#extract" title="Link to this heading">#</a></h2>
+<p>Using <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract'>splinepy.helpme.extract</a> module, you can extract meshes (as a <a href='https://tataratat.github.io/gustaf/index.html'>gustaf</a></span> object)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># extract meshes as gustaf objects</span>
+<span class="n">control_mesh</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">control_mesh</span><span class="p">()</span>
+<span class="n">control_points</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">control_points</span><span class="p">()</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">faces</span><span class="p">([</span><span class="mi">201</span><span class="p">,</span> <span class="mi">33</span><span class="p">])</span>  <span class="c1"># specify sample resolutions</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;control mesh&quot;</span><span class="p">,</span> <span class="n">control_mesh</span><span class="o">.</span><span class="n">to_edges</span><span class="p">()],</span>
+    <span class="p">[</span><span class="s2">&quot;control points&quot;</span><span class="p">,</span> <span class="n">control_points</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;spline&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_extract_mesh.png"><img alt="extract_mesh" src="_images/readme_extract_mesh.png" />
+</a>
+<p>or part of splines from an existing spline using <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.spline.Spline.extract.html#splinepy.spline.Spline.extract'>spline.extract</a></span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># extract splines</span>
+<span class="n">boundaries</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">boundaries</span><span class="p">()</span>
+<span class="n">partial</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">spline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">])</span>
+<span class="n">partial_partial</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">spline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">spline</span><span class="p">(</span>
+    <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">bases</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">bases</span><span class="p">()</span>  <span class="c1"># basis functions as splines</span>
+<span class="c1"># insert knots to increase number of bezier patches</span>
+<span class="n">inserted</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">inserted</span><span class="o">.</span><span class="n">insert_knots</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.13</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">])</span>
+<span class="n">beziers_patches</span> <span class="o">=</span> <span class="n">inserted</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">beziers</span><span class="p">()</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;boundaries and part of splines&quot;</span><span class="p">,</span>
+        <span class="n">boundaries</span><span class="p">,</span>
+        <span class="n">partial</span><span class="p">,</span>
+        <span class="n">partial_partial</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;beziers&quot;</span><span class="p">,</span> <span class="n">beziers_patches</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;bases&quot;</span><span class="p">,</span> <span class="n">bases</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_extract_spline.png"><img alt="extract_spline" src="_images/readme_extract_spline.png" />
+</a>
+<section id="free-form-deformation">
+<h3>4.3 Free-form deformation<a class="headerlink" href="#free-form-deformation" title="Link to this heading">#</a></h3>
+<p>Together with mesh types of <span class="raw-html-md"><a href='https://tataratat.github.io/gustaf'>gustaf</a>, we can perform <a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.ffd.FFD.html'>free-form deformation</a></span></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gustaf</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gus</span>
+
+<span class="c1"># create gustaf mesh using extract.spline()</span>
+<span class="c1"># or use gustaf&#39;s io functions (gustaf.io)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">torus</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">faces</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+
+<span class="c1"># initialize ffd and move control points</span>
+<span class="n">ffd</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">FFD</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">multi_index</span> <span class="o">=</span> <span class="n">ffd</span><span class="o">.</span><span class="n">spline</span><span class="o">.</span><span class="n">multi_index</span>
+<span class="n">ffd</span><span class="o">.</span><span class="n">spline</span><span class="o">.</span><span class="n">control_points</span><span class="p">[</span><span class="n">multi_index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+
+<span class="n">ffd</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># get deformed mesh - FFD.mesh attribute deforms mesh before returning</span>
+<span class="n">deformed</span> <span class="o">=</span> <span class="n">ffd</span><span class="o">.</span><span class="n">mesh</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_ffd.png"><img alt="ffd" src="_images/readme_ffd.png" />
+</a>
+</section>
+<section id="fitting">
+<h3>4.4 Fitting<a class="headerlink" href="#fitting" title="Link to this heading">#</a></h3>
+<p>You can <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit'>fit</a></span> your point data using splines.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">0.955</span><span class="p">,</span> <span class="mf">0.293</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">0.707</span><span class="p">,</span> <span class="mf">0.707</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">0.293</span><span class="p">,</span> <span class="mf">0.955</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">1.911</span><span class="p">,</span> <span class="mf">0.587</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">1.414</span><span class="p">,</span> <span class="mf">1.414</span><span class="p">],</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">0.587</span><span class="p">,</span> <span class="mf">1.911</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">curve</span><span class="p">,</span> <span class="n">residual_curve</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># you can also use any existing spline&#39;s basis</span>
+<span class="n">surface</span><span class="p">,</span> <span class="n">residual_surface</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">helpme</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">surface</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">fitting_spline</span><span class="o">=</span><span class="n">nurbs</span>
+<span class="p">)</span>
+
+<span class="c1"># set visuals for data</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">gus</span><span class="o">.</span><span class="n">Vertices</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">show_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;curve fit&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">curve</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;surface fit&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_fit.png"><img alt="fit" src="_images/readme_fit.png" />
+</a>
+</section>
+<section id="mapper">
+<h3>4.5 Mapper<a class="headerlink" href="#mapper" title="Link to this heading">#</a></h3>
+<p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper'>Mapper</a></span> class is a geometric mapping helper that brings expression and derivatives into the physical domain.
+This is especially useful for trying collocation methods. Here, we show how you can create a left hand side matrix for a laplace problem - see <span class="raw-html-md"><a href='https://github.com/tataratat/splinepy/blob/main/examples/iga/collocation_laplace_problem_sparse.py'>this example</a></span> for a full solution:</p>
+<p align="center"><img src="_static/readme_matrix.png" width="70%" title="laplacian"></p><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create solution spline</span>
+<span class="n">solution_field</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">create</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># refine</span>
+<span class="n">solution_field</span><span class="o">.</span><span class="n">elevate_degrees</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">solution_field</span><span class="o">.</span><span class="n">uniform_refine</span><span class="p">(</span><span class="n">n_knots</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+<span class="c1"># create matrix using mapper</span>
+<span class="c1"># collocation points at greville abcissae</span>
+<span class="n">mapper</span> <span class="o">=</span> <span class="n">solution_field</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="n">nurbs</span><span class="p">)</span>
+<span class="n">laplacian</span><span class="p">,</span> <span class="n">support</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">basis_laplacian_and_support</span><span class="p">(</span>
+    <span class="n">solution_field</span><span class="o">.</span><span class="n">greville_abscissae</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">laplacian_matrix</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">make_matrix</span><span class="p">(</span>
+    <span class="n">laplacian</span><span class="p">,</span>
+    <span class="n">support</span><span class="p">,</span>
+    <span class="n">n_cols</span><span class="o">=</span><span class="n">solution_field</span><span class="o">.</span><span class="n">control_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="microstructure">
+<h2>5. Microstructure<a class="headerlink" href="#microstructure" title="Link to this heading">#</a></h2>
+<p>(Rational) Bezier splines in splinepy are capable of <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose'>composition</a></span>, where you can place a spline (inner spline/function) into another spline (outer spline/function) in an exact fashion.
+We can systematically perform this to create certain shapes that consist of multiple inner splines.
+The resulting shapes are called <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure'>microstructure</a>s and the inner spline that serves as a basis shape is called <a href='https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase'>tile</a></span>.</p>
+<p>splinepy has several tiles that are ready to use.
+Implementations of available tiles can be found <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html'>here</a></span>.
+However, it is easier to access them through <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.tiles.html'>module functions</a></span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">splinepy</span><span class="o">.</span><span class="n">microstructure</span><span class="o">.</span><span class="n">tiles</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_tiles.png"><img alt="tiles" src="_images/readme_tiles.png" />
+</a>
+<p>You can also filter the available tiles by their parametric and geometric dimensions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get specific dimensions as dict</span>
+<span class="n">para_2_dim_2</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">microstructure</span><span class="o">.</span><span class="n">tiles</span><span class="o">.</span><span class="n">by_dim</span><span class="p">(</span><span class="n">para_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">dim_2</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">microstructure</span><span class="o">.</span><span class="n">tiles</span><span class="o">.</span><span class="n">by_dim</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The composition can then be created as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create microstructure generator</span>
+<span class="n">microstructure</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">Microstructure</span><span class="p">()</span>
+<span class="c1"># set outer spline and a (micro) tile</span>
+<span class="n">microstructure</span><span class="o">.</span><span class="n">deformation_function</span> <span class="o">=</span> <span class="n">nurbs</span>
+<span class="n">microstructure</span><span class="o">.</span><span class="n">microtile</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">microstructure</span><span class="o">.</span><span class="n">tiles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Cross2D&quot;</span><span class="p">)</span>
+<span class="c1"># tiling determines tile resolutions within each bezier patch</span>
+<span class="n">microstructure</span><span class="o">.</span><span class="n">tiling</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="n">microstructure</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># extract only generated parts as multipatch</span>
+<span class="n">generated</span> <span class="o">=</span> <span class="n">microstructure</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_microstructure.png"><img alt="microstructures" src="_images/readme_microstructure.png" />
+</a>
+<p>Please take a look at <span class="raw-html-md"><a href='https://github.com/tataratat/splinepy/blob/main/examples/show_microstructures.py'>this example</a></span> for a broad overview of what microstructures can do!</p>
+</section>
+<section id="multipatch">
+<h2>6. Multipatch<a class="headerlink" href="#multipatch" title="Link to this heading">#</a></h2>
+<p>In practice, including <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure'>Microstructure</a>`s, it is common to work with multiple patches.
+For that, we provide a :raw-html-md:`<a href='https://tataratat.github.io/splinepy/_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch'>Multipatch</a></span> class, equipped with various useful functionalities:</p>
+<ul class="simple">
+<li><p>patch interface identification</p></li>
+<li><p>boundary patch identification</p></li>
+<li><p>boundary assignment with various options</p></li>
+<li><p>subpatch / boundary patch extraction</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># use previously generated microtiles</span>
+<span class="n">interface_info_array</span> <span class="o">=</span> <span class="n">generated</span><span class="o">.</span><span class="n">interfaces</span>
+
+
+<span class="c1"># Mark boundaries to set boundary conditions</span>
+<span class="c1"># In case of micro structure, you can use outer spline&#39;s boundary</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_left_bdr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">nurbs</span><span class="o">.</span><span class="n">extract</span><span class="o">.</span><span class="n">boundaries</span><span class="p">()[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">proximities</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">return_verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+
+<span class="n">generated</span><span class="o">.</span><span class="n">boundary_from_function</span><span class="p">(</span><span class="n">is_left_bdr</span><span class="p">,</span> <span class="n">boundary_id</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">splinepy</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;All&quot;</span><span class="p">,</span> <span class="n">generated</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Boundaries&quot;</span><span class="p">,</span> <span class="n">generated</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">()],</span>
+    <span class="p">[</span><span class="s2">&quot;Boundary 5&quot;</span><span class="p">,</span> <span class="n">generated</span><span class="o">.</span><span class="n">boundary_multipatch</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span>
+<span class="p">)</span>
+
+<span class="c1"># export for the solver</span>
+<span class="n">splinepy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gismo</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;microstructure.xml&quot;</span><span class="p">,</span> <span class="n">generated</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="../source/_static/readme_multipatch.png"><img alt="multipatch" src="_images/readme_multipatch.png" />
+</a>
+</section>
+<section id="input-output-and-vector-graphics">
+<h2>7. Input/output and vector graphics<a class="headerlink" href="#input-output-and-vector-graphics" title="Link to this heading">#</a></h2>
+<p>splinepy supports various <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.io.html'>IO formats</a></span>.
+Most notably, <span class="raw-html-md"><a href='https://github.com/gismo/gismo'>gismo</a> and <a href='https://github.com/mfem/mfem'>mfem</a></span> formats allow a seamless transition to analysis. In addition splinepy is also able to import and export the <code class="docutils literal notranslate"><span class="pre">iges</span></code> format. Specifically, <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">126</span></code> (B-Spline curve) and <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">128</span></code> (B-Spline surface).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># export</span>
+<span class="n">splinepy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">mfem</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;quarter_circle.mesh&quot;</span><span class="p">,</span> <span class="n">nurbs</span><span class="p">)</span>
+
+<span class="c1"># load</span>
+<span class="n">quarter_circle</span> <span class="o">=</span> <span class="n">splinepy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">mfem</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;quarter_circle.mesh&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/_generated/splinepy.io.svg.export.html#splinepy.io.svg.export'>svg format</a></span> enables true vector graphic export which preserves the smoothness of splines for publications/documentation. Try to zoom in!</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">splinepy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">svg</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;nurbs.svg&quot;</span><span class="p">,</span> <span class="n">nurbs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p align="center"><img src="_static/nurbs.svg" width="50%" title="nurbs_svg"></p></section>
+</section>
+<section id="try-online">
+<h1>Try online<a class="headerlink" href="#try-online" title="Link to this heading">#</a></h1>
+<p>You can also try splinepy online by clicking the <span class="raw-html-md"><a href='https://mybinder.org/v2/gh/tataratat/try-splinepy/main'>Binder</a></span> badge above!</p>
+</section>
+<section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h1>
+<p>splinepy welcomes any form of contributions!
+Feel free to write us an <span class="raw-html-md"><a href='https://github.com/tataratat/splinepy/issues'>issue</a> or start a <a href='https://github.com/tataratat/splinepy/discussions'>discussion</a></span>.
+Contribution guidelines can be found <span class="raw-html-md"><a href='https://tataratat.github.io/splinepy/CONTRIBUTING.html'>here</a></span>.</p>
+</section>
+<section id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Splines?</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spline_intro.html">Introduction to Splines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spline_intro.html#spline-visualization">Spline visualization</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Library</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/tataratat/splinepy">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="spline_intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction to Splines</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Install guide</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick start</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-spline">1. Create a spline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modifications">2. Modifications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate">3. Evaluate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-modules">4. Helper Modules</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create">4.1 Create</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extract">4.2 Extract</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#free-form-deformation">4.3 Free-form deformation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting">4.4 Fitting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mapper">4.5 Mapper</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#microstructure">5. Microstructure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multipatch">6. Multipatch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-output-and-vector-graphics">7. Input/output and vector graphics</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#try-online">Try online</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of Contents</a><ul class="visible nav section-nav flex-column">
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

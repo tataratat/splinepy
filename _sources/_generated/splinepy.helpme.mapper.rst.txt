@@ -1,0 +1,33 @@
+.. _splinepy.helpme.mapper:
+
+splinepy.helpme.mapper
+======================
+
+.. automodule:: splinepy.helpme.mapper
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Mapper
+   
+   
+
+   
+   
+   
+
+
+

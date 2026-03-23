@@ -1,0 +1,2652 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; splinepy 0.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css?v=883df730" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="icon" href="_static/favicon.png"/>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/splinepy_name.png" class="logo__image only-light" alt="splinepy 0.2.0 documentation - Home"/>
+    <img src="_static/splinepy_name.png" class="logo__image only-dark pst-js-only" alt="splinepy 0.2.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="spline_intro.html">
+    Introduction to Splines
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/tataratat/splinepy">
+    Github
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="CONTRIBUTING.html">
+    Contributing
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api_reference.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/tataratat/splinepy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/splinepy/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-box fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.io.ioutils.abs_fname.html#splinepy.io.ioutils.abs_fname">abs_fname() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.add.html#splinepy.splinepy_core.add">add() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.io.gismo.AdditionalBlocks.add_assembly_options.html#splinepy.io.gismo.AdditionalBlocks.add_assembly_options">add_assembly_options() (splinepy.io.gismo.AdditionalBlocks method)</a>
+</li>
+      <li><a href="_generated/splinepy.io.gismo.AdditionalBlocks.add_boundary_conditions.html#splinepy.io.gismo.AdditionalBlocks.add_boundary_conditions">add_boundary_conditions() (splinepy.io.gismo.AdditionalBlocks method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.add_fields.html#splinepy.multipatch.Multipatch.add_fields">add_fields() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.add_fields.html#splinepy.splinepy_core.PyMultipatch.add_fields">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.io.gismo.AdditionalBlocks.add_function.html#splinepy.io.gismo.AdditionalBlocks.add_function">add_function() (splinepy.io.gismo.AdditionalBlocks method)</a>
+</li>
+      <li><a href="_generated/splinepy.io.gismo.AdditionalBlocks.html#splinepy.io.gismo.AdditionalBlocks">AdditionalBlocks (class in splinepy.io.gismo)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.all.html#splinepy.utils.data.PhysicalSpaceArray.all">all() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.annul_core.html#splinepy.splinepy_core.annul_core">annul_core() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.any.html#splinepy.utils.data.PhysicalSpaceArray.any">any() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.arc.html#splinepy.helpme.create.arc">arc() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.argmax.html#splinepy.utils.data.PhysicalSpaceArray.argmax">argmax() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.argmin.html#splinepy.utils.data.PhysicalSpaceArray.argmin">argmin() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.argpartition.html#splinepy.utils.data.PhysicalSpaceArray.argpartition">argpartition() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.argsort.html#splinepy.utils.data.PhysicalSpaceArray.argsort">argsort() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.armadillo.Armadillo.html#splinepy.microstructure.tiles.armadillo.Armadillo">Armadillo (class in splinepy.microstructure.tiles.armadillo)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.extract.arrow_data.html#splinepy.helpme.extract.arrow_data">arrow_data() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.arrow_data.html#splinepy.helpme.extract.Extractor.arrow_data">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.arrow_data_only.html#splinepy.utils.data.SplineDataAdaptor.arrow_data_only">arrow_data_only (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.MultipatchData.as_arrow.html#splinepy.utils.data.MultipatchData.as_arrow">as_arrow() (splinepy.utils.data.MultipatchData method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.utils.data.SplineData.as_arrow.html#splinepy.utils.data.SplineData.as_arrow">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.MultipatchData.as_scalar.html#splinepy.utils.data.MultipatchData.as_scalar">as_scalar() (splinepy.utils.data.MultipatchData method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.utils.data.SplineData.as_scalar.html#splinepy.utils.data.SplineData.as_scalar">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.as_vertex_data.html#splinepy.utils.data.SplineDataAdaptor.as_vertex_data">as_vertex_data() (splinepy.utils.data.SplineDataAdaptor method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.astype.html#splinepy.utils.data.PhysicalSpaceArray.astype">astype() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.extract.bases.html#splinepy.helpme.extract.bases">bases() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.bases.html#splinepy.helpme.extract.Extractor.bases">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.basis.html#splinepy.bezier.Bezier.basis">basis() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.basis.html#splinepy.bezier.BezierBase.basis">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.basis.html#splinepy.bspline.BSpline.basis">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.basis.html#splinepy.bspline.BSplineBase.basis">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.basis.html#splinepy.nurbs.NURBS.basis">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.basis.html#splinepy.rational_bezier.RationalBezier.basis">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.basis.html#splinepy.spline.Spline.basis">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.basis.html#splinepy.splinepy_core.PySpline.basis">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.basis_and_support.html#splinepy.bezier.Bezier.basis_and_support">basis_and_support() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.basis_and_support.html#splinepy.bezier.BezierBase.basis_and_support">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.basis_and_support.html#splinepy.bspline.BSpline.basis_and_support">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.basis_and_support.html#splinepy.bspline.BSplineBase.basis_and_support">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.basis_and_support.html#splinepy.nurbs.NURBS.basis_and_support">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.basis_and_support.html#splinepy.rational_bezier.RationalBezier.basis_and_support">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.basis_and_support.html#splinepy.spline.Spline.basis_and_support">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.basis_and_support.html#splinepy.splinepy_core.PySpline.basis_and_support">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.basis_derivative.html#splinepy.bezier.Bezier.basis_derivative">basis_derivative() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.basis_derivative.html#splinepy.bezier.BezierBase.basis_derivative">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.basis_derivative.html#splinepy.bspline.BSpline.basis_derivative">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.basis_derivative.html#splinepy.bspline.BSplineBase.basis_derivative">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.basis_derivative.html#splinepy.nurbs.NURBS.basis_derivative">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.basis_derivative.html#splinepy.rational_bezier.RationalBezier.basis_derivative">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.basis_derivative.html#splinepy.spline.Spline.basis_derivative">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.basis_derivative.html#splinepy.splinepy_core.PySpline.basis_derivative">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.basis_derivative_and_support.html#splinepy.bezier.Bezier.basis_derivative_and_support">basis_derivative_and_support() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.basis_derivative_and_support.html#splinepy.bezier.BezierBase.basis_derivative_and_support">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.basis_derivative_and_support.html#splinepy.bspline.BSpline.basis_derivative_and_support">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.basis_derivative_and_support.html#splinepy.bspline.BSplineBase.basis_derivative_and_support">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.basis_derivative_and_support.html#splinepy.nurbs.NURBS.basis_derivative_and_support">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.basis_derivative_and_support.html#splinepy.rational_bezier.RationalBezier.basis_derivative_and_support">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.basis_derivative_and_support.html#splinepy.spline.Spline.basis_derivative_and_support">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.basis_derivative_and_support.html#splinepy.splinepy_core.PySpline.basis_derivative_and_support">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.basis_function_derivatives.html#splinepy.helpme.mapper.Mapper.basis_function_derivatives">basis_function_derivatives() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.basis_gradient_and_support.html#splinepy.helpme.mapper.Mapper.basis_gradient_and_support">basis_gradient_and_support() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.basis_hessian_and_support.html#splinepy.helpme.mapper.Mapper.basis_hessian_and_support">basis_hessian_and_support() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.basis_laplacian_and_support.html#splinepy.helpme.mapper.Mapper.basis_laplacian_and_support">basis_laplacian_and_support() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.html#splinepy.bezier.Bezier">Bezier (class in splinepy.bezier)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.bezier.html#splinepy.bezier.Bezier.bezier">bezier (splinepy.bezier.Bezier property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.bezier_extraction_matrix.html#splinepy.splinepy_core.bezier_extraction_matrix">bezier_extraction_matrix() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.BezierBase.html#splinepy.bezier.BezierBase">BezierBase (class in splinepy.bezier)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.extract.Extractor.beziers.html#splinepy.helpme.extract.Extractor.beziers">beziers() (splinepy.helpme.extract.Extractor method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.boundaries.html#splinepy.multipatch.Multipatch.boundaries">boundaries (splinepy.multipatch.Multipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.extract.boundaries.html#splinepy.helpme.extract.boundaries">boundaries() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.boundaries.html#splinepy.helpme.extract.Extractor.boundaries">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.boundaries_from_continuity.html#splinepy.splinepy_core.boundaries_from_continuity">boundaries_from_continuity() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.boundaries_from_continuity.html#splinepy.multipatch.Multipatch.boundaries_from_continuity">(splinepy.multipatch.Multipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.boundary_centers.html#splinepy.splinepy_core.boundary_centers">boundary_centers() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.boundary_from_function.html#splinepy.multipatch.Multipatch.boundary_from_function">boundary_from_function() (splinepy.multipatch.Multipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.boundary_multipatch.html#splinepy.multipatch.Multipatch.boundary_multipatch">boundary_multipatch() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.boundary_multipatch.html#splinepy.splinepy_core.PyMultipatch.boundary_multipatch">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.boundary_patch_ids.html#splinepy.multipatch.Multipatch.boundary_patch_ids">boundary_patch_ids() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.boundary_patch_ids.html#splinepy.splinepy_core.PyMultipatch.boundary_patch_ids">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.box.html#splinepy.helpme.create.box">box() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.bspline.BSpline.html#splinepy.bspline.BSpline">BSpline (class in splinepy.bspline)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.bspline.html#splinepy.bezier.Bezier.bspline">bspline (splinepy.bezier.Bezier property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.bspline.html#splinepy.bspline.BSpline.bspline">(splinepy.bspline.BSpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bspline.BSplineBase.html#splinepy.bspline.BSplineBase">BSplineBase (class in splinepy.bspline)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.build_type.html#splinepy.splinepy_core.build_type">build_type() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.by_dim.html#splinepy.microstructure.tiles.by_dim">by_dim() (in module splinepy.microstructure.tiles)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.byteswap.html#splinepy.utils.data.PhysicalSpaceArray.byteswap">byteswap() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.cartesian_product.html#splinepy.utils.data.cartesian_product">cartesian_product() (in module splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.check.html#splinepy.spline.Spline.check">check (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.settings.CHECK_BOUNDS.html#splinepy.settings.CHECK_BOUNDS">CHECK_BOUNDS (in module splinepy.settings)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.armadillo.Armadillo.check_param_derivatives.html#splinepy.microstructure.tiles.armadillo.Armadillo.check_param_derivatives">check_param_derivatives() (splinepy.microstructure.tiles.armadillo.Armadillo method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.chi.Chi.check_param_derivatives.html#splinepy.microstructure.tiles.chi.Chi.check_param_derivatives">(splinepy.microstructure.tiles.chi.Chi method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.Cross2D.check_param_derivatives.html#splinepy.microstructure.tiles.cross_2d.Cross2D.check_param_derivatives">(splinepy.microstructure.tiles.cross_2d.Cross2D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.Cross3D.check_param_derivatives.html#splinepy.microstructure.tiles.cross_3d.Cross3D.check_param_derivatives">(splinepy.microstructure.tiles.cross_3d.Cross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.check_param_derivatives.html#splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.check_param_derivatives">(splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.check_param_derivatives.html#splinepy.microstructure.tiles.cube_void.CubeVoid.check_param_derivatives">(splinepy.microstructure.tiles.cube_void.CubeVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.DoubleLattice.check_param_derivatives.html#splinepy.microstructure.tiles.double_lattice.DoubleLattice.check_param_derivatives">(splinepy.microstructure.tiles.double_lattice.DoubleLattice method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.check_param_derivatives.html#splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.check_param_derivatives">(splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.HollowCube.check_param_derivatives.html#splinepy.microstructure.tiles.hollow_cube.HollowCube.check_param_derivatives">(splinepy.microstructure.tiles.hollow_cube.HollowCube method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.check_param_derivatives.html#splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.check_param_derivatives">(splinepy.microstructure.tiles.hollow_octagon.HollowOctagon method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.check_param_derivatives.html#splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.check_param_derivatives">(splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.check_param_derivatives.html#splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.check_param_derivatives">(splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.snappy.Snappy.check_param_derivatives.html#splinepy.microstructure.tiles.snappy.Snappy.check_param_derivatives">(splinepy.microstructure.tiles.snappy.Snappy method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.check_param_derivatives.html#splinepy.microstructure.tiles.tile_base.TileBase.check_param_derivatives">(splinepy.microstructure.tiles.tile_base.TileBase method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.tiles.armadillo.Armadillo.check_params.html#splinepy.microstructure.tiles.armadillo.Armadillo.check_params">check_params() (splinepy.microstructure.tiles.armadillo.Armadillo method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.chi.Chi.check_params.html#splinepy.microstructure.tiles.chi.Chi.check_params">(splinepy.microstructure.tiles.chi.Chi method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.Cross2D.check_params.html#splinepy.microstructure.tiles.cross_2d.Cross2D.check_params">(splinepy.microstructure.tiles.cross_2d.Cross2D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.Cross3D.check_params.html#splinepy.microstructure.tiles.cross_3d.Cross3D.check_params">(splinepy.microstructure.tiles.cross_3d.Cross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.check_params.html#splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.check_params">(splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.check_params.html#splinepy.microstructure.tiles.cube_void.CubeVoid.check_params">(splinepy.microstructure.tiles.cube_void.CubeVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.DoubleLattice.check_params.html#splinepy.microstructure.tiles.double_lattice.DoubleLattice.check_params">(splinepy.microstructure.tiles.double_lattice.DoubleLattice method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.check_params.html#splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.check_params">(splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.HollowCube.check_params.html#splinepy.microstructure.tiles.hollow_cube.HollowCube.check_params">(splinepy.microstructure.tiles.hollow_cube.HollowCube method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.check_params.html#splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.check_params">(splinepy.microstructure.tiles.hollow_octagon.HollowOctagon method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.check_params.html#splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.check_params">(splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.check_params.html#splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.check_params">(splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.snappy.Snappy.check_params.html#splinepy.microstructure.tiles.snappy.Snappy.check_params">(splinepy.microstructure.tiles.snappy.Snappy method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.check_params.html#splinepy.microstructure.tiles.tile_base.TileBase.check_params">(splinepy.microstructure.tiles.tile_base.TileBase method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.check.Checker.html#splinepy.helpme.check.Checker">Checker (class in splinepy.helpme.check)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.chi.Chi.html#splinepy.microstructure.tiles.chi.Chi">Chi (class in splinepy.microstructure.tiles.chi)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.choose.html#splinepy.utils.data.PhysicalSpaceArray.choose">choose() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.circle.html#splinepy.helpme.create.circle">circle() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.check.clamped_knot_vectors.html#splinepy.helpme.check.clamped_knot_vectors">clamped_knot_vectors() (in module splinepy.helpme.check)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.check.Checker.clamped_knot_vectors.html#splinepy.helpme.check.Checker.clamped_knot_vectors">(splinepy.helpme.check.Checker method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.clear.html#splinepy.bezier.Bezier.clear">clear() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.clear.html#splinepy.bezier.BezierBase.clear">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.clear.html#splinepy.bspline.BSpline.clear">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.clear.html#splinepy.bspline.BSplineBase.clear">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.clear.html#splinepy.helpme.visualize.MultipatchShowOption.clear">(splinepy.helpme.visualize.MultipatchShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.clear.html#splinepy.helpme.visualize.SplineShowOption.clear">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.clear.html#splinepy.multipatch.Multipatch.clear">(splinepy.multipatch.Multipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.clear.html#splinepy.nurbs.NURBS.clear">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.clear.html#splinepy.rational_bezier.RationalBezier.clear">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.clear.html#splinepy.spline.Spline.clear">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.clear.html#splinepy.splinepy_core.PyMultipatch.clear">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.clear.html#splinepy.utils.data.MultipatchData.clear">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.clear.html#splinepy.utils.data.SplineData.clear">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.clip.html#splinepy.utils.data.PhysicalSpaceArray.clip">clip() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.closing_tile.html#splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.closing_tile">closing_tile() (splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.combine_boundaries.html#splinepy.multipatch.Multipatch.combine_boundaries">combine_boundaries() (splinepy.multipatch.Multipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.compose.html#splinepy.splinepy_core.compose">compose() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.Bezier.compose.html#splinepy.bezier.Bezier.compose">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.compose.html#splinepy.bezier.BezierBase.compose">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.compose.html#splinepy.rational_bezier.RationalBezier.compose">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.compose_sensitivities.html#splinepy.splinepy_core.compose_sensitivities">compose_sensitivities() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.composition_derivative.html#splinepy.splinepy_core.composition_derivative">composition_derivative() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.Bezier.composition_derivative.html#splinepy.bezier.Bezier.composition_derivative">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.composition_derivative.html#splinepy.bezier.BezierBase.composition_derivative">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.composition_derivative.html#splinepy.rational_bezier.RationalBezier.composition_derivative">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.compress.html#splinepy.utils.data.PhysicalSpaceArray.compress">compress() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.fit.compute_knot_vector.html#splinepy.helpme.fit.compute_knot_vector">compute_knot_vector() (in module splinepy.helpme.fit)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.cone.html#splinepy.helpme.create.cone">cone() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.log.configure.html#splinepy.utils.log.configure">configure() (in module splinepy.utils.log)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.conj.html#splinepy.utils.data.PhysicalSpaceArray.conj">conj() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.conjugate.html#splinepy.utils.data.PhysicalSpaceArray.conjugate">conjugate() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.extract.control_edges.html#splinepy.helpme.extract.control_edges">control_edges() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.control_edges.html#splinepy.helpme.extract.Extractor.control_edges">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.control_faces.html#splinepy.helpme.extract.control_faces">control_faces() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.control_faces.html#splinepy.helpme.extract.Extractor.control_faces">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.control_mesh.html#splinepy.helpme.extract.control_mesh">control_mesh() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.control_mesh.html#splinepy.helpme.extract.Extractor.control_mesh">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.Spline.control_mesh_resolutions.html#splinepy.spline.Spline.control_mesh_resolutions">control_mesh_resolutions (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.control_mesh_resolutions.html#splinepy.splinepy_core.PySpline.control_mesh_resolutions">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.Spline.control_point_bounds.html#splinepy.spline.Spline.control_point_bounds">control_point_bounds (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.control_point_offsets.html#splinepy.multipatch.Multipatch.control_point_offsets">control_point_offsets() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.control_point_offsets.html#splinepy.splinepy_core.PyMultipatch.control_point_offsets">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.Spline.control_points.html#splinepy.spline.Spline.control_points">control_points (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.control_points.html#splinepy.splinepy_core.PyMultipatch.control_points">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.control_points.html#splinepy.helpme.extract.control_points">control_points() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.control_points.html#splinepy.helpme.extract.Extractor.control_points">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.control_volumes.html#splinepy.helpme.extract.control_volumes">control_volumes() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.control_volumes.html#splinepy.helpme.extract.Extractor.control_volumes">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.html#splinepy.splinepy_core.ControlPointPointers">ControlPointPointers (class in splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.cli.convert.html#splinepy.cli.convert">convert() (in module splinepy.cli)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.copy.html#splinepy.bezier.Bezier.copy">copy() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.copy.html#splinepy.bezier.BezierBase.copy">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.copy.html#splinepy.bspline.BSpline.copy">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.copy.html#splinepy.bspline.BSplineBase.copy">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.copy.html#splinepy.nurbs.NURBS.copy">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.copy.html#splinepy.rational_bezier.RationalBezier.copy">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.copy.html#splinepy.spline.Spline.copy">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.ParameterSpace.copy.html#splinepy.splinepy_core.ParameterSpace.copy">(splinepy.splinepy_core.ParameterSpace method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.copy.html#splinepy.utils.data.PhysicalSpaceArray.copy">(splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.copy_valid_options.html#splinepy.helpme.visualize.MultipatchShowOption.copy_valid_options">copy_valid_options() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.copy_valid_options.html#splinepy.helpme.visualize.SplineShowOption.copy_valid_options">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.core_id.html#splinepy.splinepy_core.core_id">core_id() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.core_ref_count.html#splinepy.splinepy_core.core_ref_count">core_ref_count() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.cps.html#splinepy.spline.Spline.cps">cps (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.create.html#splinepy.spline.Spline.create">create (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.create.html#splinepy.microstructure.microstructure.Microstructure.create">create() (splinepy.microstructure.microstructure.Microstructure method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.armadillo.Armadillo.create_tile.html#splinepy.microstructure.tiles.armadillo.Armadillo.create_tile">create_tile() (splinepy.microstructure.tiles.armadillo.Armadillo method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.chi.Chi.create_tile.html#splinepy.microstructure.tiles.chi.Chi.create_tile">(splinepy.microstructure.tiles.chi.Chi method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.Cross2D.create_tile.html#splinepy.microstructure.tiles.cross_2d.Cross2D.create_tile">(splinepy.microstructure.tiles.cross_2d.Cross2D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.Cross3D.create_tile.html#splinepy.microstructure.tiles.cross_3d.Cross3D.create_tile">(splinepy.microstructure.tiles.cross_3d.Cross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.create_tile.html#splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.create_tile">(splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.create_tile.html#splinepy.microstructure.tiles.cube_void.CubeVoid.create_tile">(splinepy.microstructure.tiles.cube_void.CubeVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.DoubleLattice.create_tile.html#splinepy.microstructure.tiles.double_lattice.DoubleLattice.create_tile">(splinepy.microstructure.tiles.double_lattice.DoubleLattice method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.create_tile.html#splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.create_tile">(splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.HollowCube.create_tile.html#splinepy.microstructure.tiles.hollow_cube.HollowCube.create_tile">(splinepy.microstructure.tiles.hollow_cube.HollowCube method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.create_tile.html#splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.create_tile">(splinepy.microstructure.tiles.hollow_octagon.HollowOctagon method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.create_tile.html#splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.create_tile">(splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.create_tile.html#splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.create_tile">(splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.snappy.Snappy.create_tile.html#splinepy.microstructure.tiles.snappy.Snappy.create_tile">(splinepy.microstructure.tiles.snappy.Snappy method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.create_tile.html#splinepy.microstructure.tiles.tile_base.TileBase.create_tile">(splinepy.microstructure.tiles.tile_base.TileBase method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.Creator.html#splinepy.helpme.create.Creator">Creator (class in splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.Cross2D.html#splinepy.microstructure.tiles.cross_2d.Cross2D">Cross2D (class in splinepy.microstructure.tiles.cross_2d)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.Cross3D.html#splinepy.microstructure.tiles.cross_3d.Cross3D">Cross3D (class in splinepy.microstructure.tiles.cross_3d)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear.html#splinepy.microstructure.tiles.cross_3d_linear.Cross3DLinear">Cross3DLinear (class in splinepy.microstructure.tiles.cross_3d_linear)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.cube_void.CubeVoid.html#splinepy.microstructure.tiles.cube_void.CubeVoid">CubeVoid (class in splinepy.microstructure.tiles.cube_void)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.cumprod.html#splinepy.utils.data.PhysicalSpaceArray.cumprod">cumprod() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.cumsum.html#splinepy.utils.data.PhysicalSpaceArray.cumsum">cumsum() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.current_core_properties.html#splinepy.bezier.Bezier.current_core_properties">current_core_properties() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.current_core_properties.html#splinepy.bezier.BezierBase.current_core_properties">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.current_core_properties.html#splinepy.bspline.BSpline.current_core_properties">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.current_core_properties.html#splinepy.bspline.BSplineBase.current_core_properties">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.current_core_properties.html#splinepy.nurbs.NURBS.current_core_properties">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.current_core_properties.html#splinepy.rational_bezier.RationalBezier.current_core_properties">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.current_core_properties.html#splinepy.spline.Spline.current_core_properties">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.current_core_properties.html#splinepy.splinepy_core.PySpline.current_core_properties">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.fit.curve.html#splinepy.helpme.fit.curve">curve() (in module splinepy.helpme.fit)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.data.html#splinepy.utils.data.SplineDataAdaptor.data">data (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.log.debug.html#splinepy.utils.log.debug">debug() (in module splinepy.utils.log)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.deformation_function.html#splinepy.microstructure.microstructure.Microstructure.deformation_function">deformation_function (splinepy.microstructure.microstructure.Microstructure property)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.degrees.html#splinepy.spline.Spline.degrees">degrees (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.derivative.html#splinepy.bezier.Bezier.derivative">derivative() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.derivative.html#splinepy.bezier.BezierBase.derivative">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.derivative.html#splinepy.bspline.BSpline.derivative">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.derivative.html#splinepy.bspline.BSplineBase.derivative">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.derivative.html#splinepy.nurbs.NURBS.derivative">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.derivative.html#splinepy.rational_bezier.RationalBezier.derivative">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.derivative.html#splinepy.spline.Spline.derivative">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.derivative.html#splinepy.splinepy_core.PySpline.derivative">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.derivative_spline.html#splinepy.splinepy_core.derivative_spline">derivative_spline() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.Bezier.derivative_spline.html#splinepy.bezier.Bezier.derivative_spline">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.derivative_spline.html#splinepy.bezier.BezierBase.derivative_spline">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.derivative_spline.html#splinepy.rational_bezier.RationalBezier.derivative_spline">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.determinant_spline.html#splinepy.helpme.create.determinant_spline">determinant_spline() (in module splinepy.helpme.create)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.Creator.determinant_spline.html#splinepy.helpme.create.Creator.determinant_spline">(splinepy.helpme.create.Creator method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.determine_interfaces.html#splinepy.multipatch.Multipatch.determine_interfaces">determine_interfaces() (splinepy.multipatch.Multipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.diagonal.html#splinepy.utils.data.PhysicalSpaceArray.diagonal">diagonal() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.io.ioutils.dict_to_spline.html#splinepy.io.ioutils.dict_to_spline">dict_to_spline() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.dim.html#splinepy.microstructure.tiles.tile_base.TileBase.dim">dim (splinepy.microstructure.tiles.tile_base.TileBase property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.dim.html#splinepy.multipatch.Multipatch.dim">(splinepy.multipatch.Multipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.dim.html#splinepy.spline.Spline.dim">(splinepy.spline.Spline property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.dim.html#splinepy.splinepy_core.PyMultipatch.dim">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.dim.html#splinepy.splinepy_core.PySpline.dim">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.dim.html#splinepy.splinepy_core.ControlPointPointers.dim">dim() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.dim.html#splinepy.splinepy_core.WeightPointers.dim">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.disk.html#splinepy.helpme.create.disk">disk() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.divergence.html#splinepy.helpme.mapper.Mapper.divergence">divergence() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.io.mfem.dof_mapping.html#splinepy.io.mfem.dof_mapping">dof_mapping() (in module splinepy.io.mfem)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.dot.html#splinepy.utils.data.PhysicalSpaceArray.dot">dot() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.DoubleLattice.html#splinepy.microstructure.tiles.double_lattice.DoubleLattice">DoubleLattice (class in splinepy.microstructure.tiles.double_lattice)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.ds.html#splinepy.spline.Spline.ds">ds (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.dump.html#splinepy.utils.data.PhysicalSpaceArray.dump">dump() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.dumps.html#splinepy.utils.data.PhysicalSpaceArray.dumps">dumps() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.extract.edges.html#splinepy.helpme.extract.edges">edges() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.edges.html#splinepy.helpme.extract.Extractor.edges">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.elevate_degrees.html#splinepy.bezier.Bezier.elevate_degrees">elevate_degrees() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.elevate_degrees.html#splinepy.bezier.BezierBase.elevate_degrees">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.elevate_degrees.html#splinepy.bspline.BSpline.elevate_degrees">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.elevate_degrees.html#splinepy.bspline.BSplineBase.elevate_degrees">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.elevate_degrees.html#splinepy.nurbs.NURBS.elevate_degrees">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.elevate_degrees.html#splinepy.rational_bezier.RationalBezier.elevate_degrees">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.elevate_degrees.html#splinepy.spline.Spline.elevate_degrees">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.elevate_degrees.html#splinepy.splinepy_core.PySpline.elevate_degrees">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid.html#splinepy.microstructure.tiles.ellips_v_oid.EllipsVoid">EllipsVoid (class in splinepy.microstructure.tiles.ellips_v_oid)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.embedded.html#splinepy.helpme.create.embedded">embedded() (in module splinepy.helpme.create)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.Creator.embedded.html#splinepy.helpme.create.Creator.embedded">(splinepy.helpme.create.Creator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.enforce_contiguous.html#splinepy.utils.data.enforce_contiguous">enforce_contiguous() (in module splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.enforce_contiguous_values.html#splinepy.utils.data.enforce_contiguous_values">enforce_contiguous_values() (in module splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.cli.entry.html#splinepy.cli.entry">entry() (in module splinepy.cli)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.log.error.html#splinepy.utils.log.error">error() (in module splinepy.utils.log)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.evaluate.html#splinepy.bezier.Bezier.evaluate">evaluate() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.evaluate.html#splinepy.bezier.BezierBase.evaluate">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.evaluate.html#splinepy.bspline.BSpline.evaluate">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.evaluate.html#splinepy.bspline.BSplineBase.evaluate">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.evaluate.html#splinepy.multipatch.Multipatch.evaluate">(splinepy.multipatch.Multipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.evaluate.html#splinepy.nurbs.NURBS.evaluate">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.evaluate.html#splinepy.rational_bezier.RationalBezier.evaluate">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.evaluate.html#splinepy.spline.Spline.evaluate">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.evaluate.html#splinepy.splinepy_core.PyMultipatch.evaluate">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.evaluate.html#splinepy.splinepy_core.PySpline.evaluate">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.evaluation_points.html#splinepy.microstructure.tiles.tile_base.TileBase.evaluation_points">evaluation_points (splinepy.microstructure.tiles.tile_base.TileBase property)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.everything.html#splinepy.microstructure.tiles.everything">everything() (in module splinepy.microstructure.tiles)</a>
+</li>
+      <li><a href="_generated/splinepy.io.ioutils.expand_tabs.html#splinepy.io.ioutils.expand_tabs">expand_tabs() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.io.cats.export.html#splinepy.io.cats.export">export() (in module splinepy.io.cats)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.io.default.export.html#splinepy.io.default.export">(in module splinepy.io.default)</a>
+</li>
+        <li><a href="_generated/splinepy.io.gismo.export.html#splinepy.io.gismo.export">(in module splinepy.io.gismo)</a>
+</li>
+        <li><a href="_generated/splinepy.io.iges.export.html#splinepy.io.iges.export">(in module splinepy.io.iges)</a>
+</li>
+        <li><a href="_generated/splinepy.io.irit.export.html#splinepy.io.irit.export">(in module splinepy.io.irit)</a>
+</li>
+        <li><a href="_generated/splinepy.io.json.export.html#splinepy.io.json.export">(in module splinepy.io.json)</a>
+</li>
+        <li><a href="_generated/splinepy.io.mfem.export.html#splinepy.io.mfem.export">(in module splinepy.io.mfem)</a>
+</li>
+        <li><a href="_generated/splinepy.io.npz.export.html#splinepy.io.npz.export">(in module splinepy.io.npz)</a>
+</li>
+        <li><a href="_generated/splinepy.io.svg.export.html#splinepy.io.svg.export">(in module splinepy.io.svg)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.Bezier.export.html#splinepy.bezier.Bezier.export">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.export.html#splinepy.bezier.BezierBase.export">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.export.html#splinepy.bspline.BSpline.export">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.export.html#splinepy.bspline.BSplineBase.export">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.export.html#splinepy.nurbs.NURBS.export">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.export.html#splinepy.rational_bezier.RationalBezier.export">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.export.html#splinepy.spline.Spline.export">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.io.mfem.export_cartesian.html#splinepy.io.mfem.export_cartesian">export_cartesian() (in module splinepy.io.mfem)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.export_iges.html#splinepy.splinepy_core.export_iges">export_iges() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.extract.html#splinepy.multipatch.Multipatch.extract">extract (splinepy.multipatch.Multipatch property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.spline.Spline.extract.html#splinepy.spline.Spline.extract">(splinepy.spline.Spline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.extract_all_boundary_splines.html#splinepy.splinepy_core.extract_all_boundary_splines">extract_all_boundary_splines() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.extract_bezier_patches.html#splinepy.splinepy_core.extract_bezier_patches">extract_bezier_patches() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.extract_bezier_patches.html#splinepy.bspline.BSpline.extract_bezier_patches">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.extract_bezier_patches.html#splinepy.bspline.BSplineBase.extract_bezier_patches">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.extract_bezier_patches.html#splinepy.nurbs.NURBS.extract_bezier_patches">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.extract_boundaries.html#splinepy.splinepy_core.extract_boundaries">extract_boundaries() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.extract_dim.html#splinepy.splinepy_core.extract_dim">extract_dim() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.Bezier.extract_dim.html#splinepy.bezier.Bezier.extract_dim">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.extract_dim.html#splinepy.bezier.BezierBase.extract_dim">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.extract_dim.html#splinepy.rational_bezier.RationalBezier.extract_dim">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.Extractor.html#splinepy.helpme.extract.Extractor">Extractor (class in splinepy.helpme.extract)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.extruded.html#splinepy.helpme.create.extruded">extruded() (in module splinepy.helpme.create)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.Creator.extruded.html#splinepy.helpme.create.Creator.extruded">(splinepy.helpme.create.Creator method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.extract.faces.html#splinepy.helpme.extract.faces">faces() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.faces.html#splinepy.helpme.extract.Extractor.faces">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.ffd.FFD.html#splinepy.helpme.ffd.FFD">FFD (class in splinepy.helpme.ffd)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.field_derivatives.html#splinepy.helpme.mapper.Mapper.field_derivatives">field_derivatives() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.fields.html#splinepy.multipatch.Multipatch.fields">fields (splinepy.multipatch.Multipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.fields.html#splinepy.splinepy_core.PyMultipatch.fields">fields() (splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.fill.html#splinepy.utils.data.PhysicalSpaceArray.fill">fill() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.find_span.html#splinepy.splinepy_core.KnotVector.find_span">find_span() (splinepy.splinepy_core.KnotVector method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.flatten.html#splinepy.utils.data.PhysicalSpaceArray.flatten">flatten() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.reparametrize.flip_axes.html#splinepy.helpme.reparametrize.flip_axes">flip_axes() (in module splinepy.helpme.reparametrize)</a>
+</li>
+      <li><a href="_generated/splinepy.io.ioutils.form_lines.html#splinepy.io.ioutils.form_lines">form_lines() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.from_bounds.html#splinepy.helpme.create.from_bounds">from_bounds() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.full_row_indices.html#splinepy.utils.data.PhysicalSpaceArray.full_row_indices">full_row_indices() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.function.html#splinepy.utils.data.SplineDataAdaptor.function">function (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.microstructure.tiles.get.html#splinepy.microstructure.tiles.get">get() (in module splinepy.microstructure.tiles)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.get.html#splinepy.helpme.visualize.MultipatchShowOption.get">(splinepy.helpme.visualize.MultipatchShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.get.html#splinepy.helpme.visualize.SplineShowOption.get">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.get.html#splinepy.utils.data.MultipatchData.get">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.get.html#splinepy.utils.data.SplineData.get">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.get_interfaces.html#splinepy.multipatch.Multipatch.get_interfaces">get_interfaces() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.get_interfaces.html#splinepy.splinepy_core.PyMultipatch.get_interfaces">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.getfield.html#splinepy.utils.data.PhysicalSpaceArray.getfield">getfield() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.global_knot_insertion_matrix.html#splinepy.splinepy_core.global_knot_insertion_matrix">global_knot_insertion_matrix() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.gradient.html#splinepy.helpme.mapper.Mapper.gradient">gradient() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.greville_abscissae.html#splinepy.bezier.Bezier.greville_abscissae">greville_abscissae() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.greville_abscissae.html#splinepy.bezier.BezierBase.greville_abscissae">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.greville_abscissae.html#splinepy.bspline.BSpline.greville_abscissae">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.greville_abscissae.html#splinepy.bspline.BSplineBase.greville_abscissae">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.greville_abscissae.html#splinepy.nurbs.NURBS.greville_abscissae">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.greville_abscissae.html#splinepy.rational_bezier.RationalBezier.greville_abscissae">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.greville_abscissae.html#splinepy.spline.Spline.greville_abscissae">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.has_core.html#splinepy.splinepy_core.has_core">has_core() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.has_evaluate.html#splinepy.utils.data.SplineDataAdaptor.has_evaluate">has_evaluate (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.has_function.html#splinepy.utils.data.SplineDataAdaptor.has_function">has_function (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.has_knot_vectors.html#splinepy.spline.Spline.has_knot_vectors">has_knot_vectors (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.has_knot_vectors.html#splinepy.splinepy_core.PySpline.has_knot_vectors">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.has_locations.html#splinepy.utils.data.SplineDataAdaptor.has_locations">has_locations (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.hessian.html#splinepy.helpme.mapper.Mapper.hessian">hessian() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.HollowCube.html#splinepy.microstructure.tiles.hollow_cube.HollowCube">HollowCube (class in splinepy.microstructure.tiles.hollow_cube)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.HollowOctagon.html#splinepy.microstructure.tiles.hollow_octagon.HollowOctagon">HollowOctagon (class in splinepy.microstructure.tiles.hollow_octagon)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude.html#splinepy.microstructure.tiles.hollow_octagon_extrude.HollowOctagonExtrude">HollowOctagonExtrude (class in splinepy.microstructure.tiles.hollow_octagon_extrude)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.log.info.html#splinepy.utils.log.info">info() (in module splinepy.utils.log)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.insert_knots.html#splinepy.splinepy_core.insert_knots">insert_knots() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.insert_knots.html#splinepy.bspline.BSpline.insert_knots">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.insert_knots.html#splinepy.bspline.BSplineBase.insert_knots">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.insert_knots.html#splinepy.nurbs.NURBS.insert_knots">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.Spline.integrate.html#splinepy.spline.Spline.integrate">integrate (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.integrate.Integrator.html#splinepy.helpme.integrate.Integrator">Integrator (class in splinepy.helpme.integrate)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.interface_orientations.html#splinepy.multipatch.Multipatch.interface_orientations">interface_orientations() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.interface_orientations.html#splinepy.splinepy_core.PyMultipatch.interface_orientations">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.interfaces.html#splinepy.multipatch.Multipatch.interfaces">interfaces (splinepy.multipatch.Multipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.interfaces_from_boundary_centers.html#splinepy.splinepy_core.interfaces_from_boundary_centers">interfaces_from_boundary_centers() (in module splinepy.splinepy_core)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.RequiredProperties.intersection.html#splinepy.spline.RequiredProperties.intersection">intersection() (splinepy.spline.RequiredProperties class method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D.html#splinepy.microstructure.tiles.inverse_cross_3d.InverseCross3D">InverseCross3D (class in splinepy.microstructure.tiles.inverse_cross_3d)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.is_minimal.html#splinepy.splinepy_core.is_minimal">is_minimal() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.is_rational.html#splinepy.spline.Spline.is_rational">is_rational (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.is_rational.html#splinepy.splinepy_core.PySpline.is_rational">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.is_spline.html#splinepy.utils.data.SplineDataAdaptor.is_spline">is_spline (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.item.html#splinepy.utils.data.PhysicalSpaceArray.item">item() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.items.html#splinepy.helpme.visualize.MultipatchShowOption.items">items() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.items.html#splinepy.helpme.visualize.SplineShowOption.items">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.items.html#splinepy.utils.data.MultipatchData.items">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.items.html#splinepy.utils.data.SplineData.items">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.bezier.Bezier.jacobian.html#splinepy.bezier.Bezier.jacobian">jacobian() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.jacobian.html#splinepy.bezier.BezierBase.jacobian">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.jacobian.html#splinepy.bspline.BSpline.jacobian">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.jacobian.html#splinepy.bspline.BSplineBase.jacobian">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.jacobian.html#splinepy.nurbs.NURBS.jacobian">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.jacobian.html#splinepy.rational_bezier.RationalBezier.jacobian">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.jacobian.html#splinepy.spline.Spline.jacobian">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.jacobian.html#splinepy.splinepy_core.PySpline.jacobian">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.keys.html#splinepy.helpme.visualize.MultipatchShowOption.keys">keys() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.keys.html#splinepy.helpme.visualize.SplineShowOption.keys">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.keys.html#splinepy.utils.data.MultipatchData.keys">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.keys.html#splinepy.utils.data.SplineData.keys">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.knot_insertion_matrix.html#splinepy.splinepy_core.knot_insertion_matrix">knot_insertion_matrix() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.knot_insertion_matrix.html#splinepy.bspline.BSpline.knot_insertion_matrix">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.knot_insertion_matrix.html#splinepy.bspline.BSplineBase.knot_insertion_matrix">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.knot_insertion_matrix.html#splinepy.nurbs.NURBS.knot_insertion_matrix">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.Spline.knot_multiplicities.html#splinepy.spline.Spline.knot_multiplicities">knot_multiplicities (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.knot_vectors.html#splinepy.spline.Spline.knot_vectors">knot_vectors (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.html#splinepy.splinepy_core.KnotVector">KnotVector (class in splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.kvs.html#splinepy.spline.Spline.kvs">kvs (splinepy.spline.Spline property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.laplacian.html#splinepy.helpme.mapper.Mapper.laplacian">laplacian() (splinepy.helpme.mapper.Mapper method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.len.html#splinepy.splinepy_core.ControlPointPointers.len">len() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.len.html#splinepy.splinepy_core.WeightPointers.len">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.line.html#splinepy.helpme.create.line">line() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.io.cats.load.html#splinepy.io.cats.load">load() (in module splinepy.io.cats)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.io.default.load.html#splinepy.io.default.load">(in module splinepy.io.default)</a>
+</li>
+        <li><a href="_generated/splinepy.io.gismo.load.html#splinepy.io.gismo.load">(in module splinepy.io.gismo)</a>
+</li>
+        <li><a href="_generated/splinepy.io.iges.load.html#splinepy.io.iges.load">(in module splinepy.io.iges)</a>
+</li>
+        <li><a href="_generated/splinepy.io.irit.load.html#splinepy.io.irit.load">(in module splinepy.io.irit)</a>
+</li>
+        <li><a href="_generated/splinepy.io.json.load.html#splinepy.io.json.load">(in module splinepy.io.json)</a>
+</li>
+        <li><a href="_generated/splinepy.io.mfem.load.html#splinepy.io.mfem.load">(in module splinepy.io.mfem)</a>
+</li>
+        <li><a href="_generated/splinepy.io.npz.load.html#splinepy.io.npz.load">(in module splinepy.io.npz)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.locations.html#splinepy.utils.data.SplineDataAdaptor.locations">locations (splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.make_matrix.html#splinepy.utils.data.make_matrix">make_matrix() (in module splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.io.ioutils.make_meaningful.html#splinepy.io.ioutils.make_meaningful">make_meaningful() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.visualize.make_showable.html#splinepy.helpme.visualize.make_showable">make_showable() (in module splinepy.helpme.visualize)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.mapper.Mapper.html#splinepy.helpme.mapper.Mapper">Mapper (class in splinepy.helpme.mapper)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.mapper.html#splinepy.bezier.Bezier.mapper">mapper() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.mapper.html#splinepy.bezier.BezierBase.mapper">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.mapper.html#splinepy.bspline.BSpline.mapper">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.mapper.html#splinepy.bspline.BSplineBase.mapper">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.mapper.html#splinepy.nurbs.NURBS.mapper">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.mapper.html#splinepy.rational_bezier.RationalBezier.mapper">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.mapper.html#splinepy.spline.Spline.mapper">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.max.html#splinepy.utils.data.PhysicalSpaceArray.max">max() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.mean.html#splinepy.utils.data.PhysicalSpaceArray.mean">mean() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.ffd.FFD.mesh.html#splinepy.helpme.ffd.FFD.mesh">mesh (splinepy.helpme.ffd.FFD property)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.html#splinepy.microstructure.microstructure.Microstructure">Microstructure (class in splinepy.microstructure.microstructure)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.microtile.html#splinepy.microstructure.microstructure.Microstructure.microtile">microtile (splinepy.microstructure.microstructure.Microstructure property)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.min.html#splinepy.utils.data.PhysicalSpaceArray.min">min() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="_generated/splinepy.html#module-splinepy">splinepy</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.html#module-splinepy.bezier">splinepy.bezier</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.html#module-splinepy.bspline">splinepy.bspline</a>
+</li>
+        <li><a href="_generated/splinepy.cli.html#module-splinepy.cli">splinepy.cli</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.html#module-splinepy.helpme">splinepy.helpme</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.check.html#module-splinepy.helpme.check">splinepy.helpme.check</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.create.html#module-splinepy.helpme.create">splinepy.helpme.create</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract">splinepy.helpme.extract</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.ffd.html#module-splinepy.helpme.ffd">splinepy.helpme.ffd</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit">splinepy.helpme.fit</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.integrate.html#module-splinepy.helpme.integrate">splinepy.helpme.integrate</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.mapper.html#module-splinepy.helpme.mapper">splinepy.helpme.mapper</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.multi_index.html#module-splinepy.helpme.multi_index">splinepy.helpme.multi_index</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.reparametrize.html#module-splinepy.helpme.reparametrize">splinepy.helpme.reparametrize</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.visualize.html#module-splinepy.helpme.visualize">splinepy.helpme.visualize</a>
+</li>
+        <li><a href="_generated/splinepy.io.html#module-splinepy.io">splinepy.io</a>
+</li>
+        <li><a href="_generated/splinepy.io.cats.html#module-splinepy.io.cats">splinepy.io.cats</a>
+</li>
+        <li><a href="_generated/splinepy.io.default.html#module-splinepy.io.default">splinepy.io.default</a>
+</li>
+        <li><a href="_generated/splinepy.io.gismo.html#module-splinepy.io.gismo">splinepy.io.gismo</a>
+</li>
+        <li><a href="_generated/splinepy.io.iges.html#module-splinepy.io.iges">splinepy.io.iges</a>
+</li>
+        <li><a href="_generated/splinepy.io.ioutils.html#module-splinepy.io.ioutils">splinepy.io.ioutils</a>
+</li>
+        <li><a href="_generated/splinepy.io.irit.html#module-splinepy.io.irit">splinepy.io.irit</a>
+</li>
+        <li><a href="_generated/splinepy.io.json.html#module-splinepy.io.json">splinepy.io.json</a>
+</li>
+        <li><a href="_generated/splinepy.io.mfem.html#module-splinepy.io.mfem">splinepy.io.mfem</a>
+</li>
+        <li><a href="_generated/splinepy.io.npz.html#module-splinepy.io.npz">splinepy.io.npz</a>
+</li>
+        <li><a href="_generated/splinepy.io.svg.html#module-splinepy.io.svg">splinepy.io.svg</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.html#module-splinepy.microstructure">splinepy.microstructure</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.microstructure.html#module-splinepy.microstructure.microstructure">splinepy.microstructure.microstructure</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.html#module-splinepy.microstructure.tiles">splinepy.microstructure.tiles</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.armadillo.html#module-splinepy.microstructure.tiles.armadillo">splinepy.microstructure.tiles.armadillo</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.chi.html#module-splinepy.microstructure.tiles.chi">splinepy.microstructure.tiles.chi</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.html#module-splinepy.microstructure.tiles.cross_2d">splinepy.microstructure.tiles.cross_2d</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.html#module-splinepy.microstructure.tiles.cross_3d">splinepy.microstructure.tiles.cross_3d</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.html#module-splinepy.microstructure.tiles.cross_3d_linear">splinepy.microstructure.tiles.cross_3d_linear</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.cube_void.html#module-splinepy.microstructure.tiles.cube_void">splinepy.microstructure.tiles.cube_void</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.html#module-splinepy.microstructure.tiles.double_lattice">splinepy.microstructure.tiles.double_lattice</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.html#module-splinepy.microstructure.tiles.ellips_v_oid">splinepy.microstructure.tiles.ellips_v_oid</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.html#module-splinepy.microstructure.tiles.hollow_cube">splinepy.microstructure.tiles.hollow_cube</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.html#module-splinepy.microstructure.tiles.hollow_octagon">splinepy.microstructure.tiles.hollow_octagon</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.html#module-splinepy.microstructure.tiles.hollow_octagon_extrude">splinepy.microstructure.tiles.hollow_octagon_extrude</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.html#module-splinepy.microstructure.tiles.inverse_cross_3d">splinepy.microstructure.tiles.inverse_cross_3d</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.snappy.html#module-splinepy.microstructure.tiles.snappy">splinepy.microstructure.tiles.snappy</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.tile_base.html#module-splinepy.microstructure.tiles.tile_base">splinepy.microstructure.tiles.tile_base</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.html#module-splinepy.multipatch">splinepy.multipatch</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.html#module-splinepy.nurbs">splinepy.nurbs</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.html#module-splinepy.rational_bezier">splinepy.rational_bezier</a>
+</li>
+        <li><a href="_generated/splinepy.settings.html#module-splinepy.settings">splinepy.settings</a>
+</li>
+        <li><a href="_generated/splinepy.spline.html#module-splinepy.spline">splinepy.spline</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.html#module-splinepy.splinepy_core">splinepy.splinepy_core</a>
+</li>
+        <li><a href="_generated/splinepy.utils.html#module-splinepy.utils">splinepy.utils</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.html#module-splinepy.utils.data">splinepy.utils.data</a>
+</li>
+        <li><a href="_generated/splinepy.utils.log.html#module-splinepy.utils.log">splinepy.utils.log</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.Spline.multi_index.html#splinepy.spline.Spline.multi_index">multi_index (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.multi_index.MultiIndex.html#splinepy.helpme.multi_index.MultiIndex">MultiIndex (class in splinepy.helpme.multi_index)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.html#splinepy.multipatch.Multipatch">Multipatch (class in splinepy.multipatch)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.MultipatchData.html#splinepy.utils.data.MultipatchData">MultipatchData (class in splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.html#splinepy.helpme.visualize.MultipatchShowOption">MultipatchShowOption (class in splinepy.helpme.visualize)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.multiplicities.html#splinepy.splinepy_core.KnotVector.multiplicities">multiplicities() (splinepy.splinepy_core.KnotVector method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.multiply.html#splinepy.splinepy_core.multiply">multiply() (in module splinepy.splinepy_core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.n_default_threads.html#splinepy.splinepy_core.PyMultipatch.n_default_threads">n_default_threads (splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.name.html#splinepy.spline.Spline.name">name (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.name.html#splinepy.splinepy_core.PyMultipatch.name">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.name.html#splinepy.splinepy_core.PySpline.name">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.settings.NAME_TO_TYPE.html#splinepy.settings.NAME_TO_TYPE">NAME_TO_TYPE (in module splinepy.settings)</a>
+</li>
+      <li><a href="_generated/splinepy.io.ioutils.next_line.html#splinepy.io.ioutils.next_line">next_line() (in module splinepy.io.ioutils)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.nonzero.html#splinepy.utils.data.PhysicalSpaceArray.nonzero">nonzero() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.bspline.BSpline.normalize_knot_vectors.html#splinepy.bspline.BSpline.normalize_knot_vectors">normalize_knot_vectors() (splinepy.bspline.BSpline method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.normalize_knot_vectors.html#splinepy.bspline.BSplineBase.normalize_knot_vectors">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.normalize_knot_vectors.html#splinepy.nurbs.NURBS.normalize_knot_vectors">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.settings.NTHREADS.html#splinepy.settings.NTHREADS">NTHREADS (in module splinepy.settings)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.null_spline.html#splinepy.splinepy_core.null_spline">null_spline() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.numpy.html#splinepy.splinepy_core.KnotVector.numpy">numpy() (splinepy.splinepy_core.KnotVector method)</a>
+</li>
+      <li><a href="_generated/splinepy.nurbs.NURBS.html#splinepy.nurbs.NURBS">NURBS (class in splinepy.nurbs)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.nurbs.html#splinepy.bezier.Bezier.nurbs">nurbs (splinepy.bezier.Bezier property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.nurbs.html#splinepy.bspline.BSpline.nurbs">(splinepy.bspline.BSpline property)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.nurbs.html#splinepy.nurbs.NURBS.nurbs">(splinepy.nurbs.NURBS property)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.nurbs.html#splinepy.rational_bezier.RationalBezier.nurbs">(splinepy.rational_bezier.RationalBezier property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.RequiredProperties.of.html#splinepy.spline.RequiredProperties.of">of() (splinepy.spline.RequiredProperties class method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.ffd.FFD.padding.html#splinepy.helpme.ffd.FFD.padding">padding (splinepy.helpme.ffd.FFD property)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.para_dim.html#splinepy.microstructure.tiles.tile_base.TileBase.para_dim">para_dim (splinepy.microstructure.tiles.tile_base.TileBase property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.para_dim.html#splinepy.multipatch.Multipatch.para_dim">(splinepy.multipatch.Multipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.para_dim.html#splinepy.spline.Spline.para_dim">(splinepy.spline.Spline property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.para_dim.html#splinepy.splinepy_core.PyMultipatch.para_dim">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.para_dim.html#splinepy.splinepy_core.PySpline.para_dim">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.parameter_sensitivity_function.html#splinepy.microstructure.microstructure.Microstructure.parameter_sensitivity_function">parameter_sensitivity_function (splinepy.microstructure.microstructure.Microstructure property)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.fit.parameterize.html#splinepy.helpme.fit.parameterize">parameterize() (in module splinepy.helpme.fit)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.ParameterSpace.html#splinepy.splinepy_core.ParameterSpace">ParameterSpace (class in splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.parametric_bounds.html#splinepy.spline.Spline.parametric_bounds">parametric_bounds (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.parametric_bounds.html#splinepy.splinepy_core.PySpline.parametric_bounds">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.parametric_bounds.html#splinepy.utils.data.SplineDataAdaptor.parametric_bounds">(splinepy.utils.data.SplineDataAdaptor attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.integrate.parametric_function.html#splinepy.helpme.integrate.parametric_function">parametric_function() (in module splinepy.helpme.integrate)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.integrate.Integrator.parametric_function.html#splinepy.helpme.integrate.Integrator.parametric_function">(splinepy.helpme.integrate.Integrator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.create.parametric_view.html#splinepy.helpme.create.parametric_view">parametric_view() (in module splinepy.helpme.create)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.Creator.parametric_view.html#splinepy.helpme.create.Creator.parametric_view">(splinepy.helpme.create.Creator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.parametrization_function.html#splinepy.microstructure.microstructure.Microstructure.parametrization_function">parametrization_function (splinepy.microstructure.microstructure.Microstructure property)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.partition.html#splinepy.utils.data.PhysicalSpaceArray.partition">partition() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.patches.html#splinepy.multipatch.Multipatch.patches">patches (splinepy.multipatch.Multipatch property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.patches.html#splinepy.splinepy_core.PyMultipatch.patches">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.reparametrize.permute_parametric_axes.html#splinepy.helpme.reparametrize.permute_parametric_axes">permute_parametric_axes() (in module splinepy.helpme.reparametrize)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.integrate.physical_function.html#splinepy.helpme.integrate.physical_function">physical_function() (in module splinepy.helpme.integrate)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.integrate.Integrator.physical_function.html#splinepy.helpme.integrate.Integrator.physical_function">(splinepy.helpme.integrate.Integrator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.html#splinepy.utils.data.PhysicalSpaceArray">PhysicalSpaceArray (class in splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.plate.html#splinepy.helpme.create.plate">plate() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.pop.html#splinepy.helpme.visualize.MultipatchShowOption.pop">pop() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.pop.html#splinepy.helpme.visualize.SplineShowOption.pop">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.pop.html#splinepy.utils.data.MultipatchData.pop">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.pop.html#splinepy.utils.data.SplineData.pop">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.log.prepend_log.html#splinepy.utils.log.prepend_log">prepend_log() (in module splinepy.utils.log)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.prod.html#splinepy.utils.data.PhysicalSpaceArray.prod">prod() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.proximities.html#splinepy.bezier.Bezier.proximities">proximities() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.proximities.html#splinepy.bezier.BezierBase.proximities">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.proximities.html#splinepy.bspline.BSpline.proximities">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.proximities.html#splinepy.bspline.BSplineBase.proximities">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.proximities.html#splinepy.nurbs.NURBS.proximities">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.proximities.html#splinepy.rational_bezier.RationalBezier.proximities">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.proximities.html#splinepy.spline.Spline.proximities">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.proximities.html#splinepy.splinepy_core.PySpline.proximities">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.put.html#splinepy.utils.data.PhysicalSpaceArray.put">put() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.html#splinepy.splinepy_core.PyMultipatch">PyMultipatch (class in splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.pyramid.html#splinepy.helpme.create.pyramid">pyramid() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.PySpline.html#splinepy.splinepy_core.PySpline">PySpline (class in splinepy.splinepy_core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.rational_bezier.RationalBezier.html#splinepy.rational_bezier.RationalBezier">RationalBezier (class in splinepy.rational_bezier)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.rationalbezier.html#splinepy.bezier.Bezier.rationalbezier">rationalbezier (splinepy.bezier.Bezier property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.rationalbezier.html#splinepy.rational_bezier.RationalBezier.rationalbezier">(splinepy.rational_bezier.RationalBezier property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.ravel.html#splinepy.utils.data.PhysicalSpaceArray.ravel">ravel() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.read_iges.html#splinepy.splinepy_core.read_iges">read_iges() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.io.mfem.read_solution.html#splinepy.io.mfem.read_solution">read_solution() (in module splinepy.io.mfem)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.reduce_degrees.html#splinepy.bezier.Bezier.reduce_degrees">reduce_degrees() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.reduce_degrees.html#splinepy.bezier.BezierBase.reduce_degrees">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.reduce_degrees.html#splinepy.bspline.BSpline.reduce_degrees">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.reduce_degrees.html#splinepy.bspline.BSplineBase.reduce_degrees">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.reduce_degrees.html#splinepy.nurbs.NURBS.reduce_degrees">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.reduce_degrees.html#splinepy.rational_bezier.RationalBezier.reduce_degrees">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.reduce_degrees.html#splinepy.spline.Spline.reduce_degrees">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.reduce_degrees.html#splinepy.splinepy_core.PySpline.reduce_degrees">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.remove_knots.html#splinepy.splinepy_core.remove_knots">remove_knots() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSpline.remove_knots.html#splinepy.bspline.BSpline.remove_knots">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.remove_knots.html#splinepy.bspline.BSplineBase.remove_knots">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.remove_knots.html#splinepy.nurbs.NURBS.remove_knots">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.repeat.html#splinepy.utils.data.PhysicalSpaceArray.repeat">repeat() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.required_properties.html#splinepy.spline.Spline.required_properties">required_properties (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.RequiredProperties.html#splinepy.spline.RequiredProperties">RequiredProperties (class in splinepy.spline)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.reshape.html#splinepy.utils.data.PhysicalSpaceArray.reshape">reshape() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.resize.html#splinepy.utils.data.PhysicalSpaceArray.resize">resize() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.revolved.html#splinepy.helpme.create.revolved">revolved() (in module splinepy.helpme.create)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.Creator.revolved.html#splinepy.helpme.create.Creator.revolved">(splinepy.helpme.create.Creator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.round.html#splinepy.utils.data.PhysicalSpaceArray.round">round() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.row_indices.html#splinepy.utils.data.PhysicalSpaceArray.row_indices">row_indices() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.same_parametric_bounds.html#splinepy.splinepy_core.PyMultipatch.same_parametric_bounds">same_parametric_bounds (splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.same_spline_with_knot_vectors.html#splinepy.splinepy_core.same_spline_with_knot_vectors">same_spline_with_knot_vectors() (in module splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.sample.html#splinepy.bezier.Bezier.sample">sample() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.sample.html#splinepy.bezier.BezierBase.sample">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.sample.html#splinepy.bspline.BSpline.sample">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.sample.html#splinepy.bspline.BSplineBase.sample">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.sample.html#splinepy.multipatch.Multipatch.sample">(splinepy.multipatch.Multipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.sample.html#splinepy.nurbs.NURBS.sample">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.sample.html#splinepy.rational_bezier.RationalBezier.sample">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.sample.html#splinepy.spline.Spline.sample">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.sample.html#splinepy.splinepy_core.PyMultipatch.sample">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.sample.html#splinepy.splinepy_core.PySpline.sample">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.scale.html#splinepy.splinepy_core.KnotVector.scale">scale() (splinepy.splinepy_core.KnotVector method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.searchsorted.html#splinepy.utils.data.PhysicalSpaceArray.searchsorted">searchsorted() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.set_boundary.html#splinepy.multipatch.Multipatch.set_boundary">set_boundary() (splinepy.multipatch.Multipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.set_interface_orientations.html#splinepy.multipatch.Multipatch.set_interface_orientations">set_interface_orientations() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.set_interface_orientations.html#splinepy.splinepy_core.PyMultipatch.set_interface_orientations">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.set_interfaces.html#splinepy.multipatch.Multipatch.set_interfaces">set_interfaces() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.set_interfaces.html#splinepy.splinepy_core.PyMultipatch.set_interfaces">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.set_row.html#splinepy.splinepy_core.ControlPointPointers.set_row">set_row() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.set_row.html#splinepy.splinepy_core.WeightPointers.set_row">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.set_rows.html#splinepy.splinepy_core.ControlPointPointers.set_rows">set_rows() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.set_rows.html#splinepy.splinepy_core.WeightPointers.set_rows">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.setfield.html#splinepy.utils.data.PhysicalSpaceArray.setfield">setfield() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.setflags.html#splinepy.utils.data.PhysicalSpaceArray.setflags">setflags() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.cli.show.html#splinepy.cli.show">show() (in module splinepy.cli)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.show.html#splinepy.helpme.visualize.show">(in module splinepy.helpme.visualize)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.tiles.show.html#splinepy.microstructure.tiles.show">(in module splinepy.microstructure.tiles)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.Bezier.show.html#splinepy.bezier.Bezier.show">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.show.html#splinepy.bezier.BezierBase.show">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.show.html#splinepy.bspline.BSpline.show">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.show.html#splinepy.bspline.BSplineBase.show">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.ffd.FFD.show.html#splinepy.helpme.ffd.FFD.show">(splinepy.helpme.ffd.FFD method)</a>
+</li>
+        <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.show.html#splinepy.microstructure.microstructure.Microstructure.show">(splinepy.microstructure.microstructure.Microstructure method)</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.show.html#splinepy.multipatch.Multipatch.show">(splinepy.multipatch.Multipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.show.html#splinepy.nurbs.NURBS.show">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.show.html#splinepy.rational_bezier.RationalBezier.show">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.show.html#splinepy.spline.Spline.show">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.show_options.html#splinepy.multipatch.Multipatch.show_options">show_options (splinepy.multipatch.Multipatch property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.spline.Spline.show_options.html#splinepy.spline.Spline.show_options">(splinepy.spline.Spline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.bezier.Bezier.showable.html#splinepy.bezier.Bezier.showable">showable() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.showable.html#splinepy.bezier.BezierBase.showable">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.showable.html#splinepy.bspline.BSpline.showable">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.showable.html#splinepy.bspline.BSplineBase.showable">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.helpme.ffd.FFD.showable.html#splinepy.helpme.ffd.FFD.showable">(splinepy.helpme.ffd.FFD method)</a>
+</li>
+        <li><a href="_generated/splinepy.multipatch.Multipatch.showable.html#splinepy.multipatch.Multipatch.showable">(splinepy.multipatch.Multipatch method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.showable.html#splinepy.nurbs.NURBS.showable">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.showable.html#splinepy.rational_bezier.RationalBezier.showable">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.showable.html#splinepy.spline.Spline.showable">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.microstructure.tiles.snappy.Snappy.html#splinepy.microstructure.tiles.snappy.Snappy">Snappy (class in splinepy.microstructure.tiles.snappy)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.fit.solve_for_control_points.html#splinepy.helpme.fit.solve_for_control_points">solve_for_control_points() (in module splinepy.helpme.fit)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.sort.html#splinepy.utils.data.PhysicalSpaceArray.sort">sort() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.sphere.html#splinepy.helpme.create.sphere">sphere() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.html#splinepy.spline.Spline">Spline (class in splinepy.spline)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.ffd.FFD.spline.html#splinepy.helpme.ffd.FFD.spline">spline (splinepy.helpme.ffd.FFD property)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.extract.spline.html#splinepy.helpme.extract.spline">spline() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.spline.html#splinepy.helpme.extract.Extractor.spline">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.spline_data.html#splinepy.multipatch.Multipatch.spline_data">spline_data (splinepy.multipatch.Multipatch property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.spline.Spline.spline_data.html#splinepy.spline.Spline.spline_data">(splinepy.spline.Spline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.SplineData.html#splinepy.utils.data.SplineData">SplineData (class in splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.SplineDataAdaptor.html#splinepy.utils.data.SplineDataAdaptor">SplineDataAdaptor (class in splinepy.utils.data)</a>
+</li>
+      <li>
+    splinepy
+
+      <ul>
+        <li><a href="_generated/splinepy.html#module-splinepy">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.bezier
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.html#module-splinepy.bezier">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.bspline
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.html#module-splinepy.bspline">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.cli
+
+      <ul>
+        <li><a href="_generated/splinepy.cli.html#module-splinepy.cli">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.html#module-splinepy.helpme">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.check
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.check.html#module-splinepy.helpme.check">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.create
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.create.html#module-splinepy.helpme.create">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.extract
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.ffd
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.ffd.html#module-splinepy.helpme.ffd">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.fit
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.fit.html#module-splinepy.helpme.fit">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.integrate
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.integrate.html#module-splinepy.helpme.integrate">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.mapper
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.mapper.html#module-splinepy.helpme.mapper">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.multi_index
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.multi_index.html#module-splinepy.helpme.multi_index">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.reparametrize
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.reparametrize.html#module-splinepy.helpme.reparametrize">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.helpme.visualize
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.html#module-splinepy.helpme.visualize">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io
+
+      <ul>
+        <li><a href="_generated/splinepy.io.html#module-splinepy.io">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.cats
+
+      <ul>
+        <li><a href="_generated/splinepy.io.cats.html#module-splinepy.io.cats">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.default
+
+      <ul>
+        <li><a href="_generated/splinepy.io.default.html#module-splinepy.io.default">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    splinepy.io.gismo
+
+      <ul>
+        <li><a href="_generated/splinepy.io.gismo.html#module-splinepy.io.gismo">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.iges
+
+      <ul>
+        <li><a href="_generated/splinepy.io.iges.html#module-splinepy.io.iges">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.ioutils
+
+      <ul>
+        <li><a href="_generated/splinepy.io.ioutils.html#module-splinepy.io.ioutils">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.irit
+
+      <ul>
+        <li><a href="_generated/splinepy.io.irit.html#module-splinepy.io.irit">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.json
+
+      <ul>
+        <li><a href="_generated/splinepy.io.json.html#module-splinepy.io.json">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.mfem
+
+      <ul>
+        <li><a href="_generated/splinepy.io.mfem.html#module-splinepy.io.mfem">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.npz
+
+      <ul>
+        <li><a href="_generated/splinepy.io.npz.html#module-splinepy.io.npz">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.io.svg
+
+      <ul>
+        <li><a href="_generated/splinepy.io.svg.html#module-splinepy.io.svg">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.html#module-splinepy.microstructure">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.microstructure
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.microstructure.html#module-splinepy.microstructure.microstructure">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.html#module-splinepy.microstructure.tiles">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.armadillo
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.armadillo.html#module-splinepy.microstructure.tiles.armadillo">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.chi
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.chi.html#module-splinepy.microstructure.tiles.chi">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.cross_2d
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_2d.html#module-splinepy.microstructure.tiles.cross_2d">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.cross_3d
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d.html#module-splinepy.microstructure.tiles.cross_3d">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.cross_3d_linear
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.cross_3d_linear.html#module-splinepy.microstructure.tiles.cross_3d_linear">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.cube_void
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.cube_void.html#module-splinepy.microstructure.tiles.cube_void">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.double_lattice
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.double_lattice.html#module-splinepy.microstructure.tiles.double_lattice">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.ellips_v_oid
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.ellips_v_oid.html#module-splinepy.microstructure.tiles.ellips_v_oid">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.hollow_cube
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_cube.html#module-splinepy.microstructure.tiles.hollow_cube">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.hollow_octagon
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon.html#module-splinepy.microstructure.tiles.hollow_octagon">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.hollow_octagon_extrude
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.hollow_octagon_extrude.html#module-splinepy.microstructure.tiles.hollow_octagon_extrude">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.inverse_cross_3d
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.inverse_cross_3d.html#module-splinepy.microstructure.tiles.inverse_cross_3d">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.snappy
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.snappy.html#module-splinepy.microstructure.tiles.snappy">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.microstructure.tiles.tile_base
+
+      <ul>
+        <li><a href="_generated/splinepy.microstructure.tiles.tile_base.html#module-splinepy.microstructure.tiles.tile_base">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.multipatch
+
+      <ul>
+        <li><a href="_generated/splinepy.multipatch.html#module-splinepy.multipatch">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.nurbs
+
+      <ul>
+        <li><a href="_generated/splinepy.nurbs.html#module-splinepy.nurbs">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.rational_bezier
+
+      <ul>
+        <li><a href="_generated/splinepy.rational_bezier.html#module-splinepy.rational_bezier">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.settings
+
+      <ul>
+        <li><a href="_generated/splinepy.settings.html#module-splinepy.settings">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.spline
+
+      <ul>
+        <li><a href="_generated/splinepy.spline.html#module-splinepy.spline">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.splinepy_core
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.html#module-splinepy.splinepy_core">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.utils
+
+      <ul>
+        <li><a href="_generated/splinepy.utils.html#module-splinepy.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.utils.data
+
+      <ul>
+        <li><a href="_generated/splinepy.utils.data.html#module-splinepy.utils.data">module</a>
+</li>
+      </ul></li>
+      <li>
+    splinepy.utils.log
+
+      <ul>
+        <li><a href="_generated/splinepy.utils.log.html#module-splinepy.utils.log">module</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.html#splinepy.helpme.visualize.SplineShowOption">SplineShowOption (class in splinepy.helpme.visualize)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.split.html#splinepy.splinepy_core.split">split() (in module splinepy.splinepy_core)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.Bezier.split.html#splinepy.bezier.Bezier.split">(splinepy.bezier.Bezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.bezier.BezierBase.split.html#splinepy.bezier.BezierBase.split">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.split.html#splinepy.rational_bezier.RationalBezier.split">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.squeeze.html#splinepy.utils.data.PhysicalSpaceArray.squeeze">squeeze() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.std.html#splinepy.utils.data.PhysicalSpaceArray.std">std() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.sub_multipatch.html#splinepy.multipatch.Multipatch.sub_multipatch">sub_multipatch() (splinepy.multipatch.Multipatch method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.sub_multipatch.html#splinepy.splinepy_core.PyMultipatch.sub_multipatch">(splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.multipatch.Multipatch.sub_patch_centers.html#splinepy.multipatch.Multipatch.sub_patch_centers">sub_patch_centers (splinepy.multipatch.Multipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.sub_patch_centers.html#splinepy.splinepy_core.PyMultipatch.sub_patch_centers">sub_patch_centers() (splinepy.splinepy_core.PyMultipatch method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.sum.html#splinepy.utils.data.PhysicalSpaceArray.sum">sum() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.support.html#splinepy.bezier.Bezier.support">support() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.support.html#splinepy.bezier.BezierBase.support">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.support.html#splinepy.bspline.BSpline.support">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.support.html#splinepy.bspline.BSplineBase.support">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.support.html#splinepy.nurbs.NURBS.support">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.support.html#splinepy.rational_bezier.RationalBezier.support">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.support.html#splinepy.spline.Spline.support">(splinepy.spline.Spline method)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.support.html#splinepy.splinepy_core.PySpline.support">(splinepy.splinepy_core.PySpline method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.fit.surface.html#splinepy.helpme.fit.surface">surface() (in module splinepy.helpme.fit)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.surface_circle.html#splinepy.helpme.create.surface_circle">surface_circle() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.swapaxes.html#splinepy.utils.data.PhysicalSpaceArray.swapaxes">swapaxes() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.sync.html#splinepy.splinepy_core.ControlPointPointers.sync">sync() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.sync.html#splinepy.splinepy_core.WeightPointers.sync">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.splinepy_core.ControlPointPointers.sync_rows.html#splinepy.splinepy_core.ControlPointPointers.sync_rows">sync_rows() (splinepy.splinepy_core.ControlPointPointers method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.WeightPointers.sync_rows.html#splinepy.splinepy_core.WeightPointers.sync_rows">(splinepy.splinepy_core.WeightPointers method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.take.html#splinepy.utils.data.PhysicalSpaceArray.take">take() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.tiles.tile_base.TileBase.html#splinepy.microstructure.tiles.tile_base.TileBase">TileBase (class in splinepy.microstructure.tiles.tile_base)</a>
+</li>
+      <li><a href="_generated/splinepy.microstructure.microstructure.Microstructure.tiling.html#splinepy.microstructure.microstructure.Microstructure.tiling">tiling (splinepy.microstructure.microstructure.Microstructure property)</a>
+</li>
+      <li><a href="_generated/splinepy.to_derived.html#splinepy.to_derived">to_derived() (in module splinepy)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.to_device.html#splinepy.utils.data.PhysicalSpaceArray.to_device">to_device() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.io.gismo.AdditionalBlocks.to_list.html#splinepy.io.gismo.AdditionalBlocks.to_list">to_list() (splinepy.io.gismo.AdditionalBlocks method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.tobytes.html#splinepy.utils.data.PhysicalSpaceArray.tobytes">tobytes() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.bezier.Bezier.todict.html#splinepy.bezier.Bezier.todict">todict() (splinepy.bezier.Bezier method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bezier.BezierBase.todict.html#splinepy.bezier.BezierBase.todict">(splinepy.bezier.BezierBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSpline.todict.html#splinepy.bspline.BSpline.todict">(splinepy.bspline.BSpline method)</a>
+</li>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.todict.html#splinepy.bspline.BSplineBase.todict">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.todict.html#splinepy.nurbs.NURBS.todict">(splinepy.nurbs.NURBS method)</a>
+</li>
+        <li><a href="_generated/splinepy.rational_bezier.RationalBezier.todict.html#splinepy.rational_bezier.RationalBezier.todict">(splinepy.rational_bezier.RationalBezier method)</a>
+</li>
+        <li><a href="_generated/splinepy.spline.Spline.todict.html#splinepy.spline.Spline.todict">(splinepy.spline.Spline method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.tofile.html#splinepy.utils.data.PhysicalSpaceArray.tofile">tofile() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.settings.TOLERANCE.html#splinepy.settings.TOLERANCE">TOLERANCE (in module splinepy.settings)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.tolerance.html#splinepy.splinepy_core.PyMultipatch.tolerance">tolerance (splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.tolist.html#splinepy.utils.data.PhysicalSpaceArray.tolist">tolist() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.create.torus.html#splinepy.helpme.create.torus">torus() (in module splinepy.helpme.create)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.tostring.html#splinepy.utils.data.PhysicalSpaceArray.tostring">tostring() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.trace.html#splinepy.utils.data.PhysicalSpaceArray.trace">trace() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.transpose.html#splinepy.utils.data.PhysicalSpaceArray.transpose">transpose() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.uniform_query.html#splinepy.utils.data.uniform_query">uniform_query() (in module splinepy.utils.data)</a>
+</li>
+      <li><a href="_generated/splinepy.bspline.BSpline.uniform_refine.html#splinepy.bspline.BSpline.uniform_refine">uniform_refine() (splinepy.bspline.BSpline method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.bspline.BSplineBase.uniform_refine.html#splinepy.bspline.BSplineBase.uniform_refine">(splinepy.bspline.BSplineBase method)</a>
+</li>
+        <li><a href="_generated/splinepy.nurbs.NURBS.uniform_refine.html#splinepy.nurbs.NURBS.uniform_refine">(splinepy.nurbs.NURBS method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.RequiredProperties.union.html#splinepy.spline.RequiredProperties.union">union() (splinepy.spline.RequiredProperties class method)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.KnotVector.unique.html#splinepy.splinepy_core.KnotVector.unique">unique() (splinepy.splinepy_core.KnotVector method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.Spline.unique_knots.html#splinepy.spline.Spline.unique_knots">unique_knots (splinepy.spline.Spline property)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.ParameterSpace.unique_knots.html#splinepy.splinepy_core.ParameterSpace.unique_knots">unique_knots() (splinepy.splinepy_core.ParameterSpace method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.update.html#splinepy.helpme.visualize.MultipatchShowOption.update">update() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.update.html#splinepy.helpme.visualize.SplineShowOption.update">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.update.html#splinepy.utils.data.MultipatchData.update">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.update.html#splinepy.utils.data.SplineData.update">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.valid_keys.html#splinepy.helpme.visualize.MultipatchShowOption.valid_keys">valid_keys() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.valid_keys.html#splinepy.helpme.visualize.SplineShowOption.valid_keys">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.check.valid_queries.html#splinepy.helpme.check.valid_queries">valid_queries() (in module splinepy.helpme.check)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.check.Checker.valid_queries.html#splinepy.helpme.check.Checker.valid_queries">(splinepy.helpme.check.Checker method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.visualize.MultipatchShowOption.values.html#splinepy.helpme.visualize.MultipatchShowOption.values">values() (splinepy.helpme.visualize.MultipatchShowOption method)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.visualize.SplineShowOption.values.html#splinepy.helpme.visualize.SplineShowOption.values">(splinepy.helpme.visualize.SplineShowOption method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.MultipatchData.values.html#splinepy.utils.data.MultipatchData.values">(splinepy.utils.data.MultipatchData method)</a>
+</li>
+        <li><a href="_generated/splinepy.utils.data.SplineData.values.html#splinepy.utils.data.SplineData.values">(splinepy.utils.data.SplineData method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.var.html#splinepy.utils.data.PhysicalSpaceArray.var">var() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.utils.data.PhysicalSpaceArray.view.html#splinepy.utils.data.PhysicalSpaceArray.view">view() (splinepy.utils.data.PhysicalSpaceArray method)</a>
+</li>
+      <li><a href="_generated/splinepy.helpme.integrate.volume.html#splinepy.helpme.integrate.volume">volume() (in module splinepy.helpme.integrate)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.integrate.Integrator.volume.html#splinepy.helpme.integrate.Integrator.volume">(splinepy.helpme.integrate.Integrator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.helpme.extract.volumes.html#splinepy.helpme.extract.volumes">volumes() (in module splinepy.helpme.extract)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.helpme.extract.Extractor.volumes.html#splinepy.helpme.extract.Extractor.volumes">(splinepy.helpme.extract.Extractor method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.utils.log.warning.html#splinepy.utils.log.warning">warning() (in module splinepy.utils.log)</a>
+</li>
+      <li><a href="_generated/splinepy.splinepy_core.WeightPointers.html#splinepy.splinepy_core.WeightPointers">WeightPointers (class in splinepy.splinepy_core)</a>
+</li>
+      <li><a href="_generated/splinepy.spline.Spline.weights.html#splinepy.spline.Spline.weights">weights (splinepy.spline.Spline property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_generated/splinepy.spline.Spline.whatami.html#splinepy.spline.Spline.whatami">whatami (splinepy.spline.Spline property)</a>
+
+      <ul>
+        <li><a href="_generated/splinepy.splinepy_core.PyMultipatch.whatami.html#splinepy.splinepy_core.PyMultipatch.whatami">(splinepy.splinepy_core.PyMultipatch property)</a>
+</li>
+        <li><a href="_generated/splinepy.splinepy_core.PySpline.whatami.html#splinepy.splinepy_core.PySpline.whatami">(splinepy.splinepy_core.PySpline property)</a>
+</li>
+      </ul></li>
+      <li><a href="_generated/splinepy.spline.Spline.ws.html#splinepy.spline.Spline.ws">ws (splinepy.spline.Spline property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Jaewook Lee.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

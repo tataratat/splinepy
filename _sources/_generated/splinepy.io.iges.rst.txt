@@ -1,0 +1,33 @@
+.. _splinepy.io.iges:
+
+splinepy.io.iges
+================
+
+.. automodule:: splinepy.io.iges
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

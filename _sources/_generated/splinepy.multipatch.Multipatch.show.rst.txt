@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.show
+===================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. automethod:: Multipatch.show

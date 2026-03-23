@@ -1,0 +1,33 @@
+.. _splinepy.helpme.reparametrize:
+
+splinepy.helpme.reparametrize
+=============================
+
+.. automodule:: splinepy.helpme.reparametrize
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      flip_axes
+      permute_parametric_axes
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

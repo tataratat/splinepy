@@ -1,0 +1,6 @@
+splinepy.spline.Spline.show\_options
+====================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.show_options

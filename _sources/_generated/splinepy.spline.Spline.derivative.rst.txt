@@ -1,0 +1,6 @@
+splinepy.spline.Spline.derivative
+=================================
+
+.. currentmodule:: splinepy.spline
+
+.. automethod:: Spline.derivative

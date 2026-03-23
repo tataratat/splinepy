@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.cross\_2d.Cross2D.check\_param\_derivatives
+=========================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.cross_2d
+
+.. automethod:: Cross2D.check_param_derivatives

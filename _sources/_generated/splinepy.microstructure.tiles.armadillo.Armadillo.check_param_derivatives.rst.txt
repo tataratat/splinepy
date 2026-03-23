@@ -1,0 +1,6 @@
+splinepy.microstructure.tiles.armadillo.Armadillo.check\_param\_derivatives
+===========================================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.armadillo
+
+.. automethod:: Armadillo.check_param_derivatives

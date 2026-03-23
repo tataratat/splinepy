@@ -1,0 +1,6 @@
+splinepy.multipatch.Multipatch.sub\_patch\_centers
+==================================================
+
+.. currentmodule:: splinepy.multipatch
+
+.. autoproperty:: Multipatch.sub_patch_centers

@@ -1,0 +1,6 @@
+splinepy.helpme.create.box
+==========================
+
+.. currentmodule:: splinepy.helpme.create
+
+.. autofunction:: box

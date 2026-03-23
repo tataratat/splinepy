@@ -1,0 +1,6 @@
+splinepy.spline.Spline.multi\_index
+===================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.multi_index

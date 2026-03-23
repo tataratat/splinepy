@@ -1,0 +1,6 @@
+splinepy.spline.Spline.para\_dim
+================================
+
+.. currentmodule:: splinepy.spline
+
+.. autoproperty:: Spline.para_dim

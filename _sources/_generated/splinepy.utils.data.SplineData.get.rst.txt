@@ -1,0 +1,6 @@
+splinepy.utils.data.SplineData.get
+==================================
+
+.. currentmodule:: splinepy.utils.data
+
+.. automethod:: SplineData.get

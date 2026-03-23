@@ -1,0 +1,41 @@
+.. _splinepy.io.gismo:
+
+splinepy.io.gismo
+=================
+
+.. automodule:: splinepy.io.gismo
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      export
+      load
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      AdditionalBlocks
+   
+   
+
+   
+   
+   
+
+
+

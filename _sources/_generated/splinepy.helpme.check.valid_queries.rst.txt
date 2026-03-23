@@ -1,0 +1,6 @@
+splinepy.helpme.check.valid\_queries
+====================================
+
+.. currentmodule:: splinepy.helpme.check
+
+.. autofunction:: valid_queries

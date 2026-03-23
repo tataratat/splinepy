@@ -1,0 +1,6 @@
+splinepy.to\_derived
+====================
+
+.. currentmodule:: splinepy
+
+.. autofunction:: to_derived

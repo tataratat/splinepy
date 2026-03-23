@@ -1,0 +1,41 @@
+splinepy.microstructure.tiles.ellips\_v\_oid.EllipsVoid
+=======================================================
+
+.. currentmodule:: splinepy.microstructure.tiles.ellips_v_oid
+
+.. autoclass:: EllipsVoid
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       EllipsVoid.check_param_derivatives
+     
+     
+       EllipsVoid.check_params
+     
+     
+       EllipsVoid.create_tile
+     
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      
+   
+   

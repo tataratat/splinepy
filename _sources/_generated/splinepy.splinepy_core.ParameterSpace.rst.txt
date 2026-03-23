@@ -1,0 +1,29 @@
+splinepy.splinepy\_core.ParameterSpace
+======================================
+
+.. currentmodule:: splinepy.splinepy_core
+
+.. autoclass:: ParameterSpace
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       ParameterSpace.copy
+     
+     
+       ParameterSpace.unique_knots
+     
+   
+   
+
+   
+   
+   

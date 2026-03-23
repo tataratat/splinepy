@@ -1,0 +1,452 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacesplinepy_1_1utils" kind="namespace" language="C++">
+    <compoundname>splinepy::utils</compoundname>
+    <innerclass refid="classsplinepy_1_1utils_1_1Array" prot="public">splinepy::utils::Array</innerclass>
+    <innerclass refid="structsplinepy_1_1utils_1_1ControlPointPointers" prot="public">splinepy::utils::ControlPointPointers</innerclass>
+    <innerclass refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator" prot="public">splinepy::utils::DefaultInitializationAllocator</innerclass>
+    <innerclass refid="classsplinepy_1_1utils_1_1GridPoints" prot="public">splinepy::utils::GridPoints</innerclass>
+    <innerclass refid="classsplinepy_1_1utils_1_1Matrix" prot="public">splinepy::utils::Matrix</innerclass>
+    <innerclass refid="structsplinepy_1_1utils_1_1WeightPointers" prot="public">splinepy::utils::WeightPointers</innerclass>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacesplinepy_1_1utils_1a2b529e515e5f1021dafe102be9dce2fc" prot="public" static="no">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; Type, <ref refid="classsplinepy_1_1utils_1_1DefaultInitializationAllocator" kindref="compound">DefaultInitializationAllocator</ref>&lt; Type &gt; &gt;</type>
+        <definition>using DefaultInitializationVector =  std::vector&lt;Type, DefaultInitializationAllocator&lt;Type&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>DefaultInitializationVector</name>
+        <qualifiedname>splinepy::utils::DefaultInitializationVector</qualifiedname>
+        <briefdescription>
+<para>short-cut to vector that default initializes </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" line="79" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/default_initialization_allocator.hpp" bodystart="80" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a1d335ae1cfa4b71bb235ae1bcddf33d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename InputArray</type>
+          </param>
+          <param>
+            <type>typename OutIndexType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void UniqueIndicesAndMultiplicities</definition>
+        <argsstring>(const InputArray &amp;input, const Array&lt; OutIndexType, 1, OutIndexType &gt; &amp;arg_sorted, Array&lt; OutIndexType, 1, OutIndexType &gt; &amp;unique, Array&lt; OutIndexType, 1, OutIndexType &gt; &amp;multiplicity)</argsstring>
+        <name>UniqueIndicesAndMultiplicities</name>
+        <qualifiedname>splinepy::utils::UniqueIndicesAndMultiplicities</qualifiedname>
+        <param>
+          <type>const InputArray &amp;</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; OutIndexType, 1, OutIndexType &gt; &amp;</type>
+          <declname>arg_sorted</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; OutIndexType, 1, OutIndexType &gt; &amp;</type>
+          <declname>unique</declname>
+        </param>
+        <param>
+          <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; OutIndexType, 1, OutIndexType &gt; &amp;</type>
+          <declname>multiplicity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="605" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="605" bodyend="652"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1aafe936aafaeded5b357fa9b26e1e8457" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IterableA</type>
+          </param>
+          <param>
+            <type>typename IterableB</type>
+          </param>
+          <param>
+            <type>typename IterableC</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void Subtract</definition>
+        <argsstring>(const IterableA &amp;a, const IterableB &amp;b, IterableC &amp;c)</argsstring>
+        <name>Subtract</name>
+        <qualifiedname>splinepy::utils::Subtract</qualifiedname>
+        <param>
+          <type>const IterableA &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const IterableB &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>IterableC &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+<para>c[i] = a[i] - b[i] </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>IterableA</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>IterableB</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>IterableC</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>c</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="662" column="13" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="662" bodyend="671"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1ab77dc35439743aec410f40afd0590520" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename DataType</type>
+          </param>
+          <param>
+            <type>typename IndexType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CopyUpperToLowerTriangle</definition>
+        <argsstring>(Array&lt; DataType, 3, IndexType &gt; &amp;arr3d)</argsstring>
+        <name>CopyUpperToLowerTriangle</name>
+        <qualifiedname>splinepy::utils::CopyUpperToLowerTriangle</qualifiedname>
+        <param>
+          <type><ref refid="classsplinepy_1_1utils_1_1Array" kindref="compound">Array</ref>&lt; DataType, 3, IndexType &gt; &amp;</type>
+          <declname>arr3d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="823" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="823" bodyend="835"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1ad5d5f838a69da5b429407a7a29d90d8c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>std::size_t</type>
+            <declname>para_dim</declname>
+            <defname>para_dim</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void GaussWithPivot</definition>
+        <argsstring>(std::array&lt; std::array&lt; double, para_dim &gt;, para_dim &gt; &amp;A, std::array&lt; double, para_dim &gt; &amp;b, std::array&lt; int, para_dim &gt; &amp;skipmask, std::array&lt; double, para_dim &gt; &amp;x)</argsstring>
+        <name>GaussWithPivot</name>
+        <qualifiedname>splinepy::utils::GaussWithPivot</qualifiedname>
+        <param>
+          <type>std::array&lt; std::array&lt; double, para_dim &gt;, para_dim &gt; &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>std::array&lt; double, para_dim &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>std::array&lt; int, para_dim &gt; &amp;</type>
+          <declname>skipmask</declname>
+        </param>
+        <param>
+          <type>std::array&lt; double, para_dim &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>Gauss elimination with partial pivoting to find x from (A x = b) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>para_dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>A</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>May be modified inplace </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>May be modified inplace </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>skipmask</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>May be modified inplace </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="845" column="1" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" bodystart="845" bodyend="920"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a253d81e24ad31e70679e4aa7631bfcb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IndexType</type>
+          </param>
+          <param>
+            <type>typename SizeType</type>
+          </param>
+        </templateparamlist>
+        <type>IndexType</type>
+        <definition>IndexType WrapId</definition>
+        <argsstring>(IndexType i, const SizeType n)</argsstring>
+        <name>WrapId</name>
+        <qualifiedname>splinepy::utils::WrapId</qualifiedname>
+        <param>
+          <type>IndexType</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>const SizeType</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Function to support negative indexing. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" line="37" column="11" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/coordinate_pointers.hpp" bodystart="37" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a5287e921f990d1013e6788d6cfc7afe3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Func</type>
+          </param>
+          <param>
+            <type>typename IndexType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void NThreadExecution</definition>
+        <argsstring>(const Func &amp;f, const IndexType &amp;total, IndexType nthread)</argsstring>
+        <name>NThreadExecution</name>
+        <qualifiedname>splinepy::utils::NThreadExecution</qualifiedname>
+        <param>
+          <type>const Func &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>const IndexType &amp;</type>
+          <declname>total</declname>
+        </param>
+        <param>
+          <type>IndexType</type>
+          <declname>nthread</declname>
+        </param>
+        <briefdescription>
+<para>N-Thread execution. Queries will be split into chunks and each thread will execute those. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/nthreads.hpp" line="34" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/nthreads.hpp" bodystart="34" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a6263ec53e00279041b31bf38567d58fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void PrintInfo</definition>
+        <argsstring>(Args &amp;&amp;... args)</argsstring>
+        <name>PrintInfo</name>
+        <qualifiedname>splinepy::utils::PrintInfo</qualifiedname>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" line="34" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" bodystart="34" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a87e05121319f45fc714fce8ddcd37450" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void PrintDebug</definition>
+        <argsstring>(Args &amp;&amp;... args)</argsstring>
+        <name>PrintDebug</name>
+        <qualifiedname>splinepy::utils::PrintDebug</qualifiedname>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>debug printer - only for debug build </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" line="42" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" bodystart="42" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a5cecf9742e7280b5aa80c1f817191cb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void PrintWarning</definition>
+        <argsstring>(Args &amp;&amp;... args)</argsstring>
+        <name>PrintWarning</name>
+        <qualifiedname>splinepy::utils::PrintWarning</qualifiedname>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" line="51" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" bodystart="51" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacesplinepy_1_1utils_1a3e3aaa6844b55c96f7b5b81be2f1b339" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void PrintAndThrowError</definition>
+        <argsstring>(Args &amp;&amp;... args)</argsstring>
+        <name>PrintAndThrowError</name>
+        <qualifiedname>splinepy::utils::PrintAndThrowError</qualifiedname>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" line="58" column="6" bodyfile="/home/runner/work/splinepy/splinepy/include/splinepy/utils/print.hpp" bodystart="58" bodyend="64"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/runner/work/splinepy/splinepy/include/splinepy/utils/arrays.hpp" line="36" column="1"/>
+  </compounddef>
+</doxygen>

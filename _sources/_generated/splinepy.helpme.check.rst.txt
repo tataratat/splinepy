@@ -1,0 +1,41 @@
+.. _splinepy.helpme.check:
+
+splinepy.helpme.check
+=====================
+
+.. automodule:: splinepy.helpme.check
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      clamped_knot_vectors
+      valid_queries
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template:
+   
+      Checker
+   
+   
+
+   
+   
+   
+
+
+

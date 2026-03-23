@@ -1,0 +1,35 @@
+splinepy.io.gismo.AdditionalBlocks
+==================================
+
+.. currentmodule:: splinepy.io.gismo
+
+.. autoclass:: AdditionalBlocks
+   :show-inheritance:
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+     
+     
+       AdditionalBlocks.add_assembly_options
+     
+     
+       AdditionalBlocks.add_boundary_conditions
+     
+     
+       AdditionalBlocks.add_function
+     
+     
+       AdditionalBlocks.to_list
+     
+   
+   
+
+   
+   
+   
