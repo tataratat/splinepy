@@ -6,7 +6,8 @@
 
 # use default options for ci
 ci:
-  autoupdate_schedule: "weekly"
+  autoupdate_branch: 'develop'
+  autoupdate_schedule: "monthly"
   submodules: false
 
 repos:
