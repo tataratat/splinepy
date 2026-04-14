@@ -182,6 +182,14 @@ revolved = nurbs.create.revolved(
 splinepy.show(["extruded", extruded], ["revolved", revolved])
 ```
 ![create_derived](docs/source/_static/readme_create_derived.png)
+You can also create swept surfaces and solids along spline trajectories.
+```python
+swept = splinepy.helpme.create.swept(
+    cross_section=splinepy.helpme.create.circle(0.5).nurbs,
+    trajectory=trajectory,
+)
+```
+![show_swept](docs/source/_static/show_swept.png)
 
 ### 4.2 Extract
 Using [splinepy.helpme.extract](https://tataratat.github.io/splinepy/_generated/splinepy.helpme.extract.html#module-splinepy.helpme.extract) module, you can extract meshes (as a [gustaf](https://tataratat.github.io/gustaf/index.html) object)
