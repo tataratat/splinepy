@@ -14,7 +14,9 @@ def test_bspline_normalize_knot_vectors(bspline_2p2d):
     # normalize
     bspline.normalize_knot_vectors()
 
-    for i, (ref_kv, kv) in enumerate(zip(ref, bspline.knot_vectors)):
+    for i, (ref_kv, kv) in enumerate(
+        zip(ref, bspline.knot_vectors, strict=True)
+    ):
         assert np.allclose(ref_kv, kv), f"{i}. para dim failed to normalize"
 
 
@@ -31,5 +33,7 @@ def test_nurbs_normalize_knot_vectors(nurbs_2p2d):
     # normalize
     nurbs.normalize_knot_vectors()
 
-    for i, (ref_kv, kv) in enumerate(zip(ref, nurbs.knot_vectors)):
+    for i, (ref_kv, kv) in enumerate(
+        zip(ref, nurbs.knot_vectors, strict=True)
+    ):
         assert np.allclose(ref_kv, kv), f"{i}. para dim failed to normalize"

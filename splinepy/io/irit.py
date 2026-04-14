@@ -62,7 +62,9 @@ def load(fname, expand_tabs=True, strip_comments=False):
         spline_list = []
 
         # Loop over text file data
-        for type, data in zip(spline_strings[1::2], spline_strings[2::2]):
+        for type, data in zip(
+            spline_strings[1::2], spline_strings[2::2], strict=True
+        ):
             # Dictionary of current spline
             spline = {}
 

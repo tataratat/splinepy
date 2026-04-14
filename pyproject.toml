@@ -15,11 +15,11 @@ classifiers=[
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Natural Language :: English",
     "Topic :: Scientific/Engineering",
 ]
@@ -91,7 +91,7 @@ lint.select = [
   "A",           # flake8-builtins
 ]
 lint.fixable = ["ALL"]
-target-version = "py38"
+target-version = "py312"
 lint.ignore = [
     "PLR2004", # TODO!
     "PLR0912", # Too many branches

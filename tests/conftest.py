@@ -222,7 +222,9 @@ def raster():
         pts = np.meshgrid(
             *[
                 np.linspace(lo, up, re)
-                for lo, up, re in zip(l_bounds, u_bounds, resolutions)
+                for lo, up, re in zip(
+                    l_bounds, u_bounds, resolutions, strict=True
+                )
             ],
             indexing="ij",
         )
@@ -270,7 +272,7 @@ def are_splines_equal():
             return False
         for req_prop in a.required_properties:
             if req_prop == "knot_vectors":
-                for aa, bb in zip(a.knot_vectors, b.knot_vectors):
+                for aa, bb in zip(a.knot_vectors, b.knot_vectors, strict=True):
                     if not np.allclose(aa.numpy(), bb.numpy()):
                         if print_:
                             error_log("a.kvs", a.kvs)
@@ -292,7 +294,7 @@ def are_items_close():
         """returns True if items in a and b are close"""
         all_close = True
 
-        for i, (aa, bb) in enumerate(zip(a, b)):
+        for i, (aa, bb) in enumerate(zip(a, b, strict=True)):
             if not all(np.isclose(aa, bb)):
                 # print to inform
                 error_log(f"elements in index-{i} are not close")
@@ -312,7 +314,7 @@ def are_items_same():
         """returns True if items in a and b are same"""
         all_same = True
 
-        for i, (aa, bb) in enumerate(zip(a, b)):
+        for i, (aa, bb) in enumerate(zip(a, b, strict=True)):
             if aa != bb:
                 # print to inform
                 error_log(f"element in index-{i} are not same")
@@ -332,8 +334,7 @@ def are_stripped_lines_same():
         """returns True if items in a and b same, preceding and tailing whitespaces
         are ignored and strings are joined"""
         all_same = True
-
-        for i, (line_a, line_b) in enumerate(zip(a, b)):
+        for i, (line_a, line_b) in enumerate(zip(a, b, strict=True)):
             # check stripped string
             stripped_a, stripped_b = line_a.strip(), line_b.strip()
 

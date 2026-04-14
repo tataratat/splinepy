@@ -106,8 +106,7 @@ def extruded(spline, extrusion_vector=None):
         )
     else:
         raise ValueError(
-            "Dimension Mismatch between extrusion extrusion vector "
-            "and spline."
+            "Dimension Mismatch between extrusion extrusion vector and spline."
         )
 
     # Start Extrusion
@@ -222,7 +221,7 @@ def revolved(
     # rotation-matrix is only implemented for 2D and 3D problems
     if cps.shape[1] not in {2, 3}:
         raise NotImplementedError(
-            "Sorry," "revolutions only implemented for 2D and 3D splines"
+            "Sorry,revolutions only implemented for 2D and 3D splines"
         )
 
     # Angle must be (0, pi) non including
@@ -406,6 +405,7 @@ def determinant_spline(spline):
             spline.unique_knots,
             spline.knot_multiplicities,
             multiplicity_increase,
+            strict=True,
         ):
             # increase knot multiplicities:
             #   @ each inner knot -> mult_inc + 1
@@ -420,7 +420,9 @@ def determinant_spline(spline):
             [
                 len(kvs_ds) - d_ds - 1
                 for kvs_ds, d_ds in zip(
-                    knot_vectors_determinant_spline, degrees_determinant_spline
+                    knot_vectors_determinant_spline,
+                    degrees_determinant_spline,
+                    strict=True,
                 )
             ]
         )
@@ -506,7 +508,7 @@ def parametric_view(spline, axes=True, conform=False):
         # process knots to insert
         if spline.has_knot_vectors:
             for i, (kv, d) in enumerate(
-                zip(spline.knot_vectors, spline.degrees)
+                zip(spline.knot_vectors, spline.degrees, strict=True)
             ):
                 n_repeating = int(d + 1)
                 query = kv[n_repeating:-n_repeating]

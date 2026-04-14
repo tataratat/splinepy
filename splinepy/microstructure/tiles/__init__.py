@@ -86,7 +86,7 @@ def _summarize_tiles():
         key = SubClass.__qualname__
         # save types and sort with direction
         tile_types[key] = SubClass
-        dim = SubClass.dim
+        dim = SubClass._dim
         if dim == 1:
             d1[key] = SubClass
         elif dim == 2:
@@ -123,7 +123,7 @@ def by_dim(para_dim=None, dim=None):
         para_dim = int(para_dim)
         filtered = {}
         for key, value in pool.items():
-            if value.para_dim == para_dim:
+            if value._para_dim == para_dim:
                 filtered[key] = value
 
         # overwrite pool with filtered

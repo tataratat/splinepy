@@ -43,7 +43,9 @@ def test_json_import(to_tmpf, are_splines_equal):
         list_of_splines_loaded = splinepy.io.json.load(tmpf)
         assert all(
             are_splines_equal(a, b)
-            for a, b in zip(list_of_splines, list_of_splines_loaded)
+            for a, b in zip(
+                list_of_splines, list_of_splines_loaded, strict=True
+            )
         )
 
     # Test Import export with non base64 encoding
@@ -53,5 +55,7 @@ def test_json_import(to_tmpf, are_splines_equal):
         list_of_splines_loaded = splinepy.io.json.load(tmpf)
         assert all(
             are_splines_equal(a, b)
-            for a, b in zip(list_of_splines, list_of_splines_loaded)
+            for a, b in zip(
+                list_of_splines, list_of_splines_loaded, strict=True
+            )
         )

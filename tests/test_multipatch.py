@@ -207,11 +207,11 @@ def test_interfaces_and_boundaries(are_splines_equal):
     bmp_1 = multipatch.boundary_multipatch(1)
     assert len(bmp_1.patches) == 2
     boundary_1 = []
-    for i_patch, i_face in zip(*multipatch.boundaries[0]):
+    for i_patch, i_face in zip(*multipatch.boundaries[0], strict=True):
         boundary_1.append(
             *multipatch.patches[i_patch].extract.boundaries([i_face])
         )
-    for patch_0, patch_1 in zip(boundary_1, bmp_1.patches):
+    for patch_0, patch_1 in zip(boundary_1, bmp_1.patches, strict=True):
         assert are_splines_equal(patch_0, patch_1)
 
     assert len(multipatch.boundary_patch_ids(8)) == 0

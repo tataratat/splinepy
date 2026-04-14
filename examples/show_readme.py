@@ -97,7 +97,7 @@ p_basis1 = nurbs.basis(queries)
 para_queries = []
 phys_queries = []
 colors = ["red", "yellow", "blue"]
-for q, pc, c in zip(queries, physical_coordinates, colors):
+for q, pc, c in zip(queries, physical_coordinates, colors, strict=False):
     para_q, phys_q = gus.Vertices([q]), gus.Vertices([pc])
     para_q.show_options["c"] = c
     para_q.show_options["r"] = 10

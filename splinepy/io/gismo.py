@@ -270,7 +270,7 @@ class AdditionalBlocks:
         children_list = []
 
         for label, description, value, number_type in zip(
-            labels, descriptions, values, number_types
+            labels, descriptions, values, number_types, strict=True
         ):
             children_list.append(
                 {
@@ -644,7 +644,9 @@ def export(
             boundary_data.text = "\n".join(
                 [
                     str(patch_id + index_offset) + " " + str(local_face_id + 1)
-                    for (patch_id, local_face_id) in zip(*face_id_list)
+                    for (patch_id, local_face_id) in zip(
+                        *face_id_list, strict=True
+                    )
                 ]
             )
     else:
@@ -657,7 +659,9 @@ def export(
             boundary_data.text = "\n".join(
                 [
                     str(sid + index_offset) + " " + str(bid + 1)
-                    for (sid, bid) in zip(boundary_spline, boundary_face)
+                    for (sid, bid) in zip(
+                        boundary_spline, boundary_face, strict=True
+                    )
                 ]
             )
         ###
@@ -685,7 +689,9 @@ def export(
                 bc.text = "\n".join(
                     [
                         str(sid) + " " + str(bid + 1)
-                        for (sid, bid) in zip(bc_data_i[0], bc_data_i[1])
+                        for (sid, bid) in zip(
+                            bc_data_i[0], bc_data_i[1], strict=True
+                        )
                     ]
                 )
 
@@ -704,9 +710,9 @@ def export(
             as_base64=as_base64,
             field_mask=field_mask,
         )
-        field_xml.find("MultiPatch").find("patches").text = (
-            f"{index_offset} " f"{n_patches - 1  + index_offset}"
-        )
+        field_xml.find("MultiPatch").find(
+            "patches"
+        ).text = f"{index_offset} {n_patches - 1 + index_offset}"
         if int(_python_version.split(".")[1]) >= 9 and indent:
             _ET.indent(field_xml)
         file_content = _ET.tostring(field_xml)
@@ -723,7 +729,7 @@ def export(
     if n_patches != len(multipatch.patches):
         raise RuntimeError("Help - some patches were not recognised")
 
-    patch_range.text = f"{index_offset} " f"{n_patches - 1 + index_offset}"
+    patch_range.text = f"{index_offset} {n_patches - 1 + index_offset}"
 
     # Add additional options to the xml file
     if additional_blocks is not None:
@@ -976,12 +982,11 @@ def load(fname, load_options=True):
             list_of_options.append(make_dictionary(child))
         else:
             _debug(
-                f"Found unsupported keyword {child.tag}, which will be"
-                " ignored"
+                f"Found unsupported keyword {child.tag}, which will be ignored"
             )
             continue
 
-    _debug(f"Found a total of {len(list_of_splines)} " f"BSplines and NURBS")
+    _debug(f"Found a total of {len(list_of_splines)} BSplines and NURBS")
     multipatch = _Multipatch(list_of_splines)
     if interface_array is not None:
         if invalid_integer in interface_array:

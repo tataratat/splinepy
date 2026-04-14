@@ -52,7 +52,7 @@ def test_extraction_matrices(splinetype, np_rng, request):
 
     n_matrices = spline.knot_insertion_matrix(beziers=True)
     beziers_n = spline.extract_bezier_patches()
-    for m, b in zip(n_matrices, beziers_n):
+    for m, b in zip(n_matrices, beziers_n, strict=True):
         # Test matrices m against spline ctps
         if "nurbs" in splinetype:
             assert np.allclose(b.weights, m @ spline.weights)
