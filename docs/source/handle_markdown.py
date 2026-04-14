@@ -16,7 +16,6 @@ import os
 import pathlib
 import re
 import warnings
-from typing import List, Tuple
 
 # Path to this file.
 file_path = os.path.abspath(os.path.dirname(__file__))
@@ -38,7 +37,7 @@ def get_markdown_links(line: str) -> str:
     return possible or ""
 
 
-def get_special_links(line: str) -> List[Tuple[str, str]]:
+def get_special_links(line: str) -> list[tuple[str, str]]:
     """Get the special links from a string.
 
     Args:

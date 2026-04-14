@@ -182,7 +182,7 @@ def test_create_parametric_view(splinetype, request):
 
             # same knot_vectors
             if spline.has_knot_vectors:
-                for p_kv, kv in zip(p_spl.kvs, spline.kvs):
+                for p_kv, kv in zip(p_spl.kvs, spline.kvs, strict=True):
                     assert np.allclose(p_kv, kv)
 
             # same weights
@@ -194,7 +194,9 @@ def test_create_parametric_view(splinetype, request):
             assert not any(p_spl.ds - 1)
 
             # same unique knots - implies same p_bounds
-            for p_ukv, ukv in zip(p_spl.unique_knots, spline.unique_knots):
+            for p_ukv, ukv in zip(
+                p_spl.unique_knots, spline.unique_knots, strict=True
+            ):
                 assert np.allclose(p_ukv, ukv)
 
     spl = request.getfixturevalue(splinetype)

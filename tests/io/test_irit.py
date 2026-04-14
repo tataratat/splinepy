@@ -25,5 +25,7 @@ def test_irit_export_import(
         list_of_splines_loaded = splinepy.io.irit.load(tmpf)
         assert all(
             are_splines_equal(a, b)
-            for a, b in zip(list_of_splines, list_of_splines_loaded)
+            for a, b in zip(
+                list_of_splines, list_of_splines_loaded, strict=True
+            )
         )

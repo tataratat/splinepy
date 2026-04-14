@@ -98,7 +98,7 @@ def test_composition_sensitivities_on_bsplines(bspline_2p2d):
 
     composed_der_ctps = []
     beziers = []
-    for bez, mat in zip(extract_beziers, extraction_matrices):
+    for bez, mat in zip(extract_beziers, extraction_matrices, strict=True):
         # Composition
         composed, derivatives = bez.compose(
             inner_function, compute_sensitivities=True
@@ -118,7 +118,7 @@ def test_composition_sensitivities_on_bsplines(bspline_2p2d):
             # Extract Beziers
             extract_beziers_dx = bspline_dx.extract_bezier_patches()
             for bez, bez_dx, comps in zip(
-                beziers, extract_beziers_dx, composed_der_ctps
+                beziers, extract_beziers_dx, composed_der_ctps, strict=True
             ):
                 # Compose finite differences spline
                 composed_dx = bez_dx.compose(inner_function)

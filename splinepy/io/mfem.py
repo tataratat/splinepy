@@ -448,6 +448,7 @@ def export_cartesian(
                 for row, boundary_id in zip(
                     boundaries.reshape(-1, n_vertex_per_boundary).tolist(),
                     boundary_ids.tolist(),
+                    strict=True,
                 )
             )
         )
@@ -456,7 +457,7 @@ def export_cartesian(
         f.write(f"\n\nedges\n{0}\n")
 
         # Write Number Of vertices
-        f.write(f"\nvertices\n{int(_np.max(vertex_ids)+1)}\n\n")
+        f.write(f"\nvertices\n{int(_np.max(vertex_ids) + 1)}\n\n")
 
         # Export Splines
         f.write("patches\n\n")
@@ -497,6 +498,7 @@ def export_cartesian(
                         for (coords, weight) in zip(
                             spline.control_points.tolist(),
                             spline.weights.tolist(),
+                            strict=True,
                         )
                     )
                     + "\n\n"

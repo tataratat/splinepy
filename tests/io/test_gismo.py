@@ -160,10 +160,13 @@ def test_gismo_export_2D(
             labeled_boundaries=False,
         )
 
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__)
-            + "/../data/gismo_noindent_nolabels_ascii_2d.xml"
-        ) as base_file:
+        with (
+            open(tmpf) as tmp_read,
+            open(
+                os.path.dirname(__file__)
+                + "/../data/gismo_noindent_nolabels_ascii_2d.xml"
+            ) as base_file,
+        ):
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
             )
@@ -183,10 +186,13 @@ def test_gismo_export_2D_indented(
                 labeled_boundaries=False,
             )
 
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_indent_nolabels_ascii_2d.xml"
-            ) as base_file:
+            with (
+                open(tmpf) as tmp_read,
+                open(
+                    os.path.dirname(__file__)
+                    + "/../data/gismo_indent_nolabels_ascii_2d.xml"
+                ) as base_file,
+            ):
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
@@ -207,10 +213,13 @@ def test_gismo_export_2D_labels(
             labeled_boundaries=True,
         )
 
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__)
-            + "/../data/gismo_noindent_labels_ascii_2d.xml"
-        ) as base_file:
+        with (
+            open(tmpf) as tmp_read,
+            open(
+                os.path.dirname(__file__)
+                + "/../data/gismo_noindent_labels_ascii_2d.xml"
+            ) as base_file,
+        ):
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
             )
@@ -230,10 +239,13 @@ def test_gismo_export_2D_labels_indented(
                 labeled_boundaries=True,
             )
 
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_indent_labels_ascii_2d.xml"
-            ) as base_file:
+            with (
+                open(tmpf) as tmp_read,
+                open(
+                    os.path.dirname(__file__)
+                    + "/../data/gismo_indent_labels_ascii_2d.xml"
+                ) as base_file,
+            ):
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
@@ -254,10 +266,13 @@ def test_gismo_export_3D(
             labeled_boundaries=False,
         )
 
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(__file__)
-            + "/../data/gismo_noindent_nolabels_ascii_3d.xml"
-        ) as base_file:
+        with (
+            open(tmpf) as tmp_read,
+            open(
+                os.path.dirname(__file__)
+                + "/../data/gismo_noindent_nolabels_ascii_3d.xml"
+            ) as base_file,
+        ):
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
             )
@@ -324,10 +339,13 @@ def test_gismo_export_additional_blocks(
                 additional_blocks=additional_blocks.to_list(),
             )
 
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_additional_blocks.xml"
-            ) as base_file:
+            with (
+                open(tmpf) as tmp_read,
+                open(
+                    os.path.dirname(__file__)
+                    + "/../data/gismo_additional_blocks.xml"
+                ) as base_file,
+            ):
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
@@ -347,10 +365,13 @@ def test_gismo_export_3D_indented(
                 labeled_boundaries=False,
             )
 
-            with open(tmpf) as tmp_read, open(
-                os.path.dirname(__file__)
-                + "/../data/gismo_indent_nolabels_ascii_3d.xml"
-            ) as base_file:
+            with (
+                open(tmpf) as tmp_read,
+                open(
+                    os.path.dirname(__file__)
+                    + "/../data/gismo_indent_nolabels_ascii_3d.xml"
+                ) as base_file,
+            ):
                 assert are_stripped_lines_same(
                     base_file.readlines(), tmp_read.readlines(), True
                 )
@@ -399,6 +420,7 @@ def test_gismo_import(to_tmpf, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry.patches,
                 multipatch_geometry_loaded.patches,
+                strict=True,
             )
         )
 
@@ -425,6 +447,7 @@ def test_gismo_import(to_tmpf, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry.patches,
                 multipatch_geometry_loaded.patches,
+                strict=True,
             )
         )
 
@@ -505,6 +528,7 @@ def test_gismo_import_with_options(to_tmpf, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry.patches,
                 multipatch_geometry_loaded.patches,
+                strict=True,
             )
         )
 
@@ -552,10 +576,13 @@ def test_gismo_io_binary(to_tmpf, are_stripped_lines_same, are_splines_equal):
             gismo_options_loaded,
         ) = splinepy.io.gismo.load(tmpf, load_options=True)
 
-        with open(tmpf) as tmp_read, open(
-            os.path.dirname(os.path.dirname(__file__))
-            + "/data/gismo_noindent_nolabels_b64_3d.xml"
-        ) as base_file:
+        with (
+            open(tmpf) as tmp_read,
+            open(
+                os.path.dirname(os.path.dirname(__file__))
+                + "/data/gismo_noindent_nolabels_b64_3d.xml"
+            ) as base_file,
+        ):
             assert are_stripped_lines_same(
                 base_file.readlines(), tmp_read.readlines(), True
             )
@@ -565,6 +592,7 @@ def test_gismo_io_binary(to_tmpf, are_stripped_lines_same, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry.patches,
                 multipatch_geometry_loaded.patches,
+                strict=True,
             )
         )
 

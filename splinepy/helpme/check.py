@@ -38,9 +38,9 @@ def valid_queries(spline, queries):
         error_query = _np.argmin(queries, axis=0)[error_dim]
         raise ValueError(
             f"Query request out of bounds in parametric dimension "
-            f"{error_dim}. Detected query {queries[error_query,:]} at "
+            f"{error_dim}. Detected query {queries[error_query, :]} at "
             f"positions {error_query}, which is out of bounds with "
-            f"minimum values {bounds[0,:]}."
+            f"minimum values {bounds[0, :]}."
         )
 
     # Check maximum value
@@ -50,9 +50,9 @@ def valid_queries(spline, queries):
         error_query = _np.argmax(queries, axis=0)[error_dim]
         raise ValueError(
             f"Query request out of bounds in parametric dimension "
-            f"{error_dim}. Detected query {queries[error_query,:]} at "
+            f"{error_dim}. Detected query {queries[error_query, :]} at "
             f"positions {error_query}, which is out of bounds with "
-            f"maximum values {bounds[1,:]}."
+            f"maximum values {bounds[1, :]}."
         )
     return True
 
@@ -78,7 +78,7 @@ def clamped_knot_vectors(spline, warning=True):
     if degrees is None or knot_vectors is None:
         return None
 
-    for d, kv in zip(degrees, knot_vectors):
+    for d, kv in zip(degrees, knot_vectors, strict=True):
         kv_arr = _np.asanyarray(kv)
 
         front = all(abs(kv_arr[: (d + 1)] - kv_arr[0]) < _settings.TOLERANCE)

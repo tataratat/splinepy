@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         arch: [x86_64]
-        cw_build: ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+        cw_build: ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         arch: [arm64]
-        cw_build: ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+        cw_build: ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -60,7 +60,7 @@ jobs:
     strategy:
       matrix:
         arch: [x86_64]
-        cw_build: ["cp39*many*", "cp310*many*", "cp311*many*", "cp312*many*", "cp313*many*"]
+        cw_build: ["cp310*many*", "cp311*many*", "cp312*many*", "cp313*many*", "cp314*many*"]
 
     steps:
     - uses: actions/checkout@v4
@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         arch: [AMD64]
-        cw_build: ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+        cw_build: ["cp310-*", "cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
     steps:
     - uses: actions/checkout@v4
