@@ -302,6 +302,7 @@ def swept(
     cross_section,
     trajectory,
     cross_section_normal=None,
+    anchor="auto",
     set_on_trajectory=False,
     rotation_adaption=None,
 ):
@@ -329,6 +330,13 @@ def swept(
     cross_section_normal : np.array
       Normal vector of the cross-section
       Default is [0, 0, 1]
+    anchor : str
+      Strategy used to determine which point of the cross-section is
+      placed on the trajectory. Supported values are:
+      ``"auto"``, ``"parametric"``, ``"control_box"``,
+      and ``"geometry_box"``.
+      ``"auto"`` uses ``"geometry_box"`` for curve cross-sections and
+      ``"parametric"`` for surface cross-sections.
     set_on_trajectory : bool
       If True, the cross-section will be placed at the evaluation
       points of the trajectory's knots. If False, the cross-section
@@ -376,6 +384,8 @@ def swept(
         raise ValueError("trajectory must have a parametric dimension of 1")
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
+    if not isinstance(anchor, str):
+        raise TypeError("anchor must be a string")
 
     if cross_section_normal is not None and not len(cross_section_normal) == 3:
         raise ValueError(
@@ -386,6 +396,17 @@ def swept(
         cross_section_normal = _np.array([0, 0, 1])
         # add debug message
         _log.debug("No cross_section_normal given. Defaulting to [0, 0, 1].")
+
+    anchor = anchor.lower()
+    if anchor == "auto":
+        anchor = (
+            "geometry_box" if cross_section.para_dim == 1 else "parametric"
+        )
+    if anchor not in {"parametric", "control_box", "geometry_box"}:
+        raise ValueError(
+            "anchor must be one of 'auto', 'parametric', "
+            "'control_box', or 'geometry_box'"
+        )
 
     ### STARTING CALCULATIONS ###
 
@@ -401,7 +422,13 @@ def swept(
 
     # tangent vector 'e1' of trajectory at parameter value 0
     e1 = trajectory.derivative([par_value[0]], [1])
-    e1 = (e1 / _np.linalg.norm(e1)).ravel()
+    e1_norm = _np.linalg.norm(e1)
+    if e1_norm < _settings.TOLERANCE:
+        raise ValueError(
+            "Cannot determine initial sweep direction from trajectory "
+            "because the first tangent is too small."
+        )
+    e1 = (e1 / e1_norm).ravel()
 
     # evaluating a vector normal to e1
     vec = [-e1[1], e1[0], -e1[2]]
@@ -429,14 +456,22 @@ def swept(
         # calculation according to NURBS Book, eq. 10.27
         # tangent vector e1 on trajectory at parameter value i
         e1 = trajectory.derivative([par_value[i]], [1])
-        if _np.linalg.norm(e1) < _settings.TOLERANCE:
-            e1 = tang_collection[-1]
+        e1_norm = _np.linalg.norm(e1)
+        if e1_norm < _settings.TOLERANCE:
+            if tang_collection:
+                e1 = tang_collection[-1]
+                e1_norm = _np.linalg.norm(e1)
+            else:
+                raise ValueError(
+                    "Cannot determine sweep direction because the first "
+                    "trajectory tangent is too small."
+                )
             # add debug message
             _log.debug(
                 f"Division by zero occurred. Applying an approximation "
                 f"by using the previous tangent e1 for parametric value {par_value[i]}"
             )
-        e1 = (e1 / _np.linalg.norm(e1)).ravel()
+        e1 = (e1 / e1_norm).ravel()
         # collecting tangent vectors for later use
         tang_collection.append(e1)
 
@@ -458,15 +493,20 @@ def swept(
         T.append(_np.vstack((e1, e2, e3)))
 
         # array of transformation matrices from local to global coordinates
-        A.append(_np.linalg.inv(T[i]))
+        A.append(T[i].T)
 
     # separate procedure, if trajectory is closed and B[0] != B[-1]
     # recalculate B-vector and middle the values between B and B_rec
     # according to NURBS Book, Piegl & Tiller, 2nd edition, p. 483
-    is_trajectory_closed = _np.array_equal(
-        trajectory.evaluate([[0]]), trajectory.evaluate([par_value[-1]])
+    is_trajectory_closed = _np.allclose(
+        trajectory.evaluate([[0]]),
+        trajectory.evaluate([par_value[-1]]),
+        atol=_settings.TOLERANCE,
+        rtol=1e-8,
     )
-    is_B_start_equal_B_end = _np.array_equal(B[0], B[-1])
+    is_B_start_equal_B_end = _np.allclose(
+        B[0], B[-1], atol=_settings.TOLERANCE, rtol=1e-8
+    )
 
     if is_trajectory_closed and not is_B_start_equal_B_end:
         # reset transformation matrices
@@ -503,7 +543,7 @@ def swept(
             T.append(_np.vstack((tang_collection[i], e2, e3)))
 
             # array of transformation matrices from local to global coordinates
-            A.append(_np.linalg.inv(T[i]))
+            A.append(T[i].T)
 
         # check if the beginning and the end of the B-vector are the same
         if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
@@ -561,38 +601,58 @@ def swept(
     ### SWEEPING PROCESS ###
 
     # evaluate center of cross-section and translate to origin
-    cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
-    cs_center = cross_section.evaluate(
-        cross_para_center.reshape(-1, cross_section.para_dim)
-    ).ravel()
-    cross_section.control_points -= cs_center
+    if anchor == "parametric":
+        cross_para_center = _np.mean(cross_section.parametric_bounds, axis=0)
+        cs_center = cross_section.evaluate(
+            cross_para_center.reshape(-1, cross_section.para_dim)
+        ).ravel()
+    elif anchor == "control_box":
+        cs_min = cross_section.control_points.min(axis=0)
+        cs_max = cross_section.control_points.max(axis=0)
+        cs_center = 0.5 * (cs_min + cs_max)
+    else:
+        if cross_section.para_dim == 1:
+            sample_resolution = max(
+                101, 4 * cross_section.control_points.shape[0]
+            )
+        else:
+            sample_resolution = int(
+                _np.ceil(625 ** (1 / cross_section.para_dim))
+            )
+            sample_resolution = max(5, min(25, sample_resolution))
+
+        sample_axes = [
+            _np.linspace(
+                cross_section.parametric_bounds[0, i],
+                cross_section.parametric_bounds[1, i],
+                sample_resolution,
+            )
+            for i in range(cross_section.para_dim)
+        ]
+        sample_queries = _np.stack(
+            _np.meshgrid(*sample_axes, indexing="ij"),
+            axis=-1,
+        ).reshape(-1, cross_section.para_dim)
+        sampled_points = cross_section.evaluate(sample_queries)
+        cs_min = sampled_points.min(axis=0)
+        cs_max = sampled_points.max(axis=0)
+        cs_center = 0.5 * (cs_min + cs_max)
+
+    centered_cross_section_cps = cross_section.control_points - cs_center
 
     # set cross-section control points along trajectory
     swept_spline_cps = []
+    rotated_cross_section_cps = centered_cross_section_cps @ R.T
     for i, par_val in enumerate(par_value):
-        temp_csp = []
         # evaluate trajectory if user wants to set cross-section on trajectory.
         if set_on_trajectory:
-            evals = trajectory.evaluate([par_val]).ravel()
-        # place every control point of cross-section separately
-        for cscp in cross_section.control_points:
-            # rotate cross-section in trajectory direction
-            normal_cscp = _np.matmul(R, cscp)
-            # transform cross-section to global coordinates
-            normal_cscp = _np.matmul(A[i], normal_cscp)
-            # check if user wants to place cross-section at
-            # evaluation points or control points of trajectory
-            if set_on_trajectory:
-                # translate cross-section to trajectory evaluation point
-                normal_cscp += evals
-            else:
-                # translate cross-section to trajectory control point
-                normal_cscp += trajectory.control_points[i]
-            # append control point to list
-            temp_csp.append(normal_cscp)
+            section_origin = trajectory.evaluate([par_val]).ravel()
+        else:
+            section_origin = trajectory.control_points[i]
 
-        # collect all control points
-        swept_spline_cps.append(_np.array(temp_csp))
+        swept_spline_cps.append(
+            rotated_cross_section_cps @ A[i].T + section_origin
+        )
 
     # create spline dictionary
     dict_swept_spline = {
