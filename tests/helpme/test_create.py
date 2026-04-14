@@ -381,7 +381,11 @@ def test_swept_basic_functionality():
     )
 
     # create result --> 3D body should be created
-    result = splinepy.helpme.create.swept(cross_section, trajectory)
+    result = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="parametric",
+    )
 
     # test result's type
     assert result is not None
@@ -390,7 +394,11 @@ def test_swept_basic_functionality():
     # test invalid input
     invalid_trajectory = "invalid_trajectory"
     with pytest.raises(TypeError):
-        splinepy.helpme.create.swept(cross_section, invalid_trajectory)
+        splinepy.helpme.create.swept(
+            cross_section=cross_section,
+            trajectory=invalid_trajectory,
+            anchor="auto",
+        )
 
     # test result's shape
     assert (
@@ -441,7 +449,10 @@ def test_swept_to_extruded():
     )
 
     result = splinepy.helpme.create.swept(
-        cross_section, trajectory, rotation_adaption=np.pi / 2
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="parametric",
+        rotation_adaption=np.pi / 2,
     )
     extruded_result = splinepy.helpme.create.extruded(cross_section, [0, 0, 3])
     assert np.allclose(result.control_points, extruded_result.control_points)
@@ -461,7 +472,11 @@ def test_swept_control_point_placing(np_rng):
         control_points=[[0, 0, 0], [1, 0, 1], [0, 0, 2], [0, 0, 3]],
         knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
     )
-    result = splinepy.helpme.create.swept(cross_section, trajectory)
+    result = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="parametric",
+    )
 
     def calculate_cs_normal_vector(cs_cp, res_cp, rand):
 
@@ -516,7 +531,10 @@ def test_swept_control_point_placing(np_rng):
     )
 
     result_with_cus_normal = splinepy.helpme.create.swept(
-        cross_section, trajectory, cross_section_normal=custom_normal
+        cross_section=cross_section,
+        trajectory=trajectory,
+        cross_section_normal=custom_normal,
+        anchor="auto",
     )
 
     result_with_cus_normal_cps = result_with_cus_normal.control_points
@@ -549,7 +567,11 @@ def test_swept_cross_section_centering(np_rng):
         control_points=[[0, 0, 0], [1, 2, 0], [2, 3, 0], [3, 3, 0]],
         knot_vectors=[[0, 0, 0, 0, 1, 1, 1, 1]],
     )
-    result = splinepy.helpme.create.swept(cross_section, trajectory)
+    result = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="parametric",
+    )
 
     # choose random parameter value of trajectory
     r_par_val = np_rng.random(1)
@@ -561,3 +583,69 @@ def test_swept_cross_section_centering(np_rng):
     ref_coords = trajectory.evaluate([r_par_val]).ravel()
 
     assert np.allclose(coords, ref_coords)
+
+
+def test_swept_anchor_modes():
+    cross_section = splinepy.helpme.create.circle(0.55).nurbs
+    cross_section.control_points[:, 0] *= 1.2
+    cross_section.control_points[:, 1] *= 0.8
+    cross_section.control_points[1] += np.array([0.9, -0.15])
+    cross_section.control_points[2] += np.array([0.45, 0.55])
+    cross_section.control_points[5] += np.array([-0.35, -0.45])
+    cross_section.weights[1] *= 0.25
+    cross_section.weights[2] *= 0.45
+    cross_section.weights[5] *= 0.5
+
+    trajectory = splinepy.BSpline(
+        degrees=[1],
+        control_points=[[0, 0, 0], [0, 0, 2]],
+        knot_vectors=[[0, 0, 1, 1]],
+    )
+
+    swept_parametric = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="parametric",
+    )
+    swept_control_box = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="control_box",
+    )
+    swept_geometry_box = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="geometry_box",
+    )
+    swept_auto = splinepy.helpme.create.swept(
+        cross_section=cross_section,
+        trajectory=trajectory,
+        anchor="auto",
+    )
+
+    assert np.allclose(
+        swept_auto.control_points, swept_geometry_box.control_points
+    )
+    assert not np.allclose(
+        swept_parametric.control_points, swept_geometry_box.control_points
+    )
+    assert not np.allclose(
+        swept_control_box.control_points, swept_geometry_box.control_points
+    )
+
+    n_section_cps = cross_section.control_points.shape[0]
+    diff_control_vs_geometry = (
+        swept_control_box.control_points[:n_section_cps]
+        - swept_geometry_box.control_points[:n_section_cps]
+    )
+    diff_parametric_vs_geometry = (
+        swept_parametric.control_points[:n_section_cps]
+        - swept_geometry_box.control_points[:n_section_cps]
+    )
+
+    assert np.allclose(diff_control_vs_geometry, diff_control_vs_geometry[0])
+    assert np.allclose(
+        diff_parametric_vs_geometry, diff_parametric_vs_geometry[0]
+    )
+    assert not np.allclose(diff_control_vs_geometry[0], 0.0)
+    assert not np.allclose(diff_parametric_vs_geometry[0], 0.0)
