@@ -457,7 +457,8 @@ def swept(
         B.append(temp_cross / _np.linalg.norm(temp_cross))
         # add debug message
         _log.debug(
-            "Division by zero occurred. Using alternative vector for B."
+            "The initial trajectory direction led to an ambiguous sweep "
+            "orientation. Using an alternative internal reference direction."
         )
 
     # initialize transformation matrices and tangent-vector-collection
@@ -477,13 +478,14 @@ def swept(
                 e1_norm = _np.linalg.norm(e1)
             else:
                 raise ValueError(
-                    "Cannot determine sweep direction because the first "
+                    "Cannot determine sweep direction because the "
                     "trajectory tangent is too small."
                 )
             # add debug message
             _log.debug(
-                f"Division by zero occurred. Applying an approximation "
-                f"by using the previous tangent e1 for parametric value {par_value[i]}"
+                "The trajectory tangent is too small at parametric value "
+                f"{par_value[i]}. Reusing the previous tangent direction "
+                "to continue the sweep frame construction."
             )
         e1 = (e1 / e1_norm).ravel()
         # collecting tangent vectors for later use
@@ -493,8 +495,9 @@ def swept(
         B.append(B[i] - _np.dot(B[i], e1) * e1)
         if _np.linalg.norm(B[i + 1]) < _settings.TOLERANCE:
             _log.warning(
-                f"Vector B[{i + 1}] is close to zero. Adjusting "
-                f"to avoid division by zero."
+                "The automatically constructed sweep orientation became "
+                f"degenerate at parametric value {par_value[i]}. Applying a "
+                "small numerical adjustment to continue."
             )
             B[i + 1] += _settings.TOLERANCE
         B[i + 1] /= _np.linalg.norm(B[i + 1])
@@ -540,8 +543,10 @@ def swept(
             )
             if _np.linalg.norm(B_rec[i + 1]) < _settings.TOLERANCE:
                 _log.warning(
-                    f"Vector B_rec[{i + 1}] is close to zero. Adjusting "
-                    f"to avoid division by zero."
+                    "The corrected sweep orientation for the closed "
+                    f"trajectory became degenerate at parametric value "
+                    f"{par_value[i]}. Applying a small numerical adjustment "
+                    "to continue."
                 )
                 B_rec[i + 1] += _settings.TOLERANCE
             B_rec[i + 1] /= _np.linalg.norm(B_rec[i + 1])
@@ -562,8 +567,9 @@ def swept(
         # check if the beginning and the end of the B-vector are the same
         if not _np.allclose(B_rec[0], B_rec[-1], rtol=1e-3):
             _log.warning(
-                "Vector calculation is not exact due to the trajectory being closed"
-                " with non-matching tangent vectors at start and end points."
+                "The sweep orientation could only be matched approximately "
+                "because the closed trajectory has non-matching tangent "
+                "directions at its start and end."
             )
 
     ### ROTATION MATRIX ###
