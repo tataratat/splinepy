@@ -324,23 +324,27 @@ def swept(
     Parameters
     ----------
     cross_section : Spline
-      Cross-section to be swept
+      Cross-section to be swept. Requires parametric dimension 1 or 2
     trajectory : Spline
-      Trajectory along which the cross-section is swept
+      Trajectory along which the cross-section is swept.
+      Requires parametric dimension 1
     cross_section_normal : np.array
       Normal vector of the cross-section
       Default is [0, 0, 1]
     anchor : str
-      Strategy used to determine which point of the cross-section is
-      placed on the trajectory. Supported values are:
-      ``"auto"``, ``"parametric"``, ``"control_box"``,
-      and ``"geometry_box"``.
+      Defines which reference point of the cross-section is placed on the
+      trajectory during sweeping.
+      ``"parametric"`` uses the point evaluated at the center of the
+      parametric bounds.
+      ``"control_box"`` uses the center of the control-point bounding box.
+      ``"geometry_box"`` uses the center of the bounding box of sampled
+      geometric points on the cross-section.
       ``"auto"`` uses ``"geometry_box"`` for curve cross-sections and
       ``"parametric"`` for surface cross-sections.
     set_on_trajectory : bool
       If True, the cross-section will be placed at the evaluation
-      points of the trajectory's knots. If False, the cross-section
-      will be placed at the control points of the trajectory.
+      points of the trajectory. If False, the cross-section will be
+      placed at the control points of the trajectory.
       Default is False.
     rotation_adaption : float
       Angle in radians by which the cross-section is rotated around
@@ -359,6 +363,10 @@ def swept(
     -------
     swept_spline : Spline
       Spline resulting from the sweep
+
+    Examples
+    --------
+    See ``examples/show_swept.py`` for example usages of ``swept()``.
     """
 
     from splinepy import NURBS as _NURBS
@@ -382,6 +390,11 @@ def swept(
         )
     if not trajectory.para_dim == 1:
         raise ValueError("trajectory must have a parametric dimension of 1")
+    if cross_section.para_dim > 2:
+        raise ValueError(
+            "cross_section must have a parametric dimension of at most 2"
+        )
+
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
     if not isinstance(anchor, str):
