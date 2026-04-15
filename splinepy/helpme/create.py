@@ -400,15 +400,16 @@ def swept(
     if not isinstance(anchor, str):
         raise TypeError("anchor must be a string")
 
-    if cross_section_normal is not None and not len(cross_section_normal) == 3:
-        raise ValueError(
-            "cross_section_normal must be a 3D vector (array of length 3)"
-        )
-    # setting default value for cross_section_normal
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
         # add debug message
         _log.debug("No cross_section_normal given. Defaulting to [0, 0, 1].")
+    else:
+        cross_section_normal = _np.asarray(cross_section_normal).ravel()
+        if cross_section_normal.shape != (3,):
+            raise ValueError(
+                "cross_section_normal must be array-like and a 3D vector"
+            )
 
     anchor = anchor.lower()
     if anchor == "auto":
