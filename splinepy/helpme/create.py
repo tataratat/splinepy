@@ -464,32 +464,27 @@ def swept(
     # initialize transformation matrices and tangent-vector-collection
     T = []
     A = []
-    tang_collection = []
+    tang_collection = [e1]
 
     # evaluating transformation matrices for each trajectory point
     for i in range(len(par_value)):
         # calculation according to NURBS Book, eq. 10.27
         # tangent vector e1 on trajectory at parameter value i
-        e1 = trajectory.derivative([par_value[i]], [1])
-        e1_norm = _np.linalg.norm(e1)
-        if e1_norm < _settings.TOLERANCE:
-            if tang_collection:
+        if i > 0:
+            e1 = trajectory.derivative([par_value[i]], [1])
+            e1_norm = _np.linalg.norm(e1)
+            if e1_norm < _settings.TOLERANCE:
                 e1 = tang_collection[-1]
                 e1_norm = _np.linalg.norm(e1)
-            else:
-                raise ValueError(
-                    "Cannot determine sweep direction because the "
-                    "trajectory tangent is too small."
+                # add debug message
+                _log.debug(
+                    "The trajectory tangent is too small at parametric value "
+                    f"{par_value[i]}. Reusing the previous tangent direction "
+                    "to continue the sweep frame construction."
                 )
-            # add debug message
-            _log.debug(
-                "The trajectory tangent is too small at parametric value "
-                f"{par_value[i]}. Reusing the previous tangent direction "
-                "to continue the sweep frame construction."
-            )
-        e1 = (e1 / e1_norm).ravel()
-        # collecting tangent vectors for later use
-        tang_collection.append(e1)
+            e1 = (e1 / e1_norm).ravel()
+            # collecting tangent vectors for later use
+            tang_collection.append(e1)
 
         # projecting B_(i) onto the plane normal to e1
         B.append(B[i] - _np.dot(B[i], e1) * e1)
