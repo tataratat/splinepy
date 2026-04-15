@@ -318,8 +318,15 @@ def swept(
     The sweeping process has some limitations, since the cross-section
     cannot be preserved exactly along the whole trajectory.
 
-    The maths behind can be found in the NURBS Book, Piegl & Tiller,
-    2nd edition, chapter 10.4 Swept Surfaces.
+    This implementation follows the skinning-based swept surface
+    construction described in The NURBS Book, Piegl & Tiller, 2nd
+    edition, chapter 10.4, where cross-section instances are placed
+    along the trajectory and skinned afterwards.
+
+    The cross-section orientation is determined using the projection
+    normal method of Siltanen and Woodward, as described in chapter
+    10.4, Eq. (10.27). For closed trajectories, the orientation is
+    corrected as described on p. 483.
 
     Parameters
     ----------
