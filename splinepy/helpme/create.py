@@ -390,6 +390,7 @@ def swept(
         )
     if not trajectory.para_dim == 1:
         raise ValueError("trajectory must have a parametric dimension of 1")
+
     if cross_section.para_dim > 2:
         raise ValueError(
             "cross_section must have a parametric dimension of at most 2"
@@ -397,20 +398,33 @@ def swept(
 
     if not isinstance(set_on_trajectory, bool):
         raise TypeError("set_on_trajectory must be a boolean")
-    if not isinstance(anchor, str):
-        raise TypeError("anchor must be a string")
+
+    if rotation_adaption is not None:
+        try:
+            rotation_adaption = float(rotation_adaption)
+        except TypeError:
+            raise TypeError(
+                "rotation_adaption must be a number (float, int) or None"
+            )
 
     if cross_section_normal is None:
         cross_section_normal = _np.array([0, 0, 1])
         # add debug message
         _log.debug("No cross_section_normal given. Defaulting to [0, 0, 1].")
     else:
-        cross_section_normal = _np.asarray(cross_section_normal).ravel()
+        try:
+            cross_section_normal = _np.asarray(cross_section_normal).ravel()
+        except (TypeError, ValueError):
+            raise TypeError(
+                "cross_section_normal must be array-like and a 3D vector"
+            )
         if cross_section_normal.shape != (3,):
             raise ValueError(
                 "cross_section_normal must be array-like and a 3D vector"
             )
 
+    if not isinstance(anchor, str):
+        raise TypeError("anchor must be a string")
     anchor = anchor.lower()
     if anchor == "auto":
         anchor = (
@@ -596,13 +610,6 @@ def swept(
 
     # rotate cross-section around trajectory tangent vector (e1) if wanted
     if rotation_adaption is not None:
-        try:
-            rotation_adaption = float(rotation_adaption)
-        except TypeError:
-            raise TypeError(
-                "rotation_adaption must be a number (float, int) or None"
-            )
-
         R = _np.matmul(
             _arr.rotation_matrix_around_axis(
                 axis=[1, 0, 0], rotation=rotation_adaption, degree=False
@@ -625,7 +632,7 @@ def swept(
         cs_min = cross_section.control_points.min(axis=0)
         cs_max = cross_section.control_points.max(axis=0)
         cs_center = 0.5 * (cs_min + cs_max)
-    else:
+    else:  # geometry_box
         if cross_section.para_dim == 1:
             sample_resolution = max(
                 101, 4 * cross_section.control_points.shape[0]
