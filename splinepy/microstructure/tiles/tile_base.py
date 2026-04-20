@@ -98,7 +98,7 @@ class TileBase(_SplinepyBase):
         -------
         dim : int
         """
-        return self._raise_if_not_set_else_return("_dim")
+        return cls._raise_if_not_set_else_return("_dim")
 
     @property
     def para_dim(self):
