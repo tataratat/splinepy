@@ -228,8 +228,8 @@ class TileBase(_SplinepyBase):
                     ~within_bounds.reshape(parameters.shape)
                 ]
                 raise ValueError(
-                    f"The following parameters are out of bounds: {out_of_bounds}. ",
-                    f"Expected bounds: lower: {lower_bounds} and upper: {upper_bounds}",
+                    f"The following parameters are out of bounds: {out_of_bounds}. "
+                    f"Expected bounds: lower: {lower_bounds} and upper: {upper_bounds}"
                 )
 
         return True
