@@ -279,6 +279,22 @@ class Integrator:
 
 
 class Transformation:
+    """Helper class to be used for the numerical integration of field variables on a 
+    single-patch geometry.
+    
+    It computes the elements within the patch and for each one of them the quadrature
+    points and the Jacobian at those points.
+    
+    Parameters
+    ----------
+    spline: spline
+        The geometry
+    solution_field: None or spline
+        Solution field as spline function. If not given, supports and quadrature
+        will be calculated for geometry
+    orders: None or list<int>
+        Quadrature orders. If not given, default quadrature orders will be used
+    """
     __slots__ = (
         "_spline",
         "_solution_field",
@@ -298,19 +314,6 @@ class Transformation:
     )
 
     def __init__(self, spline, solution_field=None, orders=None):
-        """
-        Setup transformation class with a given geometry.
-
-        Parameters
-        ------------
-        spline: spline
-            The geometry
-        solution_field: None or spline
-            Solution field as spline function. If not given, supports and quadrature
-            will be calculated for geometry
-        orders: None or list<int>
-            Quadrature orders. If not given, default quadrature orders will be used
-        """
         self._spline = spline
         self._solution_field = solution_field
         if solution_field is not None:
@@ -700,6 +703,26 @@ class Transformation:
 
 
 class FieldIntegrator:
+    """
+    Class for the numerical evaluation of a PDE on a single-patch geometry.
+    
+    On intialization it sets up solution field, its mapper, precomputes the 
+    transformation and calculate the number of DoFs.
+    
+    
+
+    Parameters
+    ----------
+    geometry: spline
+        The geometry
+    solution_field: None or spline
+        Solution field. If not given, quadrature and supports will be calculated
+        using the geometry
+    orders: None or list<int>
+        Quadrature order in each dimension. If not given, default quadrature
+        will be used
+    """
+        
     __slots__ = (
         "_helpee",
         "_solution_field",
@@ -712,21 +735,6 @@ class FieldIntegrator:
     )
 
     def __init__(self, geometry, solution_field=None, orders=None):
-        """
-        Sets up solution field, its mapper, precomputes the transformation and
-        calculate the number of DoFs.
-
-        Parameters
-        ----------
-        geometry: spline
-            The geometry
-        solution_field: None or spline
-            Solution field. If not given, quadrature and supports will be calculated
-            using the geometry
-        orders: None or list<int>
-            Quadrature order in each dimension. If not given, default quadrature
-            will be used
-        """
         self._helpee = geometry
         if solution_field is None:
             self._solution_field = geometry.copy()
