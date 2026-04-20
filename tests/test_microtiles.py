@@ -377,7 +377,10 @@ def test_tile_derivatives(
             )
             # Check every patch
             for i_patch, deriv_orig, deriv_fd in zip(
-                range(n_patches), deriv_evaluations, fd_sensitivities
+                range(n_patches),
+                deriv_evaluations,
+                fd_sensitivities,
+                strict=True,
             ):
                 message = (
                     f"Implemented derivative calculation for tile class {tile_class} "

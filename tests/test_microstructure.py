@@ -160,6 +160,7 @@ def test_macro_sensitivities(tile_class, np_rng, h_eps, n_test_points):
             for patch_perturbed, patch_orig in zip(
                 microstructure_perturbed_evaluations,
                 microstructure_orig_evaluations,
+                strict=True,
             )
         ]
 
@@ -170,7 +171,10 @@ def test_macro_sensitivities(tile_class, np_rng, h_eps, n_test_points):
                 patch.evaluate(eval_points) for patch in deriv_orig.patches
             ]
             for k_patch, patch_deriv_implemented, patch_deriv_fd in zip(
-                range(n_patches), deriv_evaluations, fd_sensitivity
+                range(n_patches),
+                deriv_evaluations,
+                fd_sensitivity,
+                strict=True,
             ):
                 # Verify derivative shapes
                 assert patch_deriv_implemented.shape[1] == dim, (
