@@ -279,12 +279,12 @@ class Integrator:
 
 
 class Transformation:
-    """Helper class to be used for the numerical integration of field variables on a 
+    """Helper class to be used for the numerical integration of field variables on a
     single-patch geometry.
-    
+
     It computes the elements within the patch and for each one of them the quadrature
     points and the Jacobian at those points.
-    
+
     Parameters
     ----------
     spline: spline
@@ -295,6 +295,7 @@ class Transformation:
     orders: None or list<int>
         Quadrature orders. If not given, default quadrature orders will be used
     """
+
     __slots__ = (
         "_spline",
         "_solution_field",
@@ -705,11 +706,11 @@ class Transformation:
 class FieldIntegrator:
     """
     Class for the numerical evaluation of a PDE on a single-patch geometry.
-    
-    On intialization it sets up solution field, its mapper, precomputes the 
+
+    On initialization it sets up solution field, its mapper, precomputes the
     transformation and calculate the number of DoFs.
-    
-    
+
+
 
     Parameters
     ----------
@@ -722,7 +723,7 @@ class FieldIntegrator:
         Quadrature order in each dimension. If not given, default quadrature
         will be used
     """
-        
+
     __slots__ = (
         "_helpee",
         "_solution_field",
