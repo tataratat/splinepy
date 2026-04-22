@@ -9,7 +9,7 @@ from splinepy.utils.data import cartesian_product as _cartesian_product
 
 
 class Microstructure(_SplinepyBase):
-    """Helper class to facilitatae the construction of microstructures."""
+    """Helper class to facilitate the construction of microstructures."""
 
     def __init__(
         self,
@@ -18,7 +18,7 @@ class Microstructure(_SplinepyBase):
         microtile=None,
         parametrization_function=None,
     ):
-        """Helper class to facilitatae the construction of microstructures.
+        """Helper class to facilitate the construction of microstructures.
 
         Parameters
         ----------
@@ -79,8 +79,7 @@ class Microstructure(_SplinepyBase):
 
         if not isinstance(deformation_function, _PySpline):
             raise ValueError(
-                "Deformation function must be splinepy-Spline."
-                " e.g. splinepy.NURBS"
+                "Deformation function must be splinepy-Spline. e.g. splinepy.NURBS"
             )
         self._deformation_function = deformation_function
 
@@ -121,7 +120,7 @@ class Microstructure(_SplinepyBase):
         """
         if not isinstance(tiling, list) and not isinstance(tiling, int):
             raise ValueError(
-                "Tiling mus be either list of integers of integer " "value"
+                "Tiling mus be either list of integers of integer value"
             )
         self._tiling = tiling
         # Is defaulted to False using function arguments
@@ -263,7 +262,7 @@ class Microstructure(_SplinepyBase):
         # Create Spline that will be used to iterate over parametric space
         ukvs = self.deformation_function.unique_knots
         if knot_span_wise:
-            for tt, ukv in zip(self.tiling, ukvs):
+            for tt, ukv in zip(self.tiling, ukvs, strict=True):
                 inv_t = 1 / tt
                 new_knots = [
                     ukv[i - 1] + j * inv_t * (ukv[i] - ukv[i - 1])
@@ -276,7 +275,9 @@ class Microstructure(_SplinepyBase):
                 "New knots will be inserted one by one with the objective"
                 " to evenly distribute tiles within the parametric domain"
             )
-            for i_pd, (tt, ukv) in enumerate(zip(self.tiling, ukvs)):
+            for i_pd, (tt, ukv) in enumerate(
+                zip(self.tiling, ukvs, strict=True)
+            ):
                 n_current_spans = len(ukv) - 1
                 if tt == n_current_spans:
                     continue
@@ -427,8 +428,8 @@ class Microstructure(_SplinepyBase):
     def create(
         self,
         closing_face=None,
-        knot_span_wise=None,
-        macro_sensitivities=None,
+        knot_span_wise=True,
+        macro_sensitivities=False,
         **kwargs,
     ):
         """Create a Microstructure.
@@ -455,11 +456,12 @@ class Microstructure(_SplinepyBase):
         if not self._sanity_check():
             raise ValueError("Not enough information provided, abort")
 
-        # Set default values
-        if knot_span_wise is None:
-            knot_span_wise = True
-        if macro_sensitivities is None:
-            macro_sensitivities = False
+        assert isinstance(
+            knot_span_wise, bool
+        ), "knot_span_wise must be a bool"
+        assert isinstance(
+            macro_sensitivities, bool
+        ), "macro_senstivities must be a bool"
 
         # check if user wants closed structure
         if closing_face is not None:
@@ -533,7 +535,7 @@ class Microstructure(_SplinepyBase):
         if macro_sensitivities or parameter_sensitivities:
             spline_list_derivs = [
                 []
-                for i in range(
+                for _ in range(
                     n_parameter_sensitivities + n_macro_sensitivities
                 )
             ]
@@ -618,7 +620,7 @@ class Microstructure(_SplinepyBase):
                 for j in anti_support:
                     spline_list_derivs[j].extend(empty_splines)
                 for j, deris in enumerate(derivatives):
-                    for tile_v, tile_deriv in zip(tile, deris):
+                    for tile_v, tile_deriv in zip(tile, deris, strict=True):
                         spline_list_derivs[support[j]].append(
                             def_fun.composition_derivative(tile_v, tile_deriv)
                         )
@@ -723,8 +725,7 @@ class Microstructure(_SplinepyBase):
             or (self.tiling is None)
         ):
             self._logd(
-                "Current information not sufficient,"
-                " awaiting further assignments"
+                "Current information not sufficient, awaiting further assignments"
             )
             return False
         # Check if microtile object fulfils requirements
@@ -823,8 +824,7 @@ class _UserTile(_SplinepyBase):
         for m in microtile:
             if not isinstance(m, _PySpline):
                 raise ValueError(
-                    "Microtiles must be (list of) "
-                    "splinepy-Splines. e.g. splinepy.NURBS"
+                    "Microtiles must be (list of) splinepy-Splines. e.g. splinepy.NURBS"
                 )
             # Extract beziers for every non Bezier patch else this just
             # returns itself

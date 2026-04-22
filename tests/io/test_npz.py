@@ -43,5 +43,7 @@ def test_npz_io(to_tmpf, are_splines_equal):
         list_of_splines_loaded = splinepy.io.npz.load(tmpf + ".npz")
         assert all(
             are_splines_equal(a, b)
-            for a, b in zip(list_of_splines, list_of_splines_loaded)
+            for a, b in zip(
+                list_of_splines, list_of_splines_loaded, strict=True
+            )
         )

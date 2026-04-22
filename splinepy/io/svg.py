@@ -271,7 +271,7 @@ def _export_gustaf_object(
             cmap_style = gus_object.show_options.get("cmap", "jet")
             colors = [
                 _rgb_2_hex(r, g, b)
-                for r, g, b, in _color_map(
+                for r, g, b in _color_map(
                     values.ravel(), name=cmap_style, vmin=v_min, vmax=v_max
                 )
             ]
@@ -284,7 +284,7 @@ def _export_gustaf_object(
             id="control_points",
         )
 
-        for vertex, color in zip(gus_object.vertices, colors):
+        for vertex, color in zip(gus_object.vertices, colors, strict=True):
             _ET.SubElement(
                 svg_control_points,
                 "circle",
@@ -320,7 +320,7 @@ def _export_gustaf_object(
             svg_labels.attrib["stroke"] = "none"
             dx = radius
 
-            for ctp, label in zip(gus_object.vertices, labels):
+            for ctp, label in zip(gus_object.vertices, labels, strict=True):
                 text_element = _ET.SubElement(
                     svg_labels,
                     "text",
@@ -395,7 +395,7 @@ def _export_control_mesh(
             "g",
             id="mesh",
             style=(
-                f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                f"fill:none;stroke:{_rgb_2_hex(r, g, b)};stroke-opacity:{a};"
                 f"stroke-width:{stroke_width};stroke-linecap:round"
             ),
         )
@@ -442,7 +442,6 @@ def _export_control_mesh(
 
     # Then control points
     if control_point_requested:
-
         # Relevant options:
         # - control_point_ids
         # - control_point_alpha
@@ -735,7 +734,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
         "g",
         id="tick_mark_lines",
         style=(
-            f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+            f"fill:none;stroke:{_rgb_2_hex(r, g, b)};stroke-opacity:{a};"
             f"stroke-width:{stroke_width};stroke-linecap:round"
         ),
     )
@@ -775,7 +774,7 @@ def _add_scalar_bar(svg_element, box_size, **kwargs):
         ),
     )
 
-    for mark, position in zip(tick_marks, tick_mark_positions):
+    for mark, position in zip(tick_marks, tick_mark_positions, strict=True):
         # Draw a line
         _ET.SubElement(
             svg_tick_marks,
@@ -987,7 +986,6 @@ def _export_spline(
 
     # Check if a field is to be plotted
     if spline.show_options.get("data", None) is not None:
-
         # spline.show()
         _export_spline_field(
             spline, svg_spline, box_min_x, box_max_y, **kwargs
@@ -1008,15 +1006,15 @@ def _export_spline(
             spline_copy = _approximate_curve(spline, tolerance)
             bezier_elements = spline_copy.extract.beziers()
             path_d = (
-                f"M {bezier_elements[0].cps[0,0]-box_min_x},"
-                f"{box_max_y - bezier_elements[0].cps[0,1]}"
+                f"M {bezier_elements[0].cps[0, 0] - box_min_x},"
+                f"{box_max_y - bezier_elements[0].cps[0, 1]}"
             )
             path_d += " ".join(
                 [
                     (
-                        f" C {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
-                        f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                        f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                        f" C {s.cps[1, 0] - box_min_x},{box_max_y - s.cps[1, 1]}"
+                        f" {s.cps[2, 0] - box_min_x},{box_max_y - s.cps[2, 1]}"
+                        f" {s.cps[3, 0] - box_min_x},{box_max_y - s.cps[3, 1]}"
                     )
                     for s in bezier_elements
                 ]
@@ -1027,7 +1025,7 @@ def _export_spline(
                 # draw path
                 d=path_d,
                 style=(
-                    f"fill:none;stroke:{_rgb_2_hex(r,g,b)};stroke-opacity:{a};"
+                    f"fill:none;stroke:{_rgb_2_hex(r, g, b)};stroke-opacity:{a};"
                     f"stroke-width:{spline.show_options.get('lw', 0.01)};"
                     "stroke-linecap:round"
                 ),
@@ -1048,16 +1046,16 @@ def _export_spline(
                 bezier_elements += spline_copy.extract.beziers()
 
             path_d = (
-                f"M {bezier_elements[0].cps[0,0]-box_min_x},"
-                f"{box_max_y - bezier_elements[0].cps[0,1]}"
+                f"M {bezier_elements[0].cps[0, 0] - box_min_x},"
+                f"{box_max_y - bezier_elements[0].cps[0, 1]}"
             )
             path_d += " ".join(
                 [
                     (
                         f" C"
-                        f" {s.cps[1,0]-box_min_x},{box_max_y - s.cps[1,1]}"
-                        f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                        f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                        f" {s.cps[1, 0] - box_min_x},{box_max_y - s.cps[1, 1]}"
+                        f" {s.cps[2, 0] - box_min_x},{box_max_y - s.cps[2, 1]}"
+                        f" {s.cps[3, 0] - box_min_x},{box_max_y - s.cps[3, 1]}"
                     )
                     for s in bezier_elements
                 ]
@@ -1069,8 +1067,8 @@ def _export_spline(
                 # draw path
                 d=path_d,
                 style=(
-                    f"fill:{_rgb_2_hex(r,g,b)};fill-opacity:{a};stroke:none;"
-                    f"stroke-linecap:{kwargs.get('linecap','round')}"
+                    f"fill:{_rgb_2_hex(r, g, b)};fill-opacity:{a};stroke:none;"
+                    f"stroke-linecap:{kwargs.get('linecap', 'round')}"
                 ),
             )
 
@@ -1094,7 +1092,6 @@ def _export_spline(
             ukvs = spline.unique_knots[0]
             knot_projected = spline.evaluate(ukvs.reshape(-1, 1))
             for x, y in knot_projected:
-
                 _ET.SubElement(
                     svg_knots,
                     "rect",
@@ -1103,13 +1100,11 @@ def _export_spline(
                     height=str(lw),
                     width=str(lw),
                     style=(
-                        f"fill:{_rgb_2_hex(r,g,b)};stroke:none;"
-                        f"fill-opacity:{a};"
+                        f"fill:{_rgb_2_hex(r, g, b)};stroke:none;fill-opacity:{a};"
                     ),
                 )
 
         else:
-
             # Extract knot lines as splines
             knot_lines = []
             for knot in spline.unique_knots[0]:
@@ -1123,16 +1118,16 @@ def _export_spline(
                 spline_copy = _approximate_curve(knot_line, tolerance)
                 bezier_elements = spline_copy.extract.beziers()
                 path_d = (
-                    f"M {bezier_elements[0].cps[0,0]-box_min_x},"
-                    f"{box_max_y - bezier_elements[0].cps[0,1]}"
+                    f"M {bezier_elements[0].cps[0, 0] - box_min_x},"
+                    f"{box_max_y - bezier_elements[0].cps[0, 1]}"
                 )
                 path_d += " ".join(
                     [
                         (
-                            f" C {s.cps[1,0]-box_min_x},"
-                            f"{box_max_y - s.cps[1,1]}"
-                            f" {s.cps[2,0]-box_min_x},{box_max_y - s.cps[2,1]}"
-                            f" {s.cps[3,0]-box_min_x},{box_max_y - s.cps[3,1]}"
+                            f" C {s.cps[1, 0] - box_min_x},"
+                            f"{box_max_y - s.cps[1, 1]}"
+                            f" {s.cps[2, 0] - box_min_x},{box_max_y - s.cps[2, 1]}"
+                            f" {s.cps[3, 0] - box_min_x},{box_max_y - s.cps[3, 1]}"
                         )
                         for s in bezier_elements
                     ]
@@ -1143,10 +1138,10 @@ def _export_spline(
                     # draw path
                     d=path_d,
                     style=(
-                        f"fill:none;stroke:{_rgb_2_hex(r,g,b)};"
+                        f"fill:none;stroke:{_rgb_2_hex(r, g, b)};"
                         f"stroke-opacity:{a};"
                         f"stroke-width:{lw};"
-                        f"stroke-linecap:{kwargs.get('linecap','round')}"
+                        f"stroke-linecap:{kwargs.get('linecap', 'round')}"
                     ),
                 )
 

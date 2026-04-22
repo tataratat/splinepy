@@ -196,7 +196,7 @@ def test_uniform_refine():
 
         # compute what it should be
         n_elem2_ref = 1
-        for uk, nk in zip(unique_knots1, n_knots):
+        for uk, nk in zip(unique_knots1, n_knots, strict=True):
             n_elem2_ref *= (len(uk) - 1) * (nk + 1)
 
         assert n_elem2_ref == n_elem2

@@ -12,7 +12,7 @@ def test_knot_vectors(splinetype, request):
     copy_knot_vectors = spline.knot_vectors[:]
     unique_knots = [np.unique(ckvs) for ckvs in copy_knot_vectors]
 
-    for uk, uk_fct in zip(unique_knots, spline.unique_knots):
+    for uk, uk_fct in zip(unique_knots, spline.unique_knots, strict=True):
         assert np.allclose(uk, uk_fct)
 
     # test knot_multiplicities
@@ -20,7 +20,9 @@ def test_knot_vectors(splinetype, request):
         np.unique(ckvs, return_counts=True) for ckvs in copy_knot_vectors
     ]
 
-    for m_u, m_fct in zip(multiplicity, spline.knot_multiplicities):
+    for m_u, m_fct in zip(
+        multiplicity, spline.knot_multiplicities, strict=True
+    ):
         assert np.allclose(m_u[1], m_fct)
 
     # test knot_vector creation
@@ -28,5 +30,6 @@ def test_knot_vectors(splinetype, request):
         spline.unique_knots,
         spline.knot_multiplicities,
         spline.knot_vectors,
+        strict=True,
     ):
-        assert np.allclose(np.array(spl_kv), np.repeat(u_kv, kn_m))
+        assert np.allclose(spl_kv.numpy(), np.repeat(u_kv, kn_m))

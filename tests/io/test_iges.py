@@ -56,5 +56,5 @@ def test_iges_round_trip_bsplines(to_tmpf, are_splines_equal):
 
         assert all(
             are_splines_equal(a, b)
-            for a, b in zip(splines_in_3d, list_of_splines_loaded)
+            for a, b in zip(splines_in_3d, list_of_splines_loaded, strict=True)
         )

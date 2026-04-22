@@ -108,8 +108,7 @@ class BSplineBase(_spline.Spline):
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                "One of the query knots not in valid knot range. "
-                "(Too small)"
+                "One of the query knots not in valid knot range. (Too small)"
             )
 
         inserted = _splinepy_core.insert_knots(
@@ -171,7 +170,7 @@ class BSplineBase(_spline.Spline):
             return new_knots
 
         # determine new knots for each para_dim and insert the knots
-        for para_dim, n_k in zip(para_dims, n_knots):
+        for para_dim, n_k in zip(para_dims, n_knots, strict=True):
             new_knots = determine_new_knots(
                 # recompute unique to allow duplicating para_dims.
                 kv_unique=self.unique_knots[para_dim],
@@ -303,8 +302,7 @@ class BSplineBase(_spline.Spline):
 
         if min(knots) < min(self.knot_vectors[parametric_dimension]):
             raise ValueError(
-                "One of the query knots not in valid knot range. "
-                "(Too small)"
+                "One of the query knots not in valid knot range. (Too small)"
             )
 
         removed = _splinepy_core.remove_knots(
@@ -319,7 +317,6 @@ class BSplineBase(_spline.Spline):
 
         self._logd(f"Tried to remove {len(knots)} knot(s).")
         self._logd(f"Actually removed {sum(removed)} knot(s).")
-
         return removed
 
     def normalize_knot_vectors(self):

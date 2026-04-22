@@ -259,6 +259,7 @@ def test_cats_import(to_tmpf, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry,
                 multipatch_geometry_loaded,
+                strict=True,
             )
         )
 
@@ -276,5 +277,6 @@ def test_cats_import(to_tmpf, are_splines_equal):
             for a, b in zip(
                 multipatch_geometry,
                 multipatch_geometry_loaded,
+                strict=True,
             )
         )

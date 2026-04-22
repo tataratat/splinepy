@@ -468,7 +468,7 @@ def uniform_query(bounds, resolutions):
 
     # create per-dimension queries
     queries_per_dim = []
-    for lb, ub, r in zip(lower_b, upper_b, resolutions):
+    for lb, ub, r in zip(lower_b, upper_b, resolutions, strict=True):
         queries_per_dim.append(_np.linspace(lb, ub, r))
 
     return cartesian_product(queries_per_dim, reverse=True)
@@ -573,8 +573,7 @@ class SplineDataAdaptor(_SplinepyBase):
         # can call sample or has a function?
         if not self.has_function and not self.is_spline:
             raise ValueError(
-                "None spline data should at least have an accompanying "
-                "function."
+                "None spline data should at least have an accompanying function."
             )
 
     def as_vertex_data(self, resolutions=None, on=None):
@@ -595,8 +594,7 @@ class SplineDataAdaptor(_SplinepyBase):
 
         if self.has_locations and (resolutions is not None or on is not None):
             raise ValueError(
-                "Location dependent data can't be evaluated with `resolutions`"
-                " or `at`."
+                "Location dependent data can't be evaluated with `resolutions` or `at`."
             )
 
         # if resolutions is specified, this is not a location query
