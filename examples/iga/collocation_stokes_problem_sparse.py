@@ -29,16 +29,16 @@ solution_field_pressure = sp.BSpline(
     control_points=np.ones((geometry.control_points.shape[0], 1)),
     knot_vectors=geometry.knot_vectors,
 )
-solution_field_pressure.elevate_degrees([0, 1, 0, 1])
+solution_field_pressure.elevate_degrees([0, 1])
 solution_field_pressure.uniform_refine([1], 7)
 solution_field_pressure.uniform_refine([0], 7)
 # Refinement leads to quadratic spline with 10x10cps
 
 # Create Raviart-Thomas mixed style splines
 solution_field_velocity_u = solution_field_pressure.copy()
-solution_field_velocity_u.elevate_degrees([0])
+solution_field_velocity_u.elevate_degrees([1])
 solution_field_velocity_v = solution_field_pressure.copy()
-solution_field_velocity_v.elevate_degrees([1])
+solution_field_velocity_v.elevate_degrees([0])
 
 ###
 # Source Functions
@@ -51,7 +51,7 @@ def source_function_u(x_vec):
     return (
         (12 - 24 * y) * x**4
         + (-24 + 48 * y) * x**3
-        + (-48 * y + 72 * y**2 - 48 * y**3 + 12) * x**2
+        + (12 - 48 * y + 72 * y**2 - 48 * y**3) * x**2
         + (-2 + 24 * y - 72 * y**2 + 48 * y**3) * x
         + (1 - 4 * y + 12 * y**2 - 8 * y**3)
     )
@@ -66,6 +66,14 @@ def source_function_v(x_vec):
         + (4 - 24 * y + 48 * y**2 - 48 * y**3 + 24 * y**4) * x
         + (-12 * y**2 + 24 * y**3 - 12 * y**4)
     )
+
+
+def boundary_conditions_u(x_vec):
+    return np.zeros((x_vec.shape[0]))
+
+
+def boundary_conditions_v(x_vec):
+    return np.zeros((x_vec.shape[0]))
 
 
 ###
@@ -99,6 +107,8 @@ A_p_tu = sp.utils.data.make_matrix(
     solution_field_pressure.cps.shape[0],
     as_array=False,
 )
+# RHS
+rhs_u = source_function_u(geometry.evaluate(greville_points_u))
 
 # SECOND ROW ----------
 # A_u_tv = 0
@@ -117,6 +127,9 @@ A_p_tv = sp.utils.data.make_matrix(
     solution_field_pressure.cps.shape[0],
     as_array=False,
 )
+# RHS
+rhs_v = source_function_v(geometry.evaluate(greville_points_v))
+
 # THIRD ROW ----------
 # A_u_tp dudx
 gradient_u, support_u = mapper_u.basis_gradient_and_support(greville_points_p)
@@ -136,23 +149,15 @@ A_v_tp = sp.utils.data.make_matrix(
 )
 # A_p_tp = 0
 A_p_tp = None
-
-
-###
-# Evaluation of rhs
-###
-physical_points_u = geometry.evaluate(greville_points_u)
-physical_points_v = geometry.evaluate(greville_points_v)
-rhs_u = source_function_u(physical_points_u)
-rhs_v = source_function_v(physical_points_v)
+# RHS
 rhs_p = np.zeros(greville_points_p.shape[0])
 
 
 ###
-# Imposition of strong bcs (There must be a better solution here...)
+# Imposition of BCs
 ###
-# identify boundary nodes u
-boundary_dof_ids = np.concatenate(
+# For U-Velocity
+boundary_evaluation_point_ids_v = np.concatenate(
     (
         solution_field_velocity_u.multi_index[0, :],
         solution_field_velocity_u.multi_index[-1, :],
@@ -160,14 +165,21 @@ boundary_dof_ids = np.concatenate(
         solution_field_velocity_u.multi_index[1:-1, -1],
     )
 )
-A_u_tu[boundary_dof_ids] *= 0  # this does not change sparsity pattern
-A_p_tu[boundary_dof_ids] *= 0
-A_u_tu[boundary_dof_ids, boundary_dof_ids] = 1
-rhs_u[boundary_dof_ids] = 0.0
+boundary_evaluation_points_u = greville_points_u[
+    boundary_evaluation_point_ids_v]
 
-# identify boundary nodes v
-boundary_dof_ids = None
-boundary_dof_ids = np.concatenate(
+# Create matrices and RHS
+A_u_tpbcu = sp.utils.data.make_matrix(
+    *solution_field_velocity_u.basis_and_support(boundary_evaluation_points_u),
+    solution_field_velocity_u.cps.shape[0],
+    as_array=False,
+)
+A_v_tpbcu = None
+A_p_tpbcu = None
+rhs_tpbcu = boundary_conditions_u(boundary_evaluation_points_u)
+
+# For V-velocity
+boundary_evaluation_point_ids_v = np.concatenate(
     (
         solution_field_velocity_v.multi_index[0, :],
         solution_field_velocity_v.multi_index[-1, :],
@@ -175,42 +187,59 @@ boundary_dof_ids = np.concatenate(
         solution_field_velocity_v.multi_index[1:-1, -1],
     )
 )
-A_v_tv[boundary_dof_ids] *= 0  # this does not change sparsity pattern
-A_v_tv[boundary_dof_ids, boundary_dof_ids] = 1
-A_p_tv[boundary_dof_ids] *= 0
-rhs_v[boundary_dof_ids] = 0.0
+boundary_evaluation_points_v = greville_points_v[
+    boundary_evaluation_point_ids_v]
 
-# Add condition for pressure (optional)
-pressure_treatment = ""
-if pressure_treatment.lower() == "normalize":
-    n = greville_points_p.shape[0]
-    row_idx = np.full(n, n - 1)  # all entries in last row
-    col_idx = np.arange(n)  # columns 0..m-1
-    data = np.ones(n)
-    A_p_tp = csr_matrix((data, (row_idx, col_idx)), shape=(n, n))
-    A_u_tp[-1, :] *= 0
-    A_v_tp[-1, :] *= 0
-elif pressure_treatment.lower() == "singlepoint":
-    n = greville_points_p.shape[0]
-    A_u_tp[-1, :] *= 0
-    A_v_tp[-1, :] *= 0
-    A_p_tp = csr_matrix(([1], ([n - 1], [n - 1])), shape=(n, n))
-    rhs_p[n - 1] = 0.0
+# Create matrices and RHS
+A_u_tpbcv = None
+A_v_tpbcv = sp.utils.data.make_matrix(
+    *solution_field_velocity_v.basis_and_support(boundary_evaluation_points_v),
+    solution_field_velocity_v.cps.shape[0],
+    as_array=False,
+)
+A_p_tpbcv = None
+rhs_tpbcv = boundary_conditions_u(boundary_evaluation_points_u)
+
+# For Pressure Field (redundant?)
+impose_pressure_bcs = False
+if impose_pressure_bcs:
+    boundary_evaluation_point_ids_p = np.concatenate(
+        (
+            solution_field_pressure.multi_index[0, :],
+            solution_field_pressure.multi_index[-1, :],
+        )
+    )
+    boundary_evaluation_points_p = greville_points_p[
+        boundary_evaluation_point_ids_p]
+
+    # Create matrices and RHS
+    A_u_tpbcp = None
+    A_v_tpbcp = None
+    A_p_tpbcp = sp.utils.data.make_matrix(
+        *solution_field_pressure.basis_and_support(boundary_evaluation_points_p),
+        solution_field_pressure.cps.shape[0],
+        as_array=False,
+    )
+    rhs_tpbcp = boundary_conditions_u(boundary_evaluation_points_p)
 
 
 ###
 # Solve linear system
 ###
-rhs_all = np.concatenate([rhs_u, rhs_v, rhs_p])
-matrix_all = bmat(
-    [
-        [A_u_tu, A_v_tu, A_p_tu],
-        [A_u_tv, A_v_tv, A_p_tv],
-        [A_u_tp, A_v_tp, A_p_tp],
-    ],
-    format=A_u_tu.format,
-)
-solution_vector = linalg.spsolve(matrix_all, rhs_all)
+rhs_all = np.concatenate([rhs_u, rhs_v, rhs_p, rhs_tpbcu, rhs_tpbcv])
+block_matrices = [
+    [A_u_tu, A_v_tu, A_p_tu],
+    [A_u_tv, A_v_tv, A_p_tv],
+    [A_u_tp, A_v_tp, A_p_tp],
+    [A_u_tpbcu, A_v_tpbcu, A_p_tpbcu],
+    [A_u_tpbcv, A_v_tpbcv, A_p_tpbcv],
+]
+if impose_pressure_bcs:
+    rhs_all = np.concatenate([rhs_all, rhs_tpbcp
+                              ])
+    block_matrices.append([A_u_tpbcp, A_v_tpbcp, A_p_tpbcp])
+matrix_all = bmat(block_matrices, format=A_u_tu.format)
+solution_vector, istop, itn, r1norm = linalg.lsqr(matrix_all, rhs_all)[:4]
 
 ###
 # Assign solution to original splines
@@ -220,14 +249,14 @@ solution_field_velocity_u.control_points = np.reshape(
 )
 solution_field_velocity_v.control_points = np.reshape(
     solution_vector[
-        solution_field_velocity_u.cps.shape[0] : -(
+        solution_field_velocity_u.cps.shape[0]: -(
             solution_field_pressure.cps.shape[0]
         )
     ],
     (-1, 1),
 )
 solution_field_pressure.control_points = np.reshape(
-    solution_vector[-(solution_field_pressure.cps.shape[0]) :], (-1, 1)
+    solution_vector[-(solution_field_pressure.cps.shape[0]):], (-1, 1)
 )
 
 
@@ -348,8 +377,35 @@ def loss_function_v(data, on):
     )
 
 
+def loss_function_p(data, on):
+    return (
+        mapper_u.gradient(on)[:, 0, 0]
+        + mapper_v.gradient(on)[:, 0, 1]
+    )
+
+
 geometry.spline_data["field"] = sp.SplineDataAdaptor(
     geometry, function=loss_function_u
 )
 loss_u = geometry.copy()
-loss_u.show()
+geometry.spline_data["field"] = sp.SplineDataAdaptor(
+    geometry, function=loss_function_v
+)
+loss_v = geometry.copy()
+geometry.spline_data["field"] = sp.SplineDataAdaptor(
+    geometry, function=loss_function_p
+)
+loss_p = geometry.copy()
+sp.show(
+    ["U-Velocity", solution_u],
+    ["V-velocity", solution_v],
+    ["Pressure", solution_p],
+    ["|U - U_exp|", error_field_u],
+    ["|V - V_exp|", error_field_v],
+    ["|P - P_exp|", error_field_p],
+    ["|R(u)|", loss_u],
+    ["|R(v)|", loss_v],
+    ["|R(p)|", loss_p],
+    knots=True,
+    control_points=False,
+)
