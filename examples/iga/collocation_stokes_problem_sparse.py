@@ -5,7 +5,9 @@ chapter 6.8.1 example with analytical solution.
 """
 
 import numpy as np
-from scipy.sparse import bmat, csr_matrix, linalg
+from scipy.sparse import bmat, linalg
+
+import matplotlib.pyplot as plt
 
 import splinepy as sp
 
@@ -15,6 +17,8 @@ import splinepy as sp
 
 # Define the dynamic viscosity
 viscosity = 1
+mass_factor = 1e-1  # Scale second loss function
+impose_pressure_bcs = False  # Impose BCS for pressure
 
 # Define the Geometry (simple first order unit square)
 geometry = sp.BSpline(
@@ -134,7 +138,7 @@ rhs_v = source_function_v(geometry.evaluate(greville_points_v))
 # A_u_tp dudx
 gradient_u, support_u = mapper_u.basis_gradient_and_support(greville_points_p)
 A_u_tp = sp.utils.data.make_matrix(
-    gradient_u[:, :, 0],
+    mass_factor * gradient_u[:, :, 0],
     support_u,
     solution_field_velocity_u.cps.shape[0],
     as_array=False,
@@ -142,7 +146,7 @@ A_u_tp = sp.utils.data.make_matrix(
 # A_v_tp dvdx
 gradient_v, support_v = mapper_v.basis_gradient_and_support(greville_points_p)
 A_v_tp = sp.utils.data.make_matrix(
-    gradient_v[:, :, 1],
+    mass_factor * gradient_v[:, :, 1],
     support_v,
     solution_field_velocity_v.cps.shape[0],
     as_array=False,
@@ -150,7 +154,7 @@ A_v_tp = sp.utils.data.make_matrix(
 # A_p_tp = 0
 A_p_tp = None
 # RHS
-rhs_p = np.zeros(greville_points_p.shape[0])
+rhs_p = mass_factor * np.zeros(greville_points_p.shape[0])
 
 
 ###
@@ -201,7 +205,6 @@ A_p_tpbcv = None
 rhs_tpbcv = boundary_conditions_u(boundary_evaluation_points_u)
 
 # For Pressure Field (redundant?)
-impose_pressure_bcs = False
 if impose_pressure_bcs:
     boundary_evaluation_point_ids_p = np.concatenate(
         (
@@ -240,6 +243,12 @@ if impose_pressure_bcs:
     block_matrices.append([A_u_tpbcp, A_v_tpbcp, A_p_tpbcp])
 matrix_all = bmat(block_matrices, format=A_u_tu.format)
 solution_vector, istop, itn, r1norm = linalg.lsqr(matrix_all, rhs_all)[:4]
+
+
+# Plot Matrix
+plt.spy(matrix_all)
+plt.show()
+
 
 ###
 # Assign solution to original splines
@@ -338,17 +347,6 @@ geometry.spline_data["field"] = sp.SplineDataAdaptor(
 )
 error_field_p = geometry.copy()
 
-sp.show(
-    ["U-Velocity", solution_u],
-    ["V-velocity", solution_v],
-    ["Pressure", solution_p],
-    ["|U - U_exp|", error_field_u],
-    ["|V - V_exp|", error_field_v],
-    ["|P - P_exp|", error_field_p],
-    knots=True,
-    control_points=False,
-)
-
 
 ###
 # Loss function u
@@ -378,7 +376,7 @@ def loss_function_v(data, on):
 
 
 def loss_function_p(data, on):
-    return (
+    return mass_factor * (
         mapper_u.gradient(on)[:, 0, 0]
         + mapper_v.gradient(on)[:, 0, 1]
     )
