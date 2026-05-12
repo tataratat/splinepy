@@ -49,7 +49,9 @@ def _get_integral_measure(spline):
 
         def measure(spline_patch, positions):
             jacs = spline_patch.jacobian(positions)
-            return _np.sqrt(_np.linalg.det(_np.einsum("oji,ojk->oik", jacs, jacs)))
+            return _np.sqrt(
+                _np.linalg.det(_np.einsum("oji,ojk->oik", jacs, jacs))
+            )
 
         return measure
 
@@ -115,7 +117,9 @@ def _get_quadrature_information(spline, orders=None):
     else:
         quad_orders = _np.ascontiguousarray(orders, dtype=int).flatten()
         if quad_orders.size != spline.para_dim:
-            raise ValueError("Integration order must be array of size para_dim")
+            raise ValueError(
+                "Integration order must be array of size para_dim"
+            )
 
     for order in quad_orders:
         # Get legendre quadratuer points
@@ -162,7 +166,10 @@ def volume(spline, orders=None):
     # Calculate Volume
     if spline.has_knot_vectors:
         volume = _np.sum(
-            [_np.sum(meas(b, positions) * weights) for b in spline.extract.beziers()]
+            [
+                _np.sum(meas(b, positions) * weights)
+                for b in spline.extract.beziers()
+            ]
         )
     else:
         volume = _np.sum(meas(spline, positions) * weights)
@@ -229,14 +236,70 @@ def parametric_function(
 
 
 def physical_function(
-    function,  # noqa ARG001
-    orders,  # noqa ARG001
+    spline,
+    function,
+    orders=None,
 ):
-    """Integrate a function defined within the physical domain"""
-    raise NotImplementedError(
-        "Function not implemented yet. Please feel free to write an issue, if "
-        "you need it: github.com/tatarata/splinepy/issues"
-    )
+    """Integrate a function defined within the selected domain
+
+    Parameters
+    ----------
+    spline : Spline
+        The geometry over which the function is integrated
+    function : Callable
+        The user-defined function to integrate.
+    orders : optional
+        Quadrature order in parametric domain for numerical integration
+
+    Returns
+    -------
+    integral : np.ndarray
+    """
+    from splinepy.spline import Spline as _Spline
+
+    # Check input type
+    if not isinstance(spline, _Spline):
+        raise NotImplementedError("integration only works for splines")
+
+    # Retrieve aux info
+    meas = _get_integral_measure(spline)
+    positions, weights = _get_quadrature_information(spline, orders)
+
+    # define function to integrate
+    def _function(position):
+        return function(spline.evaluate(position))
+
+    # Calculate Volume
+    if spline.has_knot_vectors:
+        # positions must be mapped into each knot-element
+        para_view = spline.create.parametric_view(axes=False)
+
+        # get initial shape
+        initial = function([positions[0]])
+        result = _np.zeros(initial.shape[1])
+        for bezier_element in para_view.extract.beziers():
+            # Get the bezier element scaling factor to get the correct
+            # element size from original knot element
+            knot_element_scaling_factor = _np.prod(
+                _np.diff(bezier_element.control_point_bounds, axis=0)
+            )
+            quad_positions = bezier_element.evaluate(positions)
+            result += _np.einsum(
+                "i...,i,i->...",
+                _function(quad_positions),
+                meas(spline, quad_positions) * knot_element_scaling_factor,
+                weights,
+                optimize=True,
+            )
+    else:
+        result = _np.einsum(
+            "i...,i,i->...",
+            _function(positions),
+            meas(spline, positions),
+            weights,
+            optimize=True,
+        )
+    return result
 
 
 class Integrator:
@@ -269,6 +332,10 @@ class Integrator:
     @_wraps(parametric_function)
     def parametric_function(self, *args, **kwargs):
         return parametric_function(self._helpee, *args, **kwargs)
+
+    @_wraps(physical_function)
+    def physical_function(self, *args, **kwargs):
+        return physical_function(self._helpee, *args, **kwargs)
 
 
 class Transformation:
@@ -330,7 +397,9 @@ class Transformation:
         if orders is None:
             quad_positions = []
             quad_weights = []
-            for dim_quadrature_order in _default_quadrature_orders(spline_for_quad):
+            for dim_quadrature_order in _default_quadrature_orders(
+                spline_for_quad
+            ):
                 quad_position, quad_weight = _np.polynomial.legendre.leggauss(
                     deg=dim_quadrature_order
                 )
@@ -340,10 +409,12 @@ class Transformation:
                 quad_weights.append(quad_weight / 2)
 
             self._quad_positions = _cartesian_product(quad_positions)
-            self._quad_weights = _np.prod(_cartesian_product(quad_weights), axis=1)
+            self._quad_weights = _np.prod(
+                _cartesian_product(quad_weights), axis=1
+            )
         else:
-            self._quad_positions, self._quad_weights = _get_quadrature_information(
-                spline_for_quad, orders
+            self._quad_positions, self._quad_weights = (
+                _get_quadrature_information(spline_for_quad, orders)
             )
 
         # Precompute grid IDs
@@ -421,7 +492,9 @@ class Transformation:
             The grid ID of the element.
         """
         if self._para_dim == 3:
-            raise NotImplementedError("Element grid ID not yet implemented for 3D")
+            raise NotImplementedError(
+                "Element grid ID not yet implemented for 3D"
+            )
 
         return self._grid_ids[element_id, :]
 
@@ -448,7 +521,9 @@ class Transformation:
         element_corner_points = _np.vstack(
             [
                 ukv_dim[e_dim_id : (e_dim_id + 2)]
-                for ukv_dim, e_dim_id in zip(self._ukv, element_grid_id)
+                for ukv_dim, e_dim_id in zip(
+                    self._ukv, element_grid_id, strict=True
+                )
             ]
         )
         element_lengths = _np.diff(element_corner_points, axis=1).ravel()
@@ -523,7 +598,10 @@ class Transformation:
 
         element_jacobians = self.jacobian(element_id)
         element_jacobian_inverse = _np.stack(
-            [_np.linalg.inv(element_jacobian) for element_jacobian in element_jacobians]
+            [
+                _np.linalg.inv(element_jacobian)
+                for element_jacobian in element_jacobians
+            ]
         )
 
         return element_jacobian_inverse
@@ -547,7 +625,10 @@ class Transformation:
 
         element_jacobians = self.jacobian(element_id)
         return _np.array(
-            [_np.linalg.det(element_jacobian) for element_jacobian in element_jacobians]
+            [
+                _np.linalg.det(element_jacobian)
+                for element_jacobian in element_jacobians
+            ]
         )
 
     def compute_all_element_quad_points(self, recompute=False):
@@ -593,7 +674,9 @@ class Transformation:
 
         self.compute_all_element_quad_points(recompute=recompute)
         relevant_spline = (
-            self._spline if self._solution_field is None else self._solution_field
+            self._spline
+            if self._solution_field is None
+            else self._solution_field
         )
         self._all_supports = [
             relevant_spline.support(quad_points[:1, :]).ravel()
@@ -718,7 +801,9 @@ class FieldIntegrator:
         self._helpee = geometry
         if solution_field is None:
             self._solution_field = geometry.copy()
-            self._solution_field.control_points = _np.zeros((geometry.cps.shape[0], 1))
+            self._solution_field.control_points = _np.zeros(
+                (geometry.cps.shape[0], 1)
+            )
         else:
             self._solution_field = solution_field
         self._ndofs = int(
@@ -728,6 +813,7 @@ class FieldIntegrator:
                     for deg, kv in zip(
                         self._solution_field.degrees,
                         self._solution_field.knot_vectors,
+                        strict=True,
                     )
                 ]
             )
@@ -745,7 +831,9 @@ class FieldIntegrator:
             If given, these orders will be used for quadrature. Otherwise, default
             quadrature orders will be used.
         """
-        self._trafo = Transformation(self._helpee, self._solution_field, orders)
+        self._trafo = Transformation(
+            self._helpee, self._solution_field, orders
+        )
         self.precompute_transformation()
 
         self._supports = None
@@ -795,14 +883,16 @@ class FieldIntegrator:
         # If other matrix is used, check if it compatible
         if matrixout is not None:
             if _has_scipy:
-                assert isinstance(matrixout, _dok_matrix), (
-                    "Matrixout must be scipy sparse dok matrix"
-                )
+                assert isinstance(
+                    matrixout, _dok_matrix
+                ), "Matrixout must be scipy sparse dok matrix"
             else:
                 assert isinstance(matrixout, _np.ndarray)
             assert matrixout.shape == (self._ndofs, self._ndofs)
 
-        system_matrix = self._global_system_matrix if matrixout is None else matrixout
+        system_matrix = (
+            self._global_system_matrix if matrixout is None else matrixout
+        )
 
         quad_weights = self._trafo.quadrature_weights
 
@@ -811,6 +901,7 @@ class FieldIntegrator:
             self._trafo.all_jacobian_determinants,
             self._trafo.all_supports,
             self._trafo.all_quad_points,
+            strict=True,
         ):
             element_matrix = function(
                 mapper=self._mapper,
@@ -863,6 +954,7 @@ class FieldIntegrator:
             self._trafo.all_jacobian_determinants,
             self._trafo.all_supports,
             self._trafo.all_quad_points,
+            strict=True,
         ):
             # Assemble element vector
             function_args["quad_points"] = element_quad_points
@@ -903,15 +995,17 @@ class FieldIntegrator:
         # If other matrix is used, check if it compatible
         if matrixout is not None:
             if _has_scipy:
-                assert isinstance(matrixout, _dok_matrix), (
-                    "Matrixout must be scipy sparse dok matrix"
-                )
+                assert isinstance(
+                    matrixout, _dok_matrix
+                ), "Matrixout must be scipy sparse dok matrix"
             else:
                 assert isinstance(matrixout, _np.ndarray)
             assert matrixout.shape == (self._ndofs, self._ndofs)
 
         # Set matrix accordingly
-        system_matrix = self._global_system_matrix if matrixout is None else matrixout
+        system_matrix = (
+            self._global_system_matrix if matrixout is None else matrixout
+        )
 
         # Initialize rhs vector
         if self._global_rhs is None:
@@ -939,6 +1033,7 @@ class FieldIntegrator:
             self._trafo.all_jacobian_determinants,
             self._trafo.all_supports,
             self._trafo.all_quad_points,
+            strict=True,
         ):
             # Assemble element matrix and vector
             function_args["quad_points"] = element_quad_points
@@ -972,7 +1067,9 @@ class FieldIntegrator:
             L2-projected values for Dofs
         """
 
-        def dirichlet_lhs_and_rhs(mapper, quad_points, quad_weights, jacobian_det):
+        def dirichlet_lhs_and_rhs(
+            mapper, quad_points, quad_weights, jacobian_det
+        ):
             # Assemble system matrix
             bf_values = mapper._field_reference.basis(quad_points)
             element_matrix = _np.einsum(
@@ -985,7 +1082,9 @@ class FieldIntegrator:
             )
 
             # Assemble rhs
-            quad_points_forward = mapper._geometry_reference.evaluate(quad_points)
+            quad_points_forward = mapper._geometry_reference.evaluate(
+                quad_points
+            )
             function_values = function(quad_points_forward)
             element_vector = _np.einsum(
                 "qj,q,q,q->j",
@@ -1000,7 +1099,9 @@ class FieldIntegrator:
 
         # Initialiye mass matrix and rhs
         global_size = (self._ndofs, self._ndofs)
-        mass_matrix = _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
+        mass_matrix = (
+            _dok_matrix(global_size) if _has_scipy else _np.zeros(global_size)
+        )
         rhs_vector = _np.zeros(self._ndofs)
         # Assemble lhs and rhs
         self.assemble_matrix_and_vector(
@@ -1055,7 +1156,9 @@ class FieldIntegrator:
             Indices of relevant boundary dofs
         """
         relevant_spline = (
-            self._helpee if self._solution_field is None else self._solution_field
+            self._helpee
+            if self._solution_field is None
+            else self._solution_field
         )
 
         multi_index = relevant_spline.multi_index
@@ -1071,13 +1174,17 @@ class FieldIntegrator:
         if north or east or south or west:
             all_boundaries = False
 
-        boundaries = [True] * 4 if all_boundaries else [west, east, south, north]
+        boundaries = (
+            [True] * 4 if all_boundaries else [west, east, south, north]
+        )
 
         indices = _np.unique(
             _np.hstack(
                 [
                     index
-                    for index, boundary in zip(multi_indices, boundaries)
+                    for index, boundary in zip(
+                        multi_indices, boundaries, strict=True
+                    )
                     if boundary
                 ]
             )
@@ -1109,7 +1216,9 @@ class FieldIntegrator:
         """
         self.check_if_assembled()
 
-        indices = self.get_boundary_dofs(all_boundaries, north, east, south, west)
+        indices = self.get_boundary_dofs(
+            all_boundaries, north, east, south, west
+        )
 
         self._global_system_matrix[indices, :] = 0
         self._global_system_matrix[indices, indices] = 1
@@ -1154,7 +1263,9 @@ class FieldIntegrator:
         dof_vector = self.L2_projection(function)
 
         # Get relevant dofs
-        indices = self.get_boundary_dofs(all_boundaries, north, east, south, west)
+        indices = self.get_boundary_dofs(
+            all_boundaries, north, east, south, west
+        )
 
         if return_values:
             return dof_vector[indices], indices
@@ -1219,7 +1330,9 @@ class FieldIntegrator:
         # Integrate error
         quad_weights = self._trafo._quad_weights
         n_weights = quad_weights.shape[0]
-        quad_weights = _np.tile(quad_weights, len(solution_values) // len(quad_weights))
+        quad_weights = _np.tile(
+            quad_weights, len(solution_values) // len(quad_weights)
+        )
         self._trafo.compute_all_element_measures()
 
         error_integration = _np.einsum(

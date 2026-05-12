@@ -42,7 +42,9 @@ def test_volume_integration_embedded(np_rng):
 
     # For same curve, test other spline types
     assert np.allclose(bezier.bspline.integrate.volume(), expected_result)
-    assert np.allclose(bezier.rationalbezier.integrate.volume(), expected_result)
+    assert np.allclose(
+        bezier.rationalbezier.integrate.volume(), expected_result
+    )
     assert np.allclose(bezier.nurbs.integrate.volume(), expected_result)
 
     # Check if volume is equal after degree elevation
@@ -153,12 +155,18 @@ def test_complex_geometry(np_rng):
 
 def test_assertions(np_rng):
     """Test the assertions in volume function"""
-    bezier = splinepy.Bezier(degrees=[1, 2], control_points=np_rng.random((6, 1)))
+    bezier = splinepy.Bezier(
+        degrees=[1, 2], control_points=np_rng.random((6, 1))
+    )
 
-    with pytest.raises(ValueError, match=r"`Volume` not supported if para_dim > dim"):
+    with pytest.raises(
+        ValueError, match=r"`Volume` not supported if para_dim > dim"
+    ):
         bezier.integrate.volume()
 
-    bezier = splinepy.Bezier(degrees=[2, 2], control_points=np_rng.random((9, 2)))
+    bezier = splinepy.Bezier(
+        degrees=[2, 2], control_points=np_rng.random((9, 2))
+    )
 
     with pytest.raises(
         ValueError, match=r"Integration order must be array of size para_dim"
@@ -176,7 +184,9 @@ def test_function_integration(np_rng):
         vf[:, 1] = col1_factor
         return vf
 
-    bezier = splinepy.Bezier(degrees=[1, 2], control_points=np_rng.random((6, 2)))
+    bezier = splinepy.Bezier(
+        degrees=[1, 2], control_points=np_rng.random((6, 2))
+    )
     # Test function integration for constant functions
     assert np.allclose(
         [bezier.integrate.volume(), col1_factor * bezier.integrate.volume()],
@@ -217,12 +227,13 @@ def test_transformation_class(np_rng):
         # Extract the corners of the current element
         element_corners = [
             ukv[grid_dim_id : grid_dim_id + 2]
-            for ukv, grid_dim_id in zip(ukvs, grid_id)
+            for ukv, grid_dim_id in zip(ukvs, grid_id, strict=True)
         ]
         # Check if quadrature points lie within element
         for dim, corners in enumerate(element_corners):
             assert np.all(
-                (quad_points[:, dim] > corners[0]) & (quad_points[:, dim] < corners[1])
+                (quad_points[:, dim] > corners[0])
+                & (quad_points[:, dim] < corners[1])
             ), f"Quadrature points do not lie within element for dimension {dim}"
 
     # For given spline, all Jacobians should be identity matrix
@@ -230,9 +241,9 @@ def test_transformation_class(np_rng):
     trafo.compute_all_element_jacobian_inverses()
     for element_jacobians in trafo.all_jacobians:
         for jacobian_at_quad_point in element_jacobians:
-            assert np.allclose(eye, jacobian_at_quad_point), (
-                "All Jacobians should be identity matrix"
-            )
+            assert np.allclose(
+                eye, jacobian_at_quad_point
+            ), "All Jacobians should be identity matrix"
 
     # For created spline, all determinants should equal one
     trafo.compute_all_element_jacobian_determinants()
@@ -240,3 +251,38 @@ def test_transformation_class(np_rng):
         trafo.all_jacobian_determinants,
         np.ones_like(trafo.all_jacobian_determinants),
     ), "All Jacobians' determinants should be equal to one"
+
+
+def test_physical_function_integration(np_rng):
+    # Analytical integral of y*(5-y) over [0,1]x[0,5] rectangle
+    integral_analytical = 125 / 6
+
+    def parabolic_function(points):
+        if isinstance(points, list):
+            y = points[0][1]
+        elif isinstance(points, np.ndarray):
+            y = points[:, 1]
+        else:
+            raise TypeError("Unsupported type for points")
+        return (y * (5 - y)).reshape(-1, 1)
+
+    # Create rectangle domain
+    xlin, ylin = np.linspace(0, 1, 3), np.linspace(0, 5, 3)
+    control_points = np.vstack(
+        [array.ravel() for array in np.meshgrid(xlin, ylin)]
+    ).T
+    rectangle = splinepy.BSpline(
+        degrees=[2, 2],
+        knot_vectors=[[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]],
+        control_points=control_points,
+    )
+
+    # Insert random knots along both parametric dimensions
+    rectangle.insert_knots(0, np_rng.random(2))
+    rectangle.insert_knots(1, np_rng.random(2))
+
+    integral = splinepy.helpme.integrate.physical_function(
+        rectangle, parabolic_function
+    )
+
+    assert np.allclose(integral, integral_analytical)
