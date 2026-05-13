@@ -16,7 +16,7 @@ import splinepy as sp
 
 # Define the dynamic viscosity
 viscosity = 1
-mass_factor = 1e-1  # Scale second loss function
+mass_factor = 1e-1  # Weight the incompressibility equations in the LSQ solve
 impose_pressure_bcs = False  # Impose BCS for pressure
 
 # Define the Geometry (simple first order unit square)
@@ -39,9 +39,11 @@ solution_field_pressure.uniform_refine([0], 7)
 
 # Create Raviart-Thomas mixed style splines
 solution_field_velocity_u = solution_field_pressure.copy()
-solution_field_velocity_u.elevate_degrees([1])
+# For div-conforming tensor-product spaces in 2D, the x-velocity has
+# one higher degree in x, and the y-velocity has one higher degree in y.
+solution_field_velocity_u.elevate_degrees([0])
 solution_field_velocity_v = solution_field_pressure.copy()
-solution_field_velocity_v.elevate_degrees([0])
+solution_field_velocity_v.elevate_degrees([1])
 
 ###
 # Source Functions
@@ -76,6 +78,10 @@ def boundary_conditions_u(x_vec):
 
 
 def boundary_conditions_v(x_vec):
+    return np.zeros(x_vec.shape[0])
+
+
+def boundary_conditions_p(x_vec):
     return np.zeros(x_vec.shape[0])
 
 
@@ -160,7 +166,7 @@ rhs_p = mass_factor * np.zeros(greville_points_p.shape[0])
 # Imposition of BCs
 ###
 # For U-Velocity
-boundary_evaluation_point_ids_v = np.concatenate(
+boundary_evaluation_point_ids_u = np.concatenate(
     (
         solution_field_velocity_u.multi_index[0, :],
         solution_field_velocity_u.multi_index[-1, :],
@@ -169,7 +175,7 @@ boundary_evaluation_point_ids_v = np.concatenate(
     )
 )
 boundary_evaluation_points_u = greville_points_u[
-    boundary_evaluation_point_ids_v
+    boundary_evaluation_point_ids_u
 ]
 
 # Create matrices and RHS
@@ -203,7 +209,7 @@ A_v_tpbcv = sp.utils.data.make_matrix(
     as_array=False,
 )
 A_p_tpbcv = None
-rhs_tpbcv = boundary_conditions_u(boundary_evaluation_points_u)
+rhs_tpbcv = boundary_conditions_v(boundary_evaluation_points_v)
 
 # For Pressure Field (redundant?)
 if impose_pressure_bcs:
@@ -227,7 +233,7 @@ if impose_pressure_bcs:
         solution_field_pressure.cps.shape[0],
         as_array=False,
     )
-    rhs_tpbcp = boundary_conditions_u(boundary_evaluation_points_p)
+    rhs_tpbcp = boundary_conditions_p(boundary_evaluation_points_p)
 
 
 ###
@@ -245,7 +251,14 @@ if impose_pressure_bcs:
     rhs_all = np.concatenate([rhs_all, rhs_tpbcp])
     block_matrices.append([A_u_tpbcp, A_v_tpbcp, A_p_tpbcp])
 matrix_all = bmat(block_matrices, format=A_u_tu.format)
-solution_vector, istop, itn, r1norm = linalg.lsqr(matrix_all, rhs_all)[:4]
+solution_vector, istop, itn, r1norm = linalg.lsqr(
+    matrix_all,
+    rhs_all,
+    atol=1e-12,
+    btol=1e-12,
+    iter_lim=100 * matrix_all.shape[1],
+)[:4]
+print(f"LSQR istop={istop}, iterations={itn}, residual={r1norm:.3e}")
 
 
 # Plot Matrix
@@ -317,11 +330,24 @@ def analytical_solution_p(geometry, on):
     return x * (1 - x)
 
 
+# if we do not impose pressure BCs, we need to align the computed pressure
+# field with the analytical solution because the pressure field is only
+# determined up to a constant
+pressure_error_offset = 0.0
+if not impose_pressure_bcs:
+    # we choose the offset as the minimum value of the computed pressure field
+    # such that the computed pressure field is (theoretically) non-negative
+    pressure_error_offset = solution_field_pressure.evaluate(
+        greville_points_p
+    ).min()
+
+
 def error_p(solution_p):
     def error_p(data, on):
         sol = solution_p.evaluate(on)
+        corr_sol = sol.flat - pressure_error_offset
         ansol = analytical_solution_p(data, on)
-        return np.abs(sol.flat - ansol)
+        return np.abs(corr_sol - ansol)
 
     return error_p
 
@@ -363,18 +389,18 @@ mapper_p = solution_field_pressure.mapper(reference=geometry)
 
 
 def loss_function_u(data, on):
-    return (
-        viscosity * mapper_v.laplacian(on)
-        - mapper_p.gradient(on)[:, 0, 1]
-        - source_function_v(data.evaluate(on))
+    return np.abs(
+        -viscosity * mapper_u.laplacian(on).ravel()
+        + mapper_p.gradient(on)[:, 0, 0]
+        - source_function_u(data.evaluate(on))
     )
 
 
 def loss_function_v(data, on):
-    return (
-        viscosity * mapper_u.laplacian(on)
-        - mapper_p.gradient(on)[:, 0, 0]
-        - source_function_u(data.evaluate(on))
+    return np.abs(
+        -viscosity * mapper_v.laplacian(on).ravel()
+        + mapper_p.gradient(on)[:, 0, 1]
+        - source_function_v(data.evaluate(on))
     )
 
 
