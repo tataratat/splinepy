@@ -33,9 +33,9 @@ solution_field_pressure = sp.BSpline(
     knot_vectors=geometry.knot_vectors,
 )
 solution_field_pressure.elevate_degrees([0, 1])
+# Refinement leads to quadratic spline with 10x10cps
 solution_field_pressure.uniform_refine([1], 7)
 solution_field_pressure.uniform_refine([0], 7)
-# Refinement leads to quadratic spline with 10x10cps
 
 # Create Raviart-Thomas mixed style splines
 solution_field_velocity_u = solution_field_pressure.copy()
@@ -82,7 +82,8 @@ def boundary_conditions_v(x_vec):
 
 
 def boundary_conditions_p(x_vec):
-    return np.zeros(x_vec.shape[0])
+    x = x_vec[:, 0]
+    return x * (1.0 - x)
 
 
 ###
@@ -213,6 +214,8 @@ rhs_tpbcv = boundary_conditions_v(boundary_evaluation_points_v)
 
 # For Pressure Field (redundant?)
 if impose_pressure_bcs:
+    # boundary conditions only applied to the sides x=0 and x=1
+    # To apply to all 4 sides see bc for velocity field
     boundary_evaluation_point_ids_p = np.concatenate(
         (
             solution_field_pressure.multi_index[0, :],
@@ -247,9 +250,12 @@ block_matrices = [
     [A_u_tpbcu, A_v_tpbcu, A_p_tpbcu],
     [A_u_tpbcv, A_v_tpbcv, A_p_tpbcv],
 ]
+
+# L2-imposition of boundary conditions for the pressure field (optional)
 if impose_pressure_bcs:
     rhs_all = np.concatenate([rhs_all, rhs_tpbcp])
     block_matrices.append([A_u_tpbcp, A_v_tpbcp, A_p_tpbcp])
+
 matrix_all = bmat(block_matrices, format=A_u_tu.format)
 solution_vector, istop, itn, r1norm = linalg.lsqr(
     matrix_all,
@@ -257,6 +263,7 @@ solution_vector, istop, itn, r1norm = linalg.lsqr(
     atol=1e-12,
     btol=1e-12,
     iter_lim=100 * matrix_all.shape[1],
+    # calc_var=True
 )[:4]
 print(f"LSQR istop={istop}, iterations={itn}, residual={r1norm:.3e}")
 
@@ -345,7 +352,7 @@ if not impose_pressure_bcs:
 def error_p(solution_p):
     def error_p(data, on):
         sol = solution_p.evaluate(on)
-        corr_sol = sol.flat - pressure_error_offset
+        corr_sol = sol.flatten() - pressure_error_offset
         ansol = analytical_solution_p(data, on)
         return np.abs(corr_sol - ansol)
 
@@ -404,7 +411,7 @@ def loss_function_v(data, on):
     )
 
 
-def loss_function_p(data, on):
+def loss_function_p(_data, on):
     return mass_factor * (
         mapper_u.gradient(on)[:, 0, 0] + mapper_v.gradient(on)[:, 0, 1]
     )
